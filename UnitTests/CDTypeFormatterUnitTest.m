@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatterUnitTest.m,v 1.17 2004/01/18 23:41:57 nygard Exp $
+// $Id: CDTypeFormatterUnitTest.m,v 1.18 2004/02/02 21:40:18 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -37,7 +37,7 @@
 {
     NSString *result;
 
-    result = [typeFormatter formatVariable:aVariableName type:aType];
+    result = [typeFormatter formatVariable:aVariableName type:aType symbolReferences:nil];
     [self assert:result equals:expectedResult];
 }
 

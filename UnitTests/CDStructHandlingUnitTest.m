@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.12 2004/01/29 22:39:27 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.13 2004/02/02 21:40:18 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -38,7 +38,7 @@
 {
     NSString *result;
 
-    result = [[classDump ivarTypeFormatter] formatVariable:aVariableName type:aType];
+    result = [[classDump ivarTypeFormatter] formatVariable:aVariableName type:aType symbolReferences:nil];
     [self assert:result equals:expectedResult];
 }
 
@@ -116,7 +116,7 @@
             else
                 level = 0;
 
-            formattedString = [[classDump ivarTypeFormatter] formatVariable:variableName type:type];
+            formattedString = [[classDump ivarTypeFormatter] formatVariable:variableName type:type symbolReferences:nil];
             if (formattedString != nil) {
                 [resultString appendString:formattedString];
                 [resultString appendString:@";\n"];
