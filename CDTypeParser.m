@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeParser.m,v 1.15 2004/01/06 01:51:57 nygard Exp $
+// $Id: CDTypeParser.m,v 1.16 2004/01/06 02:04:11 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for exmaing the
@@ -8,12 +8,15 @@
 
 #import "CDTypeParser.h"
 
+#import "rcsid.h"
 #include <assert.h>
 #import <Foundation/Foundation.h>
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
+
+RCS_ID("$rcsid");
 
 //----------------------------------------------------------------------
 
