@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.59 2004/01/17 04:04:24 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.60 2004/02/02 19:46:44 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -642,7 +642,7 @@ int main(int argc, char *argv[])
     BOOL shouldExpandFrameworks = NO;
     BOOL shouldSort = NO;
     BOOL shouldSortClasses = NO;
-    BOOL shouldGenerateHeaders = NO;
+    BOOL shouldGenerateSeparateHeaders = NO;
     BOOL shouldTestVariableTypes = NO;
     BOOL shouldTestMethodTypes = NO;
     char *regexCString = NULL;
@@ -696,7 +696,7 @@ int main(int argc, char *argv[])
               break;
 
           case 'H':
-              shouldGenerateHeaders = YES;
+              shouldGenerateSeparateHeaders = YES;
               break;
 
           case 't':
@@ -745,6 +745,8 @@ int main(int argc, char *argv[])
 
         classDump = [[CDClassDump2 alloc] init];
         [classDump setShouldProcessRecursively:shouldExpandFrameworks];
+        [classDump setShouldGenerateSeparateHeaders:shouldGenerateSeparateHeaders];
+        [classDump setOutputPath:@"/tmp/cd"];
         [classDump processFilename:path];
         [classDump doSomething];
         [classDump release];
@@ -770,7 +772,7 @@ int main(int argc, char *argv[])
         [classDump setShouldExpandProtocols:shouldExpandProtocols];
         [classDump setShouldSort:shouldSort];
         [classDump setShouldSortClasses:shouldSortClasses];
-        [classDump setShouldGenerateHeaders:shouldGenerateHeaders];
+        [classDump setShouldGenerateSeparateHeaders:shouldGenerateSeparateHeaders];
         if (regexCString != NULL) {
             if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
                 printf("Error with regex: %s\n", [regexErrorMessage cString]);

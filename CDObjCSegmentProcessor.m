@@ -19,7 +19,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.14 2004/01/16 00:18:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.15 2004/02/02 19:46:44 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -72,6 +72,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     }
 
     // TODO: Sort protocols by dependency
+    // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
@@ -118,6 +119,30 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] machOFile: %@", NSStringFromClass([self class]), [machOFile filename]];
+}
+
+- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary;
+{
+    NSString *importBaseName;
+
+    importBaseName = [machOFile importBaseName];
+    if (importBaseName != nil) {
+        int count, index;
+
+        count = [modules count];
+        for (index = 0; index < count; index++) {
+            [[modules objectAtIndex:index] registerClassesWithObject:aDictionary frameworkName:importBaseName];
+        }
+    }
+}
+
+- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
+{
+    int count, index;
+
+    count = [modules count];
+    for (index = 0; index < count; index++)
+        [[modules objectAtIndex:index] generateSeparateHeadersClassDump:aClassDump];
 }
 
 @end

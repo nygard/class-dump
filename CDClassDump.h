@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.38 2004/01/29 07:28:57 nygard Exp $
+// $Id: CDClassDump.h,v 1.39 2004/02/02 19:46:43 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -20,9 +20,12 @@
 {
     NSString *executablePath;
 
+    BOOL shouldProcessRecursively;
+    BOOL shouldGenerateSeparateHeaders;
+    NSString *outputPath;
+
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
-    BOOL shouldProcessRecursively;
 
     CDStructureTable *structureTable;
     CDStructureTable *unionTable;
@@ -30,6 +33,8 @@
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
+
+    NSMutableDictionary *frameworkNamesByClassName;
 }
 
 + (void)initialize;
@@ -46,6 +51,12 @@
 - (BOOL)shouldProcessRecursively;
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 
+- (BOOL)shouldGenerateSeparateHeaders;
+- (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
+
+- (NSString *)outputPath;
+- (void)setOutputPath:(NSString *)aPath;
+
 - (CDStructureTable *)structureTable;
 - (CDStructureTable *)unionTable;
 
@@ -57,6 +68,9 @@
 - (void)_processFilename:(NSString *)aFilename;
 
 - (void)doSomething;
+- (void)generateToStandardOut;
+- (void)generateSeparateHeaders;
+
 - (void)logInfo;
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 
@@ -76,5 +90,8 @@
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 - (void)generateMemberNames;
+
+- (void)buildClassFrameworks;
+- (NSString *)frameworkForClassName:(NSString *)aClassName;
 
 @end

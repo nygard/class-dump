@@ -6,8 +6,10 @@
 
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
+#import "CDClassDump.h"
+#import "CDOCClass.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.12 2004/01/20 05:00:23 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.13 2004/02/02 19:46:44 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -63,6 +65,29 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.12 2004/01/
     return [NSString stringWithFormat:@"[%@] classes: %@, categories: %@", NSStringFromClass([self class]), classes, categories];
 }
 
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+{
+    int count, index;
+
+    count = [classes count];
+    for (index = 0; index < count; index++)
+        [[classes objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
+
+    count = [categories count];
+    for (index = 0; index < count; index++)
+        [[categories objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
+}
+
+- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
+{
+    int count, index;
+
+    count = [classes count];
+    for (index = 0; index < count; index++) {
+        [aDictionary setObject:aFrameworkName forKey:[[classes objectAtIndex:index] name]];
+    }
+}
+
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     int count, index;
@@ -76,17 +101,47 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.12 2004/01/
         [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
 {
+    NSString *outputPath;
     int count, index;
+    NSMutableString *resultString;
+    outputPath = [aClassDump outputPath];
 
     count = [classes count];
-    for (index = 0; index < count; index++)
-        [[classes objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
+    for (index = 0; index < count; index++) {
+        CDOCClass *aClass;
+        NSString *filename;
 
+        resultString = [[NSMutableString alloc] init];
+        [aClassDump appendHeaderToString:resultString];
+
+        aClass = [classes objectAtIndex:index];
+        if ([aClass superClassName] != nil) {
+            NSString *classFramework;
+
+            classFramework = [aClassDump frameworkForClassName:[aClass superClassName]];
+            if (classFramework == nil)
+                [resultString appendFormat:@"#import \"%@.h\"\n\n", [aClass superClassName]];
+            else
+                [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, [aClass superClassName]];
+        }
+
+        [aClass appendToString:resultString classDump:aClassDump];
+        filename = [NSString stringWithFormat:@"%@.h", [aClass name]];
+        if (outputPath != nil)
+            filename = [outputPath stringByAppendingPathComponent:filename];
+
+        [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+
+        [resultString release];
+    }
+#if 0
     count = [categories count];
-    for (index = 0; index < count; index++)
-        [[categories objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
+    for (index = 0; index < count; index++) {
+        [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump];
+    }
+#endif
 }
 
 @end

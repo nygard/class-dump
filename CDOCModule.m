@@ -9,7 +9,7 @@
 #import "CDObjCSegmentProcessor.h"
 #import "CDOCSymtab.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCModule.m,v 1.9 2004/01/06 02:31:42 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCModule.m,v 1.10 2004/02/02 19:46:43 nygard Exp $");
 
 @implementation CDOCModule
 
@@ -85,6 +85,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCModule.m,v 1.9 2004/01/0
 {
     [resultString appendFormat:@"/*\n * %@\n */\n\n", name];
     [symtab appendToString:resultString classDump:aClassDump];
+}
+
+- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
+{
+    [symtab registerClassesWithObject:aDictionary frameworkName:aFrameworkName];
+}
+
+- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
+{
+    [symtab generateSeparateHeadersClassDump:aClassDump];
 }
 
 @end

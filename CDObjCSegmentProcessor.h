@@ -1,5 +1,5 @@
 //
-// $Id: CDObjCSegmentProcessor.h,v 1.12 2004/01/16 00:18:20 nygard Exp $
+// $Id: CDObjCSegmentProcessor.h,v 1.13 2004/02/02 19:46:44 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -28,5 +28,8 @@
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 - (NSString *)description;
+
+- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary;
+- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
 
 @end

@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.52 2004/01/29 07:28:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.53 2004/02/02 19:46:43 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -117,12 +117,16 @@ static NSMutableSet *wrapperExtensions = nil;
     [structDeclarationTypeFormatter setBaseLevel:0];
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
+    frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+
     return self;
 }
 
 - (void)dealloc;
 {
     [executablePath release];
+    [outputPath release];
+
     [machOFilesByID release];
     [objCSegmentProcessors release];
 
@@ -132,6 +136,8 @@ static NSMutableSet *wrapperExtensions = nil;
     [ivarTypeFormatter release];
     [methodTypeFormatter release];
     [structDeclarationTypeFormatter release];
+
+    [frameworkNamesByClassName release];
 
     [super dealloc];
 }
@@ -160,6 +166,30 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 {
     shouldProcessRecursively = newFlag;
+}
+
+- (BOOL)shouldGenerateSeparateHeaders;
+{
+    return shouldGenerateSeparateHeaders;
+}
+
+- (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
+{
+    shouldGenerateSeparateHeaders = newFlag;
+}
+
+- (NSString *)outputPath;
+{
+    return outputPath;
+}
+
+- (void)setOutputPath:(NSString *)aPath;
+{
+    if (aPath == outputPath)
+        return;
+
+    [aPath release];
+    outputPath = [aPath retain];
 }
 
 - (CDStructureTable *)structureTable;
@@ -210,11 +240,9 @@ static NSMutableSet *wrapperExtensions = nil;
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
     [aProcessor process];
-    //NSLog(@"Formatted result:\n%@", [aProcessor formattedStringByClass]);
     [objCSegmentProcessors addObject:aProcessor];
     [aProcessor release];
 
-    //[machOFiles addObject:aMachOFile];
     [machOFilesByID setObject:aMachOFile forKey:aFilename];
 
     [aMachOFile release];
@@ -224,43 +252,70 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)doSomething;
 {
-    //NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
+    NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
     //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);
     //NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
 
-    {
-        NSMutableString *resultString;
-        int count, index;
+    [self registerPhase:1];
+    [self registerPhase:2];
+    [self generateMemberNames];
 
-        [self registerPhase:1];
-        [self registerPhase:2];
-        [self generateMemberNames];
-        //[self finishRegistration];
+    if ([self shouldGenerateSeparateHeaders] == YES)
+        [self generateSeparateHeaders];
+    else
+        [self generateToStandardOut];
+}
 
-        resultString = [[NSMutableString alloc] init];
-        [self appendHeaderToString:resultString];
+- (void)generateToStandardOut;
+{
+    NSMutableString *resultString;
+    int count, index;
+    NSData *data;
 
-        [self appendStructuresToString:resultString];
+    resultString = [[NSMutableString alloc] init];
 
-        count = [objCSegmentProcessors count];
-        for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString classDump:self];
+    [self appendHeaderToString:resultString];
+    [self appendStructuresToString:resultString];
+
+    count = [objCSegmentProcessors count];
+    for (index = 0; index < count; index++) {
+        [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString classDump:self];
+    }
+
+    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+
+    [resultString release];
+}
+
+- (void)generateSeparateHeaders;
+{
+    int count, index;
+
+    [self buildClassFrameworks];
+
+    if (outputPath != nil) {
+        NSFileManager *fileManager;
+        BOOL isDirectory;
+
+        fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:outputPath isDirectory:&isDirectory] == NO) {
+            BOOL result;
+
+            result = [fileManager createDirectoryAtPath:outputPath attributes:nil];
+            if (result == NO) {
+                NSLog(@"Couldn't create output directory: %@", outputPath);
+                return;
+            }
+        } else if (isDirectory == NO) {
+            NSLog(@"File exists at output path: %@", outputPath);
+            return;
         }
+    }
 
-#if 1
-        {
-            NSData *data;
-
-            data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
-            [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
-        }
-        //NSLog(@"formatted result:\n%@", resultString);
-#else
-        // For sampling
-        NSLog(@"Done...........");
-        sleep(5);
-#endif
-        [resultString release];
+    count = [objCSegmentProcessors count];
+    for (index = 0; index < count; index++) {
+        [[objCSegmentProcessors objectAtIndex:index] generateSeparateHeadersClassDump:self];
     }
 }
 
@@ -424,6 +479,16 @@ static NSMutableSet *wrapperExtensions = nil;
 {
     [structureTable generateMemberNames];
     [unionTable generateMemberNames];
+}
+
+- (void)buildClassFrameworks;
+{
+    [objCSegmentProcessors makeObjectsPerformSelector:@selector(registerClassesWithObject:) withObject:frameworkNamesByClassName];
+}
+
+- (NSString *)frameworkForClassName:(NSString *)aClassName;
+{
+    return [frameworkNamesByClassName objectForKey:aClassName];
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: CDOCSymtab.h,v 1.9 2004/01/16 00:18:20 nygard Exp $
+// $Id: CDOCSymtab.h,v 1.10 2004/02/02 19:46:43 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 #import "CDStructureRegistrationProtocol.h"
 
-@class NSArray, NSMutableString;
+@class NSArray, NSMutableDictionary, NSMutableString;
 @class CDClassDump2;
 
 @interface CDOCSymtab : NSObject
@@ -29,8 +29,10 @@
 
 - (NSString *)description;
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
-
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
+
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
 
 @end
