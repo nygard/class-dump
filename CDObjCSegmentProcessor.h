@@ -16,7 +16,6 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (void)doSomething;
 - (void)process;
 
 - (NSString *)formattedStringByModule;

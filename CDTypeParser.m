@@ -6,13 +6,10 @@
 #include <string.h>
 
 #include "datatypes.h"
-//#include "gram.h" // for TK_IDENTIFIER
 
 #import <Foundation/Foundation.h>
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
-
-//static struct method_type *rtype = NULL; // Yuck
 
 //----------------------------------------------------------------------
 
@@ -116,7 +113,6 @@ NSString *CDTokenDescription(int token)
     result->var_name = [name retain];
     [resultString appendString:[NSString spacesIndentedToLevel:1]];
     [resultString appendString:string_from_type(result, nil, NO, 1)];
-    //[resultString appendString:@";"];
 
     free_allocated_methods();
     free_allocated_types();
@@ -153,18 +149,15 @@ NSString *CDTokenDescription(int token)
 
     [lexer release];
     lexer = nil;
-#if 1
+
     if (result == NULL)
         return nil;
-#endif
+
     resultString = [NSMutableString string];
-    //[resultString appendString:name];
-    //result->var_name = [name retain];
     str = string_from_method_type(name, result);
     if (str != nil)
         [resultString appendString:str];
     [resultString appendString:@";"];
-    //[resultString appendString:@" // nyi"];
 
     free_allocated_methods();
     free_allocated_types();

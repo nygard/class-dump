@@ -1,7 +1,6 @@
 #import "CDTypeLexer.h"
 
 #import <Foundation/Foundation.h>
-//#include "gram.h" // for TK_IDENTIFIER
 #import "NSScanner-Extensions.h"
 
 @implementation CDTypeLexer

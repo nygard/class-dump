@@ -3,6 +3,8 @@
 
 @class CDTypeLexer;
 
+extern NSString *CDSyntaxError;
+
 @interface CDTypeParser : NSObject
 {
     CDTypeLexer *lexer;
