@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.13 2004/01/27 22:44:36 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.14 2004/01/29 21:57:54 nygard Exp $");
 
 @implementation CDTypeLexer
 
@@ -132,7 +132,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.13 2004/01
             return TK_IDENTIFIER;
         }
 
-        if ([scanner scanString:@"\"" intoString:NULL] == YES) {
+        if ([scanner peekChar] == '"') {
             [self setIsInIdentifierState:NO];
             if (shouldShowLexing == YES)
                 NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, '"', '"');
@@ -190,6 +190,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.13 2004/01
 - (unichar)peekChar;
 {
     return [scanner peekChar];
+}
+
+- (NSString *)remainingString;
+{
+    return [[scanner string] substringFromIndex:[scanner scanLocation]];
+}
+
+- (NSString *)peekIdentifier;
+{
+    return nil;
 }
 
 @end

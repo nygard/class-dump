@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeLexer.h,v 1.8 2004/01/20 05:31:43 nygard Exp $
+// $Id: CDTypeLexer.h,v 1.9 2004/01/29 21:57:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -45,5 +45,7 @@
 - (void)_setLexText:(NSString *)newString;
 
 - (unichar)peekChar;
+- (NSString *)remainingString;
+- (NSString *)peekIdentifier;
 
 @end
