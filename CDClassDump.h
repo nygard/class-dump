@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.41 2004/02/02 22:39:30 nygard Exp $
+// $Id: CDClassDump.h,v 1.42 2004/02/02 23:01:51 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -20,9 +20,17 @@
 {
     NSString *executablePath;
 
-    BOOL shouldProcessRecursively;
-    BOOL shouldGenerateSeparateHeaders;
-    BOOL shouldSort;
+    struct {
+        unsigned int shouldProcessRecursively:1;
+        unsigned int shouldGenerateSeparateHeaders:1;
+        unsigned int shouldSortClasses:1; // And categories, protocols
+        unsigned int shouldSortMethods:1;
+
+        unsigned int shouldShowIvarOffsets:1;
+        unsigned int shouldShowMethodAddresses:1;
+        unsigned int shouldExpandProtocols:1;
+    } flags;
+
     NSString *outputPath;
 
     NSMutableDictionary *machOFilesByID;
@@ -55,8 +63,20 @@
 - (BOOL)shouldGenerateSeparateHeaders;
 - (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
 
-- (BOOL)shouldSort;
-- (void)setShouldSort:(BOOL)newFlag;
+- (BOOL)shouldSortClasses;
+- (void)setShouldSortClasses:(BOOL)newFlag;
+
+- (BOOL)shouldSortMethods;
+- (void)setShouldSortMethods:(BOOL)newFlag;
+
+- (BOOL)shouldShowIvarOffsets;
+- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
+
+- (BOOL)shouldShowMethodAddresses;
+- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
+
+- (BOOL)shouldExpandProtocols;
+- (void)setShouldExpandProtocols:(BOOL)newFlag;
 
 - (NSString *)outputPath;
 - (void)setOutputPath:(NSString *)aPath;

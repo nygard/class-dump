@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.55 2004/02/02 22:39:30 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.56 2004/02/02 23:01:51 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -161,32 +161,72 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (BOOL)shouldProcessRecursively;
 {
-    return shouldProcessRecursively;
+    return flags.shouldProcessRecursively;
 }
 
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 {
-    shouldProcessRecursively = newFlag;
+    flags.shouldProcessRecursively = newFlag;
 }
 
 - (BOOL)shouldGenerateSeparateHeaders;
 {
-    return shouldGenerateSeparateHeaders;
+    return flags.shouldGenerateSeparateHeaders;
 }
 
 - (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
 {
-    shouldGenerateSeparateHeaders = newFlag;
+    flags.shouldGenerateSeparateHeaders = newFlag;
 }
 
-- (BOOL)shouldSort;
+- (BOOL)shouldSortClasses;
 {
-    return shouldSort;
+    return flags.shouldSortClasses;
 }
 
-- (void)setShouldSort:(BOOL)newFlag;
+- (void)setShouldSortClasses:(BOOL)newFlag;
 {
-    shouldSort = newFlag;
+    flags.shouldSortClasses = newFlag;
+}
+
+- (BOOL)shouldSortMethods;
+{
+    return flags.shouldSortMethods;
+}
+
+- (void)setShouldSortMethods:(BOOL)newFlag;
+{
+    flags.shouldSortMethods = newFlag;
+}
+
+- (BOOL)shouldShowIvarOffsets;
+{
+    return flags.shouldShowIvarOffsets;
+}
+
+- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
+{
+    flags.shouldShowIvarOffsets = newFlag;
+}
+
+- (BOOL)shouldShowMethodAddresses;
+{
+    return flags.shouldShowMethodAddresses;
+}
+
+- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
+{
+    flags.shouldShowMethodAddresses = newFlag;
+}
+
+- (BOOL)shouldExpandProtocols;
+{
+    return flags.shouldExpandProtocols;
+}
+
+- (void)setShouldExpandProtocols:(BOOL)newFlag;
+{
+    flags.shouldExpandProtocols = newFlag;
 }
 
 - (NSString *)outputPath;
@@ -407,7 +447,7 @@ static NSMutableSet *wrapperExtensions = nil;
     //NSLog(@" > %s", _cmd);
     //NSLog(@"aDylibCommand: %@", aDylibCommand);
 
-    if ([aDylibCommand cmd] == LC_LOAD_DYLIB && shouldProcessRecursively == YES) {
+    if ([aDylibCommand cmd] == LC_LOAD_DYLIB && [self shouldProcessRecursively] == YES) {
         //NSLog(@"Load it!");
         [self machOFileWithID:[aDylibCommand name]];
     }

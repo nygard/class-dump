@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.62 2004/02/02 22:40:31 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.63 2004/02/02 23:01:51 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -435,21 +435,18 @@ void print_usage(void)
 
 //======================================================================
 
+extern int optind;
+extern char *optarg;
+
 int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    int c;
-    extern int optind;
-    extern char *optarg;
-    int error_flag = 0;
-    BOOL shouldShowIvarOffsets = NO;
-    BOOL shouldShowMethodAddresses = NO;
-    BOOL shouldExpandProtocols = NO;
+    CDClassDump2 *classDump;
+
+    int ch;
+    BOOL errorFlag = NO;
+
     //BOOL shouldMatchRegex = NO;
-    BOOL shouldExpandFrameworks = NO;
-    BOOL shouldSort = NO;
-    BOOL shouldSortClasses = NO;
-    BOOL shouldGenerateSeparateHeaders = NO;
     char *regexCString = NULL;
 
     if (argc == 1) {
@@ -457,77 +454,71 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAC:HIrRS")) != EOF) {
-        switch (c) {
+    classDump = [[[CDClassDump2 alloc] init] autorelease];
+
+    while ( (ch = getopt(argc, argv, "aAC:HIrRS")) != EOF) {
+        switch (ch) {
           case 'a':
-              shouldShowIvarOffsets = YES;
+              [classDump setShouldShowIvarOffsets:YES];
               break;
 
           case 'A':
-              shouldShowMethodAddresses = YES;
+              [classDump setShouldShowMethodAddresses:YES];
               break;
 
           case 'C':
               if (regexCString != NULL) {
                   printf("Error: sorry, only one -C allowed\n");
-                  error_flag++;
+                  errorFlag = YES;
               } else {
                   regexCString = optarg;
               }
               break;
 
           case 'H':
-              shouldGenerateSeparateHeaders = YES;
+              [classDump setShouldGenerateSeparateHeaders:YES];
               break;
 
           case 'I':
-              shouldSortClasses = YES;
+              //[classDump setShouldSortByInheritance:YES];
               break;
 
           case 'r':
-              shouldExpandFrameworks = YES;
+              [classDump setShouldProcessRecursively:YES];
               break;
 
           case 'R':
-              shouldExpandProtocols = YES;
+              [classDump setShouldExpandProtocols:YES];
               break;
 
           case 'S':
-              shouldSort = YES;
+              [classDump setShouldSortClasses:YES];
+              [classDump setShouldSortMethods:YES];
               break;
 
           case '?':
           default:
-              error_flag++;
+              errorFlag = YES;
               break;
         }
     }
 
-    if (error_flag > 0) {
+    if (errorFlag == YES) {
         print_usage();
         exit(2);
     }
 
     if (optind < argc) {
-        char *str;
         NSString *path;
-        CDClassDump2 *classDump;
 
-        str = argv[optind];
-        path = [NSString stringWithFileSystemRepresentation:str];
+        path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         NSLog(@"path: '%@'", path);
 
-        classDump = [[CDClassDump2 alloc] init];
-        [classDump setShouldProcessRecursively:shouldExpandFrameworks];
-        [classDump setShouldGenerateSeparateHeaders:shouldGenerateSeparateHeaders];
-        [classDump setShouldSort:shouldSort];
         [classDump setOutputPath:@"/tmp/cd"];
         [classDump processFilename:path];
         [classDump doSomething];
-        [classDump release];
 
         exit(99);
-
 #if 0
         if (regexCString != NULL) {
             if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
