@@ -40,23 +40,9 @@
 #import "NSString-Extensions.h"
 
 #import "class-dump.h"
-
-#if 0
-#import "CDSectionInfo.h"
-#import "ObjcThing.h"
-#import "ObjcClass.h"
-#import "ObjcCategory.h"
-#import "ObjcProtocol.h"
-#import "ObjcIvar.h"
-#import "ObjcMethod.h"
-#import "MappedFile.h"
-#endif
-#import "CDTypeFormatter.h"
-#import "CDTypeParser.h"
-#import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.67 2004/02/03 04:09:27 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.68 2004/02/03 06:12:07 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -107,94 +93,6 @@ void print_header(void);
 #if 0
 @implementation CDClassDump
 
-- (id)initWithPath:(NSString *)aPath;
-{
-    if ([super init] == nil)
-        return nil;
-
-    mainPath = [aPath retain];
-    mappedFiles = [[NSMutableArray alloc] init];
-    mappedFilesByInstallName = [[NSMutableDictionary alloc] init];
-    sections = [[NSMutableArray alloc] init];
-
-    protocols = [[NSMutableDictionary alloc] init];
-
-    flags.shouldMatchRegex = NO;
-    flags.shouldSwapFat = NO;
-    flags.shouldSwapMachO = NO;
-
-    return self;
-}
-
-- (void)dealloc;
-{
-    [mainPath release];
-    [mappedFiles release];
-    [mappedFilesByInstallName release];
-    [sections release];
-    [protocols release];
-
-    if (flags.shouldMatchRegex == YES) {
-        regfree(&compiledRegex);
-    }
-
-    [super dealloc];
-}
-
-- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
-{
-    int result;
-
-    if (flags.shouldMatchRegex == YES) {
-        regfree(&compiledRegex);
-    }
-
-    result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
-    if (result != 0) {
-        char regex_error_buffer[256];
-
-        if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0) {
-            if (errorMessagePointer != NULL) {
-                *errorMessagePointer = [NSString stringWithCString:regex_error_buffer];
-                NSLog(@"Error with regex: '%@'", *errorMessagePointer);
-            }
-        } else {
-            if (errorMessagePointer != NULL)
-                *errorMessagePointer = nil;
-        }
-
-        return NO;
-    }
-
-    [self setShouldMatchRegex:YES];
-
-    return YES;
-}
-
-- (BOOL)regexMatchesCString:(const char *)str;
-{
-    int result;
-
-    if (flags.shouldMatchRegex == NO)
-        return YES;
-
-    result = regexec(&compiledRegex, str, 0, NULL, 0);
-
-    return (result == 0) ? YES : NO;
-}
-
-- (NSArray *)sections;
-{
-    return sections;
-}
-
-- (void)addSectionInfo:(CDSectionInfo *)aSectionInfo;
-{
-    [sections addObject:aSectionInfo];
-}
-
-//======================================================================
-
 - (void)processDylibCommand:(void *)start ptr:(void *)ptr;
 {
     struct dylib_command *dc = (struct dylib_command *)ptr;
@@ -219,37 +117,6 @@ void print_header(void);
     [self buildUpObjectiveCSegments:str];
 }
 
-//----------------------------------------------------------------------
-
-- (NSArray *)handleObjectiveCMethods:(struct my_objc_methods *)methods methodType:(char)ch;
-{
-    struct my_objc_method *method = (struct my_objc_method *)(methods + 1);
-    NSMutableArray *methodArray = [NSMutableArray array];
-    ObjcMethod *objcMethod;
-    int l;
-
-    if (methods == NULL)
-        return nil;
-
-    for (l = 0; l < methods->method_count; l++)
-    {
-        // Sometimes the name, types, and implementation are all zero.  However, the
-        // implementation may legitimately be zero (most often the first method of an object file),
-        // so we check the name instead.
-
-        if (method->name != 0)
-        {
-            objcMethod = [[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:method->name section:CDSECT_METH_VAR_NAMES]
-                                              type:[self nsstringAt:method->types section:CDSECT_METH_VAR_TYPES]
-                                              address:method->imp] autorelease];
-            [methodArray addObject:objcMethod];
-        }
-        method++;
-    }
-
-    return methodArray;
-}
-
 //======================================================================
 
 - (void)showSingleModule:(CDSectionInfo *)moduleInfo;
@@ -262,11 +129,6 @@ void print_header(void);
     NSMutableArray *classList;
     NSArray *newClasses;
     int formatFlags;
-
-    // begin wolf
-    id en2, thing2;
-    NSMutableDictionary *categoryByName = [NSMutableDictionary dictionaryWithCapacity:5];
-    // end wolf
 
     if (moduleInfo == nil)
         return;
@@ -305,64 +167,6 @@ void print_header(void);
         m++;
     }
 
-    //begin wolf
-    if (flags.shouldGenerateHeaders == YES) {
-        printf("Should generate headers...\n");
-#if 1
-        en = [[protocols allKeys] objectEnumerator];
-        while (key = [en nextObject]) {
-            int old_stdout = dup(1);
-
-            thing = [protocols objectForKey:key];
-            freopen([[NSString stringWithFormat:@"%@.h", [thing protocolName]] cString], "w", stdout);
-            [thing showDefinition:formatFlags];
-            fclose(stdout);
-            fdopen(old_stdout, "w");
-        }
-
-        en = [classList objectEnumerator];
-        while (thing = [en nextObject]) {
-            if ([thing isKindOfClass:[ObjcCategory class]] ) {
-                NSMutableArray *categoryArray = [categoryByName objectForKey:[thing categoryName]];
-
-                if (categoryArray != nil) {
-                    [categoryArray addObject:thing];
-                } else {
-                    [categoryByName setObject:[NSMutableArray arrayWithObject:thing] forKey:[thing categoryName]];
-                }
-            } else {
-                int old_stdout = dup(1);
-
-                freopen([[NSString stringWithFormat:@"%@.h", [thing className]] cString], "w", stdout);
-                [thing showDefinition:formatFlags];
-                fclose(stdout);
-                fdopen(old_stdout, "w");
-            }
-        }
-
-        en = [[categoryByName allKeys] objectEnumerator];
-        while (key = [en nextObject]) {
-            int old_stdout = dup(1);
-
-            freopen([[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout);
-
-            print_header();
-            printf("\n");
-            thing = [categoryByName objectForKey:key];
-            en2 = [thing objectEnumerator];
-            while (thing2 = [en2 nextObject]) {
-                [thing2 showDefinition:formatFlags];
-            }
-
-            fclose(stdout);
-            fdopen(old_stdout, "w");
-        }
-#endif
-        // TODO: nothing prints to stdout after this.
-        printf("Testing... 1.. 2.. 3..\n");
-    }
-    //end wolf
-
     if (flags.shouldSort == YES)
         en = [[[protocols allKeys] sortedArrayUsingSelector:@selector(compare:)] objectEnumerator];
     else
@@ -390,25 +194,6 @@ void print_header(void);
     [protocols removeAllObjects];
 
     current_filename = tmp;
-}
-
-- (int)methodFormattingFlags;
-{
-    int formatFlags = 0;
-
-    if (flags.shouldSort == YES)
-        formatFlags |= F_SORT_METHODS;
-
-    if (flags.shouldShowIvarOffsets == YES)
-        formatFlags |= F_SHOW_IVAR_OFFSET;
-
-    if (flags.shouldShowMethodAddresses == YES)
-        formatFlags |= F_SHOW_METHOD_ADDRESS;
-
-    if (flags.shouldGenerateHeaders == YES)
-        formatFlags |= F_SHOW_IMPORT;
-
-    return formatFlags;
 }
 
 @end

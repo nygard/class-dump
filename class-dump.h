@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.15 2004/02/02 22:40:31 nygard Exp $
+// $Id: class-dump.h,v 1.16 2004/02/03 06:12:07 nygard Exp $
 //
 
 //
@@ -30,35 +30,14 @@
 //======================================================================
 
 #if 0
-#include <regex.h>
 @interface CDClassDump : NSObject
 {
-    NSString *mainPath;
-
-    NSMutableArray *mappedFiles;
-    NSMutableDictionary *mappedFilesByInstallName;
-    NSMutableArray *sections;
-
-    // Used in handleObjectiveCProtocols:expandProtocols:, showSingleModule:
-    NSMutableDictionary *protocols;
-
     struct {
         // Not really used yet:
         unsigned int shouldSwapFat:1;
         unsigned int shouldSwapMachO:1;
     } flags;
-
-    regex_t compiledRegex;
 }
-
-- (id)initWithPath:(NSString *)aPath;
-- (void)dealloc;
-
-- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
-- (BOOL)regexMatchesCString:(const char *)str;
-
-- (NSArray *)sections;
-- (void)addSectionInfo:(CDSectionInfo *)aSectionInfo;
 
 
 
@@ -67,10 +46,7 @@
 // Remnants with notes:
 - (void)processDylibCommand:(void *)start ptr:(void *)ptr;
 - (void)processFvmlibCommand:(void *)start ptr:(void *)ptr;
-- (NSArray *)handleObjectiveCMethods:(struct my_objc_methods *)methods methodType:(char)ch;
 - (void)showSingleModule:(CDSectionInfo *)moduleInfo;
-
-- (int)methodFormattingFlags;
 
 @end
 #endif
