@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.29 2003/09/06 21:17:56 nygard Exp $
+// $Id: class-dump.m,v 1.30 2003/09/07 00:50:41 nygard Exp $
 //
 
 //
@@ -31,6 +31,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <regex.h>
+#include <stdio.h>
 
 #include <mach/mach.h>
 #include <mach/mach_error.h>
@@ -120,6 +121,8 @@ char *load_command_names[] =
 };
 
 NSMutableDictionary *protocols;
+
+void print_header(void);
 
 //======================================================================
 
@@ -723,7 +726,7 @@ NSMutableDictionary *protocols;
         MappedFile *currentFile;
         NSString *installName, *filename;
         NSString *key;
-        
+
         key = [moduleInfo filename];
         currentFile = [mappedFilesByInstallName objectForKey:key];
         installName = [currentFile installName];
@@ -749,48 +752,49 @@ NSMutableDictionary *protocols;
     //begin wolf
     if (flags.shouldGenerateHeaders == YES) {
         printf("Should generate headers...\n");
-#if 0
+#if 1
         en = [[protocols allKeys] objectEnumerator];
-        while( key = [en nextObject] ) {
+        while (key = [en nextObject]) {
+            int old_stdout = dup(1);
+
             thing = [protocols objectForKey:key];
-            int old_stdout = dup( 1 );
-            freopen( [[NSString stringWithFormat:@"%@.h", [thing protocolName]] cString], "w", stdout );
-            [thing showDefinition:flags];
-            fclose( stdout );
-            fdopen( old_stdout, "w" );
+            freopen([[NSString stringWithFormat:@"%@.h", [thing protocolName]] cString], "w", stdout);
+            [thing showDefinition:formatFlags];
+            fclose(stdout);
+            fdopen(old_stdout, "w");
         }
         en = [classList objectEnumerator];
-        while( thing = [en nextObject] ) {
-            if( [thing isKindOfClass:[ObjcCategory class]] ) {
+        while (thing = [en nextObject]) {
+            if ([thing isKindOfClass:[ObjcCategory class]] ) {
                 NSMutableArray *categoryArray = [categoryByName objectForKey:[thing categoryName]];
-                if( categoryArray ) {
+                if (categoryArray) {
                     [categoryArray addObject:thing];
                 } else {
                     [categoryByName setObject:[NSMutableArray arrayWithObject:thing] forKey:[thing categoryName]];
                 }
             } else {
-                int old_stdout = dup( 1 );
-                freopen( [[NSString stringWithFormat:@"%@.h", [thing className]] cString], "w", stdout );
-                [thing showDefinition:flags];
-                fclose( stdout );
-                fdopen( old_stdout, "w" );
+                int old_stdout = dup(1);
+                freopen([[NSString stringWithFormat:@"%@.h", [thing className]] cString], "w", stdout);
+                [thing showDefinition:formatFlags];
+                fclose(stdout);
+                fdopen(old_stdout, "w");
             }
         }
     
         en = [[categoryByName allKeys] objectEnumerator];
-        while( key = [en nextObject] ) {
-            int old_stdout = dup( 1 );
-            freopen( [[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout );
+        while (key = [en nextObject]) {
+            int old_stdout = dup(1);
+            freopen([[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout);
         
             print_header();
             thing = [categoryByName objectForKey:key];
             en2 = [thing objectEnumerator];
-            while( thing2 = [en2 nextObject] ) {
-                [thing2 showDefinition:flags];
+            while (thing2 = [en2 nextObject]) {
+                [thing2 showDefinition:formatFlags];
             }
         
-            fclose( stdout );
-            fdopen( old_stdout, "w" );
+            fclose(stdout);
+            fdopen(old_stdout, "w");
         }
 #endif
     }

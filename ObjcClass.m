@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.15 2003/09/06 21:17:56 nygard Exp $
+// $Id: ObjcClass.m,v 1.16 2003/09/07 00:50:41 nygard Exp $
 //
 
 //
@@ -32,6 +32,8 @@
 #include "datatypes.h"
 #import "ObjcIvar.h"
 #import "ObjcMethod.h"
+
+extern void print_header(void);
 
 @implementation ObjcClass
 
@@ -155,44 +157,45 @@
     ObjcMethod *method;
     NSString *protocolName;
 
-#if 0    
+#if 1
     //begin wolf
-    if( flags & F_SHOW_IMPORT ) {
+    if (flags & F_SHOW_IMPORT) {
         NSMutableSet *imports = [NSMutableSet setWithCapacity:5];
-        
-        //Add superclass import is necessary.
-        if( super_class_name != NULL && ![super_class_name hasPrefix:@"NS"] )
-            [imports addObject:super_class_name];
-        
-        //Add protocol imports.
-        enumerator = [protocol_names objectEnumerator];
-        while( protocolName = [enumerator nextObject] ) {
-            if( ![protocolName hasPrefix:@"NS"] )
+        ObjcIvar *ivar;
+        NSString *import;
+
+        // Add superclass import is necessary.
+        if (superClassName != NULL && [superClassName hasPrefix:@"NS"] == NO)
+            [imports addObject:superClassName];
+
+        // Add protocol imports.
+        enumerator = [protocolNames objectEnumerator];
+        while (protocolName = [enumerator nextObject]) {
+            if( [protocolName hasPrefix:@"NS"] == NO)
                 [imports addObject:protocolName];
         }
-        
-        //Add ivar type imports.
+
+        // Add ivar type imports.
         enumerator = [ivars objectEnumerator];
-        ObjcIvar *ivar;
-        while( ivar = [enumerator nextObject] ) {
+        while (ivar = [enumerator nextObject]) {
             NSString *type = [ivar type];
-            if( [type hasPrefix:@"@\""] && ![type hasPrefix:@"@\"NS"] )
-                [imports addObject:[type substringWithRange:NSMakeRange(2,[type length]-3)]];
+
+            if ([type hasPrefix:@"@\""] && [type hasPrefix:@"@\"NS"] == NO)
+                [imports addObject:[type substringWithRange:NSMakeRange(2, [type length]-3)]];
             /*if( ![type hasPrefix:@"NS"]
               && ([type compare:[type lowercaseString] options:NSLiteralSearch] != NSOrderedSame)) {
               [imports addObject:type];
               }*/
         }
         
-        //Print out the imports.
+        // Print out the imports.
         print_header();
-        printf( "\n" );
+        printf("\n");
         enumerator = [imports objectEnumerator];
-        NSString *import;
-        while( import = [enumerator nextObject] ) {
-            printf( "#import \"%s.h\"\n", [import cString] );
+        while (import = [enumerator nextObject]) {
+            printf("#import \"%s.h\"\n", [import cString]);
         }
-        printf( "\n" );
+        printf("\n");
     }
     //end wolf
 #endif
