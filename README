@@ -2,6 +2,11 @@ class-dump is a utility for examining the Objective-C segment of
 Mach-O files.  It generates the @interface and @protocol declarations
 for classes, categories and protocols.
 
+class-dump generates interface definitions for Objective-C class,
+category and protocols from Mach-O files.  It uses the information
+stored in the __OBJC segment that the Objective-C runtime system
+needs/uses.
+
 Version 2 is a re-implementation of Eric P. Scott's class-dump, and
 works with the frameworks in Openstep 4.x.
 
