@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.30 2003/09/07 00:50:41 nygard Exp $
+// $Id: class-dump.m,v 1.31 2003/09/09 00:27:52 nygard Exp $
 //
 
 //
@@ -120,8 +120,6 @@ char *load_command_names[] =
     "LC_SUB_FRAMEWORK",
 };
 
-NSMutableDictionary *protocols;
-
 void print_header(void);
 
 //======================================================================
@@ -137,6 +135,8 @@ void print_header(void);
     mappedFiles = [[NSMutableArray alloc] init];
     mappedFilesByInstallName = [[NSMutableDictionary alloc] init];
     sections = [[NSMutableArray alloc] init];
+
+    protocols = [[NSMutableDictionary alloc] init];
 
     flags.shouldShowIvarOffsets = NO;
     flags.shouldShowMethodAddresses = NO;
@@ -157,6 +157,7 @@ void print_header(void);
     [mappedFiles release];
     [mappedFilesByInstallName release];
     [sections release];
+    [protocols release];
 
     if (flags.shouldMatchRegex == YES) {
         regfree(&compiledRegex);
@@ -763,17 +764,20 @@ void print_header(void);
             fclose(stdout);
             fdopen(old_stdout, "w");
         }
+
         en = [classList objectEnumerator];
         while (thing = [en nextObject]) {
             if ([thing isKindOfClass:[ObjcCategory class]] ) {
                 NSMutableArray *categoryArray = [categoryByName objectForKey:[thing categoryName]];
-                if (categoryArray) {
+
+                if (categoryArray != nil) {
                     [categoryArray addObject:thing];
                 } else {
                     [categoryByName setObject:[NSMutableArray arrayWithObject:thing] forKey:[thing categoryName]];
                 }
             } else {
                 int old_stdout = dup(1);
+
                 freopen([[NSString stringWithFormat:@"%@.h", [thing className]] cString], "w", stdout);
                 [thing showDefinition:formatFlags];
                 fclose(stdout);
@@ -784,9 +788,11 @@ void print_header(void);
         en = [[categoryByName allKeys] objectEnumerator];
         while (key = [en nextObject]) {
             int old_stdout = dup(1);
+
             freopen([[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout);
         
             print_header();
+            printf("\n");
             thing = [categoryByName objectForKey:key];
             en2 = [thing objectEnumerator];
             while (thing2 = [en2 nextObject]) {
@@ -797,6 +803,8 @@ void print_header(void);
             fdopen(old_stdout, "w");
         }
 #endif
+        // TODO: nothing prints to stdout after this.
+        printf("Testing... 1.. 2.. 3..\n");
     }
     //end wolf
 
@@ -818,10 +826,10 @@ void print_header(void);
     else
         en = [classList objectEnumerator];
 
-
     while (thing = [en nextObject]) {
-        if (flags.shouldMatchRegex == NO || [self regexMatchesCString:[[thing sortableName] cString]] == YES)
+        if (flags.shouldMatchRegex == NO || [self regexMatchesCString:[[thing sortableName] cString]] == YES) {
             [thing showDefinition:formatFlags];
+        }
     }
 
     [protocols removeAllObjects];
@@ -1173,8 +1181,6 @@ int main(int argc, char *argv[])
         print_usage();
         exit(2);
     }
-
-    protocols = [NSMutableDictionary dictionary];
 
     if (optind < argc) {
         char *str;

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.10 2003/09/06 21:17:56 nygard Exp $
+// $Id: class-dump.h,v 1.11 2003/09/09 00:27:52 nygard Exp $
 //
 
 //
@@ -146,6 +146,9 @@ struct my_objc_prot_inst_meth_list
     NSMutableArray *mappedFiles;
     NSMutableDictionary *mappedFilesByInstallName;
     NSMutableArray *sections;
+
+    // Used in handleObjectiveCProtocols:expandProtocols:, showSingleModule:
+    NSMutableDictionary *protocols;
 
     struct {
         unsigned int shouldShowIvarOffsets:1;
