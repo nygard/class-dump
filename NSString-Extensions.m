@@ -20,4 +20,16 @@
     return [self initWithCString:buf];
 }
 
++ (NSString *)spacesIndentedToLevel:(int)level;
+{
+    NSMutableString *str;
+    int l;
+
+    str = [NSMutableString string];
+    for (l = 0; l < level; l++)
+        [str appendString:@"  "];
+
+    return str;
+}
+
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.31 2003/09/09 00:27:52 nygard Exp $
+// $Id: class-dump.m,v 1.32 2003/09/09 22:51:04 nygard Exp $
 //
 
 //
@@ -53,6 +53,7 @@
 #import "ObjcIvar.h"
 #import "ObjcMethod.h"
 #import "MappedFile.h"
+#import "CDTypeParser.h"
 
 //----------------------------------------------------------------------
 
@@ -1099,6 +1100,50 @@ void print_unknown_struct_typedef(void)
     printf("\ntypedef unsigned long CDAnonymousStruct;\n");
 }
 
+void doTests(char *file)
+{
+    NSString *filename, *contents;
+    NSArray *lines, *fields;
+    int count, index;
+
+    CDTypeParser *typeParser;
+
+    typeParser = [[CDTypeParser alloc] init];
+
+    printf("Testing %s\n", file);
+    filename = [NSString stringWithCString:file];
+    contents = [NSString stringWithContentsOfFile:filename];
+    lines = [contents componentsSeparatedByString:@"\n"];
+    count = [lines count];
+    for (index = 0; index < count; index++) {
+        NSString *line;
+        NSString *type, *name;
+
+        line = [lines objectAtIndex:index];
+        fields = [line componentsSeparatedByString:@"\t"];
+        if ([fields count] >= 2) {
+            struct my_objc_type *result;
+
+            type = [fields objectAtIndex:0];
+            name = [fields objectAtIndex:1];
+            //NSLog(@"%@\t%@", type, name);
+            result = [typeParser parseType:[type cString] name:[name cString]];
+            if (result != NULL) {
+                result->var_name = strdup([name cString]);
+                print_type(result, 0, 0);
+                printf(";");
+                //free_objc_type(result); // This function needs work to avoid double free()s.
+            }
+            printf("\t%s\t%s", [type cString], [name cString]);
+            printf("\n");
+        }
+    }
+
+    printf("Done.\n\n");
+
+    [typeParser release];
+}
+
 //======================================================================
 
 int main(int argc, char *argv[])
@@ -1123,7 +1168,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAeIRC:rSH")) != EOF) {
+    while ( (c = getopt(argc, argv, "aAeIRC:rSHt:")) != EOF) {
         switch (c) {
           case 'a':
               shouldShowIvarOffsets = YES;
@@ -1168,6 +1213,11 @@ int main(int argc, char *argv[])
 
           case 'H':
               shouldGenerateHeaders = YES;
+              break;
+
+          case 't':
+              doTests(optarg);
+              exit(0);
               break;
 
           case '?':

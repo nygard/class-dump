@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.13 2003/09/06 21:17:56 nygard Exp $
+// $Id: datatypes.m,v 1.14 2003/09/09 22:51:04 nygard Exp $
 //
 
 //
@@ -118,7 +118,9 @@ struct my_objc_type *create_id_type(char *name)
 
     t->type_name = name;
 
+    //NSLog(@"create_id_type(), name = %p", name);
     if (name != NULL) {
+        //NSLog(@"T_NAMED_OBJECT %p:(%s)", name, name);
         t->type = T_NAMED_OBJECT;
         return create_pointer_type(t);
     } else {
@@ -313,6 +315,8 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
 
     switch (t->type) {
       case T_NAMED_OBJECT:
+          //NSLog(@"string_from_type(), var_name = %p:'%s', type_name = %p:'%s'", t->var_name, t->var_name, t->type_name, t->type_name);
+
           if (t->var_name == NULL)
               name = @"";
           else
@@ -567,3 +571,37 @@ void free_allocated_methods(void)
             free(tmp->name);
     }
 }
+
+#if 0
+// Replaces format_type() from gram.y
+NSString *CDFormatType(const char *type, const char *name, int level)
+{
+    NSString *result;
+    int parse_flag;
+    extern int expand_structures_flag;
+
+    result = [NSMutableString string];
+
+    rtype = NULL;
+    yy_scan_string(type);
+    parse_flag = parse_ivar_type();
+
+    if (parse_flag == 0) {
+        if (name != NULL)
+            rtype->type->var_name = strdup(name);
+        [result appendString:[NSString spacesIndentedToLevel:level]];
+        [result appendString:string_from_type(rtype->type, nil, expand_structures_flag, level)];
+        [result appendString:@";"];
+
+        rtype = NULL;
+    } else {
+        [result appendFormat:@"// Error! format_type('%s', '%s')\n", type, name];
+        [result appendString:@"\n\n"];
+    }
+
+    free_allocated_methods();
+    free_allocated_types();
+
+    return result;
+}
+#endif

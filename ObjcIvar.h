@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.h,v 1.11 2003/09/06 21:17:56 nygard Exp $
+// $Id: ObjcIvar.h,v 1.12 2003/09/09 22:51:04 nygard Exp $
 //
 
 //
@@ -44,5 +44,6 @@
 
 - (long)offset;
 - (void)showIvarAtLevel:(int)level;
+//- (NSString *)ivarAtLevel:(int)level;
 
 @end

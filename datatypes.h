@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.h,v 1.5 2003/09/05 20:30:26 nygard Exp $
+// $Id: datatypes.h,v 1.6 2003/09/09 22:51:04 nygard Exp $
 //
 
 //
@@ -54,6 +54,7 @@ struct method_type
 // These are from gram.y:
 extern void format_type(const char *type, const char *name, int level);
 extern void format_method(char method_type, const char *name, const char *types);
+//extern NSString *CDFormatType(const char *type, const char *name, int level);
 
 //======================================================================
 

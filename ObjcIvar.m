@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.m,v 1.10 2003/09/06 21:17:56 nygard Exp $
+// $Id: ObjcIvar.m,v 1.11 2003/09/09 22:51:04 nygard Exp $
 //
 
 //
@@ -29,6 +29,8 @@
 
 #import <Foundation/Foundation.h>
 #include "datatypes.h"
+
+//extern NSString *CDFormatType(const char *type, const char *name, int level);
 
 @implementation ObjcIvar
 
@@ -71,5 +73,12 @@
 {
     format_type([ivarType cString], [ivarName cString], level);
 }
+
+#if 0
+- (NSString *)ivarAtLevel:(int)level;
+{
+    return CDFormatType([ivarType cString], [ivarName cString], level);
+}
+#endif
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.13 2003/09/09 00:28:21 nygard Exp $
+// $Id: ObjcClass.h,v 1.14 2003/09/09 22:51:03 nygard Exp $
 //
 
 //
@@ -59,5 +59,6 @@
 
 - (void)generateImports;
 - (void)showDefinition:(int)flags;
+//- (NSString *)definitionWithOptions:(int)flags;
 
 @end

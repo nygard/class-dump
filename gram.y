@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.11 2003/09/06 21:17:56 nygard Exp $
+// $Id: gram.y,v 1.12 2003/09/09 22:51:04 nygard Exp $
 //
 
 //
@@ -353,6 +353,8 @@ void format_type(const char *type, const char *name, int level)
 {
 	int parse_flag;
         extern int expand_structures_flag;
+
+        fprintf(stderr, "%s\t%s\n", type, name);
 
 	rtype = NULL;
 	yy_scan_string(type);

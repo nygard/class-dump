@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.17 2003/09/09 00:28:21 nygard Exp $
+// $Id: ObjcClass.m,v 1.18 2003/09/09 22:51:03 nygard Exp $
 //
 
 //
@@ -264,5 +264,75 @@ extern void print_header(void);
 
     printf("\n@end\n\n");
 }
+
+#if 0
+- (NSString *)definitionWithOptions:(int)flags;
+{
+    NSMutableString *result;
+
+    NSEnumerator *enumerator;
+    ObjcIvar *ivar;
+    ObjcMethod *method;
+
+    result = [NSMutableString string];
+#if 0
+    if (flags & F_SHOW_IMPORT)
+        [self generateImports];
+#endif
+    [result appendFormat:@"@interface %@", className];
+    if (superClassName != nil)
+        [result appendFormat:@":%@", superClassName];
+
+    if ([protocolNames count] > 0) {
+        [result appendString:@" <"];
+        [result appendString:[protocolNames componentsJoinedByString:@", "]];
+        [result appendString:@">"];
+    }
+
+    [result appendString:@"\n{\n"];
+
+    enumerator = [ivars objectEnumerator];
+    while (ivar = [enumerator nextObject]) {
+        [ivar showIvarAtLevel:2];
+        if (flags & F_SHOW_IVAR_OFFSET)
+            printf("\t// %ld = 0x%lx", [ivar offset], [ivar offset]);
+
+        printf("\n");
+    }
+
+    //printf("%s\n", [[ivars description] cString]);
+    printf("}\n\n");
+
+    //NSLog(@"classMethods: %@", classMethods);
+
+    if (flags & F_SORT_METHODS)
+        enumerator = [[classMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
+    else
+        enumerator = [classMethods reverseObjectEnumerator];
+
+    while (method = [enumerator nextObject]) {
+        [method showMethod:'+'];
+        if (flags & F_SHOW_METHOD_ADDRESS)
+            printf("\t// IMP=0x%08lx", [method address]);
+
+        printf("\n");
+    }
+
+    if (flags & F_SORT_METHODS)
+        enumerator = [[instanceMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
+    else
+        enumerator = [instanceMethods reverseObjectEnumerator];
+
+    while (method = [enumerator nextObject]) {
+        [method showMethod:'-'];
+        if (flags & F_SHOW_METHOD_ADDRESS)
+            printf("\t// IMP=0x%08lx", [method address]);
+
+        printf("\n");
+    }
+
+    printf("\n@end\n\n");
+}
+#endif
 
 @end

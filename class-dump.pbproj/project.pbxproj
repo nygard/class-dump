@@ -78,6 +78,30 @@
 			settings = {
 			};
 		};
+		01CAEA35050E653200E28615 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDTypeParser.h;
+			refType = 4;
+		};
+		01CAEA36050E653200E28615 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDTypeParser.m;
+			refType = 4;
+		};
+		01CAEA37050E653200E28615 = {
+			fileRef = 01CAEA35050E653200E28615;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01CAEA38050E653200E28615 = {
+			fileRef = 01CAEA36050E653200E28615;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 //010
 //011
 //012
@@ -142,6 +166,8 @@
 				03070CAFFF009A5FC0A80A02,
 				0174482D043BF8E000A8010A,
 				0174482E043BF8E000A8010A,
+				01CAEA35050E653200E28615,
+				01CAEA36050E653200E28615,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -343,6 +369,7 @@
 				019CC2F303DD10C100A8010A,
 				0114A45B0405EB1600A8010A,
 				0174482F043BF8E000A8010A,
+				01CAEA37050E653200E28615,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -411,6 +438,7 @@
 				03070CE0FF009A5FC0A80A02,
 				0114A45C0405EB1600A8010A,
 				01744830043BF8E000A8010A,
+				01CAEA38050E653200E28615,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
