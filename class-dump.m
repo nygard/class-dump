@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.8 2000/10/15 01:49:59 nygard Exp $
+// $Id: class-dump.m,v 1.9 2000/10/15 01:54:33 nygard Exp $
 //
 
 //
@@ -799,7 +799,6 @@ void show_single_module (struct section_info *module_info)
             printf ("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename cString], module_info->filename);
         }
     }
-    //printf ("\n/*\n * File: %s\n */\n\n", module_info->filename);
     current_filename = module_info->filename;
 
     for (l = 0; l < module_count; l++)
