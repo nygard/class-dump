@@ -1,11 +1,12 @@
 #import <Foundation/NSObject.h>
 
-@class NSArray, NSMutableArray, NSMutableSet, NSString;
+@class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
 
 @interface CDOCProtocol : NSObject
 {
     NSString *name;
     NSMutableArray *protocols;
+    NSArray *classMethods;
     NSArray *methods;
 
     NSMutableSet *adoptedProtocolNames;
@@ -22,10 +23,16 @@
 - (void)removeProtocol:(CDOCProtocol *)aProtocol;
 - (void)addProtocolsFromArray:(NSArray *)newProtocols;
 
+- (NSArray *)classMethods;
+- (void)setClassMethods:(NSArray *)newClassMethods;
+
 - (NSArray *)methods;
 - (void)setMethods:(NSArray *)newMethods;
 
 - (NSString *)description;
-- (NSString *)formattedString;
+- (void)appendToString:(NSMutableString *)resultString;
+
+- (NSString *)sortableName;
+- (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
 @end

@@ -20,6 +20,7 @@
 {
     [name release];
     [protocols release];
+    [classMethods release];
     [methods release];
     [adoptedProtocolNames release];
 
@@ -69,6 +70,20 @@
         [self addProtocol:[newProtocols objectAtIndex:index]];
 }
 
+- (NSArray *)classMethods;
+{
+    return classMethods;
+}
+
+- (void)setClassMethods:(NSArray *)newClassMethods;
+{
+    if (newClassMethods == classMethods)
+        return;
+
+    [classMethods release];
+    classMethods = [newClassMethods retain];
+}
+
 - (NSArray *)methods;
 {
     return methods;
@@ -88,21 +103,43 @@
     return [NSString stringWithFormat:@"[%@] name: %@, protocols: %@, methods: %@", NSStringFromClass([self class]), name, protocols, methods];
 }
 
-- (NSString *)formattedString;
+- (void)appendToString:(NSMutableString *)resultString;
 {
-    NSMutableString *result;
+    int count, index;
+    NSArray *sortedMethods;
 
-    result = [NSMutableString string];
-    [result appendFormat:@"@protocol %@", name];
+    [resultString appendFormat:@"@protocol %@", name];
     if ([protocols count] > 0)
-        [result appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
-    // TODO: And the methods
-    [result appendString:@"\n"];
-    [result appendString:[[methods arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
-    [result appendString:@"\n@end\n"];
+    [resultString appendString:@"\n"];
 
-    return result;
+    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    count = [sortedMethods count];
+    for (index = 0; index < count; index++) {
+        [resultString appendString:@"+ "];
+        [[sortedMethods objectAtIndex:index] appendToString:resultString];
+        [resultString appendString:@"\n"];
+    }
+
+    sortedMethods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    count = [sortedMethods count];
+    for (index = 0; index < count; index++) {
+        [resultString appendString:@"- "];
+        [[sortedMethods objectAtIndex:index] appendToString:resultString];
+        [resultString appendString:@"\n"];
+    }
+    [resultString appendString:@"@end\n\n"];
+}
+
+- (NSString *)sortableName;
+{
+    return name;
+}
+
+- (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
+{
+    return [[self sortableName] compare:[otherProtocol sortableName]];
 }
 
 @end

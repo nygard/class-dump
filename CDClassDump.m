@@ -23,7 +23,6 @@
     machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
-    protocolNames = [[NSMutableSet alloc] init];
 
     return self;
 }
@@ -33,7 +32,6 @@
     [machOFile release];
     [modules release];
     [protocolsByName release];
-    [protocolNames release];
 
     [super dealloc];
 }
@@ -242,14 +240,15 @@
         aProtocol = [[[CDOCProtocol alloc] init] autorelease];
         [aProtocol setName:name];
 
-        // TODO (2003-12-09): Handle class methods
-
         [protocolsByName setObject:aProtocol forKey:name];
     }
 
     [aProtocol addProtocolsFromArray:protocols];
     if ([[aProtocol methods] count] == 0)
         [aProtocol setMethods:[self processProtocolMethods:protocolPtr->instance_methods]];
+
+    if ([[aProtocol classMethods] count] == 0)
+        [aProtocol setClassMethods:[self processProtocolMethods:protocolPtr->class_methods]];
 
     // TODO (2003-12-09): Maybe we should add any missing methods.  But then we'd lose the original order.
 
@@ -380,11 +379,20 @@
     NSMutableString *resultString;
     int count, index;
     NSMutableArray *allClasses;
+    NSArray *protocolNames;
 
     resultString = [NSMutableString string];
     allClasses = [[NSMutableArray alloc] init];
 
-    // TODO: Show protocols
+    // TODO: Sort protocols by dependency
+    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    count = [protocolNames count];
+    for (index = 0; index < count; index++) {
+        CDOCProtocol *aProtocol;
+
+        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
+        [aProtocol appendToString:resultString];
+    }
 
     count = [modules count];
     for (index = 0; index < count; index++) {

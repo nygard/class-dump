@@ -112,9 +112,6 @@ struct cd_objc_protocol_method
     CDMachOFile *machOFile;
     NSMutableArray *modules;
     NSMutableDictionary *protocolsByName;
-
-    // temporary:
-    NSMutableSet *protocolNames;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
