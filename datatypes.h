@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.h,v 1.8 2003/12/12 04:01:38 nygard Exp $
+// $Id: datatypes.h,v 1.9 2003/12/16 07:30:16 nygard Exp $
 //
 
 //
@@ -41,8 +41,6 @@ struct my_objc_type
 #define array_size type_name
 #define bitfield_size type_name
 
-#define IS_ID(a) ((a)->type == '@' && (a)->type_name == NULL)
-
 struct method_type
 {
     struct method_type *link;
@@ -51,12 +49,9 @@ struct method_type
     struct my_objc_type *type;
 };
 
-// These are from gram.y:
-extern void format_type(const char *type, const char *name, int level);
-extern void format_method(char method_type, const char *name, const char *types);
-
 //======================================================================
 
+// Type creation functions
 struct my_objc_type *create_empty_type(void);
 struct my_objc_type *create_simple_type(int type);
 struct my_objc_type *create_id_type(NSString *name);
@@ -67,20 +62,21 @@ struct my_objc_type *create_array_type(NSString *count, struct my_objc_type *typ
 struct my_objc_type *create_pointer_type(struct my_objc_type *type);
 struct my_objc_type *create_modified_type(int modifier, struct my_objc_type *type);
 
+// Method creation functions
 struct method_type *create_method_type(struct my_objc_type *t, NSString *name);
 
+// Misc functions
 struct my_objc_type *reverse_types(struct my_objc_type *t);
 struct method_type *reverse_method_types(struct method_type *m);
 
-void indent_to_level(int level);
+// Display functions
+NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level);
+NSString *string_from_method_type(NSString *methodName, struct method_type *m);
 
 void free_objc_type(struct my_objc_type *t);
 void free_method_type(struct method_type *m);
 
 void free_allocated_types(void);
 void free_allocated_methods(void);
-
-NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level);
-NSString *string_from_method_type(NSString *methodName, struct method_type *m);
 
 #endif

@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.19 2003/12/16 07:09:01 nygard Exp $
+// $Id: datatypes.m,v 1.20 2003/12/16 07:30:16 nygard Exp $
 //
 
 //
@@ -33,13 +33,14 @@
 #import <Foundation/Foundation.h>
 
 #include "datatypes.h"
-//#include "gram.h"
 #import "CDTypeLexer.h"
 #import "NSScanner-Extensions.h"
+#import "NSString-Extensions.h"
 
-NSString *string_indent_to_level(int level);
-NSString *string_from_members(struct my_objc_type *t, int level);
-NSString *string_from_simple_type(char c);
+#define IS_ID(a) ((a)->type == '@' && (a)->type_name == NULL)
+
+static NSString *string_from_members(struct my_objc_type *t, int level);
+static NSString *string_from_simple_type(char c);
 
 // Not ^ or b
 static char *simple_types = "cislqCISLQfdBv*#:%?rnNoORV";
@@ -255,55 +256,6 @@ struct method_type *reverse_method_types(struct method_type *m)
 // Display functions
 //======================================================================
 
-void indent_to_level(int level)
-{
-    int l;
-
-    for (l = 0; l < level; l++)
-        printf("  ");
-}
-
-NSString *string_indent_to_level(int level)
-{
-    NSMutableString *str;
-    int l;
-
-    str = [NSMutableString string];
-    for (l = 0; l < level; l++)
-        [str appendString:@"  "];
-
-    return str;
-}
-
-NSString *string_from_members (struct my_objc_type *t, int level)
-{
-    NSMutableString *str;
-
-    str = [NSMutableString string];
-
-    while (t != NULL) {
-        [str appendString:string_indent_to_level(level)];
-        [str appendString:string_from_type(t, nil, 1, level)];
-        [str appendString:@";\n"];
-        t = t->next;
-    }
-
-    return str;
-}
-
-NSString *string_from_simple_type(char c)
-{
-    char *ptr = strchr(simple_types, c);
-    NSString *str = nil;
-
-    if (ptr != NULL)
-        str = simple_type_names[ ptr - simple_types ];
-    else
-        NSLog(@"Unknown simple type '%c'", c);
-
-    return str;
-}
-
 NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level)
 {
     NSString *tmp;
@@ -374,7 +326,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           tmp = [NSString stringWithFormat:@"union%@", type_name];
           if (expand == 1 && t->subtype != NULL) {
               tmp = [NSString stringWithFormat:@"%@ {\n%@%@}", tmp, string_from_members(t->subtype, level + 1),
-                              string_indent_to_level(level)];
+                              [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
           }
 
           if ([inner length] > 0 || [name length] > 0) {
@@ -397,7 +349,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
 
           if (expand == 1 && t->subtype != NULL) {
               tmp = [NSString stringWithFormat:@"%@ {\n%@%@}", tmp, string_from_members(t->subtype, level + 1),
-                              string_indent_to_level(level)];
+                              [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
           }
 
           if ([inner length] > 0 || [name length] > 0) {
@@ -455,7 +407,6 @@ NSString *string_from_method_type(NSString *methodName, struct method_type *m)
     NSScanner *scanner;
 
     //NSLog(@"string_from_method_type(), methodName = %@", methodName);
-#if 1
     if (m == NULL) {
         NSLog(@"Error: No method types in string_from_method_type, method: %@", methodName);
         return nil;
@@ -479,7 +430,6 @@ NSString *string_from_method_type(NSString *methodName, struct method_type *m)
 
     for (l = 0; l < 3 && m != NULL; l++)
         m = m->next;
-#endif
 
     scanner = [[NSScanner alloc] initWithString:methodName];
     while ([scanner isAtEnd] == NO) {
@@ -583,4 +533,37 @@ void free_allocated_methods(void)
         if (tmp->name != NULL)
             free(tmp->name);
     }
+}
+
+//======================================================================
+// Private display functions
+//======================================================================
+
+NSString *string_from_members (struct my_objc_type *t, int level)
+{
+    NSMutableString *str;
+
+    str = [NSMutableString string];
+
+    while (t != NULL) {
+        [str appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+        [str appendString:string_from_type(t, nil, 1, level)];
+        [str appendString:@";\n"];
+        t = t->next;
+    }
+
+    return str;
+}
+
+NSString *string_from_simple_type(char c)
+{
+    char *ptr = strchr(simple_types, c);
+    NSString *str = nil;
+
+    if (ptr != NULL)
+        str = simple_type_names[ ptr - simple_types ];
+    else
+        NSLog(@"Unknown simple type '%c'", c);
+
+    return str;
 }

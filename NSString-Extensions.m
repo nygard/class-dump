@@ -22,12 +22,22 @@
 
 + (NSString *)spacesIndentedToLevel:(int)level;
 {
+    return [self spacesIndentedToLevel:level spacesPerLevel:4];
+}
+
++ (NSString *)spacesIndentedToLevel:(int)level spacesPerLevel:(int)spacesPerLevel;
+{
+    NSString *spaces = @"                                        ";
+    NSString *levelSpaces;
     NSMutableString *str;
     int l;
 
+    assert(spacesPerLevel <= [spaces length]);
+    levelSpaces = [spaces substringToIndex:spacesPerLevel];
+
     str = [NSMutableString string];
     for (l = 0; l < level; l++)
-        [str appendString:@"    "];
+        [str appendString:levelSpaces];
 
     return str;
 }
