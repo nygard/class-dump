@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.63 2004/02/02 23:01:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.64 2004/02/02 23:39:41 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -419,15 +419,16 @@ void print_usage(void)
 {
     fprintf(stderr,
             "class-dump %s\n"
-            "Usage: class-dump [-a] [-A] [-e] [-R] [-C regex] [-r] [-S] executable-file\n"
-            "        -a  show instance variable offsets\n"
-            "        -A  show implementation addresses\n"
-            "        -C  only display classes matching regular expression\n"
-            "        -H  generate header files in current directory\n"
-            "        -I  sort classes, categories, and protocols by inheritance (overrides -S)\n"
-            "        -R  recursively expand @protocol <>\n"
-            "        -r  recursively expand frameworks and fixed VM shared libraries\n"
-            "        -S  sort classes, categories, protocols and methods by name\n"
+            "Usage: class-dump [options] executable-file\n"
+            "  where options are:\n"
+            "        -a        show instance variable offsets\n"
+            "        -A        show implementation addresses\n"
+            "        -C regex  only display classes matching regular expression\n"
+            "        -H        generate header files in current directory\n"
+            "        -I        sort classes, categories, and protocols by inheritance (overrides -S)\n"
+            "        -R        recursively expand @protocol <>\n"
+            "        -r        recursively expand frameworks and fixed VM shared libraries\n"
+            "        -S        sort classes, categories, protocols and methods by name\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
