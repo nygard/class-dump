@@ -9,7 +9,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.18 2004/02/02 21:37:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.19 2004/02/02 23:33:44 nygard Exp $");
 
 @implementation CDOCMethod
 
@@ -70,6 +70,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.18 2004/02/
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
+        if ([aClassDump shouldShowMethodAddresses] == YES && imp != 0)
+            [resultString appendFormat:@"\t// IMP=0x%08x", imp];
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
 }
