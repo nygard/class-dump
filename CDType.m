@@ -190,114 +190,97 @@
                      NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
 }
 
-- (NSString *)formattedString:(NSString *)inner expand:(BOOL)shouldExpand level:(int)level;
+- (NSString *)formattedString:(NSString *)previousName expand:(BOOL)shouldExpand level:(int)level;
 {
-    NSString *result;
-    NSString *name, *type_name;
-#if 0
-    if (t == NULL)
-        return inner;
-#endif
-    if (inner == nil)
-        inner = @"";
+    NSString *result, *currentName;
+    NSString *baseType, *memberString;
+
+    assert(variableName == nil || previousName == nil);
+    if (variableName != nil)
+        currentName = variableName;
+    else
+        currentName = previousName;
 
     switch (type) {
       case T_NAMED_OBJECT:
-          if (variableName == nil)
-              name = @"";
+          assert(typeName != nil);
+          if (currentName == nil)
+              result = typeName;
           else
-              name = [NSString stringWithFormat:@" %@", variableName];
-
-          result = [NSString stringWithFormat:@"%@%@ %@", typeName, name, inner]; // We always have a pointer to this type
+              result = [NSString stringWithFormat:@"%@ %@", typeName, currentName];
           break;
 
       case '@':
-          if (variableName == nil)
-              name = @"";
+          if (currentName == nil)
+              result = @"id";
           else
-              name = [NSString stringWithFormat:@" %@", variableName];
-
-          if ([inner length] > 0)
-              result = [NSString stringWithFormat:@"id%@ %@", name, inner];
-          else
-              result = [NSString stringWithFormat:@"id%@%@", name, inner];
+              result = [NSString stringWithFormat:@"id %@", currentName];
           break;
 
       case 'b':
-          // TODO (2003-12-19): This is different from previous... why?
-          if (variableName == nil)
-              name = @"";
+          if (currentName == nil)
+              result = [NSString stringWithFormat:@"int :%@", bitfieldSize]; // I don't expect this to happen
           else
-              name = [NSString stringWithFormat:@"%@", variableName];
-
-          result = [NSString stringWithFormat:@"int %@:%@%@", name, bitfieldSize, inner];
+              result = [NSString stringWithFormat:@"int %@:%@", currentName, bitfieldSize];
           break;
 
       case '[':
-          if (variableName == nil)
-              name = @"";
+          if (currentName == nil)
+              result = [NSString stringWithFormat:@"[%@]", arraySize];
           else
-              name = [NSString stringWithFormat:@"%@", variableName];
+              result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
 
-          result = [NSString stringWithFormat:@"%@%@[%@]", inner, name, arraySize];
           result = [subtype formattedString:result expand:shouldExpand level:level];
           break;
 
       case '(':
-          if (variableName == nil || [variableName hasPrefix:@"?"] == YES)
-              name = @"";
-          else
-              name = [NSString stringWithFormat:@"%@", variableName];
-
           if (typeName == nil)
-              type_name = @"";
+              baseType = @"union";
           else
-              type_name = [NSString stringWithFormat:@" %@", typeName];
+              baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-          result = [NSString stringWithFormat:@"union%@", type_name];
-          if (shouldExpand == YES && subtype != nil) {
-              result = [NSString stringWithFormat:@"%@ {\n%@%@}",
-                              result, [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
-          }
+          if (shouldExpand == YES && subtype != nil)
+              memberString = [NSString stringWithFormat:@" {\n%@%@}",
+                                       [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+          else
+              memberString = @"";
 
-          if ([inner length] > 0 || [name length] > 0) {
-              result = [NSString stringWithFormat:@"%@ %@%@", result, inner, name];
-          }
+          baseType = [baseType stringByAppendingString:memberString];
+
+          if (currentName == nil || [currentName hasPrefix:@"?"] == YES) // Not sure about this
+              result = baseType;
+          else
+              result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
           break;
 
       case '{':
-          if (variableName == nil || [variableName hasPrefix:@"?"] == YES)
-              name = @"";
-          else
-              name = [NSString stringWithFormat:@"%@", variableName];
-
           if (typeName == nil)
-              type_name = @"";
+              baseType = @"struct";
           else
-              type_name = [NSString stringWithFormat:@" %@", typeName];
+              baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-          result = [NSString stringWithFormat:@"struct%@", type_name];
+          if (shouldExpand == YES && subtype != nil)
+              memberString = [NSString stringWithFormat:@" {\n%@%@}",
+                                       [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+          else
+              memberString = @"";
 
-          if (shouldExpand == YES && subtype != nil) {
-              result = [NSString stringWithFormat:@"%@ {\n%@%@}",
-                              result, [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
-          }
+          baseType = [baseType stringByAppendingString:memberString];
 
-          if ([inner length] > 0 || [name length] > 0) {
-              result = [NSString stringWithFormat:@"%@ %@%@", result, inner, name];
-          }
+          if (currentName == nil || [currentName hasPrefix:@"?"] == YES) // Not sure about this
+              result = baseType;
+          else
+              result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
           break;
 
       case '^':
-          if (variableName == nil)
-              name = @"";
+          if (currentName == nil)
+              result = @"*";
           else
-              name = [NSString stringWithFormat:@"%@", variableName];
+              result = [@"*" stringByAppendingString:currentName];
 
           if (subtype != nil && [subtype type] == '[')
-              result = [NSString stringWithFormat:@"(*%@%@)", inner, name];
-          else
-              result = [NSString stringWithFormat:@"*%@%@", name, inner];
+              result = [NSString stringWithFormat:@"(%@)", result];
 
           result = [subtype formattedString:result expand:shouldExpand level:level];
           break;
@@ -309,20 +292,15 @@
       case 'O':
       case 'R':
       case 'V':
-          result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType],
-                             [subtype formattedString:nil expand:shouldExpand level:level]];
+          result = [NSString stringWithFormat:@"%@ %@",
+                             [self formattedStringForSimpleType], [subtype formattedString:currentName expand:shouldExpand level:level]];
           break;
 
       default:
-          if (variableName == nil)
-              name = @"";
-          else
-              name = [NSString stringWithFormat:@"%@", variableName];
-
-          if ([name length] == 0 && [inner length] == 0)
+          if (currentName == nil)
               result = [self formattedStringForSimpleType];
           else
-              result = [NSString stringWithFormat:@"%@ %@%@", [self formattedStringForSimpleType], name, inner];
+              result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
           break;
     }
 

@@ -39,7 +39,7 @@
 
 - (NSString *)description;
 
-- (NSString *)formattedString:(NSString *)inner expand:(BOOL)shouldExpand level:(int)level;
+- (NSString *)formattedString:(NSString *)previousName expand:(BOOL)shouldExpand level:(int)level;
 - (NSString *)formattedStringForMembersAtLevel:(int)level;
 - (NSString *)formattedStringForSimpleType;
 

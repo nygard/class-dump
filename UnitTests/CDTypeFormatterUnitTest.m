@@ -63,7 +63,18 @@
     [self testVariableName:nil type:@"Ri" expectedResult:@"byref int"];
     [self testVariableName:nil type:@"Vi" expectedResult:@"oneway int"];
 
-    //[self testVariableName:nil type:@"r^i" expectedResult:@"const int *var"];
+    // These shouldn't happen in practice, but here's how they would be formatted
+    [self testVariableName:@"var" type:@"ri" expectedResult:@"const int var"];
+    [self testVariableName:@"var" type:@"ni" expectedResult:@"in int var"];
+    [self testVariableName:@"var" type:@"Ni" expectedResult:@"inout int var"];
+    [self testVariableName:@"var" type:@"oi" expectedResult:@"out int var"];
+    [self testVariableName:@"var" type:@"Oi" expectedResult:@"bycopy int var"];
+    [self testVariableName:@"var" type:@"Ri" expectedResult:@"byref int var"];
+    [self testVariableName:@"var" type:@"Vi" expectedResult:@"oneway int var"];
+
+    [self testVariableName:@"var" type:@"^i" expectedResult:@"int *var"];
+    [self testVariableName:@"var" type:@"r^i" expectedResult:@"const int *var"];
+    [self testVariableName:nil type:@"r^i" expectedResult:@"const int *"];
     //[self testVariableName:nil type:@"^ri" expectedResult:@"int *const"];
     //[self testVariableName:nil type:@"r^ri" expectedResult:@"const int *const"];
 
@@ -159,6 +170,26 @@
 {
     [self testVariableName:@"_tokenBuffer" type:@"(?=\"ascii\"*\"unicode\"^S)" expectedResult:@"union ? _tokenBuffer"];
     //[self testVariableName:@"" type:@"" expectedResult:@""];
+}
+
+// I have diagrams of these cases
+- (void)testDiagrammedTypes;
+{
+    [self testVariableName:@"foo" type:@"i" expectedResult:@"int foo"];
+    [self testVariableName:@"foo" type:@"^i" expectedResult:@"int *foo"];
+    [self testVariableName:@"foo" type:@"^^i" expectedResult:@"int **foo"];
+    [self testVariableName:@"foo" type:@"[8i]" expectedResult:@"int foo[8]"];
+    [self testVariableName:@"foo" type:@"[8^i]" expectedResult:@"int *foo[8]"];
+    [self testVariableName:@"foo" type:@"^[8i]" expectedResult:@"int (*foo)[8]"];
+    [self testVariableName:@"foo" type:@"[8[12i]]" expectedResult:@"int foo[8][12]"];
+    [self testVariableName:@"foo" type:@"^^[8i]" expectedResult:@"int (**foo)[8]"];
+    [self testVariableName:@"foo" type:@"^^[8[12i]]" expectedResult:@"int (**foo)[8][12]"];
+    [self testVariableName:@"foo" type:@"[3^^[8i]]" expectedResult:@"int (**foo[3])[8]"];
+    [self testVariableName:@"foo" type:@"@" expectedResult:@"id foo"];
+    [self testVariableName:@"foo" type:@"@\"NSString\"" expectedResult:@"NSString *foo"];
+    [self testVariableName:@"foo" type:@"b7" expectedResult:@"int foo:7"];
+    [self testVariableName:@"foo" type:@"r^i" expectedResult:@"const int *foo"];
+    //[self testVariableName:@"foo" type:@"" expectedResult:@""];
 }
 
 #if 0
