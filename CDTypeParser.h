@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeParser.h,v 1.15 2004/01/18 00:42:52 nygard Exp $
+// $Id: CDTypeParser.h,v 1.16 2004/01/18 01:34:58 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 
 @class NSArray, NSString;
-@class CDMethodType, CDType, CDTypeLexer;
+@class CDMethodType, CDType, CDTypeLexer, CDTypeName;
 
 extern NSString *CDSyntaxError;
 
@@ -45,7 +45,7 @@ extern NSString *CDSyntaxError;
 - (NSArray *)parseMemberList;
 - (CDType *)parseMember;
 
-- (NSString *)parseTypeName;
+- (CDTypeName *)parseTypeName;
 - (NSString *)parseIdentifier;
 - (NSString *)parseNumber;
 - (NSString *)parseQuotedName;

@@ -12,9 +12,10 @@
 #import "CDClassDump.h" // not ideal
 #import "CDMethodType.h"
 #import "CDType.h"
+#import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.21 2004/01/18 00:42:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.22 2004/01/18 01:34:57 nygard Exp $");
 
 //----------------------------------------------------------------------
 

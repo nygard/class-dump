@@ -7,10 +7,11 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
+#import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 00:18:21 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.33 2004/01/18 01:34:57 nygard Exp $");
 
 @implementation CDType
 
@@ -45,7 +46,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
     return self;
 }
 
-- (id)initIDType:(NSString *)aName;
+- (id)initIDType:(CDTypeName *)aName;
 {
     if ([self init] == nil)
         return nil;
@@ -60,7 +61,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
     return self;
 }
 
-- (id)initNamedType:(NSString *)aName;
+- (id)initNamedType:(CDTypeName *)aName;
 {
     if ([self init] == nil)
         return nil;
@@ -71,7 +72,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
     return self;
 }
 
-- (id)initStructType:(NSString *)aName members:(NSArray *)someMembers;
+- (id)initStructType:(CDTypeName *)aName members:(NSArray *)someMembers;
 {
     if ([self init] == nil)
         return nil;
@@ -83,7 +84,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
     return self;
 }
 
-- (id)initUnionType:(NSString *)aName members:(NSArray *)someMembers;
+- (id)initUnionType:(CDTypeName *)aName members:(NSArray *)someMembers;
 {
     if ([self init] == nil)
         return nil;
@@ -181,7 +182,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
     return subtype;
 }
 
-- (NSString *)typeName;
+- (CDTypeName *)typeName;
 {
     return typeName;
 }
@@ -225,7 +226,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
       case T_NAMED_OBJECT:
           assert(typeName != nil);
           if (currentName == nil)
-              result = typeName;
+              result = [typeName description];
           else
               result = [NSString stringWithFormat:@"%@ %@", typeName, currentName];
           break;
@@ -256,7 +257,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
 
       case '(':
           baseType = nil;
-          if (typeName == nil || [@"?" isEqual:typeName] == YES) {
+          if (typeName == nil || [@"?" isEqual:[typeName description]] == YES) {
               NSString *typedefName;
 
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
@@ -266,12 +267,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
           }
 
           if (baseType == nil) {
-              if (typeName == nil || [@"?" isEqual:typeName] == YES)
+              if (typeName == nil || [@"?" isEqual:[typeName description]] == YES)
                   baseType = @"union";
               else
                   baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:typeName] == YES)
+              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:[typeName description]] == YES)
                   || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
@@ -290,7 +291,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
 
       case '{':
           baseType = nil;
-          if (typeName == nil || [@"?" isEqual:typeName] == YES) {
+          if (typeName == nil || [@"?" isEqual:[typeName description]] == YES) {
               NSString *typedefName;
 
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
@@ -299,12 +300,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
               }
           }
           if (baseType == nil) {
-              if (typeName == nil || [@"?" isEqual:typeName] == YES)
+              if (typeName == nil || [@"?" isEqual:[typeName description]] == YES)
                   baseType = @"struct";
               else
                   baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:typeName] == YES)
+              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:[typeName description]] == YES)
                   || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
@@ -610,7 +611,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
 
     for (index = 0; index < count; index++) {
         CDType *thisMember, *otherMember;
-        NSString *thisTypeName, *otherTypeName;
+        CDTypeName *thisTypeName, *otherTypeName;
         NSString *thisVariableName, *otherVariableName;
 
         thisMember = [members objectAtIndex:index];
@@ -626,7 +627,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 0
         if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil))
             NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
         else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
-            NSLog(@"Warning: (2) type names don't match.");
+            NSLog(@"Warning: (2) type names don't match, %@ vs %@.", thisTypeName, otherTypeName);
 
         if (otherVariableName != nil) {
             if (thisVariableName == nil)

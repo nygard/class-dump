@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatterUnitTest.m,v 1.14 2004/01/18 00:42:52 nygard Exp $
+// $Id: CDTypeFormatterUnitTest.m,v 1.15 2004/01/18 01:34:58 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -333,11 +333,13 @@
 
 - (void)test1;
 {
-    [typeFormatter setShouldShowLexing:YES];
-    //[self testVariableName:@"var" type:@"{QValueList<KWQSlot>=i}" expectedResult:@"struct QValueList<KWQSlot> var"];
-    [self testVariableName:@"var" type:@"{QValueList<KWQSlot>=i}" expectedResult:@"struct QValueList var"];
-    [typeFormatter setShouldShowLexing:NO];
-    [self testVariableName:@"var" type:@"{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}" expectedResult:@"struct QValueList var"];
+    [self testVariableName:@"var" type:@"{QValueList<foo<bar>,foo<baz>,bar<blegga>>=i}"
+          expectedResult:@"struct QValueList<foo<bar>,foo<baz>,bar<blegga>> var"];
+    [self testVariableName:@"var" type:@"{QValueList<KWQSlot<foobar>>=i}" expectedResult:@"struct QValueList<KWQSlot<foobar>> var"];
+    [self testVariableName:@"var" type:@"{QValueList<KWQSlot>=i}" expectedResult:@"struct QValueList<KWQSlot> var"];
+    [self testVariableName:@"var"
+          type:@"{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}"
+          expectedResult:@"struct QValueList<KWQSlot> var"];
     [self testVariableName:@"var" type:@"{KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}" expectedResult:@"struct KWQSignal var"];
     [self testVariableName:@"var" type:@"^{QButton={KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}}" expectedResult:@"struct QButton *var"];
 }

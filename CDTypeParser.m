@@ -9,10 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "CDMethodType.h"
 #import "CDType.h"
+#import "CDTypeName.h"
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.23 2004/01/18 00:42:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.24 2004/01/18 01:34:58 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -185,14 +186,18 @@ NSString *CDTokenDescription(int token)
         if (lookahead == '"' && (shouldUseHeuristics == NO
                                         || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[lexer peekChar]] == YES)) {
             NSString *name;
+            CDTypeName *typeName;
 
             name = [self parseQuotedName];
-            result = [[CDType alloc] initIDType:name];
+            typeName = [[CDTypeName alloc] init];
+            [typeName setName:name];
+            result = [[CDType alloc] initIDType:typeName];
+            [typeName release];
         } else {
             result = [[CDType alloc] initIDType:nil];
         }
     } else if (lookahead == '{') { // structure
-        NSString *typeName;
+        CDTypeName *typeName;
         NSArray *optionalMembers;
 
         [self match:'{' allowIdentifier:YES];
@@ -204,14 +209,14 @@ NSString *CDTokenDescription(int token)
     } else if (lookahead == '(') { // union
         [self match:'(' allowIdentifier:YES];
         if (lookahead == TK_IDENTIFIER) {
-            NSString *identifier;
+            CDTypeName *typeName;
             NSArray *optionalMembers;
 
-            identifier = [self parseIdentifier];
+            typeName = [self parseTypeName]; // 2004-01-17: This is new, used to just be parseIdentifier
             optionalMembers = [self parseOptionalMembers];
             [self match:')'];
 
-            result = [[CDType alloc] initUnionType:identifier members:optionalMembers];
+            result = [[CDType alloc] initUnionType:typeName members:optionalMembers];
         } else {
             NSArray *unionTypes;
 
@@ -305,23 +310,25 @@ NSString *CDTokenDescription(int token)
     return result;
 }
 
-- (NSString *)parseTypeName;
+- (CDTypeName *)parseTypeName;
 {
-    NSString *identifier;
+    CDTypeName *typeName;
 
-    identifier = [self parseIdentifier];
+    typeName = [[[CDTypeName alloc] init] autorelease];
+    [typeName setName:[self parseIdentifier]];
+
     if (lookahead == '<') {
         //NSLog(@"Matching template class...");
         [self match:'<' allowIdentifier:YES];
-        [self parseIdentifier]; // TODO (2004-01-16): This should be parseTypeName.
+        [typeName addTemplateType:[self parseTypeName]];
         while (lookahead == ',') {
             [self match:',' allowIdentifier:YES];
-            [self parseIdentifier];
+            [typeName addTemplateType:[self parseTypeName]];
         }
         [self match:'>' allowIdentifier:NO];
     }
 
-    return identifier;
+    return typeName;
 }
 
 - (NSString *)parseIdentifier;

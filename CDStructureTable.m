@@ -9,9 +9,10 @@
 #import "NSArray-Extensions.h"
 #import "CDType.h"
 #import "CDTypeFormatter.h"
+#import "CDTypeName.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.12 2004/01/16 00:18:21 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.13 2004/01/18 01:34:57 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -263,7 +264,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.12 20
     //NSLog(@" > %s", _cmd);
     //NSLog(@"keySignature: %@ (%d)", [aStructure keyTypeString], [structureSignatures containsObject:[aStructure keyTypeString]]);
 
-    aName = [aStructure typeName];
+    aName = [[aStructure typeName] description];
     if (aName == nil || [aName isEqual:@"?"] == YES) {
         if ([structureSignatures containsObject:[aStructure keyTypeString]] == NO) {
             [structureSignatures addObject:[aStructure keyTypeString]];
@@ -285,7 +286,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.12 20
     //NSLog(@"[%p](%@)  > %s", self, name, _cmd);
     //NSLog(@"aStructure: %p", aStructure);
 
-    aName = [aStructure typeName];
+    aName = [[aStructure typeName] description];
     keySignature = [aStructure keyTypeString];
 
     if (isUsedInMethod == YES)
