@@ -1,12 +1,13 @@
-//  This file is part of APPNAME, SHORT DESCRIPTION
-//  Copyright (C) 2004 Steve Nygard.  All rights reserved.
+//  This file is part of class-dump, a utility for examining the
+//  Objective-C segment of Mach-O files.
+//  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "CDSymbolReferences.h"
 
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSymbolReferences.m,v 1.2 2004/02/03 03:04:32 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSymbolReferences.m,v 1.3 2004/02/03 22:18:37 nygard Exp $");
 
 @implementation CDSymbolReferences
 
