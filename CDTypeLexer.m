@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.12 2004/01/27 21:22:05 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.13 2004/01/27 22:44:36 nygard Exp $");
 
 @implementation CDTypeLexer
 
@@ -140,7 +140,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.12 2004/01
         }
 
         if ([scanner scanCharacterFromSet:[CDTypeLexer identifierStartCharacterSet] intoString:&start] == YES) {
-            if ([scanner scanCharactersFromSet:[CDTypeLexer identifierCharacterSet] intoString:&remainder] == YES) {
+            if ([scanner my_scanCharactersFromSet:[CDTypeLexer identifierCharacterSet] intoString:&remainder] == YES) {
                 str = [start stringByAppendingString:remainder];
             } else {
                 str = start;
@@ -154,7 +154,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.12 2004/01
         }
     }
 
-    if ([scanner scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str] == YES) {
+    if ([scanner my_scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str] == YES) {
         [self _setLexText:str];
         if (shouldShowLexing == YES)
             NSLog(@"%s [id=%d], token = TK_NUMBER (%@)", _cmd, isInIdentifierState, lexText);

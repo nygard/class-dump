@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.6 2004/01/06 02:31:45 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.7 2004/01/27 22:44:37 nygard Exp $");
 
 @implementation NSScanner (CDExtensions)
 
@@ -65,6 +65,45 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.6
     }
 
     return NO;
+}
+
+// On 10.3 (7D24) the Foundation scanCharactersFromSet:intoString: inverts the set each call, creating an autoreleased CFCharacterSet.
+// This cuts the total CFCharacterSet alloctions (when run on Foundation) from 161682 down to 17.
+
+// This works for my purposes, but I haven't tested it to make sure it's fully compatible with the standard version.
+
+- (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
+{
+    NSRange matchedRange;
+    unsigned int currentLocation;
+
+    //[self skipCharacters];
+
+    currentLocation = [self scanLocation];
+    matchedRange.location = currentLocation;
+    matchedRange.length = 0;
+
+    while ([self isAtEnd] == NO) {
+        unichar ch;
+
+        ch = [[self string] characterAtIndex:currentLocation];
+        if ([set characterIsMember:ch] == NO)
+            break;
+
+        currentLocation++;
+        [self setScanLocation:currentLocation];
+    }
+
+    matchedRange.length = currentLocation - matchedRange.location;
+
+    if (matchedRange.length == 0)
+        return NO;
+
+    if (value != NULL) {
+        *value = [[self string] substringWithRange:matchedRange];
+    }
+
+    return YES;
 }
 
 @end
