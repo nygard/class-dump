@@ -20,7 +20,7 @@
 {
     NSString *result;
 
-    result = [CDTypeFormatter formatVariable:aVariableName type:aType atLevel:0];
+    result = [[CDTypeFormatter sharedTypeFormatter] formatVariable:aVariableName type:aType atLevel:0];
     [self assert:result equals:expectedResult];
 }
 

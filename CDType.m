@@ -239,9 +239,9 @@
           else
               baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-          if (shouldExpand == YES && subtype != nil)
+          if (shouldExpand == YES/* && [members count] > 0*/)
               memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                       [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+                                       [self formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
           else
               memberString = @"";
 
@@ -259,9 +259,10 @@
           else
               baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-          if (shouldExpand == YES && subtype != nil)
+          NSLog(@"%s, c_ase struct, shouldExpand: %d", _cmd, shouldExpand);
+          if (shouldExpand == YES/* && [members count] > 0*/)
               memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                       [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+                                       [self formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
           else
               memberString = @"";
 
@@ -316,6 +317,7 @@
     str = [NSMutableString string];
 
     count = [members count];
+    NSLog(@"%s, count: %d", _cmd, count);
     for (index = 0; index < count; index++) {
         [str appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:2]];
         [str appendString:[[members objectAtIndex:index] formattedString:nil expand:YES level:level]];

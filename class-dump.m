@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.47 2003/12/22 00:57:11 nygard Exp $
+// $Id: class-dump.m,v 1.48 2003/12/22 03:22:46 nygard Exp $
 //
 
 //
@@ -64,7 +64,7 @@
 
 #define CLASS_DUMP_VERSION "3.0 alpha"
 
-int expand_structures_flag = 0; // This is used in datatypes.m
+//int expand_structures_flag = 0; // This is used in datatypes.m
 int expand_arg_structures_flag = 0;
 #if 0
 NSString *current_filename = nil;
@@ -1139,7 +1139,7 @@ void testVariableTypes(NSString *path)
             [resultString appendFormat:@"type: '%@'\n", type];
             [resultString appendFormat:@"name: '%@'\n", name];
             [resultString appendFormat:@"level: %d\n", level];
-            formattedString = [CDTypeFormatter formatVariable:name type:type atLevel:0];
+            formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:name type:type atLevel:level];
             if (formattedString != nil) {
                 [resultString appendString:formattedString];
                 [resultString appendString:@"\n"];
@@ -1241,7 +1241,8 @@ int main(int argc, char *argv[])
               break;
 
           case 'e':
-              expand_structures_flag = 1;
+              //expand_structures_flag = 1;
+              [[CDTypeFormatter sharedTypeFormatter] setShouldExpandStructures:YES];
               break;
 
           case 'E':

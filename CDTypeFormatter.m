@@ -14,12 +14,34 @@
 
 @implementation CDTypeFormatter
 
-+ (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
++ (id)sharedTypeFormatter;
+{
+    static CDTypeFormatter *instance = nil;
+
+    if (instance == nil) {
+        instance = [[CDTypeFormatter alloc] init];
+    }
+
+    return instance;
+}
+
+- (BOOL)shouldExpandStructures;
+{
+    return shouldExpandStructures;
+}
+
+- (void)setShouldExpandStructures:(BOOL)newFlag;
+{
+    shouldExpandStructures = newFlag;
+}
+
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
 {
     CDTypeParser *aParser;
     CDType *resultType;
     NSMutableString *resultString;
 
+    //NSLog(@"%s, shouldExpandStructures: %d", _cmd, shouldExpandStructures);
     //NSLog(@" > %s", _cmd);
     //NSLog(@"name: '%@', type: '%@', level: %d", name, type, level);
 
@@ -36,7 +58,7 @@
     resultString = [NSMutableString string];
     [resultType setVariableName:name];
     [resultString appendString:[NSString spacesIndentedToLevel:level]];
-    [resultString appendString:[resultType formattedString:nil expand:NO level:level]];
+    [resultString appendString:[resultType formattedString:nil expand:shouldExpandStructures level:level]];
 
     //free_allocated_methods();
     //free_allocated_types();
@@ -46,7 +68,7 @@
     return resultString;
 }
 
-+ (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
+- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 {
     CDTypeParser *aParser;
     NSArray *methodTypes;
