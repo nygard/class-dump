@@ -1,5 +1,6 @@
 #import <Foundation/NSObject.h>
 
+#define TK_EOS 0
 #define TK_NUMBER 257
 #define TK_IDENTIFIER 258
 #define T_NAMED_OBJECT 259
@@ -14,6 +15,8 @@
 
     NSCharacterSet *identifierStartSet;
     NSCharacterSet *identifierSet;
+
+    BOOL shouldShowLexing;
 }
 
 - (id)initWithString:(NSString *)aString;
@@ -21,6 +24,9 @@
 
 - (BOOL)isInIdentifierState;
 - (void)setIsInIdentifierState:(BOOL)newFlag;
+
+- (BOOL)shouldShowLexing;
+- (void)setShouldShowLexing:(BOOL)newFlag;
 
 - (int)nextToken;
 

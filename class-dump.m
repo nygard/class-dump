@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.40 2003/12/11 05:54:26 nygard Exp $
+// $Id: class-dump.m,v 1.41 2003/12/11 06:44:14 nygard Exp $
 //
 
 //
@@ -1112,6 +1112,7 @@ void doTests(char *file)
     CDTypeParser *typeParser;
 
     typeParser = [[CDTypeParser alloc] init];
+    [typeParser setShouldShowLexing:YES];
 
     NSLog(@"Testing %s", file);
     filename = [NSString stringWithCString:file];

@@ -7,10 +7,14 @@
 {
     CDTypeLexer *lexer;
     int lookahead;
+    BOOL shouldShowLexing;
 }
 
 - (id)init;
 - (void)dealloc;
+
+- (BOOL)shouldShowLexing;
+- (void)setShouldShowLexing:(BOOL)newFlag;
 
 - (void)match:(int)token;
 - (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;

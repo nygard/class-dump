@@ -58,7 +58,10 @@
 
     typeParser = [[CDTypeParser alloc] init];
     formattedString = [typeParser parseType:type name:name];
-    [resultString appendString:formattedString];
+    if (formattedString != nil)
+        [resultString appendString:formattedString];
+    else
+        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
     [typeParser release];
 }
 

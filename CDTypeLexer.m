@@ -57,6 +57,16 @@
     isInIdentifierState = newFlag;
 }
 
+- (BOOL)shouldShowLexing;
+{
+    return shouldShowLexing;
+}
+
+- (void)setShouldShowLexing:(BOOL)newFlag;
+{
+    shouldShowLexing = newFlag;
+}
+
 // TODO: Change to scanNextToken?
 - (int)nextToken;
 {
@@ -65,8 +75,11 @@
 
     [self _setLexText:nil];
 
-    if ([scanner isAtEnd] == YES)
-        return 0;
+    if ([scanner isAtEnd] == YES) {
+        if (shouldShowLexing == YES)
+            NSLog(@"%s [id=%d], token = TK_EOS", _cmd, isInIdentifierState);
+        return TK_EOS;
+    }
 
     if (isInIdentifierState == YES) {
         NSString *start, *remainder;
@@ -75,11 +88,16 @@
 
         if ([scanner scanString:@"?" intoString:NULL] == YES) {
             [self _setLexText:@"?"];
+            [self setIsInIdentifierState:NO];
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [id=%d], token = TK_IDENTIFIER (%@)", _cmd, isInIdentifierState, lexText);
             return TK_IDENTIFIER;
         }
 
         if ([scanner scanString:@"\"" intoString:NULL] == YES) {
             [self setIsInIdentifierState:NO];
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, '"', '"');
             return '"';
         }
 
@@ -92,21 +110,30 @@
 
             [self setIsInIdentifierState:NO];
             [self _setLexText:str];
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [id=%d], token = TK_IDENTIFIER (%@)", _cmd, isInIdentifierState, lexText);
             return TK_IDENTIFIER;
         }
     }
 
     if ([scanner scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str] == YES) {
         [self _setLexText:str];
+        if (shouldShowLexing == YES)
+            NSLog(@"%s [id=%d], token = TK_NUMBER (%@)", _cmd, isInIdentifierState, lexText);
         return TK_NUMBER;
     }
 
     if ([scanner scanCharacter:&ch] == YES) {
         // TODO: I'm just assuming this works.
+        if (shouldShowLexing == YES)
+            NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, ch, ch);
         return ch;
     }
 
-    return 0;
+    if (shouldShowLexing == YES)
+        NSLog(@"%s [id=%d], token = TK_EOS)", _cmd, isInIdentifierState);
+
+    return TK_EOS;
 }
 
 - (NSString *)lexText;

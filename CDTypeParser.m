@@ -34,6 +34,8 @@ NSString *CDTokenDescription(int token)
         return nil;
 
     lexer = nil;
+    lookahead = 0;
+    shouldShowLexing = NO;
 
     return self;
 }
@@ -43,6 +45,17 @@ NSString *CDTokenDescription(int token)
     [lexer release];
 
     [super dealloc];
+}
+
+- (BOOL)shouldShowLexing;
+{
+    return shouldShowLexing;
+}
+
+- (void)setShouldShowLexing:(BOOL)newFlag;
+{
+    shouldShowLexing = newFlag;
+    [lexer setShouldShowLexing:newFlag];
 }
 
 - (void)match:(int)token;
@@ -79,34 +92,14 @@ NSString *CDTokenDescription(int token)
 
     assert(lexer == nil);
     lexer = [[CDTypeLexer alloc] initWithString:type];
-#if 0
-    {
-        int token;
-
-        NSLog(@"Lexing string '%@'", type);
-        //token = [lexer nextToken];
-        //token = [lexer nextToken];
-        //[lexer setIsInIdentifierState:YES];
-        do {
-            token = [lexer nextToken];
-            if (token > 0 && token < 128)
-                NSLog(@"token %d(%c)", token, token);
-            else
-                NSLog(@"token %d, lex text '%@'", token, [lexer lexText]);
-        } while (token != 0);
-        [lexer release];
-        lexer = nil;
-        return NULL;
-    }
-#endif
-    lookahead = [lexer nextToken];
-
+    [lexer setShouldShowLexing:shouldShowLexing];
 
     NS_DURING {
+        lookahead = [lexer nextToken];
         result = [self parseType];
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %s, name: %s", type, name);
+        NSLog(@"type: %@, name: %@", type, name);
 
         free_allocated_methods();
         free_allocated_types();
@@ -181,7 +174,6 @@ NSString *CDTokenDescription(int token)
             NSString *name;
 
             name = [self parseQuotedName];
-            //NSLog(@"-----------> name = %p:'%s'", name, name);
             result = create_id_type(name);
         } else {
             result = create_id_type(NULL);
@@ -326,7 +318,6 @@ NSString *CDTokenDescription(int token)
         NSString *result;
 
         result = [lexer lexText];
-        //NSLog(@"---> identifier %p:(%s)", result, result);
         [self match:TK_IDENTIFIER];
         return result;
     }
