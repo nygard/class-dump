@@ -45,4 +45,9 @@
                      NSStringFromClass([self class]), name, type, offset];
 }
 
+- (NSString *)formattedString;
+{
+    return [NSString stringWithFormat:@"\t%@", name];
+}
+
 @end

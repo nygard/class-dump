@@ -17,5 +17,6 @@
 - (unsigned long)imp;
 
 - (NSString *)description;
+- (NSString *)formattedString;
 
 @end

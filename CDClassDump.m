@@ -43,12 +43,14 @@
 
     NSLog(@" > %s", _cmd);
 
+#if 0
+    // Only for current Foundation framework.
     aProtocol = [self processProtocol:0xa0a1b6f0];
     NSLog(@"aProtocol: %@", aProtocol);
 
     aProtocol = [self processProtocol:0xa0a1b704];
     NSLog(@"aProtocol: %@", aProtocol);
-
+#endif
     NSLog(@" < %s", _cmd);
 }
 
@@ -141,6 +143,8 @@
     }
 
     [aSymtab setClasses:[NSArray arrayWithArray:classes]];
+
+    NSLog(@"\n\n\n%@\n\n\n", [[classes arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]);
 
     [classes release];
     [categories release];
@@ -237,7 +241,6 @@
 {
     const struct cd_objc_protocol *protocolPtr;
     CDOCProtocol *aProtocol;
-    NSArray *methods;
     NSString *name;
     NSArray *protocols;
 
@@ -255,33 +258,16 @@
         aProtocol = [[[CDOCProtocol alloc] init] autorelease];
         [aProtocol setName:name];
 
-        methods = [self processProtocolMethods:protocolPtr->instance_methods];
-        [aProtocol setMethods:methods];
-
         // TODO (2003-12-09): Handle class methods
 
-        //NSLog(@"protocolPtr->protocol_list: %p", protocolPtr->protocol_list);
-        [aProtocol setProtocols:protocols];
         [protocolsByName setObject:aProtocol forKey:name];
-    } else {
-        int count, index;
-        NSSet *previousProtocolNames;
-
-        previousProtocolNames = [NSSet setWithArray:[[aProtocol protocols] arrayByMappingSelector:@selector(name)]];
-        NSLog(@"=== protocol %@, previous protocol names: %@", name, [previousProtocolNames allObjects]);
-
-        // Make sure all protocols adopted by this one are part of aProtocol
-        count = [protocols count];
-        for (index = 0; index < count; index++) {
-            CDOCProtocol *thisProtocol;
-
-            thisProtocol = [protocols objectAtIndex:index];
-            NSLog(@"Checking for %@", [thisProtocol name]);
-            if ([previousProtocolNames containsObject:[thisProtocol name]] == NO) {
-                NSLog(@"Warning: Previous instance of this protocol doesn't adopt '%@' protocol that this instance does.", [thisProtocol name]);
-            }
-        }
     }
+
+    [aProtocol addProtocolsFromArray:protocols];
+    if ([[aProtocol methods] count] == 0)
+        [aProtocol setMethods:[self processProtocolMethods:protocolPtr->instance_methods]];
+
+    // TODO (2003-12-09): Maybe we should add any missing methods.  But then we'd lose the original order.
 
     //NSLog(@"aProtocol: %@", aProtocol);
     //NSLog(@"formatted protocol: %@", [aProtocol formattedString]);

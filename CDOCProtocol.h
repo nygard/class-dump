@@ -1,14 +1,14 @@
 #import <Foundation/NSObject.h>
 
-// TODO (2003-12-08): What about protocols that adopt other protocols?
-
-@class NSArray, NSString;
+@class NSArray, NSMutableArray, NSMutableSet, NSString;
 
 @interface CDOCProtocol : NSObject
 {
     NSString *name;
-    NSArray *protocols;
+    NSMutableArray *protocols;
     NSArray *methods;
+
+    NSMutableSet *adoptedProtocolNames;
 }
 
 - (id)init;
@@ -18,7 +18,9 @@
 - (void)setName:(NSString *)newName;
 
 - (NSArray *)protocols;
-- (void)setProtocols:(NSArray *)newProtocols;
+- (void)addProtocol:(CDOCProtocol *)aProtocol;
+- (void)removeProtocol:(CDOCProtocol *)aProtocol;
+- (void)addProtocolsFromArray:(NSArray *)newProtocols;
 
 - (NSArray *)methods;
 - (void)setMethods:(NSArray *)newMethods;

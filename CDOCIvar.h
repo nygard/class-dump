@@ -17,5 +17,6 @@
 - (int)offset;
 
 - (NSString *)description;
+- (NSString *)formattedString;
 
 @end

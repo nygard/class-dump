@@ -10,13 +10,18 @@
     if ([super init] == nil)
         return nil;
 
+    protocols = [[NSMutableArray alloc] init];
+    adoptedProtocolNames = [[NSMutableSet alloc] init];
+
     return self;
 }
 
 - (void)dealloc;
 {
     [name release];
+    [protocols release];
     [methods release];
+    [adoptedProtocolNames release];
 
     [super dealloc];
 }
@@ -40,13 +45,28 @@
     return protocols;
 }
 
-- (void)setProtocols:(NSArray *)newProtocols;
+// This assumes that the protocol name doesn't change after it's been added to this.
+- (void)addProtocol:(CDOCProtocol *)aProtocol;
 {
-    if (newProtocols == protocols)
-        return;
+    if ([adoptedProtocolNames containsObject:[aProtocol name]] == NO) {
+        [protocols addObject:aProtocol];
+        [adoptedProtocolNames addObject:[aProtocol name]];
+    }
+}
 
-    [protocols release];
-    protocols = [newProtocols retain];
+- (void)removeProtocol:(CDOCProtocol *)aProtocol;
+{
+    [adoptedProtocolNames removeObject:[aProtocol name]];
+    [protocols removeObject:aProtocol];
+}
+
+- (void)addProtocolsFromArray:(NSArray *)newProtocols;
+{
+    int count, index;
+
+    count = [newProtocols count];
+    for (index = 0; index < count; index++)
+        [self addProtocol:[newProtocols objectAtIndex:index]];
 }
 
 - (NSArray *)methods;
@@ -78,6 +98,8 @@
         [result appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
     // TODO: And the methods
+    [result appendString:@"\n"];
+    [result appendString:[[methods arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
     [result appendString:@"\n@end\n"];
 
     return result;

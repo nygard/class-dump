@@ -48,4 +48,9 @@
                      NSStringFromClass([self class]), name, type, imp];
 }
 
+- (NSString *)formattedString;
+{
+    return [NSString stringWithFormat:@"- %@", name];
+}
+
 @end

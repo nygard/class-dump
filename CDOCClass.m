@@ -1,6 +1,7 @@
 #import "CDOCClass.h"
 
 #import <Foundation/Foundation.h>
+#import "NSArray-Extensions.h"
 
 @implementation CDOCClass
 
@@ -100,8 +101,25 @@
 
 - (NSString *)formattedString;
 {
-    return [NSString stringWithFormat:@"@interface %@ : %@\n{\n // ivars\n}\n\n%@\n%@\n@end\n\n",
-                     name, superClassName, classMethods, instanceMethods];
+    NSMutableString *result;
+
+    result = [NSMutableString string];
+    [result appendFormat:@"@interface %@", name];
+    if (superClassName != nil)
+        [result appendFormat:@" : %@", superClassName];
+
+    // Need to handle adopted protocols
+    [result appendString:@"\n{\n"];
+    if ([ivars count] > 0)
+        [result appendString:[[ivars arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
+    [result appendString:@"\n}\n\n"];
+    if ([instanceMethods count] > 0) {
+        [result appendString:[[instanceMethods arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
+        [result appendString:@"\n\n"];
+    }
+    [result appendString:@"@end\n"];
+
+    return result;
 }
 
 @end
