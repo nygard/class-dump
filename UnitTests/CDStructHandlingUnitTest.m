@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.10 2004/01/15 03:04:54 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.11 2004/01/15 23:57:03 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -78,7 +78,7 @@
 
     // First register structs/unions
     for (phase = 1; phase <= 2; phase++) {
-        NSLog(@"Phase %d ========================================", phase);
+        //NSLog(@"Phase %d ========================================", phase);
 
         for (index = 0; index < count; index++) {
             NSString *line;
@@ -90,10 +90,6 @@
 
         [classDump endPhase:phase];
     }
-
-    //[classDump registerPhase:1];
-    //[classDump registerPhase:2];
-    //[classDump finishRegistration];
 
     // Then generate output
     [classDump appendStructuresToString:resultString];
