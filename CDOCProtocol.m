@@ -2,6 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "CDTypeParser.h"
 
 @implementation CDOCProtocol
 
@@ -131,6 +132,29 @@
         [resultString appendString:@"\n"];
     }
     [resultString appendString:@"@end\n\n"];
+}
+
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+{
+    int count, index;
+    CDTypeParser *parser;
+    NSArray *methodTypes;
+
+    count = [classMethods count];
+    for (index = 0; index < count; index++) {
+        parser = [[CDTypeParser alloc] initWithType:[[classMethods objectAtIndex:index] type]];
+        methodTypes = [parser parseMethodType];
+        [[methodTypes arrayByMappingSelector:@selector(type)] makeObjectsPerformSelector:_cmd withObject:anObject];
+        [parser release];
+    }
+
+    count = [instanceMethods count];
+    for (index = 0; index < count; index++) {
+        parser = [[CDTypeParser alloc] initWithType:[[instanceMethods objectAtIndex:index] type]];
+        methodTypes = [parser parseMethodType];
+        [[methodTypes arrayByMappingSelector:@selector(type)] makeObjectsPerformSelector:_cmd withObject:anObject];
+        [parser release];
+    }
 }
 
 - (NSString *)sortableName;

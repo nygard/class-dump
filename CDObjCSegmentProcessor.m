@@ -108,6 +108,32 @@
     [allClasses release];
 }
 
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+{
+    int count, index;
+    NSArray *protocolNames;
+
+    count = [modules count];
+    for (index = 0; index < count; index++) {
+        NSArray *moduleClasses, *moduleCategories;
+
+        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
+        [moduleClasses makeObjectsPerformSelector:_cmd withObject:anObject];
+
+        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
+        [moduleCategories makeObjectsPerformSelector:_cmd withObject:anObject];
+    }
+
+    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    count = [protocolNames count];
+    for (index = 0; index < count; index++) {
+        CDOCProtocol *aProtocol;
+
+        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
+        [aProtocol registerStructsWithObject:anObject];
+    }
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] machOFile: %@", NSStringFromClass([self class]), [machOFile filename]];

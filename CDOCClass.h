@@ -15,5 +15,6 @@
 - (void)setIvars:(NSArray *)newIvars;
 
 - (void)appendToString:(NSMutableString *)resultString;
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
 @end

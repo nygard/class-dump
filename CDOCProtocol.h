@@ -1,4 +1,5 @@
 #import <Foundation/NSObject.h>
+#import "CDStructRegistrationProtocol.h"
 
 @class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
 
@@ -31,6 +32,7 @@
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString;
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
 - (NSString *)sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;

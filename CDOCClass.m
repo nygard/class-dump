@@ -1,8 +1,11 @@
 #import "CDOCClass.h"
 
 #import <Foundation/Foundation.h>
-#import "CDOCMethod.h"
 #import "NSArray-Extensions.h"
+#import "CDOCIvar.h"
+#import "CDOCMethod.h"
+#import "CDType.h"
+#import "CDTypeParser.h"
 
 @implementation CDOCClass
 
@@ -88,6 +91,19 @@
     if ([classMethods count] > 0 || [instanceMethods count] > 0)
         [resultString appendString:@"\n"];
     [resultString appendString:@"@end\n\n"];
+}
+
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+{
+    int count, index;
+    CDTypeParser *parser;
+
+    count = [ivars count];
+    for (index = 0; index < count; index++) {
+        parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
+        [[parser parseType] registerStructsWithObject:anObject];
+        [parser release];
+    }
 }
 
 @end

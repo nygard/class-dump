@@ -422,6 +422,26 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
+		01A253C50598E3ED00ED81E2 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDStructRegistrationProtocol.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01A253C60598E3ED00ED81E2 = {
+			fileRef = 01A253C50598E3ED00ED81E2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01A253C70598E3ED00ED81E2 = {
+			fileRef = 01A253C50598E3ED00ED81E2;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		01C5C12005855E970052C696 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -480,6 +500,7 @@
 		};
 		01C5C1260587C04D0052C696 = {
 			children = (
+				01A253C50598E3ED00ED81E2,
 				01C5C12B0587C0D10052C696,
 				01C5C12C0587C0D10052C696,
 				01CAEA35050E653200E28615,
@@ -678,6 +699,7 @@
 				016047910592C6A500C03665,
 				016047B305942AEC00C03665,
 				016047B505942AEC00C03665,
+				01A253C70598E3ED00ED81E2,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1008,6 +1030,7 @@
 				016047990592D60C00C03665,
 				016047B705942AEC00C03665,
 				016047B905942AEC00C03665,
+				01A253C60598E3ED00ED81E2,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

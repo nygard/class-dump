@@ -2,6 +2,7 @@
 // Copyright (C) 2003 Steve Nygard.  All rights reserved.
 
 #import <Foundation/NSObject.h>
+#import "CDStructRegistrationProtocol.h"
 
 @class NSArray, NSString;
 
@@ -39,8 +40,13 @@
 
 - (NSString *)description;
 
-- (NSString *)formattedString:(NSString *)previousName expand:(BOOL)shouldExpand level:(int)level;
-- (NSString *)formattedStringForMembersAtLevel:(int)level;
+- (NSString *)formattedString:(NSString *)previousName expand:(BOOL)shouldExpand autoExpand:(BOOL)shouldAutoExpand level:(int)level;
+- (NSString *)formattedStringForMembersAtLevel:(int)level expand:(BOOL)shouldExpand autoExpand:(BOOL)shouldAutoExpand;
 - (NSString *)formattedStringForSimpleType;
+
+- (NSString *)typeString;
+- (NSString *)typeStringForMembers;
+
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
 @end

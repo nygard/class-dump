@@ -1,14 +1,18 @@
 #import <Foundation/NSObject.h>
+#import "CDStructRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
 
-@interface CDClassDump2 : NSObject
+
+@interface CDClassDump2 : NSObject <CDStructRegistration>
 {
     //NSMutableArray *machOFiles;
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
     BOOL shouldProcessRecursively;
+
+    NSMutableDictionary *structCounts;
 }
 
 - (id)init;
@@ -25,5 +29,7 @@
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
+
+- (void)registerStructType:(NSString *)typeString;
 
 @end

@@ -19,6 +19,7 @@
     //machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objCSegmentProcessors = [[NSMutableArray alloc] init];
+    structCounts = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -28,6 +29,7 @@
     //[machOFiles release];
     [machOFilesByID release];
     [objCSegmentProcessors release];
+    [structCounts release];
 
     [super dealloc];
 }
@@ -78,10 +80,30 @@
         NSMutableString *resultString;
         int count, index;
 
+        count = [objCSegmentProcessors count];
+        for (index = 0; index < count; index++) {
+            [[objCSegmentProcessors objectAtIndex:index] registerStructsWithObject:self];
+        }
+
+        {
+            NSArray *keys;
+            int count, index;
+            NSString *key;
+
+            keys = [[structCounts allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            count = [keys count];
+            for (index = 0; index < count; index++) {
+                key = [keys objectAtIndex:index];
+                NSLog(@"%3d: %@ => %@", index, key, [structCounts objectForKey:key]);
+            }
+
+            // If a structure doesn't have any named members, it should be typedef'd
+            // Any structure in a return value or argument should be typedef'd
+        }
+
         resultString = [[NSMutableString alloc] init];
         [self appendHeaderToString:resultString];
 
-        count = [objCSegmentProcessors count];
         for (index = 0; index < count; index++) {
             //[resultString appendString:@"----------------------------------------------------------------------\n"];
             //[resultString appendFormat:@"file: %@\n", [objCSegmentProcessors objectAtIndex:index]];
@@ -143,6 +165,19 @@
     [resultString appendString:@" *\n"];
     [resultString appendString:@" *     class-dump is Copyright (C) 1997, 1999-2001, 2003 by Steve Nygard.\n"];
     [resultString appendString:@" */\n\n"];
+}
+
+- (void)registerStructType:(NSString *)typeString;
+{
+    NSNumber *oldCount;
+
+    NSLog(@"%s, typeString: %@", _cmd, typeString);
+
+    oldCount = [structCounts objectForKey:typeString];
+    if (oldCount == nil)
+        [structCounts setObject:[NSNumber numberWithInt:1] forKey:typeString];
+    else
+        [structCounts setObject:[NSNumber numberWithInt:[oldCount intValue] + 1] forKey:typeString];
 }
 
 @end

@@ -2,6 +2,7 @@
 // Copyright (C) 2003 Steve Nygard.  All rights reserved.
 
 #import <Foundation/NSObject.h>
+#import "CDStructRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
 @class CDMachOFile;
@@ -20,6 +21,7 @@
 
 - (NSString *)formattedStringByModule;
 - (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString;
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
 - (NSString *)description;
 
