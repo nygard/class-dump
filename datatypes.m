@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.9 2002/12/19 07:14:57 nygard Exp $
+// $Id: datatypes.m,v 1.10 2003/01/21 06:31:23 nygard Exp $
 //
 
 //
@@ -101,9 +101,7 @@ struct my_objc_type *create_simple_type(int type)
 {
     struct my_objc_type *t = create_empty_type();
 
-    extern int char_star_flag;
-
-    if (char_star_flag == 1 && type == '*') {
+    if (type == '*') {
         t->type = '^';
         t->subtype = create_simple_type('c');
     } else {

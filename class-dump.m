@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.17 2003/01/21 06:01:32 nygard Exp $
+// $Id: class-dump.m,v 1.18 2003/01/21 06:31:23 nygard Exp $
 //
 
 //
@@ -79,7 +79,6 @@ struct dylib_command {
 #define CLASS_DUMP_VERSION "2.1.6 alpha"
 
 int expand_structures_flag = 0;
-int char_star_flag = 0;
 
 BOOL show_ivar_offsets_flag = NO;
 BOOL show_method_addresses_flag = NO;
@@ -890,7 +889,6 @@ void print_usage(void)
             "        -R  recursively expand @protocol <>\n"
             "        -C  only display classes matching regular expression\n"
             "        -r  recursively expand frameworks and fixed VM shared libraries\n"
-            "        -s  convert STR to char *\n"
             "        -S  sort protocols, classes, and methods\n",
             CLASS_DUMP_VERSION
        );
@@ -926,7 +924,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAeIRC:rsS")) != EOF)
+    while ( (c = getopt(argc, argv, "aAeIRC:rS")) != EOF)
     {
         switch (c)
         {
@@ -967,10 +965,6 @@ int main(int argc, char *argv[])
 
           case 'r':
               expand_frameworks_flag = YES;
-              break;
-
-          case 's':
-              char_star_flag = 1;
               break;
 
           case 'S':
