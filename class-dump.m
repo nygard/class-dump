@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.64 2004/02/02 23:39:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.65 2004/02/03 00:35:48 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -447,9 +447,6 @@ int main(int argc, char *argv[])
     int ch;
     BOOL errorFlag = NO;
 
-    //BOOL shouldMatchRegex = NO;
-    char *regexCString = NULL;
-
     if (argc == 1) {
         print_usage();
         exit(2);
@@ -468,12 +465,15 @@ int main(int argc, char *argv[])
               break;
 
           case 'C':
-              if (regexCString != NULL) {
-                  printf("Error: sorry, only one -C allowed\n");
+          {
+              NSString *errorMessage;
+
+              if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
+                  NSLog(@"%@", errorMessage);
                   errorFlag = YES;
-              } else {
-                  regexCString = optarg;
               }
+              // Last one wins now.
+          }
               break;
 
           case 'H':

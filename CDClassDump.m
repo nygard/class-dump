@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.56 2004/02/02 23:01:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.57 2004/02/03 00:35:48 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -140,6 +140,9 @@ static NSMutableSet *wrapperExtensions = nil;
 
     [frameworkNamesByClassName release];
 
+    if (flags.shouldMatchRegex == YES)
+        regfree(&compiledRegex);
+
     [super dealloc];
 }
 
@@ -227,6 +230,47 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)setShouldExpandProtocols:(BOOL)newFlag;
 {
     flags.shouldExpandProtocols = newFlag;
+}
+
+- (BOOL)shouldMatchRegex;
+{
+    return flags.shouldMatchRegex;
+}
+
+- (void)setShouldMatchRegex:(BOOL)newFlag;
+{
+    if (flags.shouldMatchRegex == YES && newFlag == NO)
+        regfree(&compiledRegex);
+
+    flags.shouldMatchRegex = newFlag;
+}
+
+- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
+{
+    int result;
+    if (flags.shouldMatchRegex == YES)
+        regfree(&compiledRegex);
+
+    result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
+    if (result != 0) {
+        char regex_error_buffer[256];
+
+        if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0) {
+            if (errorMessagePointer != NULL) {
+                *errorMessagePointer = [NSString stringWithCString:regex_error_buffer];
+                NSLog(@"Error with regex: '%@'", *errorMessagePointer);
+            }
+        } else {
+            if (errorMessagePointer != NULL)
+                *errorMessagePointer = nil;
+        }
+
+        return NO;
+    }
+
+    [self setShouldMatchRegex:YES];
+
+    return YES;
 }
 
 - (NSString *)outputPath;

@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.42 2004/02/02 23:01:51 nygard Exp $
+// $Id: CDClassDump.h,v 1.43 2004/02/03 00:35:48 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -8,6 +8,8 @@
 
 #import <Foundation/NSObject.h>
 
+#include <sys/types.h>
+#include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
 #define CLASS_DUMP_VERSION @"3.0 alpha"
@@ -29,8 +31,10 @@
         unsigned int shouldShowIvarOffsets:1;
         unsigned int shouldShowMethodAddresses:1;
         unsigned int shouldExpandProtocols:1;
+        unsigned int shouldMatchRegex:1;
     } flags;
 
+    regex_t compiledRegex;
     NSString *outputPath;
 
     NSMutableDictionary *machOFilesByID;
@@ -77,6 +81,11 @@
 
 - (BOOL)shouldExpandProtocols;
 - (void)setShouldExpandProtocols:(BOOL)newFlag;
+
+- (BOOL)shouldMatchRegex;
+- (void)setShouldMatchRegex:(BOOL)newFlag;
+
+- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 
 - (NSString *)outputPath;
 - (void)setOutputPath:(NSString *)aPath;
