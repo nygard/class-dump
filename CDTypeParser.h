@@ -18,12 +18,16 @@ extern NSString *CDSyntaxError;
 - (BOOL)shouldShowLexing;
 - (void)setShouldShowLexing:(BOOL)newFlag;
 
+- (NSString *)parseType:(NSString *)type name:(NSString *)name;
+- (NSString *)parseMethodName:(NSString *)name type:(NSString *)type;
+
+@end
+
+@interface CDTypeParser (Private)
+
 - (void)match:(int)token;
 - (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
 - (void)error:(NSString *)errorString;
-
-- (NSString *)parseType:(NSString *)type name:(NSString *)name;
-- (NSString *)parseMethodName:(NSString *)name type:(NSString *)type;
 
 - (struct method_type *)parseMethodType;
 

@@ -55,30 +55,6 @@ NSString *CDTokenDescription(int token)
     [lexer setShouldShowLexing:newFlag];
 }
 
-- (void)match:(int)token;
-{
-    [self match:token allowIdentifier:NO];
-}
-
-- (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
-{
-    if (lookahead == token) {
-        //NSLog(@"matched %@", CDTokenDescription(token));
-        if (shouldAllowIdentifier == YES)
-            [lexer setIsInIdentifierState:YES];
-        lookahead = [lexer nextToken];
-    } else {
-        [NSException raise:CDSyntaxError format:@"expected token %@, got %@",
-                     CDTokenDescription(token),
-                     CDTokenDescription(lookahead)];
-    }
-}
-
-- (void)error:(NSString *)errorString;
-{
-    [NSException raise:CDSyntaxError format:@"%@", errorString];
-}
-
 - (NSString *)parseType:(NSString *)type name:(NSString *)name;
 {
     struct my_objc_type *result;
@@ -165,6 +141,34 @@ NSString *CDTokenDescription(int token)
     //NSLog(@"<  %s", _cmd);
 
     return resultString;
+}
+
+@end
+
+@implementation CDTypeParser (Private)
+
+- (void)match:(int)token;
+{
+    [self match:token allowIdentifier:NO];
+}
+
+- (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
+{
+    if (lookahead == token) {
+        //NSLog(@"matched %@", CDTokenDescription(token));
+        if (shouldAllowIdentifier == YES)
+            [lexer setIsInIdentifierState:YES];
+        lookahead = [lexer nextToken];
+    } else {
+        [NSException raise:CDSyntaxError format:@"expected token %@, got %@",
+                     CDTokenDescription(token),
+                     CDTokenDescription(lookahead)];
+    }
+}
+
+- (void)error:(NSString *)errorString;
+{
+    [NSException raise:CDSyntaxError format:@"%@", errorString];
 }
 
 - (struct method_type *)parseMethodType;
