@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.3 2000/10/15 01:22:18 nygard Exp $
+// $Id: class-dump.h,v 1.4 2003/02/20 06:51:12 nygard Exp $
 //
 
 //
@@ -25,8 +25,8 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#ifndef __CLASS_DUMP_H
-#define __CLASS_DUMP_H
+#import <Foundation/NSObject.h>
+#include <regex.h>
 
 struct my_objc_module
 {
@@ -134,4 +134,87 @@ struct my_objc_prot_inst_meth_list
     long methods;
 };
 
-#endif
+//======================================================================
+
+@class NSArray, NSString, NSMutableArray, NSMutableDictionary;
+@class MappedFile, ObjcClass, ObjcCategory;
+
+@interface CDClassDump : NSObject
+{
+    NSString *mainPath;
+
+    NSMutableArray *mappedFiles;
+    NSMutableDictionary *mappedFilesByInstallName;
+
+    struct {
+        unsigned int shouldShowIvarOffsets:1;
+        unsigned int shouldShowMethodAddresses:1;
+        unsigned int shouldExpandProtocols:1;
+        unsigned int shouldMatchRegex:1;
+        unsigned int shouldSort:1;
+        unsigned int shouldSortClasses:1;
+
+        // Not really used yet:
+        unsigned int shouldSwapFat:1;
+        unsigned int shouldSwapMachO:1;
+    } flags;
+
+    regex_t compiledRegex;
+}
+
+- (id)initWithPath:(NSString *)aPath;
+- (void)dealloc;
+
+- (BOOL)shouldShowIvarOffsets;
+- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
+
+- (BOOL)shouldShowMethodAddresses;
+- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
+
+- (BOOL)shouldExpandProtocols;
+- (void)setShouldExpandProtocols:(BOOL)newFlag;
+
+- (BOOL)shouldSort;
+- (void)setShouldSort:(BOOL)newFlag;
+
+- (BOOL)shouldSortClasses;
+- (void)setShouldSortClasses:(BOOL)newFlag;
+
+- (BOOL)shouldMatchRegex;
+- (void)setShouldMatchRegex:(BOOL)newFlag;
+
+- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
+- (BOOL)regexMatchesCString:(const char *)str;
+
+- (void)processFile:(MappedFile *)aMappedFile;
+
+- (int)processMachO:(void *)ptr filename:(NSString *)filename;
+- (unsigned long)processLoadCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
+- (void)processDylibCommand:(void *)start ptr:(void *)ptr;
+- (void)processFvmlibCommand:(void *)start ptr:(void *)ptr;
+- (void)processSegmentCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
+- (void)processObjectiveCSegment:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
+
+// TODO: Objc -> ObjectiveC
+- (NSArray *)handleObjcSymtab:(struct my_objc_symtab *)symtab;
+- (ObjcClass *)handleObjcClass:(struct my_objc_class *)ocl;
+- (ObjcCategory *)handleObjcCategory:(struct my_objc_category *)ocat;
+- (NSArray *)handleObjcProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
+- (NSArray *)handleObjcMetaClass:(struct my_objc_class *)ocl;
+- (NSArray *)handleObjcIvars:(struct my_objc_ivars *)ivars;
+- (NSArray *)handleObjcMethods:(struct my_objc_methods *)methods methodType:(char)ch;
+
+- (void)showSingleModule:(struct section_info *)module_info;
+- (void)showAllModules;
+- (void)buildUpObjectiveCSegments:(NSString *)filename;
+
+// Utility methods
+- (struct section_info *)findObjcSection:(char *)name filename:(NSString *)filename;
+- (void)debugSectionOverlap;
+- (void *)translateAddressToPointer:(long)addr section:(char *)section;
+- (void *)translateAddressToPointerComplain:(long)addr section:(char *)section complain:(BOOL)complain;
+- (char *)stringAt:(long)addr section:(char *)section;
+- (NSString *)nsstringAt:(long)addr section:(char *)section;
+- (struct section_info *)sectionOfAddress:(long)addr;
+
+@end

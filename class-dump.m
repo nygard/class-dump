@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.21 2003/02/20 04:38:49 nygard Exp $
+// $Id: class-dump.m,v 1.22 2003/02/20 06:51:12 nygard Exp $
 //
 
 //
@@ -41,7 +41,7 @@
 #import <Foundation/Foundation.h>
 
 #include "datatypes.h"
-#include "class-dump.h"
+#import "class-dump.h"
 
 #import "ObjcThing.h"
 #import "ObjcClass.h"
@@ -55,26 +55,9 @@
 
 #define CLASS_DUMP_VERSION "2.1.6 alpha"
 
-int expand_structures_flag = 0;
-
-BOOL show_ivar_offsets_flag = NO;
-BOOL show_method_addresses_flag = NO;
-BOOL expand_protocols_flag = NO;
-
-BOOL match_flag = NO;
-static regex_t compiled_regex;
-
-BOOL expand_frameworks_flag = NO;
-BOOL sort_flag = NO;
-BOOL sort_classes_flag = NO;
-
-int swap_fat = 0;
-int swap_macho = 0;
+int expand_structures_flag = 0; // This is used in datatypes.m
 
 #define MAX_SECTIONS 2048
-
-NSMutableArray *mappedFiles;
-NSMutableDictionary *mappedFilesByInstallName;
 
 NSString *current_filename = nil;
 
@@ -89,6 +72,7 @@ struct section_info
 } objc_sections[MAX_SECTIONS];
 
 int section_count = 0;
+
 
 //----------------------------------------------------------------------
 
@@ -150,95 +134,194 @@ NSMutableDictionary *protocols;
 
 //======================================================================
 
-void process_file(void *ptr, NSString *filename);
+@implementation CDClassDump
 
-int process_macho(void *ptr, NSString *filename);
-unsigned long process_load_command(void *start, void *ptr, NSString *filename);
-void process_dylib_command(void *start, void *ptr);
-void process_fvmlib_command(void *start, void *ptr);
-void process_segment_command(void *start, void *ptr, NSString *filename);
-void process_objc_segment(void *start, void *ptr, NSString *filename);
+- (id)initWithPath:(NSString *)aPath;
+{
+    if ([super init] == nil)
+        return nil;
 
-struct section_info *find_objc_section(char *name, NSString *filename);
-void *translate_address_to_pointer(long addr, char *section);
-void *translate_address_to_pointer_complain(long addr, char *section, BOOL complain);
-char *string_at(long addr, char *section);
-NSString *nsstring_at(long addr, char *section);
+    mainPath = [aPath retain];
+    mappedFiles = [[NSMutableArray alloc] init];
+    mappedFilesByInstallName = [[NSMutableDictionary alloc] init];
 
-struct section_info *section_of_address(long addr);
-NSArray *handle_objc_symtab(struct my_objc_symtab *symtab);
-ObjcClass *handle_objc_class(struct my_objc_class *ocl);
-ObjcCategory *handle_objc_category(struct my_objc_category *ocat);
-NSArray *handle_objc_protocols(struct my_objc_protocol_list *plist, BOOL expandProtocols);
-NSArray *handle_objc_meta_class(struct my_objc_class *ocl);
-NSArray *handle_objc_ivars(struct my_objc_ivars *ivars);
-NSArray *handle_objc_methods(struct my_objc_methods *methods, char ch);
+    flags.shouldShowIvarOffsets = NO;
+    flags.shouldShowMethodAddresses = NO;
+    flags.shouldExpandProtocols = NO;
+    flags.shouldMatchRegex = NO;
+    flags.shouldSort = NO;
+    flags.shouldSortClasses = NO;
+    flags.shouldSwapFat = NO;
+    flags.shouldSwapMachO = NO;
 
-void show_single_module(struct section_info *module_info);
-void show_all_modules(void);
-void build_up_objc_segments(NSString *filename);
+    return self;
+}
 
-static BOOL CDRegexMatchesCString(const char *text)
+- (void)dealloc;
+{
+    [mainPath release];
+    [mappedFiles release];
+    [mappedFilesByInstallName release];
+
+    if (flags.shouldMatchRegex == YES) {
+        regfree(&compiledRegex);
+    }
+
+    [super dealloc];
+}
+
+- (BOOL)shouldShowIvarOffsets;
+{
+    return flags.shouldShowIvarOffsets;
+}
+
+- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
+{
+    flags.shouldShowIvarOffsets = newFlag;
+}
+
+- (BOOL)shouldShowMethodAddresses;
+{
+    return flags.shouldShowMethodAddresses;
+}
+
+- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
+{
+    flags.shouldShowMethodAddresses = newFlag;
+}
+
+- (BOOL)shouldExpandProtocols;
+{
+    return flags.shouldExpandProtocols;
+}
+
+- (void)setShouldExpandProtocols:(BOOL)newFlag;
+{
+    flags.shouldExpandProtocols = newFlag;
+}
+
+- (BOOL)shouldSort;
+{
+    return flags.shouldSort;
+}
+
+- (void)setShouldSort:(BOOL)newFlag;
+{
+    flags.shouldSort = newFlag;
+}
+
+- (BOOL)shouldSortClasses;
+{
+    return flags.shouldSortClasses;
+}
+
+- (void)setShouldSortClasses:(BOOL)newFlag;
+{
+    flags.shouldSortClasses = newFlag;
+}
+
+- (BOOL)shouldMatchRegex;
+{
+    return flags.shouldMatchRegex;
+}
+
+- (void)setShouldMatchRegex:(BOOL)newFlag;
+{
+    flags.shouldMatchRegex = newFlag;
+}
+
+- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 {
     int result;
 
-    result = regexec(&compiled_regex, text, 0, NULL, 0);
+    if (flags.shouldMatchRegex == YES) {
+        regfree(&compiledRegex);
+    }
+
+    result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
+    if (result != 0) {
+        char regex_error_buffer[256];
+
+        if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0) {
+            if (errorMessagePointer != NULL) {
+                *errorMessagePointer = [NSString stringWithCString:regex_error_buffer];
+                NSLog(@"Error with regex: '%@'", *errorMessagePointer);
+            }
+        } else {
+            if (errorMessagePointer != NULL)
+                *errorMessagePointer = nil;
+        }
+
+        return NO;
+    }
+
+    [self setShouldMatchRegex:YES];
+
+    return YES;
+}
+
+- (BOOL)regexMatchesCString:(const char *)str;
+{
+    int result;
+
+    if (flags.shouldMatchRegex == NO)
+        return YES;
+
+    result = regexec(&compiledRegex, str, 0, NULL, 0);
 
     return (result == 0) ? YES : NO;
 }
 
 //======================================================================
 
-void process_file(void *ptr, NSString *filename)
+- (void)processFile:(MappedFile *)aMappedFile;
 {
-    struct mach_header *mh = (struct mach_header *)ptr;
-    struct fat_header *fh = (struct fat_header *)ptr;
-    struct fat_arch *fa = (struct fat_arch *)(fh + 1);
+    void *ptr;
+    struct mach_header *mh;
+    struct fat_header *fh;
+    struct fat_arch *fa;
     int l;
     int result = 1;
 
-    if (mh->magic == FAT_CIGAM)
-    {
+    ptr = (void *)[aMappedFile data];
+    mh = (struct mach_header *)ptr;
+    fh = (struct fat_header *)ptr;
+    fa = (struct fat_arch *)(fh + 1);
+
+    if (mh->magic == FAT_CIGAM) {
         // Fat file... Other endian.
 
-        swap_fat = 1;
-        for (l = 0; l < NXSwapLong(fh->nfat_arch); l++)
-        {
+        flags.shouldSwapFat = YES;
+        for (l = 0; l < NXSwapLong(fh->nfat_arch); l++) {
 #ifdef VERBOSE
             printf("archs: %ld\n", NXSwapLong(fh->nfat_arch));
             printf("offset: %lx\n", NXSwapLong(fa->offset));
             printf("arch: %08lx\n", NXSwapLong(fa->cputype));
 #endif
-            result = process_macho(ptr + NXSwapLong(fa->offset), filename);
+            result = [self processMachO:(ptr + NXSwapLong(fa->offset)) filename:[aMappedFile installName]];
             if (result == 0) 
                 break;
             fa++;
         }
-    }
-    else if (mh->magic == FAT_MAGIC)
-    {
+    } else if (mh->magic == FAT_MAGIC) {
         // Fat file... This endian.
 
-        for (l = 0; l < fh->nfat_arch; l++)
-        {
+        for (l = 0; l < fh->nfat_arch; l++) {
 #ifdef VERBOSE
             printf("archs: %ld\n", fh->nfat_arch);
             printf("offset: %lx\n", fa->offset);
             printf("arch: %08x\n", fa->cputype);
 #endif
-            result = process_macho(ptr + fa->offset, filename);
-            if (result == 0) 
+            result = [self processMachO:ptr + fa->offset filename:[aMappedFile installName]];
+            if (result == 0)
                 break;
             fa++;
         }
-    }
-    else
-    {
-        result = process_macho(ptr, filename);
+    } else {
+        result = [self processMachO:ptr filename:[aMappedFile installName]];
     }
 
-    switch (result)
-    {
+    switch (result) {
       case 0:
           break;
 
@@ -255,28 +338,24 @@ void process_file(void *ptr, NSString *filename)
 
 // Returns 0 if this was our endian, 1 if it was not, 2 otherwise.
 
-int process_macho(void *ptr, NSString *filename)
+- (int)processMachO:(void *)ptr filename:(NSString *)filename;
 {
     struct mach_header *mh = (struct mach_header *)ptr;
     int l;
     void *start = ptr;
 
-    if (mh->magic == MH_CIGAM)
-    {
-        swap_macho = 1;
+    if (mh->magic == MH_CIGAM) {
+        flags.shouldSwapMachO = YES;
         return 1;
-    }
-    else if (mh->magic != MH_MAGIC)
-    {
+    } else if (mh->magic != MH_MAGIC) {
         printf("This is not a Mach-O file.\n");
         return 2;
     }
 
     ptr += sizeof(struct mach_header);
 
-    for (l = 0; l < mh->ncmds; l++)
-    {
-        ptr += process_load_command(start, ptr, filename);
+    for (l = 0; l < mh->ncmds; l++) {
+        ptr += [self processLoadCommand:start ptr:ptr filename:filename];
     }
 
     return 0;
@@ -284,32 +363,24 @@ int process_macho(void *ptr, NSString *filename)
 
 //----------------------------------------------------------------------
 
-unsigned long process_load_command(void *start, void *ptr, NSString *filename)
+- (unsigned long)processLoadCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
 {
     struct load_command *lc = (struct load_command *)ptr;
 
 #ifdef VERBOSE
-    if (lc->cmd <= LC_SUB_FRAMEWORK)
-    {
+    if (lc->cmd <= LC_SUB_FRAMEWORK) {
         printf("%s\n", load_command_names[ lc->cmd ]);
-    }
-    else
-    {
+    } else {
         printf("%08lx\n", lc->cmd);
     }
 #endif
 
-    if (lc->cmd == LC_SEGMENT)
-    {
-        process_segment_command(start, ptr, filename);
-    }
-    else if (lc->cmd == LC_LOAD_DYLIB)
-    {
-        process_dylib_command(start, ptr);
-    }
-    else if (lc->cmd == LC_LOADFVMLIB)
-    {
-        process_fvmlib_command(start, ptr);
+    if (lc->cmd == LC_SEGMENT) {
+        [self processSegmentCommand:start ptr:ptr filename:filename];
+    } else if (lc->cmd == LC_LOAD_DYLIB) {
+        [self processDylibCommand:start ptr:ptr];
+    } else if (lc->cmd == LC_LOADFVMLIB) {
+        [self processFvmlibCommand:start ptr:ptr];
     }
 
     return lc->cmdsize;
@@ -317,7 +388,7 @@ unsigned long process_load_command(void *start, void *ptr, NSString *filename)
 
 //----------------------------------------------------------------------
 
-void process_dylib_command(void *start, void *ptr)
+- (void)processDylibCommand:(void *)start ptr:(void *)ptr;
 {
     struct dylib_command *dc = (struct dylib_command *)ptr;
     NSString *str;
@@ -326,13 +397,12 @@ void process_dylib_command(void *start, void *ptr)
     strptr = ptr + dc->dylib.name.offset;
     str = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:strptr length:strlen(strptr)];
     //NSLog(@"strptr: '%s', str: '%@'", strptr, str);
-    //build_up_objc_segments(ptr + dc->dylib.name.offset);
-    build_up_objc_segments(str);
+    [self buildUpObjectiveCSegments:str];
 }
 
 //----------------------------------------------------------------------
 
-void process_fvmlib_command(void *start, void *ptr)
+- (void)processFvmlibCommand:(void *)start ptr:(void *)ptr;
 {
     struct fvmlib_command *fc = (struct fvmlib_command *)ptr;
     NSString *str;
@@ -341,13 +411,12 @@ void process_fvmlib_command(void *start, void *ptr)
     strptr = ptr + fc->fvmlib.name.offset;
     str = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:strptr length:strlen(strptr)];
     NSLog(@"strptr: '%s', str: '%@'", strptr, str);
-    //build_up_objc_segments(ptr + fc->fvmlib.name.offset);
-    build_up_objc_segments(str);
+    [self buildUpObjectiveCSegments:str];
 }
 
 //----------------------------------------------------------------------
 
-void process_segment_command(void *start, void *ptr, NSString *filename)
+- (void)processSegmentCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
 {
     struct segment_command *sc = (struct segment_command *)ptr;
     char name[17];
@@ -355,27 +424,26 @@ void process_segment_command(void *start, void *ptr, NSString *filename)
     strncpy(name, sc->segname, 16);
     name[16] = 0;
 
-    if (!strcmp(name, SEG_OBJC) || 
-        !strcmp(name, SEG_TEXT) || /* for MacOS X __cstring sections */
-        !strcmp(name, "") /* for .o files. */)
+    if (!strcmp(name, SEG_OBJC)
+        || !strcmp(name, SEG_TEXT) /* for MacOS X __cstring sections */
+        ||  !strcmp(name, "") /* for .o files. */
+        )
     {
-        process_objc_segment(start, ptr, filename);
+        [self processObjectiveCSegment:start ptr:ptr filename:filename];
     }
 }
 
 //----------------------------------------------------------------------
 
-void process_objc_segment(void *start, void *ptr, NSString *filename)
+- (void)processObjectiveCSegment:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
 {
     struct segment_command *sc = (struct segment_command *)ptr;
     struct section *section = (struct section *)(sc + 1);
     int l;
 
     //NSLog(@"process_objc_segment, %d: %@", section_count, filename);
-    for (l = 0; l < sc->nsects; l++)
-    {
-        if (section_count >= MAX_SECTIONS)
-        {
+    for (l = 0; l < sc->nsects; l++) {
+        if (section_count >= MAX_SECTIONS) {
             printf("Error: Maximum number of sections reached.\n");
             return;
         }
@@ -392,16 +460,372 @@ void process_objc_segment(void *start, void *ptr, NSString *filename)
         {
             section_count++;
         }
+
         section++;
     }
 }
 
 //----------------------------------------------------------------------
 
+- (NSArray *)handleObjcSymtab:(struct my_objc_symtab *)symtab;
+{
+    NSMutableArray *classList = [NSMutableArray array];
+    ObjcThing *objcThing;
+    long *class_pointer;
+    int l;
+  
+    if (symtab == NULL) {
+        printf("NULL symtab...\n");
+        return nil;
+    }
+
+    class_pointer = &symtab->class_pointer;
+
+    for (l = 0; l < symtab->cls_def_count; l++) {
+        objcThing = [self handleObjcClass:[self translateAddressToPointer:*class_pointer section:SEC_CLASS]];
+        if (objcThing != nil)
+            [classList addObject:objcThing];
+
+        class_pointer++;
+    }
+
+    for (l = 0; l < symtab->cat_def_count; l++) {
+        objcThing = [self handleObjcCategory:[self translateAddressToPointer:*class_pointer section:SEC_CATEGORY]];
+        if (objcThing != nil)
+            [classList addObject:objcThing];
+
+        class_pointer++;
+    }
+
+    return classList;
+}
+
+//----------------------------------------------------------------------
+
+- (ObjcClass *)handleObjcClass:(struct my_objc_class *)ocl;
+{
+    ObjcClass *objcClass;
+    NSArray *tmp;
+    
+    if (ocl == NULL)
+        return nil;
+
+    tmp = [self handleObjcProtocols:(struct my_objc_protocol_list *)[self translateAddressToPointer:ocl->protocols section:SEC_CAT_CLS_METH]
+                expandProtocols:YES];
+
+    if ([self stringAt:ocl->super_class section:SEC_CLASS_NAMES] == NULL)
+    {
+        objcClass = [[[ObjcClass alloc] initWithClassName:[self nsstringAt:ocl->name section:SEC_CLASS_NAMES] superClassName:nil] autorelease];
+    }
+    else
+    {
+        objcClass = [[[ObjcClass alloc] initWithClassName:[self nsstringAt:ocl->name section:SEC_CLASS_NAMES]
+                                        superClassName:[self nsstringAt:ocl->super_class section:SEC_CLASS_NAMES]] autorelease];
+    }
+
+    [objcClass addProtocolNames:tmp];
+
+    tmp = [self handleObjcIvars:(struct my_objc_ivars *)[self translateAddressToPointer:ocl->ivars section:SEC_INSTANCE_VARS]];
+    [objcClass addIvars:tmp];
+
+    tmp = [self handleObjcMetaClass:(struct my_objc_class *)[self translateAddressToPointer:ocl->isa section:SEC_META_CLASS]];
+    [objcClass addClassMethods:tmp];
+
+    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:SEC_INST_METH] methodType:'-'];
+    [objcClass addInstanceMethods:tmp];
+
+    return objcClass;
+}
+
+//----------------------------------------------------------------------
+
+- (ObjcCategory *)handleObjcCategory:(struct my_objc_category *)ocat;
+{
+    ObjcCategory *objcCategory;
+    NSArray *tmp;
+    
+    if (ocat == NULL)
+        return nil;
+  
+    objcCategory = [[[ObjcCategory alloc] initWithClassName:[self nsstringAt:ocat->class_name section:SEC_CLASS_NAMES]
+                                          categoryName:[self nsstringAt:ocat->category_name section:SEC_CLASS_NAMES]] autorelease];
+
+    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->class_methods section:SEC_CAT_CLS_METH] methodType:'+'];
+    [objcCategory addClassMethods:tmp];
+
+    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->methods section:SEC_CAT_INST_METH] methodType:'-'];
+    [objcCategory addInstanceMethods:tmp];
+
+    return objcCategory;
+}
+
+//----------------------------------------------------------------------
+
+// Return list of protocol names.
+- (NSArray *)handleObjcProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
+{
+    NSMutableArray *protocolArray = [NSMutableArray array];
+    ObjcProtocol *objcProtocol;
+    struct my_objc_protocol *prot;
+    struct my_objc_prot_inst_meth_list *mlist;
+    struct my_objc_prot_inst_meth *meth;
+    int l, p;
+    long *ptr;
+    NSArray *parentProtocols;
+
+    if (plist == NULL)
+        return nil;
+  
+    ptr = &plist->list;
+
+    for (p = 0; p < plist->count; p++)
+    {
+        prot = [self translateAddressToPointer:*ptr section:SEC_PROTOCOL];
+
+        objcProtocol = [[[ObjcProtocol alloc] initWithProtocolName:[self nsstringAt:prot->protocol_name section:SEC_CLASS_NAMES]] autorelease];
+        [protocolArray addObject:[objcProtocol protocolName]];
+
+        parentProtocols = [self handleObjcProtocols:[self translateAddressToPointer:prot->protocol_list section:SEC_CAT_CLS_METH]
+                                expandProtocols:flags.shouldExpandProtocols]; // TODO: Hmm, is this correct? Shouldn't it be expandProtocols?
+        [objcProtocol addProtocolNames:parentProtocols];
+
+        mlist = [self translateAddressToPointer:prot->instance_methods section:SEC_CAT_INST_METH];
+        if (mlist != NULL)
+        {
+            meth = (struct my_objc_prot_inst_meth *)&mlist->methods;
+
+            for (l = 0; l < mlist->count; l++)
+            {
+                [objcProtocol addProtocolMethod:[[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:meth->name section:SEC_METH_VAR_NAMES]
+                                                                     type:[self nsstringAt:meth->types section:SEC_METH_VAR_TYPES]] autorelease]];
+                meth++;
+            }
+        }
+
+        if (expandProtocols == YES && [protocols objectForKey:[objcProtocol protocolName]] == nil)
+        {
+            [protocols setObject:objcProtocol forKey:[objcProtocol protocolName]];
+            objcProtocol = nil;
+        }
+
+        ptr++;
+    }
+
+    return protocolArray;
+}
+
+//----------------------------------------------------------------------
+
+- (NSArray *)handleObjcMetaClass:(struct my_objc_class *)ocl;
+{
+    if (ocl == NULL)
+        return nil;
+
+    return [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:SEC_CLS_METH] methodType:'+'];
+}  
+
+//----------------------------------------------------------------------
+
+- (NSArray *)handleObjcIvars:(struct my_objc_ivars *)ivars;
+{
+    struct my_objc_ivar *ivar = (struct my_objc_ivar *)(ivars + 1);
+    NSMutableArray *ivarArray = [NSMutableArray array];
+    ObjcIvar *objcIvar;
+    int l;
+
+    if (ivars == NULL)
+        return nil;
+
+    for (l = 0; l < ivars->ivar_count; l++)
+    {
+        objcIvar = [[[ObjcIvar alloc] initWithName:[self nsstringAt:ivar->name section:SEC_METH_VAR_NAMES]
+                                      type:[self nsstringAt:ivar->type section:SEC_METH_VAR_TYPES]
+                                      offset:ivar->offset] autorelease];
+        [ivarArray addObject:objcIvar];
+
+        ivar++;
+    }
+
+    return ivarArray;
+}
+
+//----------------------------------------------------------------------
+
+- (NSArray *)handleObjcMethods:(struct my_objc_methods *)methods methodType:(char)ch;
+{
+    struct my_objc_method *method = (struct my_objc_method *)(methods + 1);
+    NSMutableArray *methodArray = [NSMutableArray array];
+    ObjcMethod *objcMethod;
+    int l;
+
+    if (methods == NULL)
+        return nil;
+
+    for (l = 0; l < methods->method_count; l++)
+    {
+        // Sometimes the name, types, and implementation are all zero.  However, the
+        // implementation may legitimately be zero (most often the first method of an object file),
+        // so we check the name instead.
+
+        if (method->name != 0)
+        {
+            objcMethod = [[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:method->name section:SEC_METH_VAR_NAMES]
+                                              type:[self nsstringAt:method->types section:SEC_METH_VAR_TYPES]
+                                              address:method->imp] autorelease];
+            [methodArray addObject:objcMethod];
+        }
+        method++;
+    }
+
+    return methodArray;
+}
+
+//======================================================================
+
+- (void)showSingleModule:(struct section_info *)module_info;
+{
+    struct my_objc_module *m;
+    int module_count;
+    int l;
+    NSString *tmp;
+    id en, thing, key;
+    NSMutableArray *classList = [NSMutableArray array];
+    NSArray *newClasses;
+    int formatFlags = 0;
+
+    if (module_info == NULL)
+    {
+        return;
+    }
+
+    if (flags.shouldSort == YES)
+        formatFlags |= F_SORT_METHODS;
+
+    if (flags.shouldShowIvarOffsets == YES)
+        formatFlags |= F_SHOW_IVAR_OFFSET;
+
+    if (flags.shouldShowMethodAddresses == YES)
+        formatFlags |= F_SHOW_METHOD_ADDRESS;
+
+    tmp = current_filename;
+    m = module_info->start;
+    module_count = module_info->size / sizeof(struct my_objc_module);
+
+    {
+        MappedFile *currentFile;
+        NSString *installName, *filename;
+        NSString *key;
+        
+        //key = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:module_info->filename length:strlen(module_info->filename)];
+        key = module_info->filename;
+        currentFile = [mappedFilesByInstallName objectForKey:key];
+        installName = [currentFile installName];
+        filename = [currentFile filename];
+        if (filename == nil || [installName isEqual:filename] == YES)
+        {
+            printf("\n/*\n * File: %s\n */\n\n", [installName fileSystemRepresentation]);
+        }
+        else
+        {
+            printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], [installName fileSystemRepresentation]);
+        }
+
+        current_filename = key;
+    }
+    //current_filename = module_info->filename;
+
+    for (l = 0; l < module_count; l++)
+    {
+        newClasses = [self handleObjcSymtab:(struct my_objc_symtab *)[self translateAddressToPointer:m->symtab section:SEC_SYMBOLS]];
+        [classList addObjectsFromArray:newClasses];
+        m++;
+    }
+
+    if (flags.shouldSort == YES)
+        en = [[[protocols allKeys] sortedArrayUsingSelector:@selector(compare:)] objectEnumerator];
+    else
+        en = [[protocols allKeys] objectEnumerator];
+
+    while (key = [en nextObject])
+    {
+        thing = [protocols objectForKey:key];
+        if (flags.shouldMatchRegex == NO || [self regexMatchesCString:[[thing sortableName] cString]] == YES)
+            [thing showDefinition:formatFlags];
+    }
+
+    if (flags.shouldSort == YES && flags.shouldSortClasses == NO)
+        en = [[classList sortedArrayUsingSelector:@selector(orderByName:)] objectEnumerator];
+    else if (flags.shouldSortClasses == YES)
+        en = [[ObjcClass sortedClasses] objectEnumerator];
+    else
+        en = [classList objectEnumerator];
+
+
+    while (thing = [en nextObject])
+    {
+        if (flags.shouldMatchRegex == NO || [self regexMatchesCString:[[thing sortableName] cString]] == YES)
+            [thing showDefinition:formatFlags];
+    }
+
+    [protocols removeAllObjects];
+
+    current_filename = tmp;
+}
+
+//----------------------------------------------------------------------
+
+- (void)showAllModules;
+{
+    int l;
+
+    for (l = section_count - 1; l >= 0; l--)
+    {
+        if (!strcmp(objc_sections[l].name, SEC_MODULE_INFO))
+        {
+            [self showSingleModule:(struct section_info *)&objc_sections[l]];
+        }
+    }
+}
+
+//----------------------------------------------------------------------
+
+- (void)buildUpObjectiveCSegments:(NSString *)filename;
+{    
+    MappedFile *mappedFile;
+    int count, index;
+
+    // Only process each file once.
+
+    //NSLog(@"%s", _cmd);
+
+    //NSLog(@"filename: '%@'", filename);
+    //NSLog(@"mappedFiles: %@", [mappedFiles description]);
+    count = [mappedFiles count];
+    for (index = 0; index < count; index++) {
+        if ([filename isEqual:[[mappedFiles objectAtIndex:index] installName]] == YES) {
+            //NSLog(@"Already have file %@, skipping.", filename);
+            return;
+        }
+    }
+
+    mappedFile = [[MappedFile alloc] initWithFilename:filename];
+    if (mappedFile != nil) {
+        [mappedFiles addObject:mappedFile];
+        [mappedFilesByInstallName setObject:mappedFile forKey:[mappedFile installName]];
+
+        [self processFile:mappedFile]; // Use installName instead of passing filename
+        [mappedFile release];
+    }
+}
+
+//
+// Utility Methods
+//
+
 // Find the Objective-C segment for the given filename noted in our
 // list.
 
-struct section_info *find_objc_section(char *name, NSString *filename)
+- (struct section_info *)findObjcSection:(char *)name filename:(NSString *)filename;
 {
     int l;
 
@@ -418,7 +842,7 @@ struct section_info *find_objc_section(char *name, NSString *filename)
 
 //----------------------------------------------------------------------
 
-void debug_section_overlap(void)
+- (void)debugSectionOverlap;
 {
     int l;
 
@@ -438,12 +862,12 @@ void debug_section_overlap(void)
 // a pointer to where we have the file mapped.
 //
 
-void *translate_address_to_pointer(long addr, char *section)
+- (void *)translateAddressToPointer:(long)addr section:(char *)section;
 {
-    return translate_address_to_pointer_complain(addr, section, YES);
+    return [self translateAddressToPointerComplain:addr section:section complain:YES];
 }
 
-void *translate_address_to_pointer_complain(long addr, char *section, BOOL complain)
+- (void *)translateAddressToPointerComplain:(long)addr section:(char *)section complain:(BOOL)complain;
 {
     int l;
     int count = 0;
@@ -490,30 +914,36 @@ void *translate_address_to_pointer_complain(long addr, char *section, BOOL compl
 
 //----------------------------------------------------------------------
 
-char *string_at(long addr, char *section)
+- (char *)stringAt:(long)addr section:(char *)section;
 {
+    char *ptr;
+
     /* String addresses are located in a different section in MacOS X binaries.
        Look there first, and only print error message if not found in either
        the old or new style section.  MacOS X still supports older Mac OS X
        Server binaries, so we do need to look in both places.
      */
-    char *ptr = (char *)translate_address_to_pointer_complain(addr, SEC_CSTRING, NO);
+    ptr = (char *)[self translateAddressToPointerComplain:addr section:SEC_CSTRING complain:NO];
     if (ptr == NULL)
-	ptr = (char *)translate_address_to_pointer_complain(addr, section, YES);
+	ptr = (char *)[self translateAddressToPointerComplain:addr section:section complain:YES];
+
     return ptr;
 }
 
 //----------------------------------------------------------------------
 
-NSString *nsstring_at(long addr, char *section)
+- (NSString *)nsstringAt:(long)addr section:(char *)section;
 {
-    char *str = string_at(addr, section);
+    char *str;
+
+    str = [self stringAt:addr section:section];
+
     return (str == NULL) ? (NSString *)@"" : [NSString stringWithCString:str];
 }
 
 //----------------------------------------------------------------------
 
-struct section_info *section_of_address(long addr)
+- (struct section_info *)sectionOfAddress:(long)addr;
 {
     int l;
 
@@ -528,360 +958,7 @@ struct section_info *section_of_address(long addr)
     return NULL;
 }
 
-//======================================================================
-
-NSArray *handle_objc_symtab(struct my_objc_symtab *symtab)
-{
-    NSMutableArray *classList = [NSMutableArray array];
-    ObjcThing *objcThing;
-    long *class_pointer;
-    int l;
-  
-    if (symtab == NULL)
-    {
-        printf("NULL symtab...\n");
-        return nil;
-    }
-
-    class_pointer = &symtab->class_pointer;
-
-    for (l = 0; l < symtab->cls_def_count; l++)
-    {
-        objcThing = handle_objc_class(translate_address_to_pointer(*class_pointer, SEC_CLASS));
-        if (objcThing != nil)
-            [classList addObject:objcThing];
-
-        class_pointer++;
-    }
-
-    for (l = 0; l < symtab->cat_def_count; l++)
-    {
-        objcThing = handle_objc_category(translate_address_to_pointer(*class_pointer, SEC_CATEGORY));
-        if (objcThing != nil)
-            [classList addObject:objcThing];
-
-        class_pointer++;
-    }
-
-    return classList;
-}
-
-//----------------------------------------------------------------------
-
-ObjcClass *handle_objc_class(struct my_objc_class *ocl)
-{
-    ObjcClass *objcClass;
-    NSArray *tmp;
-    
-    if (ocl == NULL)
-        return nil;
-
-    tmp = handle_objc_protocols((struct my_objc_protocol_list *)translate_address_to_pointer(ocl->protocols, SEC_CAT_CLS_METH), YES);
-
-    if (string_at(ocl->super_class, SEC_CLASS_NAMES) == NULL)
-    {
-        objcClass = [[[ObjcClass alloc] initWithClassName:nsstring_at(ocl->name, SEC_CLASS_NAMES) superClassName:nil] autorelease];
-    }
-    else
-    {
-        objcClass = [[[ObjcClass alloc] initWithClassName:nsstring_at(ocl->name, SEC_CLASS_NAMES)
-                                        superClassName:nsstring_at(ocl->super_class, SEC_CLASS_NAMES)] autorelease];
-    }
-
-    [objcClass addProtocolNames:tmp];
-
-    tmp = handle_objc_ivars((struct my_objc_ivars *)translate_address_to_pointer(ocl->ivars, SEC_INSTANCE_VARS));
-    [objcClass addIvars:tmp];
-
-    tmp = handle_objc_meta_class((struct my_objc_class *)translate_address_to_pointer(ocl->isa, SEC_META_CLASS));
-    [objcClass addClassMethods:tmp];
-
-    tmp = handle_objc_methods((struct my_objc_methods *)translate_address_to_pointer(ocl->methods, SEC_INST_METH), '-');
-    [objcClass addInstanceMethods:tmp];
-
-    return objcClass;
-}
-
-//----------------------------------------------------------------------
-
-ObjcCategory *handle_objc_category(struct my_objc_category *ocat)
-{
-    ObjcCategory *objcCategory;
-    NSArray *tmp;
-    
-    if (ocat == NULL)
-        return nil;
-  
-    objcCategory = [[[ObjcCategory alloc] initWithClassName:nsstring_at(ocat->class_name, SEC_CLASS_NAMES)
-                                          categoryName:nsstring_at(ocat->category_name, SEC_CLASS_NAMES)] autorelease];
-
-    tmp = handle_objc_methods((struct my_objc_methods *)translate_address_to_pointer(ocat->class_methods, SEC_CAT_CLS_METH), '+');
-    [objcCategory addClassMethods:tmp];
-
-    tmp = handle_objc_methods((struct my_objc_methods *)translate_address_to_pointer(ocat->methods, SEC_CAT_INST_METH), '-');
-    [objcCategory addInstanceMethods:tmp];
-
-    return objcCategory;
-}
-
-//----------------------------------------------------------------------
-
-// Return list of protocol names.
-NSArray *handle_objc_protocols(struct my_objc_protocol_list *plist, BOOL expandProtocols)
-{
-    NSMutableArray *protocolArray = [NSMutableArray array];
-    ObjcProtocol *objcProtocol;
-    struct my_objc_protocol *prot;
-    struct my_objc_prot_inst_meth_list *mlist;
-    struct my_objc_prot_inst_meth *meth;
-    int l, p;
-    long *ptr;
-    NSArray *parentProtocols;
-
-    if (plist == NULL)
-        return nil;
-  
-    ptr = &plist->list;
-
-    for (p = 0; p < plist->count; p++)
-    {
-        prot = translate_address_to_pointer(*ptr, SEC_PROTOCOL);
-
-        objcProtocol = [[[ObjcProtocol alloc] initWithProtocolName:nsstring_at(prot->protocol_name, SEC_CLASS_NAMES)] autorelease];
-        [protocolArray addObject:[objcProtocol protocolName]];
-
-        parentProtocols = handle_objc_protocols(translate_address_to_pointer(prot->protocol_list, SEC_CAT_CLS_METH),
-                                                expand_protocols_flag);
-        [objcProtocol addProtocolNames:parentProtocols];
-
-        mlist = translate_address_to_pointer(prot->instance_methods, SEC_CAT_INST_METH);
-        if (mlist != NULL)
-        {
-            meth = (struct my_objc_prot_inst_meth *)&mlist->methods;
-
-            for (l = 0; l < mlist->count; l++)
-            {
-                [objcProtocol addProtocolMethod:[[[ObjcMethod alloc] initWithMethodName:nsstring_at(meth->name, SEC_METH_VAR_NAMES)
-                                                                     type:nsstring_at(meth->types, SEC_METH_VAR_TYPES)] autorelease]];
-                meth++;
-            }
-        }
-
-        if (expandProtocols == YES && [protocols objectForKey:[objcProtocol protocolName]] == nil)
-        {
-            [protocols setObject:objcProtocol forKey:[objcProtocol protocolName]];
-            objcProtocol = nil;
-        }
-
-        ptr++;
-    }
-
-    return protocolArray;
-}
-
-//----------------------------------------------------------------------
-
-NSArray *handle_objc_meta_class(struct my_objc_class *ocl)
-{
-    if (ocl == NULL)
-        return nil;
-
-    return handle_objc_methods((struct my_objc_methods *)translate_address_to_pointer(ocl->methods, SEC_CLS_METH), '+');
-}  
-
-//----------------------------------------------------------------------
-
-NSArray *handle_objc_ivars(struct my_objc_ivars *ivars)
-{
-    struct my_objc_ivar *ivar = (struct my_objc_ivar *)(ivars + 1);
-    NSMutableArray *ivarArray = [NSMutableArray array];
-    ObjcIvar *objcIvar;
-    int l;
-
-    if (ivars == NULL)
-        return nil;
-
-    for (l = 0; l < ivars->ivar_count; l++)
-    {
-        objcIvar = [[[ObjcIvar alloc] initWithName:nsstring_at(ivar->name, SEC_METH_VAR_NAMES)
-                                      type:nsstring_at(ivar->type, SEC_METH_VAR_TYPES)
-                                      offset:ivar->offset] autorelease];
-        [ivarArray addObject:objcIvar];
-
-        ivar++;
-    }
-
-    return ivarArray;
-}
-
-//----------------------------------------------------------------------
-
-NSArray *handle_objc_methods(struct my_objc_methods *methods, char ch)
-{
-    struct my_objc_method *method = (struct my_objc_method *)(methods + 1);
-    NSMutableArray *methodArray = [NSMutableArray array];
-    ObjcMethod *objcMethod;
-    int l;
-
-    if (methods == NULL)
-        return nil;
-
-    for (l = 0; l < methods->method_count; l++)
-    {
-        // Sometimes the name, types, and implementation are all zero.  However, the
-        // implementation may legitimately be zero (most often the first method of an object file),
-        // so we check the name instead.
-
-        if (method->name != 0)
-        {
-            objcMethod = [[[ObjcMethod alloc] initWithMethodName:nsstring_at(method->name, SEC_METH_VAR_NAMES)
-                                              type:nsstring_at(method->types, SEC_METH_VAR_TYPES)
-                                              address:method->imp] autorelease];
-            [methodArray addObject:objcMethod];
-        }
-        method++;
-    }
-
-    return methodArray;
-}
-
-//======================================================================
-
-void show_single_module(struct section_info *module_info)
-{
-    struct my_objc_module *m;
-    int module_count;
-    int l;
-    NSString *tmp;
-    id en, thing, key;
-    NSMutableArray *classList = [NSMutableArray array];
-    NSArray *newClasses;
-    int flags = 0;
-
-    if (module_info == NULL)
-    {
-        return;
-    }
-
-    if (sort_flag == YES)
-        flags |= F_SORT_METHODS;
-
-    if (show_ivar_offsets_flag == YES)
-        flags |= F_SHOW_IVAR_OFFSET;
-
-    if (show_method_addresses_flag == YES)
-        flags |= F_SHOW_METHOD_ADDRESS;
-
-    tmp = current_filename;
-    m = module_info->start;
-    module_count = module_info->size / sizeof(struct my_objc_module);
-
-    {
-        MappedFile *currentFile;
-        NSString *installName, *filename;
-        NSString *key;
-        
-        //key = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:module_info->filename length:strlen(module_info->filename)];
-        key = module_info->filename;
-        currentFile = [mappedFilesByInstallName objectForKey:key];
-        installName = [currentFile installName];
-        filename = [currentFile filename];
-        if (filename == nil || [installName isEqual:filename] == YES)
-        {
-            printf("\n/*\n * File: %s\n */\n\n", [installName fileSystemRepresentation]);
-        }
-        else
-        {
-            printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], [installName fileSystemRepresentation]);
-        }
-
-        current_filename = key;
-    }
-    //current_filename = module_info->filename;
-
-    for (l = 0; l < module_count; l++)
-    {
-        newClasses = handle_objc_symtab((struct my_objc_symtab *)translate_address_to_pointer(m->symtab, SEC_SYMBOLS));
-        [classList addObjectsFromArray:newClasses];
-        m++;
-    }
-
-    if (sort_flag == YES)
-        en = [[[protocols allKeys] sortedArrayUsingSelector:@selector(compare:)] objectEnumerator];
-    else
-        en = [[protocols allKeys] objectEnumerator];
-
-    while (key = [en nextObject])
-    {
-        thing = [protocols objectForKey:key];
-        if (match_flag == NO || CDRegexMatchesCString([[thing sortableName] cString]) == 1)
-            [thing showDefinition:flags];
-    }
-
-    if (sort_flag == YES && sort_classes_flag == NO)
-        en = [[classList sortedArrayUsingSelector:@selector(orderByName:)] objectEnumerator];
-    else if (sort_classes_flag == YES)
-        en = [[ObjcClass sortedClasses] objectEnumerator];
-    else
-        en = [classList objectEnumerator];
-
-
-    while (thing = [en nextObject])
-    {
-        if (match_flag == NO || CDRegexMatchesCString([[thing sortableName] cString]) == 1)
-            [thing showDefinition:flags];
-    }
-
-    [protocols removeAllObjects];
-
-    current_filename = tmp;
-}
-
-//----------------------------------------------------------------------
-
-void show_all_modules(void)
-{
-    int l;
-
-    for (l = section_count - 1; l >= 0; l--)
-    {
-        if (!strcmp(objc_sections[l].name, SEC_MODULE_INFO))
-        {
-            show_single_module((struct section_info *)&objc_sections[l]);
-        }
-    }
-}
-
-//----------------------------------------------------------------------
-
-void build_up_objc_segments(NSString *filename)
-{    
-    MappedFile *mappedFile;
-    int count, index;
-
-    // Only process each file once.
-
-    //NSLog(@"build_up_objc_segments(%@)", filename);
-
-    //NSLog(@"filename: '%@'", filename);
-    //NSLog(@"mappedFiles: %@", [mappedFiles description]);
-    count = [mappedFiles count];
-    for (index = 0; index < count; index++) {
-        if ([filename isEqual:[[mappedFiles objectAtIndex:index] installName]] == YES) {
-            //NSLog(@"Already have file %@, skipping.", filename);
-            return;
-        }
-    }
-
-    mappedFile = [[[MappedFile alloc] initWithFilename:filename] autorelease];
-    if (mappedFile != nil)
-    {
-        [mappedFiles addObject:mappedFile];
-        [mappedFilesByInstallName setObject:mappedFile forKey:[mappedFile installName]];
-
-        process_file((void *)[mappedFile data], filename);
-    }
-}
+@end
 
 //----------------------------------------------------------------------
 
@@ -924,23 +1001,28 @@ int main(int argc, char *argv[])
     extern int optind;
     extern char *optarg;
     int error_flag = 0;
+    BOOL shouldShowIvarOffsets = NO;
+    BOOL shouldShowMethodAddresses = NO;
+    BOOL shouldExpandProtocols = NO;
+    //BOOL shouldMatchRegex = NO;
+    BOOL shouldExpandFrameworks = NO;
+    BOOL shouldSort = NO;
+    BOOL shouldSortClasses = NO;
+    char *regexCString = NULL;
   
-    if (argc == 1)
-    {
+    if (argc == 1) {
         print_usage();
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAeIRC:rS")) != EOF)
-    {
-        switch (c)
-        {
+    while ( (c = getopt(argc, argv, "aAeIRC:rS")) != EOF) {
+        switch (c) {
           case 'a':
-              show_ivar_offsets_flag = YES;
+              shouldShowIvarOffsets = YES;
               break;
 
           case 'A':
-              show_method_addresses_flag = YES;
+              shouldShowMethodAddresses = YES;
               break;
 
           case 'e':
@@ -948,40 +1030,28 @@ int main(int argc, char *argv[])
               break;
 
           case 'R':
-              expand_protocols_flag = YES;
+              shouldExpandProtocols = YES;
               break;
 
           case 'C':
-              if (match_flag == YES)
-              {
+              if (regexCString != NULL) {
                   printf("Error: sorry, only one -C allowed\n");
                   error_flag++;
-              }
-              else
-              {
-                  char regex_error_buffer[256];
-                  int result;
-
-                  result = regcomp(&compiled_regex, optarg, REG_EXTENDED);
-                  if (result == 0) {
-                      match_flag = YES;
-                  } else {
-                      printf("Error with regex: %s\n", regex_error_buffer);
-                      exit(1);
-                  }
+              } else {
+                  regexCString = optarg;
               }
               break;
 
           case 'r':
-              expand_frameworks_flag = YES;
+              shouldExpandFrameworks = YES;
               break;
 
           case 'S':
-              sort_flag = YES;
+              shouldSort = YES;
               break;
 
           case 'I':
-              sort_classes_flag = YES;
+              shouldSortClasses = YES;
               break;
 
           case '?':
@@ -991,51 +1061,57 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (error_flag > 0)
-    {
+    if (error_flag > 0) {
         print_usage();
         exit(2);
     }
 
-    mappedFiles = [NSMutableArray array];
-    mappedFilesByInstallName = [NSMutableDictionary dictionary];
     protocols = [NSMutableDictionary dictionary];
 
-    if (optind < argc)
-    {
+    if (optind < argc) {
         char *str;
         NSString *targetPath, *adjustedPath;
+        CDClassDump *classDump;
+        NSString *regexErrorMessage;
 
         //targetPath = [[NSString alloc] initWithCString:argv[optind]];
         str = argv[optind];
         targetPath = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:str length:strlen(str)];
         NSLog(@"targetPath: '%@'", targetPath);
         adjustedPath = [MappedFile adjustUserSuppliedPath:targetPath];
-        NSLog(@"adjustedPath: '%@'", adjustedPath);
+        NSLog(@"adjusted user supplied path: '%@'", adjustedPath);
 
-        //build_up_objc_segments(argv[optind]);
-        build_up_objc_segments(adjustedPath);
+        classDump = [[CDClassDump alloc] initWithPath:adjustedPath];
+        [classDump setShouldShowIvarOffsets:shouldShowIvarOffsets];
+        [classDump setShouldShowMethodAddresses:shouldShowMethodAddresses];
+        [classDump setShouldExpandProtocols:shouldExpandProtocols];
+        [classDump setShouldSort:shouldSort];
+        [classDump setShouldSortClasses:shouldSortClasses];
+        [classDump buildUpObjectiveCSegments:adjustedPath];
+        if(regexCString != NULL) {
+            if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
+                printf("Error with regex: %s\n", [regexErrorMessage cString]);
+                [classDump release];
+                exit(1);
+            }
+        }
 
         print_header();
 
         //debug_section_overlap();
 
-        if (section_count > 0)
-        {
-            if (expand_frameworks_flag == NO)
-                show_single_module((struct section_info *)find_objc_section(SEC_MODULE_INFO, adjustedPath));
-            else
-                show_all_modules();
+        if (section_count > 0) {
+            if (shouldExpandFrameworks == NO) {
+                [classDump showSingleModule:(struct section_info *)[classDump findObjcSection:SEC_MODULE_INFO filename:adjustedPath]];
+            } else {
+                [classDump showAllModules];
+            }
         }
-    }
 
-    [mappedFiles removeAllObjects];
+        [classDump release];
+    }
 
     [pool release];
-
-    if (match_flag == YES) {
-        regfree(&compiled_regex);
-    }
 
     return 0;
 }
