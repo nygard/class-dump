@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatterUnitTest.m,v 1.16 2004/01/18 02:30:08 nygard Exp $
+// $Id: CDTypeFormatterUnitTest.m,v 1.17 2004/01/18 23:41:57 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -333,10 +333,10 @@
 
 - (void)test1;
 {
-    [self testVariableName:@"var" type:@"^{DocumentImpl={?=^^?{QPtrList<QObject>={?=^^?B}{KWQListImpl=^{KWQListNode}^{KWQListNode}^{KWQListNode}I^?^{KWQListIteratorImpl}}}^{KWQSignal}B{KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}^{QObject}}{?={?=^^?{?=I^{NodeImpl}}^{DocumentPtr}^{NodeImpl}^{NodeImpl}^{RenderObject}^{QPtrList<DOM::RegisteredEventListener>}SBBBBBBBBBBBBBBBB}^{NodeImpl}^{NodeImpl}}^{CSSStyleSelector}^{KHTMLView}{QStringList={?={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}^{DocLoader}^{Tokenizer}{QString=^^{KWQStringData}{KWQStringData=II^{QChar}*b30b1b1b31b1[20c]}}{QString=^^{KWQStringData}{KWQStringData=II^{QChar}*b30b1b1b31b1[20c]}}{QString=^^{KWQStringData}{KWQStringData=II^{QChar}*b30b1b1b31b1[20c]}}^{DocumentTypeImpl}^{DOMImplementationImpl}^{StyleSheetImpl}{QString=^^{KWQStringData}{KWQStringData=II^{QChar}*b30b1b1b31b1[20c]}}{QString=^^{KWQStringData}{KWQStringData=II^{QChar}*b30b1b1b31b1[20c]}}{QStringList={?={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}i^{CSSStyleSheetImpl}^{QPaintDevice}^{QPaintDeviceMetrics}ii{QColor=Ib1}^{NodeImpl}^^{DOMStringImpl}SS^^{DOMStringImpl}SS^^{DOMStringImpl}SS{QPtrList<DOM::NodeIteratorImpl>={?=^^?B}{KWQListImpl=^{KWQListNode}^{KWQListNode}^{KWQListNode}I^?^{KWQListIteratorImpl}}}^{AbstractViewImpl}S^{StyleSheetListImpl}{QMap<QString,DOM::ProcessingInstructionImpl*>={?=^^?{KWQRefPtr<KWQMapImpl::KWQMapPrivate>=^{KWQMapPrivate}}}}{QPtrList<DOM::RegisteredEventListener>={?=^^?B}{KWQListImpl=^{KWQListNode}^{KWQListNode}^{KWQListNode}I^?^{KWQListIteratorImpl}}}{QPtrList<DOM::NodeImpl>={?=^^?B}{KWQListImpl=^{KWQListNode}^{KWQListNode}^{KWQListNode}I^?^{KWQListIteratorImpl}}}{DOMString=^{DOMStringImpl}}BBBBBBB{DOMString=^{DOMStringImpl}}^{RenderArena}{QPtrList<khtml::RenderImage>={?=^^?B}{KWQListImpl=^{KWQListNode}^{KWQListNode}^{KWQListNode}I^?^{KWQListIteratorImpl}}}{QPtrList<khtml::RenderImage>={?=^^?B}{KWQListImpl=^{KWQListNode}^{KWQListNode}^{KWQListNode}I^?^{KWQListIteratorImpl}}}i^{NodeImpl}{KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}{DOMString=^{DOMStringImpl}}Bii^{Decoder}B}" expectedResult:@"dunno"];
+    [self testVariableName:@"var" type:@"r" expectedResult:@"const var"];
 
     [self testVariableName:@"var" type:@"{KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}"
-          expectedResult:@"struct KWQRefPtr<KWQValueListImpl::KWQValueListPrivate> varfoobar"];
+          expectedResult:@"struct KWQRefPtr<KWQValueListImpl::KWQValueListPrivate> var"];
 
     [self testVariableName:@"var" type:@"{QValueList<foo<bar>,foo<baz>,bar<blegga>>=i}"
           expectedResult:@"struct QValueList<foo<bar>,foo<baz>,bar<blegga>> var"];

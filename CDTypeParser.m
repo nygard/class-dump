@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.24 2004/01/18 01:34:58 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.25 2004/01/18 23:41:57 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -166,7 +166,10 @@ NSString *CDTokenDescription(int token)
         modifier = lookahead;
         [self match:modifier];
 
-        unmodifiedType = [self _parseTypeUseClassNameHeuristics:shouldUseHeuristics];
+        if ([self isLookaheadInTypeStartSet] == YES)
+            unmodifiedType = [self _parseTypeUseClassNameHeuristics:shouldUseHeuristics];
+        else
+            unmodifiedType = nil;
         result = [[CDType alloc] initModifier:modifier type:unmodifiedType];
     } else if (lookahead == '^') { // pointer
         CDType *type;

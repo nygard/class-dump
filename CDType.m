@@ -11,7 +11,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.35 2004/01/18 02:59:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.36 2004/01/18 23:41:57 nygard Exp $");
 
 @implementation CDType
 
@@ -350,8 +350,14 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.35 2004/01/18 0
       case 'O':
       case 'R':
       case 'V':
-          result = [NSString stringWithFormat:@"%@ %@",
-                             [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level]];
+          if (subtype == nil) {
+              if (currentName == nil)
+                  result = [self formattedStringForSimpleType];
+              else
+                  result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
+          } else
+              result = [NSString stringWithFormat:@"%@ %@",
+                                 [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level]];
           break;
 
       default:
