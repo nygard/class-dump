@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatterUnitTest.m,v 1.18 2004/02/02 21:40:18 nygard Exp $
+// $Id: CDTypeFormatterUnitTest.m,v 1.19 2004/02/18 07:39:42 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -45,7 +45,7 @@
 {
     //[self variableName:@"var" testType:@"i" expectedResult:@"int var"];
 
-    [self testVariableName:@"var" type:@"c" expectedResult:@"char var"];
+    [self testVariableName:@"var" type:@"c" expectedResult:@"BOOL var"];
     [self testVariableName:@"var" type:@"i" expectedResult:@"int var"];
     [self testVariableName:@"var" type:@"s" expectedResult:@"short var"];
     [self testVariableName:@"var" type:@"l" expectedResult:@"long var"];
@@ -63,7 +63,7 @@
     [self testVariableName:@"var" type:@"#" expectedResult:@"Class var"];
     [self testVariableName:@"var" type:@":" expectedResult:@"SEL var"];
     [self testVariableName:@"var" type:@"%" expectedResult:@"NXAtom var"];
-    [self testVariableName:@"var" type:@"?" expectedResult:@"UNKNOWN var"];
+    [self testVariableName:@"var" type:@"?" expectedResult:@"void var"];
 }
 
 - (void)testModifiers;
@@ -118,7 +118,7 @@
     [self testVariableName:@"var" type:@"^#" expectedResult:@"Class *var"];
     [self testVariableName:@"var" type:@"^:" expectedResult:@"SEL *var"];
     [self testVariableName:@"var" type:@"^%" expectedResult:@"NXAtom *var"];
-    [self testVariableName:@"var" type:@"^?" expectedResult:@"UNKNOWN *var"];
+    [self testVariableName:@"var" type:@"^?" expectedResult:@"void *var"];
 
     [self testVariableName:@"var" type:@"^^i" expectedResult:@"int **var"];
 }
