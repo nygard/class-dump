@@ -8,9 +8,57 @@
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.7 2004/01/27 22:44:37 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.8 2004/01/29 22:37:33 nygard Exp $");
 
 @implementation NSScanner (CDExtensions)
+
+// other: $_:*
+// start: alpha + other
+// remainder: alnum + other
+
++ (NSCharacterSet *)cdOtherCharacterSet;
+{
+    static NSCharacterSet *otherCharacterSet = nil;
+
+    if (otherCharacterSet == nil)
+        otherCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"$_:*"] retain];
+
+    return otherCharacterSet;
+}
+
++ (NSCharacterSet *)cdIdentifierStartCharacterSet;
+{
+    static NSCharacterSet *identifierStartCharacterSet = nil;
+
+    if (identifierStartCharacterSet == nil) {
+        NSMutableCharacterSet *aSet;
+
+        aSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
+        [aSet formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
+        identifierStartCharacterSet = [aSet copy];
+
+        [aSet release];
+    }
+
+    return identifierStartCharacterSet;
+}
+
++ (NSCharacterSet *)cdIdentifierCharacterSet;
+{
+    static NSCharacterSet *identifierCharacterSet = nil;
+
+    if (identifierCharacterSet == nil) {
+        NSMutableCharacterSet *aSet;
+
+        aSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+        [aSet formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
+        identifierCharacterSet = [aSet copy];
+
+        [aSet release];
+    }
+
+    return identifierCharacterSet;
+}
 
 - (NSString *)peekCharacter;
 {
@@ -104,6 +152,32 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.7
     }
 
     return YES;
+}
+
+- (BOOL)scanIdentifierIntoString:(NSString **)stringPointer;
+{
+    NSString *start, *remainder;
+
+    if ([self scanString:@"?" intoString:stringPointer] == YES) {
+        return YES;
+    }
+
+    if ([self scanCharacterFromSet:[NSScanner cdIdentifierStartCharacterSet] intoString:&start] == YES) {
+        NSString *str;
+
+        if ([self my_scanCharactersFromSet:[NSScanner cdIdentifierCharacterSet] intoString:&remainder] == YES) {
+            str = [start stringByAppendingString:remainder];
+        } else {
+            str = start;
+        }
+
+        if (stringPointer != NULL)
+            *stringPointer = str;
+
+        return YES;
+    }
+
+    return NO;
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: NSScanner-Extensions.h,v 1.6 2004/01/27 22:44:36 nygard Exp $
+// $Id: NSScanner-Extensions.h,v 1.7 2004/01/29 22:37:33 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -12,10 +12,16 @@
 
 @interface NSScanner (CDExtensions)
 
++ (NSCharacterSet *)cdOtherCharacterSet;
++ (NSCharacterSet *)cdIdentifierStartCharacterSet;
++ (NSCharacterSet *)cdIdentifierCharacterSet;
+
 - (NSString *)peekCharacter;
 - (unichar)peekChar;
 - (BOOL)scanCharacter:(unichar *)value;
 - (BOOL)scanCharacterFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
 - (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
+
+- (BOOL)scanIdentifierIntoString:(NSString **)stringPointer;
 
 @end

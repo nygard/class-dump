@@ -1,5 +1,5 @@
 //
-// $Id: NSString-Extensions.h,v 1.7 2004/01/16 23:17:26 nygard Exp $
+// $Id: NSString-Extensions.h,v 1.8 2004/01/29 22:37:33 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -15,5 +15,7 @@
 + (NSString *)spacesIndentedToLevel:(int)level;
 + (NSString *)spacesIndentedToLevel:(int)level spacesPerLevel:(int)spacesPerLevel;
 + (NSString *)stringWithUnichar:(unichar)character;
+
+- (BOOL)isFirstLetterUppercase;
 
 @end

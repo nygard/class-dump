@@ -8,57 +8,9 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.14 2004/01/29 21:57:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.15 2004/01/29 22:37:33 nygard Exp $");
 
 @implementation CDTypeLexer
-
-// other: $_:*
-// start: alpha + other
-// remainder: alnum + other
-
-+ (NSCharacterSet *)otherCharacterSet;
-{
-    static NSCharacterSet *otherCharacterSet = nil;
-
-    if (otherCharacterSet == nil)
-        otherCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"$_:*"] retain];
-
-    return otherCharacterSet;
-}
-
-+ (NSCharacterSet *)identifierStartCharacterSet;
-{
-    static NSCharacterSet *identifierStartCharacterSet = nil;
-
-    if (identifierStartCharacterSet == nil) {
-        NSMutableCharacterSet *aSet;
-
-        aSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
-        [aSet formUnionWithCharacterSet:[CDTypeLexer otherCharacterSet]];
-        identifierStartCharacterSet = [aSet copy];
-
-        [aSet release];
-    }
-
-    return identifierStartCharacterSet;
-}
-
-+ (NSCharacterSet *)identifierCharacterSet;
-{
-    static NSCharacterSet *identifierCharacterSet = nil;
-
-    if (identifierCharacterSet == nil) {
-        NSMutableCharacterSet *aSet;
-
-        aSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
-        [aSet formUnionWithCharacterSet:[CDTypeLexer otherCharacterSet]];
-        identifierCharacterSet = [aSet copy];
-
-        [aSet release];
-    }
-
-    return identifierCharacterSet;
-}
 
 - (id)initWithString:(NSString *)aString;
 {
@@ -120,34 +72,20 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.14 2004/01
     }
 
     if (isInIdentifierState == YES) {
-        NSString *start, *remainder;
+        NSString *anIdentifier;
 
         //NSLog(@"Scanning in identifier state.");
 
-        if ([scanner scanString:@"?" intoString:NULL] == YES) {
-            [self _setLexText:@"?"];
-            [self setIsInIdentifierState:NO];
-            if (shouldShowLexing == YES)
-                NSLog(@"%s [id=%d], token = TK_IDENTIFIER (%@)", _cmd, isInIdentifierState, lexText);
-            return TK_IDENTIFIER;
-        }
-
-        if ([scanner peekChar] == '"') {
+        if ([scanner scanString:@"\"" intoString:NULL] == YES) {
             [self setIsInIdentifierState:NO];
             if (shouldShowLexing == YES)
                 NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, '"', '"');
             return '"';
         }
 
-        if ([scanner scanCharacterFromSet:[CDTypeLexer identifierStartCharacterSet] intoString:&start] == YES) {
-            if ([scanner my_scanCharactersFromSet:[CDTypeLexer identifierCharacterSet] intoString:&remainder] == YES) {
-                str = [start stringByAppendingString:remainder];
-            } else {
-                str = start;
-            }
-
+        if ([scanner scanIdentifierIntoString:&anIdentifier] == YES) {
+            [self _setLexText:anIdentifier];
             [self setIsInIdentifierState:NO];
-            [self _setLexText:str];
             if (shouldShowLexing == YES)
                 NSLog(@"%s [id=%d], token = TK_IDENTIFIER (%@)", _cmd, isInIdentifierState, lexText);
             return TK_IDENTIFIER;
@@ -199,6 +137,19 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.14 2004/01
 
 - (NSString *)peekIdentifier;
 {
+    NSScanner *aScanner;
+    NSString *anIdentifier;
+
+    aScanner = [[NSScanner alloc] initWithString:[scanner string]];
+    [aScanner setScanLocation:[scanner scanLocation]];
+
+    if ([aScanner scanIdentifierIntoString:&anIdentifier] == YES) {
+        [aScanner release];
+        return anIdentifier;
+    }
+
+    [aScanner release];
+
     return nil;
 }
 

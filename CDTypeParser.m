@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.29 2004/01/27 22:53:29 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.30 2004/01/29 22:37:33 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -62,6 +62,7 @@ NSString *CDTokenDescription(int token)
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
         NSLog(@"type: %@", [lexer string]);
+        NSLog(@"remaining string: %@", [lexer remainingString]);
 
         result = nil;
     } NS_ENDHANDLER;
@@ -79,6 +80,7 @@ NSString *CDTokenDescription(int token)
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
         NSLog(@"type: %@", [lexer string]);
+        NSLog(@"remaining string: %@", [lexer remainingString]);
 
         result = nil;
     } NS_ENDHANDLER;
@@ -180,7 +182,7 @@ NSString *CDTokenDescription(int token)
         [self match:'@'];
 
         if (lookahead == '"' && (shouldUseHeuristics == NO
-                                 || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[lexer peekChar]] == YES)) {
+                                 || [[lexer peekIdentifier] isFirstLetterUppercase] == YES)) {
             NSString *name;
             CDTypeName *typeName;
 

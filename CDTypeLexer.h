@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeLexer.h,v 1.9 2004/01/29 21:57:54 nygard Exp $
+// $Id: CDTypeLexer.h,v 1.10 2004/01/29 22:37:33 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -24,10 +24,6 @@
 
     BOOL shouldShowLexing;
 }
-
-+ (NSCharacterSet *)otherCharacterSet;
-+ (NSCharacterSet *)identifierStartCharacterSet;
-+ (NSCharacterSet *)identifierCharacterSet;
 
 - (id)initWithString:(NSString *)aString;
 - (void)dealloc;

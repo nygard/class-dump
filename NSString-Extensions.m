@@ -7,7 +7,7 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSString-Extensions.m,v 1.8 2004/01/16 23:17:26 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSString-Extensions.m,v 1.9 2004/01/29 22:37:33 nygard Exp $");
 
 @implementation NSString (CDExtensions)
 
@@ -42,6 +42,17 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSString-Extensions.m,v 1.8 
 + (NSString *)stringWithUnichar:(unichar)character;
 {
     return [NSString stringWithCharacters:&character length:1];
+}
+
+- (BOOL)isFirstLetterUppercase;
+{
+    NSRange letterRange;
+
+    letterRange = [self rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]];
+    if (letterRange.length == 0)
+        return NO;
+
+    return [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:letterRange.location]];
 }
 
 @end
