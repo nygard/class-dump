@@ -41,13 +41,11 @@
     if (newIvars == ivars)
         return;
 
-    [ivars makeObjectsPerformSelector:@selector(setOCClass:) withObject:nil];
     [ivars release];
     ivars = [newIvars retain];
-    [ivars makeObjectsPerformSelector:@selector(setOCClass:) withObject:self];
 }
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     NSArray *sortedMethods;
     int count, index;
@@ -63,7 +61,7 @@
     count = [ivars count];
     if (count > 0) {
         for (index = 0; index < count; index++) {
-            [[ivars objectAtIndex:index] appendToString:resultString];
+            [[ivars objectAtIndex:index] appendToString:resultString classDump:aClassDump];
             [resultString appendString:@"\n"];
         }
     }
@@ -75,7 +73,7 @@
     if (count > 0) {
         for (index = 0; index < count; index++) {
             [resultString appendString:@"+ "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
             [resultString appendString:@"\n"];
         }
     }
@@ -85,7 +83,7 @@
     if (count > 0) {
         for (index = 0; index < count; index++) {
             [resultString appendString:@"- "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
             [resultString appendString:@"\n"];
         }
     }

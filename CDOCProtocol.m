@@ -12,7 +12,6 @@
     if ([super init] == nil)
         return nil;
 
-    nonretainedSymtab = nil;
     name = nil;
     protocols = [[NSMutableArray alloc] init];
     classMethods = nil;
@@ -24,7 +23,6 @@
 
 - (void)dealloc;
 {
-    nonretainedSymtab = nil;
     [name release];
     [protocols release];
     [classMethods release];
@@ -32,22 +30,6 @@
     [adoptedProtocolNames release];
 
     [super dealloc];
-}
-
-- (CDOCSymtab *)symtab;
-{
-    return nonretainedSymtab;
-}
-
-- (void)setSymtab:(CDOCSymtab *)newSymtab;
-{
-    nonretainedSymtab = newSymtab;
-    [protocols makeObjectsPerformSelector:@selector(setSymtab:) withObject:newSymtab];
-}
-
-- (CDClassDump2 *)classDumper;
-{
-    return [[self symtab] classDumper];
 }
 
 - (NSString *)name;
@@ -73,7 +55,6 @@
 - (void)addProtocol:(CDOCProtocol *)aProtocol;
 {
     if ([adoptedProtocolNames containsObject:[aProtocol name]] == NO) {
-        [aProtocol setSymtab:[self symtab]];
         [protocols addObject:aProtocol];
         [adoptedProtocolNames addObject:[aProtocol name]];
     }
@@ -81,7 +62,6 @@
 
 - (void)removeProtocol:(CDOCProtocol *)aProtocol;
 {
-    [aProtocol setSymtab:nil];
     [adoptedProtocolNames removeObject:[aProtocol name]];
     [protocols removeObject:aProtocol];
 }
@@ -105,10 +85,8 @@
     if (newClassMethods == classMethods)
         return;
 
-    [classMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:nil];
     [classMethods release];
     classMethods = [newClassMethods retain];
-    [classMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:self];
 }
 
 - (NSArray *)instanceMethods;
@@ -121,10 +99,8 @@
     if (newInstanceMethods == instanceMethods)
         return;
 
-    [instanceMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:nil];
     [instanceMethods release];
     instanceMethods = [newInstanceMethods retain];
-    [instanceMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:self];
 }
 
 - (NSString *)description;
@@ -133,7 +109,7 @@
                      NSStringFromClass([self class]), name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     int count, index;
     NSArray *sortedMethods;
@@ -148,7 +124,7 @@
     count = [sortedMethods count];
     for (index = 0; index < count; index++) {
         [resultString appendString:@"+ "];
-        [[sortedMethods objectAtIndex:index] appendToString:resultString];
+        [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
         [resultString appendString:@"\n"];
     }
 
@@ -156,7 +132,7 @@
     count = [sortedMethods count];
     for (index = 0; index < count; index++) {
         [resultString appendString:@"- "];
-        [[sortedMethods objectAtIndex:index] appendToString:resultString];
+        [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
         [resultString appendString:@"\n"];
     }
     [resultString appendString:@"@end\n\n"];

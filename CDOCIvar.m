@@ -2,7 +2,6 @@
 
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
-#import "CDOCClass.h"
 #import "CDTypeFormatter.h"
 
 @implementation CDOCIvar
@@ -27,21 +26,6 @@
     [super dealloc];
 }
 
-- (CDOCClass *)OCClass;
-{
-    return nonretainedClass;
-}
-
-- (void)setOCClass:(CDOCClass *)newOCClass;
-{
-    nonretainedClass = newOCClass;
-}
-
-- (CDClassDump2 *)classDumper;
-{
-    return [[self OCClass] classDumper];
-}
-
 - (NSString *)name;
 {
     return name;
@@ -63,17 +47,11 @@
                      NSStringFromClass([self class]), name, type, offset];
 }
 
-- (NSString *)formattedString;
-{
-    return [NSString stringWithFormat:@"\t%@", name];
-}
-
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     NSString *formattedString;
 
-    //formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type];
-    formattedString = [[[self classDumper] ivarTypeFormatter] formatVariable:name type:type];
+    formattedString = [[aClassDump ivarTypeFormatter] formatVariable:name type:type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

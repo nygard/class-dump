@@ -2,12 +2,10 @@
 #import "CDStructRegistrationProtocol.h"
 
 @class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
-@class CDClassDump2, CDOCSymtab;
+@class CDClassDump2;
 
 @interface CDOCProtocol : NSObject
 {
-    CDOCSymtab *nonretainedSymtab;
-
     NSString *name;
     NSMutableArray *protocols;
     NSArray *classMethods;
@@ -18,11 +16,6 @@
 
 - (id)init;
 - (void)dealloc;
-
-- (CDOCSymtab *)symtab;
-- (void)setSymtab:(CDOCSymtab *)newSymtab;
-
-- (CDClassDump2 *)classDumper;
 
 - (NSString *)name;
 - (void)setName:(NSString *)newName;
@@ -39,7 +32,7 @@
 - (void)setInstanceMethods:(NSArray *)newInstanceMethods;
 
 - (NSString *)description;
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
 - (NSString *)sortableName;

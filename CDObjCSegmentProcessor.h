@@ -9,8 +9,6 @@
 
 @interface CDObjCSegmentProcessor : NSObject
 {
-    CDClassDump2 *nonretainedClassDumper;
-
     CDMachOFile *machOFile;
     NSMutableArray *modules;
     NSMutableDictionary *protocolsByName;
@@ -19,13 +17,10 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (CDClassDump2 *)classDumper;
-- (void)setClassDumper:(CDClassDump2 *)newClassDumper;
-
 - (void)process;
 
 - (NSString *)formattedStringByModule;
-- (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString;
+- (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
 - (NSString *)description;

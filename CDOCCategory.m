@@ -4,6 +4,7 @@
 #import "CDOCCategory.h"
 
 #import <Foundation/Foundation.h>
+#import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "NSArray-Extensions.h"
 
@@ -30,7 +31,7 @@
     className = [newClassName retain];
 }
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     NSArray *sortedMethods;
     int count, index;
@@ -47,7 +48,7 @@
     if (count > 0) {
         for (index = 0; index < count; index++) {
             [resultString appendString:@"+ "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
             [resultString appendString:@"\n"];
         }
     }
@@ -57,7 +58,7 @@
     if (count > 0) {
         for (index = 0; index < count; index++) {
             [resultString appendString:@"- "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
             [resultString appendString:@"\n"];
         }
     }

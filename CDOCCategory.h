@@ -15,7 +15,7 @@
 - (NSString *)className;
 - (void)setClassName:(NSString *)newClassName;
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 
 - (NSString *)sortableName;
 

@@ -24,7 +24,6 @@
     if ([super init] == nil)
         return nil;
 
-    nonretainedClassDumper = nil;
     machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
@@ -37,19 +36,8 @@
     [machOFile release];
     [modules release];
     [protocolsByName release];
-    nonretainedClassDumper = nil;
 
     [super dealloc];
-}
-
-- (CDClassDump2 *)classDumper;
-{
-    return nonretainedClassDumper;
-}
-
-- (void)setClassDumper:(CDClassDump2 *)newClassDumper;
-{
-    nonretainedClassDumper = newClassDumper;
 }
 
 - (void)process;
@@ -74,7 +62,7 @@
     return resultString;
 }
 
-- (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString;
+- (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     int count, index;
     NSMutableArray *allClasses;
@@ -109,13 +97,13 @@
         CDOCProtocol *aProtocol;
 
         aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol appendToString:resultString];
+        [aProtocol appendToString:resultString classDump:aClassDump];
     }
 
     [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
     count = [allClasses count];
     for (index = 0; index < count; index++)
-        [[allClasses objectAtIndex:index] appendToString:resultString];
+        [[allClasses objectAtIndex:index] appendToString:resultString classDump:aClassDump];
 
     [allClasses release];
 }

@@ -101,7 +101,6 @@
     [aMachOFile process];
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
-    [aProcessor setClassDumper:self];
     [aProcessor process];
     //NSLog(@"Formatted result:\n%@", [aProcessor formattedStringByClass]);
     [objCSegmentProcessors addObject:aProcessor];
@@ -229,7 +228,7 @@
         [self appendTypedefsToString:resultString];
 
         for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString];
+            [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString classDump:self];
         }
 
 #if 1
