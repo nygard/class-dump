@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.h,v 1.9 2003/12/16 07:30:16 nygard Exp $
+// $Id: datatypes.h,v 1.10 2003/12/17 05:53:09 nygard Exp $
 //
 
 //
@@ -52,7 +52,7 @@ struct method_type
 //======================================================================
 
 // Type creation functions
-struct my_objc_type *create_empty_type(void);
+struct my_objc_type *create_empty_type(void); // private
 struct my_objc_type *create_simple_type(int type);
 struct my_objc_type *create_id_type(NSString *name);
 struct my_objc_type *create_struct_type(NSString *name, struct my_objc_type *members);
@@ -66,7 +66,6 @@ struct my_objc_type *create_modified_type(int modifier, struct my_objc_type *typ
 struct method_type *create_method_type(struct my_objc_type *t, NSString *name);
 
 // Misc functions
-struct my_objc_type *reverse_types(struct my_objc_type *t);
 struct method_type *reverse_method_types(struct method_type *m);
 
 // Display functions

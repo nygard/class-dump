@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.20 2003/12/16 07:30:16 nygard Exp $
+// $Id: datatypes.m,v 1.21 2003/12/17 05:53:09 nygard Exp $
 //
 
 //
@@ -221,21 +221,6 @@ struct method_type *create_method_type(struct my_objc_type *t, NSString *name)
 //======================================================================
 // Misc functions
 //======================================================================
-
-struct my_objc_type *reverse_types(struct my_objc_type *t)
-{
-    struct my_objc_type *head = NULL;
-    struct my_objc_type *tmp;
-
-    while (t != NULL) {
-        tmp = t;
-        t = t->next;
-        tmp->next = head;
-        head = tmp;
-    }
-
-    return head;
-}
 
 struct method_type *reverse_method_types(struct method_type *m)
 {
