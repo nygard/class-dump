@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.h,v 1.4 1999/08/09 07:45:00 nygard Exp $
+// $Id: MappedFile.h,v 1.5 2000/10/15 01:17:53 nygard Exp $
 //
 
 //
@@ -28,9 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if defined(__APPLE__) && defined (__MACH__)
-#import <Foundation/Foundation.h>
-#elif NS_TARGET_MAJOR >= 4
+#if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
 #else
 #import <foundation/NSString.h>

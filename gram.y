@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.3 2000/06/25 04:21:49 nygard Exp $
+// $Id: gram.y,v 1.4 2000/10/15 01:17:54 nygard Exp $
 //
 
 //
@@ -271,7 +271,7 @@ union_type:
 		}
 	| union_type_prefix identifier optional_format ')'
 		{
-			$$ = create_union_type (NULL, $2);
+			$$ = create_union_type ($3, $2);
 		}
 	;
 
@@ -282,7 +282,7 @@ union_type_prefix:
 			 * Great - for a union, an instance variable has a name, and no type,
 			 *         but a method has the types, and no name!
 			 */
-			if (parsing_ivar == 1)
+			/* if (parsing_ivar == 1) */ /* Methods can have names now... -CEL */
 				ident_state = 1;
 		}
 	;
@@ -348,9 +348,6 @@ void format_type (const char *type, const char *name, int level)
 	int parse_flag;
         extern int expand_structures_flag;
 
-#warning NEW FILE
-	//fprintf(stderr, "type: %s\t%s\n", type, name);
-
 	rtype = NULL;
 	yy_scan_string (type);
 	parse_flag = parse_ivar_type();
@@ -378,8 +375,6 @@ void format_type (const char *type, const char *name, int level)
 void format_method (char method_type, const char *name, const char *types)
 {
 	int parse_flag;
-
-	//fprintf(stderr, "method: %s\t%s\n", name, types);
 
 	if (name == NULL)
 	{

@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.4 1999/08/09 07:45:00 nygard Exp $
+// $Id: MappedFile.m,v 1.5 2000/10/15 01:17:53 nygard Exp $
 //
 
 //
@@ -134,7 +134,7 @@ static NSMutableArray *secondSearchPath = nil;
 - initWithFilename:(NSString *)aFilename
 {
     NSString *standardPath;
-#if (NS_TARGET_MAJOR >= 4)
+#if (NS_TARGET_MAJOR >= 4) || defined(__APPLE__)
     NSMutableSet *wrappers = [NSMutableSet set];
 #else
     // for foundation 3.x (less efficient than a set but at least it works...)
@@ -143,9 +143,7 @@ static NSMutableArray *secondSearchPath = nil;
     if ([super init] == nil)
         return nil;
 
-    //NSLog (@"aFilename: %@", aFilename);
     standardPath = [aFilename stringByStandardizingPath];
-    //NSLog (@"standardPath: %@", standardPath);
 
     // XXX: Try grabbing these from an environment variable & move to +initialize
     [wrappers addObject:@"app"];

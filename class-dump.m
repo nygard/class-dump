@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.5 2000/06/23 23:35:55 nygard Exp $
+// $Id: class-dump.m,v 1.6 2000/10/15 01:17:54 nygard Exp $
 //
 
 //
@@ -38,7 +38,7 @@
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 
-#if NS_TARGET_MAJOR >= 4
+#if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
 #else
 #import <foundation/NSString.h>
@@ -61,8 +61,8 @@
 #import "ObjcMethod.h"
 #import "MappedFile.h"
 
-#ifndef LC_PREBOUND_DYLIB
-#define LC_PREBOUND_DYLIB 0x10
+#ifndef LC_SUB_FRAMEWORK
+#define LC_SUB_FRAMEWORK 0x12
 #endif
 
 #ifndef LC_LOAD_DYLIB
@@ -122,24 +122,19 @@ int section_count = 0;
 
 #define SEC_CLASS          "__class"
 #define SEC_SYMBOLS        "__symbols"
+#define SEC_CSTRING        "__cstring"  /* In SEG_TEXT segments */
 #define SEC_PROTOCOL       "__protocol"
 #define SEC_CATEGORY       "__category"
 #define SEC_CLS_METH       "__cls_meth"
 #define SEC_INST_METH      "__inst_meth"
 #define SEC_META_CLASS     "__meta_class"
+#define SEC_CLASS_NAMES    "__class_names"
 #define SEC_MODULE_INFO    "__module_info"
 #define SEC_CAT_CLS_METH   "__cat_cls_meth"
 #define SEC_INSTANCE_VARS  "__instance_vars"
 #define SEC_CAT_INST_METH  "__cat_inst_meth"
-#if NS_TARGET_MAJOR >= 5
-#define SEC_CLASS_NAMES    "__cstring"
-#define SEC_METH_VAR_TYPES "__cstring"
-#define SEC_METH_VAR_NAMES "__cstring"
-#else
-#define SEC_CLASS_NAMES    "__class_names"
 #define SEC_METH_VAR_TYPES "__meth_var_types"
 #define SEC_METH_VAR_NAMES "__meth_var_names"
-#endif
 
 //======================================================================
 
@@ -175,6 +170,8 @@ char *load_command_names[] =
     "LC_LOAD_DYLINKER",
     "LC_ID_DYLINKER",
     "LC_PREBOUND_DYLIB",
+    "LC_ROUTINES",
+    "LC_SUB_FRAMEWORK",
 };
 
 NSMutableDictionary *protocols;
@@ -189,10 +186,10 @@ void process_dylib_command (void *start, void *ptr);
 void process_fvmlib_command (void *start, void *ptr);
 void process_segment_command (void *start, void *ptr, char *filename);
 void process_objc_segment (void *start, void *ptr, char *filename);
-void process_text_segment (void *start, void *ptr, char *filename);
 
 struct section_info *find_objc_section (char *name, char *filename);
 void *translate_address_to_pointer (long addr, char *section);
+void *translate_address_to_pointer_complain (long addr, char *section, BOOL complain);
 char *string_at (long addr, char *section);
 NSString *nsstring_at (long addr, char *section);
 
@@ -311,7 +308,7 @@ unsigned long process_load_command (void *start, void *ptr, char *filename)
     struct load_command *lc = (struct load_command *)ptr;
 
 #ifdef VERBOSE
-    if (lc->cmd <= LC_PREBOUND_DYLIB)
+    if (lc->cmd <= LC_SUB_FRAMEWORK)
     {
         printf ("%s\n", load_command_names[ lc->cmd ]);
     }
@@ -365,15 +362,12 @@ void process_segment_command (void *start, void *ptr, char *filename)
     strncpy (name, sc->segname, 16);
     name[16] = 0;
 
-    if (!strcmp (name, SEG_OBJC) || !strcmp(name, "") /* for .o files. */)
+    if (!strcmp (name, SEG_OBJC) || 
+        !strcmp (name, SEG_TEXT) || /* for MacOS X __cstring sections */
+        !strcmp (name, "") /* for .o files. */)
     {
         process_objc_segment (start, ptr, filename);
     }
-    
-    if (!strcmp (name, SEG_TEXT))
-    {
-        process_text_segment (start, ptr, filename);
-    }    
 }
 
 //----------------------------------------------------------------------
@@ -399,47 +393,14 @@ void process_objc_segment (void *start, void *ptr, char *filename)
         objc_sections[section_count].start = start + section->offset;
         objc_sections[section_count].vmaddr = section->addr;
         objc_sections[section_count].size = section->size;
-        if (!strcmp(section->segname, SEG_OBJC)) section_count++;
-#if NS_TARGET_MAJOR >= 5
-        if (!strcmp(section->segname, SEG_TEXT) && !strcmp(section->sectname,SEC_CLASS_NAMES))
+        if (!strcmp(section->segname, SEG_OBJC) ||
+              (!strcmp(section->segname, SEG_TEXT) &&
+               !strcmp(section->sectname, SEC_CSTRING)))
+        {
             section_count++;
-#endif
-        section++;
-    }
-}
-
-void process_text_segment (void *start, void *ptr, char *filename)
-{
-    struct segment_command *sc = (struct segment_command *)ptr;
-    struct section *section = (struct section *)(sc + 1);
-    int l;
-
-    // In the text segment, we only want to extract the __cstring
-    // section.
-    
-#if NS_TARGET_MAJOR >= 5    
-    for (l = 0; l < sc->nsects; l++)
-    {
-        if (section_count >= MAX_SECTIONS)
-        {
-            printf ("Error: Maximum number of sections reached.\n");
-            return;
-        }
-
-        if (!strcmp(SEC_CLASS_NAMES,section->sectname))
-        {
-            objc_sections[section_count].filename = filename;
-            strncpy (objc_sections[section_count].name, section->sectname, 16);
-            objc_sections[section_count].name[16] = 0;
-            objc_sections[section_count].section = section;
-            objc_sections[section_count].start = start + section->offset;
-            objc_sections[section_count].vmaddr = section->addr;
-            objc_sections[section_count].size = section->size;
-            if (!strcmp(section->segname, SEG_TEXT)) section_count++;
         }
         section++;
     }
-#endif
 }
 
 //----------------------------------------------------------------------
@@ -486,6 +447,11 @@ void debug_section_overlap (void)
 
 void *translate_address_to_pointer (long addr, char *section)
 {
+    return translate_address_to_pointer_complain (addr, section, YES);
+}
+
+void *translate_address_to_pointer_complain (long addr, char *section, BOOL complain)
+{
     int l;
     int count = 0;
 
@@ -523,7 +489,7 @@ void *translate_address_to_pointer (long addr, char *section)
         }
     }
 
-    if (addr != 0)
+    if (addr != 0 && complain)
         printf ("address (0x%08lx) not in '%s' section of OBJC segment!\n", addr, section);
 
     return NULL;
@@ -533,7 +499,15 @@ void *translate_address_to_pointer (long addr, char *section)
 
 char *string_at (long addr, char *section)
 {
-    return (char *)translate_address_to_pointer (addr, section);
+    /* String addresses are located in a different section in MacOS X binaries.
+       Look there first, and only print error message if not found in either
+       the old or new style section.  MacOS X still supports older Mac OS X
+       Server binaries, so we do need to look in both places.
+     */
+    char *ptr = (char *)translate_address_to_pointer_complain (addr, SEC_CSTRING, NO);
+    if (ptr == NULL)
+	ptr = (char *)translate_address_to_pointer_complain (addr, section, YES);
+    return ptr;
 }
 
 //----------------------------------------------------------------------

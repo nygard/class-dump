@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.3 1999/08/09 07:45:03 nygard Exp $
+// $Id: datatypes.m,v 1.4 2000/10/15 01:17:54 nygard Exp $
 //
 
 //
@@ -30,9 +30,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if defined(__APPLE__) && defined (__MACH__)
-#import <Foundation/Foundation.h>
-#elif NS_TARGET_MAJOR >= 4
+#if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
 #else
 #import <foundation/NSString.h>
