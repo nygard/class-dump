@@ -276,6 +276,11 @@
     return [data bytes];
 }
 
+- (const void *)bytesAtOffset:(unsigned long)offset;
+{
+    return [data bytes] + offset;
+}
+
 - (NSString *)importBaseName;
 {
     if ([self filetype] == MH_DYLIB) {

@@ -60,6 +60,7 @@
 - (NSString *)stringFromVMAddr:(unsigned long)vmaddr;
 
 - (const void *)bytes;
+- (const void *)bytesAtOffset:(unsigned long)offset;
 
 - (NSString *)importBaseName;
 
