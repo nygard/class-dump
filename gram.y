@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.6 2002/12/19 05:37:06 nygard Exp $
+// $Id: gram.y,v 1.7 2002/12/19 05:40:17 nygard Exp $
 //
 
 //
@@ -42,22 +42,8 @@ int parsing_ivar = 0;
 
 //----------------------------------------------------------------------
 
-char *strdup (const char *str);
 int yylex (void);
 int yyerror (char *s);
-
-//----------------------------------------------------------------------
-
-char *strdup (const char *str)
-{
-	char *ptr = malloc (strlen (str) + 1);
-
-	assert (ptr != NULL);
-
-	strcpy (ptr, str);
-
-	return ptr;
-}
 
 %}
 
