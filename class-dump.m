@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.33 2003/12/05 06:49:43 nygard Exp $
+// $Id: class-dump.m,v 1.34 2003/12/09 01:50:32 nygard Exp $
 //
 
 //
@@ -54,6 +54,9 @@
 #import "ObjcMethod.h"
 #import "MappedFile.h"
 #import "CDTypeParser.h"
+
+#import "CDMachOFile.h"
+#import "CDClassDump.h"
 
 //----------------------------------------------------------------------
 
@@ -1234,6 +1237,32 @@ int main(int argc, char *argv[])
 
     if (optind < argc) {
         char *str;
+        NSString *path;
+        CDMachOFile *machOFile;
+        CDClassDump2 *classDump;
+
+        str = argv[optind];
+        path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
+        NSLog(@"path: '%@'", path);
+
+        machOFile = [[CDMachOFile alloc] initWithFilename:path];
+        NSLog(@"machOFile: %@", machOFile);
+        NSLog(@"[machOFile description]: %@", [machOFile description]);
+        NSLog(@"[machOFile loadCommands]: %@", [machOFile loadCommands]);
+
+        classDump = [[CDClassDump2 alloc] initWithMachOFile:machOFile];
+        [classDump doSomething];
+        [classDump processModules];
+        [classDump release];
+
+        [machOFile release];
+
+        [path release];
+        exit(99);
+
+
+#if 0
+        char *str;
         NSString *targetPath, *adjustedPath;
         CDClassDump *classDump;
         NSString *regexErrorMessage;
@@ -1279,6 +1308,7 @@ int main(int argc, char *argv[])
         }
 
         [classDump release];
+#endif
     }
 
     [pool release];
