@@ -1,5 +1,5 @@
 //
-// $Id: CDDylibCommand.h,v 1.3 2004/01/06 02:31:40 nygard Exp $
+// $Id: CDDylibCommand.h,v 1.4 2004/01/06 02:39:25 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -22,6 +22,9 @@
 - (unsigned long)timestamp;
 - (unsigned long)currentVersion;
 - (unsigned long)compatibilityVersion;
+
+- (NSString *)formattedCurrentVersion;
+- (NSString *)formattedCompatibilityVersion;
 
 //- (NSString *)extraDescription;
 
