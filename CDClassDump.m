@@ -123,8 +123,8 @@
 
             NSLog(@"defs[%d]: %p", index, *defs);
             aClass = [self processClassDefinition:*defs];
-            NSLog(@"aClass: %@", aClass);
-            NSLog(@"%@", [aClass formattedString]);
+            //NSLog(@"aClass: %@", aClass);
+            //NSLog(@"%@", [aClass formattedString]);
             [classes addObject:aClass];
         }
     }
@@ -153,8 +153,6 @@
     const struct cd_objc_class *classPtr;
     const struct cd_objc_ivars *ivarsPtr;
     const struct cd_objc_ivar *ivarPtr;
-    const struct cd_objc_methods *methodsPtr;
-    const struct cd_objc_method *methodPtr;
     CDOCClass *aClass;
     int index;
 
@@ -189,26 +187,7 @@
 
     // Process methods
     NSLog(@"classPtr->methods: %p", classPtr->methods);
-    if (classPtr->methods != 0) {
-        NSMutableArray *methods;
-
-        methods = [[NSMutableArray alloc] init];
-        methodsPtr = [machOFile pointerFromVMAddr:classPtr->methods];
-        methodPtr = (struct cd_objc_method *)(methodsPtr + 1);
-
-        for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
-            CDOCMethod *aMethod;
-
-            aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
-                                          type:[machOFile stringFromVMAddr:methodPtr->types]
-                                          imp:methodPtr->imp];
-            [methods addObject:aMethod];
-            [aMethod release];
-        }
-
-        [aClass setInstanceMethods:[methods reversedArray]];
-        [methods release];
-    }
+    [aClass setInstanceMethods:[self processMethods:classPtr->methods]];
 
     // Process meta class
     {
@@ -218,27 +197,7 @@
         //assert(metaClassPtr->info & CLS_CLASS);
 
         // Process class methods
-        if (metaClassPtr->methods != 0) {
-            NSMutableArray *methods;
-
-            methods = [[NSMutableArray alloc] init];
-
-            methodsPtr = [machOFile pointerFromVMAddr:metaClassPtr->methods];
-            methodPtr = (struct cd_objc_method *)(methodsPtr + 1);
-            for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
-                CDOCMethod *aMethod;
-
-                aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
-                                              type:[machOFile stringFromVMAddr:methodPtr->types]
-                                              imp:methodPtr->imp];
-                [methods addObject:aMethod];
-                [aMethod release];
-            }
-
-            [aClass setClassMethods:[methods reversedArray]];
-
-            [methods release];
-        }
+        [aClass setClassMethods:[self processMethods:metaClassPtr->methods]];
     }
 
     // Process protocols
@@ -249,6 +208,8 @@
 
         protocols = [[NSMutableArray alloc] init];
 
+        NSLog(@"Protocols start ************************************************************");
+        NSLog(@"classPtr->protocols: %p", classPtr->protocols);
         protocolList = [machOFile pointerFromVMAddr:classPtr->protocols];
         // Compiler doesn't like the double star cast.
         protocolPtr = (void *)(protocolList + 1);
@@ -260,13 +221,42 @@
             // TODO (2003-12-08): Let's worry about protocols later.
             [aProtocol setName:[machOFile stringFromVMAddr:(*protocolPtr)->protocol_name]];
             [protocols addObject:aProtocol];
+            NSLog(@"%d: aProtocol: %@", index, aProtocol);
             [aProtocol release];
         }
 
         [protocols release];
+        NSLog(@"Protocols end ************************************************************");
     }
 
     return aClass;
+}
+
+- (NSArray *)processMethods:(unsigned long)methodsAddr;
+{
+    NSMutableArray *methods;
+    const struct cd_objc_methods *methodsPtr;
+    const struct cd_objc_method *methodPtr;
+    int index;
+
+    methods = [NSMutableArray array];
+    if (methodsAddr == 0)
+        return methods;
+
+    methodsPtr = [machOFile pointerFromVMAddr:methodsAddr];
+    methodPtr = (struct cd_objc_method *)(methodsPtr + 1);
+
+    for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
+        CDOCMethod *aMethod;
+
+        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
+                                      type:[machOFile stringFromVMAddr:methodPtr->types]
+                                      imp:methodPtr->imp];
+        [methods addObject:aMethod];
+        [aMethod release];
+    }
+
+    return [methods reversedArray];
 }
 
 - (void)processCategoryDefinition:(unsigned long)defRef;

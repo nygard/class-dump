@@ -1,6 +1,6 @@
 #import <Foundation/NSObject.h>
 
-@class NSMutableArray;
+@class NSArray, NSMutableArray;
 @class CDMachOFile;
 @class CDOCClass, CDOCSymtab;
 
@@ -99,6 +99,7 @@ struct cd_objc_protocol
 - (void)processModules;
 - (CDOCSymtab *)processSymtab:(unsigned long)symtab;
 - (CDOCClass *)processClassDefinition:(unsigned long)defRef;
+- (NSArray *)processMethods:(unsigned long)methodsAddr;
 - (void)processCategoryDefinition:(unsigned long)defRef;
 
 @end
