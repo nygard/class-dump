@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.66 2004/02/11 01:03:39 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.67 2004/02/11 01:12:51 nygard Exp $");
 
 @implementation CDClassDump
 
@@ -88,7 +88,6 @@ static NSMutableSet *wrapperExtensions = nil;
 
     executablePath = nil;
 
-    //machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objCSegmentProcessors = [[NSMutableArray alloc] init];
 
@@ -343,9 +342,6 @@ static NSMutableSet *wrapperExtensions = nil;
     CDMachOFile *aMachOFile;
     CDObjCSegmentProcessor *aProcessor;
 
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"aFilename: %@", aFilename);
-
     aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
     [aMachOFile setDelegate:self];
     [aMachOFile process];
@@ -358,16 +354,10 @@ static NSMutableSet *wrapperExtensions = nil;
     [machOFilesByID setObject:aMachOFile forKey:aFilename];
 
     [aMachOFile release];
-
-    //NSLog(@"<  %s", _cmd);
 }
 
 - (void)generateOutput;
 {
-    //NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
-    //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);
-    //NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
-
     [self registerPhase:1];
     [self registerPhase:2];
     [self generateMemberNames];
@@ -416,11 +406,11 @@ static NSMutableSet *wrapperExtensions = nil;
 
             result = [fileManager createDirectoryAtPath:outputPath attributes:nil];
             if (result == NO) {
-                NSLog(@"Couldn't create output directory: %@", outputPath);
+                NSLog(@"Error: Couldn't create output directory: %@", outputPath);
                 return;
             }
         } else if (isDirectory == NO) {
-            NSLog(@"File exists at output path: %@", outputPath);
+            NSLog(@"Error: File exists at output path: %@", outputPath);
             return;
         }
     }
@@ -484,36 +474,25 @@ static NSMutableSet *wrapperExtensions = nil;
     CDMachOFile *aMachOFile;
     NSString *replacementString = @"@executable_path";
 
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"anID: %@", anID);
     if ([anID hasPrefix:replacementString] == YES) {
         adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
     } else {
         adjustedID = anID;
     }
-    //NSLog(@"adjustedID: %@", adjustedID);
 
     aMachOFile = [machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
         [self _processFilename:adjustedID];
         aMachOFile = [machOFilesByID objectForKey:adjustedID];
     }
-    //NSLog(@"<  %s", _cmd);
 
     return aMachOFile;
 }
 
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 {
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"aDylibCommand: %@", aDylibCommand);
-
-    if ([aDylibCommand cmd] == LC_LOAD_DYLIB && [self shouldProcessRecursively] == YES) {
-        //NSLog(@"Load it!");
+    if ([aDylibCommand cmd] == LC_LOAD_DYLIB && [self shouldProcessRecursively] == YES)
         [self machOFileWithID:[aDylibCommand name]];
-    }
-
-    //NSLog(@"<  %s", _cmd);
 }
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
@@ -565,8 +544,6 @@ static NSMutableSet *wrapperExtensions = nil;
     NSAutoreleasePool *pool;
     int count, index;
 
-    //NSLog(@"Phase %d ========================================", phase);
-
     pool = [[NSAutoreleasePool alloc] init];
 
     count = [objCSegmentProcessors count];
@@ -581,15 +558,9 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)endPhase:(int)phase;
 {
     if (phase == 1) {
-        //[structureTable logPhase1Data];
-        //[unionTable logPhase1Data];
-
         [structureTable finishPhase1];
         [unionTable finishPhase1];
     } else if (phase == 2) {
-        //[structureTable logInfo];
-        //[unionTable logInfo];
-
         [structureTable generateNamesForAnonymousStructures];
         [unionTable generateNamesForAnonymousStructures];
     }
