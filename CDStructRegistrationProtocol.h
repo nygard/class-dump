@@ -1,5 +1,5 @@
 //
-// $Id: CDStructRegistrationProtocol.h,v 1.5 2004/01/06 02:31:43 nygard Exp $
+// $Id: CDStructRegistrationProtocol.h,v 1.6 2004/01/07 18:14:18 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -10,5 +10,5 @@
 @class CDType;
 
 @protocol CDStructRegistration
-- (void)registerStruct:(CDType *)structType name:(NSString *)aName;
+- (void)registerStruct:(CDType *)structType name:(NSString *)aName countReferences:(BOOL)shouldCountReferences;
 @end

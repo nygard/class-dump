@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.15 2004/01/06 02:31:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.16 2004/01/07 18:14:19 nygard Exp $");
 
 @implementation CDType
 
@@ -280,6 +280,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.15 2004/01/06 0
           if (typeName == nil || [@"?" isEqual:typeName] == YES) {
               NSString *typedefName;
 
+              NSLog(@"[%p], typeFormatter: %@", self, typeFormatter);
               typedefName = [typeFormatter typedefNameForStruct:[self typeString]];
               if (typedefName != nil) {
                   baseType = typedefName;
@@ -495,22 +496,33 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.15 2004/01/06 0
 
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 {
-    int count, index;
+    [self registerStructsWithObject:anObject countReferences:YES];
+}
 
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject countReferences:(BOOL)shouldCountReferences;
+{
     if (subtype != nil)
-        [subtype registerStructsWithObject:anObject];
+        [subtype registerStructsWithObject:anObject countReferences:shouldCountReferences];
 
-    count = [members count];
-#if 1
-    for (index = 0; index < count; index++)
-        [[members objectAtIndex:index] registerStructsWithObject:anObject];
-#endif
-    if (type == '{' && count > 0) {
+    if (type == '{' && [members count] > 0) {
         NSString *typeString;
 
         typeString = [self typeString];
-        [anObject registerStruct:self name:typeName];
+        [anObject registerStruct:self name:typeName countReferences:shouldCountReferences];
     }
+}
+
+- (void)registerMemberStructsWithObject:(id <CDStructRegistration>)anObject countReferences:(BOOL)shouldCountReferences;
+{
+    int count, index;
+
+    if (subtype != nil)
+        [subtype registerMemberStructsWithObject:anObject countReferences:shouldCountReferences];
+
+    count = [members count];
+
+    for (index = 0; index < count; index++)
+        [[members objectAtIndex:index] registerStructsWithObject:anObject countReferences:shouldCountReferences];
 }
 
 - (BOOL)isEqual:(CDType *)otherType;

@@ -1,0 +1,17 @@
+// Named struct/union types
+struct _NSPoint {
+    float;
+    float;
+};
+
+struct _NSRect {
+    struct _NSPoint;
+    struct _NSSize;
+};
+
+struct _NSSize {
+    float;
+    float;
+};
+
+    struct _NSRect var;

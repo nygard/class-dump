@@ -12,7 +12,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.17 2004/01/06 02:31:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.18 2004/01/07 18:14:18 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -117,7 +117,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.17 2004/01/0
          if ([[self name] isEqual:@"NSInvocation"] == YES) {
              NSLog(@"Registering struct for %@: %@", [self name], [structType typeString]);
          }
-         [structType registerStructsWithObject:anObject];
+         [structType registerStructsWithObject:anObject countReferences:YES];
          [parser release];
      }
  }

@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.5 2004/01/06 02:31:45 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.6 2004/01/07 18:14:19 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -81,6 +81,12 @@
         if ([line length] > 0)
             [self registerStructsFromType:[inputFields objectAtIndex:0]];
     }
+
+    [classDump processIsomorphicStructs];
+    [classDump logStructCounts];
+    [classDump logNamedStructs];
+    [classDump logAnonymousStructs];
+    [classDump logAnonymousRemappings];
 
     // Then generate output
     [classDump appendNamedStructsToString:resultString];
@@ -180,6 +186,21 @@
 - (void)testSix;
 {
     [self testFilename:@"shud03"];
+}
+
+- (void)testSeven;
+{
+    [self testFilename:@"shud04"];
+}
+
+- (void)testEight;
+{
+    [self testFilename:@"shud05"];
+}
+
+- (void)testNine;
+{
+    [self testFilename:@"shud06"];
 }
 
 @end

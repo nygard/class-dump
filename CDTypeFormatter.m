@@ -14,7 +14,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.16 2004/01/06 02:31:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.17 2004/01/07 18:14:19 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -57,6 +57,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.16 200
 
 - (void)setDelegate:(id)newDelegate;
 {
+    NSLog(@"[%p] %s, newDelegate: %p", self, _cmd, newDelegate);
     nonretainedDelegate = newDelegate;
 }
 
@@ -219,6 +220,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.16 200
         NSLog(@"%s (ivar): structTypeString: %@", _cmd, structTypeString);
     }
 #endif
+    NSLog(@"[%p] %s, delegate: %p", self, _cmd, nonretainedDelegate);
     if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:)]);
         return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structTypeString];
 

@@ -1,0 +1,11 @@
+// Named struct/union types
+struct one {
+    int field1;
+    char field2;
+    struct {
+        float;
+        float;
+    } field3;
+};
+
+    struct one var;
