@@ -1,0 +1,2 @@
+APPNAME	class-dump
+SHORT_DESCRIPTION	a utility for examining the Objective-C segment of Mach-O files
