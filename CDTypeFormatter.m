@@ -18,8 +18,8 @@
     struct my_objc_type *result;
     NSMutableString *resultString;
 
-    aParser = [[CDTypeParser alloc] init];
-    result = [aParser parseType:type];
+    aParser = [[CDTypeParser alloc] initWithType:type];
+    result = [aParser parseType];
 
     if (result == NULL) {
         [aParser release];
@@ -45,8 +45,8 @@
     NSMutableString *resultString;
     NSString *str;
 
-    aParser = [[CDTypeParser alloc] init];
-    result = [aParser parseMethodType:type];
+    aParser = [[CDTypeParser alloc] initWithType:type];
+    result = [aParser parseMethodType];
 
     if (result == NULL) {
         [aParser release];
@@ -57,7 +57,7 @@
     str = string_from_method_type(name, result);
     if (str != nil)
         [resultString appendString:str];
-    [resultString appendString:@";"];
+    [resultString appendString:@";"]; // TODO (2003-12-18): Leave this to caller so that we can just return str.
 
     free_allocated_methods();
     free_allocated_types();

@@ -20,12 +20,12 @@ NSString *CDTokenDescription(int token)
 
 @implementation CDTypeParser
 
-- (id)init;
+- (id)initWithType:(NSString *)aType;
 {
     if ([super init] == nil)
         return nil;
 
-    lexer = nil;
+    lexer = [[CDTypeLexer alloc] initWithString:aType];
     lookahead = 0;
 
     return self;
@@ -38,140 +38,40 @@ NSString *CDTokenDescription(int token)
     [super dealloc];
 }
 
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
-{
-    struct my_objc_type *result;
-    NSMutableString *resultString;
-
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"name: %@, type: %@", name, type);
-
-    assert(lexer == nil);
-    lexer = [[CDTypeLexer alloc] initWithString:type];
-
-    NS_DURING {
-        lookahead = [lexer nextToken];
-        result = [self parseType];
-    } NS_HANDLER {
-        NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %@, name: %@", type, name);
-
-        free_allocated_methods();
-        free_allocated_types();
-        result = NULL;
-    } NS_ENDHANDLER;
-
-    [lexer release];
-    lexer = nil;
-
-    if (result == NULL)
-        return nil;
-
-    resultString = [NSMutableString string];
-    result->var_name = [name retain];
-    [resultString appendString:[NSString spacesIndentedToLevel:level]];
-    [resultString appendString:string_from_type(result, nil, NO, level)];
-
-    free_allocated_methods();
-    free_allocated_types();
-
-    //NSLog(@"<  %s", _cmd);
-
-    return resultString;
-}
-
-- (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
-{
-    struct method_type *result;
-    NSMutableString *resultString;
-    NSString *str;
-
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"name: %@, type: %@", name, type);
-
-    assert(lexer == nil);
-    lexer = [[CDTypeLexer alloc] initWithString:type];
-
-    NS_DURING {
-        lookahead = [lexer nextToken];
-        result = [self parseMethodType];
-    } NS_HANDLER {
-        NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %@, name: %@", type, name);
-
-        free_allocated_methods();
-        free_allocated_types();
-        result = NULL;
-    } NS_ENDHANDLER;
-
-    [lexer release];
-    lexer = nil;
-
-    if (result == NULL)
-        return nil;
-
-    resultString = [NSMutableString string];
-    str = string_from_method_type(name, result);
-    if (str != nil)
-        [resultString appendString:str];
-    [resultString appendString:@";"];
-
-    free_allocated_methods();
-    free_allocated_types();
-
-    //NSLog(@"<  %s", _cmd);
-
-    return resultString;
-}
-
-- (struct method_type *)parseMethodType:(NSString *)type;
+- (struct method_type *)parseMethodType;
 {
     struct method_type *result;
 
-    assert(lexer == nil);
-
-    lexer = [[CDTypeLexer alloc] initWithString:type];
-
     NS_DURING {
         lookahead = [lexer nextToken];
-        result = [self parseMethodType];
+        result = [self _parseMethodType];
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %@", type);
+        NSLog(@"type: %@", [lexer string]);
 
         free_allocated_methods();
         free_allocated_types();
         result = NULL;
     } NS_ENDHANDLER;
-
-    [lexer release];
-    lexer = nil;
 
     return result;
 }
 
-- (struct my_objc_type *)parseType:(NSString *)type;
+- (struct my_objc_type *)parseType;
 {
     struct my_objc_type *result;
 
-    assert(lexer == nil);
-
-    lexer = [[CDTypeLexer alloc] initWithString:type];
-
     NS_DURING {
         lookahead = [lexer nextToken];
-        result = [self parseType];
+        result = [self _parseType];
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %@", type);
+        NSLog(@"type: %@", [lexer string]);
 
         free_allocated_methods();
         free_allocated_types();
         result = NULL;
     } NS_ENDHANDLER;
-
-    [lexer release];
-    lexer = nil;
 
     return result;
 }
@@ -204,18 +104,18 @@ NSString *CDTokenDescription(int token)
     [NSException raise:CDSyntaxError format:@"%@", errorString];
 }
 
-- (struct method_type *)parseMethodType;
+- (struct method_type *)_parseMethodType;
 {
     struct method_type *pair, *head;
     struct my_objc_type *type;
     NSString *number;
 
-    type = [self parseType];
+    type = [self _parseType];
     number = [self parseNumber];
     head = pair = create_method_type(type, number);
 
     while ([self isLookaheadInTypeStartSet] == YES) {
-        type = [self parseType];
+        type = [self _parseType];
         number = [self parseNumber];
         pair = create_method_type(type, number);
         pair->next = head;
@@ -225,7 +125,7 @@ NSString *CDTokenDescription(int token)
     return reverse_method_types(head);
 }
 
-- (struct my_objc_type *)parseType;
+- (struct my_objc_type *)_parseType;
 {
     struct my_objc_type *result;
 
@@ -241,13 +141,13 @@ NSString *CDTokenDescription(int token)
         modifier = lookahead;
         [self match:modifier];
 
-        unmodifiedType = [self parseType];
+        unmodifiedType = [self _parseType];
         result = create_modified_type(modifier, unmodifiedType);
     } else if (lookahead == '^') { // pointer
         struct my_objc_type *type;
 
         [self match:'^'];
-        type = [self parseType];
+        type = [self _parseType];
         result = create_pointer_type(type);
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
@@ -300,7 +200,7 @@ NSString *CDTokenDescription(int token)
 
         [self match:'['];
         number = [self parseNumber];
-        type = [self parseType];
+        type = [self _parseType];
         [self match:']'];
 
         result = create_array_type(number, type);
@@ -326,7 +226,7 @@ NSString *CDTokenDescription(int token)
     while ([self isLookaheadInTypeSet] == YES) {
         struct my_objc_type *type;
 
-        type = [self parseType];
+        type = [self _parseType];
         type->var_name = [@"___" retain];
         type->next = result;
         result = type;
@@ -372,10 +272,10 @@ NSString *CDTokenDescription(int token)
         NSString *identifier;
 
         identifier = [self parseQuotedName];
-        result = [self parseType];
+        result = [self _parseType];
         result->var_name = [identifier retain];
     } else {
-        result = [self parseType];
+        result = [self _parseType];
         result->var_name = [@"___" retain];
     }
 

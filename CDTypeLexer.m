@@ -66,6 +66,11 @@
     shouldShowLexing = newFlag;
 }
 
+- (NSString *)string;
+{
+    return [scanner string];
+}
+
 // TODO: Change to scanNextToken?
 - (int)nextToken;
 {

@@ -28,6 +28,7 @@
 - (BOOL)shouldShowLexing;
 - (void)setShouldShowLexing:(BOOL)newFlag;
 
+- (NSString *)string;
 - (int)nextToken;
 
 - (NSString *)lexText;

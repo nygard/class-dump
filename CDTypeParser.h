@@ -11,11 +11,12 @@ extern NSString *CDSyntaxError;
     int lookahead;
 }
 
-- (id)init;
+- (id)initWithType:(NSString *)aType;
 - (void)dealloc;
 
-- (struct method_type *)parseMethodType:(NSString *)type;
-- (struct my_objc_type *)parseType:(NSString *)type;
+// TODO (2003-12-18): Or add subclass, CDMethodTypeParser, and then just have them -parse?  Nah, different return types.
+- (struct method_type *)parseMethodType;
+- (struct my_objc_type *)parseType;
 
 @end
 
@@ -25,8 +26,8 @@ extern NSString *CDSyntaxError;
 - (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
 - (void)error:(NSString *)errorString;
 
-- (struct method_type *)parseMethodType;
-- (struct my_objc_type *)parseType;
+- (struct method_type *)_parseMethodType;
+- (struct my_objc_type *)_parseType;
 
 - (struct my_objc_type *)parseUnionTypes;
 - (struct my_objc_type *)parseOptionalFormat;
