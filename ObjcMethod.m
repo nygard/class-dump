@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.m,v 1.10 2003/12/05 06:49:43 nygard Exp $
+// $Id: ObjcMethod.m,v 1.11 2003/12/11 05:54:26 nygard Exp $
 //
 
 //
@@ -80,7 +80,7 @@
 
 - (void)showMethod:(char)prefix;
 {
-    format_method(prefix, [methodName cString], [methodType cString]);
+    //format_method(prefix, [methodName cString], [methodType cString]);
 }
 
 - (NSComparisonResult)orderByMethodName:(ObjcMethod *)otherMethod;

@@ -1,6 +1,7 @@
 #import "CDOCIvar.h"
 
 #import <Foundation/Foundation.h>
+#import "CDTypeParser.h"
 
 @implementation CDOCIvar
 
@@ -52,7 +53,13 @@
 
 - (void)appendToString:(NSMutableString *)resultString;
 {
-    [resultString appendFormat:@"\t%@", name];
+    CDTypeParser *typeParser;
+    NSString *formattedString;
+
+    typeParser = [[CDTypeParser alloc] init];
+    formattedString = [typeParser parseType:type name:name];
+    [resultString appendString:formattedString];
+    [typeParser release];
 }
 
 @end

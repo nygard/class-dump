@@ -27,9 +27,14 @@
 
     str = [NSMutableString string];
     for (l = 0; l < level; l++)
-        [str appendString:@"  "];
+        [str appendString:@"    "];
 
     return str;
+}
+
++ (NSString *)stringWithUnichar:(unichar)character;
+{
+    return [NSString stringWithCharacters:&character length:1];
 }
 
 @end

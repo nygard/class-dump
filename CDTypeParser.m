@@ -6,21 +6,15 @@
 #include <string.h>
 
 #include "datatypes.h"
-#include "gram.h" // for TK_IDENTIFIER
+//#include "gram.h" // for TK_IDENTIFIER
 
 #import <Foundation/Foundation.h>
+#import "CDTypeLexer.h"
+#import "NSString-Extensions.h"
 
-extern int ident_state;
-extern char yytext[];
-extern void yy_scan_string(const char *str);
-
-static struct method_type *rtype = NULL;
+//static struct method_type *rtype = NULL; // Yuck
 
 //----------------------------------------------------------------------
-
-int yylex(void);
-int yyerror(char *s);
-
 
 NSString *CDSyntaxError = @"Syntax Error";
 
@@ -34,6 +28,23 @@ NSString *CDTokenDescription(int token)
 
 @implementation CDTypeParser
 
+- (id)init;
+{
+    if ([super init] == nil)
+        return nil;
+
+    lexer = nil;
+
+    return self;
+}
+
+- (void)dealloc;
+{
+    [lexer release];
+
+    [super dealloc];
+}
+
 - (void)match:(int)token;
 {
     [self match:token allowIdentifier:NO];
@@ -44,8 +55,8 @@ NSString *CDTokenDescription(int token)
     if (lookahead == token) {
         //NSLog(@"matched %@", CDTokenDescription(token));
         if (shouldAllowIdentifier == YES)
-            ident_state = 1;
-        lookahead = yylex();
+            [lexer setIsInIdentifierState:YES];
+        lookahead = [lexer nextToken];
     } else {
         [NSException raise:CDSyntaxError format:@"expected token %@, got %@",
                      CDTokenDescription(token),
@@ -58,13 +69,38 @@ NSString *CDTokenDescription(int token)
     [NSException raise:CDSyntaxError format:@"%@", errorString];
 }
 
-- (struct my_objc_type *)parseType:(const char *)type name:(const char *)name;
+- (NSString *)parseType:(NSString *)type name:(NSString *)name;
 {
     struct my_objc_type *result;
+    NSMutableString *resultString;
 
-    //printf("parseType:name:, type = %s\n", type);
-    yy_scan_string(type);
-    lookahead = yylex();
+    //NSLog(@" > %s", _cmd);
+    //NSLog(@"name: %@, type: %@", name, type);
+
+    assert(lexer == nil);
+    lexer = [[CDTypeLexer alloc] initWithString:type];
+#if 0
+    {
+        int token;
+
+        NSLog(@"Lexing string '%@'", type);
+        //token = [lexer nextToken];
+        //token = [lexer nextToken];
+        //[lexer setIsInIdentifierState:YES];
+        do {
+            token = [lexer nextToken];
+            if (token > 0 && token < 128)
+                NSLog(@"token %d(%c)", token, token);
+            else
+                NSLog(@"token %d, lex text '%@'", token, [lexer lexText]);
+        } while (token != 0);
+        [lexer release];
+        lexer = nil;
+        return NULL;
+    }
+#endif
+    lookahead = [lexer nextToken];
+
 
     NS_DURING {
         result = [self parseType];
@@ -77,18 +113,37 @@ NSString *CDTokenDescription(int token)
         result = NULL;
     } NS_ENDHANDLER;
 
-    return result;
-}
+    [lexer release];
+    lexer = nil;
 
-- (struct method_type *)parseMethodName:(const char *)name type:(const char *)type;
-{
-    yy_scan_string(type);
+    if (result == NULL)
+        return nil;
+
+    resultString = [NSMutableString string];
+    result->var_name = [name retain];
+    [resultString appendString:[NSString spacesIndentedToLevel:1]];
+    [resultString appendString:string_from_type(result, nil, NO, 1)];
+    [resultString appendString:@";"];
 
     free_allocated_methods();
     free_allocated_types();
 
+    //NSLog(@"<  %s", _cmd);
+
+    return resultString;
+}
+
+- (struct method_type *)parseMethodName:(NSString *)name type:(NSString *)type;
+{
+#if 0
+    yy_scan_string(type);
+
+    free_allocated_methods();
+    free_allocated_types();
+#endif
     return NULL;
 }
+
 
 - (struct my_objc_type *)parseType;
 {
@@ -115,7 +170,7 @@ NSString *CDTokenDescription(int token)
         type = [self parseType];
         result = create_pointer_type(type);
     } else if (lookahead == 'b') { // bitfield
-        char *number;
+        NSString *number;
 
         [self match:'b'];
         number = [self parseNumber];
@@ -123,7 +178,7 @@ NSString *CDTokenDescription(int token)
     } else if (lookahead == '@') { // id
         [self match:'@'];
         if (lookahead == '"') {
-            char *name;
+            NSString *name;
 
             name = [self parseQuotedName];
             //NSLog(@"-----------> name = %p:'%s'", name, name);
@@ -132,7 +187,7 @@ NSString *CDTokenDescription(int token)
             result = create_id_type(NULL);
         }
     } else if (lookahead == '{') { // structure
-        char *typeName;
+        NSString *typeName;
         struct my_objc_type *optionalFormat;
 
         [self match:'{' allowIdentifier:YES];
@@ -144,7 +199,7 @@ NSString *CDTokenDescription(int token)
     } else if (lookahead == '(') { // union
         [self match:'(' allowIdentifier:YES];
         if (lookahead == TK_IDENTIFIER) {
-            char *identifier;
+            NSString *identifier;
             struct my_objc_type *optionalFormat;
 
             identifier = [self parseIdentifier];
@@ -161,7 +216,7 @@ NSString *CDTokenDescription(int token)
             result = create_union_type(unionTypes, NULL);
         }
     } else if (lookahead == '[') { // array
-        char *number;
+        NSString *number;
         struct my_objc_type *type;
 
         [self match:'['];
@@ -193,7 +248,7 @@ NSString *CDTokenDescription(int token)
         struct my_objc_type *type;
 
         type = [self parseType];
-        type->var_name = strdup("___");
+        type->var_name = [@"___" retain];
         type->next = result;
         result = type;
     }
@@ -235,22 +290,22 @@ NSString *CDTokenDescription(int token)
     struct my_objc_type *result;
 
     if (lookahead == '"') {
-        char *identifier;
+        NSString *identifier;
 
         identifier = [self parseQuotedName];
         result = [self parseType];
-        result->var_name = identifier;
+        result->var_name = [identifier retain];
     } else {
         result = [self parseType];
-        result->var_name = strdup("___");
+        result->var_name = [@"___" retain];
     }
 
     return result;
 }
 
-- (char *)parseTypeName;
+- (NSString *)parseTypeName;
 {
-    char *identifier;
+    NSString *identifier;
 
     identifier = [self parseIdentifier];
     if (lookahead == '<') {
@@ -265,12 +320,12 @@ NSString *CDTokenDescription(int token)
     return identifier;
 }
 
-- (char *)parseIdentifier;
+- (NSString *)parseIdentifier;
 {
     if (lookahead == TK_IDENTIFIER) {
-        char *result;
+        NSString *result;
 
-        result = strdup(yytext);
+        result = [lexer lexText];
         //NSLog(@"---> identifier %p:(%s)", result, result);
         [self match:TK_IDENTIFIER];
         return result;
@@ -279,12 +334,12 @@ NSString *CDTokenDescription(int token)
     return NULL;
 }
 
-- (char *)parseNumber;
+- (NSString *)parseNumber;
 {
     if (lookahead == TK_NUMBER) {
-        char *result;
+        NSString *result;
 
-        result = strdup(yytext);
+        result = [lexer lexText];
         [self match:TK_NUMBER];
         return result;
     }
@@ -292,14 +347,14 @@ NSString *CDTokenDescription(int token)
     return NULL;
 }
 
-- (char *)parseQuotedName;
+- (NSString *)parseQuotedName;
 {
     [self match:'"' allowIdentifier:YES];
     if (lookahead == '"') {
         [self match:'"'];
-        return strdup("");
+        return @"";
     } else {
-        char *identifier;
+        NSString *identifier;
 
         identifier = [self parseIdentifier];
         [self match:'"'];

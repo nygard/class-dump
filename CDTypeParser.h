@@ -1,21 +1,23 @@
 #import <Foundation/NSObject.h>
 #include "datatypes.h"
 
+@class CDTypeLexer;
+
 @interface CDTypeParser : NSObject
 {
-    //int ident_state;
+    CDTypeLexer *lexer;
     int lookahead;
 }
 
-//- (id)init;
-//- (void)dealloc;
+- (id)init;
+- (void)dealloc;
 
 - (void)match:(int)token;
 - (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
 - (void)error:(NSString *)errorString;
 
-- (struct my_objc_type *)parseType:(const char *)type name:(const char *)name;
-- (struct method_type *)parseMethodName:(const char *)name type:(const char *)type;
+- (NSString *)parseType:(NSString *)type name:(NSString *)name;
+- (struct method_type *)parseMethodName:(NSString *)name type:(NSString *)type;
 
 - (struct my_objc_type *)parseType;
 
@@ -24,10 +26,10 @@
 - (struct my_objc_type *)parseTagList;
 - (struct my_objc_type *)parseTag;
 
-- (char *)parseTypeName;
-- (char *)parseIdentifier;
-- (char *)parseNumber;
-- (char *)parseQuotedName;
+- (NSString *)parseTypeName;
+- (NSString *)parseIdentifier;
+- (NSString *)parseNumber;
+- (NSString *)parseQuotedName;
 
 - (BOOL)isLookaheadInModifierSet;
 - (BOOL)isLookaheadInSimpleTypeSet;

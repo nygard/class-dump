@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.15 2003/12/05 06:49:43 nygard Exp $
+// $Id: datatypes.m,v 1.16 2003/12/11 05:54:26 nygard Exp $
 //
 
 //
@@ -33,44 +33,44 @@
 #import <Foundation/Foundation.h>
 
 #include "datatypes.h"
-#include "gram.h"
+//#include "gram.h"
+#import "CDTypeLexer.h"
 
 NSString *string_indent_to_level(int level);
 NSString *string_from_members(struct my_objc_type *t, int level);
 NSString *string_from_simple_type(char c);
-NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level);
 
 // Not ^ or b
 static char *simple_types = "cislqCISLQfdBv*#:%?rnNoORV";
 
-static char *simple_type_names[] =
+static NSString *simple_type_names[] =
 {
-    "char",
-    "int",
-    "short",
-    "long",
-    "long long",
-    "unsigned char",
-    "unsigned int",
-    "unsigned short",
-    "unsigned long",
-    "unsigned long long",
-    "float",
-    "double",
-    "_Bool", /* C99 _Bool or C++ bool */
-    "void",
-    "STR",
-    "Class",
-    "SEL",
-    "NXAtom",
-    "void /*UNKNOWN*/",
-    "const",
-    "in",
-    "inout",
-    "out",
-    "bycopy",
-    "byref",
-    "oneway"
+    @"char",
+    @"int",
+    @"short",
+    @"long",
+    @"long long",
+    @"unsigned char",
+    @"unsigned int",
+    @"unsigned short",
+    @"unsigned long",
+    @"unsigned long long",
+    @"float",
+    @"double",
+    @"_Bool", /* C99 _Bool or C++ bool */
+    @"void",
+    @"STR",
+    @"Class",
+    @"SEL",
+    @"NXAtom",
+    @"void /*UNKNOWN*/",
+    @"const",
+    @"in",
+    @"inout",
+    @"out",
+    @"bycopy",
+    @"byref",
+    @"oneway"
 };
 
 struct my_objc_type *allocated_types = NULL;
@@ -92,8 +92,8 @@ struct my_objc_type *create_empty_type(void)
     tmp->subtype = NULL;
     tmp->next = NULL;
     tmp->type = 0;
-    tmp->var_name = NULL;
-    tmp->type_name = NULL;
+    tmp->var_name = nil;
+    tmp->type_name = nil;
 
     return tmp;
 }
@@ -112,14 +112,14 @@ struct my_objc_type *create_simple_type(int type)
     return t;
 }
 
-struct my_objc_type *create_id_type(char *name)
+struct my_objc_type *create_id_type(NSString *name)
 {
     struct my_objc_type *t = create_empty_type();
 
-    t->type_name = name;
+    t->type_name = [name retain];
 
     //NSLog(@"create_id_type(), name = %p", name);
-    if (name != NULL) {
+    if (name != nil) {
         //NSLog(@"T_NAMED_OBJECT %p:(%s)", name, name);
         t->type = T_NAMED_OBJECT;
         return create_pointer_type(t);
@@ -130,44 +130,44 @@ struct my_objc_type *create_id_type(char *name)
     return t;
 }
 
-struct my_objc_type *create_struct_type(char *name, struct my_objc_type *members)
+struct my_objc_type *create_struct_type(NSString *name, struct my_objc_type *members)
 {
     struct my_objc_type *t = create_empty_type();
 
     t->type = '{';
-    t->type_name = name;
+    t->type_name = [name retain];
     t->subtype = members;
 
     return t;
 }
 
-struct my_objc_type *create_union_type(struct my_objc_type *members, char *type_name)
+struct my_objc_type *create_union_type(struct my_objc_type *members, NSString *type_name)
 {
     struct my_objc_type *t = create_empty_type();
 
     t->type = '(';
     t->subtype = members;
-    t->type_name = type_name;
+    t->type_name = [type_name retain];
 
     return t;
 }
 
-struct my_objc_type *create_bitfield_type(char *size)
+struct my_objc_type *create_bitfield_type(NSString *size)
 {
     struct my_objc_type *t = create_empty_type();
 
     t->type = 'b';
-    t->bitfield_size = size;
+    t->bitfield_size = [size retain];
 
     return t;
 }
 
-struct my_objc_type *create_array_type(char *count, struct my_objc_type *type)
+struct my_objc_type *create_array_type(NSString *count, struct my_objc_type *type)
 {
     struct my_objc_type *t = create_empty_type();
 
     t->type = '[';
-    t->array_size = count;
+    t->array_size = [count retain];
     t->subtype = type;
 
     return t;
@@ -197,7 +197,7 @@ struct my_objc_type *create_modified_type(int modifier, struct my_objc_type *typ
 // Method creation functions
 //======================================================================
 
-struct method_type *create_method_type(struct my_objc_type *t, char *name)
+struct method_type *create_method_type(struct my_objc_type *t, NSString *name)
 {
     struct method_type *tmp = malloc(sizeof(struct method_type));
 
@@ -207,7 +207,7 @@ struct method_type *create_method_type(struct my_objc_type *t, char *name)
     allocated_methods = tmp;
 
     tmp->next = NULL;
-    tmp->name = name;
+    tmp->name = [name retain];
     tmp->type = t;
 
     return tmp;
@@ -293,7 +293,7 @@ NSString *string_from_simple_type(char c)
     NSString *str = nil;
 
     if (ptr != NULL)
-        str = [NSString stringWithFormat:@"%s", simple_type_names[ ptr - simple_types ]];
+        str = simple_type_names[ ptr - simple_types ];
     else
         NSLog(@"Unknown simple type '%c'", c);
 
@@ -317,19 +317,19 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
       case T_NAMED_OBJECT:
           //NSLog(@"string_from_type(), var_name = %p:'%s', type_name = %p:'%s'", t->var_name, t->var_name, t->type_name, t->type_name);
 
-          if (t->var_name == NULL)
+          if (t->var_name == nil)
               name = @"";
           else
-              name = [NSString stringWithFormat:@" %s", t->var_name];
+              name = [NSString stringWithFormat:@" %@", t->var_name];
 
-          tmp = [NSString stringWithFormat:@"%s%@ %@", t->type_name, name, inner]; // We always have a pointer to this type
+          tmp = [NSString stringWithFormat:@"%@%@ %@", t->type_name, name, inner]; // We always have a pointer to this type
           break;
 
       case '@':
-          if (t->var_name == NULL)
+          if (t->var_name == nil)
               name = @"";
           else
-              name = [NSString stringWithFormat:@" %s", t->var_name];
+              name = [NSString stringWithFormat:@" %@", t->var_name];
 
           if ([inner length] > 0)
               tmp = [NSString stringWithFormat:@"id%@ %@", name, inner];
@@ -338,34 +338,34 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           break;
 
       case 'b':
-          if (t->var_name == NULL)
+          if (t->var_name == nil)
               name = @"";
           else
-              name = [NSString stringWithFormat:@"%s", t->var_name];
+              name = [NSString stringWithFormat:@"%@", t->var_name];
 
-          tmp = [NSString stringWithFormat:@"int %@:%s%@", name, t->bitfield_size, inner];
+          tmp = [NSString stringWithFormat:@"int %@:%@%@", name, t->bitfield_size, inner];
           break;
 
       case '[':
-          if (t->var_name == NULL)
+          if (t->var_name == nil)
               name = @"";
           else
-              name = [NSString stringWithFormat:@"%s", t->var_name];
+              name = [NSString stringWithFormat:@"%@", t->var_name];
 
-          tmp = [NSString stringWithFormat:@"%@%@[%s]", inner, name, t->array_size];
+          tmp = [NSString stringWithFormat:@"%@%@[%@]", inner, name, t->array_size];
           tmp = string_from_type (t->subtype, tmp, expand, level);
           break;
 
       case '(':
-          if (t->var_name == NULL || t->var_name[0] == '?')
+          if (t->var_name == nil || [t->var_name hasPrefix:@"?"] == YES)
               name = @"";
           else
-              name = [NSString stringWithFormat:@"%s", t->var_name];
+              name = [NSString stringWithFormat:@"%@", t->var_name];
 
-          if (t->type_name == NULL)
+          if (t->type_name == nil)
               type_name = @"";
           else
-              type_name = [NSString stringWithFormat:@" %s", t->type_name];
+              type_name = [NSString stringWithFormat:@" %@", t->type_name];
 
           tmp = [NSString stringWithFormat:@"union%@", type_name];
           if (expand == 1 && t->subtype != NULL) {
@@ -379,18 +379,18 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           break;
 
       case '{':
-          if (t->var_name == NULL || t->var_name[0] == '?')
+          if (t->var_name == nil || [t->var_name hasPrefix:@"?"] == YES)
               name = @"";
           else
-              name = [NSString stringWithFormat:@"%s", t->var_name];
+              name = [NSString stringWithFormat:@"%@", t->var_name];
 
-          if (t->type_name == NULL)
+          if (t->type_name == nil)
               type_name = @"";
           else
-              type_name = [NSString stringWithFormat:@" %s", t->type_name];
+              type_name = [NSString stringWithFormat:@" %@", t->type_name];
 
-          if(t->type_name != NULL && t->type_name[0] == '?')
-              tmp = [NSString stringWithFormat:@"CDAnonymousStruct", t->type_name];
+          if(t->type_name != nil && [t->type_name hasPrefix:@"?"] == YES)
+              tmp = @"CDAnonymousStruct"; // TODO (2003-12-10): Need to verify this.
           else
               tmp = [NSString stringWithFormat:@"struct%@", type_name];
 
@@ -405,10 +405,10 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           break;
 
       case '^':
-          if (t->var_name == NULL)
+          if (t->var_name == nil)
               name = @"";
           else
-              name = [NSString stringWithFormat:@"%s", t->var_name];
+              name = [NSString stringWithFormat:@"%@", t->var_name];
 
           if (t->subtype != NULL && t->subtype->type == '[')
               tmp = [NSString stringWithFormat:@"(*%@%@)", inner, name];
@@ -430,10 +430,10 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           break;
 
       default:
-          if (t->var_name == NULL)
+          if (t->var_name == nil)
               name = @"";
           else
-              name = [NSString stringWithFormat:@"%s", t->var_name];
+              name = [NSString stringWithFormat:@"%@", t->var_name];
 
           if ([name length] == 0 && [inner length] == 0)
               tmp = string_from_simple_type(t->type);
@@ -494,7 +494,7 @@ void print_method(char method_type, const char *method_name, struct method_type 
                     print_type(m->type, expand_arg_structures_flag, 0);
                     printf(")");
                 }
-                printf("fp%s", m->name);
+                printf("fp%s", [m->name cString]);
                 method_name++;
                 if (*method_name != '\0' && *method_name != ':')
                     printf(" ");
@@ -519,10 +519,10 @@ void free_objc_type(struct my_objc_type *t)
         tmp = t;
         t = t->next;
 
-        if (tmp->var_name != NULL)
-            free(tmp->var_name);
-        if (tmp->type_name != NULL)
-            free(tmp->type_name);
+        if (tmp->var_name != nil)
+            [tmp->var_name release];
+        if (tmp->type_name != nil)
+            [tmp->type_name release];
         if (tmp->subtype != NULL)
             free_objc_type(tmp->subtype);
     }
@@ -552,10 +552,10 @@ void free_allocated_types(void)
         tmp = allocated_types;
         allocated_types = allocated_types->link;
 
-        if (tmp->var_name != NULL)
-            free(tmp->var_name);
-        if (tmp->type_name != NULL)
-            free(tmp->type_name);
+        if (tmp->var_name != nil)
+            [tmp->var_name release];
+        if (tmp->type_name != nil)
+            [tmp->type_name release];
     }
 }
 
@@ -571,37 +571,3 @@ void free_allocated_methods(void)
             free(tmp->name);
     }
 }
-
-#if 0
-// Replaces format_type() from gram.y
-NSString *CDFormatType(const char *type, const char *name, int level)
-{
-    NSString *result;
-    int parse_flag;
-    extern int expand_structures_flag;
-
-    result = [NSMutableString string];
-
-    rtype = NULL;
-    yy_scan_string(type);
-    parse_flag = parse_ivar_type();
-
-    if (parse_flag == 0) {
-        if (name != NULL)
-            rtype->type->var_name = strdup(name);
-        [result appendString:[NSString spacesIndentedToLevel:level]];
-        [result appendString:string_from_type(rtype->type, nil, expand_structures_flag, level)];
-        [result appendString:@";"];
-
-        rtype = NULL;
-    } else {
-        [result appendFormat:@"// Error! format_type('%s', '%s')\n", type, name];
-        [result appendString:@"\n\n"];
-    }
-
-    free_allocated_methods();
-    free_allocated_types();
-
-    return result;
-}
-#endif

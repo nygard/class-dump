@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.39 2003/12/10 06:21:50 nygard Exp $
+// $Id: class-dump.m,v 1.40 2003/12/11 05:54:26 nygard Exp $
 //
 
 //
@@ -1113,7 +1113,7 @@ void doTests(char *file)
 
     typeParser = [[CDTypeParser alloc] init];
 
-    printf("Testing %s\n", file);
+    NSLog(@"Testing %s", file);
     filename = [NSString stringWithCString:file];
     contents = [NSString stringWithContentsOfFile:filename];
     lines = [contents componentsSeparatedByString:@"\n"];
@@ -1125,24 +1125,30 @@ void doTests(char *file)
         line = [lines objectAtIndex:index];
         fields = [line componentsSeparatedByString:@"\t"];
         if ([fields count] >= 2) {
-            struct my_objc_type *result;
+            NSString *result;
 
             type = [fields objectAtIndex:0];
             name = [fields objectAtIndex:1];
-            //NSLog(@"%@\t%@", type, name);
-            result = [typeParser parseType:[type cString] name:[name cString]];
-            if (result != NULL) {
+            NSLog(@"%@\t%@", type, name);
+            result = [typeParser parseType:type name:name];
+            if (result != nil) {
+                //NSLog(@"Parsed okay");
+                NSLog(@"result: %@", result);
+#if 0
                 result->var_name = strdup([name cString]);
                 print_type(result, 0, 0);
                 printf(";");
                 //free_objc_type(result); // This function needs work to avoid double free()s.
+#endif
+            } else {
+                NSLog(@"Parse failed");
             }
-            printf("\t%s\t%s", [type cString], [name cString]);
-            printf("\n");
+            //printf("\t%s\t%s", type, name);
+            //printf("\n");
         }
     }
 
-    printf("Done.\n\n");
+    NSLog(@"Done.");
 
     [typeParser release];
 }

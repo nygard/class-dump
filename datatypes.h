@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.h,v 1.6 2003/09/09 22:51:04 nygard Exp $
+// $Id: datatypes.h,v 1.7 2003/12/11 05:54:26 nygard Exp $
 //
 
 //
@@ -34,8 +34,8 @@ struct my_objc_type
     struct my_objc_type *subtype;
     struct my_objc_type *next;
     int type;
-    char *var_name;
-    char *type_name;
+    NSString *var_name;
+    NSString *type_name;
 };
 
 #define array_size type_name
@@ -47,28 +47,27 @@ struct method_type
 {
     struct method_type *link;
     struct method_type *next;
-    char *name;
+    NSString *name;
     struct my_objc_type *type;
 };
 
 // These are from gram.y:
 extern void format_type(const char *type, const char *name, int level);
 extern void format_method(char method_type, const char *name, const char *types);
-//extern NSString *CDFormatType(const char *type, const char *name, int level);
 
 //======================================================================
 
 struct my_objc_type *create_empty_type(void);
 struct my_objc_type *create_simple_type(int type);
-struct my_objc_type *create_id_type(char *name);
-struct my_objc_type *create_struct_type(char *name, struct my_objc_type *members);
-struct my_objc_type *create_union_type(struct my_objc_type *members, char *type_name);
-struct my_objc_type *create_bitfield_type(char *size);
-struct my_objc_type *create_array_type(char *count, struct my_objc_type *type);
+struct my_objc_type *create_id_type(NSString *name);
+struct my_objc_type *create_struct_type(NSString *name, struct my_objc_type *members);
+struct my_objc_type *create_union_type(struct my_objc_type *members, NSString *type_name);
+struct my_objc_type *create_bitfield_type(NSString *size);
+struct my_objc_type *create_array_type(NSString *count, struct my_objc_type *type);
 struct my_objc_type *create_pointer_type(struct my_objc_type *type);
 struct my_objc_type *create_modified_type(int modifier, struct my_objc_type *type);
 
-struct method_type *create_method_type(struct my_objc_type *t, char *name);
+struct method_type *create_method_type(struct my_objc_type *t, NSString *name);
 
 struct my_objc_type *reverse_types(struct my_objc_type *t);
 struct method_type *reverse_method_types(struct method_type *m);
@@ -83,5 +82,7 @@ void free_method_type(struct method_type *m);
 
 void free_allocated_types(void);
 void free_allocated_methods(void);
+
+NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level);
 
 #endif

@@ -163,15 +163,30 @@
     }
 
     [resultString appendString:@"}\n\n"];
+
+    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    count = [sortedMethods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [resultString appendString:@"+ "];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString];
+            [resultString appendString:@"\n"];
+        }
+    }
+
     sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     count = [sortedMethods count];
     if (count > 0) {
         for (index = 0; index < count; index++) {
+            [resultString appendString:@"- "];
             [[sortedMethods objectAtIndex:index] appendToString:resultString];
             [resultString appendString:@"\n"];
         }
-        [resultString appendString:@"\n"];
     }
+
+    //[resultString appendFormat:@"// cm: %d, im: %d\n", [classMethods count], [instanceMethods count]];
+    if ([classMethods count] > 0 || [instanceMethods count] > 0)
+        [resultString appendString:@"\n"];
     [resultString appendString:@"@end\n\n"];
 }
 
