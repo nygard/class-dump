@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.4 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.4.2.1 2003/09/05 21:25:55 nygard Exp $
 //
 
 //
@@ -30,6 +30,8 @@
 #import <foundation/NSUtilities.h>
 #endif
 #import <stdio.h>
+
+extern void print_header(void);
 
 @implementation ObjcProtocol
 
@@ -84,6 +86,13 @@
     NSEnumerator *enumerator;
     ObjcMethod *method;
     NSString *protocolName;
+	
+	//	begin wolf
+	if( flags & F_SHOW_IMPORT ) {
+		print_header();
+		printf( "\n" );
+	}
+	//	end wolf
 
     printf ("@protocol %s", [protocol_name cString]);
 

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.4 2000/10/15 01:22:16 nygard Exp $
+// $Id: ObjcCategory.m,v 1.4.2.1 2003/09/05 21:25:54 nygard Exp $
 //
 
 //
@@ -58,6 +58,12 @@
     
     [super dealloc];
 }
+
+//	begin wolf
+- (NSString*) categoryName {
+	return category_name;
+}
+//	end wolf
 
 - (NSString *) sortableName
 {

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.m,v 1.3 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcIvar.m,v 1.3.2.1 2003/09/05 21:25:54 nygard Exp $
 //
 
 //
@@ -49,6 +49,12 @@
     
     [super dealloc];
 }
+
+//	begin wolf
+- (NSString *) type {
+	return ivar_type;
+}
+//	end wolf
 
 - (NSString *) description
 {

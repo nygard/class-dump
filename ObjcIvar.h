@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.h,v 1.5 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcIvar.h,v 1.5.2.1 2003/09/05 21:25:54 nygard Exp $
 //
 
 //
@@ -41,6 +41,9 @@
 - initWithName:(NSString *)ivarName type:(NSString *)ivarType offset:(long)ivarOffset;
 - (void) dealloc;
 
+//	begin wolf
+- (NSString *) type;
+//	end wolf
 - (NSString *) description;
 
 - (long) offset;

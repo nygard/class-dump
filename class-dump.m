@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.11 2001/03/27 10:40:34 nygard Exp $
+// $Id: class-dump.m,v 1.11.2.1 2003/09/05 21:25:55 nygard Exp $
 //
 
 //
@@ -84,7 +84,9 @@ struct dylib_command {
 
 //----------------------------------------------------------------------
 
-#define CLASS_DUMP_VERSION "2.1.5"
+//	begin wolf
+#define CLASS_DUMP_VERSION "2.1.5-wolf"
+//	end wolf
 
 int expand_structures_flag = 0;
 int char_star_flag = 0;
@@ -95,6 +97,7 @@ BOOL expand_protocols_flag = NO;
 BOOL match_flag = NO;
 BOOL expand_frameworks_flag = NO;
 BOOL sort_flag = NO;
+BOOL generate_headers_flag = NO;
 
 int swap_fat = 0;
 int swap_macho = 0;
@@ -205,6 +208,7 @@ NSArray *handle_objc_methods (struct my_objc_methods *methods, char ch);
 void show_single_module (struct section_info *module_info);
 void show_all_modules (void);
 void build_up_objc_segments (char *filename);
+void print_header (void);
 
 //======================================================================
 
@@ -764,6 +768,10 @@ void show_single_module (struct section_info *module_info)
     NSMutableArray *classList = [NSMutableArray array];
     NSArray *newClasses;
     int flags = 0;
+//	begin wolf
+	id en2, thing2;
+	NSMutableDictionary *categoryByName = [NSMutableDictionary dictionaryWithCapacity:5];
+//	end wolf
 
     if (module_info == NULL)
     {
@@ -778,6 +786,11 @@ void show_single_module (struct section_info *module_info)
 
     if (show_method_addresses_flag == YES)
         flags |= F_SHOW_METHOD_ADDRESS;
+	
+	//	begin wolf
+	if (generate_headers_flag == YES)
+		flags |= F_SHOW_IMPORT;
+	//	end wolf
 
     tmp = current_filename;
     m = module_info->start;
@@ -790,14 +803,20 @@ void show_single_module (struct section_info *module_info)
         currentFile = [mappedFilesByInstallName objectForKey:[NSString stringWithCString:module_info->filename]];
         installName = [currentFile installName];
         filename = [currentFile filename];
-        if (filename == nil || [installName isEqual:filename] == YES)
-        {
-            printf ("\n/*\n * File: %s\n */\n\n", module_info->filename);
-        }
-        else
-        {
-            printf ("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename cString], module_info->filename);
-        }
+//	begin wolf
+		if( generate_headers_flag == NO ) {
+//	end wolf
+			if (filename == nil || [installName isEqual:filename] == YES)
+			{
+				printf ("\n/*\n * File: %s\n */\n\n", module_info->filename);
+			}
+			else
+			{
+				printf ("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename cString], module_info->filename);
+			}
+//	begin wolf
+		}
+//	end wolf
     }
     current_filename = module_info->filename;
 
@@ -807,7 +826,51 @@ void show_single_module (struct section_info *module_info)
         [classList addObjectsFromArray:newClasses];
         m++;
     }
-
+	
+//	begin wolf
+	en = [[protocols allKeys] objectEnumerator];
+	while( key = [en nextObject] ) {
+		thing = [protocols objectForKey:key];
+		int old_stdout = dup( 1 );
+		freopen( [[NSString stringWithFormat:@"%@.h", [thing protocolName]] cString], "w", stdout );
+		[thing showDefinition:flags];
+		fclose( stdout );
+		fdopen( old_stdout, "w" );
+	}
+	en = [classList objectEnumerator];
+	while( thing = [en nextObject] ) {
+		if( [thing isKindOfClass:[ObjcCategory class]] ) {
+			NSMutableArray *categoryArray = [categoryByName objectForKey:[thing categoryName]];
+			if( categoryArray ) {
+				[categoryArray addObject:thing];
+			} else {
+				[categoryByName setObject:[NSMutableArray arrayWithObject:thing] forKey:[thing categoryName]];
+			}
+		} else {
+			int old_stdout = dup( 1 );
+			freopen( [[NSString stringWithFormat:@"%@.h", [thing className]] cString], "w", stdout );
+			[thing showDefinition:flags];
+			fclose( stdout );
+			fdopen( old_stdout, "w" );
+		}
+	}
+	
+	en = [[categoryByName allKeys] objectEnumerator];
+	while( key = [en nextObject] ) {
+		int old_stdout = dup( 1 );
+		freopen( [[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout );
+		
+			print_header();
+			thing = [categoryByName objectForKey:key];
+			en2 = [thing objectEnumerator];
+			while( thing2 = [en2 nextObject] ) {
+				[thing2 showDefinition:flags];
+			}
+		
+		fclose( stdout );
+		fdopen( old_stdout, "w" );
+	}
+//	end wolf
 
     if (sort_flag == YES)
         en = [[[protocols allKeys] sortedArrayUsingSelector:@selector (compare:)] objectEnumerator];
@@ -892,7 +955,10 @@ void print_usage (void)
              "        -C  only display classes matching regular expression\n"
              "        -r  recursively expand frameworks and fixed VM shared libraries\n"
              "        -s  convert STR to char *\n"
-             "        -S  sort protocols, classes, and methods\n",
+//	begin wolf
+             "        -S  sort protocols, classes, and methods\n"
+             "        -H  generate header files in current directory\n",
+//	end wolf
              CLASS_DUMP_VERSION
        );
 }
@@ -927,7 +993,9 @@ int main (int argc, char *argv[])
         exit (2);
     }
 
-    while ( (c = getopt (argc, argv, "aAeRC:rsS")) != EOF)
+//	begin wolf
+    while ( (c = getopt (argc, argv, "aAeRC:rsSH")) != EOF)
+//	end wolf
     {
         switch (c)
         {
@@ -977,6 +1045,12 @@ int main (int argc, char *argv[])
           case 'S':
               sort_flag = YES;
               break;
+              
+//	begin wolf
+          case 'H':
+              generate_headers_flag = YES;
+              break;
+//	end wolf
 
           case '?':
           default:
@@ -999,7 +1073,10 @@ int main (int argc, char *argv[])
     {
         build_up_objc_segments (argv[optind]);
 
-        print_header ();
+//	begin wolf
+		if( generate_headers_flag == NO )
+			print_header ();
+//	end wolf
 
         //debug_section_overlap ();
 

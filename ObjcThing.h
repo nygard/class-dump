@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.h,v 1.5 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcThing.h,v 1.5.2.1 2003/09/05 21:25:55 nygard Exp $
 //
 
 //
@@ -34,6 +34,9 @@
 #define F_SORT_METHODS        (1 << 0)
 #define F_SHOW_IVAR_OFFSET    (1 << 1)
 #define F_SHOW_METHOD_ADDRESS (1 << 2)
+//	begin wolf
+#define F_SHOW_IMPORT         (1 << 3)
+//	end wolf
 
 @interface ObjcThing : NSObject
 {
