@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.5 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcCategory.m,v 1.6 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -26,8 +26,10 @@
 //
 
 #import "ObjcCategory.h"
-#import "ObjcMethod.h"
+
 #import <stdio.h>
+#import <Foundation/Foundation.h>
+#import "ObjcMethod.h"
 
 @implementation ObjcCategory
 

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.h,v 1.6 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcProtocol.h,v 1.7 2002/12/19 05:59:38 nygard Exp $
 //
 
 //
@@ -25,9 +25,10 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#import <Foundation/Foundation.h>
-#import "ObjcThing.h"
-#import "ObjcMethod.h"
+#import "ObjcThing.h";
+
+@class NSArray, NSMutableArray, NSString;
+@class ObjcMethod;
 
 @interface ObjcProtocol : ObjcThing
 {

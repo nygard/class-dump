@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.h,v 1.6 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcIvar.h,v 1.7 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -25,7 +25,9 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObject.h>
+
+@class NSString;
 
 @interface ObjcIvar : NSObject
 {

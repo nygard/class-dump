@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.h,v 1.7 2002/12/19 05:44:46 nygard Exp $
+// $Id: MappedFile.h,v 1.8 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -28,7 +28,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObject.h>
+
+@class NSData, NSString;
 
 // And most of this could be done with NSData - initWithContentsOfMappedFile:
 

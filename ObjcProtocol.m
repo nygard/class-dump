@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.5 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.6 2002/12/19 05:59:38 nygard Exp $
 //
 
 //
@@ -26,7 +26,10 @@
 //
 
 #import "ObjcProtocol.h"
+
 #import <stdio.h>
+#import <Foundation/Foundation.h>
+#import "ObjcMethod.h"
 
 @implementation ObjcProtocol
 

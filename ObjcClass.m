@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.7 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcClass.m,v 1.8 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -26,10 +26,12 @@
 //
 
 #import "ObjcClass.h"
+
+#import <Foundation/Foundation.h>
+#include <stdio.h>
 #include "datatypes.h"
 #import "ObjcIvar.h"
 #import "ObjcMethod.h"
-#import <stdio.h>
 
 @implementation ObjcClass
 

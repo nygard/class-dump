@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.h,v 1.6 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcThing.h,v 1.7 2002/12/19 05:59:38 nygard Exp $
 //
 
 //
@@ -25,11 +25,13 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#import <Foundation/Foundation.h>
+#import <Foundation/NSObject.h>
 
 #define F_SORT_METHODS        (1 << 0)
 #define F_SHOW_IVAR_OFFSET    (1 << 1)
 #define F_SHOW_METHOD_ADDRESS (1 << 2)
+
+@class NSString;
 
 @interface ObjcThing : NSObject
 {

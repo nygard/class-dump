@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.h,v 1.6 2002/12/19 05:44:46 nygard Exp $
+// $Id: ObjcCategory.h,v 1.7 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -25,8 +25,9 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#import <Foundation/Foundation.h>
 #import "ObjcThing.h"
+
+@class NSArray, NSMutableArray, NSString;
 
 @interface ObjcCategory : ObjcThing
 {

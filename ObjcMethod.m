@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.m,v 1.3 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcMethod.m,v 1.4 2002/12/19 05:59:38 nygard Exp $
 //
 
 //
@@ -26,6 +26,8 @@
 //
 
 #import "ObjcMethod.h"
+
+#import <Foundation/Foundation.h>
 #include "datatypes.h"
 
 @implementation ObjcMethod

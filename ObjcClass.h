@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.8 2002/12/19 05:44:47 nygard Exp $
+// $Id: ObjcClass.h,v 1.9 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -25,8 +25,9 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#import <Foundation/Foundation.h>
 #import "ObjcThing.h"
+
+@class NSArray, NSMutableArray, NSMutableDictionary, NSString;
 
 @interface ObjcClass : ObjcThing
 {

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.m,v 1.5 2002/12/19 05:03:42 nygard Exp $
+// $Id: ObjcThing.m,v 1.6 2002/12/19 05:59:38 nygard Exp $
 //
 
 //
@@ -26,6 +26,8 @@
 //
 
 #import "ObjcThing.h"
+
+#import <Foundation/Foundation.h>
 
 @implementation ObjcThing
 

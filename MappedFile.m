@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.8 2002/12/19 05:44:46 nygard Exp $
+// $Id: MappedFile.m,v 1.9 2002/12/19 05:59:37 nygard Exp $
 //
 
 //
@@ -26,6 +26,7 @@
 //
 
 #import "MappedFile.h"
+#import <Foundation/Foundation.h>
 
 #include <stdio.h>
 #include <libc.h>
