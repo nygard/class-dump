@@ -9,7 +9,7 @@
 #import "CDSegmentCommand.h"
 #import "CDDylibCommand.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDLoadCommand.m,v 1.5 2004/01/06 02:31:40 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDLoadCommand.m,v 1.6 2004/02/11 00:39:47 nygard Exp $");
 
 @implementation CDLoadCommand
 
@@ -61,30 +61,34 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDLoadCommand.m,v 1.5 2004/0
 {
     unsigned long cmd = loadCommand->cmd;
 
-    if (cmd == LC_SEGMENT) return @"SEGMENT";
-    if (cmd == LC_SYMTAB) return @"SYMTAB";
-    if (cmd == LC_SYMSEG) return @"SYMSEG";
-    if (cmd == LC_THREAD) return @"THREAD";
-    if (cmd == LC_UNIXTHREAD) return @"UNIXTHREAD";
-    if (cmd == LC_LOADFVMLIB) return @"LOADFVMLIB";
-    if (cmd == LC_IDFVMLIB) return @"IDFVMLIB";
-    if (cmd == LC_IDENT) return @"IDENT";
-    if (cmd == LC_FVMFILE) return @"FVMFILE";
-    if (cmd == LC_PREPAGE) return @"PREPAGE";
-    if (cmd == LC_DYSYMTAB) return @"DYSYMTAB";
-    if (cmd == LC_LOAD_DYLIB) return @"LOAD_DYLIB";
-    if (cmd == LC_ID_DYLIB) return @"ID_DYLIB";
-    if (cmd == LC_LOAD_DYLINKER) return @"LOAD_DYLINKER";
-    if (cmd == LC_ID_DYLINKER) return @"ID_DYLINKER";
-    if (cmd == LC_PREBOUND_DYLIB) return @"PREBOUND_DYLIB";
-    if (cmd == LC_ROUTINES) return @"ROUTINES";
-    if (cmd == LC_SUB_FRAMEWORK) return @"SUB_FRAMEWORK";
-    if (cmd == LC_SUB_UMBRELLA) return @"SUB_UMBRELLA";
-    if (cmd == LC_SUB_CLIENT) return @"SUB_CLIENT";
-    if (cmd == LC_SUB_LIBRARY) return @"SUB_LIBRARY";
-    if (cmd == LC_TWOLEVEL_HINTS) return @"TWOLEVEL_HINTS";
-    if (cmd == LC_PREBIND_CKSUM) return @"PREBIND_CKSUM";
-    if (cmd == LC_LOAD_WEAK_DYLIB) return @"LOAD_WEAK_DYLIB";
+    switch (cmd) {
+      case LC_SEGMENT: return @"SEGMENT";
+      case LC_SYMTAB: return @"SYMTAB";
+      case LC_SYMSEG: return @"SYMSEG";
+      case LC_THREAD: return @"THREAD";
+      case LC_UNIXTHREAD: return @"UNIXTHREAD";
+      case LC_LOADFVMLIB: return @"LOADFVMLIB";
+      case LC_IDFVMLIB: return @"IDFVMLIB";
+      case LC_IDENT: return @"IDENT";
+      case LC_FVMFILE: return @"FVMFILE";
+      case LC_PREPAGE: return @"PREPAGE";
+      case LC_DYSYMTAB: return @"DYSYMTAB";
+      case LC_LOAD_DYLIB: return @"LOAD_DYLIB";
+      case LC_ID_DYLIB: return @"ID_DYLIB";
+      case LC_LOAD_DYLINKER: return @"LOAD_DYLINKER";
+      case LC_ID_DYLINKER: return @"ID_DYLINKER";
+      case LC_PREBOUND_DYLIB: return @"PREBOUND_DYLIB";
+      case LC_ROUTINES: return @"ROUTINES";
+      case LC_SUB_FRAMEWORK: return @"SUB_FRAMEWORK";
+      case LC_SUB_UMBRELLA: return @"SUB_UMBRELLA";
+      case LC_SUB_CLIENT: return @"SUB_CLIENT";
+      case LC_SUB_LIBRARY: return @"SUB_LIBRARY";
+      case LC_TWOLEVEL_HINTS: return @"TWOLEVEL_HINTS";
+      case LC_PREBIND_CKSUM: return @"PREBIND_CKSUM";
+      case LC_LOAD_WEAK_DYLIB: return @"LOAD_WEAK_DYLIB";
+      default:
+          break;
+    }
 
     return @"<unknown load command>";
 }
