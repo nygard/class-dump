@@ -89,7 +89,7 @@
             [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString];
         }
 
-#if 0
+#if 1
         NSLog(@"formatted result:\n%@", resultString);
 #else
         // For sampling

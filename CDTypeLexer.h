@@ -13,11 +13,12 @@
     BOOL isInIdentifierState;
     NSString *lexText;
 
-    NSCharacterSet *identifierStartSet;
-    NSCharacterSet *identifierSet;
-
     BOOL shouldShowLexing;
 }
+
++ (NSCharacterSet *)otherCharacterSet;
++ (NSCharacterSet *)identifierStartCharacterSet;
++ (NSCharacterSet *)identifierCharacterSet;
 
 - (id)initWithString:(NSString *)aString;
 - (void)dealloc;

@@ -5,33 +5,62 @@
 
 @implementation CDTypeLexer
 
+// other: $_:*
+// start: alpha + other
+// remainder: alnum + other
+
++ (NSCharacterSet *)otherCharacterSet;
+{
+    static NSCharacterSet *otherCharacterSet = nil;
+
+    if (otherCharacterSet == nil)
+        otherCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"$_:*"] retain];
+
+    return otherCharacterSet;
+}
+
++ (NSCharacterSet *)identifierStartCharacterSet;
+{
+    static NSCharacterSet *identifierStartCharacterSet = nil;
+
+    if (identifierStartCharacterSet == nil) {
+        NSMutableCharacterSet *aSet;
+
+        aSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
+        [aSet formUnionWithCharacterSet:[CDTypeLexer otherCharacterSet]];
+        identifierStartCharacterSet = [aSet copy];
+
+        [aSet release];
+    }
+
+    return identifierStartCharacterSet;
+}
+
++ (NSCharacterSet *)identifierCharacterSet;
+{
+    static NSCharacterSet *identifierCharacterSet = nil;
+
+    if (identifierCharacterSet == nil) {
+        NSMutableCharacterSet *aSet;
+
+        aSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+        [aSet formUnionWithCharacterSet:[CDTypeLexer otherCharacterSet]];
+        identifierCharacterSet = [aSet copy];
+
+        [aSet release];
+    }
+
+    return identifierCharacterSet;
+}
+
 - (id)initWithString:(NSString *)aString;
 {
-    NSCharacterSet *otherCharacterSet;
-    NSMutableCharacterSet *aSet;
-
     if ([super init] == nil)
         return nil;
 
     scanner = [[NSScanner alloc] initWithString:aString];
     [scanner setCharactersToBeSkipped:nil];
     isInIdentifierState = NO;
-
-    // other: $_:*
-    // start: alpha + other
-    // remainder: alnum + other
-
-    otherCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"$_:*"];
-
-    aSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
-
-    [aSet formUnionWithCharacterSet:otherCharacterSet];
-    identifierStartSet = [aSet copy];
-
-    [aSet formUnionWithCharacterSet:[NSCharacterSet decimalDigitCharacterSet]];
-    identifierSet = [aSet copy];
-
-    [aSet release];
 
     return self;
 }
@@ -40,8 +69,6 @@
 {
     [scanner release];
     [lexText release];
-    [identifierStartSet release];
-    [identifierSet release];
 
     [super dealloc];
 }
@@ -105,8 +132,8 @@
             return '"';
         }
 
-        if ([scanner scanCharacterFromSet:identifierStartSet intoString:&start] == YES) {
-            if ([scanner scanCharactersFromSet:identifierSet intoString:&remainder] == YES) {
+        if ([scanner scanCharacterFromSet:[CDTypeLexer identifierStartCharacterSet] intoString:&start] == YES) {
+            if ([scanner scanCharactersFromSet:[CDTypeLexer identifierCharacterSet] intoString:&remainder] == YES) {
                 str = [start stringByAppendingString:remainder];
             } else {
                 str = start;
