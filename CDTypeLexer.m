@@ -181,4 +181,9 @@
     lexText = [newString retain];
 }
 
+- (unichar)peekChar;
+{
+    return [scanner peekChar];
+}
+
 @end

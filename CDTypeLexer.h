@@ -1,4 +1,5 @@
 #import <Foundation/NSObject.h>
+#import <Foundation/NSString.h> // for unichar
 
 #define TK_EOS 0
 #define TK_NUMBER 257
@@ -34,5 +35,7 @@
 
 - (NSString *)lexText;
 - (void)_setLexText:(NSString *)newString;
+
+- (unichar)peekChar;
 
 @end

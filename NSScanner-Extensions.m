@@ -15,6 +15,11 @@
     return [[self string] substringWithRange:NSMakeRange([self scanLocation], 1)];
 }
 
+- (unichar)peekChar;
+{
+    return [[self string] characterAtIndex:[self scanLocation]];
+}
+
 - (BOOL)scanCharacter:(unichar *)value;
 {
     unichar ch;

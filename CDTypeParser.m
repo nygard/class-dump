@@ -134,6 +134,11 @@ NSString *CDTokenDescription(int token)
 
 - (CDType *)_parseType;
 {
+    return [self _parseTypeUseClassNameHeuristics:NO];
+}
+
+- (CDType *)_parseTypeUseClassNameHeuristics:(BOOL)shouldUseHeuristics;
+{
     CDType *result;
 
     if (lookahead == 'r'
@@ -148,13 +153,13 @@ NSString *CDTokenDescription(int token)
         modifier = lookahead;
         [self match:modifier];
 
-        unmodifiedType = [self _parseType];
+        unmodifiedType = [self _parseTypeUseClassNameHeuristics:shouldUseHeuristics];
         result = [[CDType alloc] initModifier:modifier type:unmodifiedType];
     } else if (lookahead == '^') { // pointer
         CDType *type;
 
         [self match:'^'];
-        type = [self _parseType];
+        type = [self _parseTypeUseClassNameHeuristics:shouldUseHeuristics];
         result = [[CDType alloc] initPointerType:type];
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
@@ -164,7 +169,9 @@ NSString *CDTokenDescription(int token)
         result = [[CDType alloc] initBitfieldType:number];
     } else if (lookahead == '@') { // id
         [self match:'@'];
-        if (lookahead == '"') {
+
+        if (lookahead == '"' && (shouldUseHeuristics == NO
+                                        || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[lexer peekChar]] == YES)) {
             NSString *name;
 
             name = [self parseQuotedName];
@@ -276,7 +283,7 @@ NSString *CDTokenDescription(int token)
         NSString *identifier;
 
         identifier = [self parseQuotedName];
-        result = [self _parseType];
+        result = [self _parseTypeUseClassNameHeuristics:YES];
         [result setVariableName:identifier];
     } else {
         result = [self _parseType];

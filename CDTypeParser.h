@@ -29,6 +29,7 @@ extern NSString *CDSyntaxError;
 
 - (NSArray *)_parseMethodType;
 - (CDType *)_parseType;
+- (CDType *)_parseTypeUseClassNameHeuristics:(BOOL)shouldUseHeuristics;
 
 - (NSArray *)parseUnionTypes;
 - (NSArray *)parseOptionalMembers;
