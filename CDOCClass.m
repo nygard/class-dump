@@ -17,6 +17,7 @@
 {
     [name release];
     [superClassName release];
+    [protocols release];
     [ivars release];
     [classMethods release];
     [instanceMethods release];
@@ -50,6 +51,20 @@
 
     [superClassName release];
     superClassName = [newSuperClassName retain];
+}
+
+- (NSArray *)protocols;
+{
+    return protocols;
+}
+
+- (void)setProtocols:(NSArray *)newProtocols;
+{
+    if (newProtocols == protocols)
+        return;
+
+    [protocols release];
+    protocols = [newProtocols retain];
 }
 
 - (NSArray *)ivars;
@@ -110,9 +125,12 @@
 
     // Need to handle adopted protocols
     [result appendString:@"\n{\n"];
-    if ([ivars count] > 0)
+    if ([ivars count] > 0) {
         [result appendString:[[ivars arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
-    [result appendString:@"\n}\n\n"];
+        [result appendString:@"\n"];
+    }
+
+    [result appendString:@"}\n\n"];
     if ([instanceMethods count] > 0) {
         [result appendString:[[instanceMethods arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
         [result appendString:@"\n\n"];
@@ -120,6 +138,46 @@
     [result appendString:@"@end\n"];
 
     return result;
+}
+
+- (void)appendToString:(NSMutableString *)resultString;
+{
+    int count, index;
+    NSArray *sortedMethods;
+
+    [resultString appendFormat:@"@interface %@", name];
+    if (superClassName != nil)
+        [resultString appendFormat:@":%@", superClassName]; // Add space later, keep this way for backwards compatability
+
+    // TODO: Need to handle adopted protocols
+    if ([protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+
+    [resultString appendString:@"\n{\n"];
+    count = [ivars count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [[ivars objectAtIndex:index] appendToString:resultString];
+            [resultString appendString:@"\n"];
+        }
+    }
+
+    [resultString appendString:@"}\n\n"];
+    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    count = [sortedMethods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [[sortedMethods objectAtIndex:index] appendToString:resultString];
+            [resultString appendString:@"\n"];
+        }
+        [resultString appendString:@"\n"];
+    }
+    [resultString appendString:@"@end\n\n"];
+}
+
+- (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherClass;
+{
+    return [name compare:[otherClass name]];
 }
 
 @end

@@ -68,4 +68,15 @@
     return [NSString stringWithFormat:@"[%@] name: %@, version: %d, symtab: %@", NSStringFromClass([self class]), name, version, symtab];
 }
 
+- (NSString *)formattedString;
+{
+    return [NSString stringWithFormat:@"/*\n * %@\n */\n", name];
+}
+
+- (void)appendToString:(NSMutableString *)resultString;
+{
+    [resultString appendFormat:@"/*\n * %@\n */\n\n", name];
+    [symtab appendToString:resultString];
+}
+
 @end

@@ -1,11 +1,12 @@
 #import <Foundation/NSObject.h>
 
-@class NSArray, NSString;
+@class NSArray, NSMutableString, NSString;
 
 @interface CDOCClass : NSObject
 {
     NSString *name;
     NSString *superClassName; // TODO (2003-12-17): Have CDClassDump2 keep track of the name and build the tree,  linking directly to an appropriate class
+    NSArray *protocols;
     NSArray *ivars;
     NSArray *classMethods;
     NSArray *instanceMethods;
@@ -20,6 +21,9 @@
 - (NSString *)superClassName;
 - (void)setSuperClassName:(NSString *)newSuperClassName;
 
+- (NSArray *)protocols;
+- (void)setProtocols:(NSArray *)newProtocols;
+
 - (NSArray *)ivars;
 - (void)setIvars:(NSArray *)newIvars;
 
@@ -32,5 +36,8 @@
 - (NSString *)description;
 
 - (NSString *)formattedString;
+- (void)appendToString:(NSMutableString *)resultString;
+
+- (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherIvar;
 
 @end

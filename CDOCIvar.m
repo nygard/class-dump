@@ -50,4 +50,9 @@
     return [NSString stringWithFormat:@"\t%@", name];
 }
 
+- (void)appendToString:(NSMutableString *)resultString;
+{
+    [resultString appendFormat:@"\t%@", name];
+}
+
 @end

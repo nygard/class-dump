@@ -1,5 +1,6 @@
 #import <Foundation/NSObject.h>
 
+@class NSMutableString;
 @class CDOCSymtab;
 
 @interface CDOCModule : NSObject
@@ -23,5 +24,8 @@
 - (void)setSymtab:(CDOCSymtab *)newSymtab;
 
 - (NSString *)description;
+- (NSString *)formattedString;
+
+- (void)appendToString:(NSMutableString *)resultString;
 
 @end

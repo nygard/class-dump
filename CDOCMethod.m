@@ -53,4 +53,14 @@
     return [NSString stringWithFormat:@"- %@", name];
 }
 
+- (void)appendToString:(NSMutableString *)resultString;
+{
+    [resultString appendFormat:@"- %@", name];
+}
+
+- (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
+{
+    return [name compare:[otherMethod name]];
+}
+
 @end

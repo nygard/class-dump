@@ -15,9 +15,7 @@
 
     data = [[NSData alloc] initWithContentsOfMappedFile:filename];
     header = [data bytes];
-    if (header->magic == MH_MAGIC)
-        NSLog(@"MH_MAGIC");
-    else {
+    if (header->magic != MH_MAGIC) {
         if (header->magic == MH_CIGAM)
             NSLog(@"MH_CIGAM");
         else
@@ -181,7 +179,7 @@
     }
     //NSLog(@"[segment name]: %@", [segment name]);
     if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
-        [self showWarning:[NSString stringWithFormat:@"addr %p in segment %@, required segment is %@", vmaddr, [segment name], aSegmentName]];
+        //[self showWarning:[NSString stringWithFormat:@"addr %p in segment %@, required segment is %@", vmaddr, [segment name], aSegmentName]];
         return NULL;
     }
 #if 0

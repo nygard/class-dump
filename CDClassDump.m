@@ -39,8 +39,6 @@
 
 - (void)doSomething;
 {
-    CDOCProtocol *aProtocol;
-
     NSLog(@" > %s", _cmd);
 
 #if 0
@@ -61,8 +59,6 @@
     const struct cd_objc_module *ptr;
     int count, index;
 
-    NSLog(@" > %s", _cmd);
-
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
     moduleSection = [objcSegment sectionWithName:@"__module_info"];
 
@@ -78,10 +74,9 @@
         aModule = [[CDOCModule alloc] init];
         [aModule setVersion:ptr->version];
         [aModule setName:[machOFile stringFromVMAddr:ptr->name]];
-        NSLog(@"----------------------------------------------------------------------");
         [aModule setSymtab:[self processSymtab:ptr->symtab]];
-        NSLog(@"aModule: %@", aModule);
         [modules addObject:aModule];
+
         [aModule release];
     }
 }
@@ -96,12 +91,10 @@
     int index, defIndex;
     NSMutableArray *classes, *categories;
 
-    // class pointer: 0xa2df7fdc
-
     // TODO: Should we convert to pointer here or in caller?
     ptr = [machOFile pointerFromVMAddr:symtab segmentName:@"__OBJC"];
     if (ptr == NULL) {
-        NSLog(@"Skipping this symtab.");
+        //NSLog(@"Skipping this symtab.");
         return nil;
     }
 
@@ -110,41 +103,35 @@
     classes = [[NSMutableArray alloc] init];
     categories = [[NSMutableArray alloc] init];
 
-    NSLog(@"%s, symtab: %p, ptr: %p", _cmd, symtab, ptr);
-    NSLog(@"sel_ref_cnt: %p, refs: %p, cls_def_count: %d, cat_def_count: %d", ptr->sel_ref_cnt, ptr->refs, ptr->cls_def_count, ptr->cat_def_count);
+    //NSLog(@"%s, symtab: %p, ptr: %p", _cmd, symtab, ptr);
+    //NSLog(@"sel_ref_cnt: %p, refs: %p, cls_def_count: %d, cat_def_count: %d", ptr->sel_ref_cnt, ptr->refs, ptr->cls_def_count, ptr->cat_def_count);
 
     //defs = &ptr->class_pointer;
     defs = (unsigned long *)(ptr + 1);
     defIndex = 0;
 
     if (ptr->cls_def_count > 0) {
-        NSLog(@"%d classes:", ptr->cls_def_count);
-
         for (index = 0; index < ptr->cls_def_count; index++, defs++, defIndex++) {
             CDOCClass *aClass;
 
-            NSLog(@"defs[%d]: %p", index, *defs);
+            //NSLog(@"defs[%d]: %p", index, *defs);
             aClass = [self processClassDefinition:*defs];
-            //NSLog(@"aClass: %@", aClass);
-            //NSLog(@"%@", [aClass formattedString]);
             [classes addObject:aClass];
         }
     }
 
     if (ptr->cat_def_count > 0) {
-        NSLog(@"%d categories:", ptr->cat_def_count);
-        //NSLog(@"Later.");
-#if 1
+        //NSLog(@"%d categories:", ptr->cat_def_count);
+
         for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
-            NSLog(@"defs[%d]: %p", index, *defs);
+            //NSLog(@"defs[%d]: %p", index, *defs);
             [self processCategoryDefinition:*defs];
         }
-#endif
     }
 
     [aSymtab setClasses:[NSArray arrayWithArray:classes]];
 
-    NSLog(@"\n\n\n%@\n\n\n", [[classes arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]);
+    //NSLog(@"Classes:\n%@\n", [[classes arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]);
 
     [classes release];
     [categories release];
@@ -165,7 +152,6 @@
     [aClass setSuperClassName:[machOFile stringFromVMAddr:classPtr->super_class]];
 
     // Process ivars
-    NSLog(@"classPtr->ivars: %p", classPtr->ivars);
     if (classPtr->ivars != 0) {
         const struct cd_objc_ivars *ivarsPtr;
         const struct cd_objc_ivar *ivarPtr;
@@ -185,12 +171,12 @@
             [anIvar release];
         }
 
-        [aClass setIvars:[ivars reversedArray]];
+        //[aClass setIvars:[ivars reversedArray]];
+        [aClass setIvars:[NSArray arrayWithArray:ivars]];
         [ivars release];
     }
 
     // Process methods
-    NSLog(@"classPtr->methods: %p", classPtr->methods);
     [aClass setInstanceMethods:[self processMethods:classPtr->methods]];
 
     // Process meta class
@@ -205,9 +191,7 @@
     }
 
     // Process protocols
-    NSLog(@"Protocols start (%@) ************************************************************", [aClass name]);
-    [self processProtocolList:classPtr->protocols];
-    NSLog(@"Protocols end (%@) ************************************************************", [aClass name]);
+    [aClass setProtocols:[self processProtocolList:classPtr->protocols]];
 
     return aClass;
 }
@@ -224,12 +208,10 @@
     if (protocolListAddr == 0)
         return protocols;
 
-    //NSLog(@"protocolListAddr: %p", protocolListAddr);
     protocolList = [machOFile pointerFromVMAddr:protocolListAddr];
     // Compiler doesn't like the double star cast.
     protocolPtrs = (void *)(protocolList + 1);
     //protocolPtrs = (unsigned long **)(protocolList + 1);
-    NSLog(@"%d protocols:", protocolList->count);
     for (index = 0; index < protocolList->count; index++, protocolPtrs++) {
         [protocols addObject:[self processProtocol:*protocolPtrs]];
     }
@@ -244,14 +226,10 @@
     NSString *name;
     NSArray *protocols;
 
-    //NSLog(@" > %s (%p)", _cmd, protocolAddr);
-    //NSLog(@"%s, protocolAddr: %p", _cmd, protocolAddr);
     protocolPtr = [machOFile pointerFromVMAddr:protocolAddr];
 
     name = [machOFile stringFromVMAddr:protocolPtr->protocol_name];
     protocols = [self processProtocolList:protocolPtr->protocol_list];
-
-    //NSLog(@"Processing protocol (%p) %@, adopts %@", protocolAddr, name, [[protocols arrayByMappingSelector:@selector(name)] description]);
 
     aProtocol = [protocolsByName objectForKey:name];
     if (aProtocol == nil) {
@@ -268,9 +246,6 @@
         [aProtocol setMethods:[self processProtocolMethods:protocolPtr->instance_methods]];
 
     // TODO (2003-12-09): Maybe we should add any missing methods.  But then we'd lose the original order.
-
-    //NSLog(@"aProtocol: %@", aProtocol);
-    //NSLog(@"formatted protocol: %@", [aProtocol formattedString]);
 
     return aProtocol;
 }
@@ -333,12 +308,12 @@
 {
     //const struct cd_objc_class *ptr;
 
-    NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", _cmd);
 
     //ptr = [machOFile pointerFromVMAddr:defRef];
     //NSLog(@"isa: %p", ptr->isa);
 
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 }
 
 // Protocol reference other protocols, so we can't try to create them
@@ -353,40 +328,66 @@
     CDOCProtocol *aProtocol;
     int count, index;
 
-    NSLog(@"\n\n\n\n\n\n\n\n\n\n");
-    NSLog(@" > %s", _cmd);
-
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
     protocolSection = [objcSegment sectionWithName:@"__protocol"];
-    NSLog(@"protocolSection: %@", protocolSection);
 
     addr = [protocolSection addr];
 
-    NSLog(@"[protocolSection size]: %d", [protocolSection size]);
-    NSLog(@"sizeof(struct cd_objc_protocol): %d", sizeof(struct cd_objc_protocol));
     count = [protocolSection size] / sizeof(struct cd_objc_protocol);
-    NSLog(@"%d protocols in __protocol section", count);
-    for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol)) {
-        //NSLog(@"%d: addr = %p", index, addr);
+    for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol))
         aProtocol = [self processProtocol:addr];
-        //NSLog(@"%d: aProtocol: %@", index, aProtocol);
-    }
-
-    {
-        NSLog(@"unique protocols: %@", [protocolsByName allValues]);
-        NSLog(@"\n\n\n\n\n\n\n\n\n\n");
-        NSLog(@"protocols in order: \n%@",
-              [[[protocolsByName allValues] arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n\n"]);
-    }
-
-    NSLog(@"<  %s", _cmd);
 }
 
 - (void)checkUnreferencedProtocols;
 {
     NSLog(@" > %s", _cmd);
-    NSLog(@"protocolNames: %@", protocolNames);
     NSLog(@"<  %s", _cmd);
+}
+
+- (NSString *)formattedStringByModule;
+{
+    NSMutableString *resultString;
+    int count, index;
+
+    resultString = [NSMutableString string];
+
+    // TODO: Show protocols
+
+    count = [modules count];
+    for (index = 0; index < count; index++)
+        [[modules objectAtIndex:index] appendToString:resultString];
+
+    return resultString;
+}
+
+- (NSString *)formattedStringByClass;
+{
+    NSMutableString *resultString;
+    int count, index;
+    NSMutableArray *allClasses;
+
+    resultString = [NSMutableString string];
+    allClasses = [[NSMutableArray alloc] init];
+
+    // TODO: Show protocols
+
+    count = [modules count];
+    for (index = 0; index < count; index++) {
+        NSArray *moduleClasses;
+
+        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
+        if (moduleClasses != nil)
+            [allClasses addObjectsFromArray:moduleClasses];
+    }
+
+    [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+    count = [allClasses count];
+    for (index = 0; index < count; index++)
+        [[allClasses objectAtIndex:index] appendToString:resultString];
+
+    [allClasses release];
+
+    return resultString;
 }
 
 @end

@@ -125,4 +125,7 @@ struct cd_objc_protocol_method
 - (void)processProtocolSection;
 - (void)checkUnreferencedProtocols;
 
+- (NSString *)formattedStringByModule;
+- (NSString *)formattedStringByClass;
+
 @end

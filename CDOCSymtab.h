@@ -1,6 +1,6 @@
 #import <Foundation/NSObject.h>
 
-@class NSArray;
+@class NSArray, NSMutableString;
 
 @interface CDOCSymtab : NSObject
 {
@@ -18,5 +18,7 @@
 - (void)setCategories:(NSArray *)newCategories;
 
 - (NSString *)description;
+
+- (void)appendToString:(NSMutableString *)resultString;
 
 @end

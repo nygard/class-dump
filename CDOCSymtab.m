@@ -53,4 +53,15 @@
     return [NSString stringWithFormat:@"[%@] classes: %@, categories: %@", NSStringFromClass([self class]), classes, categories];
 }
 
+- (void)appendToString:(NSMutableString *)resultString;
+{
+    int count, index;
+
+    count = [classes count];
+    for (index = 0; index < count; index++)
+        [[classes objectAtIndex:index] appendToString:resultString];
+
+    // TODO: And categories.
+}
+
 @end

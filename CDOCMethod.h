@@ -1,6 +1,6 @@
 #import <Foundation/NSObject.h>
 
-@class NSString;
+@class NSMutableString, NSString;
 
 @interface CDOCMethod : NSObject
 {
@@ -18,5 +18,8 @@
 
 - (NSString *)description;
 - (NSString *)formattedString;
+- (void)appendToString:(NSMutableString *)resultString;
+
+- (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 
 @end
