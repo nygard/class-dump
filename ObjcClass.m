@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.11 2002/12/19 06:41:30 nygard Exp $
+// $Id: ObjcClass.m,v 1.12 2002/12/19 06:56:57 nygard Exp $
 //
 
 //
@@ -52,7 +52,7 @@
     BOOL done;
 
     classDict = [ObjcClass classDict];
-    classes = [[[NSMutableArray alloc] init] autorelease];
+    classes = [NSMutableArray array]
 
     do {
         NSEnumerator *enumerator;
@@ -207,6 +207,7 @@
         enumerator = [[instanceMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
     else
         enumerator = [instanceMethods reverseObjectEnumerator];
+
     while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)
