@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeLexer.h,v 1.7 2004/01/06 02:31:44 nygard Exp $
+// $Id: CDTypeLexer.h,v 1.8 2004/01/20 05:31:43 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -39,7 +39,7 @@
 - (void)setShouldShowLexing:(BOOL)newFlag;
 
 - (NSString *)string;
-- (int)nextToken;
+- (int)scanNextToken;
 
 - (NSString *)lexText;
 - (void)_setLexText:(NSString *)newString;

@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.10 2004/01/18 00:42:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.11 2004/01/20 05:31:43 nygard Exp $");
 
 @implementation CDTypeLexer
 
@@ -106,8 +106,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.10 2004/01
     return [scanner string];
 }
 
-// TODO: Change to scanNextToken?
-- (int)nextToken;
+- (int)scanNextToken;
 {
     NSString *str;
     unichar ch;

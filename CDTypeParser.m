@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.26 2004/01/20 05:01:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.27 2004/01/20 05:31:43 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ NSString *CDTokenDescription(int token)
     NSArray *result;
 
     NS_DURING {
-        lookahead = [lexer nextToken];
+        lookahead = [lexer scanNextToken];
         result = [self _parseMethodType];
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
@@ -75,7 +75,7 @@ NSString *CDTokenDescription(int token)
     CDType *result;
 
     NS_DURING {
-        lookahead = [lexer nextToken];
+        lookahead = [lexer scanNextToken];
         result = [self _parseType];
     } NS_HANDLER {
         NSLog(@"caught exception: %@", localException);
@@ -103,7 +103,7 @@ NSString *CDTokenDescription(int token)
         //NSLog(@"matched %@", CDTokenDescription(token));
         if (shouldAllowIdentifier == YES)
             [lexer setIsInIdentifierState:YES];
-        lookahead = [lexer nextToken];
+        lookahead = [lexer scanNextToken];
     } else {
         [NSException raise:CDSyntaxError format:@"expected token %@, got %@",
                      CDTokenDescription(token),
