@@ -30,7 +30,7 @@
 
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/main.m,v 1.1 2004/02/11 00:57:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/main.m,v 1.2 2004/02/11 00:58:40 nygard Exp $");
 
 void print_usage(void)
 {
@@ -70,7 +70,6 @@ int main(int argc, char *argv[])
     }
 
     classDump = [[[CDClassDump alloc] init] autorelease];
-    [classDump setOutputPath:@"/tmp/cd"]; // TODO (2004-02-10): Need to remove this
 
     while ( (ch = getopt(argc, argv, "aAC:HIo:rRsS")) != EOF) {
         switch (ch) {
