@@ -9,7 +9,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.20 2004/02/03 22:51:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.21 2004/02/11 01:19:54 nygard Exp $");
 
 @implementation CDOCMethod
 
@@ -66,7 +66,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.20 2004/02/
     NSString *formattedString;
 
     formattedString = [[aClassDump methodTypeFormatter] formatMethodName:name type:type symbolReferences:symbolReferences];
-    //NSLog(@"%s, formattedString: '%@'", _cmd, formattedString);
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

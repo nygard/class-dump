@@ -1,5 +1,5 @@
 //
-// $Id: CDOCClass.h,v 1.17 2004/02/11 00:07:53 nygard Exp $
+// $Id: CDOCClass.h,v 1.18 2004/02/11 01:19:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -11,7 +11,7 @@
 
 @interface CDOCClass : CDOCProtocol <CDTopologicalSort>
 {
-    NSString *superClassName; // TODO (2003-12-17): Have CDClassDump keep track of the name and build the tree,  linking directly to an appropriate class
+    NSString *superClassName;
     NSArray *ivars;
 }
 

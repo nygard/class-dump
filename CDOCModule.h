@@ -1,5 +1,5 @@
 //
-// $Id: CDOCModule.h,v 1.10 2004/02/03 22:51:52 nygard Exp $
+// $Id: CDOCModule.h,v 1.11 2004/02/11 01:19:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -14,7 +14,6 @@
 @interface CDOCModule : NSObject
 {
     unsigned long version;
-    //unsigned long size; // Not really relevant here
     NSString *name;
     CDOCSymtab *symtab;
 }

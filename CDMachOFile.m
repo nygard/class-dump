@@ -12,7 +12,7 @@
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.10 2004/02/11 00:49:14 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.11 2004/02/11 01:19:54 nygard Exp $");
 
 @implementation CDMachOFile
 
@@ -91,7 +91,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.10 2004/02
         if ([loadCommand isKindOfClass:[CDDylibCommand class]] == YES) {
             [nonretainedDelegate machOFile:self loadDylib:(CDDylibCommand *)loadCommand];
         }
-        //NSLog(@"%2d: %@", index, loadCommand);
+
         ptr += [loadCommand cmdsize];
     }
 
@@ -180,7 +180,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.10 2004/02
         id loadCommand;
 
         loadCommand = [loadCommands objectAtIndex:index];
-        //NSLog(@"%2d: [loadCommand commandName]: '%@' vs. segmentName: '%@'", index, [loadCommand name], segmentName);
         if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
             return loadCommand;
         }
