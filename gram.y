@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.12 2003/09/09 22:51:04 nygard Exp $
+// $Id: gram.y,v 1.13 2003/12/17 05:57:59 nygard Exp $
 //
 
 //
@@ -302,7 +302,7 @@ identifier:
 
 type_name:
         identifier optional_template_type
-        	{
+		{
 			$$ = $1;
 		}
         ;
