@@ -1,5 +1,5 @@
 //
-// $Id: CDSectionInfo.h,v 1.1 2003/04/03 05:07:22 nygard Exp $
+// $Id: CDSectionInfo.h,v 1.2 2003/04/03 05:40:55 nygard Exp $
 //
 
 //
@@ -51,6 +51,8 @@
 - (void *)start;
 - (long)vmaddr;
 - (long)size;
+
+- (long)endAddress;
 
 - (NSString *)description;
 - (BOOL)containsAddress:(long)anAddress;

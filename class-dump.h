@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.7 2003/04/03 05:11:14 nygard Exp $
+// $Id: class-dump.h,v 1.8 2003/04/03 05:40:55 nygard Exp $
 //
 
 //
@@ -217,6 +217,7 @@ struct my_objc_prot_inst_meth_list
 
 // Utility methods
 - (CDSectionInfo *)objectiveCSectionWithName:(NSString *)name filename:(NSString *)filename;
+- (void)sortObjectiveCSegments;
 - (void)debugSectionOverlap;
 - (void *)translateAddressToPointer:(long)addr section:(NSString *)section;
 - (void *)translateAddressToPointerComplain:(long)addr section:(NSString *)section complain:(BOOL)complain;

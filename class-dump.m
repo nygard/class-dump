@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.25 2003/04/03 05:11:14 nygard Exp $
+// $Id: class-dump.m,v 1.26 2003/04/03 05:40:56 nygard Exp $
 //
 
 //
@@ -826,9 +826,34 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
+- (void)sortObjectiveCSegments;
+{
+    [sections sortUsingSelector:@selector(ascendingCompareByAddress:)];
+}
+
 - (void)debugSectionOverlap;
 {
+    int count, index;
+    CDSectionInfo *previousSection, *currentSection;
+    //NSArray *sortedSections;
+
     NSLog(@"sections:\n%@", [sections description]);
+
+    //sortedSections = [sections sortedArrayUsingSelector:@selector(ascendingCompareByAddress:)];
+    //NSLog(@"sortedSections:\n%@", [sortedSections description]);
+
+    previousSection = nil;
+    count = [sections count];
+    for (index = 0; index < count; index++) {
+        currentSection = [sections objectAtIndex:index];
+
+        if (previousSection != nil) {
+            if ([currentSection vmaddr] < [previousSection endAddress])
+                NSLog(@"Looks like these two sections overlap:\n%@\n%@", previousSection, currentSection);
+        }
+
+        previousSection = currentSection;
+    }
 }
 
 //----------------------------------------------------------------------
@@ -1087,6 +1112,7 @@ int main(int argc, char *argv[])
         }
 
         [classDump buildUpObjectiveCSegments:adjustedPath];
+        [classDump sortObjectiveCSegments];
 
         print_header();
 

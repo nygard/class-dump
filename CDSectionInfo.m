@@ -1,5 +1,5 @@
 //
-// $Id: CDSectionInfo.m,v 1.1 2003/04/03 05:07:22 nygard Exp $
+// $Id: CDSectionInfo.m,v 1.2 2003/04/03 05:40:55 nygard Exp $
 //
 
 //
@@ -91,10 +91,15 @@
     return size;
 }
 
+- (long)endAddress;
+{
+    return vmaddr + size;
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"%10lx to %10lx [size 0x%08ld] %@ of %s",
-                     vmaddr, vmaddr + size, size,
+                     vmaddr, [self endAddress], size,
                      [name stringByPaddingToLength:16 withString:@" " startingAtIndex:0],
                      [filename fileSystemRepresentation]];
 }
@@ -110,6 +115,26 @@
 - (void *)translateAddress:(long)anAddress;
 {
     return start + anAddress - vmaddr;
+}
+
+- (NSComparisonResult)ascendingCompareByAddress:(CDSectionInfo *)otherSection;
+{
+    long otherAddress;
+
+    otherAddress = [otherSection vmaddr];
+    if (vmaddr < otherAddress)
+        return NSOrderedAscending;
+    else if (vmaddr == otherAddress) {
+        long otherSize;
+
+        otherSize = [otherSection size];
+        if (size < otherSize)
+            return NSOrderedAscending;
+        else if (size == otherSize)
+            return NSOrderedSame;
+    }
+
+    return NSOrderedDescending;
 }
 
 @end
