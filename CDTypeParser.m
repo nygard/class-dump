@@ -243,7 +243,7 @@ NSString *CDTokenDescription(int token)
         CDType *aType;
 
         aType = [self _parseType];
-        [aType setVariableName:@"___"];
+        //[aType setVariableName:@"___"];
         [members addObject:aType];
     }
 
@@ -287,7 +287,7 @@ NSString *CDTokenDescription(int token)
         [result setVariableName:identifier];
     } else {
         result = [self _parseType];
-        [result setVariableName:@"___"];
+        //[result setVariableName:@"___"];
     }
 
     return result;

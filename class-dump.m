@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.49 2003/12/24 00:11:01 nygard Exp $
+// $Id: class-dump.m,v 1.50 2003/12/24 06:33:08 nygard Exp $
 //
 
 //
@@ -1139,7 +1139,7 @@ void testVariableTypes(NSString *path)
             [resultString appendFormat:@"type: '%@'\n", type];
             [resultString appendFormat:@"name: '%@'\n", name];
             [resultString appendFormat:@"level: %d\n", level];
-            formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type atLevel:level];
+            formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type];
             if (formattedString != nil) {
                 [resultString appendString:formattedString];
                 [resultString appendString:@"\n"];

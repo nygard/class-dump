@@ -1,14 +1,13 @@
 #import "CDTypeFormatter.h"
 
 #include <assert.h>
-
-#import "CDMethodType.h"
-#import "CDType.h"
-#import "CDTypeParser.h"
-
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 #import "NSString-Extensions.h"
+#import "CDClassDump.h" // not ideal
+#import "CDMethodType.h"
+#import "CDType.h"
+#import "CDTypeParser.h"
 
 //----------------------------------------------------------------------
 
@@ -33,6 +32,7 @@
         instance = [[CDTypeFormatter alloc] init];
         [instance setShouldExpand:NO];
         [instance setShouldAutoExpand:YES];
+        [instance setBaseLevel:1];
     }
 
     return instance;
@@ -46,6 +46,7 @@
         instance = [[CDTypeFormatter alloc] init];
         [instance setShouldExpand:NO];
         [instance setShouldAutoExpand:NO];
+        [instance setBaseLevel:0];
     }
 
     return instance;
@@ -57,8 +58,9 @@
 
     if (instance == nil) {
         instance = [[CDTypeFormatter alloc] init];
-        [instance setShouldExpand:YES];
+        [instance setShouldExpand:YES]; // But don't expand named struct members...
         [instance setShouldAutoExpand:NO];
+        [instance setBaseLevel:0];
     }
 
     return instance;
@@ -84,6 +86,16 @@
     shouldAutoExpand = newFlag;
 }
 
+- (int)baseLevel;
+{
+    return baseLevel;
+}
+
+- (void)setBaseLevel:(int)newBaseLevel;
+{
+    baseLevel = newBaseLevel;
+}
+
 - (id)delegate;
 {
     return nonretainedDelegate;
@@ -94,15 +106,43 @@
     nonretainedDelegate = newDelegate;
 }
 
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
+- (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
+{
+#if 0
+    if ([type isEqual:@"c"] == YES) {
+        if (name == nil)
+            return @"BOOL";
+        else
+            return [NSString stringWithFormat:@"BOOL %@", name];
+    } else if ([type isEqual:@"b1"] == YES) {
+        if (name == nil)
+            return @"BOOL :1";
+        else
+            return [NSString stringWithFormat:@"BOOL %@:1", name];
+    }
+#endif
+    return nil;
+}
+
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
 {
     CDTypeParser *aParser;
     CDType *resultType;
     NSMutableString *resultString;
+    NSString *specialCase;
 
     //NSLog(@"%s, shouldExpandStructures: %d", _cmd, shouldExpandStructures);
     //NSLog(@" > %s", _cmd);
     //NSLog(@"name: '%@', type: '%@', level: %d", name, type, level);
+
+    // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
+    specialCase = [self _specialCaseVariable:name type:type];
+    if (specialCase != nil) {
+        resultString = [NSMutableString string];
+        [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
+        [resultString appendString:specialCase];
+        return resultString;
+    }
 
     aParser = [[CDTypeParser alloc] initWithType:type];
     resultType = [aParser parseType];
@@ -116,8 +156,8 @@
 
     resultString = [NSMutableString string];
     [resultType setVariableName:name];
-    [resultString appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:4]];
-    [resultString appendString:[resultType formattedString:nil formatter:self level:level]];
+    [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
+    [resultString appendString:[resultType formattedString:nil formatter:self level:0]];
 
     //free_allocated_methods();
     //free_allocated_types();
@@ -147,6 +187,7 @@
         BOOL noMoreTypes;
         CDMethodType *aMethodType;
         NSScanner *scanner;
+        NSString *specialCase;
 
         count = [methodTypes count];
         index = 0;
@@ -158,9 +199,14 @@
 
             [resultString appendString:@"("];
             // TODO (2003-12-11): Don't expect anonymous structures anywhere in method types.
-            str = [[aMethodType type] formattedString:nil formatter:self level:0];
-            if (str != nil)
-                [resultString appendFormat:@"%@", str];
+            specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+            if (specialCase != nil) {
+                [resultString appendString:specialCase];
+            } else {
+                str = [[aMethodType type] formattedString:nil formatter:self level:0];
+                if (str != nil)
+                    [resultString appendFormat:@"%@", str];
+            }
             [resultString appendString:@")"];
         }
 
@@ -185,9 +231,14 @@
                     NSString *ch;
 
                     aMethodType = [methodTypes objectAtIndex:index];
-                    typeString = [[aMethodType type] formattedString:nil formatter:self level:0];
-                    if ([[aMethodType type] isIDType] == NO)
-                        [resultString appendFormat:@"(%@)", typeString];
+                    specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+                    if (specialCase != nil) {
+                        [resultString appendFormat:@"(%@)", specialCase];
+                    } else {
+                        typeString = [[aMethodType type] formattedString:nil formatter:self level:0];
+                        if ([[aMethodType type] isIDType] == NO)
+                            [resultString appendFormat:@"(%@)", typeString];
+                    }
                     [resultString appendFormat:@"fp%@", [aMethodType offset]];
 
                     ch = [scanner peekCharacter];
@@ -209,9 +260,12 @@
 
 - (NSString *)typedefNameForStruct:(NSString *)structTypeString;
 {
-    NSLog(@"%s, structTypeString: %@", _cmd, structTypeString);
-    if ([nonretainedDelegate respondsToSelector:_cmd]);
-        return [nonretainedDelegate typedefNameForStruct:structTypeString];
+    if (self == [CDTypeFormatter sharedIvarTypeFormatter]) {
+        NSLog(@"%s (ivar): structTypeString: %@", _cmd, structTypeString);
+    }
+
+    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:)]);
+        return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structTypeString];
 
     return nil;
 }

@@ -244,7 +244,7 @@
           if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:typeName] == YES) || ([typeFormatter shouldExpand] == YES && [members count] > 0))
               memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                        [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
-                                       [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
+                                       [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
           else
               memberString = @"";
 
@@ -273,10 +273,10 @@
                   baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
               if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:typeName] == YES)
-                  || ([typeFormatter shouldExpand] == YES && [members count] > 0))
+                  || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
-                                           [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
+                                           [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
               else
                   memberString = @"";
 
@@ -333,7 +333,7 @@
 
     count = [members count];
     for (index = 0; index < count; index++) {
-        [str appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:4]];
+        [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
         [str appendString:[[members objectAtIndex:index] formattedString:nil formatter:typeFormatter level:level]];
         [str appendString:@";\n"];
     }
@@ -381,6 +381,16 @@
 
 - (NSString *)typeString;
 {
+    return [self _typeStringWithVariableNames:YES];
+}
+
+- (NSString *)bareTypeString;
+{
+    return [self _typeStringWithVariableNames:NO];
+}
+
+- (NSString *)_typeStringWithVariableNames:(BOOL)shouldUseVariableNames;
+{
     NSString *result;
 
     switch (type) {
@@ -398,32 +408,32 @@
           break;
 
       case '[':
-          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype typeString]];
+          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNames:shouldUseVariableNames]];
           break;
 
       case '(':
           if (typeName == nil) {
-              return [NSString stringWithFormat:@"(%@)", [self typeStringForMembers]];
+              return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
           } else {
-              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self typeStringForMembers]];
+              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
           }
           break;
 
       case '{':
           if (typeName == nil) {
-              return [NSString stringWithFormat:@"{%@}", [self typeStringForMembers]];
+              return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
           } else if ([members count] == 0) {
               return [NSString stringWithFormat:@"{%@}", typeName];
           } else {
-              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self typeStringForMembers]];
+              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
           }
           break;
 
       case '^':
           if ([subtype type] == T_NAMED_OBJECT)
-              result = [subtype typeString];
+              result = [subtype _typeStringWithVariableNames:shouldUseVariableNames];
           else
-              result = [NSString stringWithFormat:@"^%@", [subtype typeString]];
+              result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNames:shouldUseVariableNames]];
           break;
 
       case 'r':
@@ -433,7 +443,7 @@
       case 'O':
       case 'R':
       case 'V':
-          result = [NSString stringWithFormat:@"%c%@", type, [subtype typeString]];
+          result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNames:shouldUseVariableNames]];
           break;
 
       default:
@@ -444,7 +454,7 @@
     return result;
 }
 
-- (NSString *)typeStringForMembers;
+- (NSString *)_typeStringForMembersWithVariableNames:(BOOL)shouldUseVariableNames;
 {
     NSMutableString *str;
     int count, index;
@@ -456,9 +466,9 @@
     for (index = 0; index < count; index++) {
         CDType *aMember;
         aMember = [members objectAtIndex:index];
-        if ([aMember variableName] != nil)
+        if ([aMember variableName] != nil && shouldUseVariableNames == YES)
             [str appendFormat:@"\"%@\"", [aMember variableName]];
-        [str appendString:[aMember typeString]];
+        [str appendString:[aMember _typeStringWithVariableNames:shouldUseVariableNames]];
     }
 
     return str;
@@ -479,8 +489,31 @@
         NSString *typeString;
 
         typeString = [self typeString];
-        [anObject registerStructName:typeName type:typeString];
+        [anObject registerStruct:self name:typeName];
     }
+}
+
+- (BOOL)isEqual:(CDType *)otherType;
+{
+    return [[self typeString] isEqual:[otherType typeString]];
+}
+
+- (BOOL)isStructureEqual:(CDType *)otherType;
+{
+    return [[self bareTypeString] isEqual:[otherType bareTypeString]];
+}
+
+- (int)namedMemberCount;
+{
+    int count, index;
+    int namedCount = 0;
+
+    count = [members count];
+    for (index = 0; index < count; index++)
+        if ([[members objectAtIndex:index] variableName] != nil)
+            namedCount++;
+
+    return namedCount;
 }
 
 @end

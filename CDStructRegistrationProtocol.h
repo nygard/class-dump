@@ -1,5 +1,6 @@
 @class NSString;
+@class CDType;
 
 @protocol CDStructRegistration
-- (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
+- (void)registerStruct:(CDType *)structType name:(NSString *)aName;
 @end

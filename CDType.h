@@ -46,8 +46,14 @@
 - (NSString *)formattedStringForSimpleType;
 
 - (NSString *)typeString;
-- (NSString *)typeStringForMembers;
+- (NSString *)bareTypeString;
+- (NSString *)_typeStringWithVariableNames:(BOOL)shouldUseVariableNames;
+- (NSString *)_typeStringForMembersWithVariableNames:(BOOL)shouldUseVariableNames;
 
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+
+- (BOOL)isEqual:(CDType *)otherType;
+- (BOOL)isStructureEqual:(CDType *)otherType;
+- (int)namedMemberCount;
 
 @end

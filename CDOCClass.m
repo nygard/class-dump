@@ -96,15 +96,21 @@
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 {
     [super registerStructsWithObject:anObject];
-#if 0
+#if 1
  {
      int count, index;
      CDTypeParser *parser;
 
      count = [ivars count];
      for (index = 0; index < count; index++) {
+         CDType *structType;
+
          parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
-         [[parser parseType] registerStructsWithObject:anObject];
+         structType = [parser parseType];
+         if ([[self name] isEqual:@"NSInvocation"] == YES) {
+             NSLog(@"Registering struct for %@: %@", [self name], [structType typeString]);
+         }
+         [structType registerStructsWithObject:anObject];
          [parser release];
      }
  }

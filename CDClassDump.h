@@ -3,7 +3,7 @@
 
 @class NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
-
+@class CDType, CDTypeFormatter;
 
 @interface CDClassDump2 : NSObject <CDStructRegistration>
 {
@@ -12,9 +12,13 @@
     NSMutableArray *objCSegmentProcessors;
     BOOL shouldProcessRecursively;
 
-    NSMutableDictionary *structCounts;
+    // Can you say "just hacking out code"?
+    NSMutableDictionary *structCountsByType;
     NSMutableDictionary *structsByName;
-    NSMutableDictionary *anonymousStructs;
+    NSMutableDictionary *anonymousStructNames;
+    NSMutableDictionary *anonymousStructsByType;
+    NSMutableDictionary *anonymousRemapping;
+
     int anonymousStructCounter;
 }
 
@@ -35,7 +39,7 @@
 - (void)appendNamedStructsToString:(NSMutableString *)resultString;
 - (void)appendTypedefsToString:(NSMutableString *)resultString;
 
-- (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
-- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
+- (void)registerStruct:(CDType *)structType name:(NSString *)aName;
+- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(NSString *)structTypeString;
 
 @end

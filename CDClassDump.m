@@ -8,6 +8,7 @@
 #import "CDDylibCommand.h"
 #import "CDMachOFile.h"
 #import "CDObjCSegmentProcessor.h"
+#import "CDType.h"
 #import "CDTypeFormatter.h"
 
 @implementation CDClassDump2
@@ -20,9 +21,11 @@
     //machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objCSegmentProcessors = [[NSMutableArray alloc] init];
-    structCounts = [[NSMutableDictionary alloc] init];
+    structCountsByType = [[NSMutableDictionary alloc] init];
     structsByName = [[NSMutableDictionary alloc] init];
-    anonymousStructs = [[NSMutableDictionary alloc] init];
+    anonymousStructNames = [[NSMutableDictionary alloc] init];
+    anonymousStructsByType = [[NSMutableDictionary alloc] init];
+    anonymousRemapping = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -32,9 +35,11 @@
     //[machOFiles release];
     [machOFilesByID release];
     [objCSegmentProcessors release];
-    [structCounts release];
+    [structCountsByType release];
     [structsByName release];
-    [anonymousStructs release];
+    [anonymousStructNames release];
+    [anonymousStructsByType release];
+    [anonymousRemapping release];
 
     [super dealloc];
 }
@@ -95,16 +100,68 @@
             [[objCSegmentProcessors objectAtIndex:index] registerStructsWithObject:self];
         }
 
+        // Check for isomorphic structs, one of which may not have had named members
         {
             NSArray *keys;
             int count, index;
             NSString *key;
 
-            keys = [[structCounts allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            NSLog(@"Anonymous structs: ----------------------------------------------------------------------");
+            keys = [[anonymousStructsByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            count = [keys count];
+            for (index = 0; index < count; index++) {
+                CDType *structType;
+                NSString *bareTypeString;
+
+                key = [keys objectAtIndex:index];
+                structType = [anonymousStructsByType objectForKey:key];
+                bareTypeString = [structType bareTypeString];
+                if ([key isEqual:bareTypeString] == NO) {
+                    NSNumber *thisCount, *oldCount;
+
+                    // add this count to bare count (if it already exists)
+                    thisCount = [structCountsByType objectForKey:key];
+                    oldCount = [structCountsByType objectForKey:bareTypeString];
+                    if (oldCount != nil) {
+                        NSNumber *newCount;
+
+                        newCount = [NSNumber numberWithInt:[thisCount intValue] + [oldCount intValue]];
+                        [structCountsByType setObject:newCount forKey:bareTypeString];
+                        [structCountsByType setObject:newCount forKey:key]; // Need to update both of 'em
+                        [anonymousRemapping setObject:key forKey:bareTypeString];
+                    }
+                }
+            }
+        }
+
+        {
+            NSArray *keys;
+            int count, index;
+            NSString *key;
+
+            NSLog(@"structCountsByType ----------------------------------------------------------------------");
+            keys = [[structCountsByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
             count = [keys count];
             for (index = 0; index < count; index++) {
                 key = [keys objectAtIndex:index];
-                NSLog(@"%3d: %@ => %@", index, key, [structCounts objectForKey:key]);
+                NSLog(@"%3d: %@ => %@", index, key, [structCountsByType objectForKey:key]);
+            }
+
+            // If a structure doesn't have any named members, it should be typedef'd
+            // Any structure in a return value or argument should be typedef'd
+        }
+
+        {
+            NSArray *keys;
+            int count, index;
+            NSString *key;
+
+            NSLog(@"anonymousRemapping ----------------------------------------------------------------------");
+            keys = [[anonymousRemapping allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            count = [keys count];
+            for (index = 0; index < count; index++) {
+                key = [keys objectAtIndex:index];
+                NSLog(@"%3d: %@ => %@", index, key, [anonymousRemapping objectForKey:key]);
             }
 
             // If a structure doesn't have any named members, it should be typedef'd
@@ -121,14 +178,14 @@
             count = [keys count];
             for (index = 0; index < count; index++) {
                 key = [keys objectAtIndex:index];
-                NSLog(@"%2d: %@ => %@", index, key, [structsByName objectForKey:key]);
+                NSLog(@"%2d: %@ => %@", index, key, [[structsByName objectForKey:key] typeString]);
             }
             NSLog(@"----------------------------------------------------------------------");
-            keys = [[anonymousStructs allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            keys = [[anonymousStructNames allKeys] sortedArrayUsingSelector:@selector(compare:)];
             count = [keys count];
             for (index = 0; index < count; index++) {
                 key = [keys objectAtIndex:index];
-                NSLog(@"%2d: %@ => %@", index, [anonymousStructs objectForKey:key], key);
+                NSLog(@"%2d: %@ => %@", index, [anonymousStructNames objectForKey:key], key);
             }
         }
 #endif
@@ -206,21 +263,22 @@
 // TODO (2003-12-23): Add option to show/hide this section
 // TODO (2003-12-23): auto-name unnamed members
 // TODO (2003-12-23): sort by name or by dependency
-// TODO (2003-12-23): declare in modules where they were fist used
+// TODO (2003-12-23): declare in modules where they were first used
 
 - (void)appendNamedStructsToString:(NSMutableString *)resultString;
 {
     NSArray *keys;
     NSString *key;
     int count, index;
-    NSString *typeString, *formattedString;
+    NSString *formattedString;
+    CDType *type;
 
     keys = [[structsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
-        typeString = [structsByName objectForKey:key];
-        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:typeString atLevel:0];
+        type = [structsByName objectForKey:key];
+        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:[type typeString]];
         if (formattedString != nil) {
             [resultString appendString:formattedString];
             [resultString appendString:@";\n\n"];
@@ -231,16 +289,18 @@
 - (void)appendTypedefsToString:(NSMutableString *)resultString;
 {
     NSArray *keys;
-    //NSString *key;
     int count, index;
     NSString *typeString, *formattedString, *name;
 
-    keys = [[anonymousStructs allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    keys = [[anonymousStructNames allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
     for (index = 0; index < count; index++) {
         typeString = [keys objectAtIndex:index];
-        name = [anonymousStructs objectForKey:typeString];
-        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:typeString atLevel:0]; // TODO (2003-12-23): Need to replace
+        if ([anonymousRemapping objectForKey:typeString] != nil)
+            continue;
+
+        name = [anonymousStructNames objectForKey:typeString];
+        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:typeString];
         if (formattedString != nil) {
             [resultString appendString:@"typedef "];
             [resultString appendString:formattedString];
@@ -249,43 +309,75 @@
     }
 }
 
-- (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
+//- (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
+- (void)registerStruct:(CDType *)structType name:(NSString *)aName;
 {
     NSNumber *oldCount;
+    NSString *typeString;
 
-    NSLog(@"%s, name: %@, typeString: %@", _cmd, aName, typeString);
+    typeString = [structType typeString];
 
     // Handle named structs
     if (aName != nil && [aName isEqual:@"?"] == NO) {
-        NSString *existingTypeString;
+        CDType *existingType;
 
-        existingTypeString = [structsByName objectForKey:aName];
-        if (existingTypeString == nil)
-            [structsByName setObject:typeString forKey:aName];
-        else {
-            assert([typeString isEqual:existingTypeString] == YES);
+        if ([aName isEqual:@"objc_method_description"] == YES)
+            NSLog(@"%@ => %@", aName, typeString);
+
+        existingType = [structsByName objectForKey:aName];
+        if (existingType == nil)
+            [structsByName setObject:structType forKey:aName];
+        else if (existingType == nil || [existingType namedMemberCount] < [structType namedMemberCount]) {
+            NSLog(@"Replaced %@ with %@", [existingType typeString], [structType typeString]);
+            [structsByName setObject:structType forKey:aName];
         }
     }
 
     // Handle anonymous structs
     // TODO (2003-12-23): Count anonymous structs first, then assign names to ones used more than one time.
     if (aName == nil || [aName isEqual:@"?"] == YES) {
-        if ([anonymousStructs objectForKey:typeString] == nil) {
-            [anonymousStructs setObject:[NSString stringWithFormat:@"CDAnonymousStruct%d", ++anonymousStructCounter] forKey:typeString];
+        CDType *previousType;
+#if 1
+        // Maybe we want to number them later, when we know which ones will be used.
+        if ([anonymousStructNames objectForKey:typeString] == nil) {
+            [anonymousStructNames setObject:[NSString stringWithFormat:@"CDAnonymousStruct%d", ++anonymousStructCounter] forKey:typeString];
+        }
+#endif
+        previousType = [anonymousStructsByType objectForKey:typeString];
+        if (previousType == nil)
+            [anonymousStructsByType setObject:structType forKey:typeString];
+        else {
+            NSLog(@"Already registered this anonymoust struct, previous: %@, current: %@", [previousType typeString], typeString);
+        }
+
+        // Just count anonymous structs
+        oldCount = [structCountsByType objectForKey:typeString];
+        if (oldCount == nil)
+            [structCountsByType setObject:[NSNumber numberWithInt:1] forKey:typeString];
+        else
+            [structCountsByType setObject:[NSNumber numberWithInt:[oldCount intValue] + 1] forKey:typeString];
+    }
+}
+
+- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(NSString *)structTypeString;
+{
+    NSString *remappedTypeString;
+
+    // Count has been adjusted.
+
+    // For ivars, only use typedef if the type is used > 1 time.
+    if (aFormatter == [CDTypeFormatter sharedIvarTypeFormatter]) {
+        if ([[structCountsByType objectForKey:structTypeString] intValue] < 2) {
+            //NSLog(@"Just one of '%@'", structTypeString);
+            return nil;
         }
     }
 
-    oldCount = [structCounts objectForKey:typeString];
-    if (oldCount == nil)
-        [structCounts setObject:[NSNumber numberWithInt:1] forKey:typeString];
-    else
-        [structCounts setObject:[NSNumber numberWithInt:[oldCount intValue] + 1] forKey:typeString];
-}
+    remappedTypeString = [anonymousRemapping objectForKey:structTypeString];
+    if (remappedTypeString != nil)
+        structTypeString = remappedTypeString;
 
-- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
-{
-    NSLog(@"%s, result = %@", _cmd, [anonymousStructs objectForKey:structTypeString]);
-    return [anonymousStructs objectForKey:structTypeString];
+    return [anonymousStructNames objectForKey:structTypeString];
 }
 
 @end

@@ -4,8 +4,9 @@
 
 @interface CDTypeFormatter : NSObject
 {
-    BOOL shouldExpand;
+    BOOL shouldExpand; // But just top level struct, level == 0
     BOOL shouldAutoExpand;
+    int baseLevel;
 
     // Not ideal
     id nonretainedDelegate;
@@ -22,10 +23,14 @@
 - (BOOL)shouldAutoExpand;
 - (void)setShouldAutoExpand:(BOOL)newFlag;
 
+- (int)baseLevel;
+- (void)setBaseLevel:(int)newBaseLevel;
+
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
+- (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 
 - (NSString *)typedefNameForStruct:(NSString *)structTypeString;
