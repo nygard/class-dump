@@ -1,5 +1,5 @@
 //
-// $Id: CDOCClass.h,v 1.13 2004/01/15 03:04:52 nygard Exp $
+// $Id: CDOCClass.h,v 1.14 2004/01/16 00:18:20 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -23,6 +23,6 @@
 - (void)setIvars:(NSArray *)newIvars;
 
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 @end

@@ -7,7 +7,7 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.10 2004/01/15 03:04:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.11 2004/01/16 00:18:20 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -78,7 +78,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.10 2004/01/
         [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     int count, index;
 

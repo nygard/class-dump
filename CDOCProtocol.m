@@ -11,7 +11,7 @@
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.17 2004/01/15 03:20:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.18 2004/01/16 00:18:20 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -146,13 +146,13 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.17 2004/0
     [resultString appendString:@"@end\n\n"];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     [self registerStructuresFromMethods:classMethods withObject:anObject phase:phase];
     [self registerStructuresFromMethods:instanceMethods withObject:anObject phase:phase];
 }
 
-- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     int count, index;
     CDTypeParser *parser;
@@ -167,7 +167,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.17 2004/0
     }
 }
 
-- (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     int count, index;
 

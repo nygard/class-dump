@@ -19,7 +19,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.13 2004/01/15 03:20:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.14 2004/01/16 00:18:20 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -96,7 +96,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     [allClasses release];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     int count, index;
     NSArray *protocolNames;

@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.33 2004/01/15 23:30:40 nygard Exp $
+// $Id: CDClassDump.h,v 1.34 2004/01/16 00:18:20 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -8,13 +8,13 @@
 
 #import <Foundation/NSObject.h>
 
-#import "CDStructRegistrationProtocol.h"
+#import "CDStructureRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
 @class CDStructureTable, CDType, CDTypeFormatter;
 
-@interface CDClassDump2 : NSObject <CDStructRegistration>
+@interface CDClassDump2 : NSObject <CDStructureRegistration>
 {
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;

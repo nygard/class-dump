@@ -978,26 +978,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		01A253C50598E3ED00ED81E2 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = CDStructRegistrationProtocol.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		01A253C60598E3ED00ED81E2 = {
-			fileRef = 01A253C50598E3ED00ED81E2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		01A253C70598E3ED00ED81E2 = {
-			fileRef = 01A253C50598E3ED00ED81E2;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		01C5C12005855E970052C696 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1056,7 +1036,7 @@
 		};
 		01C5C1260587C04D0052C696 = {
 			children = (
-				01A253C50598E3ED00ED81E2,
+				01E6680E05B76139005849C7,
 				01C5C12B0587C0D10052C696,
 				01C5C12C0587C0D10052C696,
 				01CAEA35050E653200E28615,
@@ -1257,12 +1237,12 @@
 				016047910592C6A500C03665,
 				016047B305942AEC00C03665,
 				016047B505942AEC00C03665,
-				01A253C70598E3ED00ED81E2,
 				014EEC34059AA5DD0097CFC1,
 				01DEC43105A7622B00682FCC,
 				01DEC43205A7622B00682FCC,
 				01497A3805AA4EC30023398B,
 				01497A6205AD0BAC0023398B,
+				01E6681005B76139005849C7,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1596,7 +1576,6 @@
 				016047990592D60C00C03665,
 				016047B705942AEC00C03665,
 				016047B905942AEC00C03665,
-				01A253C60598E3ED00ED81E2,
 				014EEC32059AA5DD0097CFC1,
 				0149791305AA10D80023398B,
 				0149792E05AA14E20023398B,
@@ -1617,6 +1596,7 @@
 				014979E105AA15310023398B,
 				01497A3B05AA4EC90023398B,
 				01497A6705AD0BB20023398B,
+				01E6680F05B76139005849C7,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1887,6 +1867,26 @@
 		};
 		01DEC43305A7622B00682FCC = {
 			fileRef = 01DEC43005A7622B00682FCC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01E6680E05B76139005849C7 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDStructureRegistrationProtocol.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01E6680F05B76139005849C7 = {
+			fileRef = 01E6680E05B76139005849C7;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01E6681005B76139005849C7 = {
+			fileRef = 01E6680E05B76139005849C7;
 			isa = PBXBuildFile;
 			settings = {
 			};

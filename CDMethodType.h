@@ -1,5 +1,5 @@
 //
-// $Id: CDMethodType.h,v 1.7 2004/01/15 03:04:52 nygard Exp $
+// $Id: CDMethodType.h,v 1.8 2004/01/16 00:18:20 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -8,7 +8,7 @@
 
 #import <Foundation/NSObject.h>
 
-#import "CDStructRegistrationProtocol.h"
+#import "CDStructureRegistrationProtocol.h"
 
 @class NSMutableArray;
 @class CDType;
@@ -27,6 +27,6 @@
 
 - (NSString *)description;
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 @end

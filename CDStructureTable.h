@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.8 2004/01/15 23:30:40 nygard Exp $
+// $Id: CDStructureTable.h,v 1.9 2004/01/16 00:18:21 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -8,7 +8,7 @@
 
 #import <Foundation/NSObject.h>
 
-#import "CDStructRegistrationProtocol.h"
+#import "CDStructureRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString;
 @class CDType, CDTypeFormatter;
@@ -59,11 +59,11 @@
 - (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
-//- (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
+//- (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructureRegistration>)anObject
 //             usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 - (void)phase1RegisterStructure:(CDType *)aStructure;
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
+- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
                 countReferences:(BOOL)shouldCountReferences;
 
 @end

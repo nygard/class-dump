@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.17 2004/01/15 23:30:40 nygard Exp $
+// $Id: CDType.h,v 1.18 2004/01/16 00:18:21 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -7,7 +7,7 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import <Foundation/NSObject.h>
-#import "CDStructRegistrationProtocol.h"
+#import "CDStructureRegistrationProtocol.h"
 
 @class NSArray, NSString;
 @class CDTypeFormatter;
@@ -60,9 +60,9 @@
 - (NSString *)_typeStringWithVariableNamesToLevel:(int)level;
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(int)level;
 
-- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
-- (void)phase1RegisterStructuresWithObject:(id <CDStructRegistration>)anObject;
-- (void)phase2RegisterStructuresWithObject:(id <CDStructRegistration>)anObject
+- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
+- (void)phase2RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject
                               usedInMethod:(BOOL)isUsedInMethod
                            countReferences:(BOOL)shouldCountReferences;
 

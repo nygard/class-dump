@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.31 2004/01/15 23:55:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.32 2004/01/16 00:18:21 nygard Exp $");
 
 @implementation CDType
 
@@ -524,7 +524,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.31 2004/01/15 2
     return str;
 }
 
-- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
     if (phase == 1)
         [self phase1RegisterStructuresWithObject:anObject];
@@ -532,7 +532,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.31 2004/01/15 2
         [self phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:YES];
 }
 
-- (void)phase1RegisterStructuresWithObject:(id <CDStructRegistration>)anObject;
+- (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
 {
     int count, index;
 
@@ -548,7 +548,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.31 2004/01/15 2
     }
 }
 
-- (void)phase2RegisterStructuresWithObject:(id <CDStructRegistration>)anObject
+- (void)phase2RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject
                               usedInMethod:(BOOL)isUsedInMethod
                            countReferences:(BOOL)shouldCountReferences;
 {

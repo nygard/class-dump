@@ -11,7 +11,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.11 2004/01/15 23:55:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.12 2004/01/16 00:18:21 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -275,7 +275,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.11 20
 }
 
 // Returns YES to indicate that we should count references for children.
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
+- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
                 countReferences:(BOOL)shouldCountReferences;
 {
     BOOL shouldCountMembers = NO;
