@@ -6,15 +6,17 @@ Version 2 is a re-implementation of Eric P. Scott's class-dump, and
 works with the frameworks in Openstep 4.x.
 
 The class-dump version 2.1.4 package includes source that should
-compile on Mac OS X Public Beta, Openstep, and Nextstep 3.3 with
-Foundation.  This package includes the binary compiled for Mac OS X
-Public Beta:
+compile on Mac OS X Public Beta, Mac OS X Server, Openstep, and
+Nextstep 3.3 with Foundation.  This package includes the binary
+compiled for Mac OS X Public Beta:
 
     class-dump-2.1.4-bs.tar.gz        (Mac OS X Public Beta)
 
 Most of the changes since version 2.1.2 have been fixes for Mac OS X,
-so I haven't updated the Openstep and Nextstep packages:
+so I haven't updated the Mac OS X Server, Openstep and Nextstep
+packages:
 
+    class-dump-2.1.2-PI-bs.tar.gz     (Mac OS X Server)
     class-dump.2.1.2.m.NIS.bs.tar.gz  (Openstep)
     class-dump.2.1.2.NIHS.bs.tar.gz   (Nextstep)
 
