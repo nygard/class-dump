@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.26 2004/01/15 03:20:55 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.27 2004/01/15 05:17:47 nygard Exp $");
 
 @implementation CDType
 
@@ -615,6 +615,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.26 2004/01/15 0
 - (void)mergeWithType:(CDType *)otherType;
 {
     int count, index;
+    int otherCount;
     NSArray *otherMembers;
 
     if ([self type] != [otherType type]) {
@@ -626,8 +627,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.26 2004/01/15 0
 
     otherMembers = [otherType members];
     count = [members count];
-    if ([otherMembers count] != count) {
+    otherCount = [otherMembers count];
+    if (count != 0 && otherCount != 0 && otherCount != count) {
         NSLog(@"Warning: Types have different number of members.  This is bad.");
+        NSLog(@"%@ vs %@", [self typeString], [otherType typeString]);
         return;
     }
 
