@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.20 2003/01/21 06:55:27 nygard Exp $
+// $Id: class-dump.m,v 1.21 2003/02/20 04:38:49 nygard Exp $
 //
 
 //
@@ -76,11 +76,11 @@ int swap_macho = 0;
 NSMutableArray *mappedFiles;
 NSMutableDictionary *mappedFilesByInstallName;
 
-char *current_filename = NULL;
+NSString *current_filename = nil;
 
 struct section_info
 {
-    char *filename;
+    NSString *filename;
     char name[17];
     struct section *section;
     void *start;
@@ -150,16 +150,16 @@ NSMutableDictionary *protocols;
 
 //======================================================================
 
-void process_file(void *ptr, char *filename);
+void process_file(void *ptr, NSString *filename);
 
-int process_macho(void *ptr, char *filename);
-unsigned long process_load_command(void *start, void *ptr, char *filename);
+int process_macho(void *ptr, NSString *filename);
+unsigned long process_load_command(void *start, void *ptr, NSString *filename);
 void process_dylib_command(void *start, void *ptr);
 void process_fvmlib_command(void *start, void *ptr);
-void process_segment_command(void *start, void *ptr, char *filename);
-void process_objc_segment(void *start, void *ptr, char *filename);
+void process_segment_command(void *start, void *ptr, NSString *filename);
+void process_objc_segment(void *start, void *ptr, NSString *filename);
 
-struct section_info *find_objc_section(char *name, char *filename);
+struct section_info *find_objc_section(char *name, NSString *filename);
 void *translate_address_to_pointer(long addr, char *section);
 void *translate_address_to_pointer_complain(long addr, char *section, BOOL complain);
 char *string_at(long addr, char *section);
@@ -176,7 +176,7 @@ NSArray *handle_objc_methods(struct my_objc_methods *methods, char ch);
 
 void show_single_module(struct section_info *module_info);
 void show_all_modules(void);
-void build_up_objc_segments(char *filename);
+void build_up_objc_segments(NSString *filename);
 
 static BOOL CDRegexMatchesCString(const char *text)
 {
@@ -189,7 +189,7 @@ static BOOL CDRegexMatchesCString(const char *text)
 
 //======================================================================
 
-void process_file(void *ptr, char *filename)
+void process_file(void *ptr, NSString *filename)
 {
     struct mach_header *mh = (struct mach_header *)ptr;
     struct fat_header *fh = (struct fat_header *)ptr;
@@ -255,7 +255,7 @@ void process_file(void *ptr, char *filename)
 
 // Returns 0 if this was our endian, 1 if it was not, 2 otherwise.
 
-int process_macho(void *ptr, char *filename)
+int process_macho(void *ptr, NSString *filename)
 {
     struct mach_header *mh = (struct mach_header *)ptr;
     int l;
@@ -284,7 +284,7 @@ int process_macho(void *ptr, char *filename)
 
 //----------------------------------------------------------------------
 
-unsigned long process_load_command(void *start, void *ptr, char *filename)
+unsigned long process_load_command(void *start, void *ptr, NSString *filename)
 {
     struct load_command *lc = (struct load_command *)ptr;
 
@@ -320,8 +320,14 @@ unsigned long process_load_command(void *start, void *ptr, char *filename)
 void process_dylib_command(void *start, void *ptr)
 {
     struct dylib_command *dc = (struct dylib_command *)ptr;
+    NSString *str;
+    char *strptr;
 
-    build_up_objc_segments(ptr + dc->dylib.name.offset);
+    strptr = ptr + dc->dylib.name.offset;
+    str = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:strptr length:strlen(strptr)];
+    //NSLog(@"strptr: '%s', str: '%@'", strptr, str);
+    //build_up_objc_segments(ptr + dc->dylib.name.offset);
+    build_up_objc_segments(str);
 }
 
 //----------------------------------------------------------------------
@@ -329,13 +335,19 @@ void process_dylib_command(void *start, void *ptr)
 void process_fvmlib_command(void *start, void *ptr)
 {
     struct fvmlib_command *fc = (struct fvmlib_command *)ptr;
+    NSString *str;
+    char *strptr;
 
-    build_up_objc_segments(ptr + fc->fvmlib.name.offset);
+    strptr = ptr + fc->fvmlib.name.offset;
+    str = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:strptr length:strlen(strptr)];
+    NSLog(@"strptr: '%s', str: '%@'", strptr, str);
+    //build_up_objc_segments(ptr + fc->fvmlib.name.offset);
+    build_up_objc_segments(str);
 }
 
 //----------------------------------------------------------------------
 
-void process_segment_command(void *start, void *ptr, char *filename)
+void process_segment_command(void *start, void *ptr, NSString *filename)
 {
     struct segment_command *sc = (struct segment_command *)ptr;
     char name[17];
@@ -353,12 +365,13 @@ void process_segment_command(void *start, void *ptr, char *filename)
 
 //----------------------------------------------------------------------
 
-void process_objc_segment(void *start, void *ptr, char *filename)
+void process_objc_segment(void *start, void *ptr, NSString *filename)
 {
     struct segment_command *sc = (struct segment_command *)ptr;
     struct section *section = (struct section *)(sc + 1);
     int l;
 
+    //NSLog(@"process_objc_segment, %d: %@", section_count, filename);
     for (l = 0; l < sc->nsects; l++)
     {
         if (section_count >= MAX_SECTIONS)
@@ -367,7 +380,7 @@ void process_objc_segment(void *start, void *ptr, char *filename)
             return;
         }
 
-        objc_sections[section_count].filename = filename;
+        objc_sections[section_count].filename = filename; // TODO: Should we retain this?
         strncpy(objc_sections[section_count].name, section->sectname, 16);
         objc_sections[section_count].name[16] = 0;
         objc_sections[section_count].section = section;
@@ -388,13 +401,13 @@ void process_objc_segment(void *start, void *ptr, char *filename)
 // Find the Objective-C segment for the given filename noted in our
 // list.
 
-struct section_info *find_objc_section(char *name, char *filename)
+struct section_info *find_objc_section(char *name, NSString *filename)
 {
     int l;
 
     for (l = 0; l < section_count; l++)
     {
-        if (!strcmp(name, objc_sections[l].name) && !strcmp(filename, objc_sections[l].filename))
+        if (!strcmp(name, objc_sections[l].name) && [filename isEqual:objc_sections[l].filename] == YES)
         {
             return &objc_sections[l];
         }
@@ -413,7 +426,7 @@ void debug_section_overlap(void)
     {
         printf("%10ld to %10ld [size 0x%08ld] %-16s of %s\n",
                objc_sections[l].vmaddr, objc_sections[l].vmaddr + objc_sections[l].size, objc_sections[l].size,
-               objc_sections[l].name, objc_sections[l].filename);
+               objc_sections[l].name, [objc_sections[l].filename fileSystemRepresentation]);
     }
 }
 
@@ -451,7 +464,7 @@ void *translate_address_to_pointer_complain(long addr, char *section, BOOL compl
         {
             if (addr >= objc_sections[l].vmaddr && addr < objc_sections[l].vmaddr + objc_sections[l].size
                 && !strcmp(objc_sections[l].name, section)
-                && !strcmp(objc_sections[l].filename, current_filename))
+                && [current_filename isEqual:objc_sections[l].filename] == YES)
             {
                 return objc_sections[l].start + addr - objc_sections[l].vmaddr;
             }
@@ -739,7 +752,7 @@ void show_single_module(struct section_info *module_info)
     struct my_objc_module *m;
     int module_count;
     int l;
-    char *tmp;
+    NSString *tmp;
     id en, thing, key;
     NSMutableArray *classList = [NSMutableArray array];
     NSArray *newClasses;
@@ -768,20 +781,23 @@ void show_single_module(struct section_info *module_info)
         NSString *installName, *filename;
         NSString *key;
         
-        key = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:module_info->filename length:strlen(module_info->filename)];
+        //key = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:module_info->filename length:strlen(module_info->filename)];
+        key = module_info->filename;
         currentFile = [mappedFilesByInstallName objectForKey:key];
         installName = [currentFile installName];
         filename = [currentFile filename];
         if (filename == nil || [installName isEqual:filename] == YES)
         {
-            printf("\n/*\n * File: %s\n */\n\n", module_info->filename);
+            printf("\n/*\n * File: %s\n */\n\n", [installName fileSystemRepresentation]);
         }
         else
         {
-            printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], module_info->filename);
+            printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], [installName fileSystemRepresentation]);
         }
+
+        current_filename = key;
     }
-    current_filename = module_info->filename;
+    //current_filename = module_info->filename;
 
     for (l = 0; l < module_count; l++)
     {
@@ -838,29 +854,32 @@ void show_all_modules(void)
 
 //----------------------------------------------------------------------
 
-void build_up_objc_segments(char *filename)
+void build_up_objc_segments(NSString *filename)
 {    
     MappedFile *mappedFile;
-    NSEnumerator *mfEnumerator;
-    NSString *aFilename;
+    int count, index;
 
     // Only process each file once.
 
-    mfEnumerator = [mappedFiles objectEnumerator];
-    while (mappedFile = [mfEnumerator nextObject])
-    {
-        if (!strcmp(filename, [[mappedFile installName] fileSystemRepresentation]))
+    //NSLog(@"build_up_objc_segments(%@)", filename);
+
+    //NSLog(@"filename: '%@'", filename);
+    //NSLog(@"mappedFiles: %@", [mappedFiles description]);
+    count = [mappedFiles count];
+    for (index = 0; index < count; index++) {
+        if ([filename isEqual:[[mappedFiles objectAtIndex:index] installName]] == YES) {
+            //NSLog(@"Already have file %@, skipping.", filename);
             return;
+        }
     }
 
-    aFilename = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:filename length:strlen(filename)];
-    mappedFile = [[[MappedFile alloc] initWithFilename:aFilename] autorelease];
+    mappedFile = [[[MappedFile alloc] initWithFilename:filename] autorelease];
     if (mappedFile != nil)
     {
         [mappedFiles addObject:mappedFile];
         [mappedFilesByInstallName setObject:mappedFile forKey:[mappedFile installName]];
 
-        process_file ((void *)[mappedFile data], filename);
+        process_file((void *)[mappedFile data], filename);
     }
 }
 
@@ -870,7 +889,7 @@ void print_usage(void)
 {
     fprintf(stderr,
             "class-dump %s\n"
-            "Usage: class-dump [-a] [-A] [-e] [-R] [-C regex] [-r] [-s] [-S] executable-file\n"
+            "Usage: class-dump [-a] [-A] [-e] [-R] [-C regex] [-r] [-S] executable-file\n"
             "        -a  show instance variable offsets\n"
             "        -A  show implementation addresses\n"
             "        -e  expand structure (and union) definition whenever possible\n"
@@ -984,7 +1003,18 @@ int main(int argc, char *argv[])
 
     if (optind < argc)
     {
-        build_up_objc_segments(argv[optind]);
+        char *str;
+        NSString *targetPath, *adjustedPath;
+
+        //targetPath = [[NSString alloc] initWithCString:argv[optind]];
+        str = argv[optind];
+        targetPath = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:str length:strlen(str)];
+        NSLog(@"targetPath: '%@'", targetPath);
+        adjustedPath = [MappedFile adjustUserSuppliedPath:targetPath];
+        NSLog(@"adjustedPath: '%@'", adjustedPath);
+
+        //build_up_objc_segments(argv[optind]);
+        build_up_objc_segments(adjustedPath);
 
         print_header();
 
@@ -993,7 +1023,7 @@ int main(int argc, char *argv[])
         if (section_count > 0)
         {
             if (expand_frameworks_flag == NO)
-                show_single_module((struct section_info *)find_objc_section(SEC_MODULE_INFO, argv[optind]));
+                show_single_module((struct section_info *)find_objc_section(SEC_MODULE_INFO, adjustedPath));
             else
                 show_all_modules();
         }
