@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.10 2003/01/21 06:31:23 nygard Exp $
+// $Id: datatypes.m,v 1.11 2003/04/03 05:50:35 nygard Exp $
 //
 
 //
@@ -385,7 +385,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
               type_name = [NSString stringWithFormat:@" %s", t->type_name];
 
           if(t->type_name != NULL && t->type_name[0] == '?')
-              tmp = [NSString stringWithFormat:@"unsigned long /* WARNING: This may not be a unsigned long (%s)*/", t->type_name];
+              tmp = [NSString stringWithFormat:@"CDAnonymousStruct", t->type_name];
           else
               tmp = [NSString stringWithFormat:@"struct%@", type_name];
 

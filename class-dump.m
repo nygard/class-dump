@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.26 2003/04/03 05:40:56 nygard Exp $
+// $Id: class-dump.m,v 1.27 2003/04/03 05:50:35 nygard Exp $
 //
 
 //
@@ -1008,6 +1008,11 @@ void print_header(void)
        );
 }
 
+void print_unknown_struct_typedef(void)
+{
+    printf("\ntypedef unsigned long CDAnonymousStruct;\n");
+}
+
 //======================================================================
 
 int main(int argc, char *argv[])
@@ -1115,6 +1120,8 @@ int main(int argc, char *argv[])
         [classDump sortObjectiveCSegments];
 
         print_header();
+
+        print_unknown_struct_typedef();
 
         [classDump debugSectionOverlap];
 
