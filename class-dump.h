@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.2 1999/08/09 07:45:02 nygard Exp $
+// $Id: class-dump.h,v 1.1 1999/07/31 03:32:26 nygard Exp $
 //
 
 //
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  nygard@telusplanet.net
 //
 
 #ifndef __CLASS_DUMP_H

@@ -1,5 +1,5 @@
 //
-// $Id: my_regex.h,v 1.2 1999/08/09 07:45:04 nygard Exp $
+// $Id: my_regex.h,v 1.1 1999/07/31 03:32:27 nygard Exp $
 //
 
 //
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  nygard@telusplanet.net
 //
 
 #include <regex.h> // This is the same name for both the old and new versions.

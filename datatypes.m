@@ -1,11 +1,11 @@
 //
-// $Id: datatypes.m,v 1.3 1999/08/09 07:45:03 nygard Exp $
+// $Id: datatypes.m,v 1.1 1999/07/31 03:32:26 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 1999  Steve Nygard
+//  Copyright (C) 1997  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  nygard@telusplanet.net
 //
 
 #include <assert.h>
@@ -30,9 +30,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if defined(__APPLE__) && defined (__MACH__)
-#import <Foundation/Foundation.h>
-#elif NS_TARGET_MAJOR >= 4
+#if NS_TARGET_MAJOR >= 4
 #import <Foundation/Foundation.h>
 #else
 #import <foundation/NSString.h>

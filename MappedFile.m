@@ -1,11 +1,11 @@
 //
-// $Id: MappedFile.m,v 1.4 1999/08/09 07:45:00 nygard Exp $
+// $Id: MappedFile.m,v 1.1 1999/07/31 03:32:27 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 1998, 1999  Steve Nygard
+//  Copyright (C) 1997  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -22,11 +22,11 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  nygard@telusplanet.net
 //
 
 #import "MappedFile.h"
-#if NS_TARGET_MAJOR < 4 && !defined(__APPLE__)
+#if NS_TARGET_MAJOR < 4
 #import <foundation/NSArray.h>
 #import <foundation/NSException.h>
 #import <foundation/NSPathUtilities.h>
@@ -49,85 +49,7 @@
 #include <libc.h>
 #include <ctype.h>
 
-static BOOL debugFlag = NO;
-
-static NSArray *envDyldFrameworkPath = nil;
-static NSArray *envDyldLibraryPath = nil;
-static NSArray *envDyldFallbackFrameworkPath = nil;
-static NSArray *envDyldFallbackLibraryPath = nil;
-static NSMutableArray *firstSearchPath = nil;
-static NSMutableArray *secondSearchPath = nil;
-
 @implementation MappedFile
-
-+ (void) initialize
-{
-    static BOOL initialized = NO;
-    NSDictionary *environment;
-    NSString *home, *debugFrameworkPaths;
-
-    if (initialized == YES)
-        return;
-    initialized = YES;
-
-    environment = [[NSProcessInfo processInfo] environment];
-    debugFrameworkPaths = [environment objectForKey:@"ClassDumpDebugFrameworkPaths"];
-    if (debugFrameworkPaths != nil && [debugFrameworkPaths isEqual:@"YES"])
-        debugFlag = YES;
-
-    envDyldFrameworkPath = [[environment objectForKey:@"DYLD_FRAMEWORK_PATH"] componentsSeparatedByString:@":"];
-    envDyldLibraryPath = [[environment objectForKey:@"DYLD_LIBRARY_PATH"] componentsSeparatedByString:@":"];
-    envDyldFallbackFrameworkPath = [[environment objectForKey:@"DYLD_FALLBACK_FRAMEWORK_PATH"] componentsSeparatedByString:@":"];
-    envDyldFallbackLibraryPath = [[environment objectForKey:@"DYLD_FALLBACK_LIBRARY_PATH"] componentsSeparatedByString:@":"];
-    home = [environment objectForKey:@"HOME"];
-
-    if (debugFlag == YES)
-    {
-        NSLog (@"envDyldFrameworkPath: %@", envDyldFrameworkPath);
-        NSLog (@"envDyldLibraryPath: %@", envDyldLibraryPath);
-        NSLog (@"envDyldFallbackFrameworkPath: %@", envDyldFallbackFrameworkPath);
-    }
-
-    if (envDyldFallbackFrameworkPath == nil)
-        envDyldFallbackFrameworkPath = [[NSArray arrayWithObjects:[NSString stringWithFormat:@"%@/Library/Frameworks", home],
-                                                 @"/Local/Library/Frameworks",
-                                                 @"/Network/Library/Frameworks",
-                                                 @"/System/Library/Frameworks",
-                                                 @"/LocalLibrary/Frameworks",
-                                                 @"/NextLibrary/Frameworks",
-                                                 nil] retain];
-
-    if (debugFlag == YES)
-    {
-        NSLog (@"envDyldFallbackFrameworkPath: %@", envDyldFallbackFrameworkPath);
-        NSLog (@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
-    }
-
-    if (envDyldFallbackLibraryPath == nil)
-        envDyldFallbackLibraryPath = [[NSArray arrayWithObjects:[NSString stringWithFormat:@"%@/lib", home],
-                                               @"/usr/local/lib",
-                                               @"/lib",
-                                               @"/usr/lib",
-                                               nil] retain];
-    if (debugFlag == YES)
-        NSLog (@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
-
-    firstSearchPath = [[NSMutableArray arrayWithArray:envDyldFrameworkPath] retain];
-    [firstSearchPath addObjectsFromArray:envDyldLibraryPath];
-
-    secondSearchPath = [[NSMutableArray arrayWithArray:envDyldFallbackFrameworkPath] retain];
-    [secondSearchPath addObjectsFromArray:envDyldFallbackLibraryPath];
-}
-
-+ (BOOL) debug
-{
-    return debugFlag;
-}
-
-+ (void) setDebug:(BOOL)flag
-{
-    debugFlag = flag;
-}
 
 // Will map filename into memory.  If filename is a directory with specific suffixes, treat the directory as a wrapper.
 
@@ -143,42 +65,26 @@ static NSMutableArray *secondSearchPath = nil;
     if ([super init] == nil)
         return nil;
 
-    //NSLog (@"aFilename: %@", aFilename);
     standardPath = [aFilename stringByStandardizingPath];
-    //NSLog (@"standardPath: %@", standardPath);
 
-    // XXX: Try grabbing these from an environment variable & move to +initialize
     [wrappers addObject:@"app"];
     [wrappers addObject:@"framework"];
     [wrappers addObject:@"bundle"];
     [wrappers addObject:@"palette"];
-    [wrappers addObject:@"plugin"];
 
     if ([wrappers containsObject:[standardPath pathExtension]] == YES)
     {
         standardPath = [self pathToMainFileOfWrapper:standardPath];
     }
 
-    if (debugFlag == YES)
-    {
-        NSLog (@"----------------------------------------------------------------------");
-        NSLog (@"before: %@", standardPath);
-    }
-
-    filename = [self adjustedFrameworkPath:standardPath];
-
-    if (debugFlag == YES)
-        NSLog (@"after:  %@", filename);
-
-    data = [[NSData dataWithContentsOfMappedFile:filename] retain];
+    data = [[NSData dataWithContentsOfMappedFile:standardPath] retain];
     if (data == nil)
     {
-        NSLog (@"Couldn't map file: %@", filename);
+        NSLog (@"Couldn't map file: %@", standardPath);
         return nil;
     }
 
-    installName = [standardPath retain];
-    filename = [filename retain];
+    filename = [standardPath retain];
 
     return self;
 }
@@ -187,14 +93,8 @@ static NSMutableArray *secondSearchPath = nil;
 {
     [data release];
     [filename release];
-    [installName release];
 
     [super dealloc];
-}
-
-- (NSString *) installName
-{
-    return installName;
 }
 
 - (NSString *) filename
@@ -226,73 +126,6 @@ static NSMutableArray *secondSearchPath = nil;
     [tmp deleteCharactersInRange:range];
 
     return tmp;
-}
-
-- (NSString *) adjustedFrameworkPath:(NSString *)path
-{
-    NSArray *pathComponents;
-    int count, l;
-    NSString *tailString = nil, *frameworkName = nil, *version = nil;
-    NSRange tailRange;
-    NSString *adjustedPath;
-    NSFileManager *fileManager;
-
-    pathComponents = [path pathComponents];
-    count = [pathComponents count];
-    if (count - 1 >= 0)
-        frameworkName = [pathComponents objectAtIndex:count - 1];
-
-    if (count - 3 >= 0)
-    {
-        if ([[pathComponents objectAtIndex:count - 3] isEqual:@"Versions"] == YES)
-            version = [pathComponents objectAtIndex:count - 2];
-    }
-
-    if (debugFlag == YES)
-        NSLog (@"frameworkName: %@", frameworkName);
-
-    if (frameworkName == nil)
-        return path;
-
-    if (debugFlag == YES)
-        NSLog (@"version: %@", version);
-    if (version == nil)
-        tailString = [NSString stringWithFormat:@"%@.framework/%@", frameworkName, frameworkName];
-    else
-        tailString = [NSString stringWithFormat:@"%@.framework/Versions/%@/%@", frameworkName, version, frameworkName];
-
-    if (debugFlag == YES)
-        NSLog (@"tailString: %@", tailString);
-
-    tailRange = [path rangeOfString:tailString options:NSBackwardsSearch];
-    if (debugFlag == YES)
-        NSLog (@"tailRange.length: %d", tailRange.length);
-    if (tailRange.length == 0)
-        return path;
-
-    fileManager = [NSFileManager defaultManager];
-
-    count = [firstSearchPath count];
-    for (l = 0; l < count; l++)
-    {
-        adjustedPath = [NSString stringWithFormat:@"%@/%@", [firstSearchPath objectAtIndex:l], tailString];
-        if (debugFlag == YES)
-            NSLog (@"adjustedPath: %@", adjustedPath);
-        if ([fileManager fileExistsAtPath:adjustedPath] == YES)
-            return adjustedPath;
-    }
-
-    count = [secondSearchPath count];
-    for (l = 0; l < count; l++)
-    {
-        adjustedPath = [NSString stringWithFormat:@"%@/%@", [secondSearchPath objectAtIndex:l], tailString];
-        if (debugFlag == YES)
-            NSLog (@"adjustedPath: %@", adjustedPath);
-        if ([fileManager fileExistsAtPath:adjustedPath] == YES)
-            return adjustedPath;
-    }
-
-    return path;
 }
 
 @end
