@@ -1,5 +1,5 @@
 //
-// $Id: CDOCCategory.h,v 1.7 2004/02/03 22:51:51 nygard Exp $
+// $Id: CDOCCategory.h,v 1.8 2004/02/11 00:07:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -7,11 +7,12 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "CDOCProtocol.h"
+#import "CDTopologicalSortProtocol.h"
 
 @class NSArray, NSMutableString, NSString;
 @class CDSymbolReferences;
 
-@interface CDOCCategory : CDOCProtocol
+@interface CDOCCategory : CDOCProtocol <CDTopologicalSort>
 {
     NSString *className;
 }
@@ -24,5 +25,9 @@
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (NSString *)sortableName;
+
+// CDTopologicalSort protocol
+- (NSString *)identifier;
+- (NSArray *)dependancies;
 
 @end

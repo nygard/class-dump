@@ -20,7 +20,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.18 2004/02/03 22:51:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.19 2004/02/11 00:07:54 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -91,7 +91,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
         [aProtocol appendToString:resultString classDump:aClassDump symbolReferences:nil];
     }
 
-    if ([aClassDump shouldSortClasses] == YES)
+    if ([aClassDump shouldSortClassesByInheritance] == YES) {
+        [allClasses sortTopologically];
+    } else if ([aClassDump shouldSortClasses] == YES)
         [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
 
     count = [allClasses count];

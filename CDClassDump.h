@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.46 2004/02/03 22:51:51 nygard Exp $
+// $Id: CDClassDump.h,v 1.47 2004/02/11 00:07:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -26,6 +26,7 @@
         unsigned int shouldProcessRecursively:1;
         unsigned int shouldGenerateSeparateHeaders:1;
         unsigned int shouldSortClasses:1; // And categories, protocols
+        unsigned int shouldSortClassesByInheritance:1; // And categories, protocols
         unsigned int shouldSortMethods:1;
 
         unsigned int shouldShowIvarOffsets:1;
@@ -68,6 +69,9 @@
 
 - (BOOL)shouldSortClasses;
 - (void)setShouldSortClasses:(BOOL)newFlag;
+
+- (BOOL)shouldSortClassesByInheritance;
+- (void)setShouldSortClassesByInheritance:(BOOL)newFlag;
 
 - (BOOL)shouldSortMethods;
 - (void)setShouldSortMethods:(BOOL)newFlag;

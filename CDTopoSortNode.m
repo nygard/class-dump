@@ -8,24 +8,27 @@
 #import <Foundation/Foundation.h>
 #import "NSObject-CDExtensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTopoSortNode.m,v 1.4 2004/01/06 02:31:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTopoSortNode.m,v 1.5 2004/02/11 00:07:54 nygard Exp $");
 
 @implementation CDTopoSortNode
 
-- (id)initWithIdentifier:(NSString *)anIdentifier;
+- (id)initWithObject:(id <CDTopologicalSort>)anObject;
 {
     if ([super init] == nil)
         return nil;
 
-    identifier = [anIdentifier retain];
+    representedObject = [anObject retain];
     dependancies = [[NSMutableSet alloc] init];
+    color = CDWhiteNodeColor;
+
+    [self addDependanciesFromArray:[representedObject dependancies]];
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [identifier release];
+    [representedObject release];
     [dependancies release];
 
     [super dealloc];
@@ -33,7 +36,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTopoSortNode.m,v 1.4 2004/
 
 - (NSString *)identifier;
 {
-    return identifier;
+    return [representedObject identifier];
+}
+
+- (id)representedObject;
+{
+    return representedObject;
 }
 
 - (NSArray *)dependancies;
@@ -55,6 +63,50 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTopoSortNode.m,v 1.4 2004/
 {
     [self performSelector:@selector(addDependancy:) withObjectsFromArray:identifiers];
     //[identifiers makeObject:self performSelector:@selector(addDependancy:)];
+}
+
+- (CDNodeColor)color;
+{
+    return color;
+}
+
+- (void)setColor:(CDNodeColor)newColor;
+{
+    color = newColor;
+}
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"%@ (%d) depends on %@", [self identifier], color, [[dependancies allObjects] componentsJoinedByString:@", "]];
+}
+
+- (NSComparisonResult)ascendingCompareByIdentifier:(id)otherNode;
+{
+    return [[self identifier] compare:[otherNode identifier]];
+}
+
+- (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
+{
+    NSArray *dependantIdentifiers;
+    int count, index;
+    NSString *anIdentifier;
+    CDTopoSortNode *aNode;
+
+    dependantIdentifiers = [self dependancies];
+    count = [dependantIdentifiers count];
+    for (index = 0; index < count; index++) {
+        anIdentifier = [dependantIdentifiers objectAtIndex:index];
+        aNode = [nodesByIdentifier objectForKey:anIdentifier];
+        if ([aNode color] == CDWhiteNodeColor) {
+            [aNode setColor:CDGrayNodeColor];
+            [aNode topologicallySortNodes:nodesByIdentifier intoArray:sortedArray];
+        } else if ([aNode color] == CDGrayNodeColor) {
+            NSLog(@"Warning: Possible circular reference? %@ -> %@", [self identifier], [aNode identifier]);
+        }
+    }
+
+    [sortedArray addObject:[self representedObject]];
+    [self setColor:CDBlackNodeColor];
 }
 
 @end

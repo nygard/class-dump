@@ -1,5 +1,5 @@
 //
-// $Id: CDTopoSortNode.h,v 1.3 2004/01/06 02:31:43 nygard Exp $
+// $Id: CDTopoSortNode.h,v 1.4 2004/02/11 00:07:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -7,23 +7,41 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import <Foundation/NSObject.h>
+#import "CDTopologicalSortProtocol.h"
 
-@class NSArray, NSMutableSet, NSString;
+@class NSArray, NSDictionary, NSMutableArray, NSMutableSet, NSString;
+
+typedef enum {
+    CDWhiteNodeColor = 0,
+    CDGrayNodeColor = 1,
+    CDBlackNodeColor = 2,
+} CDNodeColor;
 
 @interface CDTopoSortNode : NSObject
 {
-    NSString *identifier;
+    id <CDTopologicalSort> representedObject;
+
     NSMutableSet *dependancies;
+    CDNodeColor color;
 }
 
-- (id)initWithIdentifier:(NSString *)anIdentifier;
+- (id)initWithObject:(id <CDTopologicalSort>)anObject;
 - (void)dealloc;
 
 - (NSString *)identifier;
+- (id <CDTopologicalSort>)representedObject;
 
 - (NSArray *)dependancies;
 - (void)addDependancy:(NSString *)anIdentifier;
 - (void)removeDependancy:(NSString *)anIdentifier;
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
+
+- (CDNodeColor)color;
+- (void)setColor:(CDNodeColor)newColor;
+
+- (NSString *)description;
+
+- (NSComparisonResult)ascendingCompareByIdentifier:(id)otherNode;
+- (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
 
 @end

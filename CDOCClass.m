@@ -14,7 +14,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.30 2004/02/03 22:51:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.31 2004/02/11 00:07:53 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -103,6 +103,23 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.30 2004/02/0
         [aType phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
         [parser release];
     }
+}
+
+//
+// CDTopologicalSort protocol
+//
+
+- (NSString *)identifier;
+{
+    return [self name];
+}
+
+- (NSArray *)dependancies;
+{
+    if (superClassName == nil)
+        return [NSArray array];
+
+    return [NSArray arrayWithObject:superClassName];
 }
 
 @end

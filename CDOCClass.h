@@ -1,5 +1,5 @@
 //
-// $Id: CDOCClass.h,v 1.16 2004/02/03 22:51:51 nygard Exp $
+// $Id: CDOCClass.h,v 1.17 2004/02/11 00:07:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -7,8 +7,9 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "CDOCProtocol.h"
+#import "CDTopologicalSortProtocol.h"
 
-@interface CDOCClass : CDOCProtocol
+@interface CDOCClass : CDOCProtocol <CDTopologicalSort>
 {
     NSString *superClassName; // TODO (2003-12-17): Have CDClassDump keep track of the name and build the tree,  linking directly to an appropriate class
     NSArray *ivars;
@@ -25,4 +26,9 @@
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
+// CDTopologicalSort protocol
+- (NSString *)identifier;
+- (NSArray *)dependancies;
+
 @end
+

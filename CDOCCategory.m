@@ -11,7 +11,7 @@
 #import "CDSymbolReferences.h"
 #import "NSArray-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.10 2004/02/03 22:51:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.11 2004/02/11 00:07:53 nygard Exp $");
 
 @implementation CDOCCategory
 
@@ -56,6 +56,23 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.10 2004/0
 - (NSString *)sortableName;
 {
     return [NSString stringWithFormat:@"%@ (%@)", className, name];
+}
+
+//
+// CDTopologicalSort protocol
+//
+
+- (NSString *)identifier;
+{
+    return [self sortableName];
+}
+
+- (NSArray *)dependancies;
+{
+    if (className == nil)
+        return [NSArray array];
+
+    return [NSArray arrayWithObject:className];
 }
 
 @end

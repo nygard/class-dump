@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.64 2004/02/04 21:07:14 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.65 2004/02/11 00:07:53 nygard Exp $");
 
 @implementation CDClassDump
 
@@ -188,6 +188,16 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)setShouldSortClasses:(BOOL)newFlag;
 {
     flags.shouldSortClasses = newFlag;
+}
+
+- (BOOL)shouldSortClassesByInheritance;
+{
+    return flags.shouldSortClassesByInheritance;
+}
+
+- (void)setShouldSortClassesByInheritance:(BOOL)newFlag;
+{
+    flags.shouldSortClassesByInheritance = newFlag;
 }
 
 - (BOOL)shouldSortMethods;

@@ -31,7 +31,7 @@
 #import "class-dump.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.72 2004/02/04 21:07:14 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.73 2004/02/11 00:07:54 nygard Exp $");
 
 //======================================================================
 
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
               break;
 
           case 'I':
-              //[classDump setShouldSortByInheritance:YES];
+              [classDump setShouldSortClassesByInheritance:YES];
               break;
 
           case 'o':

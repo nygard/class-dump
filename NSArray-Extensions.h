@@ -1,5 +1,5 @@
 //
-// $Id: NSArray-Extensions.h,v 1.4 2004/01/06 02:31:44 nygard Exp $
+// $Id: NSArray-Extensions.h,v 1.5 2004/02/11 00:07:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -13,4 +13,12 @@
 - (NSArray *)reversedArray;
 - (NSArray *)arrayByMappingSelector:(SEL)aSelector;
 
+@end
+
+@interface NSArray (CDTopoSort)
+- (NSArray *)topologicallySortedArray;
+@end
+
+@interface NSMutableArray (CDTopoSort)
+- (void)sortTopologically;
 @end
