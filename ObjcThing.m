@@ -1,11 +1,11 @@
 //
-// $Id: ObjcThing.m,v 1.8 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcThing.m,v 1.9 2004/01/06 01:52:00 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 2000, 2002  Steve Nygard
+//  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by

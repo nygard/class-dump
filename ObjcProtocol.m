@@ -1,11 +1,11 @@
 //
-// $Id: ObjcProtocol.m,v 1.15 2003/12/05 06:49:43 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.16 2004/01/06 01:51:59 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 1999, 2000  Steve Nygard
+//  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
