@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.26 2004/01/08 02:03:00 nygard Exp $
+// $Id: CDClassDump.h,v 1.27 2004/01/08 04:44:20 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -18,6 +18,9 @@
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
     BOOL shouldProcessRecursively;
+
+    //CDStructureTable *structureTable;
+    //CDStructureTable *unionTable;
 
     // Can you say "just hacking out code"?
     NSMutableDictionary *anonymousStructCountsByType;

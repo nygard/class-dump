@@ -14,7 +14,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01/08 00:43:08 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.37 2004/01/08 04:44:20 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -50,10 +50,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     [structDeclarationTypeFormatter setShouldAutoExpand:YES];
     [structDeclarationTypeFormatter setBaseLevel:0];
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
-
-    NSLog(@"ivarTypeFormatter: %@", ivarTypeFormatter);
-    NSLog(@"methodTypeFormatter: %@", methodTypeFormatter);
-    NSLog(@"structDeclarationTypeFormatter: %@", structDeclarationTypeFormatter);
 
     return self;
 }
@@ -134,20 +130,18 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
 
 - (void)processIsomorphicStructs;
 {
-#if 1
     NSMutableDictionary *anonymousRemapping;
     NSArray *keys;
     int count, index;
     NSString *key;
-    //NSMutableArray *bares = [NSMutableArray array];
     NSMutableSet *duplicateMappings = [NSMutableSet set];
 
-    NSLog(@"processIsomorphicStructs ----------------------------------------");
-    //[self logAnonymousStructs];
+    NSLog(@"----------------------------------------");
     anonymousRemapping = [[NSMutableDictionary alloc] init];
 
     keys = [[anonymousStructsByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
+    NSLog(@"%s, count: %d", _cmd, count);
     for (index = 0; index < count; index++) {
         CDType *structType;
         NSString *bareTypeString;
@@ -156,9 +150,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
         structType = [anonymousStructsByType objectForKey:key];
         bareTypeString = [structType bareTypeString];
         if ([key isEqual:bareTypeString] == NO) {
-            //NSLog(@"%@ -> %@", key, bareTypeString);
-            //NSLog(@"%@ <- %@", bareTypeString, key);
-#if 1
             if ([duplicateMappings containsObject:bareTypeString] == NO && [anonymousStructsByType objectForKey:bareTypeString] != nil) {
                 NSString *existingValue;
 
@@ -170,14 +161,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
                     [anonymousRemapping removeObjectForKey:bareTypeString];
                 }
             }
-#endif
-            //[bares addObject:bareTypeString];
         }
     }
-
-    //[bares sortUsingSelector:@selector(compare:)];
-    //NSLog(@"bares: %@", [bares description]);
-#endif
 
     // Now we need to combine anything that gets remapped.
     {
@@ -203,8 +188,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     }
 
     [anonymousRemapping release];
-
-    NSLog(@"forcedTypedefs: %@", [forcedTypedefs description]);
 }
 
 - (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
@@ -245,9 +228,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     int count, index;
     NSString *key;
 
-    NSLog(@"%s ----------------------------------------", _cmd);
+    NSLog(@"----------------------------------------");
     keys = [[anonymousStructCountsByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
+    NSLog(@"%s, count: %d", _cmd, count);
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         NSLog(@"%3d: %@ => %@", index, key, [anonymousStructCountsByType objectForKey:key]);
@@ -263,9 +247,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     int count, index;
     NSString *key;
 
-    NSLog(@"%s ----------------------------------------", _cmd);
+    NSLog(@"----------------------------------------");
     keys = [[replacementTypes allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
+    NSLog(@"%s, count: %d", _cmd, count);
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         NSLog(@"%3d: %@ => %@", index, key, [[replacementTypes objectForKey:key] typeString]);
@@ -281,9 +266,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     NSString *key;
     int count, index;
 
-    NSLog(@"%s ----------------------------------------", _cmd);
+    NSLog(@"----------------------------------------");
     keys = [[structsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
+    NSLog(@"%s, count: %d", _cmd, count);
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         NSLog(@"%2d: %@ => %@", index, key, [[structsByName objectForKey:key] typeString]);
@@ -296,10 +282,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     NSString *key;
     int count, index;
 
-    NSLog(@"%s ----------------------------------------", _cmd);
+    NSLog(@"----------------------------------------");
     keys = [[anonymousStructNamesByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
-    NSLog(@"count: %d", count);
+    NSLog(@"%s, count: %d", _cmd, count);
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         NSLog(@"%2d: %@ => %@", index, [anonymousStructNamesByType objectForKey:key], key);
@@ -308,9 +294,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
 
 - (void)doSomething;
 {
-    NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
+    //NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
     //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);
-    NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
+    //NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
 
     {
         NSMutableString *resultString;
@@ -473,9 +459,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     if (aName != nil && [aName isEqual:@"?"] == NO) {
         CDType *existingType;
 
-        if ([aName isEqual:@"objc_method_description"] == YES)
-            NSLog(@"%@ => %@", aName, typeString);
-
         existingType = [structsByName objectForKey:aName];
         if (existingType == nil) {
             //[structType registerMemberStructsWithObject:self usedInMethod:NO countReferences:shouldCountReferences];
@@ -508,7 +491,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
             [anonymousStructsByType setObject:structType forKey:typeString];
             [structType registerMemberStructsWithObject:self usedInMethod:NO countReferences:YES];
         } else {
-            NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
+            //NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
         }
 
         // Just count anonymous structs
@@ -524,10 +507,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 {
-    NSLog(@" > %s", _cmd);
-    NSLog(@"aFormatter: %@", aFormatter);
-    NSLog(@"%@ -> %@", [aType typeString], [replacementTypes objectForKey:[aType typeString]]);
-    NSLog(@"<  %s", _cmd);
     return [replacementTypes objectForKey:[aType typeString]];
 }
 
@@ -536,26 +515,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
     NSString *structTypeString;
     CDType *replacementType;
 
-    NSLog(@" > %s", _cmd);
-#if 0
-    return nil;
-    // Count has been adjusted.
-
-    // For ivars, only use typedef if the type is used > 1 time.
-    if (1/*aFormatter == ivarTypeFormatter*/) {
-        if ([[anonymousStructCountsByType objectForKey:structTypeString] intValue] < 2) {
-            NSLog(@"Just one of '%@'", structTypeString);
-            NSLog(@"<  %s", _cmd);
-            return nil;
-        }
-    }
-#endif
-    // TODO (2004-01-07): This isn't quite right.  We'll need to reference typedefs when defining structs.
-    if (level == 0 && aFormatter == structDeclarationTypeFormatter) {
-        NSLog(@"Returning nil.");
-        NSLog(@"<  %s", _cmd);
+    if (level == 0 && aFormatter == structDeclarationTypeFormatter)
         return nil;
-    }
 
     // We need to catch top level replacements, not just replacements for struct members.
     replacementType = [self typeFormatter:aFormatter replacementForType:structType];
@@ -563,11 +524,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.36 2004/01
         structTypeString = [replacementType typeString];
     else
         structTypeString = [structType typeString];
-    NSLog(@"structTypeString: %@", [structType typeString]);
 
-    NSLog(@"level: %d", level);
-    NSLog(@"Returning: %@", [anonymousStructNamesByType objectForKey:structTypeString]);
-    NSLog(@"<  %s", _cmd);
     return [anonymousStructNamesByType objectForKey:structTypeString];
 }
 

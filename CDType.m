@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.19 2004/01/08 00:50:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.20 2004/01/08 04:44:20 nygard Exp $");
 
 @implementation CDType
 
@@ -280,7 +280,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.19 2004/01/08 0
           if (typeName == nil || [@"?" isEqual:typeName] == YES) {
               NSString *typedefName;
 
-              NSLog(@"[%p], typeFormatter: %@", self, typeFormatter);
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
               if (typedefName != nil) {
                   baseType = typedefName;
