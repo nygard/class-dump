@@ -356,10 +356,17 @@
         existingType = [structsByName objectForKey:aName];
         if (existingType == nil)
             [structsByName setObject:structType forKey:aName];
-        else {
-            NSLog(@"Merging %@ with %@", [existingType typeString], [structType typeString]);
+        else if ([structType isEqual:existingType] == NO) {
+            NSString *before;
+
+            before = [existingType typeString];
             [existingType mergeWithType:structType];
-            NSLog(@"Merged result: %@", [existingType typeString]);
+            if ([before isEqual:[existingType typeString]] == NO) {
+                NSLog(@"Merging %@ with %@", before, [structType typeString]);
+                NSLog(@"Merged result: %@", [existingType typeString]);
+            } else {
+                //NSLog(@"No change from merging types.");
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.51 2004/01/05 21:01:25 nygard Exp $
+// $Id: class-dump.m,v 1.52 2004/01/06 01:23:43 nygard Exp $
 //
 
 //
@@ -1328,7 +1328,7 @@ int main(int argc, char *argv[])
         path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
 
         classDump = [[CDClassDump2 alloc] init];
-        //[classDump setShouldProcessRecursively:YES];
+        [classDump setShouldProcessRecursively:shouldExpandFrameworks];
         [classDump processFilename:path];
         [classDump doSomething];
         [classDump release];
