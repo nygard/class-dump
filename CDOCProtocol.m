@@ -11,7 +11,7 @@
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.18 2004/01/16 00:18:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.19 2004/01/18 02:30:08 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -162,6 +162,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.18 2004/0
     for (index = 0; index < count; index++) {
         parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[methods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
+        if (methodTypes == nil)
+            NSLog(@"Warning: Parsing method types failed, %@", [(CDOCMethod *)[methods objectAtIndex:index] name]);
         [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
         [parser release];
     }
