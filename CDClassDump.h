@@ -1,6 +1,6 @@
 #import <Foundation/NSObject.h>
 
-@class NSArray, NSMutableArray, NSMutableDictionary, NSMutableSet;
+@class NSArray, NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString;
 @class CDMachOFile;
 @class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 
@@ -133,5 +133,6 @@ struct cd_objc_protocol_method
 
 - (NSString *)formattedStringByModule;
 - (NSString *)formattedStringByClass;
+- (void)appendHeaderToString:(NSMutableString *)resultString;
 
 @end
