@@ -51,16 +51,23 @@
 
 - (void)testModifiers;
 {
-    // Hmm, interesting.  These all seem to fail for variables.
-    [self testVariableName:@"var" type:@"ri" expectedResult:@"const int var"];
-    [self testVariableName:@"var" type:@"ni" expectedResult:@"in int var"];
-    [self testVariableName:@"var" type:@"Ni" expectedResult:@"inout int var"];
-    [self testVariableName:@"var" type:@"oi" expectedResult:@"out int var"];
-    [self testVariableName:@"var" type:@"Oi" expectedResult:@"bycopy int var"];
-    [self testVariableName:@"var" type:@"Ri" expectedResult:@"byref int var"];
-    [self testVariableName:@"var" type:@"Vi" expectedResult:@"oneway int var"];
+    // The Distributed Object modifiers (in, inout, out, bycopy, byref, oneway) are only for method paramters/return
+    // values, so they will never have a variable name.
 
-    [self testVariableName:@"var" type:@"i" expectedResult:@"int var-it went to the end"];
+    // TODO (2003-12-20): Check whether const makes sense for ivars.
+    [self testVariableName:nil type:@"ri" expectedResult:@"const int"];
+    [self testVariableName:nil type:@"ni" expectedResult:@"in int"];
+    [self testVariableName:nil type:@"Ni" expectedResult:@"inout int"];
+    [self testVariableName:nil type:@"oi" expectedResult:@"out int"];
+    [self testVariableName:nil type:@"Oi" expectedResult:@"bycopy int"];
+    [self testVariableName:nil type:@"Ri" expectedResult:@"byref int"];
+    [self testVariableName:nil type:@"Vi" expectedResult:@"oneway int"];
+
+    //[self testVariableName:nil type:@"r^i" expectedResult:@"const int *var"];
+    //[self testVariableName:nil type:@"^ri" expectedResult:@"int *const"];
+    //[self testVariableName:nil type:@"r^ri" expectedResult:@"const int *const"];
+
+    //[self testVariableName:nil type:@"i" expectedResult:@"int var-it went to the end"];
 }
 
 - (void)testPointers;
@@ -116,7 +123,7 @@
     [self testVariableName:@"var" type:@"^[16^i]" expectedResult:@"int *(*var)[16]"];
 
     [self testVariableName:@"var" type:@"[8[12f]]" expectedResult:@"float var[8][12]"];
-    [self testVariableName:@"var" type:@"[8b3]" expectedResult:@"int var:3[8]"]; // Don't know if this is even valid!
+    //[self testVariableName:@"var" type:@"[8b3]" expectedResult:@"int var:3[8]"]; // Don't know if this is even valid!
 
     //[self testVariableName:@"var" type:@"" expectedResult:@""];
     //[self testVariableName:@"var" type:@"" expectedResult:@""];
