@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.h,v 1.7 2002/12/19 05:59:38 nygard Exp $
+// $Id: ObjcMethod.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -37,16 +37,16 @@
     long method_address; // Note: protocols will not have method addresses
 }
 
-- initWithMethodName:(NSString *)methodName type:(NSString *)methodType;
-- initWithMethodName:(NSString *)methodName type:(NSString *)methodType address:(long)methodAddress;
-- (void) dealloc;
+- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType;
+- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType address:(long)methodAddress;
+- (void)dealloc;
 
-- (NSString *) description;
-- (NSString *) methodName;
-- (long) address;
+- (NSString *)description;
+- (NSString *)methodName;
+- (long)address;
 
-- (void) showMethod:(char)prefix;
+- (void)showMethod:(char)prefix;
 
-- (NSComparisonResult) orderByMethodName:(ObjcMethod *)otherMethod;
+- (NSComparisonResult)orderByMethodName:(ObjcMethod *)otherMethod;
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.h,v 1.7 2002/12/19 05:59:38 nygard Exp $
+// $Id: ObjcThing.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -37,10 +37,11 @@
 {
 }
 
-- (NSString *) sortableName;
+- (NSString *)sortableName;
 
-- (void) showDefinition:(int)flags;
+- (void)showDefinition:(int)flags;
+- (NSString *)superClass;
 
-- (NSComparisonResult) orderByName:(ObjcThing *)otherThing;
+- (NSComparisonResult)orderByName:(ObjcThing *)otherThing;
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.h,v 1.7 2002/12/19 05:59:38 nygard Exp $
+// $Id: ObjcProtocol.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -37,16 +37,16 @@
     NSMutableArray *protocol_methods;
 }
 
-- initWithProtocolName:(NSString *)protocolName;
-- (void) dealloc;
+- (id)initWithProtocolName:(NSString *)protocolName;
+- (void)dealloc;
 
-- (NSString *) protocolName;
-- (NSString *) sortableName;
+- (NSString *)protocolName;
+- (NSString *)sortableName;
 
-- (void) addProtocolNames:(NSArray *)newProtocolNames;
-- (void) addProtocolMethod:(ObjcMethod *)newMethod;
-- (void) addProtocolMethods:(NSArray *)newProtocolMethods;
+- (void)addProtocolNames:(NSArray *)newProtocolNames;
+- (void)addProtocolMethod:(ObjcMethod *)newMethod;
+- (void)addProtocolMethods:(NSArray *)newProtocolMethods;
 
-- (void) showDefinition:(int)flags;
+- (void)showDefinition:(int)flags;
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.6 2002/12/19 05:59:37 nygard Exp $
+// $Id: ObjcCategory.m,v 1.7 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -33,7 +33,7 @@
 
 @implementation ObjcCategory
 
-- initWithClassName:(NSString *)className categoryName:(NSString *)categoryName
+- (id)initWithClassName:(NSString *)className categoryName:(NSString *)categoryName;
 {
     if ([super init] == nil)
         return nil;
@@ -47,7 +47,7 @@
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc;
 {
     [class_name release];
     [category_name release];
@@ -58,22 +58,22 @@
     [super dealloc];
 }
 
-- (NSString *) sortableName
+- (NSString *)sortableName;
 {
     return [NSString stringWithFormat:@"%@ %@", class_name, category_name];
 }
 
-- (void) addClassMethods:(NSArray *)newClassMethods
+- (void)addClassMethods:(NSArray *)newClassMethods;
 {
     [class_methods addObjectsFromArray:newClassMethods];
 }
 
-- (void) addInstanceMethods:(NSArray *)newInstanceMethods
+- (void)addInstanceMethods:(NSArray *)newInstanceMethods;
 {
     [instance_methods addObjectsFromArray:newInstanceMethods];
 }
 
-- (void) showDefinition:(int)flags
+- (void)showDefinition:(int)flags;
 {
     NSEnumerator *enumerator;
     ObjcMethod *method;

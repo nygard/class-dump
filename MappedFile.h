@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.h,v 1.8 2002/12/19 05:59:37 nygard Exp $
+// $Id: MappedFile.h,v 1.9 2002/12/19 06:13:18 nygard Exp $
 //
 
 //
@@ -41,19 +41,19 @@
     NSData *data;
 }
 
-+ (void) initialize;
++ (void)initialize;
 
-+ (BOOL) debug;
-+ (void) setDebug:(BOOL)flag;
++ (BOOL)debug;
++ (void)setDebug:(BOOL)flag;
 
-- initWithFilename:(NSString *)aFilename;
-- (void) dealloc;
+- (id)initWithFilename:(NSString *)aFilename;
+- (void)dealloc;
 
-- (NSString *) installName;
-- (NSString *) filename;
-- (const void *) data;
+- (NSString *)installName;
+- (NSString *)filename;
+- (const void *)data;
 
-- (NSString *) pathToMainFileOfWrapper:(NSString *)path;
-- (NSString *) adjustedFrameworkPath:(NSString *)path;
+- (NSString *)pathToMainFileOfWrapper:(NSString *)path;
+- (NSString *)adjustedFrameworkPath:(NSString *)path;
 
 @end

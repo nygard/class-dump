@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.9 2002/12/19 05:59:37 nygard Exp $
+// $Id: ObjcClass.h,v 1.10 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -39,24 +39,24 @@
     NSMutableArray *protocol_names;
 }
 
-+ (NSMutableDictionary *) classDict;
-+ (NSArray *) sortedClasses;
++ (NSMutableDictionary *)classDict;
++ (NSArray *)sortedClasses;
 
-- initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
-- (void) dealloc;
+- (id)initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
+- (void)dealloc;
 
-- (NSString *) description;
-- (NSString *) className;
-- (NSArray *) protocolNames;
+- (NSString *)description;
+- (NSString *)className;
+- (NSArray *)protocolNames;
 
-- (NSString *) sortableName;
-- (NSString *) superClassName;
+- (NSString *)sortableName;
+- (NSString *)superClassName;
 
-- (void) addIvars:(NSArray *)ivars;
-- (void) addClassMethods:(NSArray *)newClassMethods;
-- (void) addInstanceMethods:(NSArray *)newInstanceMethods;
-- (void) addProtocolNames:(NSArray *)newProtocolNames;
+- (void)addIvars:(NSArray *)ivars;
+- (void)addClassMethods:(NSArray *)newClassMethods;
+- (void)addInstanceMethods:(NSArray *)newInstanceMethods;
+- (void)addProtocolNames:(NSArray *)newProtocolNames;
 
-- (void) showDefinition:(int)flags;
+- (void)showDefinition:(int)flags;
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.m,v 1.4 2002/12/19 05:59:38 nygard Exp $
+// $Id: ObjcMethod.m,v 1.5 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -32,7 +32,7 @@
 
 @implementation ObjcMethod
 
-- initWithMethodName:(NSString *)methodName type:(NSString *)methodType
+- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType;
 {
     if ([self initWithMethodName:methodName type:methodType address:0] == nil)
         return nil;
@@ -42,7 +42,7 @@
     return self;
 }
 
-- initWithMethodName:(NSString *)methodName type:(NSString *)methodType address:(long)methodAddress
+- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType address:(long)methodAddress;
 {
     [super init];
 
@@ -54,7 +54,7 @@
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc;
 {
     [method_name release];
     [method_type release];
@@ -62,30 +62,29 @@
     [super dealloc];
 }
 
-- (NSString *) description
+- (NSString *)description;
 {
     return [NSString stringWithFormat:@"%@/%@\t// %x", method_name, method_type, method_address];
 }
 
-- (NSString *) methodName
+- (NSString *)methodName;
 {
     return method_name;
 }
 
-- (long) address
+- (long)address;
 {
     return method_address;
 }
 
-- (void) showMethod:(char)prefix
+- (void)showMethod:(char)prefix;
 {
     format_method (prefix, [method_name cString], [method_type cString]);
 }
 
-- (NSComparisonResult) orderByMethodName:(ObjcMethod *)otherMethod
+- (NSComparisonResult)orderByMethodName:(ObjcMethod *)otherMethod;
 {
     return [method_name compare:[otherMethod methodName]];
 }
-
 
 @end

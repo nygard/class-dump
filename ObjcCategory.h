@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.h,v 1.7 2002/12/19 05:59:37 nygard Exp $
+// $Id: ObjcCategory.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -38,14 +38,14 @@
     NSMutableArray *protocols;
 }
 
-- initWithClassName:(NSString *)className categoryName:(NSString *)categoryName;
-- (void) dealloc;
+- (id)initWithClassName:(NSString *)className categoryName:(NSString *)categoryName;
+- (void)dealloc;
 
-- (NSString *) sortableName;
+- (NSString *)sortableName;
 
-- (void) addClassMethods:(NSArray *)newClassMethods;
-- (void) addInstanceMethods:(NSArray *)newInstanceMethods;
+- (void)addClassMethods:(NSArray *)newClassMethods;
+- (void)addInstanceMethods:(NSArray *)newInstanceMethods;
 
-- (void) showDefinition:(int)flags;
+- (void)showDefinition:(int)flags;
 
 @end

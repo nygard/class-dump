@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.h,v 1.7 2002/12/19 05:59:37 nygard Exp $
+// $Id: ObjcIvar.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -36,12 +36,12 @@
     long ivar_offset;
 }
 
-- initWithName:(NSString *)ivarName type:(NSString *)ivarType offset:(long)ivarOffset;
-- (void) dealloc;
+- (id)initWithName:(NSString *)ivarName type:(NSString *)ivarType offset:(long)ivarOffset;
+- (void)dealloc;
 
-- (NSString *) description;
+- (NSString *)description;
 
-- (long) offset;
-- (void) showIvarAtLevel:(int)level;
+- (long)offset;
+- (void)showIvarAtLevel:(int)level;
 
 @end

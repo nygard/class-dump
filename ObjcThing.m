@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.m,v 1.6 2002/12/19 05:59:38 nygard Exp $
+// $Id: ObjcThing.m,v 1.7 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -31,21 +31,21 @@
 
 @implementation ObjcThing
 
-- (NSString *) sortableName
+- (NSString *)sortableName;
 {
     return @"";
 }
 
-- (void) showDefinition:(int)flags
+- (void)showDefinition:(int)flags;
 {
 }
 
-- (NSString *) superClass
+- (NSString *)superClass;
 {
     return nil;
 }
 
-- (NSComparisonResult) orderByName:(ObjcThing *)otherThing
+- (NSComparisonResult)orderByName:(ObjcThing *)otherThing;
 {
     return [[self sortableName] compare:[otherThing sortableName]];
 }

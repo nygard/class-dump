@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.6 2002/12/19 05:59:38 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.7 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -33,7 +33,7 @@
 
 @implementation ObjcProtocol
 
-- initWithProtocolName:(NSString *)protocolName
+- (id)initWithProtocolName:(NSString *)protocolName;
 {
     if ([super init] == nil)
         return nil;
@@ -45,7 +45,7 @@
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc;
 {
     [protocol_name release];
     [protocol_names release];
@@ -54,32 +54,32 @@
     [super dealloc];
 }
 
-- (NSString *) protocolName
+- (NSString *)protocolName;
 {
     return protocol_name;
 }
 
-- (NSString *) sortableName
+- (NSString *)sortableName;
 {
     return protocol_name;
 }
 
-- (void) addProtocolNames:(NSArray *)newProtocolNames
+- (void)addProtocolNames:(NSArray *)newProtocolNames;
 {
     [protocol_names addObjectsFromArray:newProtocolNames];
 }
 
-- (void) addProtocolMethod:(ObjcMethod *)newMethod
+- (void)addProtocolMethod:(ObjcMethod *)newMethod;
 {
     [protocol_methods addObject:newMethod];
 }
 
-- (void) addProtocolMethods:(NSArray *)newProtocolMethods
+- (void)addProtocolMethods:(NSArray *)newProtocolMethods;
 {
     [protocol_methods addObjectsFromArray:newProtocolMethods];
 }
 
-- (void) showDefinition:(int)flags
+- (void)showDefinition:(int)flags;
 {
     NSEnumerator *enumerator;
     ObjcMethod *method;

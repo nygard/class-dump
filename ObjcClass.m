@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.8 2002/12/19 05:59:37 nygard Exp $
+// $Id: ObjcClass.m,v 1.9 2002/12/19 06:13:19 nygard Exp $
 //
 
 //
@@ -35,7 +35,7 @@
 
 @implementation ObjcClass
 
-+ (NSMutableDictionary *) classDict
++ (NSMutableDictionary *)classDict;
 {
     static NSMutableDictionary *classDict = nil;
 
@@ -45,7 +45,7 @@
     return classDict;
 }
 
-+ (NSArray *) sortedClasses
++ (NSArray *)sortedClasses;
 {
     NSMutableArray *classes;
     NSMutableDictionary *classDict;
@@ -71,7 +71,7 @@
     return classes;
 }
 
-- initWithClassName:(NSString *)className superClassName:(NSString *)superClassName
+- (id)initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
 {
     if ([super init] == nil)
         return nil;
@@ -88,7 +88,7 @@
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc;
 {
     [class_name release];
     [super_class_name release];
@@ -100,53 +100,53 @@
     [super dealloc];
 }
 
-- (void) addIvars:(NSArray *)newIvars
-{
-    [ivars addObjectsFromArray:newIvars];
-}
-
-- (NSString *) description
+- (NSString *)description;
 {
     return [NSString stringWithFormat:@"@interface %@:%@ {\n%@\n}\n%@\n%@",
                      class_name, super_class_name, ivars, class_methods, instance_methods];
 }
 
-- (NSString *) className
+- (NSString *)className;
 {
     return class_name;
 }
 
-- (NSArray *) protocolNames
+- (NSArray *)protocolNames;
 {
     return protocol_names;
 }
 
-- (NSString *) sortableName
+- (NSString *)sortableName;
 {
     return class_name;
 }
 
-- (NSString *) superClassName
+- (NSString *)superClassName;
 {
     return super_class_name;
 }
 
-- (void) addClassMethods:(NSArray *)newClassMethods
+- (void)addIvars:(NSArray *)newIvars;
+{
+    [ivars addObjectsFromArray:newIvars];
+}
+
+- (void)addClassMethods:(NSArray *)newClassMethods;
 {
     [class_methods addObjectsFromArray:newClassMethods];
 }
 
-- (void) addInstanceMethods:(NSArray *)newInstanceMethods
+- (void)addInstanceMethods:(NSArray *)newInstanceMethods;
 {
     [instance_methods addObjectsFromArray:newInstanceMethods];
 }
 
-- (void) addProtocolNames:(NSArray *)newProtocolNames
+- (void)addProtocolNames:(NSArray *)newProtocolNames;
 {
     [protocol_names addObjectsFromArray:newProtocolNames];
 }
 
-- (void) showDefinition:(int)flags
+- (void)showDefinition:(int)flags;
 {
     NSEnumerator *enumerator;
     ObjcIvar *ivar;

@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.9 2002/12/19 05:59:37 nygard Exp $
+// $Id: MappedFile.m,v 1.10 2002/12/19 06:13:18 nygard Exp $
 //
 
 //
@@ -43,7 +43,7 @@ static NSMutableArray *secondSearchPath = nil;
 
 @implementation MappedFile
 
-+ (void) initialize
++ (void)initialize;
 {
     static BOOL initialized = NO;
     NSDictionary *environment;
@@ -102,19 +102,19 @@ static NSMutableArray *secondSearchPath = nil;
     [secondSearchPath addObjectsFromArray:envDyldFallbackLibraryPath];
 }
 
-+ (BOOL) debug
++ (BOOL)debug;
 {
     return debugFlag;
 }
 
-+ (void) setDebug:(BOOL)flag
++ (void)setDebug:(BOOL)flag;
 {
     debugFlag = flag;
 }
 
 // Will map filename into memory.  If filename is a directory with specific suffixes, treat the directory as a wrapper.
 
-- initWithFilename:(NSString *)aFilename
+- (id)initWithFilename:(NSString *)aFilename;
 {
     NSString *standardPath;
     NSMutableSet *wrappers = [NSMutableSet set];
@@ -160,7 +160,7 @@ static NSMutableArray *secondSearchPath = nil;
     return self;
 }
 
-- (void) dealloc
+- (void)dealloc;
 {
     [data release];
     [filename release];
@@ -169,24 +169,24 @@ static NSMutableArray *secondSearchPath = nil;
     [super dealloc];
 }
 
-- (NSString *) installName
+- (NSString *)installName;
 {
     return installName;
 }
 
-- (NSString *) filename
+- (NSString *)filename;
 {
     return filename;
 }
 
-- (const void *) data
+- (const void *)data;
 {
     return [data bytes];
 }
 
 // How does this handle something ending in "/"?
 
-- (NSString *) pathToMainFileOfWrapper:(NSString *)path
+- (NSString *)pathToMainFileOfWrapper:(NSString *)path;
 {
     NSString *base, *extension, *mainFile;
 
@@ -216,7 +216,7 @@ static NSMutableArray *secondSearchPath = nil;
     return mainFile;
 }
 
-- (NSString *) adjustedFrameworkPath:(NSString *)path
+- (NSString *)adjustedFrameworkPath:(NSString *)path;
 {
     NSArray *pathComponents;
     int count, l;
