@@ -90,7 +90,13 @@
         }
 
 #if 1
-        NSLog(@"formatted result:\n%@", resultString);
+        {
+            NSData *data;
+
+            data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+            [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+        }
+        //NSLog(@"formatted result:\n%@", resultString);
 #else
         // For sampling
         NSLog(@"Done...........");

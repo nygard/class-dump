@@ -13,6 +13,9 @@
 - (void)testVariableName:(NSString *)aVariableName type:(NSString *)aType expectedResult:(NSString *)expectedResult;
 - (void)testBasicTypes;
 - (void)testModifiers;
+- (void)testPointers;
+- (void)testStructType;
+- (void)testUnionType;
 //- (void)testBar;
 
 @end

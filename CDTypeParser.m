@@ -3,6 +3,8 @@
 #include <assert.h>
 #import <Foundation/Foundation.h>
 #include "datatypes.h"
+#import "CDMethodType.h"
+#import "CDType.h"
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
@@ -38,9 +40,9 @@ NSString *CDTokenDescription(int token)
     [super dealloc];
 }
 
-- (struct method_type *)parseMethodType;
+- (NSArray *)parseMethodType;
 {
-    struct method_type *result;
+    NSArray *result;
 
     NS_DURING {
         lookahead = [lexer nextToken];
@@ -49,17 +51,16 @@ NSString *CDTokenDescription(int token)
         NSLog(@"caught exception: %@", localException);
         NSLog(@"type: %@", [lexer string]);
 
-        free_allocated_methods();
-        free_allocated_types();
-        result = NULL;
+        // TODO (2003-12-19): Free stuff if necessary
+        result = nil;
     } NS_ENDHANDLER;
 
     return result;
 }
 
-- (struct my_objc_type *)parseType;
+- (CDType *)parseType;
 {
-    struct my_objc_type *result;
+    CDType *result;
 
     NS_DURING {
         lookahead = [lexer nextToken];
@@ -68,9 +69,8 @@ NSString *CDTokenDescription(int token)
         NSLog(@"caught exception: %@", localException);
         NSLog(@"type: %@", [lexer string]);
 
-        free_allocated_methods();
-        free_allocated_types();
-        result = NULL;
+        // TODO (2003-12-19): Free stuff if necessary
+        result = nil;
     } NS_ENDHANDLER;
 
     return result;
@@ -104,30 +104,38 @@ NSString *CDTokenDescription(int token)
     [NSException raise:CDSyntaxError format:@"%@", errorString];
 }
 
-- (struct method_type *)_parseMethodType;
+- (NSArray *)_parseMethodType;
 {
-    struct method_type *pair, *head;
-    struct my_objc_type *type;
+    NSMutableArray *methodTypes;
+    CDMethodType *aMethodType;
+    CDType *type;
     NSString *number;
+
+    methodTypes = [NSMutableArray array];
+    // Has to have at least one pair for the return type;
+    // Probably needs at least two more, for object and selector
+    // TODO (2003-12-19): Replace with do/while.
 
     type = [self _parseType];
     number = [self parseNumber];
-    head = pair = create_method_type(type, number);
+    aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
+    [methodTypes addObject:aMethodType];
+    [aMethodType release];
 
     while ([self isLookaheadInTypeStartSet] == YES) {
         type = [self _parseType];
         number = [self parseNumber];
-        pair = create_method_type(type, number);
-        pair->next = head;
-        head = pair;
+        aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
+        [methodTypes addObject:aMethodType];
+        [aMethodType release];
     }
 
-    return reverse_method_types(head);
+    return methodTypes;
 }
 
-- (struct my_objc_type *)_parseType;
+- (CDType *)_parseType;
 {
-    struct my_objc_type *result;
+    CDType *result;
 
     if (lookahead == 'r'
         || lookahead == 'n'
@@ -137,79 +145,79 @@ NSString *CDTokenDescription(int token)
         || lookahead == 'R'
         || lookahead == 'V') { // modifiers
         int modifier;
-        struct my_objc_type *unmodifiedType;
+        CDType *unmodifiedType;
         modifier = lookahead;
         [self match:modifier];
 
         unmodifiedType = [self _parseType];
-        result = create_modified_type(modifier, unmodifiedType);
+        result = [[CDType alloc] initModifier:modifier type:unmodifiedType];
     } else if (lookahead == '^') { // pointer
-        struct my_objc_type *type;
+        CDType *type;
 
         [self match:'^'];
         type = [self _parseType];
-        result = create_pointer_type(type);
+        result = [[CDType alloc] initPointerType:type];
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
 
         [self match:'b'];
         number = [self parseNumber];
-        result = create_bitfield_type(number);
+        result = [[CDType alloc] initBitfieldType:number];
     } else if (lookahead == '@') { // id
         [self match:'@'];
         if (lookahead == '"') {
             NSString *name;
 
             name = [self parseQuotedName];
-            result = create_id_type(name);
+            result = [[CDType alloc] initIDType:name];
         } else {
-            result = create_id_type(NULL);
+            result = [[CDType alloc] initIDType:nil];
         }
     } else if (lookahead == '{') { // structure
         NSString *typeName;
-        struct my_objc_type *optionalFormat;
+        NSArray *optionalMembers;
 
         [self match:'{' allowIdentifier:YES];
         typeName = [self parseTypeName];
-        optionalFormat = [self parseOptionalFormat];
+        optionalMembers = [self parseOptionalMembers];
         [self match:'}'];
 
-        result = create_struct_type(typeName, optionalFormat);
+        result = [[CDType alloc] initStructType:typeName members:optionalMembers];
     } else if (lookahead == '(') { // union
         [self match:'(' allowIdentifier:YES];
         if (lookahead == TK_IDENTIFIER) {
             NSString *identifier;
-            struct my_objc_type *optionalFormat;
+            NSArray *optionalMembers;
 
             identifier = [self parseIdentifier];
-            optionalFormat = [self parseOptionalFormat];
+            optionalMembers = [self parseOptionalMembers];
             [self match:')'];
 
-            result = create_union_type(optionalFormat, identifier);
+            result = [[CDType alloc] initUnionType:identifier members:optionalMembers];
         } else {
-            struct my_objc_type *unionTypes;
+            NSArray *unionTypes;
 
             unionTypes = [self parseUnionTypes];
             [self match:')'];
 
-            result = create_union_type(unionTypes, NULL);
+            result = [[CDType alloc] initUnionType:nil members:unionTypes];
         }
     } else if (lookahead == '[') { // array
         NSString *number;
-        struct my_objc_type *type;
+        CDType *type;
 
         [self match:'['];
         number = [self parseNumber];
         type = [self _parseType];
         [self match:']'];
 
-        result = create_array_type(number, type);
+        result = [[CDType alloc] initArrayType:type count:number];
     } else if ([self isLookaheadInSimpleTypeSet] == YES) { // simple type
         int simpleType;
 
         simpleType = lookahead;
         [self match:simpleType];
-        result = create_simple_type(simpleType);
+        result = [[CDType alloc] initSimpleType:simpleType];
     } else {
         result = NULL;
         [NSException raise:CDSyntaxError format:@"expected (many things), got %d", lookahead];
@@ -218,65 +226,62 @@ NSString *CDTokenDescription(int token)
     return result;
 }
 
-- (struct my_objc_type *)parseUnionTypes;
+// This seems to be used in method types -- no names
+- (NSArray *)parseUnionTypes;
 {
-    struct my_objc_type *result;
+    NSMutableArray *members;
 
-    result = NULL;
+    members = [NSMutableArray array];
+
     while ([self isLookaheadInTypeSet] == YES) {
-        struct my_objc_type *type;
+        CDType *aType;
 
-        type = [self _parseType];
-        type->var_name = [@"___" retain];
-        type->next = result;
-        result = type;
+        aType = [self _parseType];
+        [aType setVariableName:@"___"];
+        [members addObject:aType];
     }
 
-    return result;
+    return members;
 }
 
-- (struct my_objc_type *)parseOptionalFormat;
+- (NSArray *)parseOptionalMembers;
 {
-    struct my_objc_type *result;
+    NSArray *result;
 
     if (lookahead == '=') {
         [self match:'='];
-        result = [self parseTagList];
+        result = [self parseMemberList];
     } else
-        result = NULL;
+        result = nil;
 
     return result;
 }
 
-- (struct my_objc_type *)parseTagList;
+- (NSArray *)parseMemberList;
 {
-    struct my_objc_type *result;
+    NSMutableArray *result;
 
-    result = NULL;
+    result = [NSMutableArray array];
     while (lookahead == '"' || [self isLookaheadInTypeSet] == YES) {
-        struct my_objc_type *tag;
-
-        tag = [self parseTag];
-        tag->next = result;
-        result = tag;
+        [result addObject:[self parseMember]];
     }
 
     return result;
 }
 
-- (struct my_objc_type *)parseTag;
+- (CDType *)parseMember;
 {
-    struct my_objc_type *result;
+    CDType *result;
 
     if (lookahead == '"') {
         NSString *identifier;
 
         identifier = [self parseQuotedName];
         result = [self _parseType];
-        result->var_name = [identifier retain];
+        [result setVariableName:identifier];
     } else {
         result = [self _parseType];
-        result->var_name = [@"___" retain];
+        [result setVariableName:@"___"];
     }
 
     return result;
@@ -288,6 +293,7 @@ NSString *CDTokenDescription(int token)
 
     identifier = [self parseIdentifier];
     if (lookahead == '<') {
+        NSLog(@"Matching template class...");
         [self match:'<' allowIdentifier:YES];
         [self parseIdentifier];
         while (lookahead == ',') {
@@ -309,7 +315,7 @@ NSString *CDTokenDescription(int token)
         return result;
     }
 
-    return NULL;
+    return nil;
 }
 
 - (NSString *)parseNumber;
@@ -322,7 +328,7 @@ NSString *CDTokenDescription(int token)
         return result;
     }
 
-    return NULL;
+    return nil;
 }
 
 - (NSString *)parseQuotedName;

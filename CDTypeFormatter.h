@@ -7,6 +7,6 @@
 }
 
 + (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
-+ (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
++ (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 
 @end

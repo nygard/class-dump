@@ -1,7 +1,8 @@
 #import <Foundation/NSObject.h>
-#include "datatypes.h"
+//#include "datatypes.h"
 
-@class CDTypeLexer;
+@class NSArray, NSString;
+@class CDMethodType, CDType, CDTypeLexer;
 
 extern NSString *CDSyntaxError;
 
@@ -15,8 +16,8 @@ extern NSString *CDSyntaxError;
 - (void)dealloc;
 
 // TODO (2003-12-18): Or add subclass, CDMethodTypeParser, and then just have them -parse?  Nah, different return types.
-- (struct method_type *)parseMethodType;
-- (struct my_objc_type *)parseType;
+- (NSArray *)parseMethodType;
+- (CDType *)parseType;
 
 @end
 
@@ -26,13 +27,13 @@ extern NSString *CDSyntaxError;
 - (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
 - (void)error:(NSString *)errorString;
 
-- (struct method_type *)_parseMethodType;
-- (struct my_objc_type *)_parseType;
+- (NSArray *)_parseMethodType;
+- (CDType *)_parseType;
 
-- (struct my_objc_type *)parseUnionTypes;
-- (struct my_objc_type *)parseOptionalFormat;
-- (struct my_objc_type *)parseTagList;
-- (struct my_objc_type *)parseTag;
+- (NSArray *)parseUnionTypes;
+- (NSArray *)parseOptionalMembers;
+- (NSArray *)parseMemberList;
+- (CDType *)parseMember;
 
 - (NSString *)parseTypeName;
 - (NSString *)parseIdentifier;
