@@ -1,5 +1,5 @@
 //
-// $Id: CDOCCategory.h,v 1.6 2004/02/02 23:21:21 nygard Exp $
+// $Id: CDOCCategory.h,v 1.7 2004/02/03 22:51:51 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -21,7 +21,7 @@
 - (NSString *)className;
 - (void)setClassName:(NSString *)newClassName;
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (NSString *)sortableName;
 

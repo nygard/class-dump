@@ -42,7 +42,7 @@
 #import "class-dump.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.69 2004/02/03 22:10:17 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.70 2004/02/03 22:51:52 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -229,7 +229,7 @@ extern char *optarg;
 int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    CDClassDump2 *classDump;
+    CDClassDump *classDump;
 
     int ch;
     BOOL errorFlag = NO;
@@ -239,7 +239,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    classDump = [[[CDClassDump2 alloc] init] autorelease];
+    classDump = [[[CDClassDump alloc] init] autorelease];
     [classDump setOutputPath:@"/tmp/cd"];
 
     while ( (ch = getopt(argc, argv, "aAC:HIo:rRS")) != EOF) {

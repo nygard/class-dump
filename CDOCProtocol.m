@@ -13,7 +13,7 @@
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.23 2004/02/03 04:00:21 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.24 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -119,7 +119,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.23 2004/0
                      NSStringFromClass([self class]), name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
         return;
@@ -135,7 +135,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.23 2004/0
     [resultString appendString:@"@end\n\n"];
 }
 
-- (void)appendMethodsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendMethodsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     int count, index;
     NSArray *methods;

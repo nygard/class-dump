@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.14 2004/02/03 06:19:16 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.15 2004/02/03 22:51:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -25,7 +25,7 @@
 
 - (void)setUp;
 {
-    classDump = [[CDClassDump2 alloc] init];
+    classDump = [[CDClassDump alloc] init];
 }
 
 - (void)tearDown;

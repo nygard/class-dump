@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.12 2004/02/03 02:54:38 nygard Exp $
+// $Id: CDStructureTable.h,v 1.13 2004/02/03 22:51:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -11,7 +11,7 @@
 #import "CDStructureRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString;
-@class CDClassDump2, CDType, CDSymbolReferences, CDTypeFormatter;
+@class CDClassDump, CDType, CDSymbolReferences, CDTypeFormatter;
 
 @interface CDStructureTable : NSObject
 {
@@ -52,8 +52,8 @@
 
 - (void)generateNamesForAnonymousStructures;
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (void)forceTypedefForStructure:(NSString *)typeString;
 - (CDType *)replacementForType:(CDType *)aType;

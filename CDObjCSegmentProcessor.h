@@ -1,5 +1,5 @@
 //
-// $Id: CDObjCSegmentProcessor.h,v 1.14 2004/02/03 03:54:45 nygard Exp $
+// $Id: CDObjCSegmentProcessor.h,v 1.15 2004/02/03 22:51:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -10,7 +10,7 @@
 #import "CDStructureRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
-@class CDClassDump2, CDMachOFile;
+@class CDClassDump, CDMachOFile;
 
 @interface CDObjCSegmentProcessor : NSObject
 {
@@ -24,12 +24,12 @@
 
 - (void)process;
 
-- (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 - (NSString *)description;
 
 - (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary;
-- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
+- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 
 @end

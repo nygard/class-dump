@@ -11,7 +11,7 @@
 #import "CDOCClass.h"
 #import "CDSymbolReferences.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.16 2004/02/03 03:10:37 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.17 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -90,7 +90,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.16 2004/02/
     }
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 {
     int count, index;
 
@@ -103,7 +103,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.16 2004/02/
         [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];
 }
 
-- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
+- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 {
     NSString *outputPath;
     int count, index;

@@ -1,5 +1,5 @@
 //
-// $Id: CDOCMethod.h,v 1.8 2004/02/02 21:37:20 nygard Exp $
+// $Id: CDOCMethod.h,v 1.9 2004/02/03 22:51:51 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 
 @class NSMutableString, NSString;
-@class CDClassDump2, CDSymbolReferences;
+@class CDClassDump, CDSymbolReferences;
 
 @interface CDOCMethod : NSObject
 {
@@ -26,7 +26,7 @@
 - (unsigned long)imp;
 
 - (NSString *)description;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 

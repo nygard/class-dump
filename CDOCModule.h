@@ -1,5 +1,5 @@
 //
-// $Id: CDOCModule.h,v 1.9 2004/02/02 19:46:43 nygard Exp $
+// $Id: CDOCModule.h,v 1.10 2004/02/03 22:51:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 
 @class NSMutableDictionary, NSMutableString;
-@class CDClassDump2, CDOCSymtab;
+@class CDClassDump, CDOCSymtab;
 
 @interface CDOCModule : NSObject
 {
@@ -34,8 +34,8 @@
 - (NSString *)description;
 - (NSString *)formattedString;
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 - (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
-- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
+- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 
 @end

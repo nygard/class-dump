@@ -1,5 +1,5 @@
 //
-// $Id: CDPathUnitTest.m,v 1.1 2004/01/31 03:29:40 nygard Exp $
+// $Id: CDPathUnitTest.m,v 1.2 2004/02/03 22:51:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -39,7 +39,7 @@
 {
     NSString *result;
 
-    result = [CDClassDump2 adjustUserSuppliedPath:sourcePath];
+    result = [CDClassDump adjustUserSuppliedPath:sourcePath];
     [self assert:result equals:expectedResult];
 }
 

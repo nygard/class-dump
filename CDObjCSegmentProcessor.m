@@ -20,7 +20,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.17 2004/02/03 03:54:45 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.18 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -51,7 +51,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     [self processModules];
 }
 
-- (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 {
     int count, index;
     NSMutableArray *allClasses;
@@ -140,7 +140,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     }
 }
 
-- (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
+- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 {
     int count, index;
 

@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.h,v 1.8 2004/01/15 03:04:54 nygard Exp $
+// $Id: CDStructHandlingUnitTest.h,v 1.9 2004/02/03 22:51:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -8,11 +8,11 @@
 
 #import <ObjcUnit/TestCase.h>
 
-@class CDClassDump2;
+@class CDClassDump;
 
 @interface CDStructHandlingUnitTest : TestCase
 {
-    CDClassDump2 *classDump;
+    CDClassDump *classDump;
 }
 
 - (void)dealloc;

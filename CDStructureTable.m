@@ -14,7 +14,7 @@
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.17 2004/02/03 02:54:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.18 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -191,7 +191,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.17 20
 // TODO (2003-12-23): sort by name or by dependency
 // TODO (2003-12-23): declare in modules where they were first used
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSArray *keys;
     NSString *key;
@@ -217,7 +217,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.17 20
     }
 }
 
-- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSArray *keys;
     int count, index;

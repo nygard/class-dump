@@ -1,5 +1,5 @@
 //
-// $Id: CDOCClass.h,v 1.15 2004/02/02 21:37:19 nygard Exp $
+// $Id: CDOCClass.h,v 1.16 2004/02/03 22:51:51 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -10,7 +10,7 @@
 
 @interface CDOCClass : CDOCProtocol
 {
-    NSString *superClassName; // TODO (2003-12-17): Have CDClassDump2 keep track of the name and build the tree,  linking directly to an appropriate class
+    NSString *superClassName; // TODO (2003-12-17): Have CDClassDump keep track of the name and build the tree,  linking directly to an appropriate class
     NSArray *ivars;
 }
 
@@ -22,7 +22,7 @@
 - (NSArray *)ivars;
 - (void)setIvars:(NSArray *)newIvars;
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 @end

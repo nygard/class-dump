@@ -9,7 +9,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.18 2004/02/02 23:24:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.19 2004/02/03 22:51:51 nygard Exp $");
 
 @implementation CDOCIvar
 
@@ -54,7 +54,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.18 2004/02/02
                      NSStringFromClass([self class]), name, type, offset];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *formattedString;
 

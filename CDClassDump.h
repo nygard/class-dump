@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.45 2004/02/03 22:10:17 nygard Exp $
+// $Id: CDClassDump.h,v 1.46 2004/02/03 22:51:51 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -18,7 +18,7 @@
 @class CDDylibCommand, CDMachOFile;
 @class CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
 
-@interface CDClassDump2 : NSObject <CDStructureRegistration>
+@interface CDClassDump : NSObject <CDStructureRegistration>
 {
     NSString *executablePath;
 
