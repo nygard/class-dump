@@ -6,7 +6,7 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSymbolReferences.m,v 1.1 2004/02/02 21:46:22 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSymbolReferences.m,v 1.2 2004/02/03 03:04:32 nygard Exp $");
 
 @implementation CDSymbolReferences
 
@@ -80,10 +80,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSymbolReferences.m,v 1.1 2
 
     names = [self classes];
     if ([names count] > 0) {
-        [resultString appendFormat:@"@class %@;\n", [names componentsJoinedByString:@", "]];
+        [resultString appendFormat:@"@class %@;\n\n", [names componentsJoinedByString:@", "]];
     }
-    if (count > 0)
-        [resultString appendString:@"\n"];
 }
 
 - (NSString *)referenceString;
