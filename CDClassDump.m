@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.41 2004/01/12 19:07:37 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.42 2004/01/12 19:34:09 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -148,17 +148,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.41 2004/01
             [[objCSegmentProcessors objectAtIndex:index] registerStructuresWithObject:self];
         }
 
-        [structureTable doneRegistration];
-        [unionTable doneRegistration];
+        [self finishRegistration];
 
         resultString = [[NSMutableString alloc] init];
         [self appendHeaderToString:resultString];
 
-        [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
-        [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter];
-
-        [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
-        [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter];
+        [self appendStructuresToString:resultString];
 
         for (index = 0; index < count; index++) {
             [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString classDump:self];
@@ -179,6 +174,21 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.41 2004/01
 #endif
         [resultString release];
     }
+}
+
+- (void)finishRegistration;
+{
+    [structureTable doneRegistration];
+    [unionTable doneRegistration];
+}
+
+- (void)appendStructuresToString:(NSMutableString *)resultString;
+{
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
+    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter];
+
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
+    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter];
 }
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;

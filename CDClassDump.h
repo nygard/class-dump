@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.30 2004/01/12 19:07:37 nygard Exp $
+// $Id: CDClassDump.h,v 1.31 2004/01/12 19:34:09 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -44,6 +44,8 @@
 - (void)processFilename:(NSString *)aFilename;
 
 - (void)doSomething;
+- (void)finishRegistration;
+- (void)appendStructuresToString:(NSMutableString *)resultString;
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 

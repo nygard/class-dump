@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.8 2004/01/08 00:43:09 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.9 2004/01/12 19:34:09 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -49,7 +49,7 @@
 
     parser = [[CDTypeParser alloc] initWithType:aTypeString];
     type = [parser parseType];
-    [type registerStructsWithObject:classDump usedInMethod:NO countReferences:YES];
+    [type registerStructuresWithObject:classDump usedInMethod:NO];
     [parser release];
 }
 
@@ -82,16 +82,10 @@
             [self registerStructsFromType:[inputFields objectAtIndex:0]];
     }
 
-    [classDump processIsomorphicStructs];
-    [classDump generateNamesForAnonymousStructs];
-    [classDump logStructCounts];
-    [classDump logNamedStructs];
-    [classDump logAnonymousStructs];
-    [classDump logAnonymousRemappings];
+    [classDump finishRegistration];
 
     // Then generate output
-    [classDump appendNamedStructsToString:resultString];
-    [classDump appendTypedefsToString:resultString];
+    [classDump appendStructuresToString:resultString];
 
     for (index = 0; index < count; index++) {
         NSString *line;

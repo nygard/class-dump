@@ -684,6 +684,8 @@
 				01DEC43005A7622B00682FCC,
 				01497A6005AD0BAC0023398B,
 				01497A6105AD0BAC0023398B,
+				018B16CE05B32B3000C95EFC,
+				018B16CF05B32B3000C95EFC,
 			);
 			isa = PBXGroup;
 			name = "New stuff";
@@ -815,6 +817,22 @@
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
 			path = CDOCProtocol.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		018B16CE05B32B3000C95EFC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDStructureInfo.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		018B16CF05B32B3000C95EFC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = CDStructureInfo.m;
 			refType = 4;
 			sourceTree = "<group>";
 		};
