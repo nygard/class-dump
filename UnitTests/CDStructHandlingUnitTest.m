@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.13 2004/02/02 21:40:18 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.14 2004/02/03 06:19:16 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -92,7 +92,7 @@
     }
 
     // Then generate output
-    [classDump appendStructuresToString:resultString];
+    [classDump appendStructuresToString:resultString symbolReferences:nil];
 
     for (index = 0; index < count; index++) {
         NSString *line;
