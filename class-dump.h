@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.13 2004/01/06 01:52:00 nygard Exp $
+// $Id: class-dump.h,v 1.14 2004/01/16 21:54:38 nygard Exp $
 //
 
 //
@@ -26,120 +26,11 @@
 //
 
 #import <Foundation/NSObject.h>
-#include <regex.h>
 
-#if 0
-struct my_objc_module
-{
-    long version;
-    long size;
-    long name;
-    long symtab;
-};
-
-// Section: __symbols
-struct my_objc_symtab
-{
-    long sel_ref_cnt;
-    long refs;
-    short cls_def_count;
-    short cat_def_count;
-    long class_pointer;
-};
-
-// Section: __class
-struct my_objc_class
-{
-    long isa;
-    long super_class;
-    long name;
-    long version;
-    long info;
-    long instance_size;
-    long ivars;
-    long methods;
-    long cache;
-    long protocols;
-};
-
-// Section: ??
-struct my_objc_category
-{
-    long category_name;
-    long class_name;
-    long methods;
-    long class_methods;
-    long protocols;
-};
-
-// Section: __instance_vars
-struct my_objc_ivars
-{
-    long ivar_count;
-    // Followed by ivars
-};
-
-// Section: __instance_vars
-struct my_objc_ivar
-{
-    long name;
-    long type;
-    long offset;
-};
-
-// Section: __inst_meth
-struct my_objc_methods
-{
-    long _obsolete;
-    long method_count;
-    // Followed by methods
-};
-
-// Section: __inst_meth
-struct my_objc_method
-{
-    long name;
-    long types;
-    long imp;
-};
-
-// Section: __meta_class
-struct my_objc_isa
-{
-};
-
-struct my_objc_protocol_list
-{
-    long next;
-    long count;
-    long list;
-};
-
-struct my_objc_protocol
-{
-    long isa;
-    long protocol_name;
-    long protocol_list;
-    long instance_methods;
-};
-
-struct my_objc_prot_inst_meth
-{
-    long name;
-    long types;
-};
-
-struct my_objc_prot_inst_meth_list
-{
-    long count;
-    long methods;
-};
-#endif
 //======================================================================
 
-@class NSArray, NSString, NSMutableArray, NSMutableDictionary;
-//@class CDSectionInfo, MappedFile, ObjcClass, ObjcCategory;
 #if 0
+#include <regex.h>
 @interface CDClassDump : NSObject
 {
     NSString *mainPath;
@@ -202,36 +93,11 @@ struct my_objc_prot_inst_meth_list
 
 
 
-- (void)processFile:(MappedFile *)aMappedFile;
-
-- (int)processMachO:(void *)ptr filename:(NSString *)filename;
-- (unsigned long)processLoadCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
+// Remnants with notes:
 - (void)processDylibCommand:(void *)start ptr:(void *)ptr;
 - (void)processFvmlibCommand:(void *)start ptr:(void *)ptr;
-- (void)processSegmentCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
-- (void)processObjectiveCSegment:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
-
-- (NSArray *)handleObjectiveCSymtab:(struct my_objc_symtab *)symtab;
-- (ObjcClass *)handleObjectiveCClass:(struct my_objc_class *)ocl;
-- (ObjcCategory *)handleObjectiveCCategory:(struct my_objc_category *)ocat;
-- (NSArray *)handleObjectiveCProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
-- (NSArray *)handleObjectiveCMetaClass:(struct my_objc_class *)ocl;
-- (NSArray *)handleObjectiveCIvars:(struct my_objc_ivars *)ivars;
 - (NSArray *)handleObjectiveCMethods:(struct my_objc_methods *)methods methodType:(char)ch;
-
 - (void)showSingleModule:(CDSectionInfo *)moduleInfo;
-- (void)showAllModules;
-- (void)buildUpObjectiveCSegments:(NSString *)filename;
-
-// Utility methods
-- (CDSectionInfo *)objectiveCSectionWithName:(NSString *)name filename:(NSString *)filename;
-- (void)sortObjectiveCSegments;
-- (void)debugSectionOverlap;
-- (void *)translateAddressToPointer:(long)addr section:(NSString *)section;
-- (void *)translateAddressToPointerComplain:(long)addr section:(NSString *)section complain:(BOOL)complain;
-- (char *)stringAt:(long)addr section:(NSString *)section;
-- (NSString *)nsstringAt:(long)addr section:(NSString *)section;
-- (CDSectionInfo *)sectionOfAddress:(long)addr;
 
 - (int)methodFormattingFlags;
 
