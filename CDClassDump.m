@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.50 2004/01/20 05:17:30 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.51 2004/01/27 22:42:14 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -362,9 +362,12 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)registerPhase:(int)phase;
 {
+    NSAutoreleasePool *pool;
     int count, index;
 
     //NSLog(@"Phase %d ========================================", phase);
+
+    pool = [[NSAutoreleasePool alloc] init];
 
     count = [objCSegmentProcessors count];
     for (index = 0; index < count; index++) {
@@ -372,6 +375,7 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 
     [self endPhase:phase];
+    [pool release];
 }
 
 - (void)endPhase:(int)phase;
