@@ -47,6 +47,36 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
+		012934C605CB521700E843DB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = CDPathUnitTest.h;
+			path = UnitTests/CDPathUnitTest.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		012934C705CB521700E843DB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = CDPathUnitTest.m;
+			path = UnitTests/CDPathUnitTest.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		012934C805CB521700E843DB = {
+			fileRef = 012934C605CB521700E843DB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		012934C905CB521700E843DB = {
+			fileRef = 012934C705CB521700E843DB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0149791105AA10D80023398B = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1671,6 +1701,7 @@
 				01E6680F05B76139005849C7,
 				01B607C205BA10E800A4AD78,
 				01B6080A05BA201F00A4AD78,
+				012934C805CB521700E843DB,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1709,6 +1740,7 @@
 				01497A6D05AD0BB20023398B,
 				01B607C305BA10E800A4AD78,
 				01B6080B05BA201F00A4AD78,
+				012934C905CB521700E843DB,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1771,6 +1803,8 @@
 				01B6080905BA201F00A4AD78,
 				0149791105AA10D80023398B,
 				0149791205AA10D80023398B,
+				012934C605CB521700E843DB,
+				012934C705CB521700E843DB,
 			);
 			isa = PBXGroup;
 			name = "Unit Tests";

@@ -3,6 +3,7 @@
 #import "CDTypeFormatterUnitTest.h"
 #import "CDTypeParserUnitTest.h"
 #import "CDStructHandlingUnitTest.h"
+#import "CDPathUnitTest.h"
 
 @implementation AllTests
 
@@ -16,6 +17,7 @@
     [suite addTest:[TestSuite suiteWithClass:[CDTypeParserUnitTest class]]];
     [suite addTest:[TestSuite suiteWithClass:[CDTypeFormatterUnitTest class]]];
     [suite addTest:[TestSuite suiteWithClass:[CDStructHandlingUnitTest class]]];
+    [suite addTest:[TestSuite suiteWithClass:[CDPathUnitTest class]]];
 
     return suite;
 }
