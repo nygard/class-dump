@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.11 2002/12/19 06:41:30 nygard Exp $
+// $Id: MappedFile.m,v 1.12 2002/12/19 06:53:07 nygard Exp $
 //
 
 //
@@ -58,10 +58,10 @@ static NSMutableArray *secondSearchPath = nil;
     if (debugFrameworkPaths != nil && [debugFrameworkPaths isEqual:@"YES"])
         debugFlag = YES;
 
-    envDyldFrameworkPath = [[environment objectForKey:@"DYLD_FRAMEWORK_PATH"] componentsSeparatedByString:@":"];
-    envDyldLibraryPath = [[environment objectForKey:@"DYLD_LIBRARY_PATH"] componentsSeparatedByString:@":"];
-    envDyldFallbackFrameworkPath = [[environment objectForKey:@"DYLD_FALLBACK_FRAMEWORK_PATH"] componentsSeparatedByString:@":"];
-    envDyldFallbackLibraryPath = [[environment objectForKey:@"DYLD_FALLBACK_LIBRARY_PATH"] componentsSeparatedByString:@":"];
+    envDyldFrameworkPath = [[[environment objectForKey:@"DYLD_FRAMEWORK_PATH"] componentsSeparatedByString:@":"] retain];
+    envDyldLibraryPath = [[[environment objectForKey:@"DYLD_LIBRARY_PATH"] componentsSeparatedByString:@":"] retain];
+    envDyldFallbackFrameworkPath = [[[environment objectForKey:@"DYLD_FALLBACK_FRAMEWORK_PATH"] componentsSeparatedByString:@":"] retain];
+    envDyldFallbackLibraryPath = [[[environment objectForKey:@"DYLD_FALLBACK_LIBRARY_PATH"] componentsSeparatedByString:@":"] retain];
     home = [environment objectForKey:@"HOME"];
 
     if (debugFlag == YES) {
@@ -96,10 +96,10 @@ static NSMutableArray *secondSearchPath = nil;
     if (debugFlag == YES)
         NSLog (@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
 
-    firstSearchPath = [[NSMutableArray arrayWithArray:envDyldFrameworkPath] retain];
+    firstSearchPath = [[NSMutableArray alloc] initWithArray:envDyldFrameworkPath];
     [firstSearchPath addObjectsFromArray:envDyldLibraryPath];
 
-    secondSearchPath = [[NSMutableArray arrayWithArray:envDyldFallbackFrameworkPath] retain];
+    secondSearchPath = [[NSMutableArray alloc] initWithArray:envDyldFallbackFrameworkPath];
     [secondSearchPath addObjectsFromArray:envDyldFallbackLibraryPath];
 }
 
