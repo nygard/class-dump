@@ -12,7 +12,7 @@
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.8 2004/01/06 02:31:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.9 2004/02/02 19:40:35 nygard Exp $");
 
 @implementation CDMachOFile
 
@@ -243,6 +243,21 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.8 2004/01/
 - (const void *)bytes;
 {
     return [data bytes];
+}
+
+- (NSString *)importBaseName;
+{
+    if ([self filetype] == MH_DYLIB) {
+        NSString *str;
+
+        str = [filename lastPathComponent];
+        if ([str hasPrefix:@"lib"] == YES)
+            str = [[[str substringFromIndex:3] componentsSeparatedByString:@"."] objectAtIndex:0];
+
+        return str;
+    }
+
+    return nil;
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: CDMachOFile.h,v 1.5 2004/01/06 02:31:41 nygard Exp $
+// $Id: CDMachOFile.h,v 1.6 2004/02/02 19:40:34 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -61,5 +61,7 @@
 - (NSString *)stringFromVMAddr:(unsigned long)vmaddr;
 
 - (const void *)bytes;
+
+- (NSString *)importBaseName;
 
 @end
