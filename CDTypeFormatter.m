@@ -15,7 +15,7 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.24 2004/01/20 05:00:23 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.25 2004/01/20 05:17:30 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -228,7 +228,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.24 200
 - (CDType *)replacementForType:(CDType *)aType;
 {
     //NSLog(@"[%p] %s, aType: %@", self, _cmd, [aType typeString]);
-    //NSLog(@"[nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)]: %d", [nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)]);
     if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)] == YES) {
         return [nonretainedDelegate typeFormatter:self replacementForType:aType];
     }

@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.49 2004/01/18 00:42:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.50 2004/01/20 05:17:30 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -351,7 +351,6 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 
     // We need to catch top level replacements, not just replacements for struct members.
-    // TODO (2004-01-07): We could even move this check into CDStructureTable
     replacementType = [targetTable replacementForType:structType];
     if (replacementType != nil)
         searchType = replacementType;
