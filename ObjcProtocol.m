@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.10 2002/12/19 07:06:08 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.11 2003/04/03 05:18:27 nygard Exp $
 //
 
 //
@@ -89,13 +89,14 @@
     if ([protocolNames count] > 0) {
         NSString *aProtocolName;
 
+        NSLog(@"protocolNames: %@", [protocolNames description]);
         enumerator = [protocolNames objectEnumerator];
         printf(" <");
         aProtocolName = [enumerator nextObject];
         if (aProtocolName != nil) {
             printf("%s", [aProtocolName cString]);
             
-            while (protocolName = [enumerator nextObject])
+            while (aProtocolName = [enumerator nextObject])
                 printf(", %s", [aProtocolName cString]);
         }
 
