@@ -21,6 +21,19 @@ Compiling
     of the Nextstep, Openstep or Rhapsody directories into the main
     source directory and then build it.
 
+Differences between 2.1.2 and 2.1.3
+
+    - It now understands framework install names and the framework
+      search path, so you should be able to run it on apps or
+      frameworks where the install name of the frameworks is not where
+      the framework exists in the filesystem.  The Omni frameworks,
+      for example, change the install name.
+    - You can set the ClassDumpDebugFrameworkPaths environment variable
+      to see the steps it's going through to find the frameworks.  It
+      spits out a lot of stuff, but it may be useful for someone.  With
+      zsh, you can do this:
+          ClassDumpDebugFrameworkPaths=YES class-dump /System/Applications/MailViewer.app
+
 Differences between 2.1.1 and 2.1.2
 
     - Tom Hageman has provided the changes to make it work with object
