@@ -1,6 +1,6 @@
 #import <Foundation/NSObject.h>
 
-@class NSArray, NSMutableArray, NSMutableDictionary;
+@class NSArray, NSMutableArray, NSMutableDictionary, NSMutableSet;
 @class CDMachOFile;
 @class CDOCClass, CDOCProtocol, CDOCSymtab;
 
@@ -106,6 +106,7 @@ struct cd_objc_protocol_method
 
     // temporary:
     NSMutableDictionary *usedVMAddrs;
+    NSMutableSet *protocolNames;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;

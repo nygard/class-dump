@@ -23,6 +23,7 @@
     modules = [[NSMutableArray alloc] init];
     protocolsByVMAddr = [[NSMutableDictionary alloc] init];
     usedVMAddrs = [[NSMutableDictionary alloc] init];
+    protocolNames = [[NSMutableSet alloc] init];
 
     return self;
 }
@@ -33,6 +34,7 @@
     [modules release];
     [protocolsByVMAddr release];
     [usedVMAddrs release];
+    [protocolNames release];
 
     [super dealloc];
 }
@@ -341,6 +343,9 @@
     CDOCProtocol *aProtocol;
     int count, index;
 
+    NSMutableArray *inOrder = [NSMutableArray array];
+
+    NSLog(@"\n\n\n\n\n\n\n\n\n\n");
     NSLog(@" > %s", _cmd);
 
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
@@ -354,13 +359,19 @@
     count = [protocolSection size] / sizeof(struct cd_objc_protocol);
     NSLog(@"%d protocols in __protocol section", count);
     for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol)) {
-        NSLog(@"%d: addr = %p", index, addr);
+        //NSLog(@"%d: addr = %p", index, addr);
         aProtocol = [self processProtocol:addr];
+        [inOrder addObject:aProtocol];
         //NSLog(@"%d: aProtocol: %@", index, aProtocol);
         //[protocolsByVMAddr setObject:aProtocol forKey:[NSNumber numberWithLong:addr]];
     }
 
     [usedVMAddrs removeAllObjects];
+
+    //NSLog(@"inOrder: %@", inOrder);
+    {
+        NSLog(@"protocols in order: \n%@", [[inOrder arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n\n"]);
+    }
 
     NSLog(@"<  %s", _cmd);
 }
@@ -377,6 +388,7 @@
     if (aProtocol == nil) {
         aProtocol = [self processProtocol:protocolAddr];
         [protocolsByVMAddr setObject:aProtocol forKey:key];
+        [protocolNames addObject:[aProtocol name]];
     }
 
     return aProtocol;
@@ -390,6 +402,9 @@
     int count, index;
 
     NSLog(@" > %s", _cmd);
+
+    NSLog(@"total protocol count: %d", [[protocolsByVMAddr allKeys] count]);
+    NSLog(@"used protocol count: %d", [[usedVMAddrs allKeys] count]);
 
     addrs = [NSMutableSet setWithArray:[protocolsByVMAddr allKeys]];
     usedAddrs = [NSSet setWithArray:[usedVMAddrs allKeys]];
@@ -406,6 +421,8 @@
         aProtocol = [protocolsByVMAddr objectForKey:key];
         NSLog(@"%d, key: 0x%08x, aProtocol: %@", index, [key longValue], aProtocol);
     }
+
+    NSLog(@"protocolNames: %@", protocolNames);
 
     NSLog(@"<  %s", _cmd);
 }
