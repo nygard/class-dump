@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.28 2004/01/27 22:43:07 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.29 2004/01/27 22:53:29 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -63,7 +63,6 @@ NSString *CDTokenDescription(int token)
         NSLog(@"caught exception: %@", localException);
         NSLog(@"type: %@", [lexer string]);
 
-        // TODO (2003-12-19): Free stuff if necessary
         result = nil;
     } NS_ENDHANDLER;
 
@@ -81,7 +80,6 @@ NSString *CDTokenDescription(int token)
         NSLog(@"caught exception: %@", localException);
         NSLog(@"type: %@", [lexer string]);
 
-        // TODO (2003-12-19): Free stuff if necessary
         result = nil;
     } NS_ENDHANDLER;
 
