@@ -2,7 +2,6 @@
 
 #include <assert.h>
 
-//#include "datatypes.h"
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
