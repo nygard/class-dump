@@ -35,6 +35,8 @@
 - (int)type;
 - (BOOL)isIDType;
 
+- (int)typeIgnoringModifiers;
+
 - (NSString *)description;
 
 - (NSString *)formattedString:(NSString *)inner expand:(BOOL)shouldExpand level:(int)level;

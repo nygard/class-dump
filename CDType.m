@@ -171,6 +171,19 @@
     return type == '@' && typeName == nil;
 }
 
+- (BOOL)isModifierType;
+{
+    return type == 'r' || type == 'n' || type == 'N' || type == 'o' || type == 'O' || type == 'R' || type == 'V';
+}
+
+- (int)typeIgnoringModifiers;
+{
+    if ([self isModifierType] == YES && subtype != nil)
+        return [subtype typeIgnoringModifiers];
+
+    return type;
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %@, arraySize: %@, members: %@, variableName: %@",
@@ -179,7 +192,7 @@
 
 - (NSString *)formattedString:(NSString *)inner expand:(BOOL)shouldExpand level:(int)level;
 {
-    NSString *tmp;
+    NSString *result;
     NSString *name, *type_name;
 #if 0
     if (t == NULL)
@@ -195,7 +208,7 @@
           else
               name = [NSString stringWithFormat:@" %@", variableName];
 
-          tmp = [NSString stringWithFormat:@"%@%@ %@", typeName, name, inner]; // We always have a pointer to this type
+          result = [NSString stringWithFormat:@"%@%@ %@", typeName, name, inner]; // We always have a pointer to this type
           break;
 
       case '@':
@@ -205,9 +218,9 @@
               name = [NSString stringWithFormat:@" %@", variableName];
 
           if ([inner length] > 0)
-              tmp = [NSString stringWithFormat:@"id%@ %@", name, inner];
+              result = [NSString stringWithFormat:@"id%@ %@", name, inner];
           else
-              tmp = [NSString stringWithFormat:@"id%@%@", name, inner];
+              result = [NSString stringWithFormat:@"id%@%@", name, inner];
           break;
 
       case 'b':
@@ -217,7 +230,7 @@
           else
               name = [NSString stringWithFormat:@"%@", variableName];
 
-          tmp = [NSString stringWithFormat:@"int %@:%@%@", name, bitfieldSize, inner];
+          result = [NSString stringWithFormat:@"int %@:%@%@", name, bitfieldSize, inner];
           break;
 
       case '[':
@@ -226,8 +239,8 @@
           else
               name = [NSString stringWithFormat:@"%@", variableName];
 
-          tmp = [NSString stringWithFormat:@"%@%@[%@]", inner, name, arraySize];
-          tmp = [subtype formattedString:tmp expand:shouldExpand level:level];
+          result = [NSString stringWithFormat:@"%@%@[%@]", inner, name, arraySize];
+          result = [subtype formattedString:result expand:shouldExpand level:level];
           break;
 
       case '(':
@@ -241,14 +254,14 @@
           else
               type_name = [NSString stringWithFormat:@" %@", typeName];
 
-          tmp = [NSString stringWithFormat:@"union%@", type_name];
+          result = [NSString stringWithFormat:@"union%@", type_name];
           if (shouldExpand == YES && subtype != nil) {
-              tmp = [NSString stringWithFormat:@"%@ {\n%@%@}",
-                              tmp, [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+              result = [NSString stringWithFormat:@"%@ {\n%@%@}",
+                              result, [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
           }
 
           if ([inner length] > 0 || [name length] > 0) {
-              tmp = [NSString stringWithFormat:@"%@ %@%@", tmp, inner, name];
+              result = [NSString stringWithFormat:@"%@ %@%@", result, inner, name];
           }
           break;
 
@@ -263,15 +276,15 @@
           else
               type_name = [NSString stringWithFormat:@" %@", typeName];
 
-          tmp = [NSString stringWithFormat:@"struct%@", type_name];
+          result = [NSString stringWithFormat:@"struct%@", type_name];
 
           if (shouldExpand == YES && subtype != nil) {
-              tmp = [NSString stringWithFormat:@"%@ {\n%@%@}",
-                              tmp, [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+              result = [NSString stringWithFormat:@"%@ {\n%@%@}",
+                              result, [subtype formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
           }
 
           if ([inner length] > 0 || [name length] > 0) {
-              tmp = [NSString stringWithFormat:@"%@ %@%@", tmp, inner, name];
+              result = [NSString stringWithFormat:@"%@ %@%@", result, inner, name];
           }
           break;
 
@@ -282,11 +295,11 @@
               name = [NSString stringWithFormat:@"%@", variableName];
 
           if (subtype != nil && [subtype type] == '[')
-              tmp = [NSString stringWithFormat:@"(*%@%@)", inner, name];
+              result = [NSString stringWithFormat:@"(*%@%@)", inner, name];
           else
-              tmp = [NSString stringWithFormat:@"*%@%@", name, inner];
+              result = [NSString stringWithFormat:@"*%@%@", name, inner];
 
-          tmp = [subtype formattedString:tmp expand:shouldExpand level:level];
+          result = [subtype formattedString:result expand:shouldExpand level:level];
           break;
 
       case 'r':
@@ -296,8 +309,8 @@
       case 'O':
       case 'R':
       case 'V':
-          tmp = [subtype formattedString:inner expand:shouldExpand level:level];
-          tmp = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], tmp];
+          result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType],
+                             [subtype formattedString:nil expand:shouldExpand level:level]];
           break;
 
       default:
@@ -307,13 +320,13 @@
               name = [NSString stringWithFormat:@"%@", variableName];
 
           if ([name length] == 0 && [inner length] == 0)
-              tmp = [self formattedStringForSimpleType];
+              result = [self formattedStringForSimpleType];
           else
-              tmp = [NSString stringWithFormat:@"%@ %@%@", [self formattedStringForSimpleType], name, inner];
+              result = [NSString stringWithFormat:@"%@ %@%@", [self formattedStringForSimpleType], name, inner];
           break;
     }
 
-    return tmp;
+    return result;
 }
 
 - (NSString *)formattedStringForMembersAtLevel:(int)level;
