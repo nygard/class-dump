@@ -39,7 +39,6 @@
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 
-#include "datatypes.h"
 #import "class-dump.h"
 
 #if 0
@@ -57,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.56 2004/01/16 21:54:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.57 2004/01/16 21:57:28 nygard Exp $");
 
 //----------------------------------------------------------------------
 
