@@ -18,6 +18,8 @@
 - (void)testArrayType;
 - (void)testStructType;
 - (void)testUnionType;
+- (void)testDiagrammedTypes;
+- (void)testErrors;
 //- (void)testBar;
 
 @end

@@ -192,6 +192,13 @@
     //[self testVariableName:@"foo" type:@"" expectedResult:@""];
 }
 
+- (void)testErrors;
+{
+    [self testVariableName:@"bar" type:@"[5i" expectedResult:nil];
+    [self testVariableName:@"bar" type:@"" expectedResult:nil];
+    [self testVariableName:@"bar" type:nil expectedResult:nil];
+}
+
 #if 0
 - (void)testBar;
 {
