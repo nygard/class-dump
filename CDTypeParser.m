@@ -1,8 +1,3 @@
-//
-// $Id: CDTypeParser.m,v 1.20 2004/01/06 02:07:21 nygard Exp $
-// "$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.20 2004/01/06 02:07:21 nygard Exp $"
-//
-
 //  This file is part of class-dump, a utility for exmaing the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
@@ -17,7 +12,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.20 2004/01/06 02:07:21 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.21 2004/01/06 02:18:19 nygard Exp $");
 
 //----------------------------------------------------------------------
 

@@ -1,19 +1,18 @@
-//
-// $Id: CDMachOFile.m,v 1.6 2004/01/06 01:51:53 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for exmaing the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "CDMachOFile.h"
 
+#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #include <mach-o/loader.h>
 
 #import "CDDylibCommand.h"
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
+
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.7 2004/01/06 02:18:18 nygard Exp $");
 
 @implementation CDMachOFile
 

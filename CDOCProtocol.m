@@ -1,18 +1,17 @@
-//
-// $Id: CDOCProtocol.m,v 1.10 2004/01/06 01:51:55 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for exmaing the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "CDOCProtocol.h"
 
+#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDOCMethod.h"
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
+
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.11 2004/01/06 02:18:19 nygard Exp $");
 
 @implementation CDOCProtocol
 

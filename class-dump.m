@@ -1,8 +1,4 @@
 //
-// $Id: class-dump.m,v 1.53 2004/01/06 01:52:00 nygard Exp $
-//
-
-//
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
@@ -39,6 +35,7 @@
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 
+#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 
@@ -59,6 +56,8 @@
 #import "CDTypeParser.h"
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
+
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.54 2004/01/06 02:18:20 nygard Exp $");
 
 //----------------------------------------------------------------------
 

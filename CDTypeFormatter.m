@@ -1,13 +1,10 @@
-//
-// $Id: CDTypeFormatter.m,v 1.14 2004/01/06 01:51:57 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for exmaing the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "CDTypeFormatter.h"
 
+#import "rcsid.h"
 #include <assert.h>
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
@@ -16,6 +13,8 @@
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
+
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.15 2004/01/06 02:18:19 nygard Exp $");
 
 //----------------------------------------------------------------------
 

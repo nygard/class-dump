@@ -1,15 +1,14 @@
-//
-// $Id: NSScanner-Extensions.m,v 1.4 2004/01/06 01:51:58 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for exmaing the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import "NSScanner-Extensions.h"
 
+#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
+
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.5 2004/01/06 02:18:20 nygard Exp $");
 
 @implementation NSScanner (CDExtensions)
 
