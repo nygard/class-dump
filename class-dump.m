@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.24 2003/04/03 05:07:22 nygard Exp $
+// $Id: class-dump.m,v 1.25 2003/04/03 05:11:14 nygard Exp $
 //
 
 //
@@ -466,7 +466,7 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (NSArray *)handleObjcSymtab:(struct my_objc_symtab *)symtab;
+- (NSArray *)handleObjectiveCSymtab:(struct my_objc_symtab *)symtab;
 {
     NSMutableArray *classList = [NSMutableArray array];
     ObjcThing *objcThing;
@@ -481,7 +481,7 @@ NSMutableDictionary *protocols;
     class_pointer = &symtab->class_pointer;
 
     for (l = 0; l < symtab->cls_def_count; l++) {
-        objcThing = [self handleObjcClass:[self translateAddressToPointer:*class_pointer section:CDSECT_CLASS]];
+        objcThing = [self handleObjectiveCClass:[self translateAddressToPointer:*class_pointer section:CDSECT_CLASS]];
         if (objcThing != nil)
             [classList addObject:objcThing];
 
@@ -489,7 +489,7 @@ NSMutableDictionary *protocols;
     }
 
     for (l = 0; l < symtab->cat_def_count; l++) {
-        objcThing = [self handleObjcCategory:[self translateAddressToPointer:*class_pointer section:CDSECT_CATEGORY]];
+        objcThing = [self handleObjectiveCCategory:[self translateAddressToPointer:*class_pointer section:CDSECT_CATEGORY]];
         if (objcThing != nil)
             [classList addObject:objcThing];
 
@@ -501,7 +501,7 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (ObjcClass *)handleObjcClass:(struct my_objc_class *)ocl;
+- (ObjcClass *)handleObjectiveCClass:(struct my_objc_class *)ocl;
 {
     ObjcClass *objcClass;
     NSArray *tmp;
@@ -509,7 +509,7 @@ NSMutableDictionary *protocols;
     if (ocl == NULL)
         return nil;
 
-    tmp = [self handleObjcProtocols:(struct my_objc_protocol_list *)[self translateAddressToPointer:ocl->protocols section:CDSECT_CAT_CLS_METH]
+    tmp = [self handleObjectiveCProtocols:(struct my_objc_protocol_list *)[self translateAddressToPointer:ocl->protocols section:CDSECT_CAT_CLS_METH]
                 expandProtocols:YES];
 
     if ([self stringAt:ocl->super_class section:CDSECT_CLASS_NAMES] == NULL)
@@ -524,13 +524,13 @@ NSMutableDictionary *protocols;
 
     [objcClass addProtocolNames:tmp];
 
-    tmp = [self handleObjcIvars:(struct my_objc_ivars *)[self translateAddressToPointer:ocl->ivars section:CDSECT_INSTANCE_VARS]];
+    tmp = [self handleObjectiveCIvars:(struct my_objc_ivars *)[self translateAddressToPointer:ocl->ivars section:CDSECT_INSTANCE_VARS]];
     [objcClass addIvars:tmp];
 
-    tmp = [self handleObjcMetaClass:(struct my_objc_class *)[self translateAddressToPointer:ocl->isa section:CDSECT_META_CLASS]];
+    tmp = [self handleObjectiveCMetaClass:(struct my_objc_class *)[self translateAddressToPointer:ocl->isa section:CDSECT_META_CLASS]];
     [objcClass addClassMethods:tmp];
 
-    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_INST_METH] methodType:'-'];
+    tmp = [self handleObjectiveCMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_INST_METH] methodType:'-'];
     [objcClass addInstanceMethods:tmp];
 
     return objcClass;
@@ -538,7 +538,7 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (ObjcCategory *)handleObjcCategory:(struct my_objc_category *)ocat;
+- (ObjcCategory *)handleObjectiveCCategory:(struct my_objc_category *)ocat;
 {
     ObjcCategory *objcCategory;
     NSArray *tmp;
@@ -549,10 +549,10 @@ NSMutableDictionary *protocols;
     objcCategory = [[[ObjcCategory alloc] initWithClassName:[self nsstringAt:ocat->class_name section:CDSECT_CLASS_NAMES]
                                           categoryName:[self nsstringAt:ocat->category_name section:CDSECT_CLASS_NAMES]] autorelease];
 
-    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->class_methods section:CDSECT_CAT_CLS_METH] methodType:'+'];
+    tmp = [self handleObjectiveCMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->class_methods section:CDSECT_CAT_CLS_METH] methodType:'+'];
     [objcCategory addClassMethods:tmp];
 
-    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->methods section:CDSECT_CAT_INST_METH] methodType:'-'];
+    tmp = [self handleObjectiveCMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->methods section:CDSECT_CAT_INST_METH] methodType:'-'];
     [objcCategory addInstanceMethods:tmp];
 
     return objcCategory;
@@ -561,7 +561,7 @@ NSMutableDictionary *protocols;
 //----------------------------------------------------------------------
 
 // Return list of protocol names.
-- (NSArray *)handleObjcProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
+- (NSArray *)handleObjectiveCProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
 {
     NSMutableArray *protocolArray = [NSMutableArray array];
     ObjcProtocol *objcProtocol;
@@ -584,7 +584,7 @@ NSMutableDictionary *protocols;
         objcProtocol = [[[ObjcProtocol alloc] initWithProtocolName:[self nsstringAt:prot->protocol_name section:CDSECT_CLASS_NAMES]] autorelease];
         [protocolArray addObject:[objcProtocol protocolName]];
 
-        parentProtocols = [self handleObjcProtocols:[self translateAddressToPointer:prot->protocol_list section:CDSECT_CAT_CLS_METH]
+        parentProtocols = [self handleObjectiveCProtocols:[self translateAddressToPointer:prot->protocol_list section:CDSECT_CAT_CLS_METH]
                                 expandProtocols:flags.shouldExpandProtocols]; // TODO: Hmm, is this correct? Shouldn't it be expandProtocols?
         [objcProtocol addProtocolNames:parentProtocols];
 
@@ -615,17 +615,17 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (NSArray *)handleObjcMetaClass:(struct my_objc_class *)ocl;
+- (NSArray *)handleObjectiveCMetaClass:(struct my_objc_class *)ocl;
 {
     if (ocl == NULL)
         return nil;
 
-    return [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_CLS_METH] methodType:'+'];
+    return [self handleObjectiveCMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_CLS_METH] methodType:'+'];
 }  
 
 //----------------------------------------------------------------------
 
-- (NSArray *)handleObjcIvars:(struct my_objc_ivars *)ivars;
+- (NSArray *)handleObjectiveCIvars:(struct my_objc_ivars *)ivars;
 {
     struct my_objc_ivar *ivar = (struct my_objc_ivar *)(ivars + 1);
     NSMutableArray *ivarArray = [NSMutableArray array];
@@ -650,7 +650,7 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (NSArray *)handleObjcMethods:(struct my_objc_methods *)methods methodType:(char)ch;
+- (NSArray *)handleObjectiveCMethods:(struct my_objc_methods *)methods methodType:(char)ch;
 {
     struct my_objc_method *method = (struct my_objc_method *)(methods + 1);
     NSMutableArray *methodArray = [NSMutableArray array];
@@ -722,7 +722,7 @@ NSMutableDictionary *protocols;
     //current_filename = module_info->filename;
 
     for (l = 0; l < module_count; l++) {
-        newClasses = [self handleObjcSymtab:(struct my_objc_symtab *)[self translateAddressToPointer:m->symtab section:CDSECT_SYMBOLS]];
+        newClasses = [self handleObjectiveCSymtab:(struct my_objc_symtab *)[self translateAddressToPointer:m->symtab section:CDSECT_SYMBOLS]];
         [classList addObjectsFromArray:newClasses];
         m++;
     }

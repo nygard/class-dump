@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.6 2003/04/03 05:07:22 nygard Exp $
+// $Id: class-dump.h,v 1.7 2003/04/03 05:11:14 nygard Exp $
 //
 
 //
@@ -203,14 +203,13 @@ struct my_objc_prot_inst_meth_list
 - (void)processSegmentCommand:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
 - (void)processObjectiveCSegment:(void *)start ptr:(void *)ptr filename:(NSString *)filename;
 
-// TODO: Objc -> ObjectiveC
-- (NSArray *)handleObjcSymtab:(struct my_objc_symtab *)symtab;
-- (ObjcClass *)handleObjcClass:(struct my_objc_class *)ocl;
-- (ObjcCategory *)handleObjcCategory:(struct my_objc_category *)ocat;
-- (NSArray *)handleObjcProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
-- (NSArray *)handleObjcMetaClass:(struct my_objc_class *)ocl;
-- (NSArray *)handleObjcIvars:(struct my_objc_ivars *)ivars;
-- (NSArray *)handleObjcMethods:(struct my_objc_methods *)methods methodType:(char)ch;
+- (NSArray *)handleObjectiveCSymtab:(struct my_objc_symtab *)symtab;
+- (ObjcClass *)handleObjectiveCClass:(struct my_objc_class *)ocl;
+- (ObjcCategory *)handleObjectiveCCategory:(struct my_objc_category *)ocat;
+- (NSArray *)handleObjectiveCProtocols:(struct my_objc_protocol_list *)plist expandProtocols:(BOOL)expandProtocols;
+- (NSArray *)handleObjectiveCMetaClass:(struct my_objc_class *)ocl;
+- (NSArray *)handleObjectiveCIvars:(struct my_objc_ivars *)ivars;
+- (NSArray *)handleObjectiveCMethods:(struct my_objc_methods *)methods methodType:(char)ch;
 
 - (void)showSingleModule:(CDSectionInfo *)moduleInfo;
 - (void)showAllModules;
