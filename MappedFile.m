@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.13 2002/12/19 07:06:07 nygard Exp $
+// $Id: MappedFile.m,v 1.14 2003/01/21 07:12:28 nygard Exp $
 //
 
 //
@@ -75,8 +75,6 @@ static NSMutableArray *secondSearchPath = nil;
                                                  @"/Local/Library/Frameworks",
                                                  @"/Network/Library/Frameworks",
                                                  @"/System/Library/Frameworks",
-                                                 @"/LocalLibrary/Frameworks",
-                                                 @"/NextLibrary/Frameworks",
                                                  nil];
     }
 
@@ -192,23 +190,11 @@ static NSMutableArray *secondSearchPath = nil;
     base = [path lastPathComponent];
     extension = [base pathExtension];
     base = [base stringByDeletingPathExtension];
-    mainFile = [NSString stringWithFormat:@"%@/%@", path, base];
-    if ([@"app" isEqual:extension] == YES) {
-        NSFileManager *fileManager;
-        NSString *alternateMainFile;
 
-        fileManager = [NSFileManager defaultManager];
-        // Currently OmniWeb uses a small file to change the library paths and then runs the real
-        // OmniWeb, which is in Contents/MacOS/.OmniWeb, so we'll check for this case first:
-        alternateMainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/.%@", path, base];
-        if ([fileManager fileExistsAtPath:alternateMainFile] == YES)
-            mainFile = alternateMainFile;
-        else {
-            // Mac OS X has a different app layout now
-            alternateMainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/%@", path, base];
-            if ([fileManager fileExistsAtPath:alternateMainFile] == YES)
-                mainFile = alternateMainFile;
-        }
+    if ([@"app" isEqual:extension] == YES) {
+        mainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/%@", path, base];
+    } else {
+        mainFile = [NSString stringWithFormat:@"%@/%@", path, base];
     }
 
     return mainFile;
