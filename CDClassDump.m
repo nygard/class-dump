@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.60 2004/02/03 04:08:50 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.61 2004/02/03 22:10:17 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -220,16 +220,6 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)setShouldShowMethodAddresses:(BOOL)newFlag;
 {
     flags.shouldShowMethodAddresses = newFlag;
-}
-
-- (BOOL)shouldExpandProtocols;
-{
-    return flags.shouldExpandProtocols;
-}
-
-- (void)setShouldExpandProtocols:(BOOL)newFlag;
-{
-    flags.shouldExpandProtocols = newFlag;
 }
 
 - (BOOL)shouldMatchRegex;

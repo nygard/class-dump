@@ -42,7 +42,7 @@
 #import "class-dump.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.68 2004/02/03 06:12:07 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.69 2004/02/03 22:10:17 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -204,17 +204,18 @@ void print_usage(void)
 {
     fprintf(stderr,
             "class-dump %s\n"
-            "Usage: class-dump [options] MachO-file\n"
+            "Usage: class-dump [options] mach-o-file\n"
+            "\n"
             "  where options are:\n"
             "        -a        show instance variable offsets\n"
             "        -A        show implementation addresses\n"
             "        -C regex  only display classes matching regular expression\n"
             "        -H        generate header files in current directory, or directory specified with -o\n"
-            "        -I        sort classes, categories, and protocols by inheritance (overrides -S)\n"
+            "        -I        sort classes, categories, and protocols by inheritance (overrides -s)\n"
             "        -o dir    output directory used for -H\n"
-            "        -R        recursively expand @protocol <>\n"
             "        -r        recursively expand frameworks and fixed VM shared libraries\n"
-            "        -S        sort classes, categories and methods by name\n"
+            "        -s        sort classes and categories by name\n"
+            "        -S        sort methods by name\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -279,12 +280,11 @@ int main(int argc, char *argv[])
               [classDump setShouldProcessRecursively:YES];
               break;
 
-          case 'R':
-              [classDump setShouldExpandProtocols:YES];
+          case 's':
+              [classDump setShouldSortClasses:YES];
               break;
 
           case 'S':
-              [classDump setShouldSortClasses:YES];
               [classDump setShouldSortMethods:YES];
               break;
 

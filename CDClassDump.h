@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.44 2004/02/03 02:54:37 nygard Exp $
+// $Id: CDClassDump.h,v 1.45 2004/02/03 22:10:17 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -12,7 +12,7 @@
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
-#define CLASS_DUMP_VERSION @"3.0 alpha"
+#define CLASS_DUMP_VERSION @"3.0 alpha (v1)"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
@@ -30,7 +30,6 @@
 
         unsigned int shouldShowIvarOffsets:1;
         unsigned int shouldShowMethodAddresses:1;
-        unsigned int shouldExpandProtocols:1;
         unsigned int shouldMatchRegex:1;
     } flags;
 
@@ -78,9 +77,6 @@
 
 - (BOOL)shouldShowMethodAddresses;
 - (void)setShouldShowMethodAddresses:(BOOL)newFlag;
-
-- (BOOL)shouldExpandProtocols;
-- (void)setShouldExpandProtocols:(BOOL)newFlag;
 
 - (BOOL)shouldMatchRegex;
 - (void)setShouldMatchRegex:(BOOL)newFlag;
