@@ -15,7 +15,7 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.22 2004/01/18 01:34:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.23 2004/01/18 06:05:11 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -141,6 +141,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.22 200
 
     aParser = [[CDTypeParser alloc] initWithType:type];
     methodTypes = [aParser parseMethodType];
+    if (methodTypes == nil)
+        NSLog(@"Warning: Parsing method types failed, %@", methodName);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {
