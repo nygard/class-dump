@@ -1,5 +1,5 @@
 //
-// $Id: CDMachOFile.h,v 1.6 2004/02/02 19:40:34 nygard Exp $
+// $Id: CDMachOFile.h,v 1.7 2004/02/11 00:49:14 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -51,6 +51,7 @@
 - (unsigned long)filetype;
 - (unsigned long)flags;
 
+- (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
 - (NSString *)description;
 

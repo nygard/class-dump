@@ -12,7 +12,7 @@
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.9 2004/02/02 19:40:35 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.10 2004/02/11 00:49:14 nygard Exp $");
 
 @implementation CDMachOFile
 
@@ -111,6 +111,25 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.9 2004/02/
 - (unsigned long)flags;
 {
     return header->flags;
+}
+
+- (NSString *)filetypeDescription;
+{
+    switch ([self filetype]) {
+      case MH_OBJECT: return @"OBJECT";
+      case MH_EXECUTE: return @"EXECUTE";
+      case MH_FVMLIB: return @"FVMLIB";
+      case MH_CORE: return @"CORE";
+      case MH_PRELOAD: return @"PRELOAD";
+      case MH_DYLIB: return @"DYLIB";
+      case MH_DYLINKER: return @"DYLINKER";
+      case MH_BUNDLE: return @"BUNDLE";
+      case MH_DYLIB_STUB: return @"DYLIB_STUB";
+      default:
+          break;
+    }
+
+    return nil;
 }
 
 - (NSString *)flagDescription;
