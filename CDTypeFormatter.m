@@ -14,7 +14,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.20 2004/01/08 04:44:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.21 2004/01/18 00:42:52 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -38,6 +38,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.20 200
 - (void)setShouldAutoExpand:(BOOL)newFlag;
 {
     shouldAutoExpand = newFlag;
+}
+
+- (BOOL)shouldShowLexing;
+{
+    return shouldShowLexing;
+}
+
+- (void)setShouldShowLexing:(BOOL)newFlag;
+{
+    shouldShowLexing = newFlag;
 }
 
 - (int)baseLevel;
@@ -99,6 +109,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.20 200
     }
 
     aParser = [[CDTypeParser alloc] initWithType:type];
+    [[aParser lexer] setShouldShowLexing:shouldShowLexing];
     resultType = [aParser parseType];
     //NSLog(@"resultType: %p", resultType);
 

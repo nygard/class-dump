@@ -12,7 +12,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.22 2004/01/06 02:31:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.23 2004/01/18 00:42:52 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -44,6 +44,11 @@ NSString *CDTokenDescription(int token)
     [lexer release];
 
     [super dealloc];
+}
+
+- (CDTypeLexer *)lexer;
+{
+    return lexer;
 }
 
 - (NSArray *)parseMethodType;
@@ -306,13 +311,14 @@ NSString *CDTokenDescription(int token)
 
     identifier = [self parseIdentifier];
     if (lookahead == '<') {
-        NSLog(@"Matching template class...");
+        //NSLog(@"Matching template class...");
         [self match:'<' allowIdentifier:YES];
-        [self parseIdentifier];
+        [self parseIdentifier]; // TODO (2004-01-16): This should be parseTypeName.
         while (lookahead == ',') {
             [self match:',' allowIdentifier:YES];
             [self parseIdentifier];
         }
+        [self match:'>' allowIdentifier:NO];
     }
 
     return identifier;

@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.48 2004/01/17 04:04:24 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.49 2004/01/18 00:42:51 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -284,21 +284,21 @@ static NSMutableSet *wrapperExtensions = nil;
     CDMachOFile *aMachOFile;
     NSString *replacementString = @"@executable_path";
 
-    NSLog(@" > %s", _cmd);
-    NSLog(@"anID: %@", anID);
+    //NSLog(@" > %s", _cmd);
+    //NSLog(@"anID: %@", anID);
     if ([anID hasPrefix:replacementString] == YES) {
         adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
     } else {
         adjustedID = anID;
     }
-    NSLog(@"adjustedID: %@", adjustedID);
+    //NSLog(@"adjustedID: %@", adjustedID);
 
     aMachOFile = [machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
         [self _processFilename:adjustedID];
         aMachOFile = [machOFilesByID objectForKey:adjustedID];
     }
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 
     return aMachOFile;
 }

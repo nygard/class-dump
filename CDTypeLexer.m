@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.9 2004/01/06 02:31:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.10 2004/01/18 00:42:52 nygard Exp $");
 
 @implementation CDTypeLexer
 
@@ -68,6 +68,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.9 2004/01/
     scanner = [[NSScanner alloc] initWithString:aString];
     [scanner setCharactersToBeSkipped:nil];
     isInIdentifierState = NO;
+    shouldShowLexing = NO;
 
     return self;
 }

@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatter.h,v 1.11 2004/01/08 00:43:09 nygard Exp $
+// $Id: CDTypeFormatter.h,v 1.12 2004/01/18 00:42:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -15,6 +15,7 @@
 {
     BOOL shouldExpand; // But just top level struct, level == 0
     BOOL shouldAutoExpand;
+    BOOL shouldShowLexing;
     int baseLevel;
 
     // Not ideal
@@ -31,6 +32,9 @@
 
 - (BOOL)shouldAutoExpand;
 - (void)setShouldAutoExpand:(BOOL)newFlag;
+
+- (BOOL)shouldShowLexing;
+- (void)setShouldShowLexing:(BOOL)newFlag;
 
 - (int)baseLevel;
 - (void)setBaseLevel:(int)newBaseLevel;

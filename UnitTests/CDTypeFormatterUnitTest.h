@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatterUnitTest.h,v 1.8 2004/01/06 02:31:45 nygard Exp $
+// $Id: CDTypeFormatterUnitTest.h,v 1.9 2004/01/18 00:42:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -34,5 +34,7 @@
 
 - (void)parseAndEncodeType:(NSString *)originalType;
 - (void)testEncoding;
+
+- (void)test1;
 
 @end
