@@ -11,7 +11,7 @@
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.13 2004/01/08 00:43:08 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.14 2004/01/08 06:10:10 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -147,6 +147,29 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.13 2004/0
 }
 
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+{
+    int count, index;
+    CDTypeParser *parser;
+    NSArray *methodTypes;
+
+    count = [classMethods count];
+    for (index = 0; index < count; index++) {
+        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[classMethods objectAtIndex:index] type]];
+        methodTypes = [parser parseMethodType];
+        [methodTypes makeObjectsPerformSelector:_cmd withObject:anObject];
+        [parser release];
+    }
+
+    count = [instanceMethods count];
+    for (index = 0; index < count; index++) {
+        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[instanceMethods objectAtIndex:index] type]];
+        methodTypes = [parser parseMethodType];
+        [methodTypes  makeObjectsPerformSelector:_cmd withObject:anObject];
+        [parser release];
+    }
+}
+
+- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject;
 {
     int count, index;
     CDTypeParser *parser;

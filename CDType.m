@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.20 2004/01/08 04:44:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.21 2004/01/08 06:10:11 nygard Exp $");
 
 @implementation CDType
 
@@ -503,13 +503,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.20 2004/01/08 0
     return str;
 }
 
-#if 0
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
-{
-    [self registerStructsWithObject:anObject countReferences:YES];
-}
-#endif
-
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 {
     if (subtype != nil)
@@ -534,6 +527,32 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.20 2004/01/08 0
 
     for (index = 0; index < count; index++)
         [[members objectAtIndex:index] registerStructsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+}
+
+- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+{
+    if (subtype != nil)
+        [subtype registerUnionsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+
+    if (type == '(' && [members count] > 0) {
+        NSString *typeString;
+
+        typeString = [self typeString];
+        [anObject registerStruct:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    }
+}
+
+- (void)registerMemberUnionsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+{
+    int count, index;
+
+    if (subtype != nil)
+        [subtype registerMemberUnionsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+
+    count = [members count];
+
+    for (index = 0; index < count; index++)
+        [[members objectAtIndex:index] registerUnionsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 }
 
 - (BOOL)isEqual:(CDType *)otherType;

@@ -1,5 +1,5 @@
 //
-// $Id: CDObjCSegmentProcessor.h,v 1.8 2004/01/06 02:31:43 nygard Exp $
+// $Id: CDObjCSegmentProcessor.h,v 1.9 2004/01/08 06:10:10 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -26,6 +26,7 @@
 
 - (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject;
 
 - (NSString *)description;
 
