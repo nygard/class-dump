@@ -7,7 +7,6 @@
 
 @interface CDClassDump2 : NSObject <CDStructRegistration>
 {
-    //NSMutableArray *machOFiles;
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
     BOOL shouldProcessRecursively;
@@ -20,6 +19,10 @@
     NSMutableDictionary *anonymousRemapping;
 
     int anonymousStructCounter;
+
+    CDTypeFormatter *ivarTypeFormatter;
+    CDTypeFormatter *methodTypeFormatter;
+    CDTypeFormatter *structDeclarationTypeFormatter;
 }
 
 - (id)init;
@@ -27,6 +30,10 @@
 
 - (BOOL)shouldProcessRecursively;
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
+
+- (CDTypeFormatter *)ivarTypeFormatter;
+- (CDTypeFormatter *)methodTypeFormatter;
+- (CDTypeFormatter *)structDeclarationTypeFormatter;
 
 - (void)processFilename:(NSString *)aFilename;
 - (void)doSomething;

@@ -24,6 +24,7 @@
     if ([super init] == nil)
         return nil;
 
+    nonretainedClassDumper = nil;
     machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
@@ -36,8 +37,19 @@
     [machOFile release];
     [modules release];
     [protocolsByName release];
+    nonretainedClassDumper = nil;
 
     [super dealloc];
+}
+
+- (CDClassDump2 *)classDumper;
+{
+    return nonretainedClassDumper;
+}
+
+- (void)setClassDumper:(CDClassDump2 *)newClassDumper;
+{
+    nonretainedClassDumper = newClassDumper;
 }
 
 - (void)process;

@@ -1,18 +1,24 @@
 #import <Foundation/NSObject.h>
 
 @class NSMutableString;
-@class CDOCSymtab;
+@class CDClassDump2, CDObjCSegmentProcessor, CDOCSymtab;
 
 @interface CDOCModule : NSObject
 {
+    CDObjCSegmentProcessor *nonretainedSegmentProcessor;
+
     unsigned long version;
     //unsigned long size; // Not really relevant here
     NSString *name;
     CDOCSymtab *symtab;
 }
 
-- (id)init;
+- (id)initWithSegmentProcessor:(CDObjCSegmentProcessor *)aSegmentProcessor;
 - (void)dealloc;
+
+- (CDObjCSegmentProcessor *)segmentProcessor;
+
+- (CDClassDump2 *)classDumper;
 
 - (unsigned long)version;
 - (void)setVersion:(unsigned long)aVersion;

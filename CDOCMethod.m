@@ -1,6 +1,8 @@
 #import "CDOCMethod.h"
 
 #import <Foundation/Foundation.h>
+#import "CDClassDump.h"
+#import "CDOCProtocol.h"
 #import "CDTypeFormatter.h"
 
 @implementation CDOCMethod
@@ -12,6 +14,7 @@
     if ([super init] == nil)
         return nil;
 
+    nonretainedProtocol = nil;
     name = [aName retain];
     type = [aType retain];
     imp = anImp;
@@ -21,10 +24,26 @@
 
 - (void)dealloc;
 {
+    nonretainedProtocol = nil;
     [name release];
     [type release];
 
     [super dealloc];
+}
+
+- (CDOCProtocol *)protocol;
+{
+    return nonretainedProtocol;
+}
+
+- (void)setProtocol:(CDOCProtocol *)newProtocol;
+{
+    nonretainedProtocol = newProtocol;
+}
+
+- (CDClassDump2 *)classDumper;
+{
+    return [[self protocol] classDumper];
 }
 
 - (NSString *)name;
@@ -59,7 +78,8 @@
     NSString *formattedString;
 
     //[resultString appendFormat:@"%@", name];
-    formattedString = [[CDTypeFormatter sharedMethodTypeFormatter] formatMethodName:name type:type];
+    //formattedString = [[CDTypeFormatter sharedMethodTypeFormatter] formatMethodName:name type:type];
+    formattedString = [[[self classDumper] ivarTypeFormatter] formatMethodName:name type:type];
     //NSLog(@"%s, formattedString: '%@'", _cmd, formattedString);
     if (formattedString != nil) {
         [resultString appendString:formattedString];

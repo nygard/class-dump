@@ -41,8 +41,10 @@
     if (newIvars == ivars)
         return;
 
+    [ivars makeObjectsPerformSelector:@selector(setOCClass:) withObject:nil];
     [ivars release];
     ivars = [newIvars retain];
+    [ivars makeObjectsPerformSelector:@selector(setOCClass:) withObject:self];
 }
 
 - (void)appendToString:(NSMutableString *)resultString;

@@ -13,6 +13,7 @@
 
 @implementation CDTypeFormatter
 
+#if 0
 + (id)sharedTypeFormatter;
 {
     static CDTypeFormatter *instance = nil;
@@ -65,6 +66,7 @@
 
     return instance;
 }
+#endif
 
 - (BOOL)shouldExpand;
 {
@@ -260,10 +262,11 @@
 
 - (NSString *)typedefNameForStruct:(NSString *)structTypeString;
 {
+#if 0
     if (self == [CDTypeFormatter sharedIvarTypeFormatter]) {
         NSLog(@"%s (ivar): structTypeString: %@", _cmd, structTypeString);
     }
-
+#endif
     if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:)]);
         return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structTypeString];
 

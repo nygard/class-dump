@@ -1,15 +1,17 @@
 #import "CDOCModule.h"
 
 #import <Foundation/Foundation.h>
+#import "CDObjCSegmentProcessor.h"
 #import "CDOCSymtab.h"
 
 @implementation CDOCModule
 
-- (id)init;
+- (id)initWithSegmentProcessor:(CDObjCSegmentProcessor *)aSegmentProcessor;
 {
     if ([super init] == nil)
         return nil;
 
+    nonretainedSegmentProcessor = aSegmentProcessor;
     version = 0;
     name = nil;
     symtab = nil;
@@ -21,8 +23,19 @@
 {
     [name release];
     [symtab release];
+    nonretainedSegmentProcessor = nil;
 
     [super dealloc];
+}
+
+- (CDObjCSegmentProcessor *)segmentProcessor;
+{
+    return nonretainedSegmentProcessor;
+}
+
+- (CDClassDump2 *)classDumper;
+{
+    return [[self segmentProcessor] classDumper];
 }
 
 - (unsigned long)version;
@@ -59,8 +72,10 @@
     if (newSymtab == symtab)
         return;
 
+    [symtab setModule:nil];
     [symtab release];
     symtab = [newSymtab retain];
+    [symtab setModule:self];
 }
 
 - (NSString *)description;

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.50 2003/12/24 06:33:08 nygard Exp $
+// $Id: class-dump.m,v 1.51 2004/01/05 21:01:25 nygard Exp $
 //
 
 //
@@ -1102,10 +1102,17 @@ void print_header(void)
 
 void testVariableTypes(NSString *path)
 {
+    CDTypeFormatter *ivarTypeFormatter;
     NSMutableString *resultString;
     NSString *contents;
     NSArray *lines, *fields;
     int count, index;
+
+    ivarTypeFormatter = [[CDTypeFormatter alloc] init];
+    [ivarTypeFormatter setShouldExpand:NO];
+    [ivarTypeFormatter setShouldAutoExpand:YES];
+    [ivarTypeFormatter setBaseLevel:1];
+    //[ivarTypeFormatter setDelegate:self];
 
     resultString = [NSMutableString string];
     [resultString appendFormat:@"Testing %@\n", path];
@@ -1139,7 +1146,7 @@ void testVariableTypes(NSString *path)
             [resultString appendFormat:@"type: '%@'\n", type];
             [resultString appendFormat:@"name: '%@'\n", name];
             [resultString appendFormat:@"level: %d\n", level];
-            formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type];
+            formattedString = [ivarTypeFormatter formatVariable:name type:type];
             if (formattedString != nil) {
                 [resultString appendString:formattedString];
                 [resultString appendString:@"\n"];
@@ -1321,7 +1328,7 @@ int main(int argc, char *argv[])
         path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
 
         classDump = [[CDClassDump2 alloc] init];
-        [classDump setShouldProcessRecursively:YES];
+        //[classDump setShouldProcessRecursively:YES];
         [classDump processFilename:path];
         [classDump doSomething];
         [classDump release];

@@ -1,6 +1,8 @@
 #import "CDOCIvar.h"
 
 #import <Foundation/Foundation.h>
+#import "CDClassDump.h"
+#import "CDOCClass.h"
 #import "CDTypeFormatter.h"
 
 @implementation CDOCIvar
@@ -23,6 +25,21 @@
     [type release];
 
     [super dealloc];
+}
+
+- (CDOCClass *)OCClass;
+{
+    return nonretainedClass;
+}
+
+- (void)setOCClass:(CDOCClass *)newOCClass;
+{
+    nonretainedClass = newOCClass;
+}
+
+- (CDClassDump2 *)classDumper;
+{
+    return [[self OCClass] classDumper];
 }
 
 - (NSString *)name;
@@ -55,7 +72,8 @@
 {
     NSString *formattedString;
 
-    formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type];
+    //formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type];
+    formattedString = [[[self classDumper] ivarTypeFormatter] formatVariable:name type:type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

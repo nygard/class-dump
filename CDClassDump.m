@@ -27,12 +27,28 @@
     anonymousStructsByType = [[NSMutableDictionary alloc] init];
     anonymousRemapping = [[NSMutableDictionary alloc] init];
 
+    ivarTypeFormatter = [[CDTypeFormatter alloc] init];
+    [ivarTypeFormatter setShouldExpand:NO];
+    [ivarTypeFormatter setShouldAutoExpand:YES];
+    [ivarTypeFormatter setBaseLevel:1];
+    [ivarTypeFormatter setDelegate:self];
+
+    methodTypeFormatter = [[CDTypeFormatter alloc] init];
+    [methodTypeFormatter setShouldExpand:NO];
+    [methodTypeFormatter setShouldAutoExpand:NO];
+    [methodTypeFormatter setBaseLevel:0];
+    [methodTypeFormatter setDelegate:self];
+
+    structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
+    [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
+    [structDeclarationTypeFormatter setShouldAutoExpand:NO];
+    [structDeclarationTypeFormatter setBaseLevel:0];
+
     return self;
 }
 
 - (void)dealloc;
 {
-    //[machOFiles release];
     [machOFilesByID release];
     [objCSegmentProcessors release];
     [structCountsByType release];
@@ -40,6 +56,9 @@
     [anonymousStructNames release];
     [anonymousStructsByType release];
     [anonymousRemapping release];
+    [ivarTypeFormatter release];
+    [methodTypeFormatter release];
+    [structDeclarationTypeFormatter release];
 
     [super dealloc];
 }
@@ -52,6 +71,21 @@
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 {
     shouldProcessRecursively = newFlag;
+}
+
+- (CDTypeFormatter *)ivarTypeFormatter;
+{
+    return ivarTypeFormatter;
+}
+
+- (CDTypeFormatter *)methodTypeFormatter;
+{
+    return methodTypeFormatter;
+}
+
+- (CDTypeFormatter *)structDeclarationTypeFormatter;
+{
+    return structDeclarationTypeFormatter;
 }
 
 - (void)processFilename:(NSString *)aFilename;
@@ -67,6 +101,7 @@
     [aMachOFile process];
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
+    [aProcessor setClassDumper:self];
     [aProcessor process];
     //NSLog(@"Formatted result:\n%@", [aProcessor formattedStringByClass]);
     [objCSegmentProcessors addObject:aProcessor];
@@ -87,8 +122,8 @@
     NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
 
     //[[CDTypeFormatter sharedTypeFormatter] setDelegate:self];
-    [[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:self];
-    [[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:self];
+    //[[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:self];
+    //[[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:self];
     //[[CDTypeFormatter sharedStructDeclarationTypeFormatter] setDelegate:self];
 
     {
@@ -106,7 +141,6 @@
             int count, index;
             NSString *key;
 
-            NSLog(@"Anonymous structs: ----------------------------------------------------------------------");
             keys = [[anonymousStructsByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
             count = [keys count];
             for (index = 0; index < count; index++) {
@@ -139,7 +173,6 @@
             int count, index;
             NSString *key;
 
-            NSLog(@"structCountsByType ----------------------------------------------------------------------");
             keys = [[structCountsByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
             count = [keys count];
             for (index = 0; index < count; index++) {
@@ -216,8 +249,8 @@
     }
 
     //[[CDTypeFormatter sharedTypeFormatter] setDelegate:nil];
-    [[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:nil];
-    [[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:nil];
+    //[[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:nil];
+    //[[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:nil];
     //[[CDTypeFormatter sharedStructDeclarationTypeFormatter] setDelegate:nil];
 }
 
@@ -275,10 +308,13 @@
 
     keys = [[structsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
+    if (count > 0)
+        [resultString appendString:@"// Named struct/union types\n"];
+
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         type = [structsByName objectForKey:key];
-        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:[type typeString]];
+        formattedString = [structDeclarationTypeFormatter formatVariable:nil type:[type typeString]];
         if (formattedString != nil) {
             [resultString appendString:formattedString];
             [resultString appendString:@";\n\n"];
@@ -294,13 +330,16 @@
 
     keys = [[anonymousStructNames allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
+    if (count > 0)
+        [resultString appendString:@"// Anonymous struct/union types\n"];
+
     for (index = 0; index < count; index++) {
         typeString = [keys objectAtIndex:index];
         if ([anonymousRemapping objectForKey:typeString] != nil)
             continue;
 
         name = [anonymousStructNames objectForKey:typeString];
-        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:typeString];
+        formattedString = [structDeclarationTypeFormatter formatVariable:nil type:typeString];
         if (formattedString != nil) {
             [resultString appendString:@"typedef "];
             [resultString appendString:formattedString];
@@ -316,6 +355,7 @@
     NSString *typeString;
 
     typeString = [structType typeString];
+    NSLog(@"%s, name: %@, typeString: %@", _cmd, aName, typeString);
 
     // Handle named structs
     if (aName != nil && [aName isEqual:@"?"] == NO) {
@@ -366,7 +406,7 @@
     // Count has been adjusted.
 
     // For ivars, only use typedef if the type is used > 1 time.
-    if (aFormatter == [CDTypeFormatter sharedIvarTypeFormatter]) {
+    if (/*aFormatter == [CDTypeFormatter sharedIvarTypeFormatter] || */aFormatter == ivarTypeFormatter) {
         if ([[structCountsByType objectForKey:structTypeString] intValue] < 2) {
             //NSLog(@"Just one of '%@'", structTypeString);
             return nil;

@@ -5,10 +5,12 @@
 #import "CDStructRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
-@class CDMachOFile;
+@class CDClassDump2, CDMachOFile;
 
 @interface CDObjCSegmentProcessor : NSObject
 {
+    CDClassDump2 *nonretainedClassDumper;
+
     CDMachOFile *machOFile;
     NSMutableArray *modules;
     NSMutableDictionary *protocolsByName;
@@ -16,6 +18,9 @@
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
+
+- (CDClassDump2 *)classDumper;
+- (void)setClassDumper:(CDClassDump2 *)newClassDumper;
 
 - (void)process;
 

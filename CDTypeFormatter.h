@@ -12,10 +12,10 @@
     id nonretainedDelegate;
 }
 
-+ (id)sharedTypeFormatter;
-+ (id)sharedIvarTypeFormatter;
-+ (id)sharedMethodTypeFormatter;
-+ (id)sharedStructDeclarationTypeFormatter;
+//+ (id)sharedTypeFormatter;
+//+ (id)sharedIvarTypeFormatter;
+//+ (id)sharedMethodTypeFormatter;
+//+ (id)sharedStructDeclarationTypeFormatter;
 
 - (BOOL)shouldExpand;
 - (void)setShouldExpand:(BOOL)newFlag;

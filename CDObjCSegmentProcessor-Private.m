@@ -37,7 +37,7 @@
         assert(ptr->size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
         aSegment = [machOFile segmentContainingAddress:ptr->symtab];
 
-        aModule = [[CDOCModule alloc] init];
+        aModule = [[CDOCModule alloc] initWithSegmentProcessor:self];
         [aModule setVersion:ptr->version];
         [aModule setName:[machOFile stringFromVMAddr:ptr->name]];
         [aModule setSymtab:[self processSymtab:ptr->symtab]];

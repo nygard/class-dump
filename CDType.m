@@ -482,9 +482,10 @@
         [subtype registerStructsWithObject:anObject];
 
     count = [members count];
+#if 1
     for (index = 0; index < count; index++)
         [[members objectAtIndex:index] registerStructsWithObject:anObject];
-
+#endif
     if (type == '{' && count > 0) {
         NSString *typeString;
 

@@ -2,6 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
 @implementation CDOCProtocol
@@ -11,7 +12,11 @@
     if ([super init] == nil)
         return nil;
 
+    nonretainedSymtab = nil;
+    name = nil;
     protocols = [[NSMutableArray alloc] init];
+    classMethods = nil;
+    instanceMethods = nil;
     adoptedProtocolNames = [[NSMutableSet alloc] init];
 
     return self;
@@ -19,6 +24,7 @@
 
 - (void)dealloc;
 {
+    nonretainedSymtab = nil;
     [name release];
     [protocols release];
     [classMethods release];
@@ -26,6 +32,22 @@
     [adoptedProtocolNames release];
 
     [super dealloc];
+}
+
+- (CDOCSymtab *)symtab;
+{
+    return nonretainedSymtab;
+}
+
+- (void)setSymtab:(CDOCSymtab *)newSymtab;
+{
+    nonretainedSymtab = newSymtab;
+    [protocols makeObjectsPerformSelector:@selector(setSymtab:) withObject:newSymtab];
+}
+
+- (CDClassDump2 *)classDumper;
+{
+    return [[self symtab] classDumper];
 }
 
 - (NSString *)name;
@@ -51,6 +73,7 @@
 - (void)addProtocol:(CDOCProtocol *)aProtocol;
 {
     if ([adoptedProtocolNames containsObject:[aProtocol name]] == NO) {
+        [aProtocol setSymtab:[self symtab]];
         [protocols addObject:aProtocol];
         [adoptedProtocolNames addObject:[aProtocol name]];
     }
@@ -58,6 +81,7 @@
 
 - (void)removeProtocol:(CDOCProtocol *)aProtocol;
 {
+    [aProtocol setSymtab:nil];
     [adoptedProtocolNames removeObject:[aProtocol name]];
     [protocols removeObject:aProtocol];
 }
@@ -81,8 +105,10 @@
     if (newClassMethods == classMethods)
         return;
 
+    [classMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:nil];
     [classMethods release];
     classMethods = [newClassMethods retain];
+    [classMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:self];
 }
 
 - (NSArray *)instanceMethods;
@@ -95,8 +121,10 @@
     if (newInstanceMethods == instanceMethods)
         return;
 
+    [instanceMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:nil];
     [instanceMethods release];
     instanceMethods = [newInstanceMethods retain];
+    [instanceMethods makeObjectsPerformSelector:@selector(setProtocol:) withObject:self];
 }
 
 - (NSString *)description;
