@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <libc.h>
+#include <unistd.h>
 
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
@@ -30,9 +31,6 @@ void print_usage(void)
             [CLASS_DUMP_VERSION UTF8String]
        );
 }
-
-extern int optind;
-extern char *optarg;
 
 int main(int argc, char *argv[])
 {
