@@ -7,6 +7,7 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
+#import "CDDylibCommand.h"
 #import "CDMachOFile.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
@@ -20,7 +21,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.19 2004/02/11 00:07:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.20 2004/07/07 22:56:43 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -80,6 +81,14 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
         [resultString appendString:@"/*\n"];
         [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
+        if ([machOFile filetype] == MH_DYLIB) {
+            CDDylibCommand *identifier;
+
+            identifier = [machOFile dylibIdentifier];
+            if (identifier != nil)
+                [resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
+                              [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
+        }
         [resultString appendString:@" */\n\n"];
     }
 

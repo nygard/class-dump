@@ -12,7 +12,7 @@
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.11 2004/02/11 01:19:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.12 2004/07/07 22:56:43 nygard Exp $");
 
 @implementation CDMachOFile
 
@@ -169,6 +169,22 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.11 2004/02
 {
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x",
                      header->magic, header->cputype, header->cpusubtype, header->filetype, header->ncmds, header->sizeofcmds, header->flags];
+}
+
+- (CDDylibCommand *)dylibIdentifier;
+{
+    int count, index;
+
+    count = [loadCommands count];
+    for (index = 0; index < count; index++) {
+        CDLoadCommand *loadCommand;
+
+        loadCommand = [loadCommands objectAtIndex:index];
+        if ([loadCommand cmd] == LC_ID_DYLIB)
+            return (CDDylibCommand *)loadCommand;
+    }
+
+    return nil;
 }
 
 - (CDSegmentCommand *)segmentWithName:(NSString *)segmentName;

@@ -1,5 +1,5 @@
 //
-// $Id: CDMachOFile.h,v 1.7 2004/02/11 00:49:14 nygard Exp $
+// $Id: CDMachOFile.h,v 1.8 2004/07/07 22:56:43 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -54,6 +54,8 @@
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
 - (NSString *)description;
+
+- (CDDylibCommand *)dylibIdentifier;
 
 - (CDSegmentCommand *)segmentWithName:(NSString *)segmentName;
 - (CDSegmentCommand *)segmentContainingAddress:(unsigned long)vmaddr;
