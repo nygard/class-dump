@@ -1017,6 +1017,12 @@ c	_pad1
 c	_pad2
 i	fd
 d	expiry
+
+
+
+
+
+
 ^{__CFURL}	url
 ^{__CFReadStream}	httpStream
 ^{__CFReadStream}	readStreamToProxy

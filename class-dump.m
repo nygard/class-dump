@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.46 2003/12/19 05:53:43 nygard Exp $
+// $Id: class-dump.m,v 1.47 2003/12/22 00:57:11 nygard Exp $
 //
 
 //
@@ -1100,53 +1100,76 @@ void print_header(void)
        );
 }
 
-void doTests(char *file)
+void testVariableTypes(NSString *path)
 {
-    NSString *filename, *contents;
+    NSMutableString *resultString;
+    NSString *contents;
     NSArray *lines, *fields;
     int count, index;
 
-    NSLog(@"Testing %s", file);
-    filename = [NSString stringWithCString:file];
-    contents = [NSString stringWithContentsOfFile:filename];
+    resultString = [NSMutableString string];
+    [resultString appendFormat:@"Testing %@\n", path];
+
+    contents = [NSString stringWithContentsOfFile:path];
     lines = [contents componentsSeparatedByString:@"\n"];
     count = [lines count];
+
     for (index = 0; index < count; index++) {
         NSString *line;
         NSString *type, *name;
 
         line = [lines objectAtIndex:index];
         fields = [line componentsSeparatedByString:@"\t"];
-        if ([fields count] >= 2) {
-            NSString *result;
+        if ([line length] > 0) {
+            int fieldCount, level;
+            NSString *formattedString;
 
+            fieldCount = [fields count];
             type = [fields objectAtIndex:0];
-            name = [fields objectAtIndex:1];
-            NSLog(@"%@\t%@", type, name);
-            result = [CDTypeFormatter formatVariable:name type:type atLevel:0];
-            if (result != nil) {
-                //NSLog(@"Parsed okay");
-                NSLog(@"result: %@", result);
+            if (fieldCount > 1)
+                name = [fields objectAtIndex:1];
+            else
+                name = @"var";
+
+            if (fieldCount > 2)
+                level = [[fields objectAtIndex:2] intValue];
+            else
+                level = 0;
+
+            [resultString appendFormat:@"type: '%@'\n", type];
+            [resultString appendFormat:@"name: '%@'\n", name];
+            [resultString appendFormat:@"level: %d\n", level];
+            formattedString = [CDTypeFormatter formatVariable:name type:type atLevel:0];
+            if (formattedString != nil) {
+                [resultString appendString:formattedString];
+                [resultString appendString:@"\n"];
             } else {
-                NSLog(@"Parse failed");
+                [resultString appendString:@"Parse failed.\n"];
             }
-            //printf("\t%s\t%s", type, name);
-            //printf("\n");
+            [resultString appendString:@"\n"];
         }
     }
 
-    NSLog(@"Done.");
-}
+    [resultString appendString:@"Done.\n"];
 
-void doMethodTests(char *file)
+    {
+        NSData *data;
+
+        data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+        [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+    }
+
+}
+#if 0
+void testMethodTypes(NSString *path)
 {
-    NSString *filename, *contents;
+    NSString *contents;
     NSArray *lines, *fields;
     int count, index;
 
-    NSLog(@"Testing %s", file);
-    filename = [NSString stringWithCString:file];
-    contents = [NSString stringWithContentsOfFile:filename];
+    NSLog(@"Testing %@", path);
+    contents = [NSString stringWithContentsOfFile:path];
+
     lines = [contents componentsSeparatedByString:@"\n"];
     count = [lines count];
     for (index = 0; index < count; index++) {
@@ -1180,7 +1203,7 @@ void doMethodTests(char *file)
 
     NSLog(@"Done.");
 }
-
+#endif
 //======================================================================
 
 int main(int argc, char *argv[])
@@ -1198,6 +1221,8 @@ int main(int argc, char *argv[])
     BOOL shouldSort = NO;
     BOOL shouldSortClasses = NO;
     BOOL shouldGenerateHeaders = NO;
+    BOOL shouldTestVariableTypes = NO;
+    BOOL shouldTestMethodTypes = NO;
     char *regexCString = NULL;
 
     if (argc == 1) {
@@ -1205,7 +1230,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAeIRC:rSHt:")) != EOF) {
+    while ( (c = getopt(argc, argv, "aAeIRC:rSHtT")) != EOF) {
         switch (c) {
           case 'a':
               shouldShowIvarOffsets = YES;
@@ -1253,8 +1278,11 @@ int main(int argc, char *argv[])
               break;
 
           case 't':
-              doMethodTests(optarg);
-              exit(0);
+              shouldTestVariableTypes = YES;
+              break;
+
+          case 'T':
+              shouldTestMethodTypes = YES;
               break;
 
           case '?':
@@ -1267,6 +1295,21 @@ int main(int argc, char *argv[])
     if (error_flag > 0) {
         print_usage();
         exit(2);
+    }
+
+    if (shouldTestVariableTypes == YES) {
+        int index;
+
+        for (index = optind; index < argc; index++) {
+            char *str;
+            NSString *path;
+
+            str = argv[index];
+            path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
+            testVariableTypes(path);
+        }
+
+        exit(0);
     }
 
     if (optind < argc) {
