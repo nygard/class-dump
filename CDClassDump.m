@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.63 2004/02/03 22:51:51 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.64 2004/02/04 21:07:14 nygard Exp $");
 
 @implementation CDClassDump
 
@@ -70,9 +70,9 @@ static NSMutableSet *wrapperExtensions = nil;
     fullyResolvedPath = [path stringByResolvingSymlinksInPath];
     basePath = [path stringByDeletingLastPathComponent];
     resolvedBasePath = [basePath stringByResolvingSymlinksInPath];
-    NSLog(@"fullyResolvedPath: %@", fullyResolvedPath);
-    NSLog(@"basePath:          %@", basePath);
-    NSLog(@"resolvedBasePath:  %@", resolvedBasePath);
+    //NSLog(@"fullyResolvedPath: %@", fullyResolvedPath);
+    //NSLog(@"basePath:          %@", basePath);
+    //NSLog(@"resolvedBasePath:  %@", resolvedBasePath);
 
     // I don't want to resolve all of the symlinks, just the ones starting from the wrapper.
     // If I have a symlink from my home directory to /System/Library/Frameworks/AppKit.framework, I want to see the
@@ -158,8 +158,6 @@ static NSMutableSet *wrapperExtensions = nil;
 
     [executablePath release];
     executablePath = [newPath retain];
-
-    NSLog(@"%s, executablePath: %@", _cmd, executablePath);
 }
 
 - (BOOL)shouldProcessRecursively;
@@ -356,7 +354,7 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)doSomething;
 {
-    NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
+    //NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
     //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);
     //NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
 

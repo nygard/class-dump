@@ -23,17 +23,6 @@
 
 #include <stdio.h>
 #include <libc.h>
-#include <ctype.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <regex.h>
-#include <stdio.h>
-
-#include <mach/mach.h>
-#include <mach/mach_error.h>
-
-#include <mach-o/loader.h>
-#include <mach-o/fat.h>
 
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
@@ -42,13 +31,8 @@
 #import "class-dump.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.71 2004/02/04 06:48:00 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.72 2004/02/04 21:07:14 nygard Exp $");
 
-//----------------------------------------------------------------------
-
-#if 0
-NSString *current_filename = nil;
-#endif
 //======================================================================
 
 char *file_type_names[] =
@@ -304,8 +288,6 @@ int main(int argc, char *argv[])
         NSString *path;
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
-        NSLog(@"path: '%@'", path);
-
         [classDump processFilename:path];
         [classDump doSomething];
     }
