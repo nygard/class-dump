@@ -90,103 +90,103 @@
 			refType = 4;
 		};
 		03070CA9FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MappedFile.m;
 			refType = 4;
 		};
 		03070CAAFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcCategory.m;
 			refType = 4;
 		};
 		03070CABFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcClass.m;
 			refType = 4;
 		};
 		03070CACFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcIvar.m;
 			refType = 4;
 		};
 		03070CADFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcMethod.m;
 			refType = 4;
 		};
 		03070CAEFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcProtocol.m;
 			refType = 4;
 		};
 		03070CAFFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcThing.m;
 			refType = 4;
 		};
 		03070CB1FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "class-dump.h";
 			refType = 4;
 		};
 		03070CB2FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = datatypes.h;
 			refType = 4;
 		};
 		03070CB3FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = MappedFile.h;
 			refType = 4;
 		};
 		03070CB4FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcCategory.h;
 			refType = 4;
 		};
 		03070CB5FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcClass.h;
 			refType = 4;
 		};
 		03070CB6FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcIvar.h;
 			refType = 4;
 		};
 		03070CB7FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcMethod.h;
 			refType = 4;
 		};
 		03070CB8FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcProtocol.h;
 			refType = 4;
 		};
 		03070CB9FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = ObjcThing.h;
 			refType = 4;
 		};
 		03070CBAFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = my_regex.h;
 			refType = 4;
@@ -207,31 +207,31 @@
 			refType = 4;
 		};
 		03070CBCFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = gram.y;
 			refType = 4;
 		};
 		03070CBDFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = lexer.c;
 			refType = 4;
 		};
 		03070CBEFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = "class-dump.m";
 			refType = 4;
 		};
 		03070CBFFF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = datatypes.m;
 			refType = 4;
 		};
 		03070CC0FF009A5FC0A80A02 = {
-			fileEncoding = 30;
+			fileEncoding = 4;
 			isa = PBXFileReference;
 			path = my_regex.c;
 			refType = 4;
