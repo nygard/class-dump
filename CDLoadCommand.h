@@ -18,6 +18,7 @@
 - (CDMachOFile *)machOFile;
 
 - (const void *)bytes;
+- (unsigned long)cmd;
 - (unsigned long)cmdsize;
 
 - (NSString *)commandName;

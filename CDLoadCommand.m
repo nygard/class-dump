@@ -40,6 +40,11 @@
     return loadCommand;
 }
 
+- (unsigned long)cmd;
+{
+    return loadCommand->cmd;
+}
+
 - (unsigned long)cmdsize;
 {
     return loadCommand->cmdsize;

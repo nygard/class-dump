@@ -3,15 +3,54 @@
 #import <Foundation/Foundation.h>
 #include <mach-o/loader.h>
 
+#import "CDDylibCommand.h"
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
 @implementation CDMachOFile
 
-- (id)initWithFilename:(NSString *)filename;
+- (id)initWithFilename:(NSString *)aFilename;
 {
     if ([super init] == nil)
         return nil;
+
+    filename = [aFilename retain];
+    data = nil;
+    header = NULL;
+    loadCommands = nil;
+    nonretainedDelegate = nil;
+
+    return self;
+}
+
+- (void)dealloc;
+{
+    [filename release];
+    [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
+    [data release];
+    nonretainedDelegate = nil;
+
+    [super dealloc];
+}
+
+- (NSString *)filename;
+{
+    return filename;
+}
+
+- (id)delegate;
+{
+    return nonretainedDelegate;
+}
+
+- (void)setDelegate:(id)newDelegate;
+{
+    nonretainedDelegate = newDelegate;
+}
+
+- (void)process;
+{
+    assert(data == nil);
 
     data = [[NSData alloc] initWithContentsOfMappedFile:filename];
     header = [data bytes];
@@ -21,21 +60,10 @@
         else
             NSLog(@"Not a Mach-O file.");
 
-        [self release];
-        return nil;
+        // TODO (2003-12-14): Perhaps raise an exception or something.
     }
 
     loadCommands = [[self _processLoadCommands] retain];
-
-    return self;
-}
-
-- (void)dealloc;
-{
-    [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
-    [data release];
-
-    [super dealloc];
 }
 
 - (NSArray *)_processLoadCommands;
@@ -53,6 +81,9 @@
 
         loadCommand = [CDLoadCommand loadCommandWithPointer:ptr machOFile:self];
         [cmds addObject:loadCommand];
+        if ([loadCommand isKindOfClass:[CDDylibCommand class]] == YES) {
+            [nonretainedDelegate machOFile:self loadDylib:(CDDylibCommand *)loadCommand];
+        }
         //NSLog(@"%2d: %@", index, loadCommand);
         ptr += [loadCommand cmdsize];
     }

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.43 2003/12/15 00:12:18 nygard Exp $
+// $Id: class-dump.m,v 1.44 2003/12/15 04:24:38 nygard Exp $
 //
 
 //
@@ -1285,28 +1285,19 @@ int main(int argc, char *argv[])
     if (optind < argc) {
         char *str;
         NSString *path;
-        CDMachOFile *machOFile;
         CDClassDump2 *classDump;
 
         str = argv[optind];
         path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
 
-        machOFile = [[CDMachOFile alloc] initWithFilename:path];
-        //NSLog(@"[machOFile loadCommands]: %@", [machOFile loadCommands]);
-
-        classDump = [[CDClassDump2 alloc] initWithMachOFile:machOFile];
-        //[classDump doSomething];
-        [classDump processProtocolSection];
-        [classDump processModules];
-        //[classDump checkUnreferencedProtocols];
-        NSLog(@"Formatted result:\n%@", [classDump formattedStringByClass]);
+        classDump = [[CDClassDump2 alloc] init];
+        [classDump setShouldProcessRecursively:YES];
+        [classDump processFilename:path];
+        [classDump doSomething];
         [classDump release];
-
-        [machOFile release];
 
         [path release];
         exit(99);
-
 
 #if 0
         char *str;
