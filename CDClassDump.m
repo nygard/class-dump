@@ -2,6 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CDMachOFile.h"
+#import "CDOCCategory.h"
 #import "CDOCClass.h"
 #import "CDOCIvar.h"
 #import "CDOCMethod.h"
@@ -120,16 +121,21 @@
         }
     }
 
+    [aSymtab setClasses:[NSArray arrayWithArray:classes]];
+
     if (ptr->cat_def_count > 0) {
         //NSLog(@"%d categories:", ptr->cat_def_count);
 
         for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
+            CDOCCategory *aCategory;
+
             //NSLog(@"defs[%d]: %p", index, *defs);
-            [self processCategoryDefinition:*defs];
+            aCategory = [self processCategoryDefinition:*defs];
+            [categories addObject:aCategory];
         }
     }
 
-    [aSymtab setClasses:[NSArray arrayWithArray:classes]];
+    [aSymtab setCategories:[NSArray arrayWithArray:categories]];
 
     //NSLog(@"Classes:\n%@\n", [[classes arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]);
 
@@ -304,16 +310,25 @@
     return [methods reversedArray];
 }
 
-- (void)processCategoryDefinition:(unsigned long)defRef;
+- (CDOCCategory *)processCategoryDefinition:(unsigned long)defRef;
 {
-    //const struct cd_objc_class *ptr;
+    const struct cd_objc_category *categoryPtr;
+    CDOCCategory *aCategory;
 
-    //NSLog(@" > %s", _cmd);
+    categoryPtr = [machOFile pointerFromVMAddr:defRef];
 
-    //ptr = [machOFile pointerFromVMAddr:defRef];
-    //NSLog(@"isa: %p", ptr->isa);
+    aCategory = [[[CDOCCategory alloc] init] autorelease];
+    [aCategory setName:[machOFile stringFromVMAddr:categoryPtr->category_name]];
+    [aCategory setClassName:[machOFile stringFromVMAddr:categoryPtr->class_name]];
 
-    //NSLog(@"<  %s", _cmd);
+    // Process methods
+    [aCategory setInstanceMethods:[self processMethods:categoryPtr->methods]];
+    [aCategory setClassMethods:[self processMethods:categoryPtr->class_methods]];
+
+    // Process protocols
+    [aCategory setProtocols:[self processProtocolList:categoryPtr->protocols]];
+
+    return aCategory;
 }
 
 // Protocol reference other protocols, so we can't try to create them
@@ -373,11 +388,15 @@
 
     count = [modules count];
     for (index = 0; index < count; index++) {
-        NSArray *moduleClasses;
+        NSArray *moduleClasses, *moduleCategories;
 
         moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
         if (moduleClasses != nil)
             [allClasses addObjectsFromArray:moduleClasses];
+
+        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
+        if (moduleCategories != nil)
+            [allClasses addObjectsFromArray:moduleCategories];
     }
 
     [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];

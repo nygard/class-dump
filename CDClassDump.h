@@ -2,7 +2,7 @@
 
 @class NSArray, NSMutableArray, NSMutableDictionary, NSMutableSet;
 @class CDMachOFile;
-@class CDOCClass, CDOCProtocol, CDOCSymtab;
+@class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 
 // Section: __module_info
 struct cd_objc_module {
@@ -37,6 +37,15 @@ struct cd_objc_class
     long protocols;
 };
 
+// Section: ??
+struct cd_objc_category
+{
+    long category_name;
+    long class_name;
+    long methods;
+    long class_methods;
+    long protocols;
+};
 
 // Section: __instance_vars
 struct cd_objc_ivars
@@ -120,7 +129,7 @@ struct cd_objc_protocol_method
 - (CDOCProtocol *)processProtocol:(unsigned long)protocolAddr;
 - (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
-- (void)processCategoryDefinition:(unsigned long)defRef;
+- (CDOCCategory *)processCategoryDefinition:(unsigned long)defRef;
 
 - (void)processProtocolSection;
 - (void)checkUnreferencedProtocols;

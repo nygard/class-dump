@@ -35,10 +35,10 @@
 
 - (NSString *)description;
 
-- (NSString *)formattedString;
 - (void)appendToString:(NSMutableString *)resultString;
 - (void)appendRawMethodsToString:(NSMutableString *)resultString;
 
+- (NSString *)sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherIvar;
 
 @end

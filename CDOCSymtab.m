@@ -62,6 +62,10 @@
         [[classes objectAtIndex:index] appendToString:resultString];
 
     // TODO: And categories.
+
+    count = [categories count];
+    for (index = 0; index < count; index++)
+        [[categories objectAtIndex:index] appendToString:resultString];
 }
 
 @end

@@ -115,32 +115,6 @@
     return [NSString stringWithFormat:@"[%@] name: %@, superClassName: %@", NSStringFromClass([self class]), name, superClassName];
 }
 
-- (NSString *)formattedString;
-{
-    NSMutableString *result;
-
-    result = [NSMutableString string];
-    [result appendFormat:@"@interface %@", name];
-    if (superClassName != nil)
-        [result appendFormat:@" : %@", superClassName];
-
-    // Need to handle adopted protocols
-    [result appendString:@"\n{\n"];
-    if ([ivars count] > 0) {
-        [result appendString:[[ivars arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
-        [result appendString:@"\n"];
-    }
-
-    [result appendString:@"}\n\n"];
-    if ([instanceMethods count] > 0) {
-        [result appendString:[[instanceMethods arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]];
-        [result appendString:@"\n\n"];
-    }
-    [result appendString:@"@end\n"];
-
-    return result;
-}
-
 - (void)appendToString:(NSMutableString *)resultString;
 {
     NSArray *sortedMethods;
@@ -150,7 +124,6 @@
     if (superClassName != nil)
         [resultString appendFormat:@":%@", superClassName]; // Add space later, keep this way for backwards compatability
 
-    // TODO: Need to handle adopted protocols
     if ([protocols count] > 0)
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
@@ -185,7 +158,6 @@
         }
     }
 
-    //[resultString appendFormat:@"// cm: %d, im: %d\n", [classMethods count], [instanceMethods count]];
     if ([classMethods count] > 0 || [instanceMethods count] > 0)
         [resultString appendString:@"\n"];
     [resultString appendString:@"@end\n\n"];
@@ -220,9 +192,14 @@
     }
 }
 
+- (NSString *)sortableName;
+{
+    return name;
+}
+
 - (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherClass;
 {
-    return [name compare:[otherClass name]];
+    return [[self sortableName] compare:[otherClass sortableName]];
 }
 
 @end
