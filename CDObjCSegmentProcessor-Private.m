@@ -18,7 +18,7 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.8 2004/02/04 22:15:16 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.9 2004/02/04 22:17:32 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor (Private)
 
@@ -250,7 +250,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
         [aMethod release];
     }
 
-    return methods;
+    return [methods reversedArray];
 }
 
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
