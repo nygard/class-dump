@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatterUnitTest.m,v 1.12 2004/01/06 02:31:45 nygard Exp $
+// $Id: CDTypeFormatterUnitTest.m,v 1.13 2004/01/08 01:08:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -124,17 +124,17 @@
 
 - (void)testBitfield;
 {
-    [self testVariableName:@"var" type:@"b0" expectedResult:@"int var:0"];
-    [self testVariableName:@"var" type:@"b1" expectedResult:@"int var:1"];
-    [self testVariableName:@"var" type:@"b19" expectedResult:@"int var:19"];
-    [self testVariableName:@"var" type:@"b31" expectedResult:@"int var:31"];
-    [self testVariableName:@"var" type:@"b32" expectedResult:@"int var:32"];
-    [self testVariableName:@"var" type:@"b33" expectedResult:@"int var:33"];
-    [self testVariableName:@"var" type:@"b63" expectedResult:@"int var:63"];
-    [self testVariableName:@"var" type:@"b64" expectedResult:@"int var:64"];
-    [self testVariableName:@"var" type:@"b65" expectedResult:@"int var:65"];
+    [self testVariableName:@"var" type:@"b0" expectedResult:@"unsigned int var:0"];
+    [self testVariableName:@"var" type:@"b1" expectedResult:@"unsigned int var:1"];
+    [self testVariableName:@"var" type:@"b19" expectedResult:@"unsigned int var:19"];
+    [self testVariableName:@"var" type:@"b31" expectedResult:@"unsigned int var:31"];
+    [self testVariableName:@"var" type:@"b32" expectedResult:@"unsigned int var:32"];
+    [self testVariableName:@"var" type:@"b33" expectedResult:@"unsigned int var:33"];
+    [self testVariableName:@"var" type:@"b63" expectedResult:@"unsigned int var:63"];
+    [self testVariableName:@"var" type:@"b64" expectedResult:@"unsigned int var:64"];
+    [self testVariableName:@"var" type:@"b65" expectedResult:@"unsigned int var:65"];
 
-    [self testVariableName:@"var" type:@"b" expectedResult:@"int var:(null)"]; // Don't we always expect a number?
+    [self testVariableName:@"var" type:@"b" expectedResult:@"unsigned int var:(null)"]; // Don't we always expect a number?
 }
 
 - (void)testArrayType;
@@ -203,7 +203,7 @@
     [self testVariableName:@"foo" type:@"[3^^[8i]]" expectedResult:@"int (**foo[3])[8]"];
     [self testVariableName:@"foo" type:@"@" expectedResult:@"id foo"];
     [self testVariableName:@"foo" type:@"@\"NSString\"" expectedResult:@"NSString *foo"];
-    [self testVariableName:@"foo" type:@"b7" expectedResult:@"int foo:7"];
+    [self testVariableName:@"foo" type:@"b7" expectedResult:@"unsigned int foo:7"];
     [self testVariableName:@"foo" type:@"r^i" expectedResult:@"const int *foo"];
     //[self testVariableName:@"foo" type:@"" expectedResult:@""];
 }
