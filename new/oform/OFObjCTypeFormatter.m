@@ -2,7 +2,6 @@
 
 #import <Foundation/Foundation.h>
 
-
 @implementation OFObjCTypeFormatter
 
 + (NSString *)formattedType:(NSString *)type forIvar:(NSString *)name;
