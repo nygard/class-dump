@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.59 2004/02/03 03:54:45 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.60 2004/02/03 04:08:50 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -302,7 +302,7 @@ static NSMutableSet *wrapperExtensions = nil;
     if (aPath == outputPath)
         return;
 
-    [aPath release];
+    [outputPath release];
     outputPath = [aPath retain];
 }
 
