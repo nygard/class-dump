@@ -14,7 +14,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.31 2004/02/11 00:07:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.32 2004/02/11 02:31:26 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -63,7 +63,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.31 2004/02/1
 
     [resultString appendFormat:@"@interface %@", name];
     if (superClassName != nil)
-        [resultString appendFormat:@":%@", superClassName]; // TODO (2004-02-02): Add space later, keep this way for backwards compatability
+        [resultString appendFormat:@" : %@", superClassName];
 
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];

@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.38 2004/02/02 21:37:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.39 2004/02/11 02:31:26 nygard Exp $");
 
 @implementation CDType
 
@@ -427,8 +427,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.38 2004/02/02 2
       case '#': return @"Class";
       case ':': return @"SEL";
       case '%': return @"NXAtom";
-          //case '?': return @"void /*UNKNOWN*/";
-      case '?': return @"UNKNOWN"; // For easier regression testing.  TODO (2003-12-14): Change this back to void
+      case '?': return @"void";
+          //case '?': return @"UNKNOWN"; // For easier regression testing.
       case 'r': return @"const";
       case 'n': return @"in";
       case 'N': return @"inout";

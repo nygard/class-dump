@@ -16,7 +16,7 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.28 2004/02/11 01:35:22 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.29 2004/02/11 02:31:27 nygard Exp $");
 
 @implementation CDTypeFormatter
 
@@ -72,19 +72,20 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.28 200
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 {
-#if 0
     if ([type isEqual:@"c"] == YES) {
         if (name == nil)
             return @"BOOL";
         else
             return [NSString stringWithFormat:@"BOOL %@", name];
+#if 0
     } else if ([type isEqual:@"b1"] == YES) {
         if (name == nil)
             return @"BOOL :1";
         else
             return [NSString stringWithFormat:@"BOOL %@:1", name];
-    }
 #endif
+    }
+
     return nil;
 }
 
@@ -161,7 +162,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.28 200
         noMoreTypes = NO;
 
         aMethodType = [methodTypes objectAtIndex:index];
-        if ([[aMethodType type] isIDType] == NO) {
+        /*if ([[aMethodType type] isIDType] == NO)*/ {
             NSString *str;
 
             [resultString appendString:@"("];
@@ -202,8 +203,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.28 200
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
                         typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
-                        if ([[aMethodType type] isIDType] == NO)
-                            [resultString appendFormat:@"(%@)", typeString];
+                        //if ([[aMethodType type] isIDType] == NO)
+                        [resultString appendFormat:@"(%@)", typeString];
                     }
                     [resultString appendFormat:@"fp%@", [aMethodType offset]];
 
