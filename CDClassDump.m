@@ -11,11 +11,12 @@
 #import "CDMachOFile.h"
 #import "CDObjCSegmentProcessor.h"
 #import "CDStructureTable.h"
+#import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.53 2004/02/02 19:46:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.54 2004/02/02 22:19:00 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -275,7 +276,7 @@ static NSMutableSet *wrapperExtensions = nil;
     resultString = [[NSMutableString alloc] init];
 
     [self appendHeaderToString:resultString];
-    [self appendStructuresToString:resultString];
+    [self appendStructuresToString:resultString symbolReferences:nil];
 
     count = [objCSegmentProcessors count];
     for (index = 0; index < count; index++) {
@@ -313,10 +314,42 @@ static NSMutableSet *wrapperExtensions = nil;
         }
     }
 
+    [self generateStructureHeader];
+
     count = [objCSegmentProcessors count];
     for (index = 0; index < count; index++) {
         [[objCSegmentProcessors objectAtIndex:index] generateSeparateHeadersClassDump:self];
     }
+}
+
+- (void)generateStructureHeader;
+{
+    NSMutableString *resultString;
+    NSString *filename;
+    CDSymbolReferences *symbolReferences;
+    NSString *referenceString;
+    unsigned int referenceIndex;
+
+    resultString = [[NSMutableString alloc] init];
+    [self appendHeaderToString:resultString];
+
+    symbolReferences = [[CDSymbolReferences alloc] init];
+    referenceIndex = [resultString length];
+
+    [self appendStructuresToString:resultString symbolReferences:symbolReferences];
+
+    referenceString = [symbolReferences referenceString];
+    if (referenceString != nil)
+        [resultString insertString:referenceString atIndex:referenceIndex];
+
+    filename = @"CDStructures.h";
+    if (outputPath != nil)
+        filename = [outputPath stringByAppendingPathComponent:filename];
+
+    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+
+    [symbolReferences release];
+    [resultString release];
 }
 
 - (void)logInfo;
@@ -325,13 +358,13 @@ static NSMutableSet *wrapperExtensions = nil;
     [unionTable logInfo];
 }
 
-- (void)appendStructuresToString:(NSMutableString *)resultString;
+- (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
-    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter];
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 
-    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
-    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter];
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 }
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
@@ -489,6 +522,19 @@ static NSMutableSet *wrapperExtensions = nil;
 - (NSString *)frameworkForClassName:(NSString *)aClassName;
 {
     return [frameworkNamesByClassName objectForKey:aClassName];
+}
+
+- (void)appendImportForClassName:(NSString *)aClassName toString:(NSMutableString *)resultString;
+{
+    if (aClassName != nil) {
+        NSString *classFramework;
+
+        classFramework = [self frameworkForClassName:aClassName];
+        if (classFramework == nil)
+            [resultString appendFormat:@"#import \"%@.h\"\n\n", aClassName];
+        else
+            [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, aClassName];
+    }
 }
 
 @end

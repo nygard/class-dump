@@ -7,10 +7,11 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
+#import "CDOCCategory.h"
 #import "CDOCClass.h"
 #import "CDSymbolReferences.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.14 2004/02/02 21:37:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.15 2004/02/02 22:19:00 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -123,16 +124,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.14 2004/02/
         symbolReferences = [[CDSymbolReferences alloc] init];
 
         aClass = [classes objectAtIndex:index];
-        // TODO (2004-02-02): [aClassDump appendImportForClass:[aClass dumperClassName] toString:resultString];
-        if ([aClass superClassName] != nil) {
-            NSString *classFramework;
-
-            classFramework = [aClassDump frameworkForClassName:[aClass superClassName]];
-            if (classFramework == nil)
-                [resultString appendFormat:@"#import \"%@.h\"\n\n", [aClass superClassName]];
-            else
-                [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, [aClass superClassName]];
-        }
+        [aClassDump appendImportForClassName:[aClass superClassName] toString:resultString];
 
         referenceIndex = [resultString length];
         [aClass appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
@@ -152,12 +144,40 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.14 2004/02/
         [symbolReferences release];
         [resultString release];
     }
-#if 0
+
     count = [categories count];
     for (index = 0; index < count; index++) {
-        [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump];
+        CDOCCategory *aCategory;
+        NSString *filename;
+        CDSymbolReferences *symbolReferences;
+        NSString *referenceString;
+        unsigned int referenceIndex;
+
+        resultString = [[NSMutableString alloc] init];
+        [aClassDump appendHeaderToString:resultString];
+
+        symbolReferences = [[CDSymbolReferences alloc] init];
+
+        aCategory = [categories objectAtIndex:index];
+        [aClassDump appendImportForClassName:[aCategory className] toString:resultString];
+
+        referenceIndex = [resultString length];
+        [aCategory appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+
+        [symbolReferences removeClassName:[aCategory className]];
+        referenceString = [symbolReferences referenceString];
+        if (referenceString != nil)
+            [resultString insertString:referenceString atIndex:referenceIndex];
+
+        filename = [NSString stringWithFormat:@"%@-%@.h", [aCategory className], [aCategory name]];
+        if (outputPath != nil)
+            filename = [outputPath stringByAppendingPathComponent:filename];
+
+        [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+
+        [symbolReferences release];
+        [resultString release];
     }
-#endif
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.39 2004/02/02 19:46:43 nygard Exp $
+// $Id: CDClassDump.h,v 1.40 2004/02/02 22:19:00 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -14,7 +14,7 @@
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
-@class CDStructureTable, CDType, CDTypeFormatter;
+@class CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
 
 @interface CDClassDump2 : NSObject <CDStructureRegistration>
 {
@@ -70,9 +70,10 @@
 - (void)doSomething;
 - (void)generateToStandardOut;
 - (void)generateSeparateHeaders;
+- (void)generateStructureHeader;
 
 - (void)logInfo;
-- (void)appendStructuresToString:(NSMutableString *)resultString;
+- (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 
@@ -93,5 +94,7 @@
 
 - (void)buildClassFrameworks;
 - (NSString *)frameworkForClassName:(NSString *)aClassName;
+
+- (void)appendImportForClassName:(NSString *)aClassName toString:(NSMutableString *)resultString;
 
 @end

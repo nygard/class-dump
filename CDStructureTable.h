@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.10 2004/01/29 07:28:57 nygard Exp $
+// $Id: CDStructureTable.h,v 1.11 2004/02/02 22:19:00 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -11,7 +11,7 @@
 #import "CDStructureRegistrationProtocol.h"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString;
-@class CDType, CDTypeFormatter;
+@class CDType, CDSymbolReferences, CDTypeFormatter;
 
 @interface CDStructureTable : NSObject
 {
@@ -52,8 +52,8 @@
 
 - (void)generateNamesForAnonymousStructures;
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString formatter:(CDTypeFormatter *)aTypeFormatter;
-- (void)appendTypedefsToString:(NSMutableString *)resultString formatter:(CDTypeFormatter *)aTypeFormatter;
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendTypedefsToString:(NSMutableString *)resultString formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (void)forceTypedefForStructure:(NSString *)typeString;
 - (CDType *)replacementForType:(CDType *)aType;
