@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.6 2004/01/15 03:04:53 nygard Exp $
+// $Id: CDStructureTable.h,v 1.7 2004/01/15 03:07:12 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -10,7 +10,7 @@
 
 #import "CDStructRegistrationProtocol.h"
 
-@class NSMutableDictionary, NSMutableSet, NSMutableString;
+@class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString;
 @class CDType, CDTypeFormatter;
 
 @interface CDStructureTable : NSObject
