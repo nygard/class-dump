@@ -1,7 +1,7 @@
 #import "CDOCMethod.h"
 
 #import <Foundation/Foundation.h>
-#import "CDTypeParser.h"
+#import "CDTypeFormatter.h"
 
 @implementation CDOCMethod
 
@@ -56,18 +56,15 @@
 
 - (void)appendToString:(NSMutableString *)resultString;
 {
-    CDTypeParser *typeParser;
     NSString *formattedString;
 
     //[resultString appendFormat:@"%@", name];
-    typeParser = [[CDTypeParser alloc] init];
-    formattedString = [typeParser formatMethodName:name type:type];
+    formattedString = [CDTypeFormatter formatMethodName:name type:type];
     //NSLog(@"%s, formattedString: '%@'", _cmd, formattedString);
     if (formattedString != nil)
         [resultString appendString:formattedString];
     else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
-    [typeParser release];
 }
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;

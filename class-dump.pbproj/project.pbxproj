@@ -47,6 +47,34 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
+		0160478D0592C6A000C03665 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDTypeFormatter.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		0160478E0592C6A000C03665 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = CDTypeFormatter.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		016047910592C6A500C03665 = {
+			fileRef = 0160478D0592C6A000C03665;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		016047920592C6A600C03665 = {
+			fileRef = 0160478E0592C6A000C03665;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0174482D043BF8E000A8010A = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -338,6 +366,8 @@
 				01C5C12C0587C0D10052C696,
 				01CAEA35050E653200E28615,
 				01CAEA36050E653200E28615,
+				0160478D0592C6A000C03665,
+				0160478E0592C6A000C03665,
 			);
 			isa = PBXGroup;
 			name = "Type Parsing/Lexing";
@@ -516,6 +546,7 @@
 				01C5C196058D860F0052C696,
 				01C5C197058D860F0052C696,
 				01C5C198058D860F0052C696,
+				016047910592C6A500C03665,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -677,6 +708,7 @@
 				01C5C1AD058D860F0052C696,
 				01C5C1AE058D860F0052C696,
 				01C5C1AF058D860F0052C696,
+				016047920592C6A600C03665,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -899,7 +931,6 @@
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INSTALL_PATH = /usr/local/bin;
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "-framework Foundation -framework AppKit";
 				OTHER_REZFLAGS = "";

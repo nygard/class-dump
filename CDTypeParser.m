@@ -1,13 +1,8 @@
 #import "CDTypeParser.h"
 
 #include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#include "datatypes.h"
-
 #import <Foundation/Foundation.h>
+#include "datatypes.h"
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
@@ -32,7 +27,6 @@ NSString *CDTokenDescription(int token)
 
     lexer = nil;
     lookahead = 0;
-    shouldShowLexing = NO;
 
     return self;
 }
@@ -42,17 +36,6 @@ NSString *CDTokenDescription(int token)
     [lexer release];
 
     [super dealloc];
-}
-
-- (BOOL)shouldShowLexing;
-{
-    return shouldShowLexing;
-}
-
-- (void)setShouldShowLexing:(BOOL)newFlag;
-{
-    shouldShowLexing = newFlag;
-    [lexer setShouldShowLexing:newFlag];
 }
 
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
@@ -65,7 +48,6 @@ NSString *CDTokenDescription(int token)
 
     assert(lexer == nil);
     lexer = [[CDTypeLexer alloc] initWithString:type];
-    [lexer setShouldShowLexing:shouldShowLexing];
 
     NS_DURING {
         lookahead = [lexer nextToken];
@@ -109,7 +91,6 @@ NSString *CDTokenDescription(int token)
 
     assert(lexer == nil);
     lexer = [[CDTypeLexer alloc] initWithString:type];
-    [lexer setShouldShowLexing:shouldShowLexing];
 
     NS_DURING {
         lookahead = [lexer nextToken];
@@ -141,6 +122,58 @@ NSString *CDTokenDescription(int token)
     //NSLog(@"<  %s", _cmd);
 
     return resultString;
+}
+
+- (struct method_type *)parseMethodType:(NSString *)type;
+{
+    struct method_type *result;
+
+    assert(lexer == nil);
+
+    lexer = [[CDTypeLexer alloc] initWithString:type];
+
+    NS_DURING {
+        lookahead = [lexer nextToken];
+        result = [self parseMethodType];
+    } NS_HANDLER {
+        NSLog(@"caught exception: %@", localException);
+        NSLog(@"type: %@", type);
+
+        free_allocated_methods();
+        free_allocated_types();
+        result = NULL;
+    } NS_ENDHANDLER;
+
+    [lexer release];
+    lexer = nil;
+
+    return result;
+}
+
+- (struct my_objc_type *)parseType:(NSString *)type;
+{
+    struct my_objc_type *result;
+
+    assert(lexer == nil);
+
+    lexer = [[CDTypeLexer alloc] initWithString:type];
+
+    NS_DURING {
+        lookahead = [lexer nextToken];
+        result = [self parseType];
+    } NS_HANDLER {
+        NSLog(@"caught exception: %@", localException);
+        NSLog(@"type: %@", type);
+
+        free_allocated_methods();
+        free_allocated_types();
+        result = NULL;
+    } NS_ENDHANDLER;
+
+    [lexer release];
+    lexer = nil;
+
+    return result;
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.45 2003/12/16 06:48:36 nygard Exp $
+// $Id: class-dump.m,v 1.46 2003/12/19 05:53:43 nygard Exp $
 //
 
 //
@@ -55,6 +55,7 @@
 #import "ObjcMethod.h"
 #import "MappedFile.h"
 #endif
+#import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
@@ -1105,11 +1106,6 @@ void doTests(char *file)
     NSArray *lines, *fields;
     int count, index;
 
-    CDTypeParser *typeParser;
-
-    typeParser = [[CDTypeParser alloc] init];
-    [typeParser setShouldShowLexing:YES];
-
     NSLog(@"Testing %s", file);
     filename = [NSString stringWithCString:file];
     contents = [NSString stringWithContentsOfFile:filename];
@@ -1127,7 +1123,7 @@ void doTests(char *file)
             type = [fields objectAtIndex:0];
             name = [fields objectAtIndex:1];
             NSLog(@"%@\t%@", type, name);
-            result = [typeParser formatVariable:name type:type atLevel:0];
+            result = [CDTypeFormatter formatVariable:name type:type atLevel:0];
             if (result != nil) {
                 //NSLog(@"Parsed okay");
                 NSLog(@"result: %@", result);
@@ -1140,8 +1136,6 @@ void doTests(char *file)
     }
 
     NSLog(@"Done.");
-
-    [typeParser release];
 }
 
 void doMethodTests(char *file)
@@ -1149,11 +1143,6 @@ void doMethodTests(char *file)
     NSString *filename, *contents;
     NSArray *lines, *fields;
     int count, index;
-
-    CDTypeParser *typeParser;
-
-    typeParser = [[CDTypeParser alloc] init];
-    [typeParser setShouldShowLexing:YES];
 
     NSLog(@"Testing %s", file);
     filename = [NSString stringWithCString:file];
@@ -1177,7 +1166,7 @@ void doMethodTests(char *file)
             name = [fields objectAtIndex:0];
             type = [fields objectAtIndex:1];
             NSLog(@"%@\t%@", name, type);
-            result = [typeParser formatMethodName:name type:type];
+            result = [CDTypeFormatter formatMethodName:name type:type];
             if (result != nil) {
                 //NSLog(@"Parsed okay");
                 NSLog(@"result: %@", result);
@@ -1190,8 +1179,6 @@ void doMethodTests(char *file)
     }
 
     NSLog(@"Done.");
-
-    [typeParser release];
 }
 
 //======================================================================

@@ -9,17 +9,13 @@ extern NSString *CDSyntaxError;
 {
     CDTypeLexer *lexer;
     int lookahead;
-    BOOL shouldShowLexing;
 }
 
 - (id)init;
 - (void)dealloc;
 
-- (BOOL)shouldShowLexing;
-- (void)setShouldShowLexing:(BOOL)newFlag;
-
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
-- (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
+- (struct method_type *)parseMethodType:(NSString *)type;
+- (struct my_objc_type *)parseType:(NSString *)type;
 
 @end
 
@@ -30,8 +26,8 @@ extern NSString *CDSyntaxError;
 - (void)error:(NSString *)errorString;
 
 - (struct method_type *)parseMethodType;
-
 - (struct my_objc_type *)parseType;
+
 - (struct my_objc_type *)parseUnionTypes;
 - (struct my_objc_type *)parseOptionalFormat;
 - (struct my_objc_type *)parseTagList;
