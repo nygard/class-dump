@@ -20,4 +20,6 @@
 - (unsigned long)symtab;
 - (void)setSymtab:(unsigned long)newSymtab;
 
+- (NSString *)description;
+
 @end

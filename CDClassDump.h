@@ -1,6 +1,7 @@
 #import <Foundation/NSObject.h>
 
 @class CDMachOFile;
+@class CDOCClass;
 
 // Section: __module_info
 struct cd_objc_module {
@@ -92,9 +93,10 @@ struct cd_objc_protocol
 - (void)dealloc;
 
 - (void)doSomething;
+
 - (void)processModules;
 - (void)processSymtab:(unsigned long)symtab;
-- (void)processClassDefinition:(unsigned long)defRef;
+- (CDOCClass *)processClassDefinition:(unsigned long)defRef;
 - (void)processCategoryDefinition:(unsigned long)defRef;
 
 @end

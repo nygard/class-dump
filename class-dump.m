@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.34 2003/12/09 01:50:32 nygard Exp $
+// $Id: class-dump.m,v 1.35 2003/12/09 06:25:13 nygard Exp $
 //
 
 //
@@ -1243,15 +1243,15 @@ int main(int argc, char *argv[])
 
         str = argv[optind];
         path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
-        NSLog(@"path: '%@'", path);
+        //NSLog(@"path: '%@'", path);
 
         machOFile = [[CDMachOFile alloc] initWithFilename:path];
-        NSLog(@"machOFile: %@", machOFile);
-        NSLog(@"[machOFile description]: %@", [machOFile description]);
+        //NSLog(@"machOFile: %@", machOFile);
+        //NSLog(@"[machOFile description]: %@", [machOFile description]);
         NSLog(@"[machOFile loadCommands]: %@", [machOFile loadCommands]);
 
         classDump = [[CDClassDump2 alloc] initWithMachOFile:machOFile];
-        [classDump doSomething];
+        //[classDump doSomething];
         [classDump processModules];
         [classDump release];
 

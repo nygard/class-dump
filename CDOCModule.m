@@ -56,4 +56,9 @@
     symtab = newSymtab;
 }
 
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"[%@] name: %@, version: %d", NSStringFromClass([self class]), name, version];
+}
+
 @end

@@ -31,21 +31,21 @@
 
 - (void)doSomething;
 {
-    CDSegmentCommand *objectiveCSegment, *aSegment;
+    CDSegmentCommand *segment;
+    unsigned long goodVMAddr = 0xa2e3d960;
+    unsigned long badVMAddr = 0xa2de2038;
 
     NSLog(@" > %s", _cmd);
 
-    objectiveCSegment = [machOFile segmentWithName:@"__OBJC"];
-    NSLog(@"objectiveCSegment: %@", objectiveCSegment);
-    NSLog(@"\n\n\n");
+    NSLog(@"good vmaddr: %p", goodVMAddr);
+    segment = [machOFile segmentContainingAddress:goodVMAddr];
+    NSLog(@"segment: %@", segment);
 
-    aSegment = [machOFile segmentContainingAddress:0x93241e08];
-    NSLog(@"aSegment: %@", aSegment);
+    NSLog(@"bad vmaddr: %p", badVMAddr);
+    segment = [machOFile segmentContainingAddress:badVMAddr];
+    NSLog(@"segment: %@", segment);
 
-    //NSLog(@"the pointer: %d", [machOFile pointerFromVMAddr:0x93241e08]);
-    NSLog(@"the pointer: '%s'", [machOFile pointerFromVMAddr:0x93241e08]);
-
-    NSLog(@"<  %s", _cmd);
+    NSLog(@" < %s", _cmd);
 }
 
 - (void)processModules;
@@ -58,10 +58,7 @@
     NSLog(@" > %s", _cmd);
 
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
-    NSLog(@"objcSegment: %@", objcSegment);
-
     moduleSection = [objcSegment sectionWithName:@"__module_info"];
-    NSLog(@"moduleSection: %@", moduleSection);
 
     ptr = [moduleSection dataPointer];
     count = [moduleSection size] / sizeof(struct cd_objc_module);
@@ -70,22 +67,17 @@
         CDOCModule *aModule;
 
         assert(ptr->size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
-        NSLog(@"symtab: %p", ptr->symtab);
         aSegment = [machOFile segmentContainingAddress:ptr->symtab];
-        NSLog(@"[machOFile segmentContainingAddress:ptr->symtab]: %@", aSegment);
-#if 1
+
         aModule = [[CDOCModule alloc] init];
         [aModule setVersion:ptr->version];
         [aModule setName:[machOFile stringFromVMAddr:ptr->name]];
         [aModule setSymtab:ptr->symtab];
+        NSLog(@"----------------------------------------------------------------------");
         NSLog(@"aModule: %@", aModule);
         [self processSymtab:ptr->symtab];
         [aModule release];
-#endif
-        break;
     }
-
-    NSLog(@"<  %s", _cmd);
 }
 
 - (void)processSymtab:(unsigned long)symtab;
@@ -95,34 +87,43 @@
     const unsigned long *defs;
     int index, defIndex;
 
-    NSLog(@" > %s", _cmd);
-
     // class pointer: 0xa2df7fdc
 
     // TODO: Should we convert to pointer here or in caller?
     ptr = [machOFile pointerFromVMAddr:symtab];
+    NSLog(@"%s, symtab: %p, ptr: %p", _cmd, symtab, ptr);
+
     NSLog(@"sel_ref_cnt: %p, refs: %p, cls_def_count: %d, cat_def_count: %d", ptr->sel_ref_cnt, ptr->refs, ptr->cls_def_count, ptr->cat_def_count);
 
     //defs = &ptr->class_pointer;
     defs = (unsigned long *)(ptr + 1);
-
-    NSLog(@"Classes:");
     defIndex = 0;
-    for (index = 0; index < ptr->cls_def_count; index++, defs++, defIndex++) {
-        NSLog(@"defs[%d]: %p", index, *defs);
-        [self processClassDefinition:*defs];
+
+    if (ptr->cls_def_count > 0) {
+        NSLog(@"%d classes:", ptr->cls_def_count);
+
+        for (index = 0; index < ptr->cls_def_count; index++, defs++, defIndex++) {
+            CDOCClass *aClass;
+
+            NSLog(@"defs[%d]: %p", index, *defs);
+            aClass = [self processClassDefinition:*defs];
+            NSLog(@"aClass: %@", aClass);
+        }
     }
 
-    NSLog(@"Categories:");
-    for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
-        NSLog(@"defs[%d]: %p", index, *defs);
-        [self processCategoryDefinition:*defs];
+    if (ptr->cat_def_count > 0) {
+        NSLog(@"%d categories:", ptr->cat_def_count);
+        NSLog(@"Later.");
+#if 1
+        for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
+            NSLog(@"defs[%d]: %p", index, *defs);
+            [self processCategoryDefinition:*defs];
+        }
+#endif
     }
-
-    NSLog(@"<  %s", _cmd);
 }
 
-- (void)processClassDefinition:(unsigned long)defRef;
+- (CDOCClass *)processClassDefinition:(unsigned long)defRef;
 {
     const struct cd_objc_class *classPtr;
     const struct cd_objc_ivars *ivarsPtr;
@@ -131,55 +132,58 @@
     const struct cd_objc_method *methodPtr;
     CDOCClass *aClass;
     int index;
-    NSMutableArray *ivars, *methods;
-
-    NSLog(@" > %s", _cmd);
 
     classPtr = [machOFile pointerFromVMAddr:defRef];
-    NSLog(@"isa: %p", classPtr->isa);
 
-    aClass = [[CDOCClass alloc] init];
+    aClass = [[[CDOCClass alloc] init] autorelease];
     [aClass setName:[machOFile stringFromVMAddr:classPtr->name]];
     [aClass setSuperClassName:[machOFile stringFromVMAddr:classPtr->super_class]];
-    NSLog(@"aClass: %@", aClass);
 
     // Process ivars
-    ivars = [[NSMutableArray alloc] init];
-    ivarsPtr = [machOFile pointerFromVMAddr:classPtr->ivars];
-    NSLog(@"ivar count: %d", ivarsPtr->ivar_count);
+    NSLog(@"classPtr->ivars: %p", classPtr->ivars);
+    if (classPtr->ivars != 0) {
+        NSMutableArray *ivars;
 
-    ivarPtr = (struct cd_objc_ivar *)(ivarsPtr + 1);
-    for (index = 0; index < ivarsPtr->ivar_count; index++, ivarPtr++) {
-        CDOCIvar *anIvar;
+        ivars = [[NSMutableArray alloc] init];
+        ivarsPtr = [machOFile pointerFromVMAddr:classPtr->ivars];
+        ivarPtr = (struct cd_objc_ivar *)(ivarsPtr + 1);
 
-        anIvar = [[CDOCIvar alloc] initWithName:[machOFile stringFromVMAddr:ivarPtr->name]
-                                   type:[machOFile stringFromVMAddr:ivarPtr->type]
-                                   offset:ivarPtr->offset];
-        [ivars addObject:anIvar];
-        [anIvar release];
+        for (index = 0; index < ivarsPtr->ivar_count; index++, ivarPtr++) {
+            CDOCIvar *anIvar;
+
+            anIvar = [[CDOCIvar alloc] initWithName:[machOFile stringFromVMAddr:ivarPtr->name]
+                                       type:[machOFile stringFromVMAddr:ivarPtr->type]
+                                       offset:ivarPtr->offset];
+            [ivars addObject:anIvar];
+            [anIvar release];
+        }
+
+        [aClass setIvars:[ivars reversedArray]];
+        [ivars release];
     }
-
-    [aClass setIvars:[ivars reversedArray]];
-    NSLog(@"ivars: %@", [aClass ivars]);
-    [ivars release];
 
     // Process methods
-    methods = [[NSMutableArray alloc] init];
-    methodsPtr = [machOFile pointerFromVMAddr:classPtr->methods];
-    methodPtr = (struct cd_objc_method *)(methodsPtr + 1);
-    for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
-        CDOCMethod *aMethod;
+    NSLog(@"classPtr->methods: %p", classPtr->methods);
+    if (classPtr->methods != 0) {
+        NSMutableArray *methods;
 
-        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
+        methods = [[NSMutableArray alloc] init];
+        methodsPtr = [machOFile pointerFromVMAddr:classPtr->methods];
+        methodPtr = (struct cd_objc_method *)(methodsPtr + 1);
+
+        for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
+            CDOCMethod *aMethod;
+
+            aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
                                           type:[machOFile stringFromVMAddr:methodPtr->types]
                                           imp:methodPtr->imp];
-        [methods addObject:aMethod];
-        [aMethod release];
-    }
+            [methods addObject:aMethod];
+            [aMethod release];
+        }
 
-    [aClass setInstanceMethods:[methods reversedArray]];
-    NSLog(@"instance methods: %@", [aClass instanceMethods]);
-    [methods release];
+        [aClass setInstanceMethods:[methods reversedArray]];
+        [methods release];
+    }
 
     // Process meta class
     {
@@ -190,6 +194,8 @@
 
         // Process class methods
         if (metaClassPtr->methods != 0) {
+            NSMutableArray *methods;
+
             methods = [[NSMutableArray alloc] init];
 
             methodsPtr = [machOFile pointerFromVMAddr:metaClassPtr->methods];
@@ -205,14 +211,12 @@
             }
 
             [aClass setClassMethods:[methods reversedArray]];
-            NSLog(@"class methods: %@", [aClass classMethods]);
 
             [methods release];
         }
     }
 
     // Process protocols
-    NSLog(@"protocol addr: %p", classPtr->protocols);
     if (classPtr->protocols != 0) {
         const struct cd_objc_protocol_list *protocolList;
         const struct cd_objc_protocol **protocolPtr;
@@ -224,25 +228,20 @@
         // Compiler doesn't like the double star cast.
         protocolPtr = (void *)(protocolList + 1);
         //protocolPtr = (struct cd_objc_protocol **)(protocolList + 1);
-        NSLog(@"protocol count: %d", protocolList->count);
         for (index = 0; index < protocolList->count; index++, protocolPtr++) {
             CDOCProtocol *aProtocol;
 
             aProtocol = [[CDOCProtocol alloc] init];
-            NSLog(@"(*protocolPtr)->protocol_name: 0x%08x", (*protocolPtr)->protocol_name);
+            // TODO (2003-12-08): Let's worry about protocols later.
             [aProtocol setName:[machOFile stringFromVMAddr:(*protocolPtr)->protocol_name]];
-            NSLog(@"aProtocol: %@", aProtocol);
             [protocols addObject:aProtocol];
             [aProtocol release];
         }
 
-        NSLog(@"protocols: %@", protocols);
         [protocols release];
     }
 
-    [aClass release];
-
-    NSLog(@"<  %s", _cmd);
+    return aClass;
 }
 
 - (void)processCategoryDefinition:(unsigned long)defRef;

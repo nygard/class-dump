@@ -55,7 +55,7 @@
 
         loadCommand = [CDLoadCommand loadCommandWithPointer:ptr machOFile:self];
         [cmds addObject:loadCommand];
-        NSLog(@"%2d: %@", index, loadCommand);
+        //NSLog(@"%2d: %@", index, loadCommand);
         ptr += [loadCommand cmdsize];
     }
 
@@ -156,16 +156,31 @@
     NSLog(@"busted");
 }
 
+- (void)showWarning:(unsigned long)vmaddr;
+{
+    NSLog(@"Warning: %p not in an __OBJC section", vmaddr);
+}
+
 - (const void *)pointerFromVMAddr:(unsigned long)vmaddr;
 {
     CDSegmentCommand *segment;
     const void *ptr;
+
+    if (vmaddr == 0)
+        return NULL;
 
     segment = [self segmentContainingAddress:vmaddr];
     if (segment == NULL) {
         [self foo];
         NSLog(@"pointerFromVMAddr:, vmaddr: %p, segment: %@", vmaddr, segment);
     }
+    //NSLog(@"[segment name]: %@", [segment name]);
+#if 0
+    if ([[segment name] isEqual:@"__OBJC"] == NO) {
+        [self showWarning:vmaddr];
+        //return NULL;
+    }
+#endif
 #if 0
     NSLog(@"vmaddr: %p, [data bytes]: %p, [segment fileoff]: %d, [segment segmentOffsetForVMAddr:vmaddr]: %d",
           vmaddr, [data bytes], [segment fileoff], [segment segmentOffsetForVMAddr:vmaddr]);
