@@ -11,7 +11,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.33 2004/01/18 01:34:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.34 2004/01/18 02:39:43 nygard Exp $");
 
 @implementation CDType
 
@@ -625,7 +625,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.33 2004/01/18 0
         //NSLog(@"%d: vari: %@ vs %@", index, thisVariableName, otherVariableName);
 
         if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil))
-            NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
+            ; // It seems to be okay if one of them didn't have a name
+            //NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
         else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
             NSLog(@"Warning: (2) type names don't match, %@ vs %@.", thisTypeName, otherTypeName);
 
