@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.51 2004/01/27 22:42:14 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.52 2004/01/29 07:28:57 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -234,6 +234,7 @@ static NSMutableSet *wrapperExtensions = nil;
 
         [self registerPhase:1];
         [self registerPhase:2];
+        [self generateMemberNames];
         //[self finishRegistration];
 
         resultString = [[NSMutableString alloc] init];
@@ -417,6 +418,12 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 
     return NO;
+}
+
+- (void)generateMemberNames;
+{
+    [structureTable generateMemberNames];
+    [unionTable generateMemberNames];
 }
 
 @end

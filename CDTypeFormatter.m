@@ -15,7 +15,7 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.25 2004/01/20 05:17:30 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 2004/01/29 07:28:57 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -89,6 +89,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.25 200
     return nil;
 }
 
+// TODO (2004-01-28): See if we can pass in the actual CDType.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
 {
     CDTypeParser *aParser;

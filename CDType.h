@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.21 2004/01/19 01:53:43 nygard Exp $
+// $Id: CDType.h,v 1.22 2004/01/29 07:28:57 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -73,5 +73,7 @@
 - (BOOL)isStructureEqual:(CDType *)otherType;
 
 - (void)mergeWithType:(CDType *)otherType;
+
+- (void)generateMemberNames;
 
 @end

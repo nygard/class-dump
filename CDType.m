@@ -6,12 +6,13 @@
 
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
+#import "NSArray-Extensions.h"
 #import "NSString-Extensions.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.36 2004/01/18 23:41:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 07:28:57 nygard Exp $");
 
 @implementation CDType
 
@@ -659,6 +660,39 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.36 2004/01/18 2
                 NSLog(@"Warning: Different variable names for same member...");
         }
     }
+}
+
+- (void)generateMemberNames;
+{
+    if (type == '{' || type == '(') {
+        int count, index;
+        NSSet *usedNames;
+        int number;
+        CDType *aMember;
+        NSString *name;
+
+        usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
+
+        count = [members count];
+        number = 1;
+        for (index = 0; index < count; index++) {
+            aMember = [members objectAtIndex:index];
+            [aMember generateMemberNames];
+
+            // Bitfields don't need a name.
+            if ([aMember variableName] == nil && [aMember type] != 'b') {
+                do {
+                    name = [NSString stringWithFormat:@"_field%d", number++];
+                } while ([usedNames containsObject:name] == YES);
+                [aMember setVariableName:name];
+            }
+        }
+
+        [usedNames release];
+
+    }
+
+    [subtype generateMemberNames];
 }
 
 @end

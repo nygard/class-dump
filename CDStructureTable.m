@@ -12,7 +12,7 @@
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.13 2004/01/18 01:34:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.14 2004/01/29 07:28:57 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -215,16 +215,17 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.13 20
 {
     NSArray *keys;
     int count, index;
-    NSString *typeString, *formattedString, *aName;
+    NSString *key, *typeString, *formattedString, *aName;
 
     //keys = [[anonymousStructureNamesByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
     keys = [anonymousStructureNamesByType allKeys];
     count = [keys count];
 
     for (index = 0; index < count; index++) {
-        typeString = [keys objectAtIndex:index];
+        key = [keys objectAtIndex:index];
+        typeString = [[anonymousStructuresByType objectForKey:key] typeString];
 
-        aName = [anonymousStructureNamesByType objectForKey:typeString];
+        aName = [anonymousStructureNamesByType objectForKey:key];
         formattedString = [aTypeFormatter formatVariable:nil type:typeString];
         if (formattedString != nil) {
             [resultString appendString:@"typedef "];
@@ -365,6 +366,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.13 20
 
     //NSLog(@"[%p](%@) <  %s", self, name, _cmd);
     return shouldCountMembers;
+}
+
+- (void)generateMemberNames;
+{
+    [[structuresByName allValues] makeObjectsPerformSelector:@selector(generateMemberNames)];
+    [[anonymousStructuresByType allValues] makeObjectsPerformSelector:@selector(generateMemberNames)];
 }
 
 @end

@@ -7,7 +7,7 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.5 2004/01/06 02:31:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.6 2004/01/29 07:28:58 nygard Exp $");
 
 @implementation NSArray (CDExtensions)
 
@@ -20,11 +20,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.5 2
 {
     NSMutableArray *newArray;
     int count, index;
+    id value;
 
     newArray = [NSMutableArray array];
     count = [self count];
-    for (index = 0; index < count; index++)
-        [newArray addObject:[[self objectAtIndex:index] performSelector:aSelector]];
+    for (index = 0; index < count; index++) {
+        value = [[self objectAtIndex:index] performSelector:aSelector];
+        if (value != nil)
+            [newArray addObject:value];
+        // TODO (2004-01-28): Or we could add NSNull.
+    }
 
     return newArray;
 }

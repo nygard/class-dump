@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.37 2004/01/17 04:04:24 nygard Exp $
+// $Id: CDClassDump.h,v 1.38 2004/01/29 07:28:57 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -74,5 +74,7 @@
 
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+
+- (void)generateMemberNames;
 
 @end
