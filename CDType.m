@@ -172,6 +172,21 @@
     return type == '@' && typeName == nil;
 }
 
+- (CDType *)subtype;
+{
+    return subtype;
+}
+
+- (NSString *)typeName;
+{
+    return typeName;
+}
+
+- (NSArray *)members;
+{
+    return members;
+}
+
 - (BOOL)isModifierType;
 {
     return type == 'r' || type == 'n' || type == 'N' || type == 'o' || type == 'O' || type == 'R' || type == 'V';
@@ -515,6 +530,55 @@
             namedCount++;
 
     return namedCount;
+}
+
+// Merge struct/union member names
+- (void)mergeWithType:(CDType *)otherType;
+{
+    int count, index;
+    NSArray *otherMembers;
+
+    if ([self type] != [otherType type]) {
+        NSLog(@"Warning: Trying to merge different types in %s", _cmd);
+        return;
+    }
+
+    [subtype mergeWithType:[otherType subtype]];
+
+    otherMembers = [otherType members];
+    count = [members count];
+    if ([otherMembers count] != count) {
+        NSLog(@"Warning: Types have different number of members.  This is bad.");
+        return;
+    }
+
+    for (index = 0; index < count; index++) {
+        CDType *thisMember, *otherMember;
+        NSString *thisTypeName, *otherTypeName;
+        NSString *thisVariableName, *otherVariableName;
+
+        thisMember = [members objectAtIndex:index];
+        otherMember = [otherMembers objectAtIndex:index];
+
+        thisTypeName = [thisMember typeName];
+        otherTypeName = [otherMember typeName];
+        thisVariableName = [thisMember variableName];
+        otherVariableName = [otherMember variableName];
+        //NSLog(@"%d: type: %@ vs %@", index, thisTypeName, otherTypeName);
+        //NSLog(@"%d: vari: %@ vs %@", index, thisVariableName, otherVariableName);
+
+        if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil))
+            NSLog(@"Warning: (1) type names don't match.");
+        else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
+            NSLog(@"Warning: (2) type names don't match.");
+
+        if (otherVariableName != nil) {
+            if (thisVariableName == nil)
+                [thisMember setVariableName:otherVariableName];
+            else if ([thisVariableName isEqual:otherVariableName] == NO)
+                NSLog(@"Warning: Different variable names for same member...");
+        }
+    }
 }
 
 @end

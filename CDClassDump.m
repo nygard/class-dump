@@ -356,9 +356,10 @@
         existingType = [structsByName objectForKey:aName];
         if (existingType == nil)
             [structsByName setObject:structType forKey:aName];
-        else if (existingType == nil || [existingType namedMemberCount] < [structType namedMemberCount]) {
-            NSLog(@"Replaced %@ with %@", [existingType typeString], [structType typeString]);
-            [structsByName setObject:structType forKey:aName];
+        else {
+            NSLog(@"Merging %@ with %@", [existingType typeString], [structType typeString]);
+            [existingType mergeWithType:structType];
+            NSLog(@"Merged result: %@", [existingType typeString]);
         }
     }
 

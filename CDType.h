@@ -37,6 +37,10 @@
 - (int)type;
 - (BOOL)isIDType;
 
+- (CDType *)subtype;
+- (NSString *)typeName;
+- (NSArray *)members;
+
 - (int)typeIgnoringModifiers;
 
 - (NSString *)description;
@@ -55,5 +59,7 @@
 - (BOOL)isEqual:(CDType *)otherType;
 - (BOOL)isStructureEqual:(CDType *)otherType;
 - (int)namedMemberCount;
+
+- (void)mergeWithType:(CDType *)otherType;
 
 @end
