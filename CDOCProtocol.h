@@ -1,5 +1,5 @@
 //
-// $Id: CDOCProtocol.h,v 1.15 2004/01/16 00:18:20 nygard Exp $
+// $Id: CDOCProtocol.h,v 1.16 2004/02/02 21:37:20 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -11,7 +11,7 @@
 #import "CDStructureRegistrationProtocol.h"
 
 @class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
-@class CDClassDump2;
+@class CDClassDump2, CDSymbolReferences;
 
 @interface CDOCProtocol : NSObject
 {
@@ -41,7 +41,8 @@
 - (void)setInstanceMethods:(NSArray *)newInstanceMethods;
 
 - (NSString *)description;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendMethodsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 - (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 - (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;

@@ -9,9 +9,10 @@
 #import "NSArray-Extensions.h"
 #import "CDOCMethod.h"
 #import "CDOCSymtab.h"
+#import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.19 2004/01/18 02:30:08 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.20 2004/02/02 21:37:20 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -117,33 +118,46 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.19 2004/0
                      NSStringFromClass([self class]), name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+    [resultString appendFormat:@"@protocol %@", name];
+    if ([protocols count] > 0) {
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+    }
+
+    [resultString appendString:@"\n"];
+    [self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+    [resultString appendString:@"@end\n\n"];
+}
+
+- (void)appendMethodsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     int count, index;
     NSArray *sortedMethods;
 
-    [resultString appendFormat:@"@protocol %@", name];
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-
-    [resultString appendString:@"\n"];
-
     sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     count = [sortedMethods count];
-    for (index = 0; index < count; index++) {
-        [resultString appendString:@"+ "];
-        [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
-        [resultString appendString:@"\n"];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [resultString appendString:@"+ "];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+            [resultString appendString:@"\n"];
+        }
     }
 
     sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     count = [sortedMethods count];
-    for (index = 0; index < count; index++) {
-        [resultString appendString:@"- "];
-        [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
-        [resultString appendString:@"\n"];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [resultString appendString:@"- "];
+            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+            [resultString appendString:@"\n"];
+        }
     }
-    [resultString appendString:@"@end\n\n"];
+
+    if ([classMethods count] > 0 || [instanceMethods count] > 0)
+        [resultString appendString:@"\n"];
 }
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;

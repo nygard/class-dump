@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.60 2004/02/02 19:46:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.61 2004/02/02 21:37:21 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -516,6 +516,7 @@ void print_usage(void)
 
 void testVariableTypes(NSString *path)
 {
+#if 0
     CDTypeFormatter *ivarTypeFormatter;
     NSMutableString *resultString;
     NSString *contents;
@@ -579,7 +580,7 @@ void testVariableTypes(NSString *path)
         data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
         [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
     }
-
+#endif
 }
 #if 0
 void testMethodTypes(NSString *path)

@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.22 2004/01/29 07:28:57 nygard Exp $
+// $Id: CDType.h,v 1.23 2004/02/02 21:37:20 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -10,7 +10,7 @@
 #import "CDStructureRegistrationProtocol.h"
 
 @class NSArray, NSString;
-@class CDTypeFormatter, CDTypeName;
+@class CDSymbolReferences, CDTypeFormatter, CDTypeName;
 
 @interface CDType : NSObject
 {
@@ -52,8 +52,8 @@
 
 - (NSString *)description;
 
-- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level;
-- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (NSString *)formattedStringForSimpleType;
 
 - (NSString *)typeString;

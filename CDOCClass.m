@@ -9,10 +9,11 @@
 #import "NSArray-Extensions.h"
 #import "CDOCIvar.h"
 #import "CDOCMethod.h"
+#import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.26 2004/01/20 05:00:23 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.27 2004/02/02 21:37:19 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -52,51 +53,30 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.26 2004/01/2
     ivars = [newIvars retain];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSArray *sortedMethods;
     int count, index;
 
     [resultString appendFormat:@"@interface %@", name];
     if (superClassName != nil)
-        [resultString appendFormat:@":%@", superClassName]; // Add space later, keep this way for backwards compatability
+        [resultString appendFormat:@":%@", superClassName]; // TODO (2004-02-02): Add space later, keep this way for backwards compatability
 
-    if ([protocols count] > 0)
+    if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+    }
 
     [resultString appendString:@"\n{\n"];
     count = [ivars count];
     if (count > 0) {
         for (index = 0; index < count; index++) {
-            [[ivars objectAtIndex:index] appendToString:resultString classDump:aClassDump];
+            [[ivars objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
             [resultString appendString:@"\n"];
         }
     }
 
     [resultString appendString:@"}\n\n"];
-
-    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            [resultString appendString:@"+ "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
-            [resultString appendString:@"\n"];
-        }
-    }
-
-    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            [resultString appendString:@"- "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump];
-            [resultString appendString:@"\n"];
-        }
-    }
-
-    if ([classMethods count] > 0 || [instanceMethods count] > 0)
-        [resultString appendString:@"\n"];
+    [self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
     [resultString appendString:@"@end\n\n"];
 }
 

@@ -1,5 +1,5 @@
 //
-// $Id: CDOCIvar.h,v 1.7 2004/01/06 02:31:41 nygard Exp $
+// $Id: CDOCIvar.h,v 1.8 2004/02/02 21:37:19 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 
 @class NSMutableString, NSString;
-@class CDClassDump2;
+@class CDClassDump2, CDSymbolReferences;
 
 @interface CDOCIvar : NSObject
 {
@@ -26,6 +26,6 @@
 - (int)offset;
 
 - (NSString *)description;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 @end

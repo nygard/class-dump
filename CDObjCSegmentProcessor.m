@@ -19,7 +19,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.15 2004/02/02 19:46:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.16 2004/02/02 21:37:20 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -86,13 +86,13 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
         CDOCProtocol *aProtocol;
 
         aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol appendToString:resultString classDump:aClassDump];
+        [aProtocol appendToString:resultString classDump:aClassDump symbolReferences:nil];
     }
 
     [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
     count = [allClasses count];
     for (index = 0; index < count; index++)
-        [[allClasses objectAtIndex:index] appendToString:resultString classDump:aClassDump];
+        [[allClasses objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];
 
     [allClasses release];
 }

@@ -8,11 +8,12 @@
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "NSString-Extensions.h"
+#import "CDSymbolReferences.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 07:28:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.38 2004/02/02 21:37:20 nygard Exp $");
 
 @implementation CDType
 
@@ -221,7 +222,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
                      NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
 }
 
-- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *result, *currentName;
     NSString *baseType, *memberString;
@@ -235,6 +236,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
     switch (type) {
       case T_NAMED_OBJECT:
           assert(typeName != nil);
+          [symbolReferences addClassName:[typeName name]];
           if (currentName == nil)
               result = [typeName description];
           else
@@ -262,7 +264,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
           else
               result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
 
-          result = [subtype formattedString:result formatter:typeFormatter level:level];
+          result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
           break;
 
       case '(':
@@ -285,7 +287,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
               if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:[typeName description]] == YES)
                   || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
+                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
                                            [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
               else
                   memberString = @"";
@@ -318,7 +320,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
               if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:[typeName description]] == YES)
                   || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
+                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
                                            [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
               else
                   memberString = @"";
@@ -341,7 +343,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
           if (subtype != nil && [subtype type] == '[')
               result = [NSString stringWithFormat:@"(%@)", result];
 
-          result = [subtype formattedString:result formatter:typeFormatter level:level];
+          result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
           break;
 
       case 'r':
@@ -358,7 +360,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
                   result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
           } else
               result = [NSString stringWithFormat:@"%@ %@",
-                                 [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level]];
+                                 [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level symbolReferences:symbolReferences]];
           break;
 
       default:
@@ -372,7 +374,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
     return result;
 }
 
-- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter;
+- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSMutableString *str;
     int count, index;
@@ -393,7 +395,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.37 2004/01/29 0
     for (index = 0; index < count; index++) {
 
         [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
-        [str appendString:[[targetMembers objectAtIndex:index] formattedString:nil formatter:typeFormatter level:level]];
+        [str appendString:[[targetMembers objectAtIndex:index] formattedString:nil
+                                                               formatter:typeFormatter
+                                                               level:level
+                                                               symbolReferences:symbolReferences]];
         [str appendString:@";\n"];
     }
 

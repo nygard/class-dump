@@ -11,11 +11,12 @@
 #import "NSString-Extensions.h"
 #import "CDClassDump.h" // not ideal
 #import "CDMethodType.h"
+#import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 2004/01/29 07:28:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.27 2004/02/02 21:37:20 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -90,7 +91,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 200
 }
 
 // TODO (2004-01-28): See if we can pass in the actual CDType.
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     CDTypeParser *aParser;
     CDType *resultType;
@@ -107,6 +108,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 200
         resultString = [NSMutableString string];
         [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
         [resultString appendString:specialCase];
+
         return resultString;
     }
 
@@ -124,7 +126,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 200
     resultString = [NSMutableString string];
     [resultType setVariableName:name];
     [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
-    [resultString appendString:[resultType formattedString:nil formatter:self level:0]];
+    [resultString appendString:[resultType formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
 
     //free_allocated_methods();
     //free_allocated_types();
@@ -134,7 +136,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 200
     return resultString;
 }
 
-- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
+- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     CDTypeParser *aParser;
     NSArray *methodTypes;
@@ -171,7 +173,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 200
             if (specialCase != nil) {
                 [resultString appendString:specialCase];
             } else {
-                str = [[aMethodType type] formattedString:nil formatter:self level:0];
+                str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
                 if (str != nil)
                     [resultString appendFormat:@"%@", str];
             }
@@ -203,7 +205,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.26 200
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
-                        typeString = [[aMethodType type] formattedString:nil formatter:self level:0];
+                        typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
                         if ([[aMethodType type] isIDType] == NO)
                             [resultString appendFormat:@"(%@)", typeString];
                     }

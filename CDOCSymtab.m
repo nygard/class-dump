@@ -8,8 +8,9 @@
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDOCClass.h"
+#import "CDSymbolReferences.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.13 2004/02/02 19:46:44 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.14 2004/02/02 21:37:20 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -94,11 +95,11 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.13 2004/02/
 
     count = [classes count];
     for (index = 0; index < count; index++)
-        [[classes objectAtIndex:index] appendToString:resultString classDump:aClassDump];
+        [[classes objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];
 
     count = [categories count];
     for (index = 0; index < count; index++)
-        [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump];
+        [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];
 }
 
 - (void)generateSeparateHeadersClassDump:(CDClassDump2 *)aClassDump;
@@ -112,11 +113,17 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.13 2004/02/
     for (index = 0; index < count; index++) {
         CDOCClass *aClass;
         NSString *filename;
+        CDSymbolReferences *symbolReferences;
+        NSString *referenceString;
+        unsigned int referenceIndex;
 
         resultString = [[NSMutableString alloc] init];
         [aClassDump appendHeaderToString:resultString];
 
+        symbolReferences = [[CDSymbolReferences alloc] init];
+
         aClass = [classes objectAtIndex:index];
+        // TODO (2004-02-02): [aClassDump appendImportForClass:[aClass dumperClassName] toString:resultString];
         if ([aClass superClassName] != nil) {
             NSString *classFramework;
 
@@ -127,13 +134,22 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.13 2004/02/
                 [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, [aClass superClassName]];
         }
 
-        [aClass appendToString:resultString classDump:aClassDump];
+        referenceIndex = [resultString length];
+        [aClass appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+
+        [symbolReferences removeClassName:[aClass name]];
+        [symbolReferences removeClassName:[aClass superClassName]];
+        referenceString = [symbolReferences referenceString];
+        if (referenceString != nil)
+            [resultString insertString:referenceString atIndex:referenceIndex];
+
         filename = [NSString stringWithFormat:@"%@.h", [aClass name]];
         if (outputPath != nil)
             filename = [outputPath stringByAppendingPathComponent:filename];
 
         [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 
+        [symbolReferences release];
         [resultString release];
     }
 #if 0

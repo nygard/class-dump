@@ -77,6 +77,34 @@
 			settings = {
 			};
 		};
+		012934DA05CEE31B00E843DB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDSymbolReferences.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		012934DB05CEE31B00E843DB = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = CDSymbolReferences.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		012934DC05CEE31B00E843DB = {
+			fileRef = 012934DA05CEE31B00E843DB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		012934DD05CEE31B00E843DB = {
+			fileRef = 012934DB05CEE31B00E843DB;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0149791105AA10D80023398B = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -716,6 +744,8 @@
 				01DEC43005A7622B00682FCC,
 				01497A6005AD0BAC0023398B,
 				01497A6105AD0BAC0023398B,
+				012934DA05CEE31B00E843DB,
+				012934DB05CEE31B00E843DB,
 			);
 			isa = PBXGroup;
 			name = "New stuff";
@@ -1344,6 +1374,7 @@
 				01497A6205AD0BAC0023398B,
 				01E6681005B76139005849C7,
 				01B607C405BA10E800A4AD78,
+				012934DC05CEE31B00E843DB,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1505,6 +1536,7 @@
 				01DEC43305A7622B00682FCC,
 				01497A6305AD0BAC0023398B,
 				01B607C505BA10E800A4AD78,
+				012934DD05CEE31B00E843DB,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

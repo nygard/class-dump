@@ -12,7 +12,7 @@
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.14 2004/01/29 07:28:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.15 2004/02/02 21:37:20 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -203,7 +203,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.14 20
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         type = [structuresByName objectForKey:key];
-        formattedString = [aTypeFormatter formatVariable:nil type:[type typeString]];
+        formattedString = [aTypeFormatter formatVariable:nil type:[type typeString] symbolReferences:nil];
         if (formattedString != nil) {
             [resultString appendString:formattedString];
             [resultString appendString:@";\n\n"];
@@ -226,7 +226,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.14 20
         typeString = [[anonymousStructuresByType objectForKey:key] typeString];
 
         aName = [anonymousStructureNamesByType objectForKey:key];
-        formattedString = [aTypeFormatter formatVariable:nil type:typeString];
+        formattedString = [aTypeFormatter formatVariable:nil type:typeString symbolReferences:nil];
         if (formattedString != nil) {
             [resultString appendString:@"typedef "];
             [resultString appendString:formattedString];
