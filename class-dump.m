@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.66 2004/02/03 02:54:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.67 2004/02/03 04:09:27 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -424,11 +424,12 @@ void print_usage(void)
             "        -a        show instance variable offsets\n"
             "        -A        show implementation addresses\n"
             "        -C regex  only display classes matching regular expression\n"
-            "        -H        generate header files in current directory\n"
+            "        -H        generate header files in current directory, or directory specified with -o\n"
             "        -I        sort classes, categories, and protocols by inheritance (overrides -S)\n"
+            "        -o dir    output directory used for -H\n"
             "        -R        recursively expand @protocol <>\n"
             "        -r        recursively expand frameworks and fixed VM shared libraries\n"
-            "        -S        sort classes, categories, protocols and methods by name\n"
+            "        -S        sort classes, categories and methods by name\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -453,8 +454,9 @@ int main(int argc, char *argv[])
     }
 
     classDump = [[[CDClassDump2 alloc] init] autorelease];
+    [classDump setOutputPath:@"/tmp/cd"];
 
-    while ( (ch = getopt(argc, argv, "aAC:HIrRS")) != EOF) {
+    while ( (ch = getopt(argc, argv, "aAC:HIo:rRS")) != EOF) {
         switch (ch) {
           case 'a':
               [classDump setShouldShowIvarOffsets:YES];
@@ -482,6 +484,10 @@ int main(int argc, char *argv[])
 
           case 'I':
               //[classDump setShouldSortByInheritance:YES];
+              break;
+
+          case 'o':
+              [classDump setOutputPath:[NSString stringWithCString:optarg]];
               break;
 
           case 'r':
@@ -515,20 +521,8 @@ int main(int argc, char *argv[])
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         NSLog(@"path: '%@'", path);
 
-        [classDump setOutputPath:@"/tmp/cd"];
         [classDump processFilename:path];
         [classDump doSomething];
-
-        exit(99);
-#if 0
-        if (regexCString != NULL) {
-            if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
-                printf("Error with regex: %s\n", [regexErrorMessage cString]);
-                [classDump release];
-                exit(1);
-            }
-        }
-#endif
     }
 
     [pool release];
