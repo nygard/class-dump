@@ -1,5 +1,5 @@
 //
-// $Id: my_regex.h,v 1.3 2000/10/15 01:22:18 nygard Exp $
+// $Id: my_regex.h,v 1.4 2002/12/19 07:19:31 nygard Exp $
 //
 
 //
@@ -27,16 +27,10 @@
 
 #include <regex.h> // This is the same name for both the old and new versions.
 
-#ifdef __APPLE_CPP__
-char *my_re_comp (const char *pattern);
-int my_re_exec (const char *text);
-void my_re_free (void);
+char *my_re_comp(const char *pattern);
+int my_re_exec(const char *text);
+void my_re_free(void);
 
 #define RE_COMP(pattern) my_re_comp(pattern)
 #define RE_EXEC(text) my_re_exec(text)
 #define RE_FREE() my_re_free()
-#else
-#define RE_COMP(pattern) re_comp(pattern)
-#define RE_EXEC(text) re_exec(text)
-#define RE_FREE() /* empty */
-#endif

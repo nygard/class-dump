@@ -1,5 +1,5 @@
 //
-// $Id: my_regex.c,v 1.3 2000/10/15 01:22:18 nygard Exp $
+// $Id: my_regex.c,v 1.4 2002/12/19 07:19:31 nygard Exp $
 //
 
 //
@@ -30,8 +30,6 @@
 
 #import "my_regex.h"
 
-#ifdef __APPLE_CPP__
-
 //
 // This provides functions compatible with the interface of the old style
 // regular expression matching functions.  Note, however, that we use the
@@ -41,32 +39,29 @@
 static regex_t compiled_regex;
 static char regex_error_buffer[256];
 
-char *my_re_comp (const char *pattern)
+char *my_re_comp(const char *pattern)
 {
     int result;
 
-    result = regcomp (&compiled_regex, pattern, REG_EXTENDED);
-    if (result != 0)
-    {
-        regerror (result, &compiled_regex, regex_error_buffer, sizeof (regex_error_buffer));
+    result = regcomp(&compiled_regex, pattern, REG_EXTENDED);
+    if (result != 0) {
+        regerror(result, &compiled_regex, regex_error_buffer, sizeof(regex_error_buffer));
         return regex_error_buffer;
     }
 
     return NULL;
 }
 
-int my_re_exec (const char *text)
+int my_re_exec(const char *text)
 {
     int result;
 
-    result = regexec (&compiled_regex, text, 0, NULL, 0);
+    result = regexec(&compiled_regex, text, 0, NULL, 0);
 
     return (result == 0) ? 1 : 0;
 }
 
-void my_re_free (void)
+void my_re_free(void)
 {
-    regfree (&compiled_regex);
+    regfree(&compiled_regex);
 }
-
-#endif
