@@ -1,4 +1,3 @@
-// Named struct/union types
 struct _NSPoint {
     float;
     float;

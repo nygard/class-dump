@@ -10,7 +10,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.5 2004/01/12 19:07:37 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.6 2004/01/12 19:36:14 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -275,8 +275,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.5 200
 
     keys = [[structuresByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [keys count];
-    if (count > 0)
-        [resultString appendString:@"// Named struct/union types\n"];
 
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
@@ -294,7 +292,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.5 200
     NSArray *keys;
     int count, index;
     NSString *typeString, *formattedString, *name;
-    BOOL hasAddedComment = NO;
 
     //keys = [[anonymousStructureNamesByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
     keys = [anonymousStructureNamesByType allKeys];
@@ -306,10 +303,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.5 200
         name = [anonymousStructureNamesByType objectForKey:typeString];
         formattedString = [aTypeFormatter formatVariable:nil type:typeString];
         if (formattedString != nil) {
-            if (hasAddedComment == NO) {
-                [resultString appendString:@"// Anonymous struct/union types\n"];
-                hasAddedComment = YES;
-            }
             [resultString appendString:@"typedef "];
             [resultString appendString:formattedString];
             [resultString appendFormat:@" %@;\n\n", name];
