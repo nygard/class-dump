@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.25 2004/01/08 00:43:08 nygard Exp $
+// $Id: CDClassDump.h,v 1.26 2004/01/08 02:03:00 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -27,8 +27,6 @@
     NSMutableDictionary *replacementTypes;
 
     NSMutableSet *forcedTypedefs;
-
-    int anonymousStructCounter;
 
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
