@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeParser.h,v 1.12 2004/01/06 01:51:57 nygard Exp $
+// $Id: CDTypeParser.h,v 1.13 2004/01/06 02:03:38 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for exmaing the
@@ -7,7 +7,6 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
 #import <Foundation/NSObject.h>
-//#include "datatypes.h"
 
 @class NSArray, NSString;
 @class CDMethodType, CDType, CDTypeLexer;
