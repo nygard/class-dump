@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.19 2003/01/21 06:50:43 nygard Exp $
+// $Id: class-dump.m,v 1.20 2003/01/21 06:55:27 nygard Exp $
 //
 
 //
@@ -50,27 +50,6 @@
 #import "ObjcIvar.h"
 #import "ObjcMethod.h"
 #import "MappedFile.h"
-
-#ifndef LC_SUB_FRAMEWORK
-#define LC_SUB_FRAMEWORK 0x12
-#endif
-
-#ifndef LC_LOAD_DYLIB
-#define LC_LOAD_DYLIB 0x0c
-
-struct dylib {
-    union lc_str  name;
-    unsigned long timestamp;
-    unsigned long current_version;
-    unsigned long compatibility_version;
-};
-
-struct dylib_command {
-    unsigned long	cmd;
-    unsigned long	cmdsize;
-    struct dylib	dylib;
-};
-#endif
 
 //----------------------------------------------------------------------
 
