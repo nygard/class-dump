@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CDSection.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSegmentCommand.m,v 1.4 2004/01/06 02:31:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSegmentCommand.m,v 1.5 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDSegmentCommand
 
@@ -25,21 +25,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSegmentCommand.m,v 1.4 200
     name = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
     // Is segmentCommand->segname always going to be NULL terminated?
     //name = [[NSString alloc] initWithBytes:segmentCommand->segname length:strlen(segmentCommand->segname) encoding:NSASCIIStringEncoding];
-    //contents = nil;
 
     [self _processSections];
-
-#if 0
-    if ([@"__OBJC" isEqual:name]) {
-        NSLog(@"Need to create Objective-C segment contents.");
-        // Nah, just extract the Objc info later
-    }
-#endif
 
     return self;
 }
 
-// TODO (2003-12-06)(done): It might be better to just set 'sections' directly and not return the array.
 - (void)_processSections;
 {
     NSMutableArray *sects;

@@ -14,7 +14,7 @@
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.18 2004/02/03 22:51:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.19 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -187,7 +187,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.18 20
 }
 
 // TODO (2003-12-23): Add option to show/hide this section
-// TODO (2003-12-23): auto-name unnamed members
 // TODO (2003-12-23): sort by name or by dependency
 // TODO (2003-12-23): declare in modules where they were first used
 

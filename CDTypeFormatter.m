@@ -16,9 +16,7 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.27 2004/02/02 21:37:20 nygard Exp $");
-
-//----------------------------------------------------------------------
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.28 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDTypeFormatter
 
@@ -128,8 +126,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.27 200
     [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
     [resultString appendString:[resultType formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
 
-    //free_allocated_methods();
-    //free_allocated_types();
     [aParser release];
 
     //NSLog(@"<  %s", _cmd);

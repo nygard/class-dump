@@ -13,9 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.30 2004/01/29 22:37:33 nygard Exp $");
-
-//----------------------------------------------------------------------
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.31 2004/02/11 01:35:22 nygard Exp $");
 
 NSString *CDSyntaxError = @"Syntax Error";
 
@@ -210,7 +208,7 @@ NSString *CDTokenDescription(int token)
             CDTypeName *typeName;
             NSArray *optionalMembers;
 
-            typeName = [self parseTypeName]; // 2004-01-17: This is new, used to just be parseIdentifier
+            typeName = [self parseTypeName];
             optionalMembers = [self parseOptionalMembers];
             [self match:')'];
 

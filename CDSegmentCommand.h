@@ -1,5 +1,5 @@
 //
-// $Id: CDSegmentCommand.h,v 1.3 2004/01/06 02:31:43 nygard Exp $
+// $Id: CDSegmentCommand.h,v 1.4 2004/02/11 01:35:22 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -18,7 +18,6 @@
 
     NSString *name;
     NSArray *sections;
-    //id contents;
 }
 
 - (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;

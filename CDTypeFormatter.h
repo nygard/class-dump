@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatter.h,v 1.13 2004/02/02 21:37:20 nygard Exp $
+// $Id: CDTypeFormatter.h,v 1.14 2004/02/11 01:35:22 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -21,11 +21,6 @@
     // Not ideal
     id nonretainedDelegate;
 }
-
-//+ (id)sharedTypeFormatter;
-//+ (id)sharedIvarTypeFormatter;
-//+ (id)sharedMethodTypeFormatter;
-//+ (id)sharedStructDeclarationTypeFormatter;
 
 - (BOOL)shouldExpand;
 - (void)setShouldExpand:(BOOL)newFlag;

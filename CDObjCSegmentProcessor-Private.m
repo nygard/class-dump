@@ -18,7 +18,7 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.9 2004/02/04 22:17:32 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.10 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor (Private)
 
@@ -55,7 +55,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
 {
     CDOCSymtab *aSymtab;
 
-    // Huh?  The case of the struct 'cD_objc_symtab' doesn't matter?
     const struct cd_objc_symtab *ptr;
     const unsigned long *defs;
     int index, defIndex;
@@ -64,19 +63,13 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
     // TODO: Should we convert to pointer here or in caller?
     ptr = [machOFile pointerFromVMAddr:symtab segmentName:@"__OBJC"];
     if (ptr == NULL) {
-        //NSLog(@"Skipping this symtab.");
         return nil;
     }
 
     aSymtab = [[[CDOCSymtab alloc] init] autorelease];
-    // TODO (2003-12-08): I think it would be better just to let the symtab have mutable arrays
     classes = [[NSMutableArray alloc] init];
     categories = [[NSMutableArray alloc] init];
 
-    //NSLog(@"%s, symtab: %p, ptr: %p", _cmd, symtab, ptr);
-    //NSLog(@"sel_ref_cnt: %p, refs: %p, cls_def_count: %d, cat_def_count: %d", ptr->sel_ref_cnt, ptr->refs, ptr->cls_def_count, ptr->cat_def_count);
-
-    //defs = &ptr->class_pointer;
     defs = (unsigned long *)(ptr + 1);
     defIndex = 0;
 
@@ -84,7 +77,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
         for (index = 0; index < ptr->cls_def_count; index++, defs++, defIndex++) {
             CDOCClass *aClass;
 
-            //NSLog(@"defs[%d]: %p", index, *defs);
             aClass = [self processClassDefinition:*defs];
             [classes addObject:aClass];
         }
@@ -93,20 +85,15 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
     [aSymtab setClasses:[NSArray arrayWithArray:classes]];
 
     if (ptr->cat_def_count > 0) {
-        //NSLog(@"%d categories:", ptr->cat_def_count);
-
         for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
             CDOCCategory *aCategory;
 
-            //NSLog(@"defs[%d]: %p", index, *defs);
             aCategory = [self processCategoryDefinition:*defs];
             [categories addObject:aCategory];
         }
     }
 
     [aSymtab setCategories:[NSArray arrayWithArray:categories]];
-
-    //NSLog(@"Classes:\n%@\n", [[classes arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n"]);
 
     [classes release];
     [categories release];
@@ -146,7 +133,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
             [anIvar release];
         }
 
-        //[aClass setIvars:[ivars reversedArray]];
         [aClass setIvars:[NSArray arrayWithArray:ivars]];
         [ivars release];
     }
@@ -301,7 +287,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
     return aCategory;
 }
 
-// Protocol reference other protocols, so we can't try to create them
+// Protocols can reference other protocols, so we can't try to create them
 // in order.  So we create them lazily and just make sure we reference
 // all available protocols.
 

@@ -1,5 +1,5 @@
 //
-// $Id: NSString-Extensions.h,v 1.8 2004/01/29 22:37:33 nygard Exp $
+// $Id: NSString-Extensions.h,v 1.9 2004/02/11 01:35:22 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -11,7 +11,6 @@
 @interface NSString (CDExtensions)
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)str;
-//+ (NSString *)spacesOfLength:(int)length;
 + (NSString *)spacesIndentedToLevel:(int)level;
 + (NSString *)spacesIndentedToLevel:(int)level spacesPerLevel:(int)spacesPerLevel;
 + (NSString *)stringWithUnichar:(unichar)character;

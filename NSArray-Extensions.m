@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CDTopoSortNode.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.7 2004/02/11 00:07:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.8 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation NSArray (CDExtensions)
 
@@ -67,8 +67,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.7 2
         [aNode release];
     }
 
-    //NSLog(@"topo sort nodes: %@", [nodesByName allValues]);
-
     sortedArray = [NSMutableArray array];
 
     allNodes = [[nodesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByIdentifier:)];
@@ -82,8 +80,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.7 2
     }
 
     [nodesByName release];
-
-    //NSLog(@"sortedArray: %@", sortedArray);
 
     return sortedArray;
 }
