@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CDType.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMethodType.m,v 1.4 2004/01/06 02:31:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMethodType.m,v 1.5 2004/01/08 00:43:08 nygard Exp $");
 
 @implementation CDMethodType
 
@@ -44,6 +44,11 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMethodType.m,v 1.4 2004/01
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] type: %@, offset: %@", NSStringFromClass([self class]), type, offset];
+}
+
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+{
+    [type registerStructsWithObject:anObject usedInMethod:YES countReferences:YES];
 }
 
 @end

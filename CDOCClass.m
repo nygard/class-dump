@@ -12,7 +12,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.19 2004/01/07 21:26:47 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.20 2004/01/08 00:43:08 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -119,7 +119,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.19 2004/01/0
              NSLog(@"Registering struct for %@: %@", [self name], [structType typeString]);
          }
 #endif
-         [structType registerStructsWithObject:anObject countReferences:YES];
+         [structType registerStructsWithObject:anObject usedInMethod:NO countReferences:YES];
          [parser release];
      }
  }

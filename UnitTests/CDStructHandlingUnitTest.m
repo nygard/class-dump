@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.7 2004/01/07 21:26:47 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.8 2004/01/08 00:43:09 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -49,7 +49,7 @@
 
     parser = [[CDTypeParser alloc] initWithType:aTypeString];
     type = [parser parseType];
-    [type registerStructsWithObject:classDump];
+    [type registerStructsWithObject:classDump usedInMethod:NO countReferences:YES];
     [parser release];
 }
 
@@ -125,7 +125,7 @@
         }
     }
 
-    [self assert:resultString equals:expectedOutputContents];
+    [self assert:resultString equals:expectedOutputContents message:testFilename];
 }
 
 - (void)testOne;
@@ -202,6 +202,16 @@
 - (void)testNine;
 {
     [self testFilename:@"shud06"];
+}
+
+- (void)testTen;
+{
+    [self testFilename:@"shud07"];
+}
+
+- (void)testEleven;
+{
+    [self testFilename:@"shud08"];
 }
 
 @end

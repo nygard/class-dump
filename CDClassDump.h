@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.24 2004/01/07 21:26:47 nygard Exp $
+// $Id: CDClassDump.h,v 1.25 2004/01/08 00:43:08 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,7 +9,7 @@
 #import <Foundation/NSObject.h>
 #import "CDStructRegistrationProtocol.h"
 
-@class NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
+@class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
 @class CDType, CDTypeFormatter;
 
@@ -25,6 +25,8 @@
     NSMutableDictionary *anonymousStructNamesByType;
     NSMutableDictionary *anonymousStructsByType;
     NSMutableDictionary *replacementTypes;
+
+    NSMutableSet *forcedTypedefs;
 
     int anonymousStructCounter;
 
@@ -63,8 +65,8 @@
 - (void)appendNamedStructsToString:(NSMutableString *)resultString;
 - (void)appendTypedefsToString:(NSMutableString *)resultString;
 
-- (void)registerStruct:(CDType *)structType name:(NSString *)aName countReferences:(BOOL)shouldCountReferences;
+- (void)registerStruct:(CDType *)structType name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
-- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(NSString *)structTypeString;
+- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
 
 @end

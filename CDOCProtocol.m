@@ -11,7 +11,7 @@
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.12 2004/01/06 02:31:42 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.13 2004/01/08 00:43:08 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -156,7 +156,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.12 2004/0
     for (index = 0; index < count; index++) {
         parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[classMethods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
-        [[methodTypes arrayByMappingSelector:@selector(type)] makeObjectsPerformSelector:_cmd withObject:anObject];
+        [methodTypes makeObjectsPerformSelector:_cmd withObject:anObject];
         [parser release];
     }
 
@@ -164,7 +164,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.12 2004/0
     for (index = 0; index < count; index++) {
         parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[instanceMethods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
-        [[methodTypes arrayByMappingSelector:@selector(type)] makeObjectsPerformSelector:_cmd withObject:anObject];
+        [methodTypes  makeObjectsPerformSelector:_cmd withObject:anObject];
         [parser release];
     }
 }

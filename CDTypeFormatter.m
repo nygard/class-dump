@@ -14,7 +14,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.18 2004/01/07 21:26:47 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.19 2004/01/08 00:43:09 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -215,6 +215,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.18 200
 
 - (CDType *)replacementForType:(CDType *)aType;
 {
+    //NSLog(@"[%p] %s, aType: %@", self, _cmd, [aType typeString]);
+    //NSLog(@"[nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)]: %d", [nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)]);
     if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)] == YES) {
         return [nonretainedDelegate typeFormatter:self replacementForType:aType];
     }
@@ -222,16 +224,11 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.18 200
     return nil;
 }
 
-- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
+- (NSString *)typedefNameForStruct:(CDType *)structType level:(int)level;
 {
-#if 0
-    if (self == [CDTypeFormatter sharedIvarTypeFormatter]) {
-        NSLog(@"%s (ivar): structTypeString: %@", _cmd, structTypeString);
-    }
-#endif
     NSLog(@"[%p] %s, delegate: %p", self, _cmd, nonretainedDelegate);
-    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:)] == YES) //TODO (2004-01-07): This is wrong, the semicolon!
-        return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structTypeString];
+    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:level:)] == YES)
+        return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structType level:level];
 
     return nil;
 }

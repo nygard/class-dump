@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.h,v 1.6 2004/01/07 18:14:19 nygard Exp $
+// $Id: CDStructHandlingUnitTest.h,v 1.7 2004/01/08 00:43:09 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -28,12 +28,15 @@
 - (void)testOne;
 - (void)testTwo;
 - (void)testThree;
-
+#if 0
 - (void)testFour;
 - (void)testFive;
 - (void)testSix;
 - (void)testSeven;
 - (void)testEight;
 - (void)testNine;
+- (void)testTen;
+- (void)testEleven;
+#endif
 
 @end

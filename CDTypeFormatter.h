@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatter.h,v 1.10 2004/01/07 21:26:47 nygard Exp $
+// $Id: CDTypeFormatter.h,v 1.11 2004/01/08 00:43:09 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -43,6 +43,6 @@
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 
 - (CDType *)replacementForType:(CDType *)aType;
-- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
+- (NSString *)typedefNameForStruct:(CDType *)structType level:(int)level;
 
 @end

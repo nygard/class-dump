@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.17 2004/01/07 21:26:47 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.18 2004/01/08 00:43:09 nygard Exp $");
 
 @implementation CDType
 
@@ -281,7 +281,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.17 2004/01/07 2
               NSString *typedefName;
 
               NSLog(@"[%p], typeFormatter: %@", self, typeFormatter);
-              typedefName = [typeFormatter typedefNameForStruct:[self typeString]];
+              typedefName = [typeFormatter typedefNameForStruct:self level:level];
               if (typedefName != nil) {
                   baseType = typedefName;
               }
@@ -504,35 +504,37 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.17 2004/01/07 2
     return str;
 }
 
+#if 0
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 {
     [self registerStructsWithObject:anObject countReferences:YES];
 }
+#endif
 
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 {
     if (subtype != nil)
-        [subtype registerStructsWithObject:anObject countReferences:shouldCountReferences];
+        [subtype registerStructsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
     if (type == '{' && [members count] > 0) {
         NSString *typeString;
 
         typeString = [self typeString];
-        [anObject registerStruct:self name:typeName countReferences:shouldCountReferences];
+        [anObject registerStruct:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
     }
 }
 
-- (void)registerMemberStructsWithObject:(id <CDStructRegistration>)anObject countReferences:(BOOL)shouldCountReferences;
+- (void)registerMemberStructsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 {
     int count, index;
 
     if (subtype != nil)
-        [subtype registerMemberStructsWithObject:anObject countReferences:shouldCountReferences];
+        [subtype registerMemberStructsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
     count = [members count];
 
     for (index = 0; index < count; index++)
-        [[members objectAtIndex:index] registerStructsWithObject:anObject countReferences:shouldCountReferences];
+        [[members objectAtIndex:index] registerStructsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 }
 
 - (BOOL)isEqual:(CDType *)otherType;
