@@ -46,11 +46,13 @@ Differences between 2.1.4 and 2.1.3
 
 Differences between 2.1.3 and 2.1.2
 
-    - The OS X mach-o files keep some information in the __TEXT
-      __cstring section. I've made a small set of tweeks to cause
-      class-dump to look in the correct segment and section.
-    - The build on OS X defines NS_TARGET_MAJOR as 5, this needs
-      to be set in order to get the new code.
+    - James McIlree made these changes to get class-dump running on
+      Mac OS X DP4:
+      - The OS X mach-o files keep some information in the __TEXT
+        __cstring section. I've made a small set of tweeks to cause
+        class-dump to look in the correct segment and section.
+      - The build on OS X defines NS_TARGET_MAJOR as 5, this needs
+        to be set in order to get the new code.
 
 Differences between 2.1.2 and 2.1.1
 
