@@ -1,10 +1,11 @@
 #!/bin/zsh
 
-mkdir /tmp/old
-mkdir /tmp/new
+mkdir /tmp/cdt
+mkdir /tmp/cdt/old
+mkdir /tmp/cdt/new
 
 foreach i (/System/Library/Frameworks/*.framework) do
     echo $i `basename $i .framework`
-    /usr/local/bin/class-dump -s -S $i >& /tmp/old/`basename $i .framework`.txt
-    /Local/Public/nygard/Products/class-dump $i >& /tmp/new/`basename $i .framework`.txt
+    /usr/local/bin/class-dump -s -S $i >& /tmp/cdt/old/`basename $i .framework`.txt
+    /Local/Public/nygard/Products/class-dump -s -S $i >& /tmp/cdt/new/`basename $i .framework`.txt
 done
