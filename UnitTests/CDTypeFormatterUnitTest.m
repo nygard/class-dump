@@ -4,7 +4,9 @@
 #import "CDTypeFormatterUnitTest.h"
 
 #import <Foundation/Foundation.h>
+#import "CDType.h"
 #import "CDTypeFormatter.h"
+#import "CDTypeParser.h"
 
 @implementation CDTypeFormatterUnitTest
 
@@ -158,7 +160,7 @@
 - (void)testStructType;
 {
     //[self testVariableName:@"var" type:@"{}" expectedResult:@""];
-    [self testVariableName:@"var" type:@"{?}" expectedResult:@"struct ? var"];
+    [self testVariableName:@"var" type:@"{?}" expectedResult:@"struct {\n} var"];
     [self testVariableName:@"var" type:@"{NSStreamFunctions}" expectedResult:@"struct NSStreamFunctions var"];
     [self testVariableName:@"var" type:@"{__ssFlags=\"delegateLearnsWords\"b1\"delegateForgetsWords\"b1\"busy\"b1\"_reserved\"b29}" expectedResult:@"struct __ssFlags var"];
     //[self testVariableName:@"" type:@"" expectedResult:@""];
@@ -207,5 +209,111 @@
     [self testVariableName:@"var" type:@"*" expectedResult:@"STR var"];
 }
 #endif
+
+- (void)parseAndEncodeType:(NSString *)originalType;
+{
+    CDTypeParser *typeParser;
+    CDType *parsedType;
+    NSString *reencodedType;
+
+    typeParser = [[[CDTypeParser alloc] initWithType:originalType] autorelease];
+    [self assertNotNil:typeParser message:@"Failed to create parser"];
+
+    parsedType = [typeParser parseType];
+    [self assertNotNil:parsedType message:@"Failed to parse"];
+
+    reencodedType = [parsedType typeString];
+    [self assert:reencodedType equals:originalType];
+}
+
+- (void)testEncoding;
+{
+    [self parseAndEncodeType:@"c"];
+    [self parseAndEncodeType:@"i"];
+    [self parseAndEncodeType:@"s"];
+    [self parseAndEncodeType:@"l"];
+    [self parseAndEncodeType:@"q"];
+    [self parseAndEncodeType:@"C"];
+    [self parseAndEncodeType:@"I"];
+    [self parseAndEncodeType:@"S"];
+    [self parseAndEncodeType:@"L"];
+    [self parseAndEncodeType:@"Q"];
+    [self parseAndEncodeType:@"f"];
+    [self parseAndEncodeType:@"d"];
+    [self parseAndEncodeType:@"B"];
+    [self parseAndEncodeType:@"v"];
+    //[self parseAndEncodeType:@"*"];
+    [self parseAndEncodeType:@"#"];
+    [self parseAndEncodeType:@":"];
+    [self parseAndEncodeType:@"%"];
+    [self parseAndEncodeType:@"?"];
+
+    [self parseAndEncodeType:@"ri"];
+    [self parseAndEncodeType:@"ni"];
+    [self parseAndEncodeType:@"Ni"];
+    [self parseAndEncodeType:@"oi"];
+    [self parseAndEncodeType:@"Oi"];
+    [self parseAndEncodeType:@"Ri"];
+    [self parseAndEncodeType:@"Vi"];
+
+    [self parseAndEncodeType:@"^i"];
+    [self parseAndEncodeType:@"r^i"];
+
+    [self parseAndEncodeType:@"^c"];
+    [self parseAndEncodeType:@"^i"];
+    [self parseAndEncodeType:@"^s"];
+    [self parseAndEncodeType:@"^l"];
+    [self parseAndEncodeType:@"^q"];
+    [self parseAndEncodeType:@"^C"];
+    [self parseAndEncodeType:@"^I"];
+    [self parseAndEncodeType:@"^S"];
+    [self parseAndEncodeType:@"^L"];
+    [self parseAndEncodeType:@"^Q"];
+    [self parseAndEncodeType:@"^f"];
+    [self parseAndEncodeType:@"^d"];
+    [self parseAndEncodeType:@"^B"];
+    [self parseAndEncodeType:@"^v"];
+    //[self parseAndEncodeType:@"^*"];
+    [self parseAndEncodeType:@"^#"];
+    [self parseAndEncodeType:@"^:"];
+    [self parseAndEncodeType:@"^%"];
+    [self parseAndEncodeType:@"^?"];
+
+    [self parseAndEncodeType:@"^^i"];
+    [self parseAndEncodeType:@"b0"];
+    [self parseAndEncodeType:@"b1"];
+    //[self parseAndEncodeType:@"b"];
+
+    [self parseAndEncodeType:@"[0c]"];
+    [self parseAndEncodeType:@"[16c]"];
+    [self parseAndEncodeType:@"[16^i]"];
+    [self parseAndEncodeType:@"^[16i]"];
+    [self parseAndEncodeType:@"[16^^i]"];
+    [self parseAndEncodeType:@"^^[16i]"];
+    [self parseAndEncodeType:@"^[16^i]"];
+    [self parseAndEncodeType:@"[8[12f]]"];
+
+    [self parseAndEncodeType:@"{?}"];
+    [self parseAndEncodeType:@"{NSStreamFunctions}"];
+    [self parseAndEncodeType:@"{__ssFlags=\"delegateLearnsWords\"b1\"delegateForgetsWords\"b1\"busy\"b1\"_reserved\"b29}"];
+    [self parseAndEncodeType:@"(?=\"ascii\"^s\"unicode\"^S)"];
+
+    [self parseAndEncodeType:@"i"];
+    [self parseAndEncodeType:@"^i"];
+    [self parseAndEncodeType:@"^^i"];
+    [self parseAndEncodeType:@"[8i]"];
+    [self parseAndEncodeType:@"[8^i]"];
+    [self parseAndEncodeType:@"^[8i]"];
+    [self parseAndEncodeType:@"[8[12i]]"];
+    [self parseAndEncodeType:@"^^[8i]"];
+    [self parseAndEncodeType:@"^^[8[12i]]"];
+    [self parseAndEncodeType:@"[3^^[8i]]"];
+    [self parseAndEncodeType:@"@"];
+    [self parseAndEncodeType:@"@\"NSString\""];
+    [self parseAndEncodeType:@"b7"];
+    [self parseAndEncodeType:@"r^i"];
+
+    //[self parseAndEncodeType:@""];
+}
 
 @end

@@ -22,4 +22,7 @@
 - (void)testErrors;
 //- (void)testBar;
 
+- (void)parseAndEncodeType:(NSString *)originalType;
+- (void)testEncoding;
+
 @end
