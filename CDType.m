@@ -462,11 +462,11 @@
     for (index = 0; index < count; index++)
         [[members objectAtIndex:index] registerStructsWithObject:anObject];
 
-    if (type == '{') {
+    if (type == '{' && count > 0) {
         NSString *typeString;
 
         typeString = [self typeString];
-        [anObject registerStructType:typeString];
+        [anObject registerStructName:typeName type:typeString];
     }
 }
 

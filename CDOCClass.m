@@ -95,15 +95,20 @@
 
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 {
-    int count, index;
-    CDTypeParser *parser;
+    [super registerStructsWithObject:anObject];
+#if 0
+ {
+     int count, index;
+     CDTypeParser *parser;
 
-    count = [ivars count];
-    for (index = 0; index < count; index++) {
-        parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
-        [[parser parseType] registerStructsWithObject:anObject];
-        [parser release];
-    }
+     count = [ivars count];
+     for (index = 0; index < count; index++) {
+         parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
+         [[parser parseType] registerStructsWithObject:anObject];
+         [parser release];
+     }
+ }
+#endif
 }
 
 @end

@@ -8,6 +8,7 @@
 #import "CDDylibCommand.h"
 #import "CDMachOFile.h"
 #import "CDObjCSegmentProcessor.h"
+#import "CDTypeFormatter.h"
 
 @implementation CDClassDump2
 
@@ -20,6 +21,8 @@
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objCSegmentProcessors = [[NSMutableArray alloc] init];
     structCounts = [[NSMutableDictionary alloc] init];
+    structsByName = [[NSMutableDictionary alloc] init];
+    anonymousStructs = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -30,6 +33,8 @@
     [machOFilesByID release];
     [objCSegmentProcessors release];
     [structCounts release];
+    [structsByName release];
+    [anonymousStructs release];
 
     [super dealloc];
 }
@@ -100,14 +105,35 @@
             // If a structure doesn't have any named members, it should be typedef'd
             // Any structure in a return value or argument should be typedef'd
         }
+#if 1
+        {
+            NSArray *keys;
+            NSString *key;
+            int count, index;
 
+            NSLog(@"----------------------------------------------------------------------");
+            keys = [[structsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            count = [keys count];
+            for (index = 0; index < count; index++) {
+                key = [keys objectAtIndex:index];
+                NSLog(@"%2d: %@ => %@", index, key, [structsByName objectForKey:key]);
+            }
+            NSLog(@"----------------------------------------------------------------------");
+            keys = [[anonymousStructs allKeys] sortedArrayUsingSelector:@selector(compare:)];
+            count = [keys count];
+            for (index = 0; index < count; index++) {
+                key = [keys objectAtIndex:index];
+                NSLog(@"%2d: %@ => %@", index, [anonymousStructs objectForKey:key], key);
+            }
+        }
+#endif
         resultString = [[NSMutableString alloc] init];
         [self appendHeaderToString:resultString];
 
+        [self appendNamedStructsToString:resultString];
+        [self appendTypedefsToString:resultString];
+
         for (index = 0; index < count; index++) {
-            //[resultString appendString:@"----------------------------------------------------------------------\n"];
-            //[resultString appendFormat:@"file: %@\n", [objCSegmentProcessors objectAtIndex:index]];
-            //[resultString appendString:@"----------------------------------------------------------------------\n"];
             [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString];
         }
 
@@ -167,11 +193,77 @@
     [resultString appendString:@" */\n\n"];
 }
 
-- (void)registerStructType:(NSString *)typeString;
+// TODO (2003-12-23): Add option to show/hide this section
+// TODO (2003-12-23): auto-name unnamed members
+// TODO (2003-12-23): sort by name or by dependency
+// TODO (2003-12-23): declare in modules where they were fist used
+
+- (void)appendNamedStructsToString:(NSMutableString *)resultString;
+{
+    NSArray *keys;
+    NSString *key;
+    int count, index;
+    NSString *typeString, *formattedString;
+
+    keys = [[structsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    count = [keys count];
+    for (index = 0; index < count; index++) {
+        key = [keys objectAtIndex:index];
+        typeString = [structsByName objectForKey:key];
+        formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:nil type:typeString atLevel:0 expand:YES];
+        if (formattedString != nil) {
+            [resultString appendString:formattedString];
+            [resultString appendString:@";\n\n"];
+        }
+    }
+}
+
+- (void)appendTypedefsToString:(NSMutableString *)resultString;
+{
+    NSArray *keys;
+    //NSString *key;
+    int count, index;
+    NSString *typeString, *formattedString, *name;
+
+    keys = [[anonymousStructs allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    count = [keys count];
+    for (index = 0; index < count; index++) {
+        typeString = [keys objectAtIndex:index];
+        name = [anonymousStructs objectForKey:typeString];
+        formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:nil type:typeString atLevel:0 expand:YES];
+        if (formattedString != nil) {
+            [resultString appendString:@"typedef "];
+            [resultString appendString:formattedString];
+            [resultString appendFormat:@" %@;\n\n", name];
+        }
+    }
+}
+
+- (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
 {
     NSNumber *oldCount;
 
-    NSLog(@"%s, typeString: %@", _cmd, typeString);
+    NSLog(@"%s, name: %@, typeString: %@", _cmd, aName, typeString);
+
+    // Handle named structs
+    if (aName != nil && [aName isEqual:@"?"] == NO) {
+        NSString *existingTypeString;
+
+        existingTypeString = [structsByName objectForKey:aName];
+        if (existingTypeString == nil)
+            [structsByName setObject:typeString forKey:aName];
+        else {
+            assert([typeString isEqual:existingTypeString] == YES);
+        }
+    }
+
+    // Handle anonymous structs
+    // TODO (2003-12-23): Count anonymous structs first, then assign names to ones used more than one time.
+    if (aName == nil || [aName isEqual:@"?"] == YES) {
+        if ([anonymousStructs objectForKey:typeString] == nil) {
+            [anonymousStructs setObject:[NSString stringWithFormat:@"CDAnonymousStruct%d", ++anonymousStructCounter] forKey:typeString];
+        }
+    }
 
     oldCount = [structCounts objectForKey:typeString];
     if (oldCount == nil)

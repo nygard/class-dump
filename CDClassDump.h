@@ -13,6 +13,9 @@
     BOOL shouldProcessRecursively;
 
     NSMutableDictionary *structCounts;
+    NSMutableDictionary *structsByName;
+    NSMutableDictionary *anonymousStructs;
+    int anonymousStructCounter;
 }
 
 - (id)init;
@@ -29,7 +32,9 @@
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
+- (void)appendNamedStructsToString:(NSMutableString *)resultString;
+- (void)appendTypedefsToString:(NSMutableString *)resultString;
 
-- (void)registerStructType:(NSString *)typeString;
+- (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
 
 @end
