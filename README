@@ -35,6 +35,9 @@ Differences between 2.1.4 and 2.1.3
       frameworks where the install name of the frameworks is not where
       the framework exists in the filesystem.  The Omni frameworks,
       for example, change the install name.
+    - It will search for an app executable in the Contents/MacOS
+      directory of the app wrapper that Mac OS X uses if you just
+      use the path to the main app wrapper.
     - You can set the ClassDumpDebugFrameworkPaths environment variable
       to see the steps it's going through to find the frameworks.  It
       spits out a lot of stuff, but it may be useful for someone.  With
