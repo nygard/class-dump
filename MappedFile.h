@@ -1,11 +1,11 @@
 //
-// $Id: MappedFile.h,v 1.1 1999/07/31 03:32:26 nygard Exp $
+// $Id: MappedFile.h,v 1.2 1999/08/09 06:52:23 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997  Steve Nygard
+//  Copyright (C) 1997, 1999  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -28,7 +28,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if NS_TARGET_MAJOR >= 4
+#if defined(__APPLE__) && defined (__MACH__)
+#import <Foundation/Foundation.h>
+#elif NS_TARGET_MAJOR >= 4
 #import <Foundation/Foundation.h>
 #else
 #import <foundation/NSString.h>
@@ -39,16 +41,21 @@
 
 @interface MappedFile : NSObject
 {
+    NSString *installName;
     NSString *filename;
     NSData *data;
 }
 
++ (void) initialize;
+
 - initWithFilename:(NSString *)aFilename;
 - (void) dealloc;
 
+- (NSString *) installName;
 - (NSString *) filename;
 - (const void *) data;
 
 - (NSString *) pathToMainFileOfWrapper:(NSString *)path;
+- (NSString *) adjustedFrameworkPath:(NSString *)path;
 
 @end
