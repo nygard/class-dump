@@ -525,6 +525,20 @@
 			settings = {
 			};
 		};
+		01502BAC05D9B52700939BE6 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = main.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01502BAD05D9B52700939BE6 = {
+			fileRef = 01502BAC05D9B52700939BE6;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0160478D0592C6A000C03665 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1503,7 +1517,6 @@
 		01C5C199058D860F0052C696 = {
 			buildActionMask = 2147483647;
 			files = (
-				01C5C19A058D860F0052C696,
 				01C5C19C058D860F0052C696,
 				01C5C19D058D860F0052C696,
 				01C5C19E058D860F0052C696,
@@ -1532,17 +1545,10 @@
 				01497A6305AD0BAC0023398B,
 				01B607C505BA10E800A4AD78,
 				012934DD05CEE31B00E843DB,
+				01502BAD05D9B52700939BE6,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
-		};
-		01C5C19A058D860F0052C696 = {
-			fileRef = 03070CBEFF009A5FC0A80A02;
-			isa = PBXBuildFile;
-			settings = {
-				ATTRIBUTES = (
-				);
-			};
 		};
 		01C5C19C058D860F0052C696 = {
 			fileRef = 0114A45A0405EB1600A8010A;
@@ -2128,18 +2134,10 @@
 		};
 		03070CBBFF009A5FC0A80A02 = {
 			children = (
-				03070CBEFF009A5FC0A80A02,
+				01502BAC05D9B52700939BE6,
 			);
 			isa = PBXGroup;
 			name = "Other Sources";
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CBEFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = "class-dump.m";
 			refType = 4;
 			sourceTree = "<group>";
 		};

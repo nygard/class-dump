@@ -30,7 +30,7 @@
 
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.74 2004/02/11 00:55:34 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/main.m,v 1.1 2004/02/11 00:57:43 nygard Exp $");
 
 void print_usage(void)
 {
