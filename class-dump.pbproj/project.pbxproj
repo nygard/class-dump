@@ -2,7 +2,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 26;
+	objectVersion = 30;
 	objects = {
 		03070CA4FF009A5FC0A80A02 = {
 			isa = PBXProject;
@@ -28,16 +28,11 @@
 		};
 		03070CA6FF009A5FC0A80A02 = {
 			children = (
-				03070CA7FF009A5FC0A80A02,
+				09D3A82DFF9952EEC697A12D,
 			);
 			isa = PBXGroup;
 			name = Products;
 			refType = 4;
-		};
-		03070CA7FF009A5FC0A80A02 = {
-			isa = PBXFileReference;
-			path = "class-dump";
-			refType = 3;
 		};
 		03070CA8FF009A5FC0A80A02 = {
 			children = (
@@ -233,6 +228,9 @@
 				03070CE4FF009A5FC0A80A02,
 			);
 			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				HEADER_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "";
 				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "-DNS_TARGET_MAJOR=5";
 				OTHER_LDFLAGS = "";
@@ -249,7 +247,7 @@
 			name = "class-dump (Tool)";
 			productInstallPath = /usr/local/bin;
 			productName = "class-dump";
-			productReference = 03070CA7FF009A5FC0A80A02;
+			productReference = 09D3A82DFF9952EEC697A12D;
 			shouldUseHeadermap = 0;
 		};
 		03070CCAFF009A5FC0A80A02 = {
@@ -591,6 +589,11 @@
 			);
 			isa = PBXRezBuildPhase;
 			name = "ResourceManager Resources";
+		};
+		09D3A82DFF9952EEC697A12D = {
+			isa = PBXExecutableFileReference;
+			path = "class-dump";
+			refType = 3;
 		};
 	};
 	rootObject = 03070CA4FF009A5FC0A80A02;
