@@ -20,9 +20,19 @@ packages:
     class-dump.2.1.2.m.NIS.bs.tar.gz  (Openstep)
     class-dump.2.1.2.NIHS.bs.tar.gz   (Nextstep)
 
-These are all available from by website at:
+I intend to remove support for these older operating systems in a future
+release.
+
+These are all available from my website at:
 
     http://www.omnigroup.com/~nygard/Projects/index.html
+
+Differences between 2.1.6 and 2.1.5
+    - Anjo Krank added an option, -I, to sort the classes by
+      dependancy.
+    - Kurt Revis made some changes to support filenames that contain
+      some non-ASCII characters.
+    - 
 
 Differences between 2.1.5 and 2.1.4
 
