@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.6 2000/10/15 01:22:16 nygard Exp $
+// $Id: MappedFile.m,v 1.7 2000/10/15 02:47:20 nygard Exp $
 //
 
 //
@@ -209,21 +209,32 @@ static NSMutableArray *secondSearchPath = nil;
 
 - (NSString *) pathToMainFileOfWrapper:(NSString *)path
 {
-    NSRange range;
-    NSMutableString *tmp;
-    NSString *extension;
-    NSString *base;
+    NSString *base, *extension, *mainFile;
 
-    base = [[path pathComponents] lastObject];
-    NSAssert (base != nil, @"No base.");
-    
-    extension = [NSString stringWithFormat:@".%@", [base pathExtension]];
+    base = [path lastPathComponent];
+    extension = [base pathExtension];
+    base = [base stringByDeletingPathExtension];
+    mainFile = [NSString stringWithFormat:@"%@/%@", path, base];
+    if ([@"app" isEqual:extension] == YES)
+    {
+        NSFileManager *fileManager;
+        NSString *alternateMainFile;
 
-    tmp = [NSMutableString stringWithFormat:@"%@/%@", path, base];
-    range = [tmp rangeOfString:extension options:NSBackwardsSearch];
-    [tmp deleteCharactersInRange:range];
+        fileManager = [NSFileManager defaultManager];
+        // Currently OmniWeb uses a small file to change the library paths and then runs the real
+        // OmniWeb, which is in Contents/MacOS/.OmniWeb, so we'll check for this case first:
+        alternateMainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/.%@", path, base];
+        if ([fileManager fileExistsAtPath:alternateMainFile] == YES)
+            mainFile = alternateMainFile;
+        else {
+            // Mac OS X has a different app layout now
+            alternateMainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/%@", path, base];
+            if ([fileManager fileExistsAtPath:alternateMainFile] == YES)
+                mainFile = alternateMainFile;
+        }
+    }
 
-    return tmp;
+    return mainFile;
 }
 
 - (NSString *) adjustedFrameworkPath:(NSString *)path
