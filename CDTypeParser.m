@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.27 2004/01/20 05:31:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.28 2004/01/27 22:43:07 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -182,7 +182,7 @@ NSString *CDTokenDescription(int token)
         [self match:'@'];
 
         if (lookahead == '"' && (shouldUseHeuristics == NO
-                                        || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[lexer peekChar]] == YES)) {
+                                 || [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[lexer peekChar]] == YES)) {
             NSString *name;
             CDTypeName *typeName;
 
@@ -240,11 +240,11 @@ NSString *CDTokenDescription(int token)
         [self match:simpleType];
         result = [[CDType alloc] initSimpleType:simpleType];
     } else {
-        result = NULL;
+        result = nil;
         [NSException raise:CDSyntaxError format:@"expected (many things), got %d", lookahead];
     }
 
-    return result;
+    return [result autorelease];
 }
 
 // This seems to be used in method types -- no names
