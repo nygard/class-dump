@@ -1,0 +1,7 @@
+// Named struct/union types
+struct _NSRange {
+    unsigned int;
+    unsigned int;
+};
+
+    struct _NSRange foo;

@@ -48,6 +48,74 @@
     [parser release];
 }
 
+// TODO (2004-01-05): Move this somewhere that we can share it with the main app.
+- (void)testFilename:(NSString *)testFilename;
+{
+    NSString *inputFilename, *outputFilename;
+    NSMutableString *resultString;
+    NSString *inputContents, *expectedOutputContents;
+    NSArray *inputLines, *inputFields;
+    int count, index;
+
+    resultString = [NSMutableString string];
+
+    inputFilename = [testFilename stringByAppendingString:@"-in.txt"];
+    outputFilename = [testFilename stringByAppendingString:@"-out.txt"];
+
+    inputContents = [NSString stringWithContentsOfFile:inputFilename];
+    expectedOutputContents = [NSString stringWithContentsOfFile:outputFilename];
+
+    inputLines = [inputContents componentsSeparatedByString:@"\n"];
+    count = [inputLines count];
+
+    // First register structs/unions
+    for (index = 0; index < count; index++) {
+        NSString *line;
+        line = [inputLines objectAtIndex:index];
+        inputFields = [line componentsSeparatedByString:@"\t"];
+        if ([line length] > 0)
+            [self registerStructsFromType:[inputFields objectAtIndex:0]];
+    }
+
+    // Then generate output
+    [classDump appendNamedStructsToString:resultString];
+    [classDump appendTypedefsToString:resultString];
+
+    for (index = 0; index < count; index++) {
+        NSString *line;
+        NSString *type, *variableName;
+
+        line = [inputLines objectAtIndex:index];
+        inputFields = [line componentsSeparatedByString:@"\t"];
+        if ([line length] > 0) {
+            int fieldCount, level;
+            NSString *formattedString;
+
+            fieldCount = [inputFields count];
+            type = [inputFields objectAtIndex:0];
+            if (fieldCount > 1)
+                variableName = [inputFields objectAtIndex:1];
+            else
+                variableName = @"var";
+
+            if (fieldCount > 2)
+                level = [[inputFields objectAtIndex:2] intValue];
+            else
+                level = 0;
+
+            formattedString = [[classDump ivarTypeFormatter] formatVariable:variableName type:type];
+            if (formattedString != nil) {
+                [resultString appendString:formattedString];
+                [resultString appendString:@";\n"];
+            } else {
+                [resultString appendString:@"Parse failed.\n"];
+            }
+        }
+    }
+
+    [self assert:resultString equals:expectedOutputContents];
+}
+
 - (void)testOne;
 {
     NSString *first = @"{_NSRange=II}";
@@ -92,6 +160,16 @@
     // Register {_NSRange=II}
     // Test {_NSRange="location"I"length"I}
     // Test {_NSRange=II}
+}
+
+- (void)testFour;
+{
+    [self testFilename:@"shud01"];
+}
+
+- (void)testFive;
+{
+    [self testFilename:@"shud02"];
 }
 
 @end
