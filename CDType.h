@@ -1,8 +1,8 @@
 //
-// $Id: CDType.h,v 1.8 2004/01/06 01:51:57 nygard Exp $
+// $Id: CDType.h,v 1.9 2004/01/06 02:31:44 nygard Exp $
 //
 
-//  This file is part of class-dump, a utility for exmaing the
+//  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 

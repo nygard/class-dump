@@ -1,4 +1,4 @@
-//  This file is part of class-dump, a utility for exmaing the
+//  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CDSection.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSegmentCommand.m,v 1.3 2004/01/06 02:18:19 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSegmentCommand.m,v 1.4 2004/01/06 02:31:43 nygard Exp $");
 
 @implementation CDSegmentCommand
 

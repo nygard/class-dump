@@ -1,4 +1,4 @@
-//  This file is part of class-dump, a utility for exmaing the
+//  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
 
@@ -13,7 +13,7 @@
 #import "CDType.h"
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.32 2004/01/06 02:26:33 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.33 2004/01/06 02:31:40 nygard Exp $");
 
 @implementation CDClassDump2
 
