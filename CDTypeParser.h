@@ -18,8 +18,8 @@ extern NSString *CDSyntaxError;
 - (BOOL)shouldShowLexing;
 - (void)setShouldShowLexing:(BOOL)newFlag;
 
-- (NSString *)parseType:(NSString *)type name:(NSString *)name;
-- (NSString *)parseMethodName:(NSString *)name type:(NSString *)type;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
+- (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
 
 @end
 

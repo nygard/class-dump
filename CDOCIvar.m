@@ -57,7 +57,7 @@
     NSString *formattedString;
 
     typeParser = [[CDTypeParser alloc] init];
-    formattedString = [typeParser parseType:type name:name];
+    formattedString = [typeParser formatVariable:name type:type atLevel:1];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

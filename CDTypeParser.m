@@ -55,7 +55,7 @@ NSString *CDTokenDescription(int token)
     [lexer setShouldShowLexing:newFlag];
 }
 
-- (NSString *)parseType:(NSString *)type name:(NSString *)name;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
 {
     struct my_objc_type *result;
     NSMutableString *resultString;
@@ -87,8 +87,8 @@ NSString *CDTokenDescription(int token)
 
     resultString = [NSMutableString string];
     result->var_name = [name retain];
-    [resultString appendString:[NSString spacesIndentedToLevel:1]];
-    [resultString appendString:string_from_type(result, nil, NO, 1)];
+    [resultString appendString:[NSString spacesIndentedToLevel:level]];
+    [resultString appendString:string_from_type(result, nil, NO, level)];
 
     free_allocated_methods();
     free_allocated_types();
@@ -98,7 +98,7 @@ NSString *CDTokenDescription(int token)
     return resultString;
 }
 
-- (NSString *)parseMethodName:(NSString *)name type:(NSString *)type;
+- (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
 {
     struct method_type *result;
     NSMutableString *resultString;

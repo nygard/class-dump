@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.44 2003/12/15 04:24:38 nygard Exp $
+// $Id: class-dump.m,v 1.45 2003/12/16 06:48:36 nygard Exp $
 //
 
 //
@@ -1127,7 +1127,7 @@ void doTests(char *file)
             type = [fields objectAtIndex:0];
             name = [fields objectAtIndex:1];
             NSLog(@"%@\t%@", type, name);
-            result = [typeParser parseType:type name:name];
+            result = [typeParser formatVariable:name type:type atLevel:0];
             if (result != nil) {
                 //NSLog(@"Parsed okay");
                 NSLog(@"result: %@", result);
@@ -1177,7 +1177,7 @@ void doMethodTests(char *file)
             name = [fields objectAtIndex:0];
             type = [fields objectAtIndex:1];
             NSLog(@"%@\t%@", name, type);
-            result = [typeParser parseMethodName:name type:type];
+            result = [typeParser formatMethodName:name type:type];
             if (result != nil) {
                 //NSLog(@"Parsed okay");
                 NSLog(@"result: %@", result);
