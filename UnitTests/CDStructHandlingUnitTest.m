@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.6 2004/01/07 18:14:19 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.7 2004/01/07 21:26:47 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -83,6 +83,7 @@
     }
 
     [classDump processIsomorphicStructs];
+    [classDump generateNamesForAnonymousStructs];
     [classDump logStructCounts];
     [classDump logNamedStructs];
     [classDump logAnonymousStructs];

@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeFormatter.h,v 1.9 2004/01/06 02:31:44 nygard Exp $
+// $Id: CDTypeFormatter.h,v 1.10 2004/01/07 21:26:47 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -9,6 +9,7 @@
 #import <Foundation/NSObject.h>
 
 @class NSString;
+@class CDType;
 
 @interface CDTypeFormatter : NSObject
 {
@@ -41,6 +42,7 @@
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 
+- (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStruct:(NSString *)structTypeString;
 
 @end

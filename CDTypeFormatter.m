@@ -14,7 +14,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.17 2004/01/07 18:14:19 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.18 2004/01/07 21:26:47 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -213,6 +213,15 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.17 200
     return resultString;
 }
 
+- (CDType *)replacementForType:(CDType *)aType;
+{
+    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)] == YES) {
+        return [nonretainedDelegate typeFormatter:self replacementForType:aType];
+    }
+
+    return nil;
+}
+
 - (NSString *)typedefNameForStruct:(NSString *)structTypeString;
 {
 #if 0
@@ -221,7 +230,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.17 200
     }
 #endif
     NSLog(@"[%p] %s, delegate: %p", self, _cmd, nonretainedDelegate);
-    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:)]);
+    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:)] == YES) //TODO (2004-01-07): This is wrong, the semicolon!
         return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structTypeString];
 
     return nil;

@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.23 2004/01/07 18:14:18 nygard Exp $
+// $Id: CDClassDump.h,v 1.24 2004/01/07 21:26:47 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -20,11 +20,11 @@
     BOOL shouldProcessRecursively;
 
     // Can you say "just hacking out code"?
-    NSMutableDictionary *structCountsByType;
+    NSMutableDictionary *anonymousStructCountsByType;
     NSMutableDictionary *structsByName;
-    NSMutableDictionary *anonymousStructNames;
+    NSMutableDictionary *anonymousStructNamesByType;
     NSMutableDictionary *anonymousStructsByType;
-    NSMutableDictionary *anonymousRemapping;
+    NSMutableDictionary *replacementTypes;
 
     int anonymousStructCounter;
 
@@ -46,6 +46,8 @@
 - (void)processFilename:(NSString *)aFilename;
 
 - (void)processIsomorphicStructs;
+- (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
+- (void)generateNamesForAnonymousStructs;
 - (void)logStructCounts;
 - (void)logAnonymousRemappings;
 - (void)logNamedStructs;
@@ -62,6 +64,7 @@
 - (void)appendTypedefsToString:(NSMutableString *)resultString;
 
 - (void)registerStruct:(CDType *)structType name:(NSString *)aName countReferences:(BOOL)shouldCountReferences;
+- (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(NSString *)structTypeString;
 
 @end

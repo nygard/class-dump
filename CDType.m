@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.16 2004/01/07 18:14:19 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.17 2004/01/07 21:26:47 nygard Exp $");
 
 @implementation CDType
 
@@ -347,14 +347,24 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.16 2004/01/07 1
 {
     NSMutableString *str;
     int count, index;
+    CDType *replacementType;
+    NSArray *targetMembers;
 
     assert(type == '{' || type == '(');
     str = [NSMutableString string];
 
-    count = [members count];
+    // The replacement type will have member names, while ours don't.
+    replacementType = [typeFormatter replacementForType:self];
+    if  (replacementType != nil)
+        targetMembers = [replacementType members];
+    else
+        targetMembers = members;
+
+    count = [targetMembers count];
     for (index = 0; index < count; index++) {
+
         [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
-        [str appendString:[[members objectAtIndex:index] formattedString:nil formatter:typeFormatter level:level]];
+        [str appendString:[[targetMembers objectAtIndex:index] formattedString:nil formatter:typeFormatter level:level]];
         [str appendString:@";\n"];
     }
 
