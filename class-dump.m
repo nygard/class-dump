@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.7 2000/10/15 01:22:18 nygard Exp $
+// $Id: class-dump.m,v 1.8 2000/10/15 01:49:59 nygard Exp $
 //
 
 //
@@ -84,7 +84,7 @@ struct dylib_command {
 
 //----------------------------------------------------------------------
 
-#define CLASS_DUMP_VERSION "2.1.4a"
+#define CLASS_DUMP_VERSION "2.1.4"
 
 int expand_structures_flag = 0;
 int char_star_flag = 0;
