@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.36 2003/12/09 08:44:01 nygard Exp $
+// $Id: class-dump.m,v 1.37 2003/12/09 09:05:48 nygard Exp $
 //
 
 //
@@ -1254,6 +1254,7 @@ int main(int argc, char *argv[])
         //[classDump doSomething];
         [classDump processProtocolSection];
         [classDump processModules];
+        [classDump checkUnreferencedProtocols];
         [classDump release];
 
         [machOFile release];

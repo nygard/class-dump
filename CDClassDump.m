@@ -231,7 +231,7 @@
     //protocolPtrs = (unsigned long **)(protocolList + 1);
     NSLog(@"%d protocols:", protocolList->count);
     for (index = 0; index < protocolList->count; index++, protocolPtrs++) {
-        [protocols addObject:[self processProtocol:*protocolPtrs]];
+        [protocols addObject:[self protocolAtVMAddr:*protocolPtrs]];
     }
 
     return protocols;
@@ -329,6 +329,10 @@
     NSLog(@"<  %s", _cmd);
 }
 
+// Protocol reference other protocols, so we can't try to create them
+// in order.  So we create them lazily and just make sure we reference
+// all available protocols.
+
 - (void)processProtocolSection;
 {
     CDSegmentCommand *objcSegment;
@@ -352,21 +356,58 @@
     for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol)) {
         NSLog(@"%d: addr = %p", index, addr);
         aProtocol = [self processProtocol:addr];
-        NSLog(@"%d: aProtocol: %@", index, aProtocol);
-        [protocolsByVMAddr setObject:aProtocol forKey:[NSNumber numberWithLong:addr]];
+        //NSLog(@"%d: aProtocol: %@", index, aProtocol);
+        //[protocolsByVMAddr setObject:aProtocol forKey:[NSNumber numberWithLong:addr]];
     }
+
+    [usedVMAddrs removeAllObjects];
 
     NSLog(@"<  %s", _cmd);
 }
 
 - (CDOCProtocol *)protocolAtVMAddr:(unsigned long)protocolAddr;
 {
+    CDOCProtocol *aProtocol;
     NSNumber *key;
 
     key = [NSNumber numberWithLong:protocolAddr];
     [usedVMAddrs setObject:@"Yes" forKey:key];
 
-    return [protocolsByVMAddr objectForKey:key];
+    aProtocol = [protocolsByVMAddr objectForKey:key];
+    if (aProtocol == nil) {
+        aProtocol = [self processProtocol:protocolAddr];
+        [protocolsByVMAddr setObject:aProtocol forKey:key];
+    }
+
+    return aProtocol;
+}
+
+- (void)checkUnreferencedProtocols;
+{
+    NSMutableSet *addrs;
+    NSSet *usedAddrs;
+    NSArray *unreffedAddrs;
+    int count, index;
+
+    NSLog(@" > %s", _cmd);
+
+    addrs = [NSMutableSet setWithArray:[protocolsByVMAddr allKeys]];
+    usedAddrs = [NSSet setWithArray:[usedVMAddrs allKeys]];
+    [addrs minusSet:usedAddrs];
+
+    //NSLog(@"addrs: %@", addrs);
+    unreffedAddrs = [addrs allObjects];
+    count = [unreffedAddrs count];
+    for (index = 0; index < count; index++) {
+        NSNumber *key;
+        CDOCProtocol *aProtocol;
+
+        key = [unreffedAddrs objectAtIndex:index];
+        aProtocol = [protocolsByVMAddr objectForKey:key];
+        NSLog(@"%d, key: 0x%08x, aProtocol: %@", index, [key longValue], aProtocol);
+    }
+
+    NSLog(@"<  %s", _cmd);
 }
 
 @end

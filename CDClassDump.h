@@ -124,5 +124,6 @@ struct cd_objc_protocol_method
 
 - (void)processProtocolSection;
 - (CDOCProtocol *)protocolAtVMAddr:(unsigned long)protocolAddr;
+- (void)checkUnreferencedProtocols;
 
 @end
