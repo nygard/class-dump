@@ -7,13 +7,14 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "CDClassDump.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.16 2004/02/02 22:19:00 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.17 2004/02/03 02:54:38 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -190,7 +191,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.16 20
 // TODO (2003-12-23): sort by name or by dependency
 // TODO (2003-12-23): declare in modules where they were first used
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSArray *keys;
     NSString *key;
@@ -204,6 +205,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.16 20
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         type = [structuresByName objectForKey:key];
+
+        if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[[type typeName] description]] == NO)
+            continue;
+
         formattedString = [aTypeFormatter formatVariable:nil type:[type typeString] symbolReferences:symbolReferences];
         if (formattedString != nil) {
             [resultString appendString:formattedString];
@@ -212,7 +217,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.16 20
     }
 }
 
-- (void)appendTypedefsToString:(NSMutableString *)resultString formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSArray *keys;
     int count, index;
@@ -224,9 +229,13 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.16 20
 
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
+        aName = [anonymousStructureNamesByType objectForKey:key];
+
+        if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:aName] == NO)
+            continue;
+
         typeString = [[anonymousStructuresByType objectForKey:key] typeString];
 
-        aName = [anonymousStructureNamesByType objectForKey:key];
         formattedString = [aTypeFormatter formatVariable:nil type:typeString symbolReferences:symbolReferences];
         if (formattedString != nil) {
             [resultString appendString:@"typedef "];

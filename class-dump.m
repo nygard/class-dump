@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.65 2004/02/03 00:35:48 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.66 2004/02/03 02:54:38 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -419,7 +419,7 @@ void print_usage(void)
 {
     fprintf(stderr,
             "class-dump %s\n"
-            "Usage: class-dump [options] executable-file\n"
+            "Usage: class-dump [options] MachO-file\n"
             "  where options are:\n"
             "        -a        show instance variable offsets\n"
             "        -A        show implementation addresses\n"
@@ -469,7 +469,7 @@ int main(int argc, char *argv[])
               NSString *errorMessage;
 
               if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
-                  NSLog(@"%@", errorMessage);
+                  NSLog(@"Error with regex: '%@'\n\n", errorMessage);
                   errorFlag = YES;
               }
               // Last one wins now.

@@ -7,13 +7,14 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "CDClassDump.h"
 #import "CDOCIvar.h"
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.28 2004/02/02 23:20:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.29 2004/02/03 02:54:38 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -56,6 +57,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.28 2004/02/0
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     int count, index;
+
+    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
+        return;
 
     [resultString appendFormat:@"@interface %@", name];
     if (superClassName != nil)

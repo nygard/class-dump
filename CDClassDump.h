@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.43 2004/02/03 00:35:48 nygard Exp $
+// $Id: CDClassDump.h,v 1.44 2004/02/03 02:54:37 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -86,6 +86,7 @@
 - (void)setShouldMatchRegex:(BOOL)newFlag;
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
+- (BOOL)regexMatchesString:(NSString *)aString;
 
 - (NSString *)outputPath;
 - (void)setOutputPath:(NSString *)aPath;

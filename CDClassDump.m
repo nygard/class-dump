@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.57 2004/02/03 00:35:48 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.58 2004/02/03 02:54:38 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -248,6 +248,7 @@ static NSMutableSet *wrapperExtensions = nil;
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 {
     int result;
+
     if (flags.shouldMatchRegex == YES)
         regfree(&compiledRegex);
 
@@ -258,7 +259,6 @@ static NSMutableSet *wrapperExtensions = nil;
         if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0) {
             if (errorMessagePointer != NULL) {
                 *errorMessagePointer = [NSString stringWithCString:regex_error_buffer];
-                NSLog(@"Error with regex: '%@'", *errorMessagePointer);
             }
         } else {
             if (errorMessagePointer != NULL)
@@ -269,6 +269,25 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 
     [self setShouldMatchRegex:YES];
+
+    return YES;
+}
+
+- (BOOL)regexMatchesString:(NSString *)aString;
+{
+    int result;
+
+    result = regexec(&compiledRegex, [aString UTF8String], 0, NULL, 0);
+    if (result != 0) {
+        if (result != REG_NOMATCH) {
+            char regex_error_buffer[256];
+
+            if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0)
+                NSLog(@"Error with regex matching string, %@", [NSString stringWithCString:regex_error_buffer]);
+        }
+
+        return NO;
+    }
 
     return YES;
 }
@@ -454,11 +473,11 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [structureTable appendNamedStructuresToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [structureTable appendTypedefsToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 
-    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [unionTable appendNamedStructuresToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [unionTable appendTypedefsToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 }
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;

@@ -7,12 +7,13 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDOCSymtab.h"
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.21 2004/02/02 23:20:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.22 2004/02/03 02:54:38 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -120,6 +121,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.21 2004/0
 
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
+    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
+        return;
+
     [resultString appendFormat:@"@protocol %@", name];
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
