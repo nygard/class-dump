@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.18 2004/01/08 00:43:09 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.19 2004/01/08 00:50:38 nygard Exp $");
 
 @implementation CDType
 
@@ -240,9 +240,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.18 2004/01/08 0
       case 'b':
           if (currentName == nil) {
               // This actually compiles!
-              result = [NSString stringWithFormat:@"int :%@", bitfieldSize];
+              result = [NSString stringWithFormat:@"unsigned int :%@", bitfieldSize];
           } else
-              result = [NSString stringWithFormat:@"int %@:%@", currentName, bitfieldSize];
+              result = [NSString stringWithFormat:@"unsigned int %@:%@", currentName, bitfieldSize];
           break;
 
       case '[':
