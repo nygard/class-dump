@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.5 2000/10/15 01:22:18 nygard Exp $
+// $Id: gram.y,v 1.6 2002/12/19 05:37:06 nygard Exp $
 //
 
 //
@@ -323,7 +323,8 @@ number:
 
 %%
 
-extern yy_scan_string();
+extern int yy_scan_string(const char *);
+extern int yyparse(void);
 
 int yyerror (char *s)
 {

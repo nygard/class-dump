@@ -1,5 +1,5 @@
 //
-// $Id: lexer.c,v 1.3 2000/10/15 01:22:18 nygard Exp $
+// $Id: lexer.c,v 1.4 2002/12/19 05:37:06 nygard Exp $
 //
 
 //
@@ -27,6 +27,7 @@
 
 #include <ctype.h>
 #include <stdio.h>
+#include <string.h>
 #include "gram.h"
 
 #define LEX_BUFFER_SIZE 1024
