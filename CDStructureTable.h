@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.2 2004/01/08 06:10:11 nygard Exp $
+// $Id: CDStructureTable.h,v 1.3 2004/01/10 02:29:26 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -24,11 +24,15 @@
     NSMutableDictionary *replacementTypes;
     NSMutableSet *forcedTypedefs;
 
+    int structureType;
     NSString *anonymousBaseName;
 }
 
 - (id)init;
 - (void)dealloc;
+
+- (int)structureType;
+- (void)setStructureType:(int)newStructureType;
 
 - (NSString *)anonymousBaseName;
 - (void)setAnonymousBaseName:(NSString *)newName;

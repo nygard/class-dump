@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.38 2004/01/08 06:10:10 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01/10 02:29:26 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -29,17 +29,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.38 2004/01
     objCSegmentProcessors = [[NSMutableArray alloc] init];
 
     structureTable = [[CDStructureTable alloc] init];
+    [structureTable setStructureType:'{'];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
 
     unionTable = [[CDStructureTable alloc] init];
+    [unionTable setStructureType:'('];
     [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
-
-    //anonymousStructCountsByType = [[NSMutableDictionary alloc] init];
-    //structsByName = [[NSMutableDictionary alloc] init];
-    //anonymousStructNamesByType = [[NSMutableDictionary alloc] init];
-    //anonymousStructsByType = [[NSMutableDictionary alloc] init];
-    //replacementTypes = [[NSMutableDictionary alloc] init];
-    //forcedTypedefs = [[NSMutableSet alloc] init];
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
     [ivarTypeFormatter setShouldExpand:NO];
@@ -69,13 +64,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.38 2004/01
 
     [structureTable release];
     [unionTable release];
-
-    //[anonymousStructCountsByType release];
-    //[structsByName release];
-    //[anonymousStructNamesByType release];
-    //[anonymousStructsByType release];
-    //[replacementTypes release];
-    //[forcedTypedefs release];
 
     [ivarTypeFormatter release];
     [methodTypeFormatter release];
@@ -231,19 +219,26 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.38 2004/01
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
 {
     CDType *replacementType, *searchType;
+    CDStructureTable *targetTable;
 
     if (level == 0 && aFormatter == structDeclarationTypeFormatter)
         return nil;
 
+    if ([structType type] == '{') {
+        targetTable = structureTable;
+    } else {
+        targetTable = unionTable;
+    }
+
     // We need to catch top level replacements, not just replacements for struct members.
     // TODO (2004-01-07): We could even move this check into CDStructureTable
-    replacementType = [structureTable replacementForType:structType];
+    replacementType = [targetTable replacementForType:structType];
     if (replacementType != nil)
         searchType = replacementType;
     else
         searchType = structType;
 
-    return [structureTable typedefNameForStructureType:searchType];
+    return [targetTable typedefNameForStructureType:searchType];
 }
 
 @end

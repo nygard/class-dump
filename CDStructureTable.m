@@ -10,7 +10,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.2 2004/01/08 06:10:11 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.3 2004/01/10 02:29:26 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -46,6 +46,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.2 200
     [anonymousBaseName release];
 
     [super dealloc];
+}
+
+- (int)structureType;
+{
+    return structureType;
+}
+
+- (void)setStructureType:(int)newStructureType;
+{
+    structureType = newStructureType;
 }
 
 - (NSString *)anonymousBaseName;
@@ -329,13 +339,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.2 200
 
         existingType = [structuresByName objectForKey:aName];
         if (existingType == nil) {
-#warning This is the next problem to fix.
-            [structType registerMemberStructsWithObject:self usedInMethod:NO countReferences:YES]; // TODO (2004-01-07): This needs to be change. Struct or union
+            [structType registerMemberStructures:structureType withObject:self usedInMethod:NO countReferences:YES];
             [structuresByName setObject:structType forKey:aName];
         } else if ([structType isEqual:existingType] == NO) {
             NSString *before;
 
-            [structType registerMemberStructsWithObject:self usedInMethod:NO countReferences:NO];
+            [structType registerMemberStructures:structureType withObject:self usedInMethod:NO countReferences:NO];
             before = [existingType typeString];
             [existingType mergeWithType:structType];
             if ([before isEqual:[existingType typeString]] == NO) {
@@ -354,7 +363,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.2 200
         previousType = [anonymousStructuresByType objectForKey:typeString];
         if (previousType == nil) {
             [anonymousStructuresByType setObject:structType forKey:typeString];
-            [structType registerMemberStructsWithObject:self usedInMethod:NO countReferences:YES];
+            [structType registerMemberStructures:structureType withObject:self usedInMethod:NO countReferences:YES];
         } else {
             //NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
         }
