@@ -57,7 +57,7 @@
 
     resultString = [NSMutableString string];
     [resultType setVariableName:name];
-    [resultString appendString:[NSString spacesIndentedToLevel:level]];
+    [resultString appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:4]];
     [resultString appendString:[resultType formattedString:nil expand:shouldExpandStructures level:level]];
 
     //free_allocated_methods();
@@ -102,7 +102,7 @@
 
             [resultString appendString:@"("];
             // TODO (2003-12-11): Don't expect anonymous structures anywhere in method types.
-            str = [[aMethodType type] formattedString:nil expand:NO level:0];
+            str = [[aMethodType type] formattedString:nil expand:shouldExpandStructures level:0];
             if (str != nil)
                 [resultString appendFormat:@"%@", str];
             [resultString appendString:@")"];
@@ -129,7 +129,7 @@
                     NSString *ch;
 
                     aMethodType = [methodTypes objectAtIndex:index];
-                    typeString = [[aMethodType type] formattedString:nil expand:NO level:0];
+                    typeString = [[aMethodType type] formattedString:nil expand:shouldExpandStructures level:0];
                     if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     [resultString appendFormat:@"fp%@", [aMethodType offset]];

@@ -241,7 +241,7 @@
 
           if (shouldExpand == YES && [members count] > 0) // TODO: What about a struct with no members, though?
               memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                       [self formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+                                       [self formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
           else
               memberString = @"";
 
@@ -261,7 +261,7 @@
 
           if (shouldExpand == YES && [members count] > 0)
               memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                       [self formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+                                       [self formattedStringForMembersAtLevel:level + 1], [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
           else
               memberString = @"";
 
@@ -317,7 +317,7 @@
 
     count = [members count];
     for (index = 0; index < count; index++) {
-        [str appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:2]];
+        [str appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:4]];
         [str appendString:[[members objectAtIndex:index] formattedString:nil expand:YES level:level]];
         [str appendString:@";\n"];
     }
