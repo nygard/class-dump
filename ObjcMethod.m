@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.m,v 1.9 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcMethod.m,v 1.10 2003/12/05 06:49:43 nygard Exp $
 //
 
 //
@@ -59,7 +59,7 @@
 {
     [methodName release];
     [methodType release];
-    
+
     [super dealloc];
 }
 

@@ -1,5 +1,5 @@
 //
-// $Id: CDSectionInfo.m,v 1.3 2003/09/05 20:30:24 nygard Exp $
+// $Id: CDSectionInfo.m,v 1.4 2003/12/05 06:49:42 nygard Exp $
 //
 
 //
@@ -28,8 +28,6 @@
 #import "CDSectionInfo.h"
 
 #import <Foundation/Foundation.h>
-
-//----------------------------------------------------------------------
 
 @implementation CDSectionInfo
 

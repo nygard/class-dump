@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.12 2003/09/06 21:17:56 nygard Exp $
+// $Id: ObjcCategory.m,v 1.13 2003/12/05 06:49:42 nygard Exp $
 //
 
 //
@@ -54,7 +54,7 @@
     [classMethods release];
     [instanceMethods release];
     [protocols release];
-    
+
     [super dealloc];
 }
 
@@ -102,7 +102,7 @@
         enumerator = [[instanceMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
     else
         enumerator = [instanceMethods reverseObjectEnumerator];
-    
+
     while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)

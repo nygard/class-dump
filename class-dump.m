@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.32 2003/09/09 22:51:04 nygard Exp $
+// $Id: class-dump.m,v 1.33 2003/12/05 06:49:43 nygard Exp $
 //
 
 //
@@ -316,7 +316,7 @@ void print_header(void);
             printf("arch: %08lx\n", NXSwapLong(fa->cputype));
 #endif
             result = [self processMachO:(ptr + NXSwapLong(fa->offset)) filename:[aMappedFile installName]];
-            if (result == 0) 
+            if (result == 0)
                 break;
             fa++;
         }
@@ -489,7 +489,7 @@ void print_header(void);
     ObjcThing *objcThing;
     long *class_pointer;
     int l;
-  
+
     if (symtab == NULL) {
         printf("// NULL symtab...\n");
         return nil;
@@ -522,7 +522,7 @@ void print_header(void);
 {
     ObjcClass *objcClass;
     NSArray *tmp;
-    
+
     if (ocl == NULL)
         return nil;
 
@@ -559,10 +559,10 @@ void print_header(void);
 {
     ObjcCategory *objcCategory;
     NSArray *tmp;
-    
+
     if (ocat == NULL)
         return nil;
-  
+
     objcCategory = [[[ObjcCategory alloc] initWithClassName:[self nsstringAt:ocat->class_name section:CDSECT_CLASS_NAMES]
                                           categoryName:[self nsstringAt:ocat->category_name section:CDSECT_CLASS_NAMES]] autorelease];
 
@@ -591,7 +591,7 @@ void print_header(void);
 
     if (plist == NULL)
         return nil;
-  
+
     ptr = &plist->list;
 
     for (p = 0; p < plist->count; p++)
@@ -638,7 +638,7 @@ void print_header(void);
         return nil;
 
     return [self handleObjectiveCMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_CLS_METH] methodType:'+'];
-}  
+}
 
 //----------------------------------------------------------------------
 
@@ -785,13 +785,13 @@ void print_header(void);
                 fdopen(old_stdout, "w");
             }
         }
-    
+
         en = [[categoryByName allKeys] objectEnumerator];
         while (key = [en nextObject]) {
             int old_stdout = dup(1);
 
             freopen([[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout);
-        
+
             print_header();
             printf("\n");
             thing = [categoryByName objectForKey:key];
@@ -799,7 +799,7 @@ void print_header(void);
             while (thing2 = [en2 nextObject]) {
                 [thing2 showDefinition:formatFlags];
             }
-        
+
             fclose(stdout);
             fdopen(old_stdout, "w");
         }
@@ -856,7 +856,7 @@ void print_header(void);
 //----------------------------------------------------------------------
 
 - (void)buildUpObjectiveCSegments:(NSString *)filename;
-{    
+{
     MappedFile *mappedFile;
     int count, index;
 
@@ -1162,7 +1162,7 @@ int main(int argc, char *argv[])
     BOOL shouldSortClasses = NO;
     BOOL shouldGenerateHeaders = NO;
     char *regexCString = NULL;
-  
+
     if (argc == 1) {
         print_usage();
         exit(2);

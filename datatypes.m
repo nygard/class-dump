@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.14 2003/09/09 22:51:04 nygard Exp $
+// $Id: datatypes.m,v 1.15 2003/12/05 06:49:43 nygard Exp $
 //
 
 //
@@ -267,7 +267,7 @@ NSString *string_indent_to_level(int level)
     str = [NSMutableString string];
     for (l = 0; l < level; l++)
         [str appendString:@"  "];
-    
+
     return str;
 }
 
@@ -276,7 +276,7 @@ NSString *string_from_members (struct my_objc_type *t, int level)
     NSMutableString *str;
 
     str = [NSMutableString string];
-    
+
     while (t != NULL) {
         [str appendString:string_indent_to_level(level)];
         [str appendString:string_from_type(t, nil, 1, level)];
@@ -321,16 +321,16 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
               name = @"";
           else
               name = [NSString stringWithFormat:@" %s", t->var_name];
-          
+
           tmp = [NSString stringWithFormat:@"%s%@ %@", t->type_name, name, inner]; // We always have a pointer to this type
           break;
-          
+
       case '@':
           if (t->var_name == NULL)
               name = @"";
           else
               name = [NSString stringWithFormat:@" %s", t->var_name];
-          
+
           if ([inner length] > 0)
               tmp = [NSString stringWithFormat:@"id%@ %@", name, inner];
           else
@@ -434,7 +434,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
               name = @"";
           else
               name = [NSString stringWithFormat:@"%s", t->var_name];
-          
+
           if ([name length] == 0 && [inner length] == 0)
               tmp = string_from_simple_type(t->type);
           else

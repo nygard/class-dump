@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.18 2003/09/09 22:51:03 nygard Exp $
+// $Id: ObjcClass.m,v 1.19 2003/12/05 06:49:42 nygard Exp $
 //
 
 //
@@ -181,7 +181,7 @@ extern void print_header(void);
           [imports addObject:type];
           }*/
     }
-        
+
     // Print out the imports.
     print_header();
     printf("\n");

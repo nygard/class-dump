@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.14 2003/09/06 21:17:56 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.15 2003/12/05 06:49:43 nygard Exp $
 //
 
 //
@@ -101,7 +101,7 @@ extern void print_header(void);
         aProtocolName = [enumerator nextObject];
         if (aProtocolName != nil) {
             printf("%s", [aProtocolName cString]);
-            
+
             while (aProtocolName = [enumerator nextObject])
                 printf(", %s", [aProtocolName cString]);
         }

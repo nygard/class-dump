@@ -7,7 +7,7 @@ int main (int argc, const char *argv[])
 
     // insert your code here
     [OFObjCTypeFormatter test];
-    
+
     [pool release];
     exit(0);
 }

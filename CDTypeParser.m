@@ -105,7 +105,7 @@ NSString *CDTokenDescription(int token)
         struct my_objc_type *unmodifiedType;
         modifier = lookahead;
         [self match:modifier];
-        
+
         unmodifiedType = [self parseType];
         result = create_modified_type(modifier, unmodifiedType);
     } else if (lookahead == '^') { // pointer
