@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.7 2002/12/19 05:40:17 nygard Exp $
+// $Id: gram.y,v 1.8 2003/01/08 08:08:46 nygard Exp $
 //
 
 //
@@ -42,17 +42,16 @@ int parsing_ivar = 0;
 
 //----------------------------------------------------------------------
 
-int yylex (void);
-int yyerror (char *s);
+int yylex(void);
+int yyerror(char *s);
 
 %}
 
-%union
-{
-	int u_int;
-	char *u_str;
-	struct my_objc_type *u_type;
-	struct method_type *u_meth;
+%union {
+    int u_int;
+    char *u_str;
+    struct my_objc_type *u_type;
+    struct method_type *u_meth;
 };
 
 %type <u_int> start
@@ -96,12 +95,12 @@ int yyerror (char *s);
 start:
 	type
 		{
-			rtype = create_method_type ($1, NULL);
+			rtype = create_method_type($1, NULL);
 			$$ = 0;
 		}
 	| method_type_list
 		{
-			rtype = reverse_method_types ($1);
+			rtype = reverse_method_types($1);
 			$$ = 0;
 		}
 	;
@@ -118,14 +117,14 @@ method_type_list:
 method_type:
 	type number
 		{
-			$$ = create_method_type ($1, $2);
+			$$ = create_method_type($1, $2);
 		}
 	;
 
 type:	unmodified_type
 	| modifier type
 		{
-			$$ = create_modified_type ($1, $2);
+			$$ = create_modified_type($1, $2);
 		}
 	;
 
@@ -142,16 +141,16 @@ modifier:
 unmodified_type:
 	simple_type
 		{
-			$$ = create_simple_type ($1);
+			$$ = create_simple_type($1);
 		}
 	| id_type
 	| '^' type
 		{
-			$$ = create_pointer_type ($2);
+			$$ = create_pointer_type($2);
 		}
 	| 'b' number
 		{
-			$$ = create_bitfield_type ($2);
+			$$ = create_bitfield_type($2);
 		}
 	| structure_type
 	| union_type
@@ -184,18 +183,18 @@ simple_type:
 id_type:
 	'@'
 		{
-			$$ = create_id_type (NULL);
+			$$ = create_id_type(NULL);
 		}
 	| '@' quoted_name
 		{
-			$$ = create_id_type ($2);
+			$$ = create_id_type($2);
 		}
 	;
 
 structure_type:
 	'{' { ident_state = 1; } identifier optional_format '}'
 		{
-			$$ = create_struct_type ($3, $4);
+			$$ = create_struct_type($3, $4);
 		}
 	;
 
@@ -206,7 +205,7 @@ optional_format:
 		}
 	| '=' taglist
 		{
-			$$ = reverse_types ($2);
+			$$ = reverse_types($2);
 		}
 	;
 
@@ -230,7 +229,7 @@ tag:
 		}
 	| type
 		{
-			$1->var_name = strdup ("___");
+			$1->var_name = strdup("___");
 			$$ = $1;
 		}
 	;
@@ -242,7 +241,7 @@ quoted_name:
 		}
 	| quoted_name_prefix '"'
 		{
-			$$ = strdup ("");
+			$$ = strdup("");
 		}
 	;
 
@@ -253,11 +252,11 @@ quoted_name_prefix:
 union_type:
 	union_type_prefix union_types ')'
 		{
-			$$ = create_union_type (reverse_types ($2), NULL);
+			$$ = create_union_type(reverse_types($2), NULL);
 		}
 	| union_type_prefix identifier optional_format ')'
 		{
-			$$ = create_union_type ($3, $2);
+			$$ = create_union_type($3, $2);
 		}
 	;
 
@@ -280,7 +279,7 @@ union_types:
 		}
 	| union_types type
 		{
-			$2->var_name = strdup ("___");
+			$2->var_name = strdup("___");
 			$2->next = $1;
 			$$ = $2;
 		}
@@ -289,21 +288,21 @@ union_types:
 array_type:
 	'[' number type ']'
 		{
-			$$ = create_array_type ($2, $3);
+			$$ = create_array_type($2, $3);
 		}
 	;
 
 identifier:
 	TK_IDENTIFIER
 		{
-			$$ = strdup (yytext);
+			$$ = strdup(yytext);
 		}
 	;
 
 number:
 	TK_NUMBER
 		{
-			$$ = strdup (yytext);
+			$$ = strdup(yytext);
 		}
 	;
 
@@ -312,85 +311,85 @@ number:
 extern int yy_scan_string(const char *);
 extern int yyparse(void);
 
-int yyerror (char *s)
+int yyerror(char *s)
 {
-	fprintf (stderr, "%s\n", s);
+	fprintf(stderr, "%s\n", s);
 	return 0;
 }
 
-int parse_ivar_type (void)
+int parse_ivar_type(void)
 {
 	parsing_ivar = 1;
 	return yyparse();
 }
 
-int parse_method_type (void)
+int parse_method_type(void)
 {
 	parsing_ivar = 0;
 	return yyparse();
 }
 
-void format_type (const char *type, const char *name, int level)
+void format_type(const char *type, const char *name, int level)
 {
 	int parse_flag;
         extern int expand_structures_flag;
 
 	rtype = NULL;
-	yy_scan_string (type);
+	yy_scan_string(type);
 	parse_flag = parse_ivar_type();
 
 	if (parse_flag == 0)
 	{
 		if (name != NULL)
-			rtype->type->var_name = strdup (name);
-                indent_to_level (level);
-		print_type (rtype->type, expand_structures_flag, level);
-		printf (";");
+			rtype->type->var_name = strdup(name);
+                indent_to_level(level);
+		print_type(rtype->type, expand_structures_flag, level);
+		printf(";");
 
 		rtype = NULL;
 	}
 	else
         {
-		printf ("Error! format_type (%s, %s)\n", type, name);
-                printf ("\n\n");
+		printf("Error! format_type(%s, %s)\n", type, name);
+                printf("\n\n");
         }
 
 	free_allocated_methods();
 	free_allocated_types();
 }
 
-void format_method (char method_type, const char *name, const char *types)
+void format_method(char method_type, const char *name, const char *types)
 {
 	int parse_flag;
 
 	if (name == NULL)
 	{
-		printf ("%c (method name not found in OBJC segments), args: %s", method_type, types);
+		printf("%c(method name not found in OBJC segments), args: %s", method_type, types);
 		return;
 	}
 
         if (*name == '\0' || *types == '\0')
         {
-		printf ("Error! format_method (%c, '%s', '%s')", method_type, name, types);
+		printf("Error! format_method(%c, '%s', '%s')", method_type, name, types);
 		return;
         }
 
 	rtype = NULL;
-	yy_scan_string (types);
+	yy_scan_string(types);
 	parse_flag = parse_method_type();
 
 	if (parse_flag == 0)
 	{
-		print_method (method_type, name, rtype);
+		print_method(method_type, name, rtype);
 		rtype = NULL;
 	}
 	else
         {
 		extern const char *scanner_ptr;
 
-		printf ("Error! format_method (%c, %s, %s )\n", method_type, name, types);
-                printf ("at %s\n", scanner_ptr);
-                printf ("\n\n");
+		printf("Error! format_method(%c, %s, %s )\n", method_type, name, types);
+                printf("at %s\n", scanner_ptr);
+                printf("\n\n");
         }
 
 	free_allocated_methods();
