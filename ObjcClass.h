@@ -1,11 +1,11 @@
 //
-// $Id: ObjcClass.h,v 1.4 2000/10/15 01:17:53 nygard Exp $
+// $Id: ObjcClass.h,v 1.5 2000/10/15 01:22:17 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 1999  Steve Nygard
+//  Copyright (C) 1997, 1999, 2000  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
