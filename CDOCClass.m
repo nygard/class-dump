@@ -13,7 +13,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.27 2004/02/02 21:37:19 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.28 2004/02/02 23:20:20 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -77,6 +77,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.27 2004/02/0
 
     [resultString appendString:@"}\n\n"];
     [self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+
+    if ([classMethods count] > 0 || [instanceMethods count] > 0)
+        [resultString appendString:@"\n"];
     [resultString appendString:@"@end\n\n"];
 }
 

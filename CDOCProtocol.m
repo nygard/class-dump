@@ -12,7 +12,7 @@
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.20 2004/02/02 21:37:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.21 2004/02/02 23:20:20 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -155,9 +155,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.20 2004/0
             [resultString appendString:@"\n"];
         }
     }
-
-    if ([classMethods count] > 0 || [instanceMethods count] > 0)
-        [resultString appendString:@"\n"];
 }
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
