@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.m,v 1.6 2002/12/19 06:28:47 nygard Exp $
+// $Id: ObjcIvar.m,v 1.7 2002/12/19 06:41:30 nygard Exp $
 //
 
 //
@@ -48,7 +48,7 @@
 {
     [ivarName release];
     [ivarType release];
-    
+
     [super dealloc];
 }
 

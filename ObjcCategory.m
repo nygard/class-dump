@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.8 2002/12/19 06:28:47 nygard Exp $
+// $Id: ObjcCategory.m,v 1.9 2002/12/19 06:41:30 nygard Exp $
 //
 
 //
@@ -40,9 +40,9 @@
 
     className = [aClassName retain];
     categoryName = [aCategoryName retain];
-    classMethods = [[NSMutableArray array] retain];
-    instanceMethods = [[NSMutableArray array] retain];
-    protocols = [[NSMutableArray array] retain];
+    classMethods = [[NSMutableArray alloc] init];
+    instanceMethods = [[NSMutableArray alloc] init];
+    protocols = [[NSMutableArray alloc] init];
 
     return self;
 }
@@ -85,13 +85,11 @@
     else
         enumerator = [classMethods reverseObjectEnumerator];
 
-    while (method = [enumerator nextObject])
-    {
+    while (method = [enumerator nextObject]) {
         [method showMethod:'+'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-        {
             printf ("\t// IMP=0x%08lx", [method address]);
-        }
+
         printf ("\n");
     }
 
@@ -100,13 +98,11 @@
     else
         enumerator = [instanceMethods reverseObjectEnumerator];
     
-    while (method = [enumerator nextObject])
-    {
+    while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-        {
             printf ("\t// IMP=0x%08lx", [method address]);
-        }
+
         printf ("\n");
     }
 

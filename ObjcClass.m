@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.10 2002/12/19 06:28:47 nygard Exp $
+// $Id: ObjcClass.m,v 1.11 2002/12/19 06:41:30 nygard Exp $
 //
 
 //
@@ -55,8 +55,10 @@
     classes = [[[NSMutableArray alloc] init] autorelease];
 
     do {
-        NSEnumerator *enumerator = [classDict objectEnumerator];
+        NSEnumerator *enumerator;
         id object;
+
+        enumerator = [classDict objectEnumerator];
 
         done = true;
         while (object = [enumerator nextObject]) {
@@ -78,10 +80,10 @@
 
     className = [aClassName retain];
     superClassName = [aSuperClassName retain];
-    ivars = [[NSMutableArray array] retain];
-    classMethods = [[NSMutableArray array] retain];
-    instanceMethods = [[NSMutableArray array] retain];
-    protocolNames = [[NSMutableArray array] retain];
+    ivars = [[NSMutableArray alloc] init];
+    classMethods = [[NSMutableArray alloc] init];
+    instanceMethods = [[NSMutableArray alloc] init];
+    protocolNames = [[NSMutableArray alloc] init];
 
     [[ObjcClass classDict] setObject:self forKey:className];
 
@@ -96,7 +98,7 @@
     [classMethods release];
     [instanceMethods release];
     [protocolNames release];
-    
+
     [super dealloc];
 }
 
@@ -157,19 +159,15 @@
     if (superClassName != nil)
         printf (":%s", [superClassName cString]);
 
-    if ([protocolNames count] > 0)
-    {
+    if ([protocolNames count] > 0) {
         enumerator = [protocolNames objectEnumerator];
         printf (" <");
         protocolName = [enumerator nextObject];
-        if (protocolName != nil)
-        {
+        if (protocolName != nil) {
             printf ("%s", [protocolName cString]);
             
             while (protocolName = [enumerator nextObject])
-            {
                 printf (", %s", [protocolName cString]);
-            }
         }
 
         printf (">");
@@ -182,9 +180,8 @@
     {
         [ivar showIvarAtLevel:2];
         if (flags & F_SHOW_IVAR_OFFSET)
-        {
             printf ("\t// %ld = 0x%lx", [ivar offset], [ivar offset]);
-        }
+
         printf ("\n");
     }
 
@@ -198,13 +195,11 @@
     else
         enumerator = [classMethods reverseObjectEnumerator];
 
-    while (method = [enumerator nextObject])
-    {
+    while (method = [enumerator nextObject]) {
         [method showMethod:'+'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-        {
             printf ("\t// IMP=0x%08lx", [method address]);
-        }
+
         printf ("\n");
     }
 
@@ -212,13 +207,11 @@
         enumerator = [[instanceMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
     else
         enumerator = [instanceMethods reverseObjectEnumerator];
-    while (method = [enumerator nextObject])
-    {
+    while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-        {
             printf ("\t// IMP=0x%08lx", [method address]);
-        }
+
         printf ("\n");
     }
 

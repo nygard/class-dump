@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.m,v 1.6 2002/12/19 06:28:47 nygard Exp $
+// $Id: ObjcMethod.m,v 1.7 2002/12/19 06:41:30 nygard Exp $
 //
 
 //
@@ -36,7 +36,7 @@
 {
     if ([self initWithMethodName:aMethodName type:aMethodType address:0] == nil)
         return nil;
-    
+
     isProtocolMethod = YES;
 
     return self;

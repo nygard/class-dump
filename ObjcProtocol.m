@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.8 2002/12/19 06:28:47 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.9 2002/12/19 06:41:30 nygard Exp $
 //
 
 //
@@ -39,8 +39,8 @@
         return nil;
 
     protocolName = [aProtocolName retain];
-    protocolNames = [[NSMutableArray array] retain];
-    protocolMethods = [[NSMutableArray array] retain];
+    protocolNames = [[NSMutableArray alloc] init];
+    protocolMethods = [[NSMutableArray alloc] init];
 
     return self;
 }
@@ -86,21 +86,17 @@
 
     printf ("@protocol %s", [protocolName cString]);
 
-    if ([protocolNames count] > 0)
-    {
+    if ([protocolNames count] > 0) {
         NSString *aProtocolName;
 
         enumerator = [protocolNames objectEnumerator];
         printf (" <");
         aProtocolName = [enumerator nextObject];
-        if (aProtocolName != nil)
-        {
+        if (aProtocolName != nil) {
             printf ("%s", [aProtocolName cString]);
             
             while (protocolName = [enumerator nextObject])
-            {
                 printf (", %s", [aProtocolName cString]);
-            }
         }
 
         printf (">");
@@ -113,13 +109,11 @@
     else
         enumerator = [protocolMethods objectEnumerator];
 
-    while (method = [enumerator nextObject])
-    {
+    while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-        {
             printf ("\t// IMP=0x%08lx", [method address]);
-        }
+
         printf ("\n");
     }
 
