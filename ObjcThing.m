@@ -1,11 +1,11 @@
 //
-// $Id: ObjcThing.m,v 1.4 2002/12/19 04:56:07 nygard Exp $
+// $Id: ObjcThing.m,v 1.5 2002/12/19 05:03:42 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 2000  Steve Nygard
+//  Copyright (C) 1997, 2000, 2002  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -43,9 +43,9 @@
     return nil;
 }
 
-
 - (NSComparisonResult) orderByName:(ObjcThing *)otherThing
 {
     return [[self sortableName] compare:[otherThing sortableName]];
 }
+
 @end

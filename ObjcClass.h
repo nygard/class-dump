@@ -1,11 +1,11 @@
 //
-// $Id: ObjcClass.h,v 1.6 2002/12/19 04:56:07 nygard Exp $
+// $Id: ObjcClass.h,v 1.7 2002/12/19 05:03:42 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 1999, 2000  Steve Nygard
+//  Copyright (C) 1997, 1999, 2000, 2002  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -43,7 +43,8 @@
     NSMutableArray *protocol_names;
 }
 
-+ (NSArray *)sortedClasses;
++ (NSMutableDictionary *) classDict;
++ (NSArray *) sortedClasses;
 
 - initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
 - (void) dealloc;

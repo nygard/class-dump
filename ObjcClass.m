@@ -1,11 +1,11 @@
 //
-// $Id: ObjcClass.m,v 1.5 2002/12/19 04:56:07 nygard Exp $
+// $Id: ObjcClass.m,v 1.6 2002/12/19 05:03:42 nygard Exp $
 //
 
 //
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997, 1999, 2000  Steve Nygard
+//  Copyright (C) 1997, 1999, 2000, 2002  Steve Nygard
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -34,13 +34,27 @@
 #endif
 #import <stdio.h>
 
-static NSMutableDictionary *classDict;
-
 @implementation ObjcClass
 
-+ (NSArray *)sortedClasses {
-    NSMutableArray *classes = [[[NSMutableArray alloc] init] autorelease];
++ (NSMutableDictionary *) classDict
+{
+    static NSMutableDictionary *classDict = nil;
+
+    if (classDict == nil)
+        classDict = [[NSMutableDictionary alloc] init];
+
+    return classDict;
+}
+
++ (NSArray *) sortedClasses
+{
+    NSMutableArray *classes;
+    NSMutableDictionary *classDict;
     BOOL done;
+
+    classDict = [ObjcClass classDict];
+    classes = [[[NSMutableArray alloc] init] autorelease];
+
     do {
         NSEnumerator *enumerator = [classDict objectEnumerator];
         id object;
@@ -54,6 +68,7 @@ static NSMutableDictionary *classDict;
             }
         }
     } while (!done);
+
     return classes;
 }
 
@@ -61,15 +76,16 @@ static NSMutableDictionary *classDict;
 {
     if ([super init] == nil)
         return nil;
-    if(classDict == nil)
-        classDict = [[[NSMutableDictionary alloc] init] autorelease];
+
     class_name = [className retain];
     super_class_name = [superClassName retain];
     ivars = [[NSMutableArray array] retain];
     class_methods = [[NSMutableArray array] retain];
     instance_methods = [[NSMutableArray array] retain];
     protocol_names = [[NSMutableArray array] retain];
-    [classDict setObject:self forKey:className];
+
+    [[ObjcClass classDict] setObject:self forKey:className];
+
     return self;
 }
 
