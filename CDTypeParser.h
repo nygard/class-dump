@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeParser.h,v 1.16 2004/01/18 01:34:58 nygard Exp $
+// $Id: CDTypeParser.h,v 1.17 2004/01/27 21:32:51 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -24,7 +24,6 @@ extern NSString *CDSyntaxError;
 
 - (CDTypeLexer *)lexer;
 
-// TODO (2003-12-18): Or add subclass, CDMethodTypeParser, and then just have them -parse?  Nah, different return types.
 - (NSArray *)parseMethodType;
 - (CDType *)parseType;
 
