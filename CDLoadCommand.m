@@ -7,6 +7,7 @@
 #import <Foundation/Foundation.h>
 #import "CDSegmentCommand.h"
 #import "CDDylibCommand.h"
+#import "CDSymtabCommand.h"
 
 @implementation CDLoadCommand
 
@@ -19,6 +20,8 @@
         targetClass = [CDSegmentCommand class];
     if (lc->cmd == LC_ID_DYLIB || lc->cmd == LC_LOAD_DYLIB || lc->cmd == LC_LOAD_WEAK_DYLIB)
         targetClass = [CDDylibCommand class];
+    if (lc->cmd == LC_SYMTAB)
+        targetClass = [CDSymtabCommand class];
 
     return [[[targetClass alloc] initWithPointer:ptr machOFile:aMachOFile] autorelease];
 }
