@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.30 2004/01/15 23:30:40 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.31 2004/01/15 23:55:41 nygard Exp $");
 
 @implementation CDType
 
@@ -433,7 +433,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.30 2004/01/15 2
 
 - (NSString *)keyTypeString;
 {
-    //use variable names at top level
+    // use variable names at top level
     return [self _typeStringWithVariableNamesToLevel:1];
 }
 

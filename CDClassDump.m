@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.44 2004/01/15 23:30:40 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.45 2004/01/15 23:55:41 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -31,12 +31,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.44 2004/01
     structureTable = [[CDStructureTable alloc] init];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
     [structureTable setName:@"Structs"];
-    [structureTable setShouldDebug:YES];
 
     unionTable = [[CDStructureTable alloc] init];
     [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
     [unionTable setName:@"Unions"];
-    [unionTable setShouldDebug:YES];
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
     [ivarTypeFormatter setShouldExpand:NO];
@@ -270,7 +268,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.44 2004/01
 {
     int count, index;
 
-    NSLog(@"Phase %d ========================================", phase);
+    //NSLog(@"Phase %d ========================================", phase);
 
     count = [objCSegmentProcessors count];
     for (index = 0; index < count; index++) {
@@ -283,14 +281,14 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.44 2004/01
 - (void)endPhase:(int)phase;
 {
     if (phase == 1) {
-        [structureTable logPhase1Data];
-        [unionTable logPhase1Data];
+        //[structureTable logPhase1Data];
+        //[unionTable logPhase1Data];
 
         [structureTable finishPhase1];
         [unionTable finishPhase1];
     } else if (phase == 2) {
-        [structureTable logInfo];
-        [unionTable logInfo];
+        //[structureTable logInfo];
+        //[unionTable logInfo];
 
         [structureTable generateNamesForAnonymousStructures];
         [unionTable generateNamesForAnonymousStructures];

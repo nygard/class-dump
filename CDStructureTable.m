@@ -11,7 +11,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 2004/01/15 23:30:40 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.11 2004/01/15 23:55:41 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -109,10 +109,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
     CDType *aType;
     NSMutableSet *ambiguousSignatures;
 
-    NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
+    //NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
     ambiguousSignatures = [[NSMutableSet alloc] init];
-
-    // TODO (2004-01-14): We need to remap named structure too?  No, we shouldn't...
 
     count = [structureTypes count];
     for (index = 0; index < count; index++) {
@@ -122,7 +120,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
         keySignature = [aType keyTypeString];
         bareSignature = [aType bareTypeString];
         if ([keySignature isEqual:bareSignature] == NO && [ambiguousSignatures containsObject:bareSignature] == NO) {
-            NSLog(@"%d: %@ != %@", index, keySignature, bareSignature);
+            //NSLog(@"%d: %@ != %@", index, keySignature, bareSignature);
             if ([replacementSignatures objectForKey:bareSignature] == nil) {
                 [replacementSignatures setObject:keySignature forKey:bareSignature];
             } else {
@@ -132,8 +130,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
         }
     }
 
-    NSLog(@"replacementSignatures: %@", [replacementSignatures description]);
-    NSLog(@"ambiguousSignatures: %@", [ambiguousSignatures description]);
+    //NSLog(@"replacementSignatures: %@", [replacementSignatures description]);
+    //NSLog(@"ambiguousSignatures: %@", [ambiguousSignatures description]);
 
     [ambiguousSignatures release];
 }
@@ -180,9 +178,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
         key = [keys objectAtIndex:index];
         if ([[anonymousStructureCountsByType objectForKey:key] intValue] > 1
             || [forcedTypedefs containsObject:key] == YES) {
-            if (nameIndex == 3) {
-                NSLog(@""); // isUsedInMethod
-            }
             [anonymousStructureNamesByType setObject:[NSString stringWithFormat:@"%@%d", anonymousBaseName, nameIndex++] forKey:key];
         }
     }
@@ -279,7 +274,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
     //NSLog(@"<  %s", _cmd);
 }
 
-// TODO (2004-01-14): Return BOOL instead of pssing anObject to indicate if it should continue recursively?
+// Returns YES to indicate that we should count references for children.
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
                 countReferences:(BOOL)shouldCountReferences;
 {
@@ -309,8 +304,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
         old = keySignature;
         remappedSignature = [replacementSignatures objectForKey:keySignature];
         if (remappedSignature != nil) {
-            //NSLog(@"remapped %@ to %@", keySignature, remappedSignature);
-            //aStructure = [anonymousStructuresByType objectForKey:remappedSignature]; // This may not exist yet.
             // There may not be an object for the replaced type yet.
             keySignature = remappedSignature;
         }
@@ -356,11 +349,13 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 20
 
             before = [existingType keyTypeString];
             [existingType mergeWithType:aStructure];
-            if ([before isEqual:[existingType keyTypeString]] == NO) {
-                NSLog(@"Merging %@ with %@", before, [aStructure keyTypeString]);
-                NSLog(@"Merged result: %@", [existingType keyTypeString]);
-            } else {
-                //NSLog(@"No change from merging types.");
+            if ([self shouldDebug] == YES) {
+                if ([before isEqual:[existingType keyTypeString]] == NO) {
+                    NSLog(@"Merging %@ with %@", before, [aStructure keyTypeString]);
+                    NSLog(@"Merged result: %@", [existingType keyTypeString]);
+                } else {
+                    //NSLog(@"No change from merging types.");
+                }
             }
         }
     }
