@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.27 2004/01/15 05:17:47 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.28 2004/01/15 05:23:13 nygard Exp $");
 
 @implementation CDType
 
@@ -650,7 +650,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.27 2004/01/15 0
         //NSLog(@"%d: vari: %@ vs %@", index, thisVariableName, otherVariableName);
 
         if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil))
-            NSLog(@"Warning: (1) type names don't match.");
+            NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
         else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
             NSLog(@"Warning: (2) type names don't match.");
 
