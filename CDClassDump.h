@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.29 2004/01/10 21:54:58 nygard Exp $
+// $Id: CDClassDump.h,v 1.30 2004/01/12 19:07:37 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -53,6 +53,6 @@
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
-- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod;
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.4 2004/01/10 21:54:59 nygard Exp $
+// $Id: CDStructureTable.h,v 1.5 2004/01/12 19:07:37 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -61,6 +61,6 @@
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
 - (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
-             usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+             usedInMethod:(BOOL)isUsedInMethod;
 
 @end

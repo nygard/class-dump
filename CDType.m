@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.23 2004/01/10 21:55:00 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 19:07:37 nygard Exp $");
 
 @implementation CDType
 
@@ -518,27 +518,27 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.23 2004/01/10 2
     return str;
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
     if (subtype != nil)
-        [subtype registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [subtype registerStructuresWithObject:anObject usedInMethod:isUsedInMethod];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        [anObject registerStructure:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [anObject registerStructure:self name:typeName usedInMethod:isUsedInMethod];
     }
 }
 
-- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
     int count, index;
 
     if (subtype != nil)
-        [subtype registerMemberStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [subtype registerMemberStructuresWithObject:anObject usedInMethod:isUsedInMethod];
 
     count = [members count];
 
     for (index = 0; index < count; index++)
-        [[members objectAtIndex:index] registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [[members objectAtIndex:index] registerStructuresWithObject:anObject usedInMethod:isUsedInMethod];
 }
 
 - (BOOL)isEqual:(CDType *)otherType;

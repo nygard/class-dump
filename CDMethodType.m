@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CDType.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMethodType.m,v 1.7 2004/01/10 21:54:59 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMethodType.m,v 1.8 2004/01/12 19:07:37 nygard Exp $");
 
 @implementation CDMethodType
 
@@ -48,7 +48,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMethodType.m,v 1.7 2004/01
 
 - (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
 {
-    [type registerStructuresWithObject:anObject usedInMethod:YES countReferences:YES];
+    [type registerStructuresWithObject:anObject usedInMethod:YES];
 }
 
 @end

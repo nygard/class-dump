@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.14 2004/01/10 21:55:00 nygard Exp $
+// $Id: CDType.h,v 1.15 2004/01/12 19:07:37 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -59,8 +59,8 @@
 - (NSString *)_typeStringWithVariableNames:(BOOL)shouldUseVariableNames;
 - (NSString *)_typeStringForMembersWithVariableNames:(BOOL)shouldUseVariableNames;
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 
 - (BOOL)isEqual:(CDType *)otherType;
 - (BOOL)isStructureEqual:(CDType *)otherType;

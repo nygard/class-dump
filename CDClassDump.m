@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.40 2004/01/10 21:54:58 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.41 2004/01/12 19:07:37 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -30,6 +30,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.40 2004/01
 
     structureTable = [[CDStructureTable alloc] init];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
+    [structureTable setShouldDebug:YES];
 
     unionTable = [[CDStructureTable alloc] init];
     [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
@@ -255,12 +256,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.40 2004/01
     return [targetTable typedefNameForStructureType:searchType];
 }
 
-- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod;
 {
     if ([aStructure type] == '{') {
-        [structureTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [structureTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod];
     } else if ([aStructure type] == '(') {
-        [unionTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [unionTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod];
     } else {
         NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
     }

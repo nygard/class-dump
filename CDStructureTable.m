@@ -10,7 +10,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.4 2004/01/10 21:55:00 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.5 2004/01/12 19:07:37 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -253,7 +253,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.4 200
     count = [keys count];
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
-        if ([[anonymousStructureCountsByType objectForKey:key] intValue] > 1
+        if ([[anonymousStructureCountsByType objectForKey:key] intValue] > 0
             || [forcedTypedefs containsObject:key] == YES) {
             [anonymousStructureNamesByType setObject:[NSString stringWithFormat:@"%@%d", anonymousBaseName, nameIndex++] forKey:key];
         }
@@ -340,7 +340,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.4 200
 }
 
 - (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
-             usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+             usedInMethod:(BOOL)isUsedInMethod;
 {
     NSNumber *oldCount;
     NSString *typeString;
@@ -351,17 +351,18 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.4 200
         [self forceTypedefForStructure:[structType typeString]];
 
     // Handle named structs
+    // We don't count them because they'll always be declared at the top.
     if (aName != nil && [aName isEqual:@"?"] == NO) {
         CDType *existingType;
 
         existingType = [structuresByName objectForKey:aName];
         if (existingType == nil) {
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:YES];
+            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO];
             [structuresByName setObject:structType forKey:aName];
         } else if ([structType isEqual:existingType] == NO) {
             NSString *before;
 
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:NO];
+            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO];
             before = [existingType typeString];
             [existingType mergeWithType:structType];
             if ([before isEqual:[existingType typeString]] == NO) {
@@ -380,13 +381,11 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.4 200
         previousType = [anonymousStructuresByType objectForKey:typeString];
         if (previousType == nil) {
             [anonymousStructuresByType setObject:structType forKey:typeString];
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:YES];
+            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO];
         } else {
             //NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
-        }
 
-        // Just count anonymous structs
-        if (shouldCountReferences == YES) {
+            // Just count anonymous structs
             oldCount = [anonymousStructureCountsByType objectForKey:typeString];
             if (oldCount == nil)
                 [anonymousStructureCountsByType setObject:[NSNumber numberWithInt:1] forKey:typeString];
