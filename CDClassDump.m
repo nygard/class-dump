@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.54 2004/02/02 22:19:00 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.55 2004/02/02 22:39:30 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -177,6 +177,16 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
 {
     shouldGenerateSeparateHeaders = newFlag;
+}
+
+- (BOOL)shouldSort;
+{
+    return shouldSort;
+}
+
+- (void)setShouldSort:(BOOL)newFlag;
+{
+    shouldSort = newFlag;
 }
 
 - (NSString *)outputPath;

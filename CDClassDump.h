@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.40 2004/02/02 22:19:00 nygard Exp $
+// $Id: CDClassDump.h,v 1.41 2004/02/02 22:39:30 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -22,6 +22,7 @@
 
     BOOL shouldProcessRecursively;
     BOOL shouldGenerateSeparateHeaders;
+    BOOL shouldSort;
     NSString *outputPath;
 
     NSMutableDictionary *machOFilesByID;
@@ -53,6 +54,9 @@
 
 - (BOOL)shouldGenerateSeparateHeaders;
 - (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
+
+- (BOOL)shouldSort;
+- (void)setShouldSort:(BOOL)newFlag;
 
 - (NSString *)outputPath;
 - (void)setOutputPath:(NSString *)aPath;
