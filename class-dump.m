@@ -56,12 +56,10 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.61 2004/02/02 21:37:21 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.62 2004/02/02 22:40:31 nygard Exp $");
 
 //----------------------------------------------------------------------
 
-//int expand_structures_flag = 0; // This is used in datatypes.m
-int expand_arg_structures_flag = 0;
 #if 0
 NSString *current_filename = nil;
 #endif
@@ -121,13 +119,7 @@ void print_header(void);
 
     protocols = [[NSMutableDictionary alloc] init];
 
-    flags.shouldShowIvarOffsets = NO;
-    flags.shouldShowMethodAddresses = NO;
-    flags.shouldExpandProtocols = NO;
     flags.shouldMatchRegex = NO;
-    flags.shouldSort = NO;
-    flags.shouldSortClasses = NO;
-    flags.shouldGenerateHeaders = NO;
     flags.shouldSwapFat = NO;
     flags.shouldSwapMachO = NO;
 
@@ -147,76 +139,6 @@ void print_header(void);
     }
 
     [super dealloc];
-}
-
-- (BOOL)shouldShowIvarOffsets;
-{
-    return flags.shouldShowIvarOffsets;
-}
-
-- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
-{
-    flags.shouldShowIvarOffsets = newFlag;
-}
-
-- (BOOL)shouldShowMethodAddresses;
-{
-    return flags.shouldShowMethodAddresses;
-}
-
-- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
-{
-    flags.shouldShowMethodAddresses = newFlag;
-}
-
-- (BOOL)shouldExpandProtocols;
-{
-    return flags.shouldExpandProtocols;
-}
-
-- (void)setShouldExpandProtocols:(BOOL)newFlag;
-{
-    flags.shouldExpandProtocols = newFlag;
-}
-
-- (BOOL)shouldSort;
-{
-    return flags.shouldSort;
-}
-
-- (void)setShouldSort:(BOOL)newFlag;
-{
-    flags.shouldSort = newFlag;
-}
-
-- (BOOL)shouldSortClasses;
-{
-    return flags.shouldSortClasses;
-}
-
-- (void)setShouldSortClasses:(BOOL)newFlag;
-{
-    flags.shouldSortClasses = newFlag;
-}
-
-- (BOOL)shouldGenerateHeaders;
-{
-    return flags.shouldGenerateHeaders;
-}
-
-- (void)setShouldGenerateHeaders:(BOOL)newFlag;
-{
-    flags.shouldGenerateHeaders = newFlag;
-}
-
-- (BOOL)shouldMatchRegex;
-{
-    return flags.shouldMatchRegex;
-}
-
-- (void)setShouldMatchRegex:(BOOL)newFlag;
-{
-    flags.shouldMatchRegex = newFlag;
 }
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
@@ -500,132 +422,16 @@ void print_usage(void)
             "Usage: class-dump [-a] [-A] [-e] [-R] [-C regex] [-r] [-S] executable-file\n"
             "        -a  show instance variable offsets\n"
             "        -A  show implementation addresses\n"
-            "        -e  expand structure (and union) definition in ivars whenever possible\n"
-            "        -E  expand structure (and union) definition in method arguments whenever possible\n"
-            "        -I  sort by inheritance (overrides -S)\n"
-            "        -R  recursively expand @protocol <>\n"
             "        -C  only display classes matching regular expression\n"
+            "        -H  generate header files in current directory\n"
+            "        -I  sort classes, categories, and protocols by inheritance (overrides -S)\n"
+            "        -R  recursively expand @protocol <>\n"
             "        -r  recursively expand frameworks and fixed VM shared libraries\n"
-            "        -S  sort protocols, classes, and methods\n"
-            "        -H  generate header files in current directory\n",
+            "        -S  sort classes, categories, protocols and methods by name\n"
+            ,
             [CLASS_DUMP_VERSION UTF8String]
        );
 }
-
-//----------------------------------------------------------------------
-
-void testVariableTypes(NSString *path)
-{
-#if 0
-    CDTypeFormatter *ivarTypeFormatter;
-    NSMutableString *resultString;
-    NSString *contents;
-    NSArray *lines, *fields;
-    int count, index;
-
-    ivarTypeFormatter = [[CDTypeFormatter alloc] init];
-    [ivarTypeFormatter setShouldExpand:NO];
-    [ivarTypeFormatter setShouldAutoExpand:YES];
-    [ivarTypeFormatter setBaseLevel:1];
-    //[ivarTypeFormatter setDelegate:self];
-
-    resultString = [NSMutableString string];
-    [resultString appendFormat:@"Testing %@\n", path];
-
-    contents = [NSString stringWithContentsOfFile:path];
-    lines = [contents componentsSeparatedByString:@"\n"];
-    count = [lines count];
-
-    for (index = 0; index < count; index++) {
-        NSString *line;
-        NSString *type, *name;
-
-        line = [lines objectAtIndex:index];
-        fields = [line componentsSeparatedByString:@"\t"];
-        if ([line length] > 0) {
-            int fieldCount, level;
-            NSString *formattedString;
-
-            fieldCount = [fields count];
-            type = [fields objectAtIndex:0];
-            if (fieldCount > 1)
-                name = [fields objectAtIndex:1];
-            else
-                name = @"var";
-
-            if (fieldCount > 2)
-                level = [[fields objectAtIndex:2] intValue];
-            else
-                level = 0;
-
-            [resultString appendFormat:@"type: '%@'\n", type];
-            [resultString appendFormat:@"name: '%@'\n", name];
-            [resultString appendFormat:@"level: %d\n", level];
-            formattedString = [ivarTypeFormatter formatVariable:name type:type];
-            if (formattedString != nil) {
-                [resultString appendString:formattedString];
-                [resultString appendString:@"\n"];
-            } else {
-                [resultString appendString:@"Parse failed.\n"];
-            }
-            [resultString appendString:@"\n"];
-        }
-    }
-
-    [resultString appendString:@"Done.\n"];
-
-    {
-        NSData *data;
-
-        data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
-        [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
-    }
-#endif
-}
-#if 0
-void testMethodTypes(NSString *path)
-{
-    NSString *contents;
-    NSArray *lines, *fields;
-    int count, index;
-
-    NSLog(@"Testing %@", path);
-    contents = [NSString stringWithContentsOfFile:path];
-
-    lines = [contents componentsSeparatedByString:@"\n"];
-    count = [lines count];
-    for (index = 0; index < count; index++) {
-        NSString *line;
-        NSString *type, *name;
-
-        line = [lines objectAtIndex:index];
-        if ([line hasPrefix:@"\tClass "] == YES) {
-            NSLog(@"Class %@", [line substringFromIndex:7]);
-            continue;
-        }
-
-        fields = [line componentsSeparatedByString:@"\t"];
-        if ([fields count] >= 2) {
-            NSString *result;
-
-            name = [fields objectAtIndex:0];
-            type = [fields objectAtIndex:1];
-            NSLog(@"%@\t%@", name, type);
-            result = [CDTypeFormatter formatMethodName:name type:type];
-            if (result != nil) {
-                //NSLog(@"Parsed okay");
-                NSLog(@"result: %@", result);
-            } else {
-                NSLog(@"Parse failed");
-            }
-            //printf("\t%s\t%s", type, name);
-            //printf("\n");
-        }
-    }
-
-    NSLog(@"Done.");
-}
-#endif
 
 //======================================================================
 
@@ -644,8 +450,6 @@ int main(int argc, char *argv[])
     BOOL shouldSort = NO;
     BOOL shouldSortClasses = NO;
     BOOL shouldGenerateSeparateHeaders = NO;
-    BOOL shouldTestVariableTypes = NO;
-    BOOL shouldTestMethodTypes = NO;
     char *regexCString = NULL;
 
     if (argc == 1) {
@@ -653,7 +457,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAeIRC:rSHtT")) != EOF) {
+    while ( (c = getopt(argc, argv, "aAC:HIrRS")) != EOF) {
         switch (c) {
           case 'a':
               shouldShowIvarOffsets = YES;
@@ -661,18 +465,6 @@ int main(int argc, char *argv[])
 
           case 'A':
               shouldShowMethodAddresses = YES;
-              break;
-
-          case 'e':
-              //expand_structures_flag = 1;
-              break;
-
-          case 'E':
-              expand_arg_structures_flag = 1;
-              break;
-
-          case 'R':
-              shouldExpandProtocols = YES;
               break;
 
           case 'C':
@@ -684,28 +476,24 @@ int main(int argc, char *argv[])
               }
               break;
 
-          case 'r':
-              shouldExpandFrameworks = YES;
-              break;
-
-          case 'S':
-              shouldSort = YES;
+          case 'H':
+              shouldGenerateSeparateHeaders = YES;
               break;
 
           case 'I':
               shouldSortClasses = YES;
               break;
 
-          case 'H':
-              shouldGenerateSeparateHeaders = YES;
+          case 'r':
+              shouldExpandFrameworks = YES;
               break;
 
-          case 't':
-              shouldTestVariableTypes = YES;
+          case 'R':
+              shouldExpandProtocols = YES;
               break;
 
-          case 'T':
-              shouldTestMethodTypes = YES;
+          case 'S':
+              shouldSort = YES;
               break;
 
           case '?':
@@ -720,21 +508,6 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    if (shouldTestVariableTypes == YES) {
-        int index;
-
-        for (index = optind; index < argc; index++) {
-            char *str;
-            NSString *path;
-
-            str = argv[index];
-            path = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
-            testVariableTypes(path);
-        }
-
-        exit(0);
-    }
-
     if (optind < argc) {
         char *str;
         NSString *path;
@@ -747,6 +520,7 @@ int main(int argc, char *argv[])
         classDump = [[CDClassDump2 alloc] init];
         [classDump setShouldProcessRecursively:shouldExpandFrameworks];
         [classDump setShouldGenerateSeparateHeaders:shouldGenerateSeparateHeaders];
+        [classDump setShouldSort:shouldSort];
         [classDump setOutputPath:@"/tmp/cd"];
         [classDump processFilename:path];
         [classDump doSomething];
@@ -755,25 +529,6 @@ int main(int argc, char *argv[])
         exit(99);
 
 #if 0
-        char *str;
-        NSString *targetPath, *adjustedPath;
-        CDClassDump *classDump;
-        NSString *regexErrorMessage;
-
-        //targetPath = [[NSString alloc] initWithCString:argv[optind]];
-        str = argv[optind];
-        targetPath = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:str length:strlen(str)];
-        NSLog(@"targetPath: '%@'", targetPath);
-        adjustedPath = [MappedFile adjustUserSuppliedPath:targetPath];
-        NSLog(@"adjusted user supplied path: '%@'", adjustedPath);
-
-        classDump = [[CDClassDump alloc] initWithPath:adjustedPath];
-        [classDump setShouldShowIvarOffsets:shouldShowIvarOffsets];
-        [classDump setShouldShowMethodAddresses:shouldShowMethodAddresses];
-        [classDump setShouldExpandProtocols:shouldExpandProtocols];
-        [classDump setShouldSort:shouldSort];
-        [classDump setShouldSortClasses:shouldSortClasses];
-        [classDump setShouldGenerateSeparateHeaders:shouldGenerateSeparateHeaders];
         if (regexCString != NULL) {
             if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
                 printf("Error with regex: %s\n", [regexErrorMessage cString]);
@@ -781,26 +536,6 @@ int main(int argc, char *argv[])
                 exit(1);
             }
         }
-
-        [classDump buildUpObjectiveCSegments:adjustedPath];
-        [classDump sortObjectiveCSegments];
-
-        if ([classDump shouldGenerateHeaders] == NO)
-            print_header();
-
-        print_unknown_struct_typedef();
-
-        //[classDump debugSectionOverlap];
-
-        if ([[classDump sections] count] > 0) {
-            if (shouldExpandFrameworks == NO) {
-                [classDump showSingleModule:[classDump objectiveCSectionWithName:CDSECT_MODULE_INFO filename:adjustedPath]];
-            } else {
-                [classDump showAllModules];
-            }
-        }
-
-        [classDump release];
 #endif
     }
 

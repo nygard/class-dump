@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.14 2004/01/16 21:54:38 nygard Exp $
+// $Id: class-dump.h,v 1.15 2004/02/02 22:40:31 nygard Exp $
 //
 
 //
@@ -43,14 +43,6 @@
     NSMutableDictionary *protocols;
 
     struct {
-        unsigned int shouldShowIvarOffsets:1;
-        unsigned int shouldShowMethodAddresses:1;
-        unsigned int shouldExpandProtocols:1;
-        unsigned int shouldMatchRegex:1;
-        unsigned int shouldSort:1;
-        unsigned int shouldSortClasses:1;
-        unsigned int shouldGenerateHeaders:1;
-
         // Not really used yet:
         unsigned int shouldSwapFat:1;
         unsigned int shouldSwapMachO:1;
@@ -61,27 +53,6 @@
 
 - (id)initWithPath:(NSString *)aPath;
 - (void)dealloc;
-
-- (BOOL)shouldShowIvarOffsets;
-- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
-
-- (BOOL)shouldShowMethodAddresses;
-- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
-
-- (BOOL)shouldExpandProtocols;
-- (void)setShouldExpandProtocols:(BOOL)newFlag;
-
-- (BOOL)shouldSort;
-- (void)setShouldSort:(BOOL)newFlag;
-
-- (BOOL)shouldSortClasses;
-- (void)setShouldSortClasses:(BOOL)newFlag;
-
-- (BOOL)shouldGenerateHeaders;
-- (void)setShouldGenerateHeaders:(BOOL)newFlag;
-
-- (BOOL)shouldMatchRegex;
-- (void)setShouldMatchRegex:(BOOL)newFlag;
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesCString:(const char *)str;
