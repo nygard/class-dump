@@ -35,6 +35,7 @@
 - (CDSegmentCommand *)segmentWithName:(NSString *)segmentName;
 - (CDSegmentCommand *)segmentContainingAddress:(unsigned long)vmaddr;
 - (const void *)pointerFromVMAddr:(unsigned long)vmaddr;
+- (const void *)pointerFromVMAddr:(unsigned long)vmaddr segmentName:(NSString *)aSegmentName;
 - (NSString *)stringFromVMAddr:(unsigned long)vmaddr;
 
 - (const void *)bytes;

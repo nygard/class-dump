@@ -156,12 +156,17 @@
     NSLog(@"busted");
 }
 
-- (void)showWarning:(unsigned long)vmaddr;
+- (void)showWarning:(NSString *)aWarning;
 {
-    NSLog(@"Warning: %p not in an __OBJC section", vmaddr);
+    NSLog(@"Warning: %@", aWarning);
 }
 
 - (const void *)pointerFromVMAddr:(unsigned long)vmaddr;
+{
+    return [self pointerFromVMAddr:vmaddr segmentName:nil]; // Any segment is fine
+}
+
+- (const void *)pointerFromVMAddr:(unsigned long)vmaddr segmentName:(NSString *)aSegmentName;
 {
     CDSegmentCommand *segment;
     const void *ptr;
@@ -175,12 +180,10 @@
         NSLog(@"pointerFromVMAddr:, vmaddr: %p, segment: %@", vmaddr, segment);
     }
     //NSLog(@"[segment name]: %@", [segment name]);
-#if 0
-    if ([[segment name] isEqual:@"__OBJC"] == NO) {
-        [self showWarning:vmaddr];
-        //return NULL;
+    if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
+        [self showWarning:[NSString stringWithFormat:@"addr %p in segment %@, required segment is %@", vmaddr, [segment name], aSegmentName]];
+        return NULL;
     }
-#endif
 #if 0
     NSLog(@"vmaddr: %p, [data bytes]: %p, [segment fileoff]: %d, [segment segmentOffsetForVMAddr:vmaddr]: %d",
           vmaddr, [data bytes], [segment fileoff], [segment segmentOffsetForVMAddr:vmaddr]);
@@ -195,6 +198,8 @@
     const void *ptr;
 
     ptr = [self pointerFromVMAddr:vmaddr];
+    if (ptr == NULL)
+        return nil;
 
     return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
 }

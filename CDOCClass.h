@@ -31,4 +31,6 @@
 
 - (NSString *)description;
 
+- (NSString *)formattedString;
+
 @end

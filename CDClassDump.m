@@ -7,6 +7,7 @@
 #import "CDOCMethod.h"
 #import "CDOCModule.h"
 #import "CDOCProtocol.h"
+#import "CDOCSymtab.h"
 #import "CDSection.h"
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
@@ -19,6 +20,7 @@
         return nil;
 
     machOFile = [aMachOFile retain];
+    modules = [[NSMutableArray alloc] init];
 
     return self;
 }
@@ -26,6 +28,8 @@
 - (void)dealloc;
 {
     [machOFile release];
+    [modules release];
+
     [super dealloc];
 }
 
@@ -72,27 +76,39 @@
         aModule = [[CDOCModule alloc] init];
         [aModule setVersion:ptr->version];
         [aModule setName:[machOFile stringFromVMAddr:ptr->name]];
-        [aModule setSymtab:ptr->symtab];
         NSLog(@"----------------------------------------------------------------------");
+        [aModule setSymtab:[self processSymtab:ptr->symtab]];
         NSLog(@"aModule: %@", aModule);
-        [self processSymtab:ptr->symtab];
+        [modules addObject:aModule];
         [aModule release];
     }
 }
 
-- (void)processSymtab:(unsigned long)symtab;
+- (CDOCSymtab *)processSymtab:(unsigned long)symtab;
 {
+    CDOCSymtab *aSymtab;
+
     // Huh?  The case of the struct 'cD_objc_symtab' doesn't matter?
     const struct cd_objc_symtab *ptr;
     const unsigned long *defs;
     int index, defIndex;
+    NSMutableArray *classes, *categories;
 
     // class pointer: 0xa2df7fdc
 
     // TODO: Should we convert to pointer here or in caller?
-    ptr = [machOFile pointerFromVMAddr:symtab];
-    NSLog(@"%s, symtab: %p, ptr: %p", _cmd, symtab, ptr);
+    ptr = [machOFile pointerFromVMAddr:symtab segmentName:@"__OBJC"];
+    if (ptr == NULL) {
+        NSLog(@"Skipping this symtab.");
+        return nil;
+    }
 
+    aSymtab = [[[CDOCSymtab alloc] init] autorelease];
+    // TODO (2003-12-08): I think it would be better just to let the symtab have mutable arrays
+    classes = [[NSMutableArray alloc] init];
+    categories = [[NSMutableArray alloc] init];
+
+    NSLog(@"%s, symtab: %p, ptr: %p", _cmd, symtab, ptr);
     NSLog(@"sel_ref_cnt: %p, refs: %p, cls_def_count: %d, cat_def_count: %d", ptr->sel_ref_cnt, ptr->refs, ptr->cls_def_count, ptr->cat_def_count);
 
     //defs = &ptr->class_pointer;
@@ -108,12 +124,14 @@
             NSLog(@"defs[%d]: %p", index, *defs);
             aClass = [self processClassDefinition:*defs];
             NSLog(@"aClass: %@", aClass);
+            NSLog(@"%@", [aClass formattedString]);
+            [classes addObject:aClass];
         }
     }
 
     if (ptr->cat_def_count > 0) {
         NSLog(@"%d categories:", ptr->cat_def_count);
-        NSLog(@"Later.");
+        //NSLog(@"Later.");
 #if 1
         for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
             NSLog(@"defs[%d]: %p", index, *defs);
@@ -121,6 +139,13 @@
         }
 #endif
     }
+
+    [aSymtab setClasses:[NSArray arrayWithArray:classes]];
+
+    [classes release];
+    [categories release];
+
+    return aSymtab;
 }
 
 - (CDOCClass *)processClassDefinition:(unsigned long)defRef;

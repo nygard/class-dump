@@ -1,7 +1,8 @@
 #import <Foundation/NSObject.h>
 
+@class NSMutableArray;
 @class CDMachOFile;
-@class CDOCClass;
+@class CDOCClass, CDOCSymtab;
 
 // Section: __module_info
 struct cd_objc_module {
@@ -87,6 +88,7 @@ struct cd_objc_protocol
 @interface CDClassDump2 : NSObject
 {
     CDMachOFile *machOFile;
+    NSMutableArray *modules;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
@@ -95,7 +97,7 @@ struct cd_objc_protocol
 - (void)doSomething;
 
 - (void)processModules;
-- (void)processSymtab:(unsigned long)symtab;
+- (CDOCSymtab *)processSymtab:(unsigned long)symtab;
 - (CDOCClass *)processClassDefinition:(unsigned long)defRef;
 - (void)processCategoryDefinition:(unsigned long)defRef;
 

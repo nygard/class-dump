@@ -1,11 +1,13 @@
 #import <Foundation/NSObject.h>
 
+@class CDOCSymtab;
+
 @interface CDOCModule : NSObject
 {
     unsigned long version;
     //unsigned long size; // Not really relevant here
     NSString *name;
-    unsigned long symtab;
+    CDOCSymtab *symtab;
 }
 
 - (id)init;
@@ -17,8 +19,8 @@
 - (NSString *)name;
 - (void)setName:(NSString *)newName;
 
-- (unsigned long)symtab;
-- (void)setSymtab:(unsigned long)newSymtab;
+- (CDOCSymtab *)symtab;
+- (void)setSymtab:(CDOCSymtab *)newSymtab;
 
 - (NSString *)description;
 

@@ -1,6 +1,7 @@
 #import "CDOCModule.h"
 
 #import <Foundation/Foundation.h>
+#import "CDOCSymtab.h"
 
 @implementation CDOCModule
 
@@ -11,7 +12,7 @@
 
     version = 0;
     name = nil;
-    symtab = 0;
+    symtab = nil;
 
     return self;
 }
@@ -19,6 +20,8 @@
 - (void)dealloc;
 {
     [name release];
+    [symtab release];
+
     [super dealloc];
 }
 
@@ -46,19 +49,23 @@
     name = [newName retain];
 }
 
-- (unsigned long)symtab;
+- (CDOCSymtab *)symtab;
 {
     return symtab;
 }
 
-- (void)setSymtab:(unsigned long)newSymtab;
+- (void)setSymtab:(CDOCSymtab *)newSymtab;
 {
-    symtab = newSymtab;
+    if (newSymtab == symtab)
+        return;
+
+    [symtab release];
+    symtab = [newSymtab retain];
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, version: %d", NSStringFromClass([self class]), name, version];
+    return [NSString stringWithFormat:@"[%@] name: %@, version: %d, symtab: %@", NSStringFromClass([self class]), name, version, symtab];
 }
 
 @end

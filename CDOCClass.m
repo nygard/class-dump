@@ -98,4 +98,10 @@
     return [NSString stringWithFormat:@"[%@] name: %@, superClassName: %@", NSStringFromClass([self class]), name, superClassName];
 }
 
+- (NSString *)formattedString;
+{
+    return [NSString stringWithFormat:@"@interface %@ : %@\n{\n // ivars\n}\n\n%@\n%@\n@end\n\n",
+                     name, superClassName, classMethods, instanceMethods];
+}
+
 @end
