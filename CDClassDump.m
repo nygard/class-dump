@@ -59,8 +59,8 @@
     CDMachOFile *aMachOFile;
     CDObjCSegmentProcessor *aProcessor;
 
-    NSLog(@" > %s", _cmd);
-    NSLog(@"aFilename: %@", aFilename);
+    //NSLog(@" > %s", _cmd);
+    //NSLog(@"aFilename: %@", aFilename);
 
     aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
     [aMachOFile setDelegate:self];
@@ -77,7 +77,7 @@
 
     [aMachOFile release];
 
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 }
 
 - (void)doSomething;
@@ -225,30 +225,30 @@
 {
     CDMachOFile *aMachOFile;
 
-    NSLog(@" > %s", _cmd);
-    NSLog(@"anID: %@", anID);
+    //NSLog(@" > %s", _cmd);
+    //NSLog(@"anID: %@", anID);
 
     aMachOFile = [machOFilesByID objectForKey:anID];
     if (aMachOFile == nil) {
         [self processFilename:anID];
         aMachOFile = [machOFilesByID objectForKey:anID];
     }
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 
     return aMachOFile;
 }
 
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 {
-    NSLog(@" > %s", _cmd);
-    NSLog(@"aDylibCommand: %@", aDylibCommand);
+    //NSLog(@" > %s", _cmd);
+    //NSLog(@"aDylibCommand: %@", aDylibCommand);
 
     if ([aDylibCommand cmd] == LC_LOAD_DYLIB && shouldProcessRecursively == YES) {
-        NSLog(@"Load it!");
+        //NSLog(@"Load it!");
         [self machOFileWithID:[aDylibCommand name]];
     }
 
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 }
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
