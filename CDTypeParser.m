@@ -1,5 +1,6 @@
 //
-// $Id: CDTypeParser.m,v 1.18 2004/01/06 02:05:53 nygard Exp $
+// $Id: CDTypeParser.m,v 1.19 2004/01/06 02:06:29 nygard Exp $
+// $Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.19 2004/01/06 02:06:29 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for exmaing the
