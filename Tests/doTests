@@ -1,11 +1,26 @@
 #!/bin/zsh
 
-mkdir /tmp/cdt
-mkdir /tmp/cdt/old
-mkdir /tmp/cdt/new
+TESTDIR=/tmp/cdt
+TESTDIR_OLD=$TESTDIR/old
+TESTDIR_NEW=$TESTDIR/new
 
-foreach i (/System/Library/Frameworks/*.framework) do
+OLD_CD=/usr/local/bin/class-dump
+NEW_CD=/Local/Public/nygard/Products/class-dump
+
+# These don't work and I don't understand why not.
+#OLD_CD_ARGS=-s -S
+#NEW_CD_ARGS=-s -S
+
+mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
+
+foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework) do
     echo $i `basename $i .framework`
-    /usr/local/bin/class-dump -s -S $i >& /tmp/cdt/old/`basename $i .framework`.txt
-    /Local/Public/nygard/Products/class-dump -s -S $i >& /tmp/cdt/new/`basename $i .framework`.txt
+    $OLD_CD -s $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
+    $NEW_CD $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
+done
+
+foreach i (/Applications/*.app /Applications/Utilities/*.app) do
+    echo $i `basename $i .app`
+    $OLD_CD -s $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
+    $NEW_CD $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
 done
