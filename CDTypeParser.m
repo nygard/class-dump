@@ -13,7 +13,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.25 2004/01/18 23:41:57 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.26 2004/01/20 05:01:54 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -124,23 +124,18 @@ NSString *CDTokenDescription(int token)
     NSString *number;
 
     methodTypes = [NSMutableArray array];
+
     // Has to have at least one pair for the return type;
     // Probably needs at least two more, for object and selector
-    // TODO (2003-12-19): Replace with do/while.
 
-    type = [self _parseType];
-    number = [self parseNumber];
-    aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
-    [methodTypes addObject:aMethodType];
-    [aMethodType release];
-
-    while ([self isLookaheadInTypeStartSet] == YES) {
+    do {
         type = [self _parseType];
         number = [self parseNumber];
+
         aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
         [methodTypes addObject:aMethodType];
         [aMethodType release];
-    }
+    } while ([self isLookaheadInTypeStartSet] == YES);
 
     return methodTypes;
 }
