@@ -9,7 +9,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.17 2004/02/02 21:37:19 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.18 2004/02/02 23:24:44 nygard Exp $");
 
 @implementation CDOCIvar
 
@@ -62,6 +62,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.17 2004/02/02
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
+        if ([aClassDump shouldShowIvarOffsets] == YES) {
+            [resultString appendFormat:@"\t// %d = 0x%x", offset, offset];
+        }
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
 }
