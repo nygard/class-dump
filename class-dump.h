@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.8 2003/04/03 05:40:55 nygard Exp $
+// $Id: class-dump.h,v 1.9 2003/09/05 20:30:25 nygard Exp $
 //
 
 //
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  class-dump at codethecode.com
 //
 
 #import <Foundation/NSObject.h>

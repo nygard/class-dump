@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.15 2003/02/20 04:38:49 nygard Exp $
+// $Id: MappedFile.m,v 1.16 2003/09/05 20:30:24 nygard Exp $
 //
 
 //
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  class-dump at codethecode.com
 //
 
 #import "MappedFile.h"

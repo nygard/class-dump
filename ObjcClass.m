@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.13 2002/12/19 07:06:08 nygard Exp $
+// $Id: ObjcClass.m,v 1.14 2003/09/05 20:30:25 nygard Exp $
 //
 
 //
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  class-dump at codethecode.com
 //
 
 #import "ObjcClass.h"
