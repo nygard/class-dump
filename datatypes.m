@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.17 2003/12/12 04:01:38 nygard Exp $
+// $Id: datatypes.m,v 1.18 2003/12/14 23:45:37 nygard Exp $
 //
 
 //
@@ -64,7 +64,8 @@ static NSString *simple_type_names[] =
     @"Class",
     @"SEL",
     @"NXAtom",
-    @"void /*UNKNOWN*/",
+//    @"void /*UNKNOWN*/",
+    @"UNKNOWN", // For easier regression testing.  TODO (2003-12-14): Change this back to void
     @"const",
     @"in",
     @"inout",
