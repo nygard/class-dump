@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.28 2004/01/08 06:10:10 nygard Exp $
+// $Id: CDClassDump.h,v 1.29 2004/01/10 21:54:58 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -8,11 +8,13 @@
 
 #import <Foundation/NSObject.h>
 
+#import "CDStructRegistrationProtocol.h"
+
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
 @class CDStructureTable, CDType, CDTypeFormatter;
 
-@interface CDClassDump2 : NSObject
+@interface CDClassDump2 : NSObject <CDStructRegistration>
 {
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
@@ -32,6 +34,9 @@
 - (BOOL)shouldProcessRecursively;
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 
+- (CDStructureTable *)structureTable;
+- (CDStructureTable *)unionTable;
+
 - (CDTypeFormatter *)ivarTypeFormatter;
 - (CDTypeFormatter *)methodTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
@@ -48,5 +53,6 @@
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
+- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 @end

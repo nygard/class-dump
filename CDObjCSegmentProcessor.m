@@ -19,7 +19,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.10 2004/01/08 06:10:11 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.11 2004/01/10 21:54:59 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -96,7 +96,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     [allClasses release];
 }
 
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
 {
     int count, index;
     NSArray *protocolNames;
@@ -118,33 +118,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
         CDOCProtocol *aProtocol;
 
         aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol registerStructsWithObject:anObject];
-    }
-}
-
-- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject;
-{
-    int count, index;
-    NSArray *protocolNames;
-
-    count = [modules count];
-    for (index = 0; index < count; index++) {
-        NSArray *moduleClasses, *moduleCategories;
-
-        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
-        [moduleClasses makeObjectsPerformSelector:_cmd withObject:anObject];
-
-        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
-        [moduleCategories makeObjectsPerformSelector:_cmd withObject:anObject];
-    }
-
-    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    count = [protocolNames count];
-    for (index = 0; index < count; index++) {
-        CDOCProtocol *aProtocol;
-
-        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol registerUnionsWithObject:anObject];
+        [aProtocol registerStructuresWithObject:anObject];
     }
 }
 

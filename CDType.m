@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.22 2004/01/10 02:29:26 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.23 2004/01/10 21:55:00 nygard Exp $");
 
 @implementation CDType
 
@@ -456,6 +456,8 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.22 2004/01/10 0
       case '(':
           if (typeName == nil) {
               return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
+          } else if ([members count] == 0) {
+              return [NSString stringWithFormat:@"(%@)", typeName];
           } else {
               return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
           }
@@ -516,59 +518,27 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.22 2004/01/10 0
     return str;
 }
 
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 {
     if (subtype != nil)
-        [subtype registerStructsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [subtype registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
-    // TODO (2004-01-07): This isn't quite right either.  It won't pick up structs within unions.
-    if (type == '{' && [members count] > 0) {
-        NSString *typeString;
-
-        typeString = [self typeString];
-        [anObject registerStruct:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else if (type == '(') {
-#warning This is the next problem area
-        // TODO (2004-01-09): This still doesn't count references properly.  Witness CDAnonymousUnion1.
-        [self registerMemberStructures:'{' withObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    if ((type == '{' || type == '(') && [members count] > 0) {
+        [anObject registerStructure:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
     }
 }
 
-- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-{
-    if (subtype != nil)
-        [subtype registerUnionsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-
-    // TODO (2004-01-07): This isn't quite right either.  It won't pick up structs within unions.
-    if (type == '(' && [members count] > 0) {
-        NSString *typeString;
-
-        typeString = [self typeString];
-        [anObject registerStruct:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else if (type == '{') {
-        // TODO (2004-01-09): This still doesn't count references properly.  Witness CDAnonymousUnion1.
-        [self registerMemberStructures:'(' withObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    }
-}
-
-- (void)registerMemberStructures:(int)structureType withObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 {
     int count, index;
 
     if (subtype != nil)
-        [subtype registerMemberStructures:structureType withObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [subtype registerMemberStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
     count = [members count];
 
-    if (structureType == '{') {
-        for (index = 0; index < count; index++)
-            [[members objectAtIndex:index] registerStructsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else if (structureType == '(') {
-        for (index = 0; index < count; index++)
-            [[members objectAtIndex:index] registerUnionsWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else {
-        NSLog(@"%s, Unknown structure type: %d", _cmd, structureType);
-    }
+    for (index = 0; index < count; index++)
+        [[members objectAtIndex:index] registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 }
 
 - (BOOL)isEqual:(CDType *)otherType;
@@ -579,19 +549,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.22 2004/01/10 0
 - (BOOL)isStructureEqual:(CDType *)otherType;
 {
     return [[self bareTypeString] isEqual:[otherType bareTypeString]];
-}
-
-- (int)namedMemberCount;
-{
-    int count, index;
-    int namedCount = 0;
-
-    count = [members count];
-    for (index = 0; index < count; index++)
-        if ([[members objectAtIndex:index] variableName] != nil)
-            namedCount++;
-
-    return namedCount;
 }
 
 // Merge struct/union member names

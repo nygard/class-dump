@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.13 2004/01/10 02:29:26 nygard Exp $
+// $Id: CDType.h,v 1.14 2004/01/10 21:55:00 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -59,13 +59,11 @@
 - (NSString *)_typeStringWithVariableNames:(BOOL)shouldUseVariableNames;
 - (NSString *)_typeStringForMembersWithVariableNames:(BOOL)shouldUseVariableNames;
 
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-- (void)registerMemberStructures:(int)structureType withObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 - (BOOL)isEqual:(CDType *)otherType;
 - (BOOL)isStructureEqual:(CDType *)otherType;
-- (int)namedMemberCount;
 
 - (void)mergeWithType:(CDType *)otherType;
 

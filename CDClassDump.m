@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01/10 02:29:26 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.40 2004/01/10 21:54:58 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -29,12 +29,11 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01
     objCSegmentProcessors = [[NSMutableArray alloc] init];
 
     structureTable = [[CDStructureTable alloc] init];
-    [structureTable setStructureType:'{'];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
 
     unionTable = [[CDStructureTable alloc] init];
-    [unionTable setStructureType:'('];
     [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
+    [unionTable setShouldDebug:YES];
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
     [ivarTypeFormatter setShouldExpand:NO];
@@ -80,6 +79,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 {
     shouldProcessRecursively = newFlag;
+}
+
+- (CDStructureTable *)structureTable;
+{
+    return structureTable;
+}
+
+- (CDStructureTable *)unionTable;
+{
+    return unionTable;
 }
 
 - (CDTypeFormatter *)ivarTypeFormatter;
@@ -135,8 +144,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01
 
         count = [objCSegmentProcessors count];
         for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] registerStructsWithObject:structureTable];
-            [[objCSegmentProcessors objectAtIndex:index] registerUnionsWithObject:unionTable];
+            [[objCSegmentProcessors objectAtIndex:index] registerStructuresWithObject:self];
         }
 
         [structureTable doneRegistration];
@@ -213,7 +221,13 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 {
-    return [structureTable replacementForType:aType];
+    if ([aType type] == '{')
+        return [structureTable replacementForType:aType];
+
+    if ([aType type] == '(')
+        return [unionTable replacementForType:aType];
+
+    return nil;
 }
 
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
@@ -239,6 +253,17 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.39 2004/01
         searchType = structType;
 
     return [targetTable typedefNameForStructureType:searchType];
+}
+
+- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+{
+    if ([aStructure type] == '{') {
+        [structureTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    } else if ([aStructure type] == '(') {
+        [unionTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    } else {
+        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
+    }
 }
 
 @end

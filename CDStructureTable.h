@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.3 2004/01/10 02:29:26 nygard Exp $
+// $Id: CDStructureTable.h,v 1.4 2004/01/10 21:54:59 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -13,7 +13,7 @@
 @class NSMutableDictionary, NSMutableSet, NSMutableString;
 @class CDType, CDTypeFormatter;
 
-@interface CDStructureTable : NSObject <CDStructRegistration>
+@interface CDStructureTable : NSObject
 {
     NSMutableDictionary *structuresByName;
 
@@ -24,18 +24,21 @@
     NSMutableDictionary *replacementTypes;
     NSMutableSet *forcedTypedefs;
 
-    int structureType;
     NSString *anonymousBaseName;
+
+    struct {
+        unsigned int shouldDebug:1;
+    } flags;
 }
 
 - (id)init;
 - (void)dealloc;
 
-- (int)structureType;
-- (void)setStructureType:(int)newStructureType;
-
 - (NSString *)anonymousBaseName;
 - (void)setAnonymousBaseName:(NSString *)newName;
+
+- (BOOL)shouldDebug;
+- (void)setShouldDebug:(BOOL)newFlag;
 
 - (void)doneRegistration;
 
@@ -43,6 +46,7 @@
 - (void)logReplacementTypes;
 - (void)logNamedStructures;
 - (void)logAnonymousStructures;
+- (void)logForcedTypedefs;
 
 - (void)processIsomorphicStructures;
 - (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
@@ -56,6 +60,7 @@
 - (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
-- (void)registerStruct:(CDType *)structType name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
+             usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 @end

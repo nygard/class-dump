@@ -1,5 +1,5 @@
 //
-// $Id: CDOCProtocol.h,v 1.12 2004/01/08 06:10:10 nygard Exp $
+// $Id: CDOCProtocol.h,v 1.13 2004/01/10 21:54:59 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -42,8 +42,7 @@
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
-- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
 
 - (NSString *)sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;

@@ -12,7 +12,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.21 2004/01/08 06:10:10 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.22 2004/01/10 21:54:59 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -100,12 +100,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.21 2004/01/0
     [resultString appendString:@"@end\n\n"];
 }
 
-- (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
 {
     int count, index;
     CDTypeParser *parser;
 
-    [super registerStructsWithObject:anObject];
+    [super registerStructuresWithObject:anObject];
 
     count = [ivars count];
     for (index = 0; index < count; index++) {
@@ -113,25 +113,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.21 2004/01/0
 
         parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
         structType = [parser parseType];
-        [structType registerStructsWithObject:anObject usedInMethod:NO countReferences:YES];
-        [parser release];
-    }
-}
-
-- (void)registerUnionsWithObject:(id <CDStructRegistration>)anObject;
-{
-    int count, index;
-    CDTypeParser *parser;
-
-    [super registerUnionsWithObject:anObject];
-
-    count = [ivars count];
-    for (index = 0; index < count; index++) {
-        CDType *structType; // TODO (2004-01-05): This could be any type, not just a struct type
-
-        parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
-        structType = [parser parseType];
-        [structType registerUnionsWithObject:anObject usedInMethod:NO countReferences:YES];
+        [structType registerStructuresWithObject:anObject usedInMethod:NO countReferences:YES];
         [parser release];
     }
 }
