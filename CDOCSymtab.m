@@ -11,7 +11,7 @@
 #import "CDOCClass.h"
 #import "CDSymbolReferences.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.15 2004/02/02 22:19:00 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.16 2004/02/03 03:10:37 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -118,12 +118,15 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.15 2004/02/
         NSString *referenceString;
         unsigned int referenceIndex;
 
+        aClass = [classes objectAtIndex:index];
+        if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[aClass name]] == NO)
+            continue;
+
         resultString = [[NSMutableString alloc] init];
         [aClassDump appendHeaderToString:resultString];
 
         symbolReferences = [[CDSymbolReferences alloc] init];
 
-        aClass = [classes objectAtIndex:index];
         [aClassDump appendImportForClassName:[aClass superClassName] toString:resultString];
 
         referenceIndex = [resultString length];
@@ -153,12 +156,15 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.15 2004/02/
         NSString *referenceString;
         unsigned int referenceIndex;
 
+        aCategory = [categories objectAtIndex:index];
+        if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[aCategory sortableName]] == NO)
+            continue;
+
         resultString = [[NSMutableString alloc] init];
         [aClassDump appendHeaderToString:resultString];
 
         symbolReferences = [[CDSymbolReferences alloc] init];
 
-        aCategory = [categories objectAtIndex:index];
         [aClassDump appendImportForClassName:[aCategory className] toString:resultString];
 
         referenceIndex = [resultString length];
