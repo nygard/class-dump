@@ -753,31 +753,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		0180A7BF0581AF0600BF5014 = {
-			children = (
-				01497A3705AA4EC30023398B,
-				01C5C1240587C02B0052C696,
-				01C5C1250587C03A0052C696,
-				01C5C1260587C04D0052C696,
-				01C5C162058D5A750052C696,
-				01C5C163058D5A750052C696,
-				01C5C168058D7DE50052C696,
-				01C5C169058D7DE50052C696,
-				01C5C12005855E970052C696,
-				01C5C12105855E970052C696,
-				01DEC42E05A7622B00682FCC,
-				01DEC42F05A7622B00682FCC,
-				01DEC43005A7622B00682FCC,
-				01497A6005AD0BAC0023398B,
-				01497A6105AD0BAC0023398B,
-				012934DA05CEE31B00E843DB,
-				012934DB05CEE31B00E843DB,
-			);
-			isa = PBXGroup;
-			name = "New stuff";
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		0180A7CA0581C90700BF5014 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1169,6 +1144,7 @@
 			);
 			isa = PBXGroup;
 			name = "Mach-O";
+			path = "";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1191,6 +1167,7 @@
 			);
 			isa = PBXGroup;
 			name = "Objective-C";
+			path = "";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1229,18 +1206,6 @@
 			);
 			isa = PBXGroup;
 			name = Extensions;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		01C5C1280587C0830052C696 = {
-			children = (
-				03070CB3FF009A5FC0A80A02,
-				03070CA9FF009A5FC0A80A02,
-				03070CB5FF009A5FC0A80A02,
-				03070CABFF009A5FC0A80A02,
-			);
-			isa = PBXGroup;
-			name = "Yucky old stuff";
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2091,44 +2056,27 @@
 		};
 		03070CA8FF009A5FC0A80A02 = {
 			children = (
-				0180A7BF0581AF0600BF5014,
+				01497A3705AA4EC30023398B,
 				01C5C1270587C0740052C696,
-				01C5C1280587C0830052C696,
+				01C5C1240587C02B0052C696,
+				01C5C1250587C03A0052C696,
+				01C5C1260587C04D0052C696,
+				01C5C162058D5A750052C696,
+				01C5C163058D5A750052C696,
+				01C5C168058D7DE50052C696,
+				01C5C169058D7DE50052C696,
+				01C5C12005855E970052C696,
+				01C5C12105855E970052C696,
+				01497A6005AD0BAC0023398B,
+				01497A6105AD0BAC0023398B,
+				012934DA05CEE31B00E843DB,
+				012934DB05CEE31B00E843DB,
+				01DEC42E05A7622B00682FCC,
+				01DEC42F05A7622B00682FCC,
+				01DEC43005A7622B00682FCC,
 			);
 			isa = PBXGroup;
 			name = Classes;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CA9FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = MappedFile.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CABFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = ObjcClass.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CB3FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = MappedFile.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CB5FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = ObjcClass.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
