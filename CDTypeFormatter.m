@@ -57,7 +57,7 @@
     str = string_from_method_type(name, result);
     if (str != nil)
         [resultString appendString:str];
-    [resultString appendString:@";"]; // TODO (2003-12-18): Leave this to caller so that we can just return str.
+    //[resultString appendString:@";"]; // TODO (2003-12-18): Leave this to caller so that we can just return str.
 
     free_allocated_methods();
     free_allocated_types();

@@ -61,9 +61,10 @@
     //[resultString appendFormat:@"%@", name];
     formattedString = [CDTypeFormatter formatMethodName:name type:type];
     //NSLog(@"%s, formattedString: '%@'", _cmd, formattedString);
-    if (formattedString != nil)
+    if (formattedString != nil) {
         [resultString appendString:formattedString];
-    else
+        [resultString appendString:@";"];
+    } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
 }
 
