@@ -6,6 +6,7 @@
 
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
+#import "CDClassDump.h"
 #import "CDMachOFile.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
@@ -19,7 +20,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.16 2004/02/02 21:37:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.17 2004/02/03 03:54:45 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -50,7 +51,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     [self processModules];
 }
 
-- (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
+- (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     int count, index;
     NSMutableArray *allClasses;
@@ -73,6 +74,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
 
     // TODO: Sort protocols by dependency
     // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
+    // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
@@ -89,7 +91,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
         [aProtocol appendToString:resultString classDump:aClassDump symbolReferences:nil];
     }
 
-    [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+    if ([aClassDump shouldSortClasses] == YES)
+        [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+
     count = [allClasses count];
     for (index = 0; index < count; index++)
         [[allClasses objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];

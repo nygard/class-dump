@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.58 2004/02/03 02:54:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.59 2004/02/03 03:54:45 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -393,7 +393,7 @@ static NSMutableSet *wrapperExtensions = nil;
 
     count = [objCSegmentProcessors count];
     for (index = 0; index < count; index++) {
-        [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString classDump:self];
+        [[objCSegmentProcessors objectAtIndex:index] appendFormattedString:resultString classDump:self];
     }
 
     data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
