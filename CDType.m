@@ -11,7 +11,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.34 2004/01/18 02:39:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.35 2004/01/18 02:59:52 nygard Exp $");
 
 @implementation CDType
 
@@ -190,6 +190,15 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.34 2004/01/18 0
 - (NSArray *)members;
 {
     return members;
+}
+
+- (void)setMembers:(NSArray *)newMembers;
+{
+    if (newMembers == members)
+        return;
+
+    [members release];
+    members = [newMembers retain];
 }
 
 - (BOOL)isModifierType;
@@ -603,8 +612,15 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.34 2004/01/18 0
     otherMembers = [otherType members];
     count = [members count];
     otherCount = [otherMembers count];
-    if (count != 0 && otherCount != 0 && otherCount != count) {
-        NSLog(@"Warning: Types have different number of members.  This is bad.");
+
+    // The counts can be zero when we register structures that just have a name.  That happened while I was working on the
+    // structure registration.
+    if (otherCount == 0) {
+        return;
+    } else if (count == 0 && otherCount != 0) {
+        [self setMembers:otherMembers];
+    } else if (count != otherCount) {
+        NSLog(@"Warning: Types have different number of members.  This is bad. (%d vs %d)", count, otherCount);
         NSLog(@"%@ vs %@", [self typeString], [otherType typeString]);
         return;
     }

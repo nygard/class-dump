@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.19 2004/01/18 01:34:57 nygard Exp $
+// $Id: CDType.h,v 1.20 2004/01/18 02:59:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -44,7 +44,9 @@
 
 - (CDType *)subtype;
 - (CDTypeName *)typeName;
+
 - (NSArray *)members;
+- (void)setMembers:(NSArray *)newMembers;
 
 - (int)typeIgnoringModifiers;
 
