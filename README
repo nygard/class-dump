@@ -6,9 +6,9 @@ Version 2 is a re-implementation of Eric P. Scott's class-dump, and
 works with the frameworks in Openstep 4.x.
 
 The source compiles on Nextstep 3.3 with Foundation, Openstep, and
-OS X dp4. 
+Rhapsody DR2, and OS X dp4. 
 
-    class-dump-2.1.3-bs.tar.gz        (OS X dp4)
+    class-dump-2.1.2-PI-bs.tar.gz     (Rhapsody DR2)
     class-dump.2.1.2.m.NIS.bs.tar.gz  (Openstep)
     class-dump.2.1.2.NIHS.bs.tar.gz   (Nextstep)
 
@@ -17,22 +17,8 @@ Compiling
     Bison is required to compile this.  There should be no warnings.
 
     To compile first copy the PB.project and Makefiles from one
-    of the Nextstep or Openstep directories into the
-    main source directory and then build it.  For OSX, just use
-    the new project builder file.
-
-Differences between 2.1.4 and 2.1.3
-
-    - It now understands framework install names and the framework
-      search path, so you should be able to run it on apps or
-      frameworks where the install name of the frameworks is not where
-      the framework exists in the filesystem.  The Omni frameworks,
-      for example, change the install name.
-    - You can set the ClassDumpDebugFrameworkPaths environment variable
-      to see the steps it's going through to find the frameworks.  It
-      spits out a lot of stuff, but it may be useful for someone.  With
-      zsh, you can do this:
-          ClassDumpDebugFrameworkPaths=YES class-dump /System/Applications/MailViewer.app
+    of the Nextstep, Openstep, Rhapsody or OSX directories into the
+    main source directory and then build it.
 
 Differences between 2.1.3 and 2.1.2
 
@@ -42,7 +28,7 @@ Differences between 2.1.3 and 2.1.2
     - The build on OS X defines NS_TARGET_MAJOR as 5, this needs
       to be set in order to get the new code.
 
-Differences between 2.1.2 and 2.1.1
+Differences between 2.1.1 and 2.1.2
 
     - Tom Hageman has provided the changes to make it work with object
       files and bundles.  In the previous version, the output was empty.
@@ -50,7 +36,7 @@ Differences between 2.1.2 and 2.1.1
       formatting a method.  This is most likely triggered by incompatible
       current versions of frameworks.
 
-Differences between 2.1.1 and 2.1.0
+Differences between 2.1.0 and 2.1.1
 
     - Compiles under Rhapsody, Openstep and Foundation based Nextstep
       3.3.  Tom Hageman provided the changes to get it working with
@@ -60,7 +46,7 @@ Differences between 2.1.1 and 2.1.0
       work as before with text strings, but you can, for example,
       specify -C 'View|Window' to match classes with both strings.
 
-Differences between 2.1.0 and 2.0
+Differences between 2.0 and 2.1.0
 
     - The -a option has been split into -a, which just shows instance
       variable offsets, and -A, which shows method addresses.
@@ -120,4 +106,4 @@ Known problems
 
 Comments and suggestions are welcomed.
 
-Steve Nygard <nygard@omnigroup.com>
+Steve Nygard <nygard@telusplanet.net>

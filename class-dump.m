@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.1 1999/07/31 03:32:26 nygard Exp $
+// $Id: class-dump.m,v 1.1.1.1.2.1 2000/06/23 23:45:07 nygard Exp $
 //
 
 //
@@ -84,7 +84,7 @@ struct dylib_command {
 
 //----------------------------------------------------------------------
 
-#define CLASS_DUMP_VERSION "2.1.2"
+#define CLASS_DUMP_VERSION "2.1.3"
 
 int expand_structures_flag = 0;
 int char_star_flag = 0;
@@ -126,13 +126,19 @@ int section_count = 0;
 #define SEC_CLS_METH       "__cls_meth"
 #define SEC_INST_METH      "__inst_meth"
 #define SEC_META_CLASS     "__meta_class"
-#define SEC_CLASS_NAMES    "__class_names"
 #define SEC_MODULE_INFO    "__module_info"
 #define SEC_CAT_CLS_METH   "__cat_cls_meth"
 #define SEC_INSTANCE_VARS  "__instance_vars"
 #define SEC_CAT_INST_METH  "__cat_inst_meth"
+#if NS_TARGET_MAJOR >= 5
+#define SEC_CLASS_NAMES    "__cstring"
+#define SEC_METH_VAR_TYPES "__cstring"
+#define SEC_METH_VAR_NAMES "__cstring"
+#else
+#define SEC_CLASS_NAMES    "__class_names"
 #define SEC_METH_VAR_TYPES "__meth_var_types"
 #define SEC_METH_VAR_NAMES "__meth_var_names"
+#endif
 
 //======================================================================
 
@@ -182,6 +188,7 @@ void process_dylib_command (void *start, void *ptr);
 void process_fvmlib_command (void *start, void *ptr);
 void process_segment_command (void *start, void *ptr, char *filename);
 void process_objc_segment (void *start, void *ptr, char *filename);
+void process_text_segment (void *start, void *ptr, char *filename);
 
 struct section_info *find_objc_section (char *name, char *filename);
 void *translate_address_to_pointer (long addr, char *section);
@@ -361,6 +368,11 @@ void process_segment_command (void *start, void *ptr, char *filename)
     {
         process_objc_segment (start, ptr, filename);
     }
+    
+    if (!strcmp (name, SEG_TEXT))
+    {
+        process_text_segment (start, ptr, filename);
+    }    
 }
 
 //----------------------------------------------------------------------
@@ -387,8 +399,46 @@ void process_objc_segment (void *start, void *ptr, char *filename)
         objc_sections[section_count].vmaddr = section->addr;
         objc_sections[section_count].size = section->size;
         if (!strcmp(section->segname, SEG_OBJC)) section_count++;
+#if NS_TARGET_MAJOR >= 5
+        if (!strcmp(section->segname, SEG_TEXT) && !strcmp(section->sectname,SEC_CLASS_NAMES))
+            section_count++;
+#endif
         section++;
     }
+}
+
+void process_text_segment (void *start, void *ptr, char *filename)
+{
+    struct segment_command *sc = (struct segment_command *)ptr;
+    struct section *section = (struct section *)(sc + 1);
+    int l;
+
+    // In the text segment, we only want to extract the __cstring
+    // section.
+    
+#if NS_TARGET_MAJOR >= 5    
+    for (l = 0; l < sc->nsects; l++)
+    {
+        if (section_count >= MAX_SECTIONS)
+        {
+            printf ("Error: Maximum number of sections reached.\n");
+            return;
+        }
+
+        if (!strcmp(SEC_CLASS_NAMES,section->sectname))
+        {
+            objc_sections[section_count].filename = filename;
+            strncpy (objc_sections[section_count].name, section->sectname, 16);
+            objc_sections[section_count].name[16] = 0;
+            objc_sections[section_count].section = section;
+            objc_sections[section_count].start = start + section->offset;
+            objc_sections[section_count].vmaddr = section->addr;
+            objc_sections[section_count].size = section->size;
+            if (!strcmp(section->segname, SEG_TEXT)) section_count++;
+        }
+        section++;
+    }
+#endif
 }
 
 //----------------------------------------------------------------------
