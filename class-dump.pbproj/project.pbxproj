@@ -48,6 +48,30 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
+		0174482D043BF8E000A8010A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDSectionInfo.h;
+			refType = 4;
+		};
+		0174482E043BF8E000A8010A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = CDSectionInfo.m;
+			refType = 4;
+		};
+		0174482F043BF8E000A8010A = {
+			fileRef = 0174482D043BF8E000A8010A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01744830043BF8E000A8010A = {
+			fileRef = 0174482E043BF8E000A8010A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		019CC2F303DD10C100A8010A = {
 			fileRef = 03070CB1FF009A5FC0A80A02;
 			isa = PBXBuildFile;
@@ -116,6 +140,8 @@
 				03070CAEFF009A5FC0A80A02,
 				03070CB9FF009A5FC0A80A02,
 				03070CAFFF009A5FC0A80A02,
+				0174482D043BF8E000A8010A,
+				0174482E043BF8E000A8010A,
 			);
 			isa = PBXGroup;
 			name = Classes;
@@ -316,6 +342,7 @@
 				03070CD3FF009A5FC0A80A02,
 				019CC2F303DD10C100A8010A,
 				0114A45B0405EB1600A8010A,
+				0174482F043BF8E000A8010A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +410,7 @@
 				03070CDFFF009A5FC0A80A02,
 				03070CE0FF009A5FC0A80A02,
 				0114A45C0405EB1600A8010A,
+				01744830043BF8E000A8010A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

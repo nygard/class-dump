@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.23 2003/02/21 06:04:14 nygard Exp $
+// $Id: class-dump.m,v 1.24 2003/04/03 05:07:22 nygard Exp $
 //
 
 //
@@ -44,6 +44,7 @@
 #include "datatypes.h"
 #import "class-dump.h"
 
+#import "CDSectionInfo.h"
 #import "ObjcThing.h"
 #import "ObjcClass.h"
 #import "ObjcCategory.h"
@@ -59,89 +60,6 @@
 int expand_structures_flag = 0; // This is used in datatypes.m
 
 NSString *current_filename = nil;
-
-@implementation CDSectionInfo
-
-- (id)initWithFilename:(NSString *)aFilename
-                  name:(NSString *)aName
-               section:(struct section *)aSection
-                 start:(void *)aStart
-                vmaddr:(long)aVMAddr
-                  size:(long)aSize;
-{
-    if ([super init] == nil)
-        return nil;
-
-    filename = [aFilename retain];
-    name = [aName retain];
-    section = aSection;
-    start = aStart;
-    vmaddr = aVMAddr;
-    size = aSize;
-
-    return self;
-}
-
-- (void)dealloc;
-{
-    [filename release];
-    [name release];
-
-    [super dealloc];
-}
-
-- (NSString *)filename;
-{
-    return filename;
-}
-
-- (NSString *)name;
-{
-    return name;
-}
-
-- (struct section *)section;
-{
-    return section;
-}
-
-- (void *)start;
-{
-    return start;
-}
-
-- (long)vmaddr;
-{
-    return vmaddr;
-}
-
-- (long)size;
-{
-    return size;
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"%10lx to %10lx [size 0x%08ld] %@ of %s",
-                     vmaddr, vmaddr + size, size,
-                     [name stringByPaddingToLength:16 withString:@" " startingAtIndex:0],
-                     [filename fileSystemRepresentation]];
-}
-
-- (BOOL)containsAddress:(long)anAddress;
-{
-    if (anAddress >= vmaddr && anAddress < vmaddr + size)
-        return YES;
-
-    return NO;
-}
-
-- (void *)translateAddress:(long)anAddress;
-{
-    return start + anAddress - vmaddr;
-}
-
-@end
 
 //----------------------------------------------------------------------
 
@@ -1160,14 +1078,15 @@ int main(int argc, char *argv[])
         [classDump setShouldExpandProtocols:shouldExpandProtocols];
         [classDump setShouldSort:shouldSort];
         [classDump setShouldSortClasses:shouldSortClasses];
-        [classDump buildUpObjectiveCSegments:adjustedPath];
-        if(regexCString != NULL) {
+        if (regexCString != NULL) {
             if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
                 printf("Error with regex: %s\n", [regexErrorMessage cString]);
                 [classDump release];
                 exit(1);
             }
         }
+
+        [classDump buildUpObjectiveCSegments:adjustedPath];
 
         print_header();
 

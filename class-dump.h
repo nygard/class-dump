@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.5 2003/02/21 06:04:14 nygard Exp $
+// $Id: class-dump.h,v 1.6 2003/04/03 05:07:22 nygard Exp $
 //
 
 //
@@ -137,38 +137,7 @@ struct my_objc_prot_inst_meth_list
 //======================================================================
 
 @class NSArray, NSString, NSMutableArray, NSMutableDictionary;
-@class MappedFile, ObjcClass, ObjcCategory;
-
-@interface CDSectionInfo : NSObject
-{
-    NSString *filename;
-    NSString *name;
-    struct section *section;
-    void *start;
-    long vmaddr;
-    long size;
-}
-
-- (id)initWithFilename:(NSString *)aFilename
-                  name:(NSString *)aName
-               section:(struct section *)aSection
-                 start:(void *)aStart
-                vmaddr:(long)aVMAddr
-                  size:(long)aSize;
-- (void)dealloc;
-
-- (NSString *)filename;
-- (NSString *)name;
-- (struct section *)section;
-- (void *)start;
-- (long)vmaddr;
-- (long)size;
-
-- (NSString *)description;
-- (BOOL)containsAddress:(long)anAddress;
-- (void *)translateAddress:(long)anAddress;
-
-@end
+@class CDSectionInfo, MappedFile, ObjcClass, ObjcCategory;
 
 @interface CDClassDump : NSObject
 {
