@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.11 2004/01/20 05:31:43 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.12 2004/01/27 21:22:05 nygard Exp $");
 
 @implementation CDTypeLexer
 
@@ -162,7 +162,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.11 2004/01
     }
 
     if ([scanner scanCharacter:&ch] == YES) {
-        // TODO: I'm just assuming this works.
         if (shouldShowLexing == YES)
             NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, ch, ch);
         return ch;
