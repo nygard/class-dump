@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.28 2003/09/05 20:30:26 nygard Exp $
+// $Id: class-dump.m,v 1.29 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -58,6 +58,7 @@
 #define CLASS_DUMP_VERSION "2.1.6 alpha"
 
 int expand_structures_flag = 0; // This is used in datatypes.m
+int expand_arg_structures_flag = 0;
 
 NSString *current_filename = nil;
 
@@ -140,6 +141,7 @@ NSMutableDictionary *protocols;
     flags.shouldMatchRegex = NO;
     flags.shouldSort = NO;
     flags.shouldSortClasses = NO;
+    flags.shouldGenerateHeaders = NO;
     flags.shouldSwapFat = NO;
     flags.shouldSwapMachO = NO;
 
@@ -208,6 +210,16 @@ NSMutableDictionary *protocols;
 - (void)setShouldSortClasses:(BOOL)newFlag;
 {
     flags.shouldSortClasses = newFlag;
+}
+
+- (BOOL)shouldGenerateHeaders;
+{
+    return flags.shouldGenerateHeaders;
+}
+
+- (void)setShouldGenerateHeaders:(BOOL)newFlag;
+{
+    flags.shouldGenerateHeaders = newFlag;
 }
 
 - (BOOL)shouldMatchRegex;
@@ -474,7 +486,7 @@ NSMutableDictionary *protocols;
     int l;
   
     if (symtab == NULL) {
-        printf("NULL symtab...\n");
+        printf("// NULL symtab...\n");
         return nil;
     }
 
@@ -692,6 +704,11 @@ NSMutableDictionary *protocols;
     NSArray *newClasses;
     int formatFlags;
 
+    // begin wolf
+    id en2, thing2;
+    NSMutableDictionary *categoryByName = [NSMutableDictionary dictionaryWithCapacity:5];
+    // end wolf
+
     if (moduleInfo == nil)
         return;
 
@@ -711,10 +728,12 @@ NSMutableDictionary *protocols;
         currentFile = [mappedFilesByInstallName objectForKey:key];
         installName = [currentFile installName];
         filename = [currentFile filename];
-        if (filename == nil || [installName isEqual:filename] == YES) {
-            printf("\n/*\n * File: %s\n */\n\n", [installName fileSystemRepresentation]);
-        } else {
-            printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], [installName fileSystemRepresentation]);
+        if (flags.shouldGenerateHeaders == NO) {
+            if (filename == nil || [installName isEqual:filename] == YES) {
+                printf("\n/*\n * File: %s\n */\n\n", [installName fileSystemRepresentation]);
+            } else {
+                printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], [installName fileSystemRepresentation]);
+            }
         }
 
         current_filename = key;
@@ -726,6 +745,56 @@ NSMutableDictionary *protocols;
         [classList addObjectsFromArray:newClasses];
         m++;
     }
+
+    //begin wolf
+    if (flags.shouldGenerateHeaders == YES) {
+        printf("Should generate headers...\n");
+#if 0
+        en = [[protocols allKeys] objectEnumerator];
+        while( key = [en nextObject] ) {
+            thing = [protocols objectForKey:key];
+            int old_stdout = dup( 1 );
+            freopen( [[NSString stringWithFormat:@"%@.h", [thing protocolName]] cString], "w", stdout );
+            [thing showDefinition:flags];
+            fclose( stdout );
+            fdopen( old_stdout, "w" );
+        }
+        en = [classList objectEnumerator];
+        while( thing = [en nextObject] ) {
+            if( [thing isKindOfClass:[ObjcCategory class]] ) {
+                NSMutableArray *categoryArray = [categoryByName objectForKey:[thing categoryName]];
+                if( categoryArray ) {
+                    [categoryArray addObject:thing];
+                } else {
+                    [categoryByName setObject:[NSMutableArray arrayWithObject:thing] forKey:[thing categoryName]];
+                }
+            } else {
+                int old_stdout = dup( 1 );
+                freopen( [[NSString stringWithFormat:@"%@.h", [thing className]] cString], "w", stdout );
+                [thing showDefinition:flags];
+                fclose( stdout );
+                fdopen( old_stdout, "w" );
+            }
+        }
+    
+        en = [[categoryByName allKeys] objectEnumerator];
+        while( key = [en nextObject] ) {
+            int old_stdout = dup( 1 );
+            freopen( [[NSString stringWithFormat:@"%@.h", key] cString], "w", stdout );
+        
+            print_header();
+            thing = [categoryByName objectForKey:key];
+            en2 = [thing objectEnumerator];
+            while( thing2 = [en2 nextObject] ) {
+                [thing2 showDefinition:flags];
+            }
+        
+            fclose( stdout );
+            fdopen( old_stdout, "w" );
+        }
+#endif
+    }
+    //end wolf
 
     if (flags.shouldSort == YES)
         en = [[[protocols allKeys] sortedArrayUsingSelector:@selector(compare:)] objectEnumerator];
@@ -971,6 +1040,9 @@ NSMutableDictionary *protocols;
     if (flags.shouldShowMethodAddresses == YES)
         formatFlags |= F_SHOW_METHOD_ADDRESS;
 
+    if (flags.shouldGenerateHeaders == YES)
+        formatFlags |= F_SHOW_IMPORT;
+
     return formatFlags;
 }
 
@@ -985,12 +1057,14 @@ void print_usage(void)
             "Usage: class-dump [-a] [-A] [-e] [-R] [-C regex] [-r] [-S] executable-file\n"
             "        -a  show instance variable offsets\n"
             "        -A  show implementation addresses\n"
-            "        -e  expand structure (and union) definition whenever possible\n"
+            "        -e  expand structure (and union) definition in ivars whenever possible\n"
+            "        -E  expand structure (and union) definition in method arguments whenever possible\n"
             "        -I  sort by inheritance (overrides -S)\n"
             "        -R  recursively expand @protocol <>\n"
             "        -C  only display classes matching regular expression\n"
             "        -r  recursively expand frameworks and fixed VM shared libraries\n"
-            "        -S  sort protocols, classes, and methods\n",
+            "        -S  sort protocols, classes, and methods\n"
+            "        -H  generate header files in current directory\n",
             CLASS_DUMP_VERSION
        );
 }
@@ -1029,6 +1103,7 @@ int main(int argc, char *argv[])
     BOOL shouldExpandFrameworks = NO;
     BOOL shouldSort = NO;
     BOOL shouldSortClasses = NO;
+    BOOL shouldGenerateHeaders = NO;
     char *regexCString = NULL;
   
     if (argc == 1) {
@@ -1036,7 +1111,7 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    while ( (c = getopt(argc, argv, "aAeIRC:rS")) != EOF) {
+    while ( (c = getopt(argc, argv, "aAeIRC:rSH")) != EOF) {
         switch (c) {
           case 'a':
               shouldShowIvarOffsets = YES;
@@ -1048,6 +1123,10 @@ int main(int argc, char *argv[])
 
           case 'e':
               expand_structures_flag = 1;
+              break;
+
+          case 'E':
+              expand_arg_structures_flag = 1;
               break;
 
           case 'R':
@@ -1073,6 +1152,10 @@ int main(int argc, char *argv[])
 
           case 'I':
               shouldSortClasses = YES;
+              break;
+
+          case 'H':
+              shouldGenerateHeaders = YES;
               break;
 
           case '?':
@@ -1108,6 +1191,7 @@ int main(int argc, char *argv[])
         [classDump setShouldExpandProtocols:shouldExpandProtocols];
         [classDump setShouldSort:shouldSort];
         [classDump setShouldSortClasses:shouldSortClasses];
+        [classDump setShouldGenerateHeaders:shouldGenerateHeaders];
         if (regexCString != NULL) {
             if ([classDump setRegex:regexCString errorMessage:&regexErrorMessage] == NO) {
                 printf("Error with regex: %s\n", [regexErrorMessage cString]);
@@ -1119,11 +1203,12 @@ int main(int argc, char *argv[])
         [classDump buildUpObjectiveCSegments:adjustedPath];
         [classDump sortObjectiveCSegments];
 
-        print_header();
+        if ([classDump shouldGenerateHeaders] == NO)
+            print_header();
 
         print_unknown_struct_typedef();
 
-        [classDump debugSectionOverlap];
+        //[classDump debugSectionOverlap];
 
         if ([[classDump sections] count] > 0) {
             if (shouldExpandFrameworks == NO) {

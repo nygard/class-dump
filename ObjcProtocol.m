@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.13 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.14 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -30,6 +30,8 @@
 #import <stdio.h>
 #import <Foundation/Foundation.h>
 #import "ObjcMethod.h"
+
+extern void print_header(void);
 
 @implementation ObjcProtocol
 
@@ -84,6 +86,11 @@
     NSEnumerator *enumerator;
     ObjcMethod *method;
 
+    if (flags & F_SHOW_IMPORT) {
+        print_header();
+        printf("\n");
+    }
+
     printf("@protocol %s", [protocolName cString]);
 
     if ([protocolNames count] > 0) {
@@ -111,7 +118,7 @@
 
     while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
-        if (flags & F_SHOW_METHOD_ADDRESS)
+        if (flags & F_SHOW_METHOD_ADDRESS && [method address] != NULL)
             printf("\t// IMP=0x%08lx", [method address]);
 
         printf("\n");

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.h,v 1.9 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcThing.h,v 1.10 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -30,6 +30,7 @@
 #define F_SORT_METHODS        (1 << 0)
 #define F_SHOW_IVAR_OFFSET    (1 << 1)
 #define F_SHOW_METHOD_ADDRESS (1 << 2)
+#define F_SHOW_IMPORT         (1 << 3)
 
 @class NSString;
 

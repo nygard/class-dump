@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.9 2003/09/05 20:30:25 nygard Exp $
+// $Id: class-dump.h,v 1.10 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -154,6 +154,7 @@ struct my_objc_prot_inst_meth_list
         unsigned int shouldMatchRegex:1;
         unsigned int shouldSort:1;
         unsigned int shouldSortClasses:1;
+        unsigned int shouldGenerateHeaders:1;
 
         // Not really used yet:
         unsigned int shouldSwapFat:1;
@@ -180,6 +181,9 @@ struct my_objc_prot_inst_meth_list
 
 - (BOOL)shouldSortClasses;
 - (void)setShouldSortClasses:(BOOL)newFlag;
+
+- (BOOL)shouldGenerateHeaders;
+- (void)setShouldGenerateHeaders:(BOOL)newFlag;
 
 - (BOOL)shouldMatchRegex;
 - (void)setShouldMatchRegex:(BOOL)newFlag;

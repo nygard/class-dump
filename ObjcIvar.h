@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.h,v 1.10 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcIvar.h,v 1.11 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -39,6 +39,7 @@
 - (id)initWithName:(NSString *)anIvarName type:(NSString *)anIvarType offset:(long)anIvarOffset;
 - (void)dealloc;
 
+- (NSString *)type;
 - (NSString *)description;
 
 - (long)offset;

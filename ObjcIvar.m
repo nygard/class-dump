@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.m,v 1.9 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcIvar.m,v 1.10 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -50,6 +50,11 @@
     [ivarType release];
 
     [super dealloc];
+}
+
+- (NSString *)type;
+{
+    return ivarType;
 }
 
 - (NSString *)description;

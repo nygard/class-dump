@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.11 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcCategory.m,v 1.12 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -56,6 +56,11 @@
     [protocols release];
     
     [super dealloc];
+}
+
+- (NSString *)categoryName;
+{
+    return categoryName;
 }
 
 - (NSString *)sortableName;

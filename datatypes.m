@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.12 2003/09/05 20:30:26 nygard Exp $
+// $Id: datatypes.m,v 1.13 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -41,7 +41,7 @@ NSString *string_from_simple_type(char c);
 NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level);
 
 // Not ^ or b
-static char *simple_types = "cislqCISLQfdv*#:%?rnNoORV";
+static char *simple_types = "cislqCISLQfdBv*#:%?rnNoORV";
 
 static char *simple_type_names[] =
 {
@@ -57,12 +57,13 @@ static char *simple_type_names[] =
     "unsigned long long",
     "float",
     "double",
+    "_Bool", /* C99 _Bool or C++ bool */
     "void",
     "STR",
     "Class",
     "SEL",
     "NXAtom",
-    "UNKNOWN",
+    "void /*UNKNOWN*/",
     "const",
     "in",
     "inout",
@@ -352,7 +353,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           break;
 
       case '(':
-          if (t->var_name == NULL)
+          if (t->var_name == NULL || t->var_name[0] == '?')
               name = @"";
           else
               name = [NSString stringWithFormat:@"%s", t->var_name];
@@ -374,7 +375,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           break;
 
       case '{':
-          if (t->var_name == NULL)
+          if (t->var_name == NULL || t->var_name[0] == '?')
               name = @"";
           else
               name = [NSString stringWithFormat:@"%s", t->var_name];
@@ -451,7 +452,7 @@ void print_type(struct my_objc_type *t, int expand, int level)
 
 void print_method(char method_type, const char *method_name, struct method_type *m)
 {
-    extern int expand_structures_flag;
+    extern int expand_arg_structures_flag;
     int l;
     BOOL noMoreTypes;
 
@@ -465,7 +466,7 @@ void print_method(char method_type, const char *method_name, struct method_type 
 
     if (!IS_ID(m->type)) {
         printf("(");
-        print_type(m->type, expand_structures_flag, 0);
+        print_type(m->type, expand_arg_structures_flag, 0);
         printf(")");
     }
 
@@ -486,7 +487,7 @@ void print_method(char method_type, const char *method_name, struct method_type 
             } else {
                 if (!IS_ID(m->type)) {
                     printf("(");
-                    print_type(m->type, expand_structures_flag, 0);
+                    print_type(m->type, expand_arg_structures_flag, 0);
                     printf(")");
                 }
                 printf("fp%s", m->name);

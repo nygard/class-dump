@@ -5,12 +5,11 @@ for classes, categories and protocols.
 Version 2 is a re-implementation of Eric P. Scott's class-dump, and
 works with the frameworks in Openstep 4.x.
 
-The class-dump version 2.1.5 package includes source that should
-compile on Mac OS X, Mac OS X Server, Openstep, and
-Nextstep 3.3 with Foundation.  This package includes the binary
+The class-dump version 2.1.6 package includes source that should
+compile on Mac OS X.  This package includes the binary
 compiled for Mac OS X:
 
-    class-dump-2.1.5-bs.tar.gz        (Mac OS X)
+    class-dump-2.1.6-bs.tar.gz        (Mac OS X)
 
 Most of the changes since version 2.1.2 have been fixes for Mac OS X,
 so I haven't updated the Mac OS X Server, Openstep and Nextstep
@@ -32,7 +31,13 @@ Differences between 2.1.6 and 2.1.5
       dependancy.
     - Kurt Revis made some changes to support filenames that contain
       some non-ASCII characters.
-    - 
+    - Jonathan Rentzsch added an option, -H, to generate separate header
+      files for each class and protocol.
+    - Stephane Corthesy made some changes:
+      - all error messages are prefixed by // to have a C comment line instead
+      - "struct ?" no longer appears
+      - protocols no longer display an IMP address
+      - compiles with gcc 3.3 on Panther
 
 Differences between 2.1.5 and 2.1.4
 

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.h,v 1.10 2003/09/05 20:30:24 nygard Exp $
+// $Id: ObjcCategory.h,v 1.11 2003/09/06 21:17:55 nygard Exp $
 //
 
 //
@@ -41,6 +41,7 @@
 - (id)initWithClassName:(NSString *)aClassName categoryName:(NSString *)aCategoryName;
 - (void)dealloc;
 
+- (NSString *)categoryName;
 - (NSString *)sortableName;
 
 - (void)addClassMethods:(NSArray *)newClassMethods;

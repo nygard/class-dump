@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.10 2003/09/05 20:33:28 nygard Exp $
+// $Id: gram.y,v 1.11 2003/09/06 21:17:56 nygard Exp $
 //
 
 //
@@ -77,9 +77,9 @@ int yyerror(char *s);
 
 %type <u_int> 'c' 'i' 's' 'l' 'q'
 %type <u_int> 'C' 'I' 'S' 'L' 'Q'
-%type <u_int> 'f' 'd' 'v' '*' '#'
-%type <u_int> ':' '%' 'r' 'n' 'N'
-%type <u_int> 'o' 'O' 'R' 'V'
+%type <u_int> 'f' 'd' 'B' 'v' '*'
+%type <u_int> '#' ':' '%' 'r' 'n'
+%type <u_int> 'N' 'o' 'O' 'R' 'V'
 
 %type <u_int> '^' 'b'
 
@@ -170,6 +170,7 @@ simple_type:
 	| 'Q' { $$ = 'Q'; }
 	| 'f' { $$ = 'f'; }
 	| 'd' { $$ = 'd'; }
+	| 'B' { $$ = 'B'; }
 	| 'v' { $$ = 'v'; }
 	| '*' { $$ = '*'; }
 	| '#' { $$ = '#'; }
@@ -369,7 +370,7 @@ void format_type(const char *type, const char *name, int level)
 	}
 	else
         {
-		printf("Error! format_type('%s', '%s')\n", type, name);
+		printf("// Error! format_type('%s', '%s')\n", type, name);
                 printf("\n\n");
         }
 
@@ -383,13 +384,13 @@ void format_method(char method_type, const char *name, const char *types)
 
 	if (name == NULL)
 	{
-		printf("%c(method name not found in OBJC segments), args: %s", method_type, types);
+		printf("// %c (method name not found in OBJC segments), args: %s", method_type, types);
 		return;
 	}
 
         if (*name == '\0' || *types == '\0')
         {
-		printf("Error! format_method(%c, '%s', '%s')", method_type, name, types);
+		printf("// Error! format_method(%c, '%s', '%s')", method_type, name, types);
 		return;
         }
 
@@ -406,8 +407,8 @@ void format_method(char method_type, const char *name, const char *types)
         {
 		extern const char *scanner_ptr;
 
-		printf("Error! format_method(%c, %s, %s )\n", method_type, name, types);
-                printf("at %s\n", scanner_ptr);
+		printf("// Error! format_method(%c, %s, %s )\n", method_type, name, types);
+                printf("// at %s\n", scanner_ptr);
                 printf("\n\n");
         }
 
