@@ -1065,6 +1065,34 @@
 			settings = {
 			};
 		};
+		01AC01E0069DE25200EF1E93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDSymbol.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01AC01E1069DE25200EF1E93 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = CDSymbol.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01AC01E2069DE25200EF1E93 = {
+			fileRef = 01AC01E0069DE25200EF1E93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01AC01E3069DE25200EF1E93 = {
+			fileRef = 01AC01E1069DE25200EF1E93;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		01B607C005BA10E800A4AD78 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1165,6 +1193,8 @@
 				0180A7CB0581C90700BF5014,
 				01AC0111069D2E9E00EF1E93,
 				01AC0112069D2E9E00EF1E93,
+				01AC01E0069DE25200EF1E93,
+				01AC01E1069DE25200EF1E93,
 			);
 			isa = PBXGroup;
 			name = "Mach-O";
@@ -1379,6 +1409,7 @@
 				01B607C405BA10E800A4AD78,
 				012934DC05CEE31B00E843DB,
 				01AC0113069D2E9E00EF1E93,
+				01AC01E2069DE25200EF1E93,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1536,6 +1567,7 @@
 				012934DD05CEE31B00E843DB,
 				01502BAD05D9B52700939BE6,
 				01AC0114069D2E9E00EF1E93,
+				01AC01E3069DE25200EF1E93,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;

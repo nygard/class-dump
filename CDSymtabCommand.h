@@ -3,13 +3,24 @@
 
 #import "CDLoadCommand.h"
 
+@class NSMutableArray;
+
 @interface CDSymtabCommand : CDLoadCommand
 {
     const struct symtab_command *symtabCommand;
+    NSMutableArray *symbols;
 }
 
 - (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (void)dealloc;
 
 - (void)_process;
+
+- (unsigned long)symoff;
+- (unsigned long)nsyms;
+- (unsigned long)stroff;
+- (unsigned long)strsize;
+
+- (NSString *)extraDescription;
 
 @end
