@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.8 2003/01/08 08:08:46 nygard Exp $
+// $Id: gram.y,v 1.9 2003/01/21 04:55:54 nygard Exp $
 //
 
 //
@@ -71,7 +71,7 @@ int yyerror(char *s);
 %type <u_type> union_type
 %type <u_type> union_types
 %type <u_type> array_type
-%type <u_str> identifier
+%type <u_str> identifier type_name
 %type <u_str> number
 
 
@@ -192,7 +192,7 @@ id_type:
 	;
 
 structure_type:
-	'{' { ident_state = 1; } identifier optional_format '}'
+	'{' { ident_state = 1; } type_name optional_format '}'
 		{
 			$$ = create_struct_type($3, $4);
 		}
@@ -299,6 +299,25 @@ identifier:
 		}
 	;
 
+type_name:
+        identifier optional_template_type
+        	{
+			$$ = $1;
+		}
+        ;
+
+optional_template_type:
+	/* empty */
+	| '<' { ident_state = 1; } identifier optional_identifier_list_suffix '>'
+	;
+
+/* I know, it's not good to be right recursive... */
+
+optional_identifier_list_suffix:
+	/* empty */
+	| ',' { ident_state = 1; } identifier optional_identifier_list_suffix
+	;
+
 number:
 	TK_NUMBER
 		{
@@ -350,7 +369,7 @@ void format_type(const char *type, const char *name, int level)
 	}
 	else
         {
-		printf("Error! format_type(%s, %s)\n", type, name);
+		printf("Error! format_type('%s', '%s')\n", type, name);
                 printf("\n\n");
         }
 

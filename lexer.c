@@ -1,5 +1,5 @@
 //
-// $Id: lexer.c,v 1.4 2002/12/19 05:37:06 nygard Exp $
+// $Id: lexer.c,v 1.5 2003/01/21 04:55:54 nygard Exp $
 //
 
 //
@@ -39,67 +39,69 @@ static const char *yyend = yytext + LEX_BUFFER_SIZE - 1;
 static const char *string = NULL;
 const char *scanner_ptr = NULL;
 
-#define is_other(x) (x=='$'||x=='_'||x=='<'||x=='>')
+#define is_other(x) (x == '$' || x == '_' || x == ':' || x == '*')
 
-void yy_scan_string (const char *str)
+void yy_scan_string(const char *str)
 {
     scanner_ptr = string = str;
 }
 
-int yylex (void)
+int yylex(void)
 {
-    if (ident_state == 1)
-    {
-        if (*scanner_ptr == '?')
-        {
+    if (ident_state == 1) {
+        if (*scanner_ptr == '?') {
             scanner_ptr++;
-            strcpy (yytext, "?");
+            strcpy(yytext, "?");
             ident_state = 0;
+            //fprintf(stderr, "yylex() {ident_state = 1} returning TK_IDENTIFIER, yytext = '%s'\n", yytext);
             return TK_IDENTIFIER;
         }
 
-        if (*scanner_ptr == '"')
-        {
+        if (*scanner_ptr == '"') {
             scanner_ptr++;
             ident_state = 0;
+            //fprintf(stderr, "yylex() {ident_state = 1} returning '\"'\n");
             return '"';
         }
 
-        if (isalpha (*scanner_ptr) || is_other (*scanner_ptr))
-        {
-            char *yptr = yytext;
+        if (isalpha(*scanner_ptr) || is_other(*scanner_ptr)) {
+            char *yptr;
+
+            yptr = yytext;
             *yptr++ = *scanner_ptr++;
 
             // Need bounds checking.
-            while ((isalnum (*scanner_ptr) || is_other (*scanner_ptr)) && yptr < yyend)
-            {
+            while ((isalnum(*scanner_ptr) || is_other(*scanner_ptr)) && yptr < yyend) {
                 *yptr++ = *scanner_ptr++;
             }
             *yptr = 0;
 
             ident_state = 0;
+            //fprintf(stderr, "yylex() {ident_state = 1} returning TK_IDENTIFIER, yytext = '%s'\n", yytext);
             return TK_IDENTIFIER;
         }
     }
 
-    if (isdigit (*scanner_ptr))
-    {
-        char *yptr = yytext;
+    if (isdigit(*scanner_ptr)) {
+        char *yptr;
 
-        //printf ("here\n");
+        yptr = yytext;
 
-        while ((isdigit (*scanner_ptr)) && yptr < yyend)
-        {
+        while ((isdigit(*scanner_ptr)) && yptr < yyend) {
             *yptr++ = *scanner_ptr++;
         }
         *yptr = 0;
         ident_state = 0;
 
+        //fprintf(stderr, "yylex() {ident_state = 0} returning TK_NUMBER, yytext = '%s'\n", yytext);
         return TK_NUMBER;
     }
 
-    if (*scanner_ptr == 0)
+    if (*scanner_ptr == 0) {
+        //fprintf(stderr, "yylex() {ident_state = 0} returning 0\n");
         return 0;
+    }
 
+    //fprintf(stderr, "yylex() {ident_state = 0} returning '%c'\n", *scanner_ptr);
     return *scanner_ptr++;
 }
