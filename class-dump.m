@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.35 2003/12/09 06:25:13 nygard Exp $
+// $Id: class-dump.m,v 1.36 2003/12/09 08:44:01 nygard Exp $
 //
 
 //
@@ -1252,6 +1252,7 @@ int main(int argc, char *argv[])
 
         classDump = [[CDClassDump2 alloc] initWithMachOFile:machOFile];
         //[classDump doSomething];
+        [classDump processProtocolSection];
         [classDump processModules];
         [classDump release];
 

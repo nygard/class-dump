@@ -1,6 +1,7 @@
 #import "CDOCProtocol.h"
 
 #import <Foundation/Foundation.h>
+#import "NSArray-Extensions.h"
 
 @implementation CDOCProtocol
 
@@ -34,6 +35,20 @@
     name = [newName retain];
 }
 
+- (NSArray *)protocols;
+{
+    return protocols;
+}
+
+- (void)setProtocols:(NSArray *)newProtocols;
+{
+    if (newProtocols == protocols)
+        return;
+
+    [protocols release];
+    protocols = [newProtocols retain];
+}
+
 - (NSArray *)methods;
 {
     return methods;
@@ -50,8 +65,22 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, methods: %@",
-                     NSStringFromClass([self class]), name, methods];
+    return [NSString stringWithFormat:@"[%@] name: %@, protocols: %@, methods: %@", NSStringFromClass([self class]), name, protocols, methods];
+}
+
+- (NSString *)formattedString;
+{
+    NSMutableString *result;
+
+    result = [NSMutableString string];
+    [result appendFormat:@"@protocol %@", name];
+    if ([protocols count] > 0)
+        [result appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+
+    // TODO: And the methods
+    [result appendString:@"\n@end\n"];
+
+    return result;
 }
 
 @end

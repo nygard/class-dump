@@ -21,6 +21,8 @@
 
     machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
+    protocolsByVMAddr = [[NSMutableDictionary alloc] init];
+    usedVMAddrs = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -29,6 +31,8 @@
 {
     [machOFile release];
     [modules release];
+    [protocolsByVMAddr release];
+    [usedVMAddrs release];
 
     [super dealloc];
 }
@@ -151,8 +155,6 @@
 - (CDOCClass *)processClassDefinition:(unsigned long)defRef;
 {
     const struct cd_objc_class *classPtr;
-    const struct cd_objc_ivars *ivarsPtr;
-    const struct cd_objc_ivar *ivarPtr;
     CDOCClass *aClass;
     int index;
 
@@ -165,6 +167,8 @@
     // Process ivars
     NSLog(@"classPtr->ivars: %p", classPtr->ivars);
     if (classPtr->ivars != 0) {
+        const struct cd_objc_ivars *ivarsPtr;
+        const struct cd_objc_ivar *ivarPtr;
         NSMutableArray *ivars;
 
         ivars = [[NSMutableArray alloc] init];
@@ -201,35 +205,89 @@
     }
 
     // Process protocols
-    if (classPtr->protocols != 0) {
-        const struct cd_objc_protocol_list *protocolList;
-        const struct cd_objc_protocol **protocolPtr;
-        NSMutableArray *protocols;
-
-        protocols = [[NSMutableArray alloc] init];
-
-        NSLog(@"Protocols start ************************************************************");
-        NSLog(@"classPtr->protocols: %p", classPtr->protocols);
-        protocolList = [machOFile pointerFromVMAddr:classPtr->protocols];
-        // Compiler doesn't like the double star cast.
-        protocolPtr = (void *)(protocolList + 1);
-        //protocolPtr = (struct cd_objc_protocol **)(protocolList + 1);
-        for (index = 0; index < protocolList->count; index++, protocolPtr++) {
-            CDOCProtocol *aProtocol;
-
-            aProtocol = [[CDOCProtocol alloc] init];
-            // TODO (2003-12-08): Let's worry about protocols later.
-            [aProtocol setName:[machOFile stringFromVMAddr:(*protocolPtr)->protocol_name]];
-            [protocols addObject:aProtocol];
-            NSLog(@"%d: aProtocol: %@", index, aProtocol);
-            [aProtocol release];
-        }
-
-        [protocols release];
-        NSLog(@"Protocols end ************************************************************");
-    }
+    NSLog(@"Protocols start (%@) ************************************************************", [aClass name]);
+    [self processProtocolList:classPtr->protocols];
+    NSLog(@"Protocols end (%@) ************************************************************", [aClass name]);
 
     return aClass;
+}
+
+- (NSArray *)processProtocolList:(unsigned long)protocolListAddr;
+{
+    const struct cd_objc_protocol_list *protocolList;
+    const unsigned long *protocolPtrs;
+    NSMutableArray *protocols;
+    int index;
+
+    protocols = [[[NSMutableArray alloc] init] autorelease];;
+
+    if (protocolListAddr == 0)
+        return protocols;
+
+    //NSLog(@"protocolListAddr: %p", protocolListAddr);
+    protocolList = [machOFile pointerFromVMAddr:protocolListAddr];
+    // Compiler doesn't like the double star cast.
+    protocolPtrs = (void *)(protocolList + 1);
+    //protocolPtrs = (unsigned long **)(protocolList + 1);
+    NSLog(@"%d protocols:", protocolList->count);
+    for (index = 0; index < protocolList->count; index++, protocolPtrs++) {
+        [protocols addObject:[self processProtocol:*protocolPtrs]];
+    }
+
+    return protocols;
+}
+
+- (CDOCProtocol *)processProtocol:(unsigned long)protocolAddr;
+{
+    const struct cd_objc_protocol *protocolPtr;
+    CDOCProtocol *aProtocol;
+    NSArray *methods;
+
+    NSLog(@"%s, protocolAddr: %p", _cmd, protocolAddr);
+    protocolPtr = [machOFile pointerFromVMAddr:protocolAddr];
+
+    aProtocol = [[[CDOCProtocol alloc] init] autorelease];
+    [aProtocol setName:[machOFile stringFromVMAddr:protocolPtr->protocol_name]];
+
+    methods = [self processProtocolMethods:protocolPtr->instance_methods];
+    [aProtocol setMethods:methods];
+
+    // TODO (2003-12-09): Handle class methods
+
+    //NSLog(@"protocolPtr->protocol_list: %p", protocolPtr->protocol_list);
+    [aProtocol setProtocols:[self processProtocolList:protocolPtr->protocol_list]];
+
+    //NSLog(@"aProtocol: %@", aProtocol);
+    //NSLog(@"formatted protocol: %@", [aProtocol formattedString]);
+
+    return aProtocol;
+}
+
+- (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
+{
+    NSMutableArray *methods;
+    const struct cd_objc_protocol_methods *methodsPtr;
+    const struct cd_objc_protocol_method *methodPtr;
+    int index;
+
+    methods = [NSMutableArray array];
+    if (methodsAddr == 0)
+        return methods;
+
+    methodsPtr = [machOFile pointerFromVMAddr:methodsAddr];
+    methodPtr = (struct cd_objc_protocol_method *)(methodsPtr + 1);
+
+    for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
+        CDOCMethod *aMethod;
+
+        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
+                                      type:[machOFile stringFromVMAddr:methodPtr->types]
+                                      imp:0];
+        [methods addObject:aMethod];
+        [aMethod release];
+    }
+
+    return [methods reversedArray];
 }
 
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
@@ -269,6 +327,46 @@
     //NSLog(@"isa: %p", ptr->isa);
 
     NSLog(@"<  %s", _cmd);
+}
+
+- (void)processProtocolSection;
+{
+    CDSegmentCommand *objcSegment;
+    CDSection *protocolSection;
+    unsigned long addr;
+    CDOCProtocol *aProtocol;
+    int count, index;
+
+    NSLog(@" > %s", _cmd);
+
+    objcSegment = [machOFile segmentWithName:@"__OBJC"];
+    protocolSection = [objcSegment sectionWithName:@"__protocol"];
+    NSLog(@"protocolSection: %@", protocolSection);
+
+    addr = [protocolSection addr];
+
+    NSLog(@"[protocolSection size]: %d", [protocolSection size]);
+    NSLog(@"sizeof(struct cd_objc_protocol): %d", sizeof(struct cd_objc_protocol));
+    count = [protocolSection size] / sizeof(struct cd_objc_protocol);
+    NSLog(@"%d protocols in __protocol section", count);
+    for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol)) {
+        NSLog(@"%d: addr = %p", index, addr);
+        aProtocol = [self processProtocol:addr];
+        NSLog(@"%d: aProtocol: %@", index, aProtocol);
+        [protocolsByVMAddr setObject:aProtocol forKey:[NSNumber numberWithLong:addr]];
+    }
+
+    NSLog(@"<  %s", _cmd);
+}
+
+- (CDOCProtocol *)protocolAtVMAddr:(unsigned long)protocolAddr;
+{
+    NSNumber *key;
+
+    key = [NSNumber numberWithLong:protocolAddr];
+    [usedVMAddrs setObject:@"Yes" forKey:key];
+
+    return [protocolsByVMAddr objectForKey:key];
 }
 
 @end

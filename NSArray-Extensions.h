@@ -3,5 +3,6 @@
 @interface NSArray (CDExtensions)
 
 - (NSArray *)reversedArray;
+- (NSArray *)arrayByMappingSelector:(SEL)aSelector;
 
 @end

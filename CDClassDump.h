@@ -1,8 +1,8 @@
 #import <Foundation/NSObject.h>
 
-@class NSArray, NSMutableArray;
+@class NSArray, NSMutableArray, NSMutableDictionary;
 @class CDMachOFile;
-@class CDOCClass, CDOCSymtab;
+@class CDOCClass, CDOCProtocol, CDOCSymtab;
 
 // Section: __module_info
 struct cd_objc_module {
@@ -83,12 +83,29 @@ struct cd_objc_protocol
     long protocol_name;
     long protocol_list;
     long instance_methods;
+    long class_methods;
+};
+
+struct cd_objc_protocol_methods // TODO (2003-12-07): Rename method_list?
+{
+    long method_count;
+    // Followed by methods
+};
+
+struct cd_objc_protocol_method
+{
+    long name;
+    long types;
 };
 
 @interface CDClassDump2 : NSObject
 {
     CDMachOFile *machOFile;
     NSMutableArray *modules;
+    NSMutableDictionary *protocolsByVMAddr;
+
+    // temporary:
+    NSMutableDictionary *usedVMAddrs;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
@@ -99,7 +116,13 @@ struct cd_objc_protocol
 - (void)processModules;
 - (CDOCSymtab *)processSymtab:(unsigned long)symtab;
 - (CDOCClass *)processClassDefinition:(unsigned long)defRef;
+- (NSArray *)processProtocolList:(unsigned long)protocolListAddr;
+- (CDOCProtocol *)processProtocol:(unsigned long)protocolAddr;
+- (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
 - (void)processCategoryDefinition:(unsigned long)defRef;
+
+- (void)processProtocolSection;
+- (CDOCProtocol *)protocolAtVMAddr:(unsigned long)protocolAddr;
 
 @end

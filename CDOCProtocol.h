@@ -7,6 +7,7 @@
 @interface CDOCProtocol : NSObject
 {
     NSString *name;
+    NSArray *protocols;
     NSArray *methods;
 }
 
@@ -16,9 +17,13 @@
 - (NSString *)name;
 - (void)setName:(NSString *)newName;
 
+- (NSArray *)protocols;
+- (void)setProtocols:(NSArray *)newProtocols;
+
 - (NSArray *)methods;
 - (void)setMethods:(NSArray *)newMethods;
 
 - (NSString *)description;
+- (NSString *)formattedString;
 
 @end
