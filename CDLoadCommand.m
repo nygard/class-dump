@@ -8,6 +8,7 @@
 #import "CDSegmentCommand.h"
 #import "CDDylibCommand.h"
 #import "CDSymbolTable.h"
+#import "CDDynamicSymbolTable.h"
 
 @implementation CDLoadCommand
 
@@ -22,6 +23,8 @@
         targetClass = [CDDylibCommand class];
     if (lc->cmd == LC_SYMTAB)
         targetClass = [CDSymbolTable class];
+    if (lc->cmd == LC_DYSYMTAB)
+        targetClass = [CDDynamicSymbolTable class];
 
     return [[[targetClass alloc] initWithPointer:ptr machOFile:aMachOFile] autorelease];
 }
