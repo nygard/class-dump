@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.h,v 1.6 2000/10/15 01:22:16 nygard Exp $
+// $Id: MappedFile.h,v 1.7 2002/12/19 05:44:46 nygard Exp $
 //
 
 //
@@ -28,12 +28,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
-#else
-#import <foundation/NSString.h>
-#import <foundation/NSData.h>
-#endif
 
 // And most of this could be done with NSData - initWithContentsOfMappedFile:
 

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.7 2002/12/19 05:03:42 nygard Exp $
+// $Id: ObjcClass.h,v 1.8 2002/12/19 05:44:47 nygard Exp $
 //
 
 //
@@ -25,12 +25,7 @@
 //     e-mail:  nygard@omnigroup.com
 //
 
-#if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
-#else
-#import <foundation/NSString.h>
-#import <foundation/NSArray.h>
-#endif
 #import "ObjcThing.h"
 
 @interface ObjcClass : ObjcThing

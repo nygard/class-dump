@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.m,v 1.4 2000/10/15 01:22:16 nygard Exp $
+// $Id: ObjcCategory.m,v 1.5 2002/12/19 05:44:47 nygard Exp $
 //
 
 //
@@ -27,9 +27,6 @@
 
 #import "ObjcCategory.h"
 #import "ObjcMethod.h"
-#if NS_TARGET_MAJOR < 4 && !defined(__APPLE__)
-#import <foundation/NSUtilities.h>
-#endif
 #import <stdio.h>
 
 @implementation ObjcCategory

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.6 2002/12/19 05:03:42 nygard Exp $
+// $Id: ObjcClass.m,v 1.7 2002/12/19 05:44:47 nygard Exp $
 //
 
 //
@@ -29,9 +29,6 @@
 #include "datatypes.h"
 #import "ObjcIvar.h"
 #import "ObjcMethod.h"
-#if NS_TARGET_MAJOR < 4 && !defined(__APPLE__)
-#import <foundation/NSUtilities.h>
-#endif
 #import <stdio.h>
 
 @implementation ObjcClass

@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.7 2002/12/19 05:03:42 nygard Exp $
+// $Id: datatypes.m,v 1.8 2002/12/19 05:44:47 nygard Exp $
 //
 
 //
@@ -30,20 +30,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
-#else
-#import <foundation/NSString.h>
-#import <foundation/NSUtilities.h>
-
-@interface NSString (Foundation4Compatibility)
-+ string;
-@end
-
-@implementation NSString (Foundation4Compatibility)
-+ string { return [[self class] stringWithCapacity:1]; }
-@end
-#endif
 
 #include "datatypes.h"
 #include "gram.h"

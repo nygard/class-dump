@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.7 2000/10/15 02:47:20 nygard Exp $
+// $Id: MappedFile.m,v 1.8 2002/12/19 05:44:46 nygard Exp $
 //
 
 //
@@ -26,24 +26,6 @@
 //
 
 #import "MappedFile.h"
-#if NS_TARGET_MAJOR < 4 && !defined(__APPLE__)
-#import <foundation/NSArray.h>
-#import <foundation/NSException.h>
-#import <foundation/NSPathUtilities.h>
-#import <foundation/NSUtilities.h>
-
-@interface NSString (Foundation4PathCompatibility)
-- (NSArray *)pathComponents;
-@end
-
-@implementation NSString (Foundation4PathCompatibility)
-- (NSArray *)pathComponents
-{
-   return [self componentsSeparatedByString:@"/"];
-}
-@end
-
-#endif
 
 #include <stdio.h>
 #include <libc.h>
@@ -134,12 +116,8 @@ static NSMutableArray *secondSearchPath = nil;
 - initWithFilename:(NSString *)aFilename
 {
     NSString *standardPath;
-#if (NS_TARGET_MAJOR >= 4) || defined(__APPLE__)
     NSMutableSet *wrappers = [NSMutableSet set];
-#else
-    // for foundation 3.x (less efficient than a set but at least it works...)
-    NSMutableArray *wrappers = [NSMutableArray array];
-#endif
+
     if ([super init] == nil)
         return nil;
 
