@@ -13,7 +13,7 @@
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.22 2004/02/03 02:54:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.23 2004/02/03 04:00:21 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -138,24 +138,32 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.22 2004/0
 - (void)appendMethodsToString:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     int count, index;
-    NSArray *sortedMethods;
+    NSArray *methods;
 
-    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
+    if ([aClassDump shouldSortMethods] == YES)
+        methods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = classMethods;
+
+    count = [methods count];
     if (count > 0) {
         for (index = 0; index < count; index++) {
             [resultString appendString:@"+ "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+            [[methods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
             [resultString appendString:@"\n"];
         }
     }
 
-    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
+    if ([aClassDump shouldSortMethods] == YES)
+        methods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = instanceMethods;
+
+    count = [methods count];
     if (count > 0) {
         for (index = 0; index < count; index++) {
             [resultString appendString:@"- "];
-            [[sortedMethods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+            [[methods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
             [resultString appendString:@"\n"];
         }
     }
