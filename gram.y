@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.9 2003/01/21 04:55:54 nygard Exp $
+// $Id: gram.y,v 1.10 2003/09/05 20:33:28 nygard Exp $
 //
 
 //
@@ -24,7 +24,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@omnigroup.com
+//     e-mail:  class-dump at codethecode.com
 //
 
 #include <assert.h>
