@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.4 2003/02/20 06:51:12 nygard Exp $
+// $Id: class-dump.h,v 1.5 2003/02/21 06:04:14 nygard Exp $
 //
 
 //
@@ -139,12 +139,44 @@ struct my_objc_prot_inst_meth_list
 @class NSArray, NSString, NSMutableArray, NSMutableDictionary;
 @class MappedFile, ObjcClass, ObjcCategory;
 
+@interface CDSectionInfo : NSObject
+{
+    NSString *filename;
+    NSString *name;
+    struct section *section;
+    void *start;
+    long vmaddr;
+    long size;
+}
+
+- (id)initWithFilename:(NSString *)aFilename
+                  name:(NSString *)aName
+               section:(struct section *)aSection
+                 start:(void *)aStart
+                vmaddr:(long)aVMAddr
+                  size:(long)aSize;
+- (void)dealloc;
+
+- (NSString *)filename;
+- (NSString *)name;
+- (struct section *)section;
+- (void *)start;
+- (long)vmaddr;
+- (long)size;
+
+- (NSString *)description;
+- (BOOL)containsAddress:(long)anAddress;
+- (void *)translateAddress:(long)anAddress;
+
+@end
+
 @interface CDClassDump : NSObject
 {
     NSString *mainPath;
 
     NSMutableArray *mappedFiles;
     NSMutableDictionary *mappedFilesByInstallName;
+    NSMutableArray *sections;
 
     struct {
         unsigned int shouldShowIvarOffsets:1;
@@ -186,6 +218,13 @@ struct my_objc_prot_inst_meth_list
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesCString:(const char *)str;
 
+- (NSArray *)sections;
+- (void)addSectionInfo:(CDSectionInfo *)aSectionInfo;
+
+
+
+
+
 - (void)processFile:(MappedFile *)aMappedFile;
 
 - (int)processMachO:(void *)ptr filename:(NSString *)filename;
@@ -204,17 +243,19 @@ struct my_objc_prot_inst_meth_list
 - (NSArray *)handleObjcIvars:(struct my_objc_ivars *)ivars;
 - (NSArray *)handleObjcMethods:(struct my_objc_methods *)methods methodType:(char)ch;
 
-- (void)showSingleModule:(struct section_info *)module_info;
+- (void)showSingleModule:(CDSectionInfo *)moduleInfo;
 - (void)showAllModules;
 - (void)buildUpObjectiveCSegments:(NSString *)filename;
 
 // Utility methods
-- (struct section_info *)findObjcSection:(char *)name filename:(NSString *)filename;
+- (CDSectionInfo *)objectiveCSectionWithName:(NSString *)name filename:(NSString *)filename;
 - (void)debugSectionOverlap;
-- (void *)translateAddressToPointer:(long)addr section:(char *)section;
-- (void *)translateAddressToPointerComplain:(long)addr section:(char *)section complain:(BOOL)complain;
-- (char *)stringAt:(long)addr section:(char *)section;
-- (NSString *)nsstringAt:(long)addr section:(char *)section;
-- (struct section_info *)sectionOfAddress:(long)addr;
+- (void *)translateAddressToPointer:(long)addr section:(NSString *)section;
+- (void *)translateAddressToPointerComplain:(long)addr section:(NSString *)section complain:(BOOL)complain;
+- (char *)stringAt:(long)addr section:(NSString *)section;
+- (NSString *)nsstringAt:(long)addr section:(NSString *)section;
+- (CDSectionInfo *)sectionOfAddress:(long)addr;
+
+- (int)methodFormattingFlags;
 
 @end

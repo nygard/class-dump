@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.22 2003/02/20 06:51:12 nygard Exp $
+// $Id: class-dump.m,v 1.23 2003/02/21 06:04:14 nygard Exp $
 //
 
 //
@@ -39,6 +39,7 @@
 #include <mach-o/fat.h>
 
 #import <Foundation/Foundation.h>
+#import "NSString-Extensions.h"
 
 #include "datatypes.h"
 #import "class-dump.h"
@@ -57,40 +58,109 @@
 
 int expand_structures_flag = 0; // This is used in datatypes.m
 
-#define MAX_SECTIONS 2048
-
 NSString *current_filename = nil;
 
-struct section_info
+@implementation CDSectionInfo
+
+- (id)initWithFilename:(NSString *)aFilename
+                  name:(NSString *)aName
+               section:(struct section *)aSection
+                 start:(void *)aStart
+                vmaddr:(long)aVMAddr
+                  size:(long)aSize;
 {
-    NSString *filename;
-    char name[17];
-    struct section *section;
-    void *start;
-    long vmaddr;
-    long size;
-} objc_sections[MAX_SECTIONS];
+    if ([super init] == nil)
+        return nil;
 
-int section_count = 0;
+    filename = [aFilename retain];
+    name = [aName retain];
+    section = aSection;
+    start = aStart;
+    vmaddr = aVMAddr;
+    size = aSize;
 
+    return self;
+}
+
+- (void)dealloc;
+{
+    [filename release];
+    [name release];
+
+    [super dealloc];
+}
+
+- (NSString *)filename;
+{
+    return filename;
+}
+
+- (NSString *)name;
+{
+    return name;
+}
+
+- (struct section *)section;
+{
+    return section;
+}
+
+- (void *)start;
+{
+    return start;
+}
+
+- (long)vmaddr;
+{
+    return vmaddr;
+}
+
+- (long)size;
+{
+    return size;
+}
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"%10lx to %10lx [size 0x%08ld] %@ of %s",
+                     vmaddr, vmaddr + size, size,
+                     [name stringByPaddingToLength:16 withString:@" " startingAtIndex:0],
+                     [filename fileSystemRepresentation]];
+}
+
+- (BOOL)containsAddress:(long)anAddress;
+{
+    if (anAddress >= vmaddr && anAddress < vmaddr + size)
+        return YES;
+
+    return NO;
+}
+
+- (void *)translateAddress:(long)anAddress;
+{
+    return start + anAddress - vmaddr;
+}
+
+@end
 
 //----------------------------------------------------------------------
 
-#define SEC_CLASS          "__class"
-#define SEC_SYMBOLS        "__symbols"
-#define SEC_CSTRING        "__cstring"  /* In SEG_TEXT segments */
-#define SEC_PROTOCOL       "__protocol"
-#define SEC_CATEGORY       "__category"
-#define SEC_CLS_METH       "__cls_meth"
-#define SEC_INST_METH      "__inst_meth"
-#define SEC_META_CLASS     "__meta_class"
-#define SEC_CLASS_NAMES    "__class_names"
-#define SEC_MODULE_INFO    "__module_info"
-#define SEC_CAT_CLS_METH   "__cat_cls_meth"
-#define SEC_INSTANCE_VARS  "__instance_vars"
-#define SEC_CAT_INST_METH  "__cat_inst_meth"
-#define SEC_METH_VAR_TYPES "__meth_var_types"
-#define SEC_METH_VAR_NAMES "__meth_var_names"
+static NSString *CDSECT_CLASS =          @"__class";
+static NSString *CDSECT_SYMBOLS =        @"__symbols";
+#define SECT_CSTRING                      "__cstring"  /* In SEG_TEXT segments */
+static NSString *CDSECT_CSTRING =        @"__cstring";  /* In SEG_TEXT segments */
+static NSString *CDSECT_PROTOCOL =       @"__protocol";
+static NSString *CDSECT_CATEGORY =       @"__category";
+static NSString *CDSECT_CLS_METH =       @"__cls_meth";
+static NSString *CDSECT_INST_METH =      @"__inst_meth";
+static NSString *CDSECT_META_CLASS =     @"__meta_class";
+static NSString *CDSECT_CLASS_NAMES =    @"__class_names";
+static NSString *CDSECT_MODULE_INFO =    @"__module_info";
+static NSString *CDSECT_CAT_CLS_METH =   @"__cat_cls_meth";
+static NSString *CDSECT_INSTANCE_VARS =  @"__instance_vars";
+static NSString *CDSECT_CAT_INST_METH =  @"__cat_inst_meth";
+static NSString *CDSECT_METH_VAR_TYPES = @"__meth_var_types";
+static NSString *CDSECT_METH_VAR_NAMES = @"__meth_var_names";
 
 //======================================================================
 
@@ -144,6 +214,7 @@ NSMutableDictionary *protocols;
     mainPath = [aPath retain];
     mappedFiles = [[NSMutableArray alloc] init];
     mappedFilesByInstallName = [[NSMutableDictionary alloc] init];
+    sections = [[NSMutableArray alloc] init];
 
     flags.shouldShowIvarOffsets = NO;
     flags.shouldShowMethodAddresses = NO;
@@ -162,6 +233,7 @@ NSMutableDictionary *protocols;
     [mainPath release];
     [mappedFiles release];
     [mappedFilesByInstallName release];
+    [sections release];
 
     if (flags.shouldMatchRegex == YES) {
         regfree(&compiledRegex);
@@ -270,6 +342,16 @@ NSMutableDictionary *protocols;
     result = regexec(&compiledRegex, str, 0, NULL, 0);
 
     return (result == 0) ? YES : NO;
+}
+
+- (NSArray *)sections;
+{
+    return sections;
+}
+
+- (void)addSectionInfo:(CDSectionInfo *)aSectionInfo;
+{
+    [sections addObject:aSectionInfo];
 }
 
 //======================================================================
@@ -443,22 +525,21 @@ NSMutableDictionary *protocols;
 
     //NSLog(@"process_objc_segment, %d: %@", section_count, filename);
     for (l = 0; l < sc->nsects; l++) {
-        if (section_count >= MAX_SECTIONS) {
-            printf("Error: Maximum number of sections reached.\n");
-            return;
-        }
+        if (!strcmp(section->segname, SEG_OBJC) || (!strcmp(section->segname, SEG_TEXT) && !strcmp(section->sectname, SECT_CSTRING))) {
+            NSString *name;
+            CDSectionInfo *sectionInfo;
 
-        objc_sections[section_count].filename = filename; // TODO: Should we retain this?
-        strncpy(objc_sections[section_count].name, section->sectname, 16);
-        objc_sections[section_count].name[16] = 0;
-        objc_sections[section_count].section = section;
-        objc_sections[section_count].start = start + section->offset;
-        objc_sections[section_count].vmaddr = section->addr;
-        objc_sections[section_count].size = section->size;
-        if (!strcmp(section->segname, SEG_OBJC) ||
-              (!strcmp(section->segname, SEG_TEXT) && !strcmp(section->sectname, SEC_CSTRING)))
-        {
-            section_count++;
+            name = [[NSString alloc] initWithCString:section->sectname maximumLength:16];
+            sectionInfo = [[CDSectionInfo alloc] initWithFilename:filename
+                                                 name:name
+                                                 section:section
+                                                 start:start + section->offset
+                                                 vmaddr:section->addr
+                                                 size:section->size];
+            [name release];
+
+            [self addSectionInfo:sectionInfo];
+            [sectionInfo release];
         }
 
         section++;
@@ -482,7 +563,7 @@ NSMutableDictionary *protocols;
     class_pointer = &symtab->class_pointer;
 
     for (l = 0; l < symtab->cls_def_count; l++) {
-        objcThing = [self handleObjcClass:[self translateAddressToPointer:*class_pointer section:SEC_CLASS]];
+        objcThing = [self handleObjcClass:[self translateAddressToPointer:*class_pointer section:CDSECT_CLASS]];
         if (objcThing != nil)
             [classList addObject:objcThing];
 
@@ -490,7 +571,7 @@ NSMutableDictionary *protocols;
     }
 
     for (l = 0; l < symtab->cat_def_count; l++) {
-        objcThing = [self handleObjcCategory:[self translateAddressToPointer:*class_pointer section:SEC_CATEGORY]];
+        objcThing = [self handleObjcCategory:[self translateAddressToPointer:*class_pointer section:CDSECT_CATEGORY]];
         if (objcThing != nil)
             [classList addObject:objcThing];
 
@@ -510,28 +591,28 @@ NSMutableDictionary *protocols;
     if (ocl == NULL)
         return nil;
 
-    tmp = [self handleObjcProtocols:(struct my_objc_protocol_list *)[self translateAddressToPointer:ocl->protocols section:SEC_CAT_CLS_METH]
+    tmp = [self handleObjcProtocols:(struct my_objc_protocol_list *)[self translateAddressToPointer:ocl->protocols section:CDSECT_CAT_CLS_METH]
                 expandProtocols:YES];
 
-    if ([self stringAt:ocl->super_class section:SEC_CLASS_NAMES] == NULL)
+    if ([self stringAt:ocl->super_class section:CDSECT_CLASS_NAMES] == NULL)
     {
-        objcClass = [[[ObjcClass alloc] initWithClassName:[self nsstringAt:ocl->name section:SEC_CLASS_NAMES] superClassName:nil] autorelease];
+        objcClass = [[[ObjcClass alloc] initWithClassName:[self nsstringAt:ocl->name section:CDSECT_CLASS_NAMES] superClassName:nil] autorelease];
     }
     else
     {
-        objcClass = [[[ObjcClass alloc] initWithClassName:[self nsstringAt:ocl->name section:SEC_CLASS_NAMES]
-                                        superClassName:[self nsstringAt:ocl->super_class section:SEC_CLASS_NAMES]] autorelease];
+        objcClass = [[[ObjcClass alloc] initWithClassName:[self nsstringAt:ocl->name section:CDSECT_CLASS_NAMES]
+                                        superClassName:[self nsstringAt:ocl->super_class section:CDSECT_CLASS_NAMES]] autorelease];
     }
 
     [objcClass addProtocolNames:tmp];
 
-    tmp = [self handleObjcIvars:(struct my_objc_ivars *)[self translateAddressToPointer:ocl->ivars section:SEC_INSTANCE_VARS]];
+    tmp = [self handleObjcIvars:(struct my_objc_ivars *)[self translateAddressToPointer:ocl->ivars section:CDSECT_INSTANCE_VARS]];
     [objcClass addIvars:tmp];
 
-    tmp = [self handleObjcMetaClass:(struct my_objc_class *)[self translateAddressToPointer:ocl->isa section:SEC_META_CLASS]];
+    tmp = [self handleObjcMetaClass:(struct my_objc_class *)[self translateAddressToPointer:ocl->isa section:CDSECT_META_CLASS]];
     [objcClass addClassMethods:tmp];
 
-    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:SEC_INST_METH] methodType:'-'];
+    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_INST_METH] methodType:'-'];
     [objcClass addInstanceMethods:tmp];
 
     return objcClass;
@@ -547,13 +628,13 @@ NSMutableDictionary *protocols;
     if (ocat == NULL)
         return nil;
   
-    objcCategory = [[[ObjcCategory alloc] initWithClassName:[self nsstringAt:ocat->class_name section:SEC_CLASS_NAMES]
-                                          categoryName:[self nsstringAt:ocat->category_name section:SEC_CLASS_NAMES]] autorelease];
+    objcCategory = [[[ObjcCategory alloc] initWithClassName:[self nsstringAt:ocat->class_name section:CDSECT_CLASS_NAMES]
+                                          categoryName:[self nsstringAt:ocat->category_name section:CDSECT_CLASS_NAMES]] autorelease];
 
-    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->class_methods section:SEC_CAT_CLS_METH] methodType:'+'];
+    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->class_methods section:CDSECT_CAT_CLS_METH] methodType:'+'];
     [objcCategory addClassMethods:tmp];
 
-    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->methods section:SEC_CAT_INST_METH] methodType:'-'];
+    tmp = [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocat->methods section:CDSECT_CAT_INST_METH] methodType:'-'];
     [objcCategory addInstanceMethods:tmp];
 
     return objcCategory;
@@ -580,24 +661,24 @@ NSMutableDictionary *protocols;
 
     for (p = 0; p < plist->count; p++)
     {
-        prot = [self translateAddressToPointer:*ptr section:SEC_PROTOCOL];
+        prot = [self translateAddressToPointer:*ptr section:CDSECT_PROTOCOL];
 
-        objcProtocol = [[[ObjcProtocol alloc] initWithProtocolName:[self nsstringAt:prot->protocol_name section:SEC_CLASS_NAMES]] autorelease];
+        objcProtocol = [[[ObjcProtocol alloc] initWithProtocolName:[self nsstringAt:prot->protocol_name section:CDSECT_CLASS_NAMES]] autorelease];
         [protocolArray addObject:[objcProtocol protocolName]];
 
-        parentProtocols = [self handleObjcProtocols:[self translateAddressToPointer:prot->protocol_list section:SEC_CAT_CLS_METH]
+        parentProtocols = [self handleObjcProtocols:[self translateAddressToPointer:prot->protocol_list section:CDSECT_CAT_CLS_METH]
                                 expandProtocols:flags.shouldExpandProtocols]; // TODO: Hmm, is this correct? Shouldn't it be expandProtocols?
         [objcProtocol addProtocolNames:parentProtocols];
 
-        mlist = [self translateAddressToPointer:prot->instance_methods section:SEC_CAT_INST_METH];
+        mlist = [self translateAddressToPointer:prot->instance_methods section:CDSECT_CAT_INST_METH];
         if (mlist != NULL)
         {
             meth = (struct my_objc_prot_inst_meth *)&mlist->methods;
 
             for (l = 0; l < mlist->count; l++)
             {
-                [objcProtocol addProtocolMethod:[[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:meth->name section:SEC_METH_VAR_NAMES]
-                                                                     type:[self nsstringAt:meth->types section:SEC_METH_VAR_TYPES]] autorelease]];
+                [objcProtocol addProtocolMethod:[[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:meth->name section:CDSECT_METH_VAR_NAMES]
+                                                                     type:[self nsstringAt:meth->types section:CDSECT_METH_VAR_TYPES]] autorelease]];
                 meth++;
             }
         }
@@ -621,7 +702,7 @@ NSMutableDictionary *protocols;
     if (ocl == NULL)
         return nil;
 
-    return [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:SEC_CLS_METH] methodType:'+'];
+    return [self handleObjcMethods:(struct my_objc_methods *)[self translateAddressToPointer:ocl->methods section:CDSECT_CLS_METH] methodType:'+'];
 }  
 
 //----------------------------------------------------------------------
@@ -638,8 +719,8 @@ NSMutableDictionary *protocols;
 
     for (l = 0; l < ivars->ivar_count; l++)
     {
-        objcIvar = [[[ObjcIvar alloc] initWithName:[self nsstringAt:ivar->name section:SEC_METH_VAR_NAMES]
-                                      type:[self nsstringAt:ivar->type section:SEC_METH_VAR_TYPES]
+        objcIvar = [[[ObjcIvar alloc] initWithName:[self nsstringAt:ivar->name section:CDSECT_METH_VAR_NAMES]
+                                      type:[self nsstringAt:ivar->type section:CDSECT_METH_VAR_TYPES]
                                       offset:ivar->offset] autorelease];
         [ivarArray addObject:objcIvar];
 
@@ -669,8 +750,8 @@ NSMutableDictionary *protocols;
 
         if (method->name != 0)
         {
-            objcMethod = [[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:method->name section:SEC_METH_VAR_NAMES]
-                                              type:[self nsstringAt:method->types section:SEC_METH_VAR_TYPES]
+            objcMethod = [[[ObjcMethod alloc] initWithMethodName:[self nsstringAt:method->name section:CDSECT_METH_VAR_NAMES]
+                                              type:[self nsstringAt:method->types section:CDSECT_METH_VAR_TYPES]
                                               address:method->imp] autorelease];
             [methodArray addObject:objcMethod];
         }
@@ -682,51 +763,39 @@ NSMutableDictionary *protocols;
 
 //======================================================================
 
-- (void)showSingleModule:(struct section_info *)module_info;
+- (void)showSingleModule:(CDSectionInfo *)moduleInfo;
 {
     struct my_objc_module *m;
     int module_count;
     int l;
     NSString *tmp;
     id en, thing, key;
-    NSMutableArray *classList = [NSMutableArray array];
+    NSMutableArray *classList;
     NSArray *newClasses;
-    int formatFlags = 0;
+    int formatFlags;
 
-    if (module_info == NULL)
-    {
+    if (moduleInfo == nil)
         return;
-    }
 
-    if (flags.shouldSort == YES)
-        formatFlags |= F_SORT_METHODS;
-
-    if (flags.shouldShowIvarOffsets == YES)
-        formatFlags |= F_SHOW_IVAR_OFFSET;
-
-    if (flags.shouldShowMethodAddresses == YES)
-        formatFlags |= F_SHOW_METHOD_ADDRESS;
+    classList = [NSMutableArray array];
+    formatFlags = [self methodFormattingFlags];
 
     tmp = current_filename;
-    m = module_info->start;
-    module_count = module_info->size / sizeof(struct my_objc_module);
+    m = [moduleInfo start];
+    module_count = [moduleInfo size] / sizeof(struct my_objc_module);
 
     {
         MappedFile *currentFile;
         NSString *installName, *filename;
         NSString *key;
         
-        //key = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:module_info->filename length:strlen(module_info->filename)];
-        key = module_info->filename;
+        key = [moduleInfo filename];
         currentFile = [mappedFilesByInstallName objectForKey:key];
         installName = [currentFile installName];
         filename = [currentFile filename];
-        if (filename == nil || [installName isEqual:filename] == YES)
-        {
+        if (filename == nil || [installName isEqual:filename] == YES) {
             printf("\n/*\n * File: %s\n */\n\n", [installName fileSystemRepresentation]);
-        }
-        else
-        {
+        } else {
             printf("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], [installName fileSystemRepresentation]);
         }
 
@@ -734,9 +803,8 @@ NSMutableDictionary *protocols;
     }
     //current_filename = module_info->filename;
 
-    for (l = 0; l < module_count; l++)
-    {
-        newClasses = [self handleObjcSymtab:(struct my_objc_symtab *)[self translateAddressToPointer:m->symtab section:SEC_SYMBOLS]];
+    for (l = 0; l < module_count; l++) {
+        newClasses = [self handleObjcSymtab:(struct my_objc_symtab *)[self translateAddressToPointer:m->symtab section:CDSECT_SYMBOLS]];
         [classList addObjectsFromArray:newClasses];
         m++;
     }
@@ -746,8 +814,7 @@ NSMutableDictionary *protocols;
     else
         en = [[protocols allKeys] objectEnumerator];
 
-    while (key = [en nextObject])
-    {
+    while (key = [en nextObject]) {
         thing = [protocols objectForKey:key];
         if (flags.shouldMatchRegex == NO || [self regexMatchesCString:[[thing sortableName] cString]] == YES)
             [thing showDefinition:formatFlags];
@@ -761,8 +828,7 @@ NSMutableDictionary *protocols;
         en = [classList objectEnumerator];
 
 
-    while (thing = [en nextObject])
-    {
+    while (thing = [en nextObject]) {
         if (flags.shouldMatchRegex == NO || [self regexMatchesCString:[[thing sortableName] cString]] == YES)
             [thing showDefinition:formatFlags];
     }
@@ -776,14 +842,14 @@ NSMutableDictionary *protocols;
 
 - (void)showAllModules;
 {
-    int l;
+    int count, index;
+    CDSectionInfo *sectionInfo;
 
-    for (l = section_count - 1; l >= 0; l--)
-    {
-        if (!strcmp(objc_sections[l].name, SEC_MODULE_INFO))
-        {
-            [self showSingleModule:(struct section_info *)&objc_sections[l]];
-        }
+    count = [sections count];
+    for (index = count - 1; index >= 0; index--) {
+        sectionInfo = [sections objectAtIndex:index];
+        if ([[sectionInfo name] isEqual:CDSECT_MODULE_INFO] == YES)
+            [self showSingleModule:sectionInfo];
     }
 }
 
@@ -825,33 +891,26 @@ NSMutableDictionary *protocols;
 // Find the Objective-C segment for the given filename noted in our
 // list.
 
-- (struct section_info *)findObjcSection:(char *)name filename:(NSString *)filename;
+- (CDSectionInfo *)objectiveCSectionWithName:(NSString *)name filename:(NSString *)filename;
 {
-    int l;
+    int count, index;
+    CDSectionInfo *sectionInfo;
 
-    for (l = 0; l < section_count; l++)
-    {
-        if (!strcmp(name, objc_sections[l].name) && [filename isEqual:objc_sections[l].filename] == YES)
-        {
-            return &objc_sections[l];
-        }
+    count = [sections count];
+    for (index = 0; index < count; index++) {
+        sectionInfo = [sections objectAtIndex:index];
+        if ([name isEqual:[sectionInfo name]] == YES && [filename isEqual:[sectionInfo filename]] == YES)
+            return sectionInfo;
     }
 
-    return NULL;
+    return nil;
 }
 
 //----------------------------------------------------------------------
 
 - (void)debugSectionOverlap;
 {
-    int l;
-
-    for (l = 0; l < section_count; l++)
-    {
-        printf("%10ld to %10ld [size 0x%08ld] %-16s of %s\n",
-               objc_sections[l].vmaddr, objc_sections[l].vmaddr + objc_sections[l].size, objc_sections[l].size,
-               objc_sections[l].name, [objc_sections[l].filename fileSystemRepresentation]);
-    }
+    NSLog(@"sections:\n%@", [sections description]);
 }
 
 //----------------------------------------------------------------------
@@ -862,59 +921,57 @@ NSMutableDictionary *protocols;
 // a pointer to where we have the file mapped.
 //
 
-- (void *)translateAddressToPointer:(long)addr section:(char *)section;
+- (void *)translateAddressToPointer:(long)addr section:(NSString *)section;
 {
     return [self translateAddressToPointerComplain:addr section:section complain:YES];
 }
 
-- (void *)translateAddressToPointerComplain:(long)addr section:(char *)section complain:(BOOL)complain;
+- (void *)translateAddressToPointerComplain:(long)addr section:(NSString *)section complain:(BOOL)shouldComplain;
 {
-    int l;
-    int count = 0;
+    int matchCount;
+    int count, index;
+    CDSectionInfo *sectionInfo;
 
-    for (l = 0; l < section_count; l++)
-    {
-        if (addr >= objc_sections[l].vmaddr && addr < objc_sections[l].vmaddr + objc_sections[l].size
-            && !strcmp(objc_sections[l].name, section))
-        {
-            count++;
-        }
+    matchCount = 0;
+    count = [sections count];
+
+    // TODO (2003-02-20): Save the last matched section.
+    for (index = 0; index < count; index++) {
+        sectionInfo = [sections objectAtIndex:index];
+        if ([sectionInfo containsAddress:addr] == YES && [[sectionInfo name] isEqual:section] == YES)
+            matchCount++;
     }
 
-    if (count > 1)
-    {
+    if (matchCount > 1) {
+        // TODO (2003-02-20): Do testing to check for dupes.
+        //NSLog(@"Dupes (%d).", matchCount);
         // If there are still duplicates, we choose the one for the current file.
-        for (l = 0; l < section_count; l++)
-        {
-            if (addr >= objc_sections[l].vmaddr && addr < objc_sections[l].vmaddr + objc_sections[l].size
-                && !strcmp(objc_sections[l].name, section)
-                && [current_filename isEqual:objc_sections[l].filename] == YES)
+        for (index = 0; index < count; index++) {
+            sectionInfo = [sections objectAtIndex:index];
+            if ([sectionInfo containsAddress:addr] == YES
+                && [[sectionInfo name] isEqual:section] == YES
+                && [[sectionInfo filename] isEqual:current_filename] == YES)
             {
-                return objc_sections[l].start + addr - objc_sections[l].vmaddr;
+                return [sectionInfo translateAddress:addr];
             }
         }
-    }
-    else
-    {
-        for (l = 0; l < section_count; l++)
-        {
-            if (addr >= objc_sections[l].vmaddr && addr < objc_sections[l].vmaddr + objc_sections[l].size
-                && !strcmp(objc_sections[l].name, section))
-            {
-                return objc_sections[l].start + addr - objc_sections[l].vmaddr;
-            }
+    } else {
+        for (index = 0; index < count; index++) {
+            sectionInfo = [sections objectAtIndex:index];
+            if ([sectionInfo containsAddress:addr] == YES && [[sectionInfo name] isEqual:section] == YES)
+                return [sectionInfo translateAddress:addr];
         }
     }
 
-    if (addr != 0 && complain)
-        printf("address (0x%08lx) not in '%s' section of OBJC segment!\n", addr, section);
+    if (addr != 0 && shouldComplain == YES)
+        NSLog(@"address (0x%08lx) not in '%@' section of OBJC segment!", addr, section);
 
     return NULL;
 }
 
 //----------------------------------------------------------------------
 
-- (char *)stringAt:(long)addr section:(char *)section;
+- (char *)stringAt:(long)addr section:(NSString *)section;
 {
     char *ptr;
 
@@ -923,7 +980,7 @@ NSMutableDictionary *protocols;
        the old or new style section.  MacOS X still supports older Mac OS X
        Server binaries, so we do need to look in both places.
      */
-    ptr = (char *)[self translateAddressToPointerComplain:addr section:SEC_CSTRING complain:NO];
+    ptr = (char *)[self translateAddressToPointerComplain:addr section:CDSECT_CSTRING complain:NO];
     if (ptr == NULL)
 	ptr = (char *)[self translateAddressToPointerComplain:addr section:section complain:YES];
 
@@ -932,7 +989,7 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (NSString *)nsstringAt:(long)addr section:(char *)section;
+- (NSString *)nsstringAt:(long)addr section:(NSString *)section;
 {
     char *str;
 
@@ -943,19 +1000,35 @@ NSMutableDictionary *protocols;
 
 //----------------------------------------------------------------------
 
-- (struct section_info *)sectionOfAddress:(long)addr;
+- (CDSectionInfo *)sectionOfAddress:(long)addr;
 {
-    int l;
+    int count, index;
+    CDSectionInfo *sectionInfo;
 
-    for (l = 0; l < section_count; l++)
-    {
-        if (addr >= objc_sections[l].vmaddr && addr < objc_sections[l].vmaddr + objc_sections[l].size)
-        {
-            return &objc_sections[l];
-        }
+    count = [sections count];
+    for (index = 0; index < count; index++) {
+        sectionInfo = [sections objectAtIndex:index];
+        if ([sectionInfo containsAddress:addr] == YES)
+            return sectionInfo;
     }
 
     return NULL;
+}
+
+- (int)methodFormattingFlags;
+{
+    int formatFlags = 0;
+
+    if (flags.shouldSort == YES)
+        formatFlags |= F_SORT_METHODS;
+
+    if (flags.shouldShowIvarOffsets == YES)
+        formatFlags |= F_SHOW_IVAR_OFFSET;
+
+    if (flags.shouldShowMethodAddresses == YES)
+        formatFlags |= F_SHOW_METHOD_ADDRESS;
+
+    return formatFlags;
 }
 
 @end
@@ -1098,11 +1171,11 @@ int main(int argc, char *argv[])
 
         print_header();
 
-        //debug_section_overlap();
+        [classDump debugSectionOverlap];
 
-        if (section_count > 0) {
+        if ([[classDump sections] count] > 0) {
             if (shouldExpandFrameworks == NO) {
-                [classDump showSingleModule:(struct section_info *)[classDump findObjcSection:SEC_MODULE_INFO filename:adjustedPath]];
+                [classDump showSingleModule:[classDump objectiveCSectionWithName:CDSECT_MODULE_INFO filename:adjustedPath]];
             } else {
                 [classDump showAllModules];
             }

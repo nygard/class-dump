@@ -5,6 +5,30 @@
 	};
 	objectVersion = 38;
 	objects = {
+		0114A4590405EB1600A8010A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "NSString-Extensions.h";
+			refType = 4;
+		};
+		0114A45A0405EB1600A8010A = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			path = "NSString-Extensions.m";
+			refType = 4;
+		};
+		0114A45B0405EB1600A8010A = {
+			fileRef = 0114A4590405EB1600A8010A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		0114A45C0405EB1600A8010A = {
+			fileRef = 0114A45A0405EB1600A8010A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		012131630070A3B1C697A12D = {
 			buildRules = (
 			);
@@ -78,6 +102,8 @@
 			children = (
 				03070CB3FF009A5FC0A80A02,
 				03070CA9FF009A5FC0A80A02,
+				0114A4590405EB1600A8010A,
+				0114A45A0405EB1600A8010A,
 				03070CB4FF009A5FC0A80A02,
 				03070CAAFF009A5FC0A80A02,
 				03070CB5FF009A5FC0A80A02,
@@ -289,6 +315,7 @@
 				03070CD2FF009A5FC0A80A02,
 				03070CD3FF009A5FC0A80A02,
 				019CC2F303DD10C100A8010A,
+				0114A45B0405EB1600A8010A,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,6 +382,7 @@
 				03070CDEFF009A5FC0A80A02,
 				03070CDFFF009A5FC0A80A02,
 				03070CE0FF009A5FC0A80A02,
+				0114A45C0405EB1600A8010A,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
