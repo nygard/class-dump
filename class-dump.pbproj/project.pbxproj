@@ -1345,7 +1345,6 @@
 		01C5C182058D860F0052C696 = {
 			buildActionMask = 2147483647;
 			files = (
-				01C5C184058D860F0052C696,
 				01C5C185058D860F0052C696,
 				01C5C186058D860F0052C696,
 				01C5C187058D860F0052C696,
@@ -1380,12 +1379,6 @@
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
-		};
-		01C5C184058D860F0052C696 = {
-			fileRef = 03070CB1FF009A5FC0A80A02;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		01C5C185058D860F0052C696 = {
 			fileRef = 0114A4590405EB1600A8010A;
@@ -2117,14 +2110,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		03070CB1FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = "class-dump.h";
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		03070CB3FF009A5FC0A80A02 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -2143,7 +2128,6 @@
 		};
 		03070CBBFF009A5FC0A80A02 = {
 			children = (
-				03070CB1FF009A5FC0A80A02,
 				03070CBEFF009A5FC0A80A02,
 			);
 			isa = PBXGroup;
