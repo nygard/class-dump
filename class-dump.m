@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.41 2003/12/11 06:44:14 nygard Exp $
+// $Id: class-dump.m,v 1.42 2003/12/12 04:01:38 nygard Exp $
 //
 
 //
@@ -45,6 +45,7 @@
 #include "datatypes.h"
 #import "class-dump.h"
 
+#if 0
 #import "CDSectionInfo.h"
 #import "ObjcThing.h"
 #import "ObjcClass.h"
@@ -53,18 +54,18 @@
 #import "ObjcIvar.h"
 #import "ObjcMethod.h"
 #import "MappedFile.h"
+#endif
 #import "CDTypeParser.h"
-
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
 //----------------------------------------------------------------------
 
-#define CLASS_DUMP_VERSION "2.1.6 alpha"
+#define CLASS_DUMP_VERSION "3.0 alpha"
 
 int expand_structures_flag = 0; // This is used in datatypes.m
 int expand_arg_structures_flag = 0;
-
+#if 0
 NSString *current_filename = nil;
 
 //----------------------------------------------------------------------
@@ -85,7 +86,7 @@ static NSString *CDSECT_INSTANCE_VARS =  @"__instance_vars";
 static NSString *CDSECT_CAT_INST_METH =  @"__cat_inst_meth";
 static NSString *CDSECT_METH_VAR_TYPES = @"__meth_var_types";
 static NSString *CDSECT_METH_VAR_NAMES = @"__meth_var_names";
-
+#endif
 //======================================================================
 
 char *file_type_names[] =
@@ -127,7 +128,7 @@ char *load_command_names[] =
 void print_header(void);
 
 //======================================================================
-
+#if 0
 @implementation CDClassDump
 
 - (id)initWithPath:(NSString *)aPath;
@@ -1063,7 +1064,7 @@ void print_header(void);
 }
 
 @end
-
+#endif
 //----------------------------------------------------------------------
 
 void print_usage(void)
@@ -1098,11 +1099,6 @@ void print_header(void)
        );
 }
 
-void print_unknown_struct_typedef(void)
-{
-    printf("\ntypedef unsigned long CDAnonymousStruct;\n");
-}
-
 void doTests(char *file)
 {
     NSString *filename, *contents;
@@ -1135,12 +1131,56 @@ void doTests(char *file)
             if (result != nil) {
                 //NSLog(@"Parsed okay");
                 NSLog(@"result: %@", result);
-#if 0
-                result->var_name = strdup([name cString]);
-                print_type(result, 0, 0);
-                printf(";");
-                //free_objc_type(result); // This function needs work to avoid double free()s.
-#endif
+            } else {
+                NSLog(@"Parse failed");
+            }
+            //printf("\t%s\t%s", type, name);
+            //printf("\n");
+        }
+    }
+
+    NSLog(@"Done.");
+
+    [typeParser release];
+}
+
+void doMethodTests(char *file)
+{
+    NSString *filename, *contents;
+    NSArray *lines, *fields;
+    int count, index;
+
+    CDTypeParser *typeParser;
+
+    typeParser = [[CDTypeParser alloc] init];
+    [typeParser setShouldShowLexing:YES];
+
+    NSLog(@"Testing %s", file);
+    filename = [NSString stringWithCString:file];
+    contents = [NSString stringWithContentsOfFile:filename];
+    lines = [contents componentsSeparatedByString:@"\n"];
+    count = [lines count];
+    for (index = 0; index < count; index++) {
+        NSString *line;
+        NSString *type, *name;
+
+        line = [lines objectAtIndex:index];
+        if ([line hasPrefix:@"\tClass "] == YES) {
+            NSLog(@"Class %@", [line substringFromIndex:7]);
+            continue;
+        }
+
+        fields = [line componentsSeparatedByString:@"\t"];
+        if ([fields count] >= 2) {
+            NSString *result;
+
+            name = [fields objectAtIndex:0];
+            type = [fields objectAtIndex:1];
+            NSLog(@"%@\t%@", name, type);
+            result = [typeParser parseMethodName:name type:type];
+            if (result != nil) {
+                //NSLog(@"Parsed okay");
+                NSLog(@"result: %@", result);
             } else {
                 NSLog(@"Parse failed");
             }
@@ -1226,7 +1266,7 @@ int main(int argc, char *argv[])
               break;
 
           case 't':
-              doTests(optarg);
+              doMethodTests(optarg);
               exit(0);
               break;
 
@@ -1260,6 +1300,7 @@ int main(int argc, char *argv[])
         [classDump processModules];
         //[classDump checkUnreferencedProtocols];
         NSLog(@"Formatted result:\n%@", [classDump formattedStringByClass]);
+        //NSLog(@"raw methods:\n%@", [classDump rawMethods]);
         [classDump release];
 
         [machOFile release];

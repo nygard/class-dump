@@ -128,4 +128,6 @@ struct cd_objc_protocol_method
 - (NSString *)formattedStringByModule;
 - (NSString *)formattedStringByClass;
 
+- (NSString *)rawMethods;
+
 @end

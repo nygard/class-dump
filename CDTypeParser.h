@@ -21,10 +21,11 @@
 - (void)error:(NSString *)errorString;
 
 - (NSString *)parseType:(NSString *)type name:(NSString *)name;
-- (struct method_type *)parseMethodName:(NSString *)name type:(NSString *)type;
+- (NSString *)parseMethodName:(NSString *)name type:(NSString *)type;
+
+- (struct method_type *)parseMethodType;
 
 - (struct my_objc_type *)parseType;
-
 - (struct my_objc_type *)parseUnionTypes;
 - (struct my_objc_type *)parseOptionalFormat;
 - (struct my_objc_type *)parseTagList;
@@ -38,5 +39,6 @@
 - (BOOL)isLookaheadInModifierSet;
 - (BOOL)isLookaheadInSimpleTypeSet;
 - (BOOL)isLookaheadInTypeSet;
+- (BOOL)isLookaheadInTypeStartSet;
 
 @end

@@ -390,4 +390,34 @@
     return resultString;
 }
 
+- (NSString *)rawMethods;
+{
+    NSMutableString *resultString;
+    int count, index;
+    NSMutableArray *allClasses;
+
+    resultString = [NSMutableString string];
+    allClasses = [[NSMutableArray alloc] init];
+
+    // TODO: Show protocols
+
+    count = [modules count];
+    for (index = 0; index < count; index++) {
+        NSArray *moduleClasses;
+
+        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
+        if (moduleClasses != nil)
+            [allClasses addObjectsFromArray:moduleClasses];
+    }
+
+    [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+    count = [allClasses count];
+    for (index = 0; index < count; index++)
+        [[allClasses objectAtIndex:index] appendRawMethodsToString:resultString];
+
+    [allClasses release];
+
+    return resultString;
+}
+
 @end

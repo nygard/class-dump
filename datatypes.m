@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.16 2003/12/11 05:54:26 nygard Exp $
+// $Id: datatypes.m,v 1.17 2003/12/12 04:01:38 nygard Exp $
 //
 
 //
@@ -35,6 +35,7 @@
 #include "datatypes.h"
 //#include "gram.h"
 #import "CDTypeLexer.h"
+#import "NSScanner-Extensions.h"
 
 NSString *string_indent_to_level(int level);
 NSString *string_from_members(struct my_objc_type *t, int level);
@@ -389,10 +390,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
           else
               type_name = [NSString stringWithFormat:@" %@", t->type_name];
 
-          if(t->type_name != nil && [t->type_name hasPrefix:@"?"] == YES)
-              tmp = @"CDAnonymousStruct"; // TODO (2003-12-10): Need to verify this.
-          else
-              tmp = [NSString stringWithFormat:@"struct%@", type_name];
+          tmp = [NSString stringWithFormat:@"struct%@", type_name];
 
           if (expand == 1 && t->subtype != NULL) {
               tmp = [NSString stringWithFormat:@"%@ {\n%@%@}", tmp, string_from_members(t->subtype, level + 1),
@@ -445,38 +443,73 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
     return tmp;
 }
 
-void print_type(struct my_objc_type *t, int expand, int level)
-{
-    NSString *str;
-
-    str = string_from_type(t, nil, expand, level);
-
-    printf("%s", [str cString]);
-}
-
-void print_method(char method_type, const char *method_name, struct method_type *m)
+NSString *string_from_method_type(NSString *methodName, struct method_type *m)
 {
     extern int expand_arg_structures_flag;
     int l;
     BOOL noMoreTypes;
+    NSMutableString *resultString;
+    NSScanner *scanner;
 
-    printf("%c ", method_type);
+    //NSLog(@"string_from_method_type(), methodName = %@", methodName);
+#if 1
     if (m == NULL) {
-        printf("%s; /* Error: No method types. */", method_name);
-        return;
+        NSLog(@"Error: No method types in string_from_method_type, method: %@", methodName);
+        return nil;
     }
 
+    resultString = [NSMutableString string];
     noMoreTypes = NO;
 
     if (!IS_ID(m->type)) {
-        printf("(");
-        print_type(m->type, expand_arg_structures_flag, 0);
-        printf(")");
+        NSString *str;
+
+        [resultString appendString:@"("];
+        // TODO (2003-12-11): Don't expect anonymous structures anywhere in method types.
+        str = string_from_type(m->type, nil, expand_arg_structures_flag, 0);
+        //NSLog(@"return type: '%@'", str);
+        if (str != nil)
+            [resultString appendFormat:@"%@", str];
+        [resultString appendString:@")"];
     }
 
     for (l = 0; l < 3 && m != NULL; l++)
         m = m->next;
+#endif
 
+    scanner = [[NSScanner alloc] initWithString:methodName];
+    while ([scanner isAtEnd] == NO) {
+        NSString *str;
+
+        // We can have unnamed paramenters, :::
+        if ([scanner scanUpToString:@":" intoString:&str] == YES) {
+            //NSLog(@"str += '%@'", str);
+            [resultString appendString:str];
+        }
+        if ([scanner scanString:@":" intoString:NULL] == YES) {
+            NSString *typeString;
+
+            [resultString appendString:@":"];
+            if (m == NULL) {
+                noMoreTypes = YES;
+            } else {
+                NSString *ch;
+
+                typeString = string_from_type(m->type, nil, 0, 0);
+                //NSLog(@"typeString: '%@'", typeString);
+                if (!IS_ID(m->type)) 
+                    [resultString appendFormat:@"(%@)", typeString];
+                [resultString appendFormat:@"fp%@", m->name];
+
+                ch = [scanner peekCharacter];
+                // if next character is not ':' nor EOS then add space
+                if (ch != nil && [ch isEqual:@":"] == NO)
+                    [resultString appendString:@" "];
+                m = m->next;
+            }
+        }
+    }
+#if 0
     while (*method_name != '\0') {
         while (*method_name != '\0' && *method_name != ':') {
             putchar(*method_name);
@@ -502,11 +535,14 @@ void print_method(char method_type, const char *method_name, struct method_type 
             }
         }
     }
-    printf(";");
+#endif
 
     if (noMoreTypes == YES) {
-        printf(" /* Error: Ran out of types for this method. */");
+        NSLog(@" /* Error: Ran out of types for this method. */");
     }
+
+    //NSLog(@"string_from_method_type(): %@", resultString);
+    return resultString;
 }
 
 //======================================================================

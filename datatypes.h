@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.h,v 1.7 2003/12/11 05:54:26 nygard Exp $
+// $Id: datatypes.h,v 1.8 2003/12/12 04:01:38 nygard Exp $
 //
 
 //
@@ -74,9 +74,6 @@ struct method_type *reverse_method_types(struct method_type *m);
 
 void indent_to_level(int level);
 
-void print_type(struct my_objc_type *t, int expand, int level);
-void print_method(char method_type, const char *method_name, struct method_type *m);
-
 void free_objc_type(struct my_objc_type *t);
 void free_method_type(struct method_type *m);
 
@@ -84,5 +81,6 @@ void free_allocated_types(void);
 void free_allocated_methods(void);
 
 NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, int level);
+NSString *string_from_method_type(NSString *methodName, struct method_type *m);
 
 #endif

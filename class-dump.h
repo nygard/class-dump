@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.h,v 1.11 2003/09/09 00:27:52 nygard Exp $
+// $Id: class-dump.h,v 1.12 2003/12/12 04:01:38 nygard Exp $
 //
 
 //
@@ -28,6 +28,7 @@
 #import <Foundation/NSObject.h>
 #include <regex.h>
 
+#if 0
 struct my_objc_module
 {
     long version;
@@ -133,12 +134,12 @@ struct my_objc_prot_inst_meth_list
     long count;
     long methods;
 };
-
+#endif
 //======================================================================
 
 @class NSArray, NSString, NSMutableArray, NSMutableDictionary;
-@class CDSectionInfo, MappedFile, ObjcClass, ObjcCategory;
-
+//@class CDSectionInfo, MappedFile, ObjcClass, ObjcCategory;
+#if 0
 @interface CDClassDump : NSObject
 {
     NSString *mainPath;
@@ -235,3 +236,4 @@ struct my_objc_prot_inst_meth_list
 - (int)methodFormattingFlags;
 
 @end
+#endif

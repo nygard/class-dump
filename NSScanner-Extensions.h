@@ -4,6 +4,7 @@
 
 @interface NSScanner (CDExtensions)
 
+- (NSString *)peekCharacter;
 - (BOOL)scanCharacter:(unichar *)value;
 - (BOOL)scanCharacterFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
 

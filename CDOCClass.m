@@ -1,6 +1,7 @@
 #import "CDOCClass.h"
 
 #import <Foundation/Foundation.h>
+#import "CDOCMethod.h"
 #import "NSArray-Extensions.h"
 
 @implementation CDOCClass
@@ -142,8 +143,8 @@
 
 - (void)appendToString:(NSMutableString *)resultString;
 {
-    int count, index;
     NSArray *sortedMethods;
+    int count, index;
 
     [resultString appendFormat:@"@interface %@", name];
     if (superClassName != nil)
@@ -188,6 +189,35 @@
     if ([classMethods count] > 0 || [instanceMethods count] > 0)
         [resultString appendString:@"\n"];
     [resultString appendString:@"@end\n\n"];
+}
+
+- (void)appendRawMethodsToString:(NSMutableString *)resultString;
+{
+    NSArray *sortedMethods;
+    int count, index;
+
+    [resultString appendFormat:@"\tClass %@\n", name];
+    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    count = [sortedMethods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            CDOCMethod *aMethod;
+
+            aMethod = [sortedMethods objectAtIndex:index];
+            [resultString appendFormat:@"%@\t%@\n", [aMethod name], [aMethod type]];
+        }
+    }
+
+    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    count = [sortedMethods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            CDOCMethod *aMethod;
+
+            aMethod = [sortedMethods objectAtIndex:index];
+            [resultString appendFormat:@"%@\t%@\n", [aMethod name], [aMethod type]];
+        }
+    }
 }
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherClass;

@@ -37,6 +37,7 @@
 
 - (NSString *)formattedString;
 - (void)appendToString:(NSMutableString *)resultString;
+- (void)appendRawMethodsToString:(NSMutableString *)resultString;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherIvar;
 

@@ -5,6 +5,16 @@
 
 @implementation NSScanner (CDExtensions)
 
+- (NSString *)peekCharacter;
+{
+    //[self skipCharacters];
+
+    if ([self isAtEnd] == YES)
+        return nil;
+
+    return [[self string] substringWithRange:NSMakeRange([self scanLocation], 1)];
+}
+
 - (BOOL)scanCharacter:(unichar *)value;
 {
     unichar ch;
