@@ -1088,8 +1088,6 @@
 				03070CAFFF009A5FC0A80A02,
 				0174482D043BF8E000A8010A,
 				0174482E043BF8E000A8010A,
-				03070CBCFF009A5FC0A80A02,
-				03070CBDFF009A5FC0A80A02,
 			);
 			isa = PBXGroup;
 			name = "Yucky old stuff";
@@ -2078,22 +2076,6 @@
 			);
 			isa = PBXGroup;
 			name = "Other Sources";
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CBCFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.yacc;
-			path = gram.y;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CBDFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.c;
-			path = lexer.c;
 			refType = 4;
 			sourceTree = "<group>";
 		};
