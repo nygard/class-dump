@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.20 2004/01/18 02:59:52 nygard Exp $
+// $Id: CDType.h,v 1.21 2004/01/19 01:53:43 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -16,7 +16,7 @@
 {
     int type;
     CDType *subtype;
-    CDTypeName *typeName; // Class name? + bitfield size, array size
+    CDTypeName *typeName;
     NSArray *members;
     NSString *bitfieldSize;
     NSString *arraySize;
