@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.9 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcClass.m,v 1.10 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -71,17 +71,17 @@
     return classes;
 }
 
-- (id)initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
+- (id)initWithClassName:(NSString *)aClassName superClassName:(NSString *)aSuperClassName;
 {
     if ([super init] == nil)
         return nil;
 
-    class_name = [className retain];
-    super_class_name = [superClassName retain];
+    className = [aClassName retain];
+    superClassName = [aSuperClassName retain];
     ivars = [[NSMutableArray array] retain];
-    class_methods = [[NSMutableArray array] retain];
-    instance_methods = [[NSMutableArray array] retain];
-    protocol_names = [[NSMutableArray array] retain];
+    classMethods = [[NSMutableArray array] retain];
+    instanceMethods = [[NSMutableArray array] retain];
+    protocolNames = [[NSMutableArray array] retain];
 
     [[ObjcClass classDict] setObject:self forKey:className];
 
@@ -90,12 +90,12 @@
 
 - (void)dealloc;
 {
-    [class_name release];
-    [super_class_name release];
+    [className release];
+    [superClassName release];
     [ivars release];
-    [class_methods release];
-    [instance_methods release];
-    [protocol_names release];
+    [classMethods release];
+    [instanceMethods release];
+    [protocolNames release];
     
     [super dealloc];
 }
@@ -103,27 +103,27 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"@interface %@:%@ {\n%@\n}\n%@\n%@",
-                     class_name, super_class_name, ivars, class_methods, instance_methods];
+                     className, superClassName, ivars, classMethods, instanceMethods];
 }
 
 - (NSString *)className;
 {
-    return class_name;
+    return className;
 }
 
 - (NSArray *)protocolNames;
 {
-    return protocol_names;
+    return protocolNames;
 }
 
 - (NSString *)sortableName;
 {
-    return class_name;
+    return className;
 }
 
 - (NSString *)superClassName;
 {
-    return super_class_name;
+    return superClassName;
 }
 
 - (void)addIvars:(NSArray *)newIvars;
@@ -133,17 +133,17 @@
 
 - (void)addClassMethods:(NSArray *)newClassMethods;
 {
-    [class_methods addObjectsFromArray:newClassMethods];
+    [classMethods addObjectsFromArray:newClassMethods];
 }
 
 - (void)addInstanceMethods:(NSArray *)newInstanceMethods;
 {
-    [instance_methods addObjectsFromArray:newInstanceMethods];
+    [instanceMethods addObjectsFromArray:newInstanceMethods];
 }
 
 - (void)addProtocolNames:(NSArray *)newProtocolNames;
 {
-    [protocol_names addObjectsFromArray:newProtocolNames];
+    [protocolNames addObjectsFromArray:newProtocolNames];
 }
 
 - (void)showDefinition:(int)flags;
@@ -153,13 +153,13 @@
     ObjcMethod *method;
     NSString *protocolName;
 
-    printf ("@interface %s", [class_name cString]);
-    if (super_class_name != nil)
-        printf (":%s", [super_class_name cString]);
+    printf ("@interface %s", [className cString]);
+    if (superClassName != nil)
+        printf (":%s", [superClassName cString]);
 
-    if ([protocol_names count] > 0)
+    if ([protocolNames count] > 0)
     {
-        enumerator = [protocol_names objectEnumerator];
+        enumerator = [protocolNames objectEnumerator];
         printf (" <");
         protocolName = [enumerator nextObject];
         if (protocolName != nil)
@@ -191,12 +191,12 @@
     //printf ("%s\n", [[ivars description] cString]);
     printf ("}\n\n");
 
-    //NSLog (@"class_methods: %@", class_methods);
+    //NSLog (@"classMethods: %@", classMethods);
 
     if (flags & F_SORT_METHODS)
-        enumerator = [[class_methods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
+        enumerator = [[classMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
     else
-        enumerator = [class_methods reverseObjectEnumerator];
+        enumerator = [classMethods reverseObjectEnumerator];
 
     while (method = [enumerator nextObject])
     {
@@ -209,9 +209,9 @@
     }
 
     if (flags & F_SORT_METHODS)
-        enumerator = [[instance_methods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
+        enumerator = [[instanceMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
     else
-        enumerator = [instance_methods reverseObjectEnumerator];
+        enumerator = [instanceMethods reverseObjectEnumerator];
     while (method = [enumerator nextObject])
     {
         [method showMethod:'-'];

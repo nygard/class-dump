@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.10 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcClass.h,v 1.11 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -31,18 +31,18 @@
 
 @interface ObjcClass : ObjcThing
 {
-    NSString *class_name;
-    NSString *super_class_name;
+    NSString *className;
+    NSString *superClassName;
     NSMutableArray *ivars;
-    NSMutableArray *class_methods;
-    NSMutableArray *instance_methods;
-    NSMutableArray *protocol_names;
+    NSMutableArray *classMethods;
+    NSMutableArray *instanceMethods;
+    NSMutableArray *protocolNames;
 }
 
 + (NSMutableDictionary *)classDict;
 + (NSArray *)sortedClasses;
 
-- (id)initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
+- (id)initWithClassName:(NSString *)aClassName superClassName:(NSString *)aSuperClassName;
 - (void)dealloc;
 
 - (NSString *)description;

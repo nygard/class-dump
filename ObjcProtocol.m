@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.7 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.8 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -33,72 +33,73 @@
 
 @implementation ObjcProtocol
 
-- (id)initWithProtocolName:(NSString *)protocolName;
+- (id)initWithProtocolName:(NSString *)aProtocolName;
 {
     if ([super init] == nil)
         return nil;
 
-    protocol_name = [protocolName retain];
-    protocol_names = [[NSMutableArray array] retain];
-    protocol_methods = [[NSMutableArray array] retain];
+    protocolName = [aProtocolName retain];
+    protocolNames = [[NSMutableArray array] retain];
+    protocolMethods = [[NSMutableArray array] retain];
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [protocol_name release];
-    [protocol_names release];
-    [protocol_methods release];
+    [protocolName release];
+    [protocolNames release];
+    [protocolMethods release];
 
     [super dealloc];
 }
 
 - (NSString *)protocolName;
 {
-    return protocol_name;
+    return protocolName;
 }
 
 - (NSString *)sortableName;
 {
-    return protocol_name;
+    return protocolName;
 }
 
 - (void)addProtocolNames:(NSArray *)newProtocolNames;
 {
-    [protocol_names addObjectsFromArray:newProtocolNames];
+    [protocolNames addObjectsFromArray:newProtocolNames];
 }
 
 - (void)addProtocolMethod:(ObjcMethod *)newMethod;
 {
-    [protocol_methods addObject:newMethod];
+    [protocolMethods addObject:newMethod];
 }
 
 - (void)addProtocolMethods:(NSArray *)newProtocolMethods;
 {
-    [protocol_methods addObjectsFromArray:newProtocolMethods];
+    [protocolMethods addObjectsFromArray:newProtocolMethods];
 }
 
 - (void)showDefinition:(int)flags;
 {
     NSEnumerator *enumerator;
     ObjcMethod *method;
-    NSString *protocolName;
 
-    printf ("@protocol %s", [protocol_name cString]);
+    printf ("@protocol %s", [protocolName cString]);
 
-    if ([protocol_names count] > 0)
+    if ([protocolNames count] > 0)
     {
-        enumerator = [protocol_names objectEnumerator];
+        NSString *aProtocolName;
+
+        enumerator = [protocolNames objectEnumerator];
         printf (" <");
-        protocolName = [enumerator nextObject];
-        if (protocolName != nil)
+        aProtocolName = [enumerator nextObject];
+        if (aProtocolName != nil)
         {
-            printf ("%s", [protocolName cString]);
+            printf ("%s", [aProtocolName cString]);
             
             while (protocolName = [enumerator nextObject])
             {
-                printf (", %s", [protocolName cString]);
+                printf (", %s", [aProtocolName cString]);
             }
         }
 
@@ -108,9 +109,9 @@
     printf ("\n");
 
     if (flags & F_SORT_METHODS)
-        enumerator = [[protocol_methods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
+        enumerator = [[protocolMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
     else
-        enumerator = [protocol_methods objectEnumerator];
+        enumerator = [protocolMethods objectEnumerator];
 
     while (method = [enumerator nextObject])
     {

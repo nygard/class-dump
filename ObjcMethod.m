@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.m,v 1.5 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcMethod.m,v 1.6 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -32,59 +32,60 @@
 
 @implementation ObjcMethod
 
-- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType;
+- (id)initWithMethodName:(NSString *)aMethodName type:(NSString *)aMethodType;
 {
-    if ([self initWithMethodName:methodName type:methodType address:0] == nil)
+    if ([self initWithMethodName:aMethodName type:aMethodType address:0] == nil)
         return nil;
     
-    is_protocol_method = YES;
+    isProtocolMethod = YES;
 
     return self;
 }
 
-- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType address:(long)methodAddress;
+- (id)initWithMethodName:(NSString *)aMethodName type:(NSString *)aMethodType address:(long)aMethodAddress;
 {
-    [super init];
+    if ([super init] == nil)
+        return nil;
 
-    method_name = [methodName retain];
-    method_type = [methodType retain];
-    method_address = methodAddress;
-    is_protocol_method = NO;
+    methodName = [aMethodName retain];
+    methodType = [aMethodType retain];
+    methodAddress = aMethodAddress;
+    isProtocolMethod = NO;
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [method_name release];
-    [method_type release];
+    [methodName release];
+    [methodType release];
     
     [super dealloc];
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%@/%@\t// %x", method_name, method_type, method_address];
+    return [NSString stringWithFormat:@"%@/%@\t// %x", methodName, methodType, methodAddress];
 }
 
 - (NSString *)methodName;
 {
-    return method_name;
+    return methodName;
 }
 
 - (long)address;
 {
-    return method_address;
+    return methodAddress;
 }
 
 - (void)showMethod:(char)prefix;
 {
-    format_method (prefix, [method_name cString], [method_type cString]);
+    format_method (prefix, [methodName cString], [methodType cString]);
 }
 
 - (NSComparisonResult)orderByMethodName:(ObjcMethod *)otherMethod;
 {
-    return [method_name compare:[otherMethod methodName]];
+    return [methodName compare:[otherMethod methodName]];
 }
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcCategory.h,v 1.9 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -31,14 +31,14 @@
 
 @interface ObjcCategory : ObjcThing
 {
-    NSString *class_name;
-    NSString *category_name;
-    NSMutableArray *class_methods;
-    NSMutableArray *instance_methods;
+    NSString *className;
+    NSString *categoryName;
+    NSMutableArray *classMethods;
+    NSMutableArray *instanceMethods;
     NSMutableArray *protocols;
 }
 
-- (id)initWithClassName:(NSString *)className categoryName:(NSString *)categoryName;
+- (id)initWithClassName:(NSString *)aClassName categoryName:(NSString *)aCategoryName;
 - (void)dealloc;
 
 - (NSString *)sortableName;

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcProtocol.h,v 1.9 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -32,12 +32,12 @@
 
 @interface ObjcProtocol : ObjcThing
 {
-    NSString *protocol_name;
-    NSMutableArray *protocol_names;
-    NSMutableArray *protocol_methods;
+    NSString *protocolName;
+    NSMutableArray *protocolNames;
+    NSMutableArray *protocolMethods;
 }
 
-- (id)initWithProtocolName:(NSString *)protocolName;
+- (id)initWithProtocolName:(NSString *)aProtocolName;
 - (void)dealloc;
 
 - (NSString *)protocolName;

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcMethod.h,v 1.8 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcMethod.h,v 1.9 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -31,14 +31,14 @@
 
 @interface ObjcMethod : NSObject
 {
-    NSString *method_name;
-    NSString *method_type;
-    BOOL is_protocol_method;
-    long method_address; // Note: protocols will not have method addresses
+    NSString *methodName;
+    NSString *methodType;
+    BOOL isProtocolMethod;
+    long methodAddress; // Note: protocols will not have method addresses
 }
 
-- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType;
-- (id)initWithMethodName:(NSString *)methodName type:(NSString *)methodType address:(long)methodAddress;
+- (id)initWithMethodName:(NSString *)aMethodName type:(NSString *)aMethodType;
+- (id)initWithMethodName:(NSString *)aMethodName type:(NSString *)aMethodType address:(long)aMethodAddress;
 - (void)dealloc;
 
 - (NSString *)description;

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.m,v 1.5 2002/12/19 06:13:19 nygard Exp $
+// $Id: ObjcIvar.m,v 1.6 2002/12/19 06:28:47 nygard Exp $
 //
 
 //
@@ -32,39 +32,39 @@
 
 @implementation ObjcIvar
 
-- (id)initWithName:(NSString *)ivarName type:(NSString *)ivarType offset:(long)ivarOffset;
+- (id)initWithName:(NSString *)anIvarName type:(NSString *)anIvarType offset:(long)anIvarOffset;
 {
     if ([super init] == nil)
         return nil;
 
-    ivar_name = [ivarName retain];
-    ivar_type = [ivarType retain];
-    ivar_offset = ivarOffset;
+    ivarName = [anIvarName retain];
+    ivarType = [anIvarType retain];
+    ivarOffset = anIvarOffset;
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [ivar_name release];
-    [ivar_type release];
+    [ivarName release];
+    [ivarType release];
     
     [super dealloc];
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%@/%@\t// %x", ivar_name, ivar_type, ivar_offset];
+    return [NSString stringWithFormat:@"%@/%@\t// %x", ivarName, ivarType, ivarOffset];
 }
 
 - (long)offset;
 {
-    return ivar_offset;
+    return ivarOffset;
 }
 
 - (void)showIvarAtLevel:(int)level;
 {
-    format_type ([ivar_type cString], [ivar_name cString], level);
+    format_type ([ivarType cString], [ivarName cString], level);
 }
 
 @end
