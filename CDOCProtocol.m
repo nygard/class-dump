@@ -21,7 +21,7 @@
     [name release];
     [protocols release];
     [classMethods release];
-    [methods release];
+    [instanceMethods release];
     [adoptedProtocolNames release];
 
     [super dealloc];
@@ -84,23 +84,24 @@
     classMethods = [newClassMethods retain];
 }
 
-- (NSArray *)methods;
+- (NSArray *)instanceMethods;
 {
-    return methods;
+    return instanceMethods;
 }
 
-- (void)setMethods:(NSArray *)newMethods;
+- (void)setInstanceMethods:(NSArray *)newInstanceMethods;
 {
-    if (newMethods == methods)
+    if (newInstanceMethods == instanceMethods)
         return;
 
-    [methods release];
-    methods = [newMethods retain];
+    [instanceMethods release];
+    instanceMethods = [newInstanceMethods retain];
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, protocols: %@, methods: %@", NSStringFromClass([self class]), name, protocols, methods];
+    return [NSString stringWithFormat:@"[%@] name: %@, protocols: %d, class methods: %d, instance methods: %d",
+                     NSStringFromClass([self class]), name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
 - (void)appendToString:(NSMutableString *)resultString;
@@ -122,7 +123,7 @@
         [resultString appendString:@"\n"];
     }
 
-    sortedMethods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     count = [sortedMethods count];
     for (index = 0; index < count; index++) {
         [resultString appendString:@"- "];

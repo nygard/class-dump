@@ -7,7 +7,7 @@
     NSString *name;
     NSMutableArray *protocols;
     NSArray *classMethods;
-    NSArray *methods;
+    NSArray *instanceMethods;
 
     NSMutableSet *adoptedProtocolNames;
 }
@@ -26,8 +26,8 @@
 - (NSArray *)classMethods;
 - (void)setClassMethods:(NSArray *)newClassMethods;
 
-- (NSArray *)methods;
-- (void)setMethods:(NSArray *)newMethods;
+- (NSArray *)instanceMethods;
+- (void)setInstanceMethods:(NSArray *)newInstanceMethods;
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString;

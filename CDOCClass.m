@@ -6,38 +6,12 @@
 
 @implementation CDOCClass
 
-- (id)init;
-{
-    if ([super init] == nil)
-        return nil;
-
-    return self;
-}
-
 - (void)dealloc;
 {
-    [name release];
     [superClassName release];
-    [protocols release];
     [ivars release];
-    [classMethods release];
-    [instanceMethods release];
 
     [super dealloc];
-}
-
-- (NSString *)name;
-{
-    return name;
-}
-
-- (void)setName:(NSString *)newName;
-{
-    if (newName == name)
-        return;
-
-    [name release];
-    name = [newName retain];
 }
 
 - (NSString *)superClassName;
@@ -54,20 +28,6 @@
     superClassName = [newSuperClassName retain];
 }
 
-- (NSArray *)protocols;
-{
-    return protocols;
-}
-
-- (void)setProtocols:(NSArray *)newProtocols;
-{
-    if (newProtocols == protocols)
-        return;
-
-    [protocols release];
-    protocols = [newProtocols retain];
-}
-
 - (NSArray *)ivars;
 {
     return ivars;
@@ -80,39 +40,6 @@
 
     [ivars release];
     ivars = [newIvars retain];
-}
-
-- (NSArray *)classMethods;
-{
-    return classMethods;
-}
-
-- (void)setClassMethods:(NSArray *)newClassMethods;
-{
-    if (newClassMethods == classMethods)
-        return;
-
-    [classMethods release];
-    classMethods = [newClassMethods retain];
-}
-
-- (NSArray *)instanceMethods;
-{
-    return instanceMethods;
-}
-
-- (void)setInstanceMethods:(NSArray *)newInstanceMethods;
-{
-    if (newInstanceMethods == instanceMethods)
-        return;
-
-    [instanceMethods release];
-    instanceMethods = [newInstanceMethods retain];
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%@] name: %@, superClassName: %@", NSStringFromClass([self class]), name, superClassName];
 }
 
 - (void)appendToString:(NSMutableString *)resultString;
@@ -161,45 +88,6 @@
     if ([classMethods count] > 0 || [instanceMethods count] > 0)
         [resultString appendString:@"\n"];
     [resultString appendString:@"@end\n\n"];
-}
-
-- (void)appendRawMethodsToString:(NSMutableString *)resultString;
-{
-    NSArray *sortedMethods;
-    int count, index;
-
-    [resultString appendFormat:@"\tClass %@\n", name];
-    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            CDOCMethod *aMethod;
-
-            aMethod = [sortedMethods objectAtIndex:index];
-            [resultString appendFormat:@"%@\t%@\n", [aMethod name], [aMethod type]];
-        }
-    }
-
-    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            CDOCMethod *aMethod;
-
-            aMethod = [sortedMethods objectAtIndex:index];
-            [resultString appendFormat:@"%@\t%@\n", [aMethod name], [aMethod type]];
-        }
-    }
-}
-
-- (NSString *)sortableName;
-{
-    return name;
-}
-
-- (NSComparisonResult)ascendingCompareByName:(CDOCClass *)otherClass;
-{
-    return [[self sortableName] compare:[otherClass sortableName]];
 }
 
 @end

@@ -9,37 +9,11 @@
 
 @implementation CDOCCategory
 
-- (id)init;
-{
-    if ([super init] == nil)
-        return nil;
-
-    return self;
-}
-
 - (void)dealloc;
 {
-    [name release];
     [className release];
-    [protocols release];
-    [classMethods release];
-    [instanceMethods release];
 
     [super dealloc];
-}
-
-- (NSString *)name;
-{
-    return name;
-}
-
-- (void)setName:(NSString *)newName;
-{
-    if (newName == name)
-        return;
-
-    [name release];
-    name = [newName retain];
 }
 
 - (NSString *)className;
@@ -54,53 +28,6 @@
 
     [className release];
     className = [newClassName retain];
-}
-
-- (NSArray *)protocols;
-{
-    return protocols;
-}
-
-- (void)setProtocols:(NSArray *)newProtocols;
-{
-    if (newProtocols == protocols)
-        return;
-
-    [protocols release];
-    protocols = [newProtocols retain];
-}
-
-- (NSArray *)classMethods;
-{
-    return classMethods;
-}
-
-- (void)setClassMethods:(NSArray *)newClassMethods;
-{
-    if (newClassMethods == classMethods)
-        return;
-
-    [classMethods release];
-    classMethods = [newClassMethods retain];
-}
-
-- (NSArray *)instanceMethods;
-{
-    return instanceMethods;
-}
-
-- (void)setInstanceMethods:(NSArray *)newInstanceMethods;
-{
-    if (newInstanceMethods == instanceMethods)
-        return;
-
-    [instanceMethods release];
-    instanceMethods = [newInstanceMethods retain];
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%@] name: %@, className: %@", NSStringFromClass([self class]), name, className];
 }
 
 - (void)appendToString:(NSMutableString *)resultString;
@@ -142,44 +69,9 @@
     [resultString appendString:@"@end\n\n"];
 }
 
-- (void)appendRawMethodsToString:(NSMutableString *)resultString;
-{
-    NSArray *sortedMethods;
-    int count, index;
-
-    [resultString appendFormat:@"\tCategory %@(%@)\n", className, name];
-    sortedMethods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            CDOCMethod *aMethod;
-
-            aMethod = [sortedMethods objectAtIndex:index];
-            [resultString appendFormat:@"%@\t%@\n", [aMethod name], [aMethod type]];
-        }
-    }
-
-    sortedMethods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    count = [sortedMethods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            CDOCMethod *aMethod;
-
-            aMethod = [sortedMethods objectAtIndex:index];
-            [resultString appendFormat:@"%@\t%@\n", [aMethod name], [aMethod type]];
-        }
-    }
-}
-
 - (NSString *)sortableName;
 {
     return [NSString stringWithFormat:@"%@ (%@)", className, name];
-}
-
-- (NSComparisonResult)ascendingCompareByName:(CDOCCategory *)otherCategory;
-{
-    // TODO (2003-12-12): Should use category name as second sort key
-    return [[self sortableName] compare:[otherCategory sortableName]];
 }
 
 @end

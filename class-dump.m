@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.42 2003/12/12 04:01:38 nygard Exp $
+// $Id: class-dump.m,v 1.43 2003/12/15 00:12:18 nygard Exp $
 //
 
 //
@@ -1300,7 +1300,6 @@ int main(int argc, char *argv[])
         [classDump processModules];
         //[classDump checkUnreferencedProtocols];
         NSLog(@"Formatted result:\n%@", [classDump formattedStringByClass]);
-        //NSLog(@"raw methods:\n%@", [classDump rawMethods]);
         [classDump release];
 
         [machOFile release];

@@ -195,7 +195,7 @@
     }
 
     // Process protocols
-    [aClass setProtocols:[self processProtocolList:classPtr->protocols]];
+    [aClass addProtocolsFromArray:[self processProtocolList:classPtr->protocols]];
 
     return aClass;
 }
@@ -244,8 +244,8 @@
     }
 
     [aProtocol addProtocolsFromArray:protocols];
-    if ([[aProtocol methods] count] == 0)
-        [aProtocol setMethods:[self processProtocolMethods:protocolPtr->instance_methods]];
+    if ([[aProtocol instanceMethods] count] == 0)
+        [aProtocol setInstanceMethods:[self processProtocolMethods:protocolPtr->instance_methods]];
 
     if ([[aProtocol classMethods] count] == 0)
         [aProtocol setClassMethods:[self processProtocolMethods:protocolPtr->class_methods]];
@@ -325,7 +325,7 @@
     [aCategory setClassMethods:[self processMethods:categoryPtr->class_methods]];
 
     // Process protocols
-    [aCategory setProtocols:[self processProtocolList:categoryPtr->protocols]];
+    [aCategory addProtocolsFromArray:[self processProtocolList:categoryPtr->protocols]];
 
     return aCategory;
 }
@@ -411,36 +411,6 @@
     count = [allClasses count];
     for (index = 0; index < count; index++)
         [[allClasses objectAtIndex:index] appendToString:resultString];
-
-    [allClasses release];
-
-    return resultString;
-}
-
-- (NSString *)rawMethods;
-{
-    NSMutableString *resultString;
-    int count, index;
-    NSMutableArray *allClasses;
-
-    resultString = [NSMutableString string];
-    allClasses = [[NSMutableArray alloc] init];
-
-    // TODO: Show protocols
-
-    count = [modules count];
-    for (index = 0; index < count; index++) {
-        NSArray *moduleClasses;
-
-        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
-        if (moduleClasses != nil)
-            [allClasses addObjectsFromArray:moduleClasses];
-    }
-
-    [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
-    count = [allClasses count];
-    for (index = 0; index < count; index++)
-        [[allClasses objectAtIndex:index] appendRawMethodsToString:resultString];
 
     [allClasses release];
 
