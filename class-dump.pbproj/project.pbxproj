@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 32;
+	objectVersion = 38;
 	objects = {
 		012131630070A3B1C697A12D = {
 			buildRules = (
 			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O0";
 			};
 			isa = PBXBuildStyle;
 			name = Development;
@@ -23,15 +24,26 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
+//010
+//011
+//012
+//013
+//014
+//030
+//031
+//032
+//033
+//034
 		03070CA4FF009A5FC0A80A02 = {
 			buildStyles = (
 				012131630070A3B1C697A12D,
 				012131640070A3B1C697A12D,
 			);
+			hasScannedForEncodings = 1;
 			isa = PBXProject;
 			mainGroup = 03070CA5FF009A5FC0A80A02;
 			productRefGroup = 03070CA6FF009A5FC0A80A02;
-			projectDirPath = .;
+			projectDirPath = "";
 			targets = (
 				03070CC9FF009A5FC0A80A02,
 			);
@@ -72,36 +84,43 @@
 			refType = 4;
 		};
 		03070CA9FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = MappedFile.m;
 			refType = 4;
 		};
 		03070CAAFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcCategory.m;
 			refType = 4;
 		};
 		03070CABFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcClass.m;
 			refType = 4;
 		};
 		03070CACFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcIvar.m;
 			refType = 4;
 		};
 		03070CADFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcMethod.m;
 			refType = 4;
 		};
 		03070CAEFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcProtocol.m;
 			refType = 4;
 		};
 		03070CAFFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcThing.m;
 			refType = 4;
@@ -124,51 +143,61 @@
 			refType = 4;
 		};
 		03070CB1FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = "class-dump.h";
 			refType = 4;
 		};
 		03070CB2FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = datatypes.h;
 			refType = 4;
 		};
 		03070CB3FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = MappedFile.h;
 			refType = 4;
 		};
 		03070CB4FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcCategory.h;
 			refType = 4;
 		};
 		03070CB5FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcClass.h;
 			refType = 4;
 		};
 		03070CB6FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcIvar.h;
 			refType = 4;
 		};
 		03070CB7FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcMethod.h;
 			refType = 4;
 		};
 		03070CB8FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcProtocol.h;
 			refType = 4;
 		};
 		03070CB9FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = ObjcThing.h;
 			refType = 4;
 		};
 		03070CBAFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = my_regex.h;
 			refType = 4;
@@ -186,26 +215,31 @@
 			refType = 4;
 		};
 		03070CBCFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = gram.y;
 			refType = 4;
 		};
 		03070CBDFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = lexer.c;
 			refType = 4;
 		};
 		03070CBEFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = "class-dump.m";
 			refType = 4;
 		};
 		03070CBFFF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = datatypes.m;
 			refType = 4;
 		};
 		03070CC0FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = my_regex.c;
 			refType = 4;
@@ -220,11 +254,13 @@
 			refType = 4;
 		};
 		03070CC5FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = m.template;
 			refType = 4;
 		};
 		03070CC6FF009A5FC0A80A02 = {
+			fileEncoding = 30;
 			isa = PBXFileReference;
 			path = h.template;
 			refType = 4;
@@ -255,7 +291,6 @@
 				HEADER_SEARCH_PATHS = "";
 				INSTALL_PATH = /usr/local/bin;
 				LIBRARY_SEARCH_PATHS = "";
-				OPTIMIZATION_CFLAGS = "";
 				OTHER_CFLAGS = "-DNS_TARGET_MAJOR=5";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
@@ -264,8 +299,6 @@
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
-			conditionalBuildSettings = {
-			};
 			dependencies = (
 			);
 			isa = PBXToolTarget;
@@ -273,7 +306,6 @@
 			productInstallPath = /usr/local/bin;
 			productName = "class-dump";
 			productReference = 09D3A82DFF9952EEC697A12D;
-			shouldUseHeadermap = 0;
 		};
 		03070CCAFF009A5FC0A80A02 = {
 			buildActionMask = 2147483647;
@@ -290,7 +322,7 @@
 				03070CD4FF009A5FC0A80A02,
 			);
 			isa = PBXHeadersBuildPhase;
-			name = Headers;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		03070CCBFF009A5FC0A80A02 = {
 			fileRef = 03070CB1FF009A5FC0A80A02;
@@ -369,7 +401,7 @@
 				03070CE1FF009A5FC0A80A02,
 			);
 			isa = PBXSourcesBuildPhase;
-			name = Sources;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		03070CD6FF009A5FC0A80A02 = {
 			fileRef = 03070CA9FF009A5FC0A80A02;
@@ -473,7 +505,7 @@
 				03070CE3FF009A5FC0A80A02,
 			);
 			isa = PBXFrameworksBuildPhase;
-			name = "Frameworks & Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 		03070CE3FF009A5FC0A80A02 = {
 			fileRef = 03070CC8FF009A5FC0A80A02;
@@ -486,8 +518,18 @@
 			files = (
 			);
 			isa = PBXRezBuildPhase;
-			name = "ResourceManager Resources";
+			runOnlyForDeploymentPostprocessing = 0;
 		};
+//030
+//031
+//032
+//033
+//034
+//090
+//091
+//092
+//093
+//094
 		09D3A82DFF9952EEC697A12D = {
 			isa = PBXExecutableFileReference;
 			path = "class-dump";
