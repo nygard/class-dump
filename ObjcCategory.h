@@ -1,5 +1,5 @@
 //
-// $Id: ObjcCategory.h,v 1.2 1999/08/09 06:52:24 nygard Exp $
+// $Id: ObjcCategory.h,v 1.3 1999/08/09 07:45:00 nygard Exp $
 //
 
 //
@@ -22,7 +22,7 @@
 //  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 //
 //  You may contact the author by:
-//     e-mail:  nygard@telusplanet.net
+//     e-mail:  nygard@omnigroup.com
 //
 
 #if defined(__APPLE__) && defined (__MACH__)
