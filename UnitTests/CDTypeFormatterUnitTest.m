@@ -1,29 +1,26 @@
 // This file is part of APPNAME, SHORT DESCRIPTION
 // Copyright (C) 2003 Steve Nygard.  All rights reserved.
 
-#import "CDTypeParserUnitTest.h"
+#import "CDTypeFormatterUnitTest.h"
 
 #import <Foundation/Foundation.h>
-#import "CDTypeParser.h"
+#import "CDTypeFormatter.h"
 
-@implementation CDTypeParserUnitTest
+@implementation CDTypeFormatterUnitTest
 
 - (void)setUp;
 {
-    aParser = [[CDTypeParser alloc] init];
 }
 
 - (void)tearDown;
 {
-    [aParser release];
-    aParser = nil;
 }
 
 - (void)testVariableName:(NSString *)aVariableName type:(NSString *)aType expectedResult:(NSString *)expectedResult;
 {
     NSString *result;
 
-    result = [aParser formatVariable:aVariableName type:aType atLevel:0];
+    result = [CDTypeFormatter formatVariable:aVariableName type:aType atLevel:0];
     [self assert:result equals:expectedResult];
 }
 

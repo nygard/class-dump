@@ -3,11 +3,8 @@
 
 #import <ObjcUnit/TestCase.h>
 
-@class CDTypeParser;
-
-@interface CDTypeParserUnitTest : TestCase
+@interface CDTypeFormatterUnitTest : TestCase
 {
-    CDTypeParser *aParser;
 }
 
 - (void)setUp;
