@@ -9,11 +9,15 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.16 2004/01/08 00:43:08 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.17 2004/01/20 05:00:23 nygard Exp $");
 
 @implementation CDOCMethod
 
-// TODO (2003-12-07): Reject unused -init method
+- (id)init;
+{
+    [NSException raise:@"RejectUnusedImplementation" format:@"-initWithName:type:imp: is the designated initializer"];
+    return nil;
+}
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(unsigned long)anImp;
 {

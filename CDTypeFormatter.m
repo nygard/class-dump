@@ -15,7 +15,7 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.23 2004/01/18 06:05:11 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.24 2004/01/20 05:00:23 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -166,7 +166,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.23 200
             NSString *str;
 
             [resultString appendString:@"("];
-            // TODO (2003-12-11): Don't expect anonymous structures anywhere in method types.
             specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
             if (specialCase != nil) {
                 [resultString appendString:specialCase];

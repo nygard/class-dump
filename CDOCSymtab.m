@@ -7,7 +7,7 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.11 2004/01/16 00:18:20 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.12 2004/01/20 05:00:23 nygard Exp $");
 
 @implementation CDOCSymtab
 
@@ -70,8 +70,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.11 2004/01/
     count = [classes count];
     for (index = 0; index < count; index++)
         [[classes objectAtIndex:index] appendToString:resultString classDump:aClassDump];
-
-    // TODO: And categories.
 
     count = [categories count];
     for (index = 0; index < count; index++)
