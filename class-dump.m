@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.13 2002/12/19 05:03:42 nygard Exp $
+// $Id: class-dump.m,v 1.14 2002/12/19 05:20:13 nygard Exp $
 //
 
 //
@@ -40,6 +40,7 @@
 
 #if NS_TARGET_MAJOR >= 4 || defined(__APPLE__)
 #import <Foundation/Foundation.h>
+#define USE_FILE_SYSTEM_REPRESENTATION
 #else
 #import <foundation/NSString.h>
 #import <foundation/NSArray.h>
@@ -787,8 +788,14 @@ void show_single_module (struct section_info *module_info)
     {
         MappedFile *currentFile;
         NSString *installName, *filename;
+        NSString *key;
         
-        currentFile = [mappedFilesByInstallName objectForKey:[NSString stringWithCString:module_info->filename]];
+#ifdef USE_FILE_SYSTEM_REPRESENTATION
+        key = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:module_info->filename length:strlen(module_info->filename)];
+#else
+        key = [NSString stringWithCString:module_info->filename];
+#endif
+        currentFile = [mappedFilesByInstallName objectForKey:key];
         installName = [currentFile installName];
         filename = [currentFile filename];
         if (filename == nil || [installName isEqual:filename] == YES)
@@ -797,7 +804,11 @@ void show_single_module (struct section_info *module_info)
         }
         else
         {
+#ifdef USE_FILE_SYSTEM_REPRESENTATION
+            printf ("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename fileSystemRepresentation], module_info->filename);
+#else
             printf ("\n/*\n * File: %s\n * Install name: %s\n */\n\n", [filename cString], module_info->filename);
+#endif
         }
     }
     current_filename = module_info->filename;
@@ -862,17 +873,28 @@ void build_up_objc_segments (char *filename)
 {    
     MappedFile *mappedFile;
     NSEnumerator *mfEnumerator;
+    NSString *aFilename;
 
     // Only process each file once.
 
     mfEnumerator = [mappedFiles objectEnumerator];
     while (mappedFile = [mfEnumerator nextObject])
     {
+#ifdef USE_FILE_SYSTEM_REPRESENTATION
+        if (!strcmp (filename, [[mappedFile installName] fileSystemRepresentation]))
+            return;
+#else
         if (!strcmp (filename, [[mappedFile installName] cString]))
             return;
+#endif
     }
 
-    mappedFile = [[[MappedFile alloc] initWithFilename:[NSString stringWithCString:filename]] autorelease];
+#ifdef USE_FILE_SYSTEM_REPRESENTATION
+    aFilename = [[NSFileManager defaultManager] stringWithFileSystemRepresentation:filename length:strlen(filename)];
+#else
+    aFilename = [NSString stringWithCString:filename];
+#endif
+    mappedFile = [[[MappedFile alloc] initWithFilename:aFilename] autorelease];
     if (mappedFile != nil)
     {
         [mappedFiles addObject:mappedFile];
