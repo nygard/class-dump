@@ -30,7 +30,7 @@
 
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/main.m,v 1.2 2004/02/11 00:58:40 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/main.m,v 1.3 2004/02/11 01:03:39 nygard Exp $");
 
 void print_usage(void)
 {
@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         [classDump processFilename:path];
-        [classDump doSomething];
+        [classDump generateOutput];
     }
 
     [pool release];

@@ -16,7 +16,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.65 2004/02/11 00:07:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.66 2004/02/11 01:03:39 nygard Exp $");
 
 @implementation CDClassDump
 
@@ -362,7 +362,7 @@ static NSMutableSet *wrapperExtensions = nil;
     //NSLog(@"<  %s", _cmd);
 }
 
-- (void)doSomething;
+- (void)generateOutput;
 {
     //NSLog(@"machOFilesByID keys: %@", [[machOFilesByID allKeys] description]);
     //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);

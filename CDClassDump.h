@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.47 2004/02/11 00:07:53 nygard Exp $
+// $Id: CDClassDump.h,v 1.48 2004/02/11 01:03:39 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -101,7 +101,7 @@
 - (void)processFilename:(NSString *)aFilename;
 - (void)_processFilename:(NSString *)aFilename;
 
-- (void)doSomething;
+- (void)generateOutput;
 - (void)generateToStandardOut;
 - (void)generateSeparateHeaders;
 - (void)generateStructureHeader;
