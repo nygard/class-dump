@@ -1222,18 +1222,8 @@
 			children = (
 				03070CB3FF009A5FC0A80A02,
 				03070CA9FF009A5FC0A80A02,
-				03070CB4FF009A5FC0A80A02,
-				03070CAAFF009A5FC0A80A02,
 				03070CB5FF009A5FC0A80A02,
 				03070CABFF009A5FC0A80A02,
-				03070CB6FF009A5FC0A80A02,
-				03070CACFF009A5FC0A80A02,
-				03070CB7FF009A5FC0A80A02,
-				03070CADFF009A5FC0A80A02,
-				03070CB8FF009A5FC0A80A02,
-				03070CAEFF009A5FC0A80A02,
-				03070CB9FF009A5FC0A80A02,
-				03070CAFFF009A5FC0A80A02,
 			);
 			isa = PBXGroup;
 			name = "Yucky old stuff";
@@ -2119,51 +2109,11 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		03070CAAFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = ObjcCategory.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		03070CABFF009A5FC0A80A02 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
 			path = ObjcClass.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CACFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = ObjcIvar.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CADFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = ObjcMethod.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CAEFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = ObjcProtocol.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CAFFF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = ObjcThing.m;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2183,51 +2133,11 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		03070CB4FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = ObjcCategory.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		03070CB5FF009A5FC0A80A02 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
 			path = ObjcClass.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CB6FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = ObjcIvar.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CB7FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = ObjcMethod.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CB8FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = ObjcProtocol.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		03070CB9FF009A5FC0A80A02 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = ObjcThing.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
