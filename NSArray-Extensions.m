@@ -4,11 +4,8 @@
 
 #import "NSArray-Extensions.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDTopoSortNode.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSArray-Extensions.m,v 1.8 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation NSArray (CDExtensions)
 

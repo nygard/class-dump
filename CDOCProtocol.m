@@ -4,7 +4,6 @@
 
 #import "CDOCProtocol.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDClassDump.h"
@@ -12,8 +11,6 @@
 #import "CDOCSymtab.h"
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.24 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDOCProtocol
 

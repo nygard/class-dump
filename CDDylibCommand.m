@@ -4,10 +4,7 @@
 
 #import "CDDylibCommand.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDDylibCommand.m,v 1.5 2004/01/06 02:39:26 nygard Exp $");
 
 // Does this work with different endianness?
 static NSString *CDDylibVersionString(unsigned long version)

@@ -4,7 +4,6 @@
 
 #import "CDClassDump.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDDylibCommand.h"
@@ -15,8 +14,6 @@
 #import "CDType.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.67 2004/02/11 01:12:51 nygard Exp $");
 
 @implementation CDClassDump
 

@@ -1,7 +1,3 @@
-//
-// $Id: CDSymbolReferences.h,v 1.2 2004/02/03 22:18:37 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard

@@ -4,11 +4,8 @@
 
 #import "NSScanner-Extensions.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSScanner-Extensions.m,v 1.8 2004/01/29 22:37:33 nygard Exp $");
 
 @implementation NSScanner (CDExtensions)
 

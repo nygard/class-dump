@@ -4,14 +4,11 @@
 
 #import "CDOCCategory.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"
 #import "NSArray-Extensions.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.12 2004/02/11 06:30:19 nygard Exp $");
 
 @implementation CDOCCategory
 

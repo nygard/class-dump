@@ -4,7 +4,6 @@
 
 #import "CDStructureTable.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDClassDump.h"
@@ -13,8 +12,6 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.19 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDStructureTable
 

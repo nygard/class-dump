@@ -4,10 +4,7 @@
 
 #import "NSString-Extensions.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSString-Extensions.m,v 1.9 2004/01/29 22:37:33 nygard Exp $");
 
 @implementation NSString (CDExtensions)
 

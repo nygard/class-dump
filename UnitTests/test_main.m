@@ -7,4 +7,3 @@ int main(int argc, const char *argv[])
 {
     return TestRunnerMain([AllTests class]);
 }
-

@@ -4,11 +4,8 @@
 
 #import "CDTopoSortNode.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSObject-CDExtensions.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTopoSortNode.m,v 1.5 2004/02/11 00:07:54 nygard Exp $");
 
 @implementation CDTopoSortNode
 

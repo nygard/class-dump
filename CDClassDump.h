@@ -1,7 +1,3 @@
-//
-// $Id: CDClassDump.h,v 1.50 2004/02/18 07:31:29 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard

@@ -4,12 +4,9 @@
 
 #import "CDOCIvar.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCIvar.m,v 1.19 2004/02/03 22:51:51 nygard Exp $");
 
 @implementation CDOCIvar
 

@@ -4,10 +4,7 @@
 
 #import "CDTypeName.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeName.m,v 1.1 2004/01/18 01:34:58 nygard Exp $");
 
 @implementation CDTypeName
 

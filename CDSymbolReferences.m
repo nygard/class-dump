@@ -4,10 +4,7 @@
 
 #import "CDSymbolReferences.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSymbolReferences.m,v 1.3 2004/02/03 22:18:37 nygard Exp $");
 
 @implementation CDSymbolReferences
 

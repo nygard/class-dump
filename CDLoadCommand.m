@@ -4,12 +4,9 @@
 
 #import "CDLoadCommand.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDSegmentCommand.h"
 #import "CDDylibCommand.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDLoadCommand.m,v 1.6 2004/02/11 00:39:47 nygard Exp $");
 
 @implementation CDLoadCommand
 

@@ -4,7 +4,6 @@
 
 #import "CDObjCSegmentProcessor-Private.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDMachOFile.h"
 #import "CDOCCategory.h"
@@ -17,8 +16,6 @@
 #import "CDSection.h"
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.10 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor (Private)
 

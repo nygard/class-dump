@@ -4,15 +4,12 @@
 
 #import "CDMachOFile.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #include <mach-o/loader.h>
 
 #import "CDDylibCommand.h"
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDMachOFile.m,v 1.12 2004/07/07 22:56:43 nygard Exp $");
 
 @implementation CDMachOFile
 

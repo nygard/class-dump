@@ -1,7 +1,3 @@
-//
-// $Id: CDTypeParser.h,v 1.17 2004/01/27 21:32:51 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard

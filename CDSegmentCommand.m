@@ -4,11 +4,8 @@
 
 #import "CDSegmentCommand.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDSection.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDSegmentCommand.m,v 1.5 2004/02/11 01:35:22 nygard Exp $");
 
 @implementation CDSegmentCommand
 

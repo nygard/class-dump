@@ -1,7 +1,3 @@
-//
-// $Id: CDTypeLexer.h,v 1.10 2004/01/29 22:37:33 nygard Exp $
-//
-
 //  This file is part of class-dump, a utility for examining the
 //  Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard

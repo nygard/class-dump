@@ -4,14 +4,11 @@
 
 #import "CDOCSymtab.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
 #import "CDSymbolReferences.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCSymtab.m,v 1.17 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDOCSymtab
 

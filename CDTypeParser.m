@@ -4,7 +4,6 @@
 
 #import "CDTypeParser.h"
 
-#import "rcsid.h"
 #include <assert.h>
 #import <Foundation/Foundation.h>
 #import "CDMethodType.h"
@@ -12,8 +11,6 @@
 #import "CDTypeName.h"
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeParser.m,v 1.31 2004/02/11 01:35:22 nygard Exp $");
 
 NSString *CDSyntaxError = @"Syntax Error";
 

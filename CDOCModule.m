@@ -4,12 +4,9 @@
 
 #import "CDOCModule.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDObjCSegmentProcessor.h"
 #import "CDOCSymtab.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCModule.m,v 1.11 2004/02/03 22:51:52 nygard Exp $");
 
 @implementation CDOCModule
 

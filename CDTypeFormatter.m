@@ -4,7 +4,6 @@
 
 #import "CDTypeFormatter.h"
 
-#import "rcsid.h"
 #include <assert.h>
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
@@ -15,8 +14,6 @@
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeFormatter.m,v 1.29 2004/02/11 02:31:27 nygard Exp $");
 
 @implementation CDTypeFormatter
 

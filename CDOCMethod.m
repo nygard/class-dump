@@ -4,12 +4,9 @@
 
 #import "CDOCMethod.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCMethod.m,v 1.21 2004/02/11 01:19:54 nygard Exp $");
 
 @implementation CDOCMethod
 

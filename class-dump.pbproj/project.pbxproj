@@ -22,8 +22,6 @@
 			sourceTree = "<group>";
 		};
 		012131630070A3B1C697A12D = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -37,8 +35,6 @@
 			name = Development;
 		};
 		012131640070A3B1C697A12D = {
-			buildRules = (
-			);
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
@@ -424,26 +420,6 @@
 			name = "Unit Tests";
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		01497A3705AA4EC30023398B = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = rcsid.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		01497A3805AA4EC30023398B = {
-			fileRef = 01497A3705AA4EC30023398B;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		01497A3B05AA4EC90023398B = {
-			fileRef = 01497A3705AA4EC30023398B;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		01497A6005AD0BAC0023398B = {
 			fileEncoding = 30;
@@ -1368,7 +1344,6 @@
 				014EEC34059AA5DD0097CFC1,
 				01DEC43105A7622B00682FCC,
 				01DEC43205A7622B00682FCC,
-				01497A3805AA4EC30023398B,
 				01497A6205AD0BAC0023398B,
 				01E6681005B76139005849C7,
 				01B607C405BA10E800A4AD78,
@@ -1712,7 +1687,6 @@
 				014979C905AA15280023398B,
 				014979D405AA152A0023398B,
 				014979E105AA15310023398B,
-				01497A3B05AA4EC90023398B,
 				01497A6705AD0BB20023398B,
 				01E6680F05B76139005849C7,
 				01B607C205BA10E800A4AD78,
@@ -2077,7 +2051,6 @@
 		};
 		03070CA8FF009A5FC0A80A02 = {
 			children = (
-				01497A3705AA4EC30023398B,
 				01C5C1270587C0740052C696,
 				01C5C1240587C02B0052C696,
 				01C5C1250587C03A0052C696,
@@ -2130,8 +2103,7 @@
 			sourceTree = "<group>";
 		};
 		03070CC8FF009A5FC0A80A02 = {
-			fallbackIsa = PBXFileReference;
-			isa = PBXFrameworkReference;
+			isa = PBXFileReference;
 			lastKnownFileType = wrapper.framework;
 			name = Foundation.framework;
 			path = /System/Library/Frameworks/Foundation.framework;

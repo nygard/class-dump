@@ -4,7 +4,6 @@
 
 #import "CDType.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "NSString-Extensions.h"
@@ -12,8 +11,6 @@
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.39 2004/02/11 02:31:26 nygard Exp $");
 
 @implementation CDType
 

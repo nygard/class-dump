@@ -4,11 +4,8 @@
 
 #import "CDTypeLexer.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDTypeLexer.m,v 1.15 2004/01/29 22:37:33 nygard Exp $");
 
 @implementation CDTypeLexer
 

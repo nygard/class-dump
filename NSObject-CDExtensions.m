@@ -4,10 +4,7 @@
 
 #import "NSObject-CDExtensions.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSObject-CDExtensions.m,v 1.4 2004/01/06 02:31:45 nygard Exp $");
 
 @implementation NSObject (CDExtensions)
 

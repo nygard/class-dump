@@ -4,7 +4,6 @@
 
 #import "CDOCClass.h"
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDClassDump.h"
@@ -13,8 +12,6 @@
 #import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.32 2004/02/11 02:31:26 nygard Exp $");
 
 @implementation CDOCClass
 

@@ -5,13 +5,10 @@
 #include <stdio.h>
 #include <libc.h>
 
-#import "rcsid.h"
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 
 #import "CDClassDump.h"
-
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/main.m,v 1.4 2004/02/11 01:08:18 nygard Exp $");
 
 void print_usage(void)
 {
