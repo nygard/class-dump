@@ -1,0 +1,46 @@
+{
+    DYNAMIC_CODE_GEN = YES; 
+    FILESTABLE = {
+        BUNDLES = (); 
+        CLASSES = (
+            MappedFile.m, 
+            ObjcCategory.m, 
+            ObjcClass.m, 
+            ObjcIvar.m, 
+            ObjcMethod.m, 
+            ObjcProtocol.m, 
+            ObjcThing.m
+        ); 
+        FRAMEWORKS = (Foundation.framework); 
+        H_FILES = (
+            "class-dump.h", 
+            datatypes.h, 
+            MappedFile.h, 
+            ObjcCategory.h, 
+            ObjcClass.h, 
+            ObjcIvar.h, 
+            ObjcMethod.h, 
+            ObjcProtocol.h, 
+            ObjcThing.h, 
+            my_regex.h
+        ); 
+        LIBS = (); 
+        OTHER_LIBS = (); 
+        OTHER_LINKED = (gram.y, lexer.c, "class-dump.m", datatypes.m, my_regex.c); 
+        OTHER_SOURCES = (Makefile.preamble, Makefile, Makefile.postamble, m.template, h.template); 
+        PRECOMPILED_HEADERS = (); 
+        PROJECT_HEADERS = (); 
+        PUBLIC_HEADERS = (); 
+        SUBPROJECTS = (); 
+        TOOLS = (); 
+    }; 
+    LANGUAGE = English; 
+    LOCALIZABLE_FILES = {}; 
+    MAKEFILEDIR = "$(NEXT_ROOT)/NextDeveloper/Makefiles/pb_makefiles"; 
+    NEXTSTEP_BUILDTOOL = /bin/gnumake; 
+    PDO_UNIX_BUILDTOOL = $NEXT_ROOT/NextDeveloper/bin/make; 
+    PROJECTNAME = "class-dump"; 
+    PROJECTTYPE = Tool; 
+    PROJECTVERSION = 2.6; 
+    WINDOWS_BUILDTOOL = $NEXT_ROOT/NextDeveloper/Executables/make; 
+}
