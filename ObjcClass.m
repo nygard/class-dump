@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.12 2002/12/19 06:56:57 nygard Exp $
+// $Id: ObjcClass.m,v 1.13 2002/12/19 07:06:08 nygard Exp $
 //
 
 //
@@ -52,7 +52,7 @@
     BOOL done;
 
     classDict = [ObjcClass classDict];
-    classes = [NSMutableArray array]
+    classes = [NSMutableArray array];
 
     do {
         NSEnumerator *enumerator;
@@ -155,40 +155,39 @@
     ObjcMethod *method;
     NSString *protocolName;
 
-    printf ("@interface %s", [className cString]);
+    printf("@interface %s", [className cString]);
     if (superClassName != nil)
-        printf (":%s", [superClassName cString]);
+        printf(":%s", [superClassName cString]);
 
     if ([protocolNames count] > 0) {
         enumerator = [protocolNames objectEnumerator];
-        printf (" <");
+        printf(" <");
         protocolName = [enumerator nextObject];
         if (protocolName != nil) {
-            printf ("%s", [protocolName cString]);
+            printf("%s", [protocolName cString]);
             
             while (protocolName = [enumerator nextObject])
-                printf (", %s", [protocolName cString]);
+                printf(", %s", [protocolName cString]);
         }
 
-        printf (">");
+        printf(">");
     }
 
-    printf ("\n{\n");
+    printf("\n{\n");
 
     enumerator = [ivars objectEnumerator];
-    while (ivar = [enumerator nextObject])
-    {
+    while (ivar = [enumerator nextObject]) {
         [ivar showIvarAtLevel:2];
         if (flags & F_SHOW_IVAR_OFFSET)
-            printf ("\t// %ld = 0x%lx", [ivar offset], [ivar offset]);
+            printf("\t// %ld = 0x%lx", [ivar offset], [ivar offset]);
 
-        printf ("\n");
+        printf("\n");
     }
 
-    //printf ("%s\n", [[ivars description] cString]);
-    printf ("}\n\n");
+    //printf("%s\n", [[ivars description] cString]);
+    printf("}\n\n");
 
-    //NSLog (@"classMethods: %@", classMethods);
+    //NSLog(@"classMethods: %@", classMethods);
 
     if (flags & F_SORT_METHODS)
         enumerator = [[classMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
@@ -198,9 +197,9 @@
     while (method = [enumerator nextObject]) {
         [method showMethod:'+'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-            printf ("\t// IMP=0x%08lx", [method address]);
+            printf("\t// IMP=0x%08lx", [method address]);
 
-        printf ("\n");
+        printf("\n");
     }
 
     if (flags & F_SORT_METHODS)
@@ -211,12 +210,12 @@
     while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-            printf ("\t// IMP=0x%08lx", [method address]);
+            printf("\t// IMP=0x%08lx", [method address]);
 
-        printf ("\n");
+        printf("\n");
     }
 
-    printf ("\n@end\n\n");
+    printf("\n@end\n\n");
 }
 
 @end

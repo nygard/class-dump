@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.12 2002/12/19 06:53:07 nygard Exp $
+// $Id: MappedFile.m,v 1.13 2002/12/19 07:06:07 nygard Exp $
 //
 
 //
@@ -65,9 +65,9 @@ static NSMutableArray *secondSearchPath = nil;
     home = [environment objectForKey:@"HOME"];
 
     if (debugFlag == YES) {
-        NSLog (@"envDyldFrameworkPath: %@", envDyldFrameworkPath);
-        NSLog (@"envDyldLibraryPath: %@", envDyldLibraryPath);
-        NSLog (@"envDyldFallbackFrameworkPath: %@", envDyldFallbackFrameworkPath);
+        NSLog(@"envDyldFrameworkPath: %@", envDyldFrameworkPath);
+        NSLog(@"envDyldLibraryPath: %@", envDyldLibraryPath);
+        NSLog(@"envDyldFallbackFrameworkPath: %@", envDyldFallbackFrameworkPath);
     }
 
     if (envDyldFallbackFrameworkPath == nil) {
@@ -81,8 +81,8 @@ static NSMutableArray *secondSearchPath = nil;
     }
 
     if (debugFlag == YES) {
-        NSLog (@"envDyldFallbackFrameworkPath: %@", envDyldFallbackFrameworkPath);
-        NSLog (@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
+        NSLog(@"envDyldFallbackFrameworkPath: %@", envDyldFallbackFrameworkPath);
+        NSLog(@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
     }
 
     if (envDyldFallbackLibraryPath == nil) {
@@ -94,7 +94,7 @@ static NSMutableArray *secondSearchPath = nil;
     }
 
     if (debugFlag == YES)
-        NSLog (@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
+        NSLog(@"envDyldFallbackLibraryPath: %@", envDyldFallbackLibraryPath);
 
     firstSearchPath = [[NSMutableArray alloc] initWithArray:envDyldFrameworkPath];
     [firstSearchPath addObjectsFromArray:envDyldLibraryPath];
@@ -138,18 +138,18 @@ static NSMutableArray *secondSearchPath = nil;
     }
 
     if (debugFlag == YES) {
-        NSLog (@"----------------------------------------------------------------------");
-        NSLog (@"before: %@", standardPath);
+        NSLog(@"----------------------------------------------------------------------");
+        NSLog(@"before: %@", standardPath);
     }
 
     filename = [self adjustedFrameworkPath:standardPath];
 
     if (debugFlag == YES)
-        NSLog (@"after:  %@", filename);
+        NSLog(@"after:  %@", filename);
 
     data = [[NSData alloc] initWithContentsOfMappedFile:filename];
     if (data == nil) {
-        NSLog (@"Couldn't map file: %@", filename);
+        NSLog(@"Couldn't map file: %@", filename);
         return nil;
     }
 
@@ -234,24 +234,24 @@ static NSMutableArray *secondSearchPath = nil;
     }
 
     if (debugFlag == YES)
-        NSLog (@"frameworkName: %@", frameworkName);
+        NSLog(@"frameworkName: %@", frameworkName);
 
     if (frameworkName == nil)
         return path;
 
     if (debugFlag == YES)
-        NSLog (@"version: %@", version);
+        NSLog(@"version: %@", version);
     if (version == nil)
         tailString = [NSString stringWithFormat:@"%@.framework/%@", frameworkName, frameworkName];
     else
         tailString = [NSString stringWithFormat:@"%@.framework/Versions/%@/%@", frameworkName, version, frameworkName];
 
     if (debugFlag == YES)
-        NSLog (@"tailString: %@", tailString);
+        NSLog(@"tailString: %@", tailString);
 
     tailRange = [path rangeOfString:tailString options:NSBackwardsSearch];
     if (debugFlag == YES)
-        NSLog (@"tailRange.length: %d", tailRange.length);
+        NSLog(@"tailRange.length: %d", tailRange.length);
     if (tailRange.length == 0)
         return path;
 
@@ -261,7 +261,7 @@ static NSMutableArray *secondSearchPath = nil;
     for (l = 0; l < count; l++) {
         adjustedPath = [NSString stringWithFormat:@"%@/%@", [firstSearchPath objectAtIndex:l], tailString];
         if (debugFlag == YES)
-            NSLog (@"adjustedPath: %@", adjustedPath);
+            NSLog(@"adjustedPath: %@", adjustedPath);
         if ([fileManager fileExistsAtPath:adjustedPath] == YES)
             return adjustedPath;
     }
@@ -270,7 +270,7 @@ static NSMutableArray *secondSearchPath = nil;
     for (l = 0; l < count; l++) {
         adjustedPath = [NSString stringWithFormat:@"%@/%@", [secondSearchPath objectAtIndex:l], tailString];
         if (debugFlag == YES)
-            NSLog (@"adjustedPath: %@", adjustedPath);
+            NSLog(@"adjustedPath: %@", adjustedPath);
         if ([fileManager fileExistsAtPath:adjustedPath] == YES)
             return adjustedPath;
     }

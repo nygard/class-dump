@@ -1,5 +1,5 @@
 //
-// $Id: ObjcIvar.m,v 1.7 2002/12/19 06:41:30 nygard Exp $
+// $Id: ObjcIvar.m,v 1.8 2002/12/19 07:06:08 nygard Exp $
 //
 
 //
@@ -64,7 +64,7 @@
 
 - (void)showIvarAtLevel:(int)level;
 {
-    format_type ([ivarType cString], [ivarName cString], level);
+    format_type([ivarType cString], [ivarName cString], level);
 }
 
 @end

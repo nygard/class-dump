@@ -1,5 +1,5 @@
 //
-// $Id: ObjcProtocol.m,v 1.9 2002/12/19 06:41:30 nygard Exp $
+// $Id: ObjcProtocol.m,v 1.10 2002/12/19 07:06:08 nygard Exp $
 //
 
 //
@@ -84,25 +84,25 @@
     NSEnumerator *enumerator;
     ObjcMethod *method;
 
-    printf ("@protocol %s", [protocolName cString]);
+    printf("@protocol %s", [protocolName cString]);
 
     if ([protocolNames count] > 0) {
         NSString *aProtocolName;
 
         enumerator = [protocolNames objectEnumerator];
-        printf (" <");
+        printf(" <");
         aProtocolName = [enumerator nextObject];
         if (aProtocolName != nil) {
-            printf ("%s", [aProtocolName cString]);
+            printf("%s", [aProtocolName cString]);
             
             while (protocolName = [enumerator nextObject])
-                printf (", %s", [aProtocolName cString]);
+                printf(", %s", [aProtocolName cString]);
         }
 
-        printf (">");
+        printf(">");
     }
 
-    printf ("\n");
+    printf("\n");
 
     if (flags & F_SORT_METHODS)
         enumerator = [[protocolMethods sortedArrayUsingSelector:@selector (orderByMethodName:)] objectEnumerator];
@@ -112,12 +112,12 @@
     while (method = [enumerator nextObject]) {
         [method showMethod:'-'];
         if (flags & F_SHOW_METHOD_ADDRESS)
-            printf ("\t// IMP=0x%08lx", [method address]);
+            printf("\t// IMP=0x%08lx", [method address]);
 
-        printf ("\n");
+        printf("\n");
     }
 
-    printf ("@end\n\n");
+    printf("@end\n\n");
 }
 
 @end
