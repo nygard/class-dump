@@ -18,7 +18,7 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.6 2004/01/06 02:31:42 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Private.m,v 1.7 2004/01/27 21:32:09 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor (Private)
 
@@ -128,7 +128,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
 
     // Process ivars
     if (classPtr->ivars != 0) {
-        const struct cd_objc_ivars *ivarsPtr;
+        const struct cd_objc_ivar_list *ivarsPtr;
         const struct cd_objc_ivar *ivarPtr;
         NSMutableArray *ivars;
 
@@ -229,7 +229,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
 - (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
 {
     NSMutableArray *methods;
-    const struct cd_objc_protocol_methods *methodsPtr;
+    const struct cd_objc_protocol_method_list *methodsPtr;
     const struct cd_objc_protocol_method *methodPtr;
     int index;
 
@@ -256,7 +256,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor-Priva
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
 {
     NSMutableArray *methods;
-    const struct cd_objc_methods *methodsPtr;
+    const struct cd_objc_method_list *methodsPtr;
     const struct cd_objc_method *methodPtr;
     int index;
 

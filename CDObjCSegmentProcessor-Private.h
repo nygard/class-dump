@@ -1,5 +1,5 @@
 //
-// $Id: CDObjCSegmentProcessor-Private.h,v 1.3 2004/01/06 02:31:42 nygard Exp $
+// $Id: CDObjCSegmentProcessor-Private.h,v 1.4 2004/01/27 21:32:09 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -52,7 +52,7 @@ struct cd_objc_category
 };
 
 // Section: __instance_vars
-struct cd_objc_ivars
+struct cd_objc_ivar_list
 {
     long ivar_count;
     // Followed by ivars
@@ -67,7 +67,7 @@ struct cd_objc_ivar
 };
 
 // Section: __inst_meth
-struct cd_objc_methods // TODO (2003-12-07): Rename method_list?
+struct cd_objc_method_list
 {
     long _obsolete;
     long method_count;
@@ -99,7 +99,7 @@ struct cd_objc_protocol
     long class_methods;
 };
 
-struct cd_objc_protocol_methods // TODO (2003-12-07): Rename method_list?
+struct cd_objc_protocol_method_list
 {
     long method_count;
     // Followed by methods
