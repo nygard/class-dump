@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.25 2004/01/15 03:04:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.26 2004/01/15 03:20:55 nygard Exp $");
 
 @implementation CDType
 
@@ -526,7 +526,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.25 2004/01/15 0
 
 - (void)phase:(int)phase registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
-    NSLog(@"%s", _cmd);
     if (phase == 1)
         [self phase1RegisterStructuresWithObject:anObject];
     else if (phase == 2)

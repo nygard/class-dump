@@ -11,7 +11,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.7 2004/01/15 03:04:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.8 2004/01/15 03:20:54 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -457,7 +457,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.7 200
     NSString *aName;
     NSString *keySignature;
 
-    NSLog(@"[%p](%@)  > %s", self, name, _cmd);
+    //NSLog(@"[%p](%@)  > %s", self, name, _cmd);
     //NSLog(@"aStructure: %p", aStructure);
 
     aName = [aStructure typeName];
@@ -537,7 +537,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.7 200
 
     // We always register recursively (so that we can merge member names if necessary) but we don't always add references?
 
-    NSLog(@"[%p](%@) <  %s", self, name, _cmd);
+    //NSLog(@"[%p](%@) <  %s", self, name, _cmd);
     return shouldCountMembers;
 }
 

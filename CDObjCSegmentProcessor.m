@@ -19,7 +19,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.12 2004/01/15 03:04:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.13 2004/01/15 03:20:54 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -103,7 +103,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
 
     count = [modules count];
     for (index = 0; index < count; index++)
-        [[modules objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
+        [[[modules objectAtIndex:index] symtab] registerStructuresWithObject:anObject phase:phase];
 
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [protocolNames count];

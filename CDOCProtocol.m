@@ -11,7 +11,7 @@
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.16 2004/01/15 03:04:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.17 2004/01/15 03:20:54 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -162,7 +162,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.16 2004/0
     for (index = 0; index < count; index++) {
         parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[methods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
-        [methodTypes makeObjectsPerformSelector:_cmd withObject:anObject];
+        [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
         [parser release];
     }
 }
