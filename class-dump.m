@@ -42,7 +42,7 @@
 #import "class-dump.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.70 2004/02/03 22:51:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.71 2004/02/04 06:48:00 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
     classDump = [[[CDClassDump alloc] init] autorelease];
     [classDump setOutputPath:@"/tmp/cd"];
 
-    while ( (ch = getopt(argc, argv, "aAC:HIo:rRS")) != EOF) {
+    while ( (ch = getopt(argc, argv, "aAC:HIo:rRsS")) != EOF) {
         switch (ch) {
           case 'a':
               [classDump setShouldShowIvarOffsets:YES];
