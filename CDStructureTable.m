@@ -11,7 +11,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.8 2004/01/15 03:20:54 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 2004/01/15 05:53:30 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -284,6 +284,9 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.8 200
         key = [keys objectAtIndex:index];
         if ([[anonymousStructureCountsByType objectForKey:key] intValue] > 1
             || [forcedTypedefs containsObject:key] == YES) {
+            if (nameIndex == 3) {
+                NSLog(@""); // isUsedInMethod
+            }
             [anonymousStructureNamesByType setObject:[NSString stringWithFormat:@"%@%d", anonymousBaseName, nameIndex++] forKey:key];
         }
     }

@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.28 2004/01/15 05:23:13 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.29 2004/01/15 05:53:30 nygard Exp $");
 
 @implementation CDType
 
@@ -565,7 +565,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.28 2004/01/15 0
 
         count = [members count];
         for (index = 0; index < count; index++) {
-            [[members objectAtIndex:index] phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:newFlag];
+            [[members objectAtIndex:index] phase2RegisterStructuresWithObject:anObject usedInMethod:NO countReferences:newFlag];
         }
     }
 }
