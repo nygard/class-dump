@@ -56,7 +56,7 @@
 #import "CDMachOFile.h"
 #import "CDClassDump.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.58 2004/01/16 23:17:26 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/Attic/class-dump.m,v 1.59 2004/01/17 04:04:24 nygard Exp $");
 
 //----------------------------------------------------------------------
 
@@ -736,18 +736,16 @@ int main(int argc, char *argv[])
 
     if (optind < argc) {
         char *str;
-        NSString *path, *adjustedPath;
+        NSString *path;
         CDClassDump2 *classDump;
 
         str = argv[optind];
         path = [NSString stringWithFileSystemRepresentation:str];
         NSLog(@"path: '%@'", path);
-        adjustedPath = [CDClassDump2 adjustUserSuppliedPath:path];
-        NSLog(@"adjustedPath: '%@'", adjustedPath);
 
         classDump = [[CDClassDump2 alloc] init];
         [classDump setShouldProcessRecursively:shouldExpandFrameworks];
-        [classDump processFilename:adjustedPath];
+        [classDump processFilename:path];
         [classDump doSomething];
         [classDump release];
 

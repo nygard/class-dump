@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.36 2004/01/16 23:17:25 nygard Exp $
+// $Id: CDClassDump.h,v 1.37 2004/01/17 04:04:24 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -18,6 +18,8 @@
 
 @interface CDClassDump2 : NSObject <CDStructureRegistration>
 {
+    NSString *executablePath;
+
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
     BOOL shouldProcessRecursively;
@@ -38,6 +40,9 @@
 - (id)init;
 - (void)dealloc;
 
+- (NSString *)executablePath;
+- (void)setExecutablePath:(NSString *)newPath;
+
 - (BOOL)shouldProcessRecursively;
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 
@@ -49,6 +54,7 @@
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
 - (void)processFilename:(NSString *)aFilename;
+- (void)_processFilename:(NSString *)aFilename;
 
 - (void)doSomething;
 - (void)logInfo;

@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.47 2004/01/16 23:17:25 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.48 2004/01/17 04:04:24 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -85,6 +85,8 @@ static NSMutableSet *wrapperExtensions = nil;
     if ([super init] == nil)
         return nil;
 
+    executablePath = nil;
+
     //machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objCSegmentProcessors = [[NSMutableArray alloc] init];
@@ -120,6 +122,7 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)dealloc;
 {
+    [executablePath release];
     [machOFilesByID release];
     [objCSegmentProcessors release];
 
@@ -131,6 +134,22 @@ static NSMutableSet *wrapperExtensions = nil;
     [structDeclarationTypeFormatter release];
 
     [super dealloc];
+}
+
+- (NSString *)executablePath;
+{
+    return executablePath;
+}
+
+- (void)setExecutablePath:(NSString *)newPath;
+{
+    if (newPath == executablePath)
+        return;
+
+    [executablePath release];
+    executablePath = [newPath retain];
+
+    NSLog(@"%s, executablePath: %@", _cmd, executablePath);
 }
 
 - (BOOL)shouldProcessRecursively;
@@ -169,6 +188,15 @@ static NSMutableSet *wrapperExtensions = nil;
 }
 
 - (void)processFilename:(NSString *)aFilename;
+{
+    NSString *adjustedPath;
+
+    adjustedPath = [[self class] adjustUserSuppliedPath:aFilename];
+    [self setExecutablePath:[adjustedPath stringByDeletingLastPathComponent]];
+    [self _processFilename:adjustedPath];
+}
+
+- (void)_processFilename:(NSString *)aFilename;
 {
     CDMachOFile *aMachOFile;
     CDObjCSegmentProcessor *aProcessor;
@@ -252,17 +280,25 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 {
+    NSString *adjustedID;
     CDMachOFile *aMachOFile;
+    NSString *replacementString = @"@executable_path";
 
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"anID: %@", anID);
-
-    aMachOFile = [machOFilesByID objectForKey:anID];
-    if (aMachOFile == nil) {
-        [self processFilename:anID];
-        aMachOFile = [machOFilesByID objectForKey:anID];
+    NSLog(@" > %s", _cmd);
+    NSLog(@"anID: %@", anID);
+    if ([anID hasPrefix:replacementString] == YES) {
+        adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
+    } else {
+        adjustedID = anID;
     }
-    //NSLog(@"<  %s", _cmd);
+    NSLog(@"adjustedID: %@", adjustedID);
+
+    aMachOFile = [machOFilesByID objectForKey:adjustedID];
+    if (aMachOFile == nil) {
+        [self _processFilename:adjustedID];
+        aMachOFile = [machOFilesByID objectForKey:adjustedID];
+    }
+    NSLog(@"<  %s", _cmd);
 
     return aMachOFile;
 }
