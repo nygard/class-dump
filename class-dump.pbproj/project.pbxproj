@@ -47,6 +47,46 @@
 			isa = PBXBuildStyle;
 			name = Deployment;
 		};
+		014EEC30059AA5DD0097CFC1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = "NSObject-CDExtensions.h";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		014EEC31059AA5DD0097CFC1 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = "NSObject-CDExtensions.m";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		014EEC32059AA5DD0097CFC1 = {
+			fileRef = 014EEC30059AA5DD0097CFC1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		014EEC33059AA5DD0097CFC1 = {
+			fileRef = 014EEC31059AA5DD0097CFC1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		014EEC34059AA5DD0097CFC1 = {
+			fileRef = 014EEC30059AA5DD0097CFC1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		014EEC35059AA5DD0097CFC1 = {
+			fileRef = 014EEC31059AA5DD0097CFC1;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		0160478D0592C6A000C03665 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -288,6 +328,9 @@
 				01C5C169058D7DE50052C696,
 				01C5C12005855E970052C696,
 				01C5C12105855E970052C696,
+				01DEC42E05A7622B00682FCC,
+				01DEC42F05A7622B00682FCC,
+				01DEC43005A7622B00682FCC,
 			);
 			isa = PBXGroup;
 			name = "New stuff";
@@ -520,6 +563,8 @@
 		};
 		01C5C1270587C0740052C696 = {
 			children = (
+				014EEC30059AA5DD0097CFC1,
+				014EEC31059AA5DD0097CFC1,
 				0180A95F0584543300BF5014,
 				0180A9600584543300BF5014,
 				01C5C1310587CC4D0052C696,
@@ -700,6 +745,9 @@
 				016047B305942AEC00C03665,
 				016047B505942AEC00C03665,
 				01A253C70598E3ED00ED81E2,
+				014EEC34059AA5DD0097CFC1,
+				01DEC43105A7622B00682FCC,
+				01DEC43205A7622B00682FCC,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -857,6 +905,8 @@
 				016047920592C6A600C03665,
 				016047B405942AEC00C03665,
 				016047B605942AEC00C03665,
+				014EEC35059AA5DD0097CFC1,
+				01DEC43305A7622B00682FCC,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1031,6 +1081,7 @@
 				016047B705942AEC00C03665,
 				016047B905942AEC00C03665,
 				01A253C60598E3ED00ED81E2,
+				014EEC32059AA5DD0097CFC1,
 			);
 			isa = PBXHeadersBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1048,6 +1099,7 @@
 				0160479A0592D60C00C03665,
 				016047B805942AEC00C03665,
 				016047BA05942AEC00C03665,
+				014EEC33059AA5DD0097CFC1,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1241,6 +1293,48 @@
 			path = CDTypeParser.m;
 			refType = 4;
 			sourceTree = "<group>";
+		};
+		01DEC42E05A7622B00682FCC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDTopologicalSortProtocol.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01DEC42F05A7622B00682FCC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = CDTopoSortNode.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01DEC43005A7622B00682FCC = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = CDTopoSortNode.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01DEC43105A7622B00682FCC = {
+			fileRef = 01DEC42E05A7622B00682FCC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01DEC43205A7622B00682FCC = {
+			fileRef = 01DEC42F05A7622B00682FCC;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		01DEC43305A7622B00682FCC = {
+			fileRef = 01DEC43005A7622B00682FCC;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 //010
 //011
