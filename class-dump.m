@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.18 2003/01/21 06:31:23 nygard Exp $
+// $Id: class-dump.m,v 1.19 2003/01/21 06:50:43 nygard Exp $
 //
 
 //
@@ -28,9 +28,9 @@
 #include <stdio.h>
 #include <libc.h>
 #include <ctype.h>
-
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <regex.h>
 
 #include <mach/mach.h>
 #include <mach/mach_error.h>
@@ -42,8 +42,6 @@
 
 #include "datatypes.h"
 #include "class-dump.h"
-
-#include "my_regex.h"
 
 #import "ObjcThing.h"
 #import "ObjcClass.h"
@@ -83,7 +81,10 @@ int expand_structures_flag = 0;
 BOOL show_ivar_offsets_flag = NO;
 BOOL show_method_addresses_flag = NO;
 BOOL expand_protocols_flag = NO;
+
 BOOL match_flag = NO;
+static regex_t compiled_regex;
+
 BOOL expand_frameworks_flag = NO;
 BOOL sort_flag = NO;
 BOOL sort_classes_flag = NO;
@@ -197,6 +198,15 @@ NSArray *handle_objc_methods(struct my_objc_methods *methods, char ch);
 void show_single_module(struct section_info *module_info);
 void show_all_modules(void);
 void build_up_objc_segments(char *filename);
+
+static BOOL CDRegexMatchesCString(const char *text)
+{
+    int result;
+
+    result = regexec(&compiled_regex, text, 0, NULL, 0);
+
+    return (result == 0) ? YES : NO;
+}
 
 //======================================================================
 
@@ -809,7 +819,7 @@ void show_single_module(struct section_info *module_info)
     while (key = [en nextObject])
     {
         thing = [protocols objectForKey:key];
-        if (match_flag == NO || RE_EXEC([[thing sortableName] cString]) == 1)
+        if (match_flag == NO || CDRegexMatchesCString([[thing sortableName] cString]) == 1)
             [thing showDefinition:flags];
     }
 
@@ -823,7 +833,7 @@ void show_single_module(struct section_info *module_info)
 
     while (thing = [en nextObject])
     {
-        if (match_flag == NO || RE_EXEC([[thing sortableName] cString]) == 1)
+        if (match_flag == NO || CDRegexMatchesCString([[thing sortableName] cString]) == 1)
             [thing showDefinition:flags];
     }
 
@@ -916,7 +926,6 @@ int main(int argc, char *argv[])
     extern int optind;
     extern char *optarg;
     int error_flag = 0;
-    const char *tmp;
   
     if (argc == 1)
     {
@@ -952,12 +961,14 @@ int main(int argc, char *argv[])
               }
               else
               {
-                  match_flag = YES;
+                  char regex_error_buffer[256];
+                  int result;
 
-                  tmp = RE_COMP(optarg);
-                  if (tmp != NULL)
-                  {
-                      printf("Error: %s\n", tmp);
+                  result = regcomp(&compiled_regex, optarg, REG_EXTENDED);
+                  if (result == 0) {
+                      match_flag = YES;
+                  } else {
+                      printf("Error with regex: %s\n", regex_error_buffer);
                       exit(1);
                   }
               }
@@ -1012,6 +1023,10 @@ int main(int argc, char *argv[])
     [mappedFiles removeAllObjects];
 
     [pool release];
+
+    if (match_flag == YES) {
+        regfree(&compiled_regex);
+    }
 
     return 0;
 }
