@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.5 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcClass.h,v 1.6 2002/12/19 04:56:07 nygard Exp $
 //
 
 //
@@ -43,6 +43,8 @@
     NSMutableArray *protocol_names;
 }
 
++ (NSArray *)sortedClasses;
+
 - initWithClassName:(NSString *)className superClassName:(NSString *)superClassName;
 - (void) dealloc;
 
@@ -51,6 +53,7 @@
 - (NSArray *) protocolNames;
 
 - (NSString *) sortableName;
+- (NSString *) superClassName;
 
 - (void) addIvars:(NSArray *)ivars;
 - (void) addClassMethods:(NSArray *)newClassMethods;

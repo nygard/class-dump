@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.11 2001/03/27 10:40:34 nygard Exp $
+// $Id: class-dump.m,v 1.12 2002/12/19 04:56:07 nygard Exp $
 //
 
 //
@@ -95,6 +95,7 @@ BOOL expand_protocols_flag = NO;
 BOOL match_flag = NO;
 BOOL expand_frameworks_flag = NO;
 BOOL sort_flag = NO;
+BOOL sort_classes_flag = NO;
 
 int swap_fat = 0;
 int swap_macho = 0;
@@ -821,10 +822,13 @@ void show_single_module (struct section_info *module_info)
             [thing showDefinition:flags];
     }
 
-    if (sort_flag == YES)
+    if (sort_flag == YES && sort_classes_flag == NO)
         en = [[classList sortedArrayUsingSelector:@selector (orderByName:)] objectEnumerator];
+    else if (sort_classes_flag == YES)
+        en = [[ObjcClass sortedClasses] objectEnumerator];
     else
-        en = [classList objectEnumerator]; 
+        en = [classList objectEnumerator];
+
 
     while (thing = [en nextObject])
     {
@@ -888,6 +892,7 @@ void print_usage (void)
              "        -a  show instance variable offsets\n"
              "        -A  show implementation addresses\n"
              "        -e  expand structure (and union) definition whenever possible\n"
+             "        -I  sort by inheritance (overrides -S)\n"
              "        -R  recursively expand @protocol <>\n"
              "        -C  only display classes matching regular expression\n"
              "        -r  recursively expand frameworks and fixed VM shared libraries\n"
@@ -927,7 +932,7 @@ int main (int argc, char *argv[])
         exit (2);
     }
 
-    while ( (c = getopt (argc, argv, "aAeRC:rsS")) != EOF)
+    while ( (c = getopt (argc, argv, "aAeIRC:rsS")) != EOF)
     {
         switch (c)
         {
@@ -978,6 +983,10 @@ int main (int argc, char *argv[])
               sort_flag = YES;
               break;
 
+          case 'I':
+              sort_classes_flag = YES;
+              break;
+              
           case '?':
           default:
               error_flag++;

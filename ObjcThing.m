@@ -1,5 +1,5 @@
 //
-// $Id: ObjcThing.m,v 1.3 2000/10/15 01:22:18 nygard Exp $
+// $Id: ObjcThing.m,v 1.4 2002/12/19 04:56:07 nygard Exp $
 //
 
 //
@@ -38,9 +38,14 @@
 {
 }
 
+- (NSString *) superClass
+{
+    return nil;
+}
+
+
 - (NSComparisonResult) orderByName:(ObjcThing *)otherThing
 {
     return [[self sortableName] compare:[otherThing sortableName]];
 }
-
 @end

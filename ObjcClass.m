@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.4 2000/10/15 01:22:17 nygard Exp $
+// $Id: ObjcClass.m,v 1.5 2002/12/19 04:56:07 nygard Exp $
 //
 
 //
@@ -34,20 +34,42 @@
 #endif
 #import <stdio.h>
 
+static NSMutableDictionary *classDict;
+
 @implementation ObjcClass
+
++ (NSArray *)sortedClasses {
+    NSMutableArray *classes = [[[NSMutableArray alloc] init] autorelease];
+    BOOL done;
+    do {
+        NSEnumerator *enumerator = [classDict objectEnumerator];
+        id object;
+
+        done = true;
+        while (object = [enumerator nextObject]) {
+            if (![classDict objectForKey:[object superClassName]]) {
+                [classes addObject:object];
+                [classDict removeObjectForKey:[object className]];
+                done = false;
+            }
+        }
+    } while (!done);
+    return classes;
+}
 
 - initWithClassName:(NSString *)className superClassName:(NSString *)superClassName
 {
     if ([super init] == nil)
         return nil;
-
+    if(classDict == nil)
+        classDict = [[[NSMutableDictionary alloc] init] autorelease];
     class_name = [className retain];
     super_class_name = [superClassName retain];
     ivars = [[NSMutableArray array] retain];
     class_methods = [[NSMutableArray array] retain];
     instance_methods = [[NSMutableArray array] retain];
     protocol_names = [[NSMutableArray array] retain];
-
+    [classDict setObject:self forKey:className];
     return self;
 }
 
@@ -87,6 +109,11 @@
 - (NSString *) sortableName
 {
     return class_name;
+}
+
+- (NSString *) superClassName
+{
+    return super_class_name;
 }
 
 - (void) addClassMethods:(NSArray *)newClassMethods
