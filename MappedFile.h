@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.h,v 1.12 2004/01/06 01:51:57 nygard Exp $
+// $Id: MappedFile.h,v 1.13 2004/01/16 23:17:25 nygard Exp $
 //
 
 //
@@ -53,10 +53,6 @@
 - (NSString *)filename;
 - (const void *)data;
 
-+ (BOOL)isWrapperAtPath:(NSString *)path;
-+ (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
-
-+ (NSString *)adjustUserSuppliedPath:(NSString *)path;
 + (NSString *)adjustInstallName:(NSString *)installName;
 
 + (NSString *)adjustedFrameworkPath:(NSString *)path;

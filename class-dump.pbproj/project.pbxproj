@@ -603,22 +603,6 @@
 			settings = {
 			};
 		};
-		0174482D043BF8E000A8010A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			path = CDSectionInfo.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		0174482E043BF8E000A8010A = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			path = CDSectionInfo.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		0180A79305819D7500BF5014 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1086,8 +1070,6 @@
 				03070CAEFF009A5FC0A80A02,
 				03070CB9FF009A5FC0A80A02,
 				03070CAFFF009A5FC0A80A02,
-				0174482D043BF8E000A8010A,
-				0174482E043BF8E000A8010A,
 			);
 			isa = PBXGroup;
 			name = "Yucky old stuff";

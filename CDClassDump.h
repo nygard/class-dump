@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.35 2004/01/16 21:54:38 nygard Exp $
+// $Id: CDClassDump.h,v 1.36 2004/01/16 23:17:25 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -29,6 +29,11 @@
     CDTypeFormatter *methodTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 }
+
++ (void)initialize;
++ (BOOL)isWrapperAtPath:(NSString *)path;
++ (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
++ (NSString *)adjustUserSuppliedPath:(NSString *)path;
 
 - (id)init;
 - (void)dealloc;

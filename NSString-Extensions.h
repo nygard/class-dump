@@ -1,5 +1,5 @@
 //
-// $Id: NSString-Extensions.h,v 1.6 2004/01/06 02:31:45 nygard Exp $
+// $Id: NSString-Extensions.h,v 1.7 2004/01/16 23:17:26 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -10,7 +10,7 @@
 
 @interface NSString (CDExtensions)
 
-- (id)initWithCString:(const char *)bytes maximumLength:(unsigned int)maximumLength;
++ (NSString *)stringWithFileSystemRepresentation:(const char *)str;
 //+ (NSString *)spacesOfLength:(int)length;
 + (NSString *)spacesIndentedToLevel:(int)level;
 + (NSString *)spacesIndentedToLevel:(int)level spacesPerLevel:(int)spacesPerLevel;

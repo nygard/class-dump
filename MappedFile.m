@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.m,v 1.17 2004/01/06 01:51:58 nygard Exp $
+// $Id: MappedFile.m,v 1.18 2004/01/16 23:17:26 nygard Exp $
 //
 
 //
@@ -40,7 +40,6 @@ static NSArray *envDyldFallbackFrameworkPath = nil;
 static NSArray *envDyldFallbackLibraryPath = nil;
 static NSMutableArray *firstSearchPath = nil;
 static NSMutableArray *secondSearchPath = nil;
-static NSMutableSet *wrapperExtensions = nil;
 
 @implementation MappedFile
 
@@ -100,14 +99,6 @@ static NSMutableSet *wrapperExtensions = nil;
 
     secondSearchPath = [[NSMutableArray alloc] initWithArray:envDyldFallbackFrameworkPath];
     [secondSearchPath addObjectsFromArray:envDyldFallbackLibraryPath];
-
-    // TODO (old): Try grabbing these from an environment variable.
-    wrapperExtensions = [[NSMutableSet alloc] init];
-    [wrapperExtensions addObject:@"app"];
-    [wrapperExtensions addObject:@"framework"];
-    [wrapperExtensions addObject:@"bundle"];
-    [wrapperExtensions addObject:@"palette"];
-    [wrapperExtensions addObject:@"plugin"];
 }
 
 + (BOOL)debug;
@@ -179,54 +170,6 @@ static NSMutableSet *wrapperExtensions = nil;
 - (const void *)data;
 {
     return [data bytes];
-}
-
-// How does this handle something ending in "/"?
-
-+ (BOOL)isWrapperAtPath:(NSString *)path;
-{
-    return [wrapperExtensions containsObject:[path pathExtension]];
-}
-
-+ (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
-{
-    NSString *base, *extension, *mainFile;
-
-    base = [wrapperPath lastPathComponent];
-    extension = [base pathExtension];
-    base = [base stringByDeletingPathExtension];
-
-    if ([@"framework" isEqual:extension] == YES) {
-        mainFile = [NSString stringWithFormat:@"%@/%@", wrapperPath, base];
-    } else {
-        // app, bundle, palette, plugin
-        mainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/%@", wrapperPath, base];
-    }
-
-    return mainFile;
-}
-
-// Allow user to specify wrapper instead of the actual Mach-O file.
-+ (NSString *)adjustUserSuppliedPath:(NSString *)path;
-{
-    NSString *fullyResolvedPath, *basePath, *resolvedBasePath;
-
-    if ([MappedFile isWrapperAtPath:path] == YES) {
-        path = [MappedFile pathToMainFileOfWrapper:path];
-    }
-
-    fullyResolvedPath = [path stringByResolvingSymlinksInPath];
-    basePath = [path stringByDeletingLastPathComponent];
-    resolvedBasePath = [basePath stringByResolvingSymlinksInPath];
-    //NSLog(@"fullyResolvedPath: %@", fullyResolvedPath);
-    //NSLog(@"basePath:          %@", basePath);
-    //NSLog(@"resolvedBasePath:  %@", resolvedBasePath);
-
-    // I don't want to resolve all of the symlinks, just the ones starting from the wrapper.
-    // If I have a symlink from my home directory to /System/Library/Frameworks/AppKit.framework, I want to see the
-    // path to my home directory.
-    // This is an easy way to cheat so that we don't have to deal with NSFileManager ourselves.
-    return [basePath stringByAppendingString:[fullyResolvedPath substringFromIndex:[resolvedBasePath length]]];
 }
 
 // Deal with '@executable_path'.

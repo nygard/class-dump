@@ -15,9 +15,70 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.46 2004/01/16 21:54:38 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.47 2004/01/16 23:17:25 nygard Exp $");
 
 @implementation CDClassDump2
+
+static NSMutableSet *wrapperExtensions = nil;
+
++ (void)initialize;
+{
+    // TODO (old): Try grabbing these from an environment variable.
+    wrapperExtensions = [[NSMutableSet alloc] init];
+    [wrapperExtensions addObject:@"app"];
+    [wrapperExtensions addObject:@"framework"];
+    [wrapperExtensions addObject:@"bundle"];
+    [wrapperExtensions addObject:@"palette"];
+    [wrapperExtensions addObject:@"plugin"];
+}
+
+// How does this handle something ending in "/"?
+
++ (BOOL)isWrapperAtPath:(NSString *)path;
+{
+    return [wrapperExtensions containsObject:[path pathExtension]];
+}
+
++ (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
+{
+    NSString *base, *extension, *mainFile;
+
+    base = [wrapperPath lastPathComponent];
+    extension = [base pathExtension];
+    base = [base stringByDeletingPathExtension];
+
+    if ([@"framework" isEqual:extension] == YES) {
+        mainFile = [NSString stringWithFormat:@"%@/%@", wrapperPath, base];
+    } else {
+        // app, bundle, palette, plugin
+        mainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/%@", wrapperPath, base];
+    }
+
+    return mainFile;
+}
+
+// Allow user to specify wrapper instead of the actual Mach-O file.
++ (NSString *)adjustUserSuppliedPath:(NSString *)path;
+{
+    NSString *fullyResolvedPath, *basePath, *resolvedBasePath;
+
+    if ([self isWrapperAtPath:path] == YES) {
+        path = [self pathToMainFileOfWrapper:path];
+    }
+
+    fullyResolvedPath = [path stringByResolvingSymlinksInPath];
+    basePath = [path stringByDeletingLastPathComponent];
+    resolvedBasePath = [basePath stringByResolvingSymlinksInPath];
+    NSLog(@"fullyResolvedPath: %@", fullyResolvedPath);
+    NSLog(@"basePath:          %@", basePath);
+    NSLog(@"resolvedBasePath:  %@", resolvedBasePath);
+
+    // I don't want to resolve all of the symlinks, just the ones starting from the wrapper.
+    // If I have a symlink from my home directory to /System/Library/Frameworks/AppKit.framework, I want to see the
+    // path to my home directory.
+    // This is an easy way to cheat so that we don't have to deal with NSFileManager ourselves.
+    return [basePath stringByAppendingString:[fullyResolvedPath substringFromIndex:[resolvedBasePath length]]];
+}
 
 - (id)init;
 {

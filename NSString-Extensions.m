@@ -7,24 +7,14 @@
 #import "rcsid.h"
 #import <Foundation/Foundation.h>
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSString-Extensions.m,v 1.7 2004/01/06 02:31:45 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/NSString-Extensions.m,v 1.8 2004/01/16 23:17:26 nygard Exp $");
 
 @implementation NSString (CDExtensions)
 
-- (id)initWithCString:(const char *)bytes maximumLength:(unsigned int)maximumLength;
++ (NSString *)stringWithFileSystemRepresentation:(const char *)str;
 {
-    char *buf;
-
-    buf = alloca(maximumLength + 1);
-    if (buf == NULL) {
-        [self release];
-        return nil;
-    }
-
-    strncpy(buf, bytes, maximumLength);
-    buf[maximumLength] = 0;
-
-    return [self initWithCString:buf];
+    // 2004-01-16: I'm don't understand why we need to pass in the length.
+    return [[NSFileManager defaultManager] stringWithFileSystemRepresentation:str length:strlen(str)];
 }
 
 + (NSString *)spacesIndentedToLevel:(int)level;
