@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.m,v 1.18 2003/12/14 23:45:37 nygard Exp $
+// $Id: datatypes.m,v 1.19 2003/12/16 07:09:01 nygard Exp $
 //
 
 //
@@ -66,6 +66,8 @@ static NSString *simple_type_names[] =
     @"NXAtom",
 //    @"void /*UNKNOWN*/",
     @"UNKNOWN", // For easier regression testing.  TODO (2003-12-14): Change this back to void
+
+    // modifiers
     @"const",
     @"in",
     @"inout",
@@ -446,7 +448,7 @@ NSString *string_from_type(struct my_objc_type *t, NSString *inner, int expand, 
 
 NSString *string_from_method_type(NSString *methodName, struct method_type *m)
 {
-    extern int expand_arg_structures_flag;
+    //extern int expand_arg_structures_flag;
     int l;
     BOOL noMoreTypes;
     NSMutableString *resultString;
@@ -467,7 +469,8 @@ NSString *string_from_method_type(NSString *methodName, struct method_type *m)
 
         [resultString appendString:@"("];
         // TODO (2003-12-11): Don't expect anonymous structures anywhere in method types.
-        str = string_from_type(m->type, nil, expand_arg_structures_flag, 0);
+        //str = string_from_type(m->type, nil, expand_arg_structures_flag, 0);
+        str = string_from_type(m->type, nil, 0, 0);
         //NSLog(@"return type: '%@'", str);
         if (str != nil)
             [resultString appendFormat:@"%@", str];
@@ -498,7 +501,7 @@ NSString *string_from_method_type(NSString *methodName, struct method_type *m)
 
                 typeString = string_from_type(m->type, nil, 0, 0);
                 //NSLog(@"typeString: '%@'", typeString);
-                if (!IS_ID(m->type)) 
+                if (!IS_ID(m->type))
                     [resultString appendFormat:@"(%@)", typeString];
                 [resultString appendFormat:@"fp%@", m->name];
 
@@ -510,33 +513,6 @@ NSString *string_from_method_type(NSString *methodName, struct method_type *m)
             }
         }
     }
-#if 0
-    while (*method_name != '\0') {
-        while (*method_name != '\0' && *method_name != ':') {
-            putchar(*method_name);
-            method_name++;
-        }
-
-        if (*method_name == ':') {
-            printf(":");
-            if (m == NULL) {
-                noMoreTypes = YES;
-                method_name++;
-            } else {
-                if (!IS_ID(m->type)) {
-                    printf("(");
-                    print_type(m->type, expand_arg_structures_flag, 0);
-                    printf(")");
-                }
-                printf("fp%s", [m->name cString]);
-                method_name++;
-                if (*method_name != '\0' && *method_name != ':')
-                    printf(" ");
-                m = m->next;
-            }
-        }
-    }
-#endif
 
     if (noMoreTypes == YES) {
         NSLog(@" /* Error: Ran out of types for this method. */");
