@@ -46,22 +46,6 @@
     [self processModules];
 }
 
-- (NSString *)formattedStringByModule;
-{
-    NSMutableString *resultString;
-    int count, index;
-
-    resultString = [NSMutableString string];
-
-    // TODO: Show protocols
-
-    count = [modules count];
-    for (index = 0; index < count; index++)
-        [[modules objectAtIndex:index] appendToString:resultString];
-
-    return resultString;
-}
-
 - (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 {
     int count, index;

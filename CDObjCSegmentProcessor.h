@@ -19,7 +19,6 @@
 
 - (void)process;
 
-- (NSString *)formattedStringByModule;
 - (void)appendFormattedStringSortedByClass:(NSMutableString *)resultString classDump:(CDClassDump2 *)aClassDump;
 - (void)registerStructsWithObject:(id <CDStructRegistration>)anObject;
 
