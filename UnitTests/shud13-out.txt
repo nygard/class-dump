@@ -1,0 +1,38 @@
+struct NSBrowserAuxiliary {
+    NSMutableArray *_field1;
+    _NSBrowserScrollView *_field2;
+    NSClipView *_field3;
+    _NSBrowserColumnScrollHelper *_field4;
+    int _field5;
+    int _field6;
+    NSMatrix *_field7;
+    NSEvent *_field8;
+    float _field9;
+    NSMutableArray *_field10;
+    int _field11;
+    int _field12;
+    NSString *_field13;
+    struct __BrFlags2 _field14;
+};
+
+struct __BrFlags2 {
+    unsigned int delegateShouldSizeColumnToWidth:1;
+    unsigned int delegateSizeToFitWidtOfColumn:1;
+    unsigned int shouldAnimateColumnScrolling:1;
+    unsigned int tilingDisabled:1;
+    unsigned int setPathOptimizationOn:1;
+    unsigned int readingSavedColumns:1;
+    unsigned int recomputeExistingColumnPositions:1;
+    unsigned int waitingToSendDoubleActionAtEndOfScroll:1;
+    unsigned int waitingToSendSingleActionAtEndOfScroll:1;
+    unsigned int waitingToSendConfigChangeNotificationAtEndOfScroll:1;
+    unsigned int compatContinuousScrollingCapable:1;
+    unsigned int compatContinuousScrollingCapableSet:1;
+    unsigned int forceSynchronizedScrollingAnimation:1;
+    unsigned int useCustomBorderType:1;
+    unsigned int customBorderType:3;
+    unsigned int animateColumnScrollingForAnyEvent:1;
+    unsigned int reserved:14;
+};
+
+    struct NSBrowserAuxiliary var;

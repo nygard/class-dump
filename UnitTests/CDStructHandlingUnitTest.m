@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.11 2004/01/15 23:57:03 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.12 2004/01/29 22:39:27 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -241,5 +241,10 @@
     [self testFilename:@"shud11"];
 }
 #endif
+
+- (void)test15;
+{
+    [self testFilename:@"shud13"];
+}
 
 @end

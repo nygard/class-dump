@@ -347,6 +347,8 @@
 				018B175705B6394500C95EFC,
 				018B175805B6394500C95EFC,
 				018B175905B6394500C95EFC,
+				01A9680F05C9C2EB00CF3B9E,
+				01A9681005C9C2EB00CF3B9E,
 			);
 			isa = PBXGroup;
 			name = "Unit Tests";
@@ -959,6 +961,24 @@
 			lastKnownFileType = text;
 			name = "shud11-out.txt";
 			path = "UnitTests/shud11-out.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01A9680F05C9C2EB00CF3B9E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud13-in.txt";
+			path = "UnitTests/shud13-in.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01A9681005C9C2EB00CF3B9E = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud13-out.txt";
+			path = "UnitTests/shud13-out.txt";
 			refType = 4;
 			sourceTree = "<group>";
 		};
