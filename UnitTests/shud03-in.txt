@@ -1,0 +1,3 @@
+{_NSRange=II}	foo
+{_NSRange="location"II}	bar
+{_NSRange=I"length"I}	baz

@@ -26,5 +26,6 @@
 
 - (void)testFour;
 - (void)testFive;
+- (void)testSix;
 
 @end

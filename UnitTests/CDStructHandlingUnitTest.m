@@ -172,4 +172,9 @@
     [self testFilename:@"shud02"];
 }
 
+- (void)testSix;
+{
+    [self testFilename:@"shud03"];
+}
+
 @end

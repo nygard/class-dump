@@ -269,6 +269,74 @@
 			settings = {
 			};
 		};
+		01497A1C05AA200C0023398B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud01-in.txt";
+			path = "UnitTests/shud01-in.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01497A1D05AA200C0023398B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud01-out.txt";
+			path = "UnitTests/shud01-out.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01497A1E05AA200C0023398B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud02-in.txt";
+			path = "UnitTests/shud02-in.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01497A1F05AA200C0023398B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud02-out.txt";
+			path = "UnitTests/shud02-out.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01497A2005AA200C0023398B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud03-in.txt";
+			path = "UnitTests/shud03-in.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01497A2105AA200C0023398B = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text;
+			name = "shud03-out.txt";
+			path = "UnitTests/shud03-out.txt";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		01497A2905AA20110023398B = {
+			children = (
+				01497A1C05AA200C0023398B,
+				01497A1D05AA200C0023398B,
+				01497A1E05AA200C0023398B,
+				01497A1F05AA200C0023398B,
+				01497A2005AA200C0023398B,
+				01497A2105AA200C0023398B,
+			);
+			isa = PBXGroup;
+			name = "Unit Tests";
+			refType = 4;
+			sourceTree = "<group>";
+		};
 		014EEC30059AA5DD0097CFC1 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1828,6 +1896,7 @@
 		};
 		03070CC1FF009A5FC0A80A02 = {
 			children = (
+				01497A2905AA20110023398B,
 			);
 			isa = PBXGroup;
 			name = "Supporting Files";
