@@ -1,14 +1,14 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 2004 Steve Nygard.  All rights reserved.
 
-#import "CDSymtabCommand.h"
+#import "CDSymbolTable.h"
 
 #include <mach-o/nlist.h>
 #import <Foundation/Foundation.h>
 #import "CDMachOFile.h"
 #import "CDSymbol.h"
 
-@implementation CDSymtabCommand
+@implementation CDSymbolTable
 
 - (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
 {
