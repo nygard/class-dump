@@ -14,6 +14,8 @@
 - (void)testBasicTypes;
 - (void)testModifiers;
 - (void)testPointers;
+- (void)testBitfield;
+- (void)testArrayType;
 - (void)testStructType;
 - (void)testUnionType;
 //- (void)testBar;

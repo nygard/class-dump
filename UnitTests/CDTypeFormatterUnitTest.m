@@ -88,12 +88,61 @@
     [self testVariableName:@"var" type:@"^^i" expectedResult:@"int **var"];
 }
 
+- (void)testBitfield;
+{
+    [self testVariableName:@"var" type:@"b0" expectedResult:@"int var:0"];
+    [self testVariableName:@"var" type:@"b1" expectedResult:@"int var:1"];
+    [self testVariableName:@"var" type:@"b19" expectedResult:@"int var:19"];
+    [self testVariableName:@"var" type:@"b31" expectedResult:@"int var:31"];
+    [self testVariableName:@"var" type:@"b32" expectedResult:@"int var:32"];
+    [self testVariableName:@"var" type:@"b33" expectedResult:@"int var:33"];
+    [self testVariableName:@"var" type:@"b63" expectedResult:@"int var:63"];
+    [self testVariableName:@"var" type:@"b64" expectedResult:@"int var:64"];
+    [self testVariableName:@"var" type:@"b65" expectedResult:@"int var:65"];
+
+    [self testVariableName:@"var" type:@"b" expectedResult:@"int var:(null)"]; // Don't we always expect a number?
+}
+
+- (void)testArrayType;
+{
+    [self testVariableName:@"var" type:@"[0c]" expectedResult:@"char var[0]"];
+    [self testVariableName:@"var" type:@"[1c]" expectedResult:@"char var[1]"];
+    [self testVariableName:@"var" type:@"[16c]" expectedResult:@"char var[16]"];
+
+    [self testVariableName:@"var" type:@"[16^i]" expectedResult:@"int *var[16]"];
+    [self testVariableName:@"var" type:@"^[16i]" expectedResult:@"int (*var)[16]"];
+    [self testVariableName:@"var" type:@"[16^^i]" expectedResult:@"int **var[16]"];
+    [self testVariableName:@"var" type:@"^^[16i]" expectedResult:@"int (**var)[16]"];
+    [self testVariableName:@"var" type:@"^[16^i]" expectedResult:@"int *(*var)[16]"];
+
+    [self testVariableName:@"var" type:@"[8[12f]]" expectedResult:@"float var[8][12]"];
+    [self testVariableName:@"var" type:@"[8b3]" expectedResult:@"int var:3[8]"]; // Don't know if this is even valid!
+
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"" expectedResult:@""];
+}
+
 - (void)testStructType;
 {
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
+    //[self testVariableName:@"var" type:@"{}" expectedResult:@""];
+    [self testVariableName:@"var" type:@"{?}" expectedResult:@"struct ? var"];
+    [self testVariableName:@"var" type:@"{NSStreamFunctions}" expectedResult:@"struct NSStreamFunctions var"];
+    [self testVariableName:@"var" type:@"{__ssFlags=\"delegateLearnsWords\"b1\"delegateForgetsWords\"b1\"busy\"b1\"_reserved\"b29}" expectedResult:@"struct __ssFlags var"];
     //[self testVariableName:@"" type:@"" expectedResult:@""];
     //[self testVariableName:@"" type:@"" expectedResult:@""];
     //[self testVariableName:@"" type:@"" expectedResult:@""];
@@ -101,7 +150,6 @@
 
 - (void)testUnionType;
 {
-    // _tokenBuffer
     [self testVariableName:@"_tokenBuffer" type:@"(?=\"ascii\"*\"unicode\"^S)" expectedResult:@"union ? _tokenBuffer"];
     //[self testVariableName:@"" type:@"" expectedResult:@""];
 }
