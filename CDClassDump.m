@@ -21,8 +21,7 @@
 
     machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
-    protocolsByVMAddr = [[NSMutableDictionary alloc] init];
-    usedVMAddrs = [[NSMutableDictionary alloc] init];
+    protocolsByName = [[NSMutableDictionary alloc] init];
     protocolNames = [[NSMutableSet alloc] init];
 
     return self;
@@ -32,8 +31,7 @@
 {
     [machOFile release];
     [modules release];
-    [protocolsByVMAddr release];
-    [usedVMAddrs release];
+    [protocolsByName release];
     [protocolNames release];
 
     [super dealloc];
@@ -41,19 +39,15 @@
 
 - (void)doSomething;
 {
-    CDSegmentCommand *segment;
-    unsigned long goodVMAddr = 0xa2e3d960;
-    unsigned long badVMAddr = 0xa2de2038;
+    CDOCProtocol *aProtocol;
 
     NSLog(@" > %s", _cmd);
 
-    NSLog(@"good vmaddr: %p", goodVMAddr);
-    segment = [machOFile segmentContainingAddress:goodVMAddr];
-    NSLog(@"segment: %@", segment);
+    aProtocol = [self processProtocol:0xa0a1b6f0];
+    NSLog(@"aProtocol: %@", aProtocol);
 
-    NSLog(@"bad vmaddr: %p", badVMAddr);
-    segment = [machOFile segmentContainingAddress:badVMAddr];
-    NSLog(@"segment: %@", segment);
+    aProtocol = [self processProtocol:0xa0a1b704];
+    NSLog(@"aProtocol: %@", aProtocol);
 
     NSLog(@" < %s", _cmd);
 }
@@ -233,7 +227,7 @@
     //protocolPtrs = (unsigned long **)(protocolList + 1);
     NSLog(@"%d protocols:", protocolList->count);
     for (index = 0; index < protocolList->count; index++, protocolPtrs++) {
-        [protocols addObject:[self protocolAtVMAddr:*protocolPtrs]];
+        [protocols addObject:[self processProtocol:*protocolPtrs]];
     }
 
     return protocols;
@@ -244,20 +238,50 @@
     const struct cd_objc_protocol *protocolPtr;
     CDOCProtocol *aProtocol;
     NSArray *methods;
+    NSString *name;
+    NSArray *protocols;
 
-    NSLog(@"%s, protocolAddr: %p", _cmd, protocolAddr);
+    //NSLog(@" > %s (%p)", _cmd, protocolAddr);
+    //NSLog(@"%s, protocolAddr: %p", _cmd, protocolAddr);
     protocolPtr = [machOFile pointerFromVMAddr:protocolAddr];
 
-    aProtocol = [[[CDOCProtocol alloc] init] autorelease];
-    [aProtocol setName:[machOFile stringFromVMAddr:protocolPtr->protocol_name]];
+    name = [machOFile stringFromVMAddr:protocolPtr->protocol_name];
+    protocols = [self processProtocolList:protocolPtr->protocol_list];
 
-    methods = [self processProtocolMethods:protocolPtr->instance_methods];
-    [aProtocol setMethods:methods];
+    //NSLog(@"Processing protocol (%p) %@, adopts %@", protocolAddr, name, [[protocols arrayByMappingSelector:@selector(name)] description]);
 
-    // TODO (2003-12-09): Handle class methods
+    aProtocol = [protocolsByName objectForKey:name];
+    if (aProtocol == nil) {
+        aProtocol = [[[CDOCProtocol alloc] init] autorelease];
+        [aProtocol setName:name];
 
-    //NSLog(@"protocolPtr->protocol_list: %p", protocolPtr->protocol_list);
-    [aProtocol setProtocols:[self processProtocolList:protocolPtr->protocol_list]];
+        methods = [self processProtocolMethods:protocolPtr->instance_methods];
+        [aProtocol setMethods:methods];
+
+        // TODO (2003-12-09): Handle class methods
+
+        //NSLog(@"protocolPtr->protocol_list: %p", protocolPtr->protocol_list);
+        [aProtocol setProtocols:protocols];
+        [protocolsByName setObject:aProtocol forKey:name];
+    } else {
+        int count, index;
+        NSSet *previousProtocolNames;
+
+        previousProtocolNames = [NSSet setWithArray:[[aProtocol protocols] arrayByMappingSelector:@selector(name)]];
+        NSLog(@"=== protocol %@, previous protocol names: %@", name, [previousProtocolNames allObjects]);
+
+        // Make sure all protocols adopted by this one are part of aProtocol
+        count = [protocols count];
+        for (index = 0; index < count; index++) {
+            CDOCProtocol *thisProtocol;
+
+            thisProtocol = [protocols objectAtIndex:index];
+            NSLog(@"Checking for %@", [thisProtocol name]);
+            if ([previousProtocolNames containsObject:[thisProtocol name]] == NO) {
+                NSLog(@"Warning: Previous instance of this protocol doesn't adopt '%@' protocol that this instance does.", [thisProtocol name]);
+            }
+        }
+    }
 
     //NSLog(@"aProtocol: %@", aProtocol);
     //NSLog(@"formatted protocol: %@", [aProtocol formattedString]);
@@ -343,8 +367,6 @@
     CDOCProtocol *aProtocol;
     int count, index;
 
-    NSMutableArray *inOrder = [NSMutableArray array];
-
     NSLog(@"\n\n\n\n\n\n\n\n\n\n");
     NSLog(@" > %s", _cmd);
 
@@ -361,69 +383,23 @@
     for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol)) {
         //NSLog(@"%d: addr = %p", index, addr);
         aProtocol = [self processProtocol:addr];
-        [inOrder addObject:aProtocol];
         //NSLog(@"%d: aProtocol: %@", index, aProtocol);
-        //[protocolsByVMAddr setObject:aProtocol forKey:[NSNumber numberWithLong:addr]];
     }
 
-    [usedVMAddrs removeAllObjects];
-
-    //NSLog(@"inOrder: %@", inOrder);
     {
-        NSLog(@"protocols in order: \n%@", [[inOrder arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n\n"]);
+        NSLog(@"unique protocols: %@", [protocolsByName allValues]);
+        NSLog(@"\n\n\n\n\n\n\n\n\n\n");
+        NSLog(@"protocols in order: \n%@",
+              [[[protocolsByName allValues] arrayByMappingSelector:@selector(formattedString)] componentsJoinedByString:@"\n\n"]);
     }
 
     NSLog(@"<  %s", _cmd);
 }
 
-- (CDOCProtocol *)protocolAtVMAddr:(unsigned long)protocolAddr;
-{
-    CDOCProtocol *aProtocol;
-    NSNumber *key;
-
-    key = [NSNumber numberWithLong:protocolAddr];
-    [usedVMAddrs setObject:@"Yes" forKey:key];
-
-    aProtocol = [protocolsByVMAddr objectForKey:key];
-    if (aProtocol == nil) {
-        aProtocol = [self processProtocol:protocolAddr];
-        [protocolsByVMAddr setObject:aProtocol forKey:key];
-        [protocolNames addObject:[aProtocol name]];
-    }
-
-    return aProtocol;
-}
-
 - (void)checkUnreferencedProtocols;
 {
-    NSMutableSet *addrs;
-    NSSet *usedAddrs;
-    NSArray *unreffedAddrs;
-    int count, index;
-
     NSLog(@" > %s", _cmd);
-
-    NSLog(@"total protocol count: %d", [[protocolsByVMAddr allKeys] count]);
-    NSLog(@"used protocol count: %d", [[usedVMAddrs allKeys] count]);
-
-    addrs = [NSMutableSet setWithArray:[protocolsByVMAddr allKeys]];
-    usedAddrs = [NSSet setWithArray:[usedVMAddrs allKeys]];
-    [addrs minusSet:usedAddrs];
-
-    //NSLog(@"addrs: %@", addrs);
-    unreffedAddrs = [addrs allObjects];
-    count = [unreffedAddrs count];
-    for (index = 0; index < count; index++) {
-        NSNumber *key;
-        CDOCProtocol *aProtocol;
-
-        key = [unreffedAddrs objectAtIndex:index];
-        aProtocol = [protocolsByVMAddr objectForKey:key];
-        NSLog(@"%d, key: 0x%08x, aProtocol: %@", index, [key longValue], aProtocol);
-    }
-
     NSLog(@"protocolNames: %@", protocolNames);
-
     NSLog(@"<  %s", _cmd);
 }
 

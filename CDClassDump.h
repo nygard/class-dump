@@ -102,10 +102,9 @@ struct cd_objc_protocol_method
 {
     CDMachOFile *machOFile;
     NSMutableArray *modules;
-    NSMutableDictionary *protocolsByVMAddr;
+    NSMutableDictionary *protocolsByName;
 
     // temporary:
-    NSMutableDictionary *usedVMAddrs;
     NSMutableSet *protocolNames;
 }
 
@@ -124,7 +123,6 @@ struct cd_objc_protocol_method
 - (void)processCategoryDefinition:(unsigned long)defRef;
 
 - (void)processProtocolSection;
-- (CDOCProtocol *)protocolAtVMAddr:(unsigned long)protocolAddr;
 - (void)checkUnreferencedProtocols;
 
 @end
