@@ -5,6 +5,6 @@ mkdir /tmp/new
 
 foreach i (/System/Library/Frameworks/*.framework) do
     echo $i `basename $i .framework`
-    /usr/local/bin/class-dump -s $i >& /tmp/old/`basename $i .framework`.txt
+    /usr/local/bin/class-dump -s -S $i >& /tmp/old/`basename $i .framework`.txt
     /Local/Public/nygard/Products/class-dump $i >& /tmp/new/`basename $i .framework`.txt
 done
