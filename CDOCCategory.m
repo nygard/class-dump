@@ -11,7 +11,7 @@
 #import "CDSymbolReferences.h"
 #import "NSArray-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.11 2004/02/11 00:07:53 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.12 2004/02/11 06:30:19 nygard Exp $");
 
 @implementation CDOCCategory
 
@@ -41,7 +41,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.11 2004/0
     if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self sortableName]] == NO)
         return;
 
-    [resultString appendFormat:@"@interface %@(%@)", className, name];
+    [resultString appendFormat:@"@interface %@ (%@)", className, name];
 
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
