@@ -1,5 +1,5 @@
 //
-// $Id: MappedFile.h,v 1.2 1999/08/09 06:52:23 nygard Exp $
+// $Id: MappedFile.h,v 1.3 1999/08/09 07:33:59 nygard Exp $
 //
 
 //
@@ -47,6 +47,9 @@
 }
 
 + (void) initialize;
+
++ (BOOL) debug;
++ (void) setDebug:(BOOL)flag;
 
 - initWithFilename:(NSString *)aFilename;
 - (void) dealloc;

@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.2 1999/08/09 06:52:26 nygard Exp $
+// $Id: class-dump.m,v 1.3 1999/08/09 07:34:00 nygard Exp $
 //
 
 //
@@ -768,7 +768,7 @@ void show_single_module (struct section_info *module_info)
         currentFile = [mappedFilesByInstallName objectForKey:[NSString stringWithCString:module_info->filename]];
         installName = [currentFile installName];
         filename = [currentFile filename];
-        if ([installName isEqual:filename] == YES)
+        if (filename == nil || [installName isEqual:filename] == YES)
         {
             printf ("\n/*\n * File: %s\n */\n\n", module_info->filename);
         }
