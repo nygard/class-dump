@@ -1,5 +1,5 @@
 //
-// $Id: class-dump.m,v 1.48 2003/12/22 03:22:46 nygard Exp $
+// $Id: class-dump.m,v 1.49 2003/12/24 00:11:01 nygard Exp $
 //
 
 //
@@ -1139,7 +1139,7 @@ void testVariableTypes(NSString *path)
             [resultString appendFormat:@"type: '%@'\n", type];
             [resultString appendFormat:@"name: '%@'\n", name];
             [resultString appendFormat:@"level: %d\n", level];
-            formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:name type:type atLevel:level];
+            formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type atLevel:level];
             if (formattedString != nil) {
                 [resultString appendString:formattedString];
                 [resultString appendString:@"\n"];
@@ -1242,7 +1242,6 @@ int main(int argc, char *argv[])
 
           case 'e':
               //expand_structures_flag = 1;
-              [[CDTypeFormatter sharedTypeFormatter] setShouldExpandStructures:YES];
               break;
 
           case 'E':

@@ -81,6 +81,11 @@
     //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);
     NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
 
+    //[[CDTypeFormatter sharedTypeFormatter] setDelegate:self];
+    [[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:self];
+    [[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:self];
+    //[[CDTypeFormatter sharedStructDeclarationTypeFormatter] setDelegate:self];
+
     {
         NSMutableString *resultString;
         int count, index;
@@ -152,6 +157,11 @@
 #endif
         [resultString release];
     }
+
+    //[[CDTypeFormatter sharedTypeFormatter] setDelegate:nil];
+    [[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:nil];
+    [[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:nil];
+    //[[CDTypeFormatter sharedStructDeclarationTypeFormatter] setDelegate:nil];
 }
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
@@ -210,7 +220,7 @@
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         typeString = [structsByName objectForKey:key];
-        formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:nil type:typeString atLevel:0 expand:YES];
+        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:typeString atLevel:0];
         if (formattedString != nil) {
             [resultString appendString:formattedString];
             [resultString appendString:@";\n\n"];
@@ -230,7 +240,7 @@
     for (index = 0; index < count; index++) {
         typeString = [keys objectAtIndex:index];
         name = [anonymousStructs objectForKey:typeString];
-        formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:nil type:typeString atLevel:0 expand:YES];
+        formattedString = [[CDTypeFormatter sharedStructDeclarationTypeFormatter] formatVariable:nil type:typeString atLevel:0]; // TODO (2003-12-23): Need to replace
         if (formattedString != nil) {
             [resultString appendString:@"typedef "];
             [resultString appendString:formattedString];
@@ -270,6 +280,12 @@
         [structCounts setObject:[NSNumber numberWithInt:1] forKey:typeString];
     else
         [structCounts setObject:[NSNumber numberWithInt:[oldCount intValue] + 1] forKey:typeString];
+}
+
+- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
+{
+    NSLog(@"%s, result = %@", _cmd, [anonymousStructs objectForKey:structTypeString]);
+    return [anonymousStructs objectForKey:structTypeString];
 }
 
 @end

@@ -36,5 +36,6 @@
 - (void)appendTypedefsToString:(NSMutableString *)resultString;
 
 - (void)registerStructName:(NSString *)aName type:(NSString *)typeString;
+- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
 
 @end

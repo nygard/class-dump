@@ -25,22 +25,76 @@
     return instance;
 }
 
-- (BOOL)shouldExpandStructures;
++ (id)sharedIvarTypeFormatter;
 {
-    return shouldExpandStructures;
+    static CDTypeFormatter *instance = nil;
+
+    if (instance == nil) {
+        instance = [[CDTypeFormatter alloc] init];
+        [instance setShouldExpand:NO];
+        [instance setShouldAutoExpand:YES];
+    }
+
+    return instance;
 }
 
-- (void)setShouldExpandStructures:(BOOL)newFlag;
++ (id)sharedMethodTypeFormatter;
 {
-    shouldExpandStructures = newFlag;
+    static CDTypeFormatter *instance = nil;
+
+    if (instance == nil) {
+        instance = [[CDTypeFormatter alloc] init];
+        [instance setShouldExpand:NO];
+        [instance setShouldAutoExpand:NO];
+    }
+
+    return instance;
+}
+
++ (id)sharedStructDeclarationTypeFormatter;
+{
+    static CDTypeFormatter *instance = nil;
+
+    if (instance == nil) {
+        instance = [[CDTypeFormatter alloc] init];
+        [instance setShouldExpand:YES];
+        [instance setShouldAutoExpand:NO];
+    }
+
+    return instance;
+}
+
+- (BOOL)shouldExpand;
+{
+    return shouldExpand;
+}
+
+- (void)setShouldExpand:(BOOL)newFlag;
+{
+    shouldExpand = newFlag;
+}
+
+- (BOOL)shouldAutoExpand;
+{
+    return shouldAutoExpand;
+}
+
+- (void)setShouldAutoExpand:(BOOL)newFlag;
+{
+    shouldAutoExpand = newFlag;
+}
+
+- (id)delegate;
+{
+    return nonretainedDelegate;
+}
+
+- (void)setDelegate:(id)newDelegate;
+{
+    nonretainedDelegate = newDelegate;
 }
 
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level;
-{
-    return [self formatVariable:name type:type atLevel:level expand:shouldExpandStructures];
-}
-
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type atLevel:(int)level expand:(BOOL)shouldExpand;
 {
     CDTypeParser *aParser;
     CDType *resultType;
@@ -63,7 +117,7 @@
     resultString = [NSMutableString string];
     [resultType setVariableName:name];
     [resultString appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:4]];
-    [resultString appendString:[resultType formattedString:nil expand:shouldExpand autoExpand:YES level:level]];
+    [resultString appendString:[resultType formattedString:nil formatter:self level:level]];
 
     //free_allocated_methods();
     //free_allocated_types();
@@ -104,7 +158,7 @@
 
             [resultString appendString:@"("];
             // TODO (2003-12-11): Don't expect anonymous structures anywhere in method types.
-            str = [[aMethodType type] formattedString:nil expand:NO autoExpand:NO level:0];
+            str = [[aMethodType type] formattedString:nil formatter:self level:0];
             if (str != nil)
                 [resultString appendFormat:@"%@", str];
             [resultString appendString:@")"];
@@ -131,7 +185,7 @@
                     NSString *ch;
 
                     aMethodType = [methodTypes objectAtIndex:index];
-                    typeString = [[aMethodType type] formattedString:nil expand:NO autoExpand:NO level:0];
+                    typeString = [[aMethodType type] formattedString:nil formatter:self level:0];
                     if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     [resultString appendFormat:@"fp%@", [aMethodType offset]];
@@ -151,6 +205,15 @@
     }
 
     return resultString;
+}
+
+- (NSString *)typedefNameForStruct:(NSString *)structTypeString;
+{
+    NSLog(@"%s, structTypeString: %@", _cmd, structTypeString);
+    if ([nonretainedDelegate respondsToSelector:_cmd]);
+        return [nonretainedDelegate typedefNameForStruct:structTypeString];
+
+    return nil;
 }
 
 @end

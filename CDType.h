@@ -5,6 +5,7 @@
 #import "CDStructRegistrationProtocol.h"
 
 @class NSArray, NSString;
+@class CDTypeFormatter;
 
 @interface CDType : NSObject
 {
@@ -40,8 +41,8 @@
 
 - (NSString *)description;
 
-- (NSString *)formattedString:(NSString *)previousName expand:(BOOL)shouldExpand autoExpand:(BOOL)shouldAutoExpand level:(int)level;
-- (NSString *)formattedStringForMembersAtLevel:(int)level expand:(BOOL)shouldExpand autoExpand:(BOOL)shouldAutoExpand;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level;
+- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter;
 - (NSString *)formattedStringForSimpleType;
 
 - (NSString *)typeString;

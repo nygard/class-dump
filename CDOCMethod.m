@@ -59,7 +59,7 @@
     NSString *formattedString;
 
     //[resultString appendFormat:@"%@", name];
-    formattedString = [[CDTypeFormatter sharedTypeFormatter] formatMethodName:name type:type];
+    formattedString = [[CDTypeFormatter sharedMethodTypeFormatter] formatMethodName:name type:type];
     //NSLog(@"%s, formattedString: '%@'", _cmd, formattedString);
     if (formattedString != nil) {
         [resultString appendString:formattedString];

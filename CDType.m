@@ -6,6 +6,7 @@
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
+#import "CDTypeFormatter.h"
 
 @implementation CDType
 
@@ -190,7 +191,7 @@
                      NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
 }
 
-- (NSString *)formattedString:(NSString *)previousName expand:(BOOL)shouldExpand autoExpand:(BOOL)shouldAutoExpand level:(int)level;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level;
 {
     NSString *result, *currentName;
     NSString *baseType, *memberString;
@@ -231,7 +232,7 @@
           else
               result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
 
-          result = [subtype formattedString:result expand:shouldExpand autoExpand:shouldAutoExpand level:level];
+          result = [subtype formattedString:result formatter:typeFormatter level:level];
           break;
 
       case '(':
@@ -240,9 +241,9 @@
           else
               baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-          if ((shouldAutoExpand == YES && [@"?" isEqual:typeName] == YES) || (shouldExpand == YES && [members count] > 0))
+          if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:typeName] == YES) || ([typeFormatter shouldExpand] == YES && [members count] > 0))
               memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                       [self formattedStringForMembersAtLevel:level + 1 expand:shouldExpand autoExpand:shouldAutoExpand],
+                                       [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
                                        [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
           else
               memberString = @"";
@@ -256,19 +257,31 @@
           break;
 
       case '{':
-          if (typeName == nil || [@"?" isEqual:typeName] == YES)
-              baseType = @"struct";
-          else
-              baseType = [NSString stringWithFormat:@"struct %@", typeName];
+          baseType = nil;
+          if (typeName == nil || [@"?" isEqual:typeName] == YES) {
+              NSString *typedefName;
 
-          if ((shouldAutoExpand == YES && [@"?" isEqual:typeName] == YES) || (shouldExpand == YES && [members count] > 0))
-              memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                       [self formattedStringForMembersAtLevel:level + 1 expand:shouldExpand autoExpand:shouldAutoExpand],
-                                       [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
-          else
-              memberString = @"";
+              typedefName = [typeFormatter typedefNameForStruct:[self typeString]];
+              if (typedefName != nil) {
+                  baseType = typedefName;
+              }
+          }
+          if (baseType == nil) {
+              if (typeName == nil || [@"?" isEqual:typeName] == YES)
+                  baseType = @"struct";
+              else
+                  baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-          baseType = [baseType stringByAppendingString:memberString];
+              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:typeName] == YES)
+                  || ([typeFormatter shouldExpand] == YES && [members count] > 0))
+                  memberString = [NSString stringWithFormat:@" {\n%@%@}",
+                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
+                                           [NSString spacesIndentedToLevel:level spacesPerLevel:4]];
+              else
+                  memberString = @"";
+
+              baseType = [baseType stringByAppendingString:memberString];
+          }
 
           if (currentName == nil || [currentName hasPrefix:@"?"] == YES) // Not sure about this
               result = baseType;
@@ -285,7 +298,7 @@
           if (subtype != nil && [subtype type] == '[')
               result = [NSString stringWithFormat:@"(%@)", result];
 
-          result = [subtype formattedString:result expand:shouldExpand autoExpand:shouldAutoExpand level:level];
+          result = [subtype formattedString:result formatter:typeFormatter level:level];
           break;
 
       case 'r':
@@ -296,7 +309,7 @@
       case 'R':
       case 'V':
           result = [NSString stringWithFormat:@"%@ %@",
-                             [self formattedStringForSimpleType], [subtype formattedString:currentName expand:shouldExpand autoExpand:shouldAutoExpand level:level]];
+                             [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level]];
           break;
 
       default:
@@ -310,7 +323,7 @@
     return result;
 }
 
-- (NSString *)formattedStringForMembersAtLevel:(int)level expand:(BOOL)shouldExpand autoExpand:(BOOL)shouldAutoExpand;
+- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter;
 {
     NSMutableString *str;
     int count, index;
@@ -321,7 +334,7 @@
     count = [members count];
     for (index = 0; index < count; index++) {
         [str appendString:[NSString spacesIndentedToLevel:level spacesPerLevel:4]];
-        [str appendString:[[members objectAtIndex:index] formattedString:nil expand:shouldExpand autoExpand:shouldAutoExpand level:level]];
+        [str appendString:[[members objectAtIndex:index] formattedString:nil formatter:typeFormatter level:level]];
         [str appendString:@";\n"];
     }
 

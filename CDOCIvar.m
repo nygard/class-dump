@@ -55,7 +55,7 @@
 {
     NSString *formattedString;
 
-    formattedString = [[CDTypeFormatter sharedTypeFormatter] formatVariable:name type:type atLevel:1];
+    formattedString = [[CDTypeFormatter sharedIvarTypeFormatter] formatVariable:name type:type atLevel:1];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
