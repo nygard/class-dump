@@ -1,5 +1,5 @@
 //
-// $Id: CDTypeParser.m,v 1.17 2004/01/06 02:05:23 nygard Exp $
+// $Id: CDTypeParser.m,v 1.18 2004/01/06 02:05:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for exmaing the
@@ -16,7 +16,7 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-RCS_ID("$Header");
+RCS_ID("$Header:");
 
 //----------------------------------------------------------------------
 
