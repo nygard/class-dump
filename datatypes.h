@@ -1,5 +1,5 @@
 //
-// $Id: datatypes.h,v 1.3 2000/10/15 01:22:18 nygard Exp $
+// $Id: datatypes.h,v 1.4 2002/12/19 07:14:57 nygard Exp $
 //
 
 //
@@ -52,35 +52,35 @@ struct method_type
 };
 
 // These are from gram.y:
-extern void format_type (const char *type, const char *name, int level);
-extern void format_method (char method_type, const char *name, const char *types);
+extern void format_type(const char *type, const char *name, int level);
+extern void format_method(char method_type, const char *name, const char *types);
 
 //======================================================================
 
-struct my_objc_type *create_empty_type (void);
-struct my_objc_type *create_simple_type (int type);
-struct my_objc_type *create_id_type (char *name);
-struct my_objc_type *create_struct_type (char *name, struct my_objc_type *members);
-struct my_objc_type *create_union_type (struct my_objc_type *members, char *type_name);
-struct my_objc_type *create_bitfield_type (char *size);
-struct my_objc_type *create_array_type (char *count, struct my_objc_type *type);
-struct my_objc_type *create_pointer_type (struct my_objc_type *type);
-struct my_objc_type *create_modified_type (int modifier, struct my_objc_type *type);
+struct my_objc_type *create_empty_type(void);
+struct my_objc_type *create_simple_type(int type);
+struct my_objc_type *create_id_type(char *name);
+struct my_objc_type *create_struct_type(char *name, struct my_objc_type *members);
+struct my_objc_type *create_union_type(struct my_objc_type *members, char *type_name);
+struct my_objc_type *create_bitfield_type(char *size);
+struct my_objc_type *create_array_type(char *count, struct my_objc_type *type);
+struct my_objc_type *create_pointer_type(struct my_objc_type *type);
+struct my_objc_type *create_modified_type(int modifier, struct my_objc_type *type);
 
-struct method_type *create_method_type (struct my_objc_type *t, char *name);
+struct method_type *create_method_type(struct my_objc_type *t, char *name);
 
-struct my_objc_type *reverse_types (struct my_objc_type *t);
-struct method_type *reverse_method_types (struct method_type *m);
+struct my_objc_type *reverse_types(struct my_objc_type *t);
+struct method_type *reverse_method_types(struct method_type *m);
 
-void indent_to_level (int level);
+void indent_to_level(int level);
 
-void print_type (struct my_objc_type *t, int expand, int level);
-void print_method (char method_type, const char *method_name, struct method_type *m);
+void print_type(struct my_objc_type *t, int expand, int level);
+void print_method(char method_type, const char *method_name, struct method_type *m);
 
-void free_objc_type (struct my_objc_type *t);
-void free_method_type (struct method_type *m);
+void free_objc_type(struct my_objc_type *t);
+void free_method_type(struct method_type *m);
 
-void free_allocated_types (void);
-void free_allocated_methods (void);
+void free_allocated_types(void);
+void free_allocated_methods(void);
 
 #endif
