@@ -1,0 +1,7 @@
+typedef struct {
+    int field1;
+    int field2;
+} CDAnonymousStruct1;
+
+    CDAnonymousStruct1 var;
+    CDAnonymousStruct1 var;

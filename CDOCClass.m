@@ -12,7 +12,7 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.23 2004/01/12 19:07:37 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.24 2004/01/15 03:04:52 nygard Exp $");
 
 @implementation CDOCClass
 
@@ -100,12 +100,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.23 2004/01/1
     [resultString appendString:@"@end\n\n"];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
 {
     int count, index;
     CDTypeParser *parser;
 
-    [super registerStructuresWithObject:anObject];
+    [super registerStructuresWithObject:anObject phase:phase];
 
     count = [ivars count];
     for (index = 0; index < count; index++) {
@@ -113,7 +113,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCClass.m,v 1.23 2004/01/1
 
         parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
         structType = [parser parseType];
-        [structType registerStructuresWithObject:anObject usedInMethod:NO];
+        [structType phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
         [parser release];
     }
 }

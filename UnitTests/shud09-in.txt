@@ -1,0 +1,2 @@
+{?="type"i"value"(?="charValue"c"shortValue"s"longValue"l"longlongValue"q"floatValue"f"doubleValue"d"boolValue"B"selectorValue":"objectValue"@"pointerValue"^v"structLocation"^v"cStringLocation"*)}
+{?=i(?=cslqfdB:@^v^v*)}

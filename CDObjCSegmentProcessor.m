@@ -19,7 +19,7 @@
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.11 2004/01/10 21:54:59 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1.12 2004/01/15 03:04:53 nygard Exp $");
 
 @implementation CDObjCSegmentProcessor
 
@@ -96,21 +96,14 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
     [allClasses release];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
 {
     int count, index;
     NSArray *protocolNames;
 
     count = [modules count];
-    for (index = 0; index < count; index++) {
-        NSArray *moduleClasses, *moduleCategories;
-
-        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
-        [moduleClasses makeObjectsPerformSelector:_cmd withObject:anObject];
-
-        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
-        [moduleCategories makeObjectsPerformSelector:_cmd withObject:anObject];
-    }
+    for (index = 0; index < count; index++)
+        [[modules objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
 
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [protocolNames count];
@@ -118,7 +111,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDObjCSegmentProcessor.m,v 1
         CDOCProtocol *aProtocol;
 
         aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol registerStructuresWithObject:anObject];
+        [aProtocol registerStructuresWithObject:anObject phase:phase];
     }
 }
 

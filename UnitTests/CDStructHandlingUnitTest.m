@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.m,v 1.9 2004/01/12 19:34:09 nygard Exp $
+// $Id: CDStructHandlingUnitTest.m,v 1.10 2004/01/15 03:04:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -42,14 +42,14 @@
     [self assert:result equals:expectedResult];
 }
 
-- (void)registerStructsFromType:(NSString *)aTypeString;
+- (void)registerStructsFromType:(NSString *)aTypeString phase:(int)phase;
 {
     CDTypeParser *parser;
     CDType *type;
 
     parser = [[CDTypeParser alloc] initWithType:aTypeString];
     type = [parser parseType];
-    [type registerStructuresWithObject:classDump usedInMethod:NO];
+    [type phase:phase registerStructuresWithObject:classDump usedInMethod:NO];
     [parser release];
 }
 
@@ -60,7 +60,10 @@
     NSMutableString *resultString;
     NSString *inputContents, *expectedOutputContents;
     NSArray *inputLines, *inputFields;
+    int phase;
     int count, index;
+
+    NSLog(@"***** %@", testFilename);
 
     resultString = [NSMutableString string];
 
@@ -74,15 +77,23 @@
     count = [inputLines count];
 
     // First register structs/unions
-    for (index = 0; index < count; index++) {
-        NSString *line;
-        line = [inputLines objectAtIndex:index];
-        inputFields = [line componentsSeparatedByString:@"\t"];
-        if ([line length] > 0)
-            [self registerStructsFromType:[inputFields objectAtIndex:0]];
+    for (phase = 1; phase <= 2; phase++) {
+        NSLog(@"Phase %d ========================================", phase);
+
+        for (index = 0; index < count; index++) {
+            NSString *line;
+            line = [inputLines objectAtIndex:index];
+            inputFields = [line componentsSeparatedByString:@"\t"];
+            if ([line length] > 0)
+                [self registerStructsFromType:[inputFields objectAtIndex:0] phase:phase];
+        }
+
+        [classDump endPhase:phase];
     }
 
-    [classDump finishRegistration];
+    //[classDump registerPhase:1];
+    //[classDump registerPhase:2];
+    //[classDump finishRegistration];
 
     // Then generate output
     [classDump appendStructuresToString:resultString];
@@ -122,27 +133,34 @@
     [self assert:resultString equals:expectedOutputContents message:testFilename];
 }
 
-- (void)testOne;
+#if 1
+- (void)test1;
 {
     NSString *first = @"{_NSRange=II}";
+    int phase;
 
     [self assertNotNil:classDump message:@"classDump"];
     [self assertNotNil:[classDump ivarTypeFormatter] message:@"[classDump ivarTypeFormatter]"];
 
-    [self registerStructsFromType:first];
+    for (phase = 1; phase <= 2; phase++)
+        [self registerStructsFromType:first phase:phase];
     [self testVariableName:@"foo" type:first expectedResult:@"    struct _NSRange foo"];
 
     // Register {_NSRange=II}
     // Test {_NSRange=II}
 }
 
-- (void)testTwo;
+- (void)test2;
 {
     NSString *first = @"{_NSRange=II}";
     NSString *second = @"{_NSRange=\"location\"I\"length\"I}";
+    int phase;
 
-    [self registerStructsFromType:first];
-    [self registerStructsFromType:second];
+    for (phase = 1; phase <= 2; phase++) {
+        [self registerStructsFromType:first phase:phase];
+        [self registerStructsFromType:second phase:phase];
+    }
+
     [self testVariableName:@"foo" type:first expectedResult:@"    struct _NSRange foo"];
     [self testVariableName:@"bar" type:second expectedResult:@"    struct _NSRange bar"];
 
@@ -152,13 +170,17 @@
     // Test {_NSRange="location"I"length"I}
 }
 
-- (void)testThree;
+- (void)test3;
 {
     NSString *first = @"{_NSRange=\"location\"I\"length\"I}";
     NSString *second = @"{_NSRange=II}";
+    int phase;
 
-    [self registerStructsFromType:first];
-    [self registerStructsFromType:second];
+    for (phase = 1; phase <= 2; phase++) {
+        [self registerStructsFromType:first phase:phase];
+        [self registerStructsFromType:second phase:phase];
+    }
+
     [self testVariableName:@"foo" type:first expectedResult:@"    struct _NSRange foo"];
     [self testVariableName:@"bar" type:second expectedResult:@"    struct _NSRange bar"];
 
@@ -168,44 +190,60 @@
     // Test {_NSRange=II}
 }
 
-- (void)testFour;
+- (void)test4;
 {
     [self testFilename:@"shud01"];
 }
 
-- (void)testFive;
+- (void)test5;
 {
     [self testFilename:@"shud02"];
 }
 
-- (void)testSix;
+- (void)test6;
 {
     [self testFilename:@"shud03"];
 }
 
-- (void)testSeven;
+- (void)test7;
 {
     [self testFilename:@"shud04"];
 }
 
-- (void)testEight;
+- (void)test8;
 {
     [self testFilename:@"shud05"];
 }
 
-- (void)testNine;
+- (void)test9;
 {
     [self testFilename:@"shud06"];
 }
 
-- (void)testTen;
+- (void)test10;
 {
     [self testFilename:@"shud07"];
 }
 
-- (void)testEleven;
+- (void)test11;
 {
     [self testFilename:@"shud08"];
 }
+
+- (void)test12;
+{
+    [self testFilename:@"shud09"];
+}
+
+- (void)test13;
+{
+    [self testFilename:@"shud10"];
+}
+
+- (void)test14;
+{
+    [self testFilename:@"shud11"];
+}
+#endif
 
 @end

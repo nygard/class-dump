@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 19:07:37 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.25 2004/01/15 03:04:53 nygard Exp $");
 
 @implementation CDType
 
@@ -423,15 +423,21 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 1
 
 - (NSString *)typeString;
 {
-    return [self _typeStringWithVariableNames:YES];
+    return [self _typeStringWithVariableNamesToLevel:1e6];
 }
 
 - (NSString *)bareTypeString;
 {
-    return [self _typeStringWithVariableNames:NO];
+    return [self _typeStringWithVariableNamesToLevel:0];
 }
 
-- (NSString *)_typeStringWithVariableNames:(BOOL)shouldUseVariableNames;
+- (NSString *)keyTypeString;
+{
+    //use variable names at top level
+    return [self _typeStringWithVariableNamesToLevel:1];
+}
+
+- (NSString *)_typeStringWithVariableNamesToLevel:(int)level;
 {
     NSString *result;
 
@@ -450,34 +456,34 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 1
           break;
 
       case '[':
-          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNames:shouldUseVariableNames]];
+          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level]];
           break;
 
       case '(':
           if (typeName == nil) {
-              return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
+              return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNamesToLevel:level]];
           } else if ([members count] == 0) {
               return [NSString stringWithFormat:@"(%@)", typeName];
           } else {
-              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
+              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level]];
           }
           break;
 
       case '{':
           if (typeName == nil) {
-              return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
+              return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNamesToLevel:level]];
           } else if ([members count] == 0) {
               return [NSString stringWithFormat:@"{%@}", typeName];
           } else {
-              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNames:shouldUseVariableNames]];
+              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level]];
           }
           break;
 
       case '^':
           if ([subtype type] == T_NAMED_OBJECT)
-              result = [subtype _typeStringWithVariableNames:shouldUseVariableNames];
+              result = [subtype _typeStringWithVariableNamesToLevel:level];
           else
-              result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNames:shouldUseVariableNames]];
+              result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level]];
           break;
 
       case 'r':
@@ -487,7 +493,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 1
       case 'O':
       case 'R':
       case 'V':
-          result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNames:shouldUseVariableNames]];
+          result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNamesToLevel:level]];
           break;
 
       default:
@@ -498,7 +504,7 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 1
     return result;
 }
 
-- (NSString *)_typeStringForMembersWithVariableNames:(BOOL)shouldUseVariableNames;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(int)level;
 {
     NSMutableString *str;
     int count, index;
@@ -510,40 +516,95 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.24 2004/01/12 1
     for (index = 0; index < count; index++) {
         CDType *aMember;
         aMember = [members objectAtIndex:index];
-        if ([aMember variableName] != nil && shouldUseVariableNames == YES)
+        if ([aMember variableName] != nil && level > 0)
             [str appendFormat:@"\"%@\"", [aMember variableName]];
-        [str appendString:[aMember _typeStringWithVariableNames:shouldUseVariableNames]];
+        [str appendString:[aMember _typeStringWithVariableNamesToLevel:level - 1]];
     }
 
     return str;
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
-    if (subtype != nil)
-        [subtype registerStructuresWithObject:anObject usedInMethod:isUsedInMethod];
-
-    if ((type == '{' || type == '(') && [members count] > 0) {
-        [anObject registerStructure:self name:typeName usedInMethod:isUsedInMethod];
-    }
+    NSLog(@"%s", _cmd);
+    if (phase == 1)
+        [self phase1RegisterStructuresWithObject:anObject];
+    else if (phase == 2)
+        [self phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:YES];
 }
 
-- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase1RegisterStructuresWithObject:(id <CDStructRegistration>)anObject;
 {
     int count, index;
 
     if (subtype != nil)
-        [subtype registerMemberStructuresWithObject:anObject usedInMethod:isUsedInMethod];
+        [subtype phase1RegisterStructuresWithObject:anObject];
+
+    count = [members count];
+    if ((type == '{' || type == '(') && count > 0) {
+        [anObject phase1RegisterStructure:self];
+        for (index = 0; index < count; index++) {
+            [[members objectAtIndex:index] phase1RegisterStructuresWithObject:anObject];
+        }
+    }
+}
+
+- (void)phase2RegisterStructuresWithObject:(id <CDStructRegistration>)anObject
+                              usedInMethod:(BOOL)isUsedInMethod
+                           countReferences:(BOOL)shouldCountReferences;
+{
+    if (subtype != nil)
+        [subtype phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+
+    if (type == '{' || type == '(') {
+        int count, index;
+        BOOL newFlag;
+
+        newFlag = [anObject phase2RegisterStructure:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        if (shouldCountReferences == NO)
+            newFlag = NO;
+
+        count = [members count];
+        for (index = 0; index < count; index++) {
+            [[members objectAtIndex:index] phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:newFlag];
+        }
+    }
+}
+
+#if 0
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+{
+    if (subtype != nil)
+        [subtype registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+
+    if ((type == '{' || type == '(') && [members count] > 0) {
+        [anObject registerStructure:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    }
+}
+
+- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
+                           countReferences:(BOOL)shouldCountReferences;
+{
+    int count, index;
+
+    if (subtype != nil)
+        [subtype registerMemberStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
     count = [members count];
 
     for (index = 0; index < count; index++)
-        [[members objectAtIndex:index] registerStructuresWithObject:anObject usedInMethod:isUsedInMethod];
+        [[members objectAtIndex:index] registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 }
+#endif
 
 - (BOOL)isEqual:(CDType *)otherType;
 {
     return [[self typeString] isEqual:[otherType typeString]];
+}
+
+- (BOOL)isBasicallyEqual:(CDType *)otherType;
+{
+    return [[self keyTypeString] isEqual:[otherType keyTypeString]];
 }
 
 - (BOOL)isStructureEqual:(CDType *)otherType;

@@ -1,0 +1,20 @@
+typedef struct {
+    int type;
+    union {
+        char charValue;
+        short shortValue;
+        long longValue;
+        long long longlongValue;
+        float floatValue;
+        double doubleValue;
+        _Bool boolValue;
+        SEL selectorValue;
+        id objectValue;
+        void *pointerValue;
+        void *structLocation;
+        char *cStringLocation;
+    } value;
+} CDAnonymousStruct1;
+
+    CDAnonymousStruct1 var;
+    CDAnonymousStruct1 var;

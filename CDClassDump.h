@@ -1,5 +1,5 @@
 //
-// $Id: CDClassDump.h,v 1.31 2004/01/12 19:34:09 nygard Exp $
+// $Id: CDClassDump.h,v 1.32 2004/01/15 03:04:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -44,7 +44,9 @@
 - (void)processFilename:(NSString *)aFilename;
 
 - (void)doSomething;
-- (void)finishRegistration;
+- (void)logInfo;
+//- (void)midRegistration;
+//- (void)finishRegistration;
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
@@ -55,6 +57,11 @@
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
-- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod;
+
+- (void)registerPhase:(int)phase;
+- (void)endPhase:(int)phase;
+
+- (void)phase1RegisterStructure:(CDType *)aStructure;
+- (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 @end

@@ -11,7 +11,7 @@
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.15 2004/01/10 21:54:59 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.16 2004/01/15 03:04:53 nygard Exp $");
 
 @implementation CDOCProtocol
 
@@ -146,26 +146,34 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCProtocol.m,v 1.15 2004/0
     [resultString appendString:@"@end\n\n"];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+{
+    [self registerStructuresFromMethods:classMethods withObject:anObject phase:phase];
+    [self registerStructuresFromMethods:instanceMethods withObject:anObject phase:phase];
+}
+
+- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructRegistration>)anObject phase:(int)phase;
 {
     int count, index;
     CDTypeParser *parser;
     NSArray *methodTypes;
 
-    count = [classMethods count];
+    count = [methods count];
     for (index = 0; index < count; index++) {
-        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[classMethods objectAtIndex:index] type]];
+        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[methods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
         [methodTypes makeObjectsPerformSelector:_cmd withObject:anObject];
         [parser release];
     }
+}
 
-    count = [instanceMethods count];
+- (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructRegistration>)anObject phase:(int)phase;
+{
+    int count, index;
+
+    count = [methodTypes count];
     for (index = 0; index < count; index++) {
-        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[instanceMethods objectAtIndex:index] type]];
-        methodTypes = [parser parseMethodType];
-        [methodTypes  makeObjectsPerformSelector:_cmd withObject:anObject];
-        [parser release];
+        [[methodTypes objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
     }
 }
 

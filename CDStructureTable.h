@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.5 2004/01/12 19:07:37 nygard Exp $
+// $Id: CDStructureTable.h,v 1.6 2004/01/15 03:04:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -15,16 +15,23 @@
 
 @interface CDStructureTable : NSObject
 {
+    NSString *name;
+
     NSMutableDictionary *structuresByName;
 
     NSMutableDictionary *anonymousStructureCountsByType;
     NSMutableDictionary *anonymousStructuresByType;
     NSMutableDictionary *anonymousStructureNamesByType;
 
-    NSMutableDictionary *replacementTypes;
+    //NSMutableDictionary *replacementTypes;
     NSMutableSet *forcedTypedefs;
 
     NSString *anonymousBaseName;
+
+    // New
+    NSMutableSet *structureSignatures; // generated during phase 1
+    NSMutableArray *structureTypes; // generated during phase 1
+    NSMutableDictionary *replacementSignatures; // generated at end of phase 1
 
     struct {
         unsigned int shouldDebug:1;
@@ -34,22 +41,24 @@
 - (id)init;
 - (void)dealloc;
 
+- (NSString *)name;
+- (void)setName:(NSString *)newName;
+
 - (NSString *)anonymousBaseName;
 - (void)setAnonymousBaseName:(NSString *)newName;
 
 - (BOOL)shouldDebug;
 - (void)setShouldDebug:(BOOL)newFlag;
 
-- (void)doneRegistration;
+//- (void)midRegistrationWithObject:(id <CDStructRegistration>)anObject;
+//- (void)doneRegistration;
 
-- (void)logStructureCounts;
-- (void)logReplacementTypes;
-- (void)logNamedStructures;
-- (void)logAnonymousStructures;
-- (void)logForcedTypedefs;
+- (void)logPhase1Data;
+- (void)finishPhase1;
+- (void)logInfo;
 
-- (void)processIsomorphicStructures;
-- (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
+//- (void)processIsomorphicStructures:(id <CDStructRegistration>)anObject;
+//- (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
 
 - (void)generateNamesForAnonymousStructures;
 
@@ -60,7 +69,11 @@
 - (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
-- (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
-             usedInMethod:(BOOL)isUsedInMethod;
+//- (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
+//             usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+
+- (void)phase1RegisterStructure:(CDType *)aStructure;
+- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
+                countReferences:(BOOL)shouldCountReferences;
 
 @end

@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.42 2004/01/12 19:34:09 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.43 2004/01/15 03:04:52 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -30,10 +30,12 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.42 2004/01
 
     structureTable = [[CDStructureTable alloc] init];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
+    [structureTable setName:@"Structs"];
     [structureTable setShouldDebug:YES];
 
     unionTable = [[CDStructureTable alloc] init];
     [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
+    [unionTable setName:@"Unions"];
     [unionTable setShouldDebug:YES];
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
@@ -143,18 +145,16 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.42 2004/01
         NSMutableString *resultString;
         int count, index;
 
-        count = [objCSegmentProcessors count];
-        for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] registerStructuresWithObject:self];
-        }
-
-        [self finishRegistration];
+        [self registerPhase:1];
+        [self registerPhase:2];
+        //[self finishRegistration];
 
         resultString = [[NSMutableString alloc] init];
         [self appendHeaderToString:resultString];
 
         [self appendStructuresToString:resultString];
 
+        count = [objCSegmentProcessors count];
         for (index = 0; index < count; index++) {
             [[objCSegmentProcessors objectAtIndex:index] appendFormattedStringSortedByClass:resultString classDump:self];
         }
@@ -176,12 +176,25 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.42 2004/01
     }
 }
 
+- (void)logInfo;
+{
+    [structureTable logInfo];
+    [unionTable logInfo];
+}
+
+#if 0
+- (void)midRegistration;
+{
+    [structureTable midRegistrationWithObject:self];
+    [unionTable midRegistrationWithObject:self];
+}
+
 - (void)finishRegistration;
 {
     [structureTable doneRegistration];
     [unionTable doneRegistration];
 }
-
+#endif
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 {
     [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];
@@ -266,15 +279,59 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.42 2004/01
     return [targetTable typedefNameForStructureType:searchType];
 }
 
-- (void)registerStructure:(CDType *)aStructure name:(NSString *)aName usedInMethod:(BOOL)isUsedInMethod;
+- (void)registerPhase:(int)phase;
+{
+    int count, index;
+
+    NSLog(@"Phase %d ========================================", phase);
+
+    count = [objCSegmentProcessors count];
+    for (index = 0; index < count; index++) {
+        [[objCSegmentProcessors objectAtIndex:index] registerStructuresWithObject:self phase:phase];
+    }
+
+    [self endPhase:phase];
+}
+
+- (void)endPhase:(int)phase;
+{
+    if (phase == 1) {
+        [structureTable logPhase1Data];
+        [unionTable logPhase1Data];
+
+        [structureTable finishPhase1];
+        [unionTable finishPhase1];
+    } else if (phase == 2) {
+        [structureTable logInfo];
+        [unionTable logInfo];
+
+        [structureTable generateNamesForAnonymousStructures];
+        [unionTable generateNamesForAnonymousStructures];
+    }
+}
+
+- (void)phase1RegisterStructure:(CDType *)aStructure;
 {
     if ([aStructure type] == '{') {
-        [structureTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod];
+        [structureTable phase1RegisterStructure:aStructure];
     } else if ([aStructure type] == '(') {
-        [unionTable registerStructure:aStructure name:aName withObject:self usedInMethod:isUsedInMethod];
+        [unionTable phase1RegisterStructure:aStructure];
     } else {
         NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
     }
+}
+
+- (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+{
+    if ([aStructure type] == '{') {
+        return [structureTable phase2RegisterStructure:aStructure withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    } else if ([aStructure type] == '(') {
+        return [unionTable phase2RegisterStructure:aStructure withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+    } else {
+        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
+    }
+
+    return NO;
 }
 
 @end

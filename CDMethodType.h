@@ -1,5 +1,5 @@
 //
-// $Id: CDMethodType.h,v 1.6 2004/01/10 21:54:59 nygard Exp $
+// $Id: CDMethodType.h,v 1.7 2004/01/15 03:04:52 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -27,6 +27,6 @@
 
 - (NSString *)description;
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject;
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject phase:(int)phase;
 
 @end

@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.15 2004/01/12 19:07:37 nygard Exp $
+// $Id: CDType.h,v 1.16 2004/01/15 03:04:53 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -56,13 +56,24 @@
 
 - (NSString *)typeString;
 - (NSString *)bareTypeString;
-- (NSString *)_typeStringWithVariableNames:(BOOL)shouldUseVariableNames;
-- (NSString *)_typeStringForMembersWithVariableNames:(BOOL)shouldUseVariableNames;
+- (NSString *)keyTypeString;
+- (NSString *)_typeStringWithVariableNamesToLevel:(int)level;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(int)level;
 
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
-- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase1RegisterStructuresWithObject:(id <CDStructRegistration>)anObject;
+- (void)phase2RegisterStructuresWithObject:(id <CDStructRegistration>)anObject
+                              usedInMethod:(BOOL)isUsedInMethod
+                           countReferences:(BOOL)shouldCountReferences;
+
+#if 0
+- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
+                           countReferences:(BOOL)shouldCountReferences;
+#endif
 
 - (BOOL)isEqual:(CDType *)otherType;
+- (BOOL)isBasicallyEqual:(CDType *)otherType;
 - (BOOL)isStructureEqual:(CDType *)otherType;
 
 - (void)mergeWithType:(CDType *)otherType;

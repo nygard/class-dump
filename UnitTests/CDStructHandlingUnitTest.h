@@ -1,5 +1,5 @@
 //
-// $Id: CDStructHandlingUnitTest.h,v 1.7 2004/01/08 00:43:09 nygard Exp $
+// $Id: CDStructHandlingUnitTest.h,v 1.8 2004/01/15 03:04:54 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -21,22 +21,22 @@
 - (void)tearDown;
 
 - (void)testVariableName:(NSString *)aVariableName type:(NSString *)aType expectedResult:(NSString *)expectedResult;
-- (void)registerStructsFromType:(NSString *)aTypeString;
+- (void)registerStructsFromType:(NSString *)aTypeString phase:(int)phase;
 
 - (void)testFilename:(NSString *)testFilename;
 
-- (void)testOne;
-- (void)testTwo;
-- (void)testThree;
 #if 0
-- (void)testFour;
-- (void)testFive;
-- (void)testSix;
-- (void)testSeven;
-- (void)testEight;
-- (void)testNine;
-- (void)testTen;
-- (void)testEleven;
+- (void)test1;
+- (void)test2;
+- (void)test3;
+- (void)test4;
+- (void)test5;
+- (void)test6;
+- (void)test7;
+- (void)test8;
+- (void)test9;
+- (void)test10;
+- (void)test11;
 #endif
 
 @end

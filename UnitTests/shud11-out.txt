@@ -1,0 +1,12 @@
+    struct {
+        int field1;
+        int field2;
+    } var;
+    struct {
+        int;
+        int;
+    } var;
+    struct {
+        int bar1;
+        int bar2;
+    } var;
