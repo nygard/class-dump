@@ -103,7 +103,7 @@
 
      count = [ivars count];
      for (index = 0; index < count; index++) {
-         CDType *structType;
+         CDType *structType; // TODO (2004-01-05): This could be any type, not just a struct type
 
          parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
          structType = [parser parseType];

@@ -3,9 +3,14 @@
 
 #import <ObjcUnit/TestCase.h>
 
+@class CDTypeFormatter;
+
 @interface CDTypeFormatterUnitTest : TestCase
 {
+    CDTypeFormatter *typeFormatter;
 }
+
+- (void)dealloc;
 
 - (void)setUp;
 - (void)tearDown;

@@ -2,6 +2,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "CDOCMethod.h"
 #import "CDOCSymtab.h"
 #import "CDTypeParser.h"
 
@@ -146,7 +147,7 @@
 
     count = [classMethods count];
     for (index = 0; index < count; index++) {
-        parser = [[CDTypeParser alloc] initWithType:[[classMethods objectAtIndex:index] type]];
+        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[classMethods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
         [[methodTypes arrayByMappingSelector:@selector(type)] makeObjectsPerformSelector:_cmd withObject:anObject];
         [parser release];
@@ -154,7 +155,7 @@
 
     count = [instanceMethods count];
     for (index = 0; index < count; index++) {
-        parser = [[CDTypeParser alloc] initWithType:[[instanceMethods objectAtIndex:index] type]];
+        parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[instanceMethods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType];
         [[methodTypes arrayByMappingSelector:@selector(type)] makeObjectsPerformSelector:_cmd withObject:anObject];
         [parser release];

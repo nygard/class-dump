@@ -120,11 +120,6 @@
     //NSLog(@"machOFiles in order: %@", [[machOFiles arrayByMappingSelector:@selector(filename)] description]);
     NSLog(@"objCSegmentProcessors in order: %@", [objCSegmentProcessors description]);
 
-    //[[CDTypeFormatter sharedTypeFormatter] setDelegate:self];
-    //[[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:self];
-    //[[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:self];
-    //[[CDTypeFormatter sharedStructDeclarationTypeFormatter] setDelegate:self];
-
     {
         NSMutableString *resultString;
         int count, index;
@@ -246,11 +241,6 @@
 #endif
         [resultString release];
     }
-
-    //[[CDTypeFormatter sharedTypeFormatter] setDelegate:nil];
-    //[[CDTypeFormatter sharedIvarTypeFormatter] setDelegate:nil];
-    //[[CDTypeFormatter sharedMethodTypeFormatter] setDelegate:nil];
-    //[[CDTypeFormatter sharedStructDeclarationTypeFormatter] setDelegate:nil];
 }
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
