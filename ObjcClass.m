@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.m,v 1.16 2003/09/07 00:50:41 nygard Exp $
+// $Id: ObjcClass.m,v 1.17 2003/09/09 00:28:21 nygard Exp $
 //
 
 //
@@ -150,6 +150,48 @@ extern void print_header(void);
     [protocolNames addObjectsFromArray:newProtocolNames];
 }
 
+- (void)generateImports;
+{
+    NSMutableSet *imports = [NSMutableSet setWithCapacity:5];
+    ObjcIvar *ivar;
+    NSString *import;
+    NSEnumerator *enumerator;
+    NSString *protocolName;
+
+    // Add superclass import is necessary.
+    if (superClassName != NULL && [superClassName hasPrefix:@"NS"] == NO)
+        [imports addObject:superClassName];
+
+    // Add protocol imports.
+    enumerator = [protocolNames objectEnumerator];
+    while (protocolName = [enumerator nextObject]) {
+        if( [protocolName hasPrefix:@"NS"] == NO)
+            [imports addObject:protocolName];
+    }
+
+    // Add ivar type imports.
+    enumerator = [ivars objectEnumerator];
+    while (ivar = [enumerator nextObject]) {
+        NSString *type = [ivar type];
+
+        if ([type hasPrefix:@"@\""] && [type hasPrefix:@"@\"NS"] == NO)
+            [imports addObject:[type substringWithRange:NSMakeRange(2, [type length]-3)]];
+        /*if( ![type hasPrefix:@"NS"]
+          && ([type compare:[type lowercaseString] options:NSLiteralSearch] != NSOrderedSame)) {
+          [imports addObject:type];
+          }*/
+    }
+        
+    // Print out the imports.
+    print_header();
+    printf("\n");
+    enumerator = [imports objectEnumerator];
+    while (import = [enumerator nextObject]) {
+        printf("#import \"%s.h\"\n", [import cString]);
+    }
+    printf("\n");
+}
+
 - (void)showDefinition:(int)flags;
 {
     NSEnumerator *enumerator;
@@ -157,48 +199,8 @@ extern void print_header(void);
     ObjcMethod *method;
     NSString *protocolName;
 
-#if 1
-    //begin wolf
-    if (flags & F_SHOW_IMPORT) {
-        NSMutableSet *imports = [NSMutableSet setWithCapacity:5];
-        ObjcIvar *ivar;
-        NSString *import;
-
-        // Add superclass import is necessary.
-        if (superClassName != NULL && [superClassName hasPrefix:@"NS"] == NO)
-            [imports addObject:superClassName];
-
-        // Add protocol imports.
-        enumerator = [protocolNames objectEnumerator];
-        while (protocolName = [enumerator nextObject]) {
-            if( [protocolName hasPrefix:@"NS"] == NO)
-                [imports addObject:protocolName];
-        }
-
-        // Add ivar type imports.
-        enumerator = [ivars objectEnumerator];
-        while (ivar = [enumerator nextObject]) {
-            NSString *type = [ivar type];
-
-            if ([type hasPrefix:@"@\""] && [type hasPrefix:@"@\"NS"] == NO)
-                [imports addObject:[type substringWithRange:NSMakeRange(2, [type length]-3)]];
-            /*if( ![type hasPrefix:@"NS"]
-              && ([type compare:[type lowercaseString] options:NSLiteralSearch] != NSOrderedSame)) {
-              [imports addObject:type];
-              }*/
-        }
-        
-        // Print out the imports.
-        print_header();
-        printf("\n");
-        enumerator = [imports objectEnumerator];
-        while (import = [enumerator nextObject]) {
-            printf("#import \"%s.h\"\n", [import cString]);
-        }
-        printf("\n");
-    }
-    //end wolf
-#endif
+    if (flags & F_SHOW_IMPORT)
+        [self generateImports];
 
     printf("@interface %s", [className cString]);
     if (superClassName != nil)
@@ -210,7 +212,7 @@ extern void print_header(void);
         protocolName = [enumerator nextObject];
         if (protocolName != nil) {
             printf("%s", [protocolName cString]);
-            
+
             while (protocolName = [enumerator nextObject])
                 printf(", %s", [protocolName cString]);
         }

@@ -1,5 +1,5 @@
 //
-// $Id: ObjcClass.h,v 1.12 2003/09/05 20:30:25 nygard Exp $
+// $Id: ObjcClass.h,v 1.13 2003/09/09 00:28:21 nygard Exp $
 //
 
 //
@@ -57,6 +57,7 @@
 - (void)addInstanceMethods:(NSArray *)newInstanceMethods;
 - (void)addProtocolNames:(NSArray *)newProtocolNames;
 
+- (void)generateImports;
 - (void)showDefinition:(int)flags;
 
 @end
