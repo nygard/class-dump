@@ -1,5 +1,5 @@
 //
-// $Id: CDType.h,v 1.16 2004/01/15 03:04:53 nygard Exp $
+// $Id: CDType.h,v 1.17 2004/01/15 23:30:40 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -65,12 +65,6 @@
 - (void)phase2RegisterStructuresWithObject:(id <CDStructRegistration>)anObject
                               usedInMethod:(BOOL)isUsedInMethod
                            countReferences:(BOOL)shouldCountReferences;
-
-#if 0
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
-                           countReferences:(BOOL)shouldCountReferences;
-#endif
 
 - (BOOL)isEqual:(CDType *)otherType;
 - (BOOL)isBasicallyEqual:(CDType *)otherType;

@@ -10,7 +10,7 @@
 #import "CDOCMethod.h"
 #import "NSArray-Extensions.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.6 2004/01/06 02:31:41 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.7 2004/01/15 23:30:40 nygard Exp $");
 
 @implementation CDOCCategory
 
@@ -67,10 +67,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDOCCategory.m,v 1.6 2004/01
         }
     }
 
-#if 0
-    if ([classMethods count] > 0 || [instanceMethods count] > 0)
-        [resultString appendString:@"\n"];
-#endif
     [resultString appendString:@"@end\n\n"];
 }
 

@@ -10,7 +10,7 @@
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.29 2004/01/15 05:53:30 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.30 2004/01/15 23:30:40 nygard Exp $");
 
 @implementation CDType
 
@@ -569,32 +569,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDType.m,v 1.29 2004/01/15 0
         }
     }
 }
-
-#if 0
-- (void)registerStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-{
-    if (subtype != nil)
-        [subtype registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-
-    if ((type == '{' || type == '(') && [members count] > 0) {
-        [anObject registerStructure:self name:typeName usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    }
-}
-
-- (void)registerMemberStructuresWithObject:(id <CDStructRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
-                           countReferences:(BOOL)shouldCountReferences;
-{
-    int count, index;
-
-    if (subtype != nil)
-        [subtype registerMemberStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-
-    count = [members count];
-
-    for (index = 0; index < count; index++)
-        [[members objectAtIndex:index] registerStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-}
-#endif
 
 - (BOOL)isEqual:(CDType *)otherType;
 {

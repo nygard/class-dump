@@ -15,7 +15,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.43 2004/01/15 03:04:52 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.44 2004/01/15 23:30:40 nygard Exp $");
 
 @implementation CDClassDump2
 
@@ -182,19 +182,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDClassDump.m,v 1.43 2004/01
     [unionTable logInfo];
 }
 
-#if 0
-- (void)midRegistration;
-{
-    [structureTable midRegistrationWithObject:self];
-    [unionTable midRegistrationWithObject:self];
-}
-
-- (void)finishRegistration;
-{
-    [structureTable doneRegistration];
-    [unionTable doneRegistration];
-}
-#endif
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 {
     [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter];

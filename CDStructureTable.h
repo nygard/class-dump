@@ -1,5 +1,5 @@
 //
-// $Id: CDStructureTable.h,v 1.7 2004/01/15 03:07:12 nygard Exp $
+// $Id: CDStructureTable.h,v 1.8 2004/01/15 23:30:40 nygard Exp $
 //
 
 //  This file is part of class-dump, a utility for examining the
@@ -16,19 +16,15 @@
 @interface CDStructureTable : NSObject
 {
     NSString *name;
+    NSString *anonymousBaseName;
 
     NSMutableDictionary *structuresByName;
-
     NSMutableDictionary *anonymousStructureCountsByType;
     NSMutableDictionary *anonymousStructuresByType;
     NSMutableDictionary *anonymousStructureNamesByType;
 
-    //NSMutableDictionary *replacementTypes;
     NSMutableSet *forcedTypedefs;
 
-    NSString *anonymousBaseName;
-
-    // New
     NSMutableSet *structureSignatures; // generated during phase 1
     NSMutableArray *structureTypes; // generated during phase 1
     NSMutableDictionary *replacementSignatures; // generated at end of phase 1
@@ -50,15 +46,9 @@
 - (BOOL)shouldDebug;
 - (void)setShouldDebug:(BOOL)newFlag;
 
-//- (void)midRegistrationWithObject:(id <CDStructRegistration>)anObject;
-//- (void)doneRegistration;
-
 - (void)logPhase1Data;
 - (void)finishPhase1;
 - (void)logInfo;
-
-//- (void)processIsomorphicStructures:(id <CDStructRegistration>)anObject;
-//- (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
 
 - (void)generateNamesForAnonymousStructures;
 

@@ -11,7 +11,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
-RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 2004/01/15 05:53:30 nygard Exp $");
+RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.10 2004/01/15 23:30:40 nygard Exp $");
 
 @implementation CDStructureTable
 
@@ -26,7 +26,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 200
     anonymousStructuresByType = [[NSMutableDictionary alloc] init];
     anonymousStructureNamesByType = [[NSMutableDictionary alloc] init];
 
-    //replacementTypes = [[NSMutableDictionary alloc] init];
     forcedTypedefs = [[NSMutableSet alloc] init];
 
     anonymousBaseName = nil;
@@ -45,7 +44,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 200
     [anonymousStructuresByType release];
     [anonymousStructureNamesByType release];
 
-    //[replacementTypes release];
     [forcedTypedefs release];
     [anonymousBaseName release];
     [structureSignatures release];
@@ -93,26 +91,17 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 200
     flags.shouldDebug = newFlag;
 }
 
-#if 0
-- (void)midRegistrationWithObject:(id <CDStructRegistration>)anObject;
-{
-    NSLog(@"[%p](%@)============================================================", self, name);
-    // Check for isomorphic structs, one of which may not have had named members
-    [self processIsomorphicStructures:anObject];
-}
-
-- (void)doneRegistration;
-{
-    NSLog(@"[%p](%@)============================================================", self, name);
-    //[self generateNamesForAnonymousStructures];
-    //[self logInfo];
-}
-#endif
 - (void)logPhase1Data;
 {
     NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
     NSLog(@"structureSignatures: %@", [structureSignatures description]);
 }
+
+// Some anonymous structs don't have member names, but others do.
+// Here we find the structs with member names and check to see if
+// there's an identical struct without names.  If there's only one
+// we'll make the one without names use the one with names.  If
+// there's more, though, we don't try to guess which it should be.
 
 - (void)finishPhase1;
 {
@@ -171,103 +160,10 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 200
         key = [keys objectAtIndex:index];
         NSLog(@"%d: %@ -> %@", index, key, [anonymousStructureCountsByType objectForKey:key]);
     }
-#if 0
-    keys = [[replacementTypes allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    count = [keys count];
-    NSLog(@"%d replacements:", count);
-    for (index = 0; index < count; index++) {
-        key = [keys objectAtIndex:index];
-        NSLog(@"%d: %@ => %@", index, key, [[replacementTypes objectForKey:key] typeString]);
-    }
-#endif
-    NSLog(@"[%p](%@) <  %s ----------------------------------------", self, name, _cmd);
-}
-
-#if 0
-// Some anonymous structs don't have member names, but others do.
-// Here we find the structs with member names and check to see if
-// there's an identical struct without names.  If there's only one
-// we'll make the one without names use the one with names.  If
-// there's more, though, we don't try to guess which it should be.
-
-- (void)processIsomorphicStructures:(id <CDStructRegistration>)anObject;
-{
-    NSMutableDictionary *anonymousRemapping;
-    NSMutableSet *duplicateMappings;
-    NSArray *keys;
-    int count, index;
-    NSString *key;
-
-    NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
-    anonymousRemapping = [[NSMutableDictionary alloc] init];
-    duplicateMappings = [NSMutableSet set];
-
-    keys = [[anonymousStructuresByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    count = [keys count];
-    NSLog(@"%s, count: %d", _cmd, count);
-    for (index = 0; index < count; index++) {
-        CDType *structType;
-        NSString *bareTypeString;
-
-        key = [keys objectAtIndex:index];
-        structType = [anonymousStructuresByType objectForKey:key];
-        bareTypeString = [structType bareTypeString];
-        if ([key isEqual:bareTypeString] == NO) {
-            if ([duplicateMappings containsObject:bareTypeString] == NO && [anonymousStructuresByType objectForKey:bareTypeString] != nil) {
-                NSString *existingValue;
-
-                existingValue = [anonymousRemapping objectForKey:bareTypeString];
-                if (existingValue == nil) {
-                    [anonymousRemapping setObject:key forKey:bareTypeString];
-                } else {
-                    [duplicateMappings addObject:bareTypeString];
-                    [anonymousRemapping removeObjectForKey:bareTypeString];
-                }
-            }
-        }
-    }
-
-    // Now we need to combine anything that gets remapped.
-    {
-        NSArray *mapKeys;
-        NSString *originalType, *replacementType;
-
-        mapKeys = [anonymousRemapping allKeys];
-        count = [mapKeys count];
-        for (index = 0; index < count; index++) {
-            int newCount;
-
-            originalType = [mapKeys objectAtIndex:index];
-            replacementType = [anonymousRemapping objectForKey:originalType];
-            newCount = [[anonymousStructureCountsByType objectForKey:originalType] intValue] + [[anonymousStructureCountsByType objectForKey:replacementType] intValue];
-
-            NSLog(@"Combining %@ with %@", originalType, replacementType);
-            [anonymousStructureCountsByType setObject:[NSNumber numberWithInt:newCount] forKey:replacementType];
-            [anonymousStructureCountsByType removeObjectForKey:originalType];
-            [anonymousStructuresByType removeObjectForKey:originalType];
-
-            [self replaceTypeString:originalType withTypeString:replacementType];
-        }
-    }
-
-    [anonymousRemapping release];
 
     NSLog(@"[%p](%@) <  %s ----------------------------------------", self, name, _cmd);
 }
 
-- (void)replaceTypeString:(NSString *)originalTypeString withTypeString:(NSString *)replacementTypeString;
-{
-    CDTypeParser *aTypeParser;
-    CDType *replacementType;
-
-    aTypeParser = [[CDTypeParser alloc] initWithType:replacementTypeString];
-    replacementType = [aTypeParser parseType];
-    if (replacementType != nil)
-        [replacementTypes setObject:replacementType forKey:originalTypeString];
-
-    [aTypeParser release];
-}
-#endif
 // Need to name anonymous structs if:
 //   - used more than once
 //   - OR used in a method
@@ -350,7 +246,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 200
 - (CDType *)replacementForType:(CDType *)aType;
 {
     return [anonymousStructuresByType objectForKey:[replacementSignatures objectForKey:[aType keyTypeString]]];
-    //return [replacementTypes objectForKey:[aType keyTypeString]];
 }
 
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
@@ -364,74 +259,6 @@ RCS_ID("$Header: /Volumes/Data/tmp/Tools/class-dump/CDStructureTable.m,v 1.9 200
 
     return result;
 }
-
-#if 0
-- (void)registerStructure:(CDType *)structType name:(NSString *)aName withObject:(id <CDStructRegistration>)anObject
-             usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-{
-    NSString *typeString;
-
-    typeString = [structType keyTypeString];
-
-    if (flags.shouldDebug == YES)
-        NSLog(@"[%p](%@) %s, typeString: %@, name: %@, object: %p, usedInMethod: %d, countReferences: %d",
-              self, name, _cmd, typeString, aName, anObject, isUsedInMethod, shouldCountReferences);
-
-    if (isUsedInMethod == YES)
-        [self forceTypedefForStructure:[structType keyTypeString]];
-
-    // Handle named structs
-    // We don't count them because they'll always be declared at the top.
-    if (aName != nil && [aName isEqual:@"?"] == NO) {
-        CDType *existingType;
-
-        existingType = [structuresByName objectForKey:aName];
-        if (existingType == nil) {
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:YES];
-            [structuresByName setObject:structType forKey:aName];
-        } else if ([structType isEqual:existingType] == NO) {
-            NSString *before;
-
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:NO];
-            before = [existingType keyTypeString];
-            [existingType mergeWithType:structType];
-            if ([before isEqual:[existingType keyTypeString]] == NO) {
-                NSLog(@"Merging %@ with %@", before, [structType keyTypeString]);
-                NSLog(@"Merged result: %@", [existingType keyTypeString]);
-            } else {
-                //NSLog(@"No change from merging types.");
-            }
-        }
-    }
-
-    // Handle anonymous structs
-    if (aName == nil || [aName isEqual:@"?"] == YES) {
-        CDType *previousType;
-
-        previousType = [anonymousStructuresByType objectForKey:typeString];
-        if (previousType == nil) {
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:YES];
-            [anonymousStructuresByType setObject:structType forKey:typeString];
-            [anonymousStructureCountsByType setObject:[NSNumber numberWithInt:1] forKey:typeString];
-        } else {
-            //NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
-
-            [structType registerMemberStructuresWithObject:anObject usedInMethod:NO countReferences:NO];
-
-            if (shouldCountReferences == YES) {
-                NSNumber *oldCount;
-
-                // Just count anonymous structs
-                oldCount = [anonymousStructureCountsByType objectForKey:typeString];
-                if (oldCount == nil)
-                    [anonymousStructureCountsByType setObject:[NSNumber numberWithInt:1] forKey:typeString];
-                else
-                    [anonymousStructureCountsByType setObject:[NSNumber numberWithInt:[oldCount intValue] + 1] forKey:typeString];
-            }
-        }
-    }
-}
-#endif
 
 // Out of phase one we want any mappings we need, and maybe to know which anonymous structs map ambiguously.
 - (void)phase1RegisterStructure:(CDType *)aStructure;
