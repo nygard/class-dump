@@ -1,7 +1,7 @@
 %{
 
 //
-// $Id: gram.y,v 1.2 1999/08/09 07:45:03 nygard Exp $
+// $Id: gram.y,v 1.3 2000/06/25 04:21:49 nygard Exp $
 //
 
 //
@@ -269,7 +269,7 @@ union_type:
 		{
 			$$ = create_union_type (reverse_types ($2), NULL);
 		}
-	| union_type_prefix identifier ')'
+	| union_type_prefix identifier optional_format ')'
 		{
 			$$ = create_union_type (NULL, $2);
 		}
@@ -348,6 +348,9 @@ void format_type (const char *type, const char *name, int level)
 	int parse_flag;
         extern int expand_structures_flag;
 
+#warning NEW FILE
+	//fprintf(stderr, "type: %s\t%s\n", type, name);
+
 	rtype = NULL;
 	yy_scan_string (type);
 	parse_flag = parse_ivar_type();
@@ -375,6 +378,8 @@ void format_type (const char *type, const char *name, int level)
 void format_method (char method_type, const char *name, const char *types)
 {
 	int parse_flag;
+
+	//fprintf(stderr, "method: %s\t%s\n", name, types);
 
 	if (name == NULL)
 	{
