@@ -346,7 +346,6 @@ static NSMutableSet *wrapperExtensions = nil;
     NS_DURING {
         [aMachOFile process];
     } NS_HANDLER {
-        NSLog(@"Caught exception in %s", _cmd);
         [aMachOFile release];
         return;
     } NS_ENDHANDLER;
