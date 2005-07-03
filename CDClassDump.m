@@ -341,7 +341,15 @@ static NSMutableSet *wrapperExtensions = nil;
 
     aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
     [aMachOFile setDelegate:self];
-    [aMachOFile process];
+
+    // TODO (2005-07-03): Look for the newer exception handling stuff.
+    NS_DURING {
+        [aMachOFile process];
+    } NS_HANDLER {
+        NSLog(@"Caught exception in %s", _cmd);
+        [aMachOFile release];
+        return;
+    } NS_ENDHANDLER;
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
     [aProcessor process];

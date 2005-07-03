@@ -65,6 +65,7 @@
             NSLog(@"Not a Mach-O file.");
 
         // TODO (2003-12-14): Perhaps raise an exception or something.
+        [NSException raise:NSGenericException format:@"Not a Mach-O file..."];
     }
 
     loadCommands = [[self _processLoadCommands] retain];
