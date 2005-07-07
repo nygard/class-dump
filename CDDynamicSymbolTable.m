@@ -39,7 +39,7 @@
 
     locreloff = dysymtab->locreloff;
     nlocrel = dysymtab->nlocrel;
-
+#if 0
     NSLog(@"ilocalsym:      0x%08x  %d", ilocalsym, ilocalsym);
     NSLog(@"nlocalsym:      0x%08x  %d", nlocalsym, nlocalsym);
     NSLog(@"iextdefsym:     0x%08x  %d", iextdefsym, iextdefsym);
@@ -61,7 +61,7 @@
     NSLog(@"nextrel:        0x%08x  %d", nextrel, nextrel);
     NSLog(@"locreloff:      0x%08x  %d", locreloff, locreloff);
     NSLog(@"nlocrel:        0x%08x  %d", nlocrel, nlocrel);
-
+#endif
     return self;
 }
 

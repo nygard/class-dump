@@ -20,7 +20,7 @@
 
     [self _process];
 
-    NSLog(@"self: %@", self);
+    //NSLog(@"self: %@", self);
 
     return self;
 }
@@ -34,6 +34,7 @@
 
 - (void)_process;
 {
+#if 0
     //const void *symtab;
     const struct nlist *symtab;
     const char *strtab;
@@ -75,6 +76,7 @@
     //NSLog(@"testing... %08x %08x %08x %08x", strtab[0], strtab[1], strtab[2], strtab[3]);
 
     NSLog(@"<  %s", _cmd);
+#endif
 }
 
 - (unsigned long)symoff;
