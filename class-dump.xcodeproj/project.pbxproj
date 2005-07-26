@@ -73,6 +73,10 @@
 		016047B805942AEC00C03665 /* CDMethodType.m in Sources */ = {isa = PBXBuildFile; fileRef = 016047B005942AEC00C03665 /* CDMethodType.m */; };
 		016047B905942AEC00C03665 /* CDType.h in Headers */ = {isa = PBXBuildFile; fileRef = 016047B105942AEC00C03665 /* CDType.h */; };
 		016047BA05942AEC00C03665 /* CDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 016047B205942AEC00C03665 /* CDType.m */; };
+		019A7E22087A538700969D4B /* CDFatFile.h in Headers */ = {isa = PBXBuildFile; fileRef = 019A7E20087A538700969D4B /* CDFatFile.h */; };
+		019A7E23087A538700969D4B /* CDFatFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 019A7E21087A538700969D4B /* CDFatFile.m */; };
+		019A7E62087D204300969D4B /* CDFatArch.h in Headers */ = {isa = PBXBuildFile; fileRef = 019A7E60087D204300969D4B /* CDFatArch.h */; };
+		019A7E63087D204300969D4B /* CDFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = 019A7E61087D204300969D4B /* CDFatArch.m */; };
 		01AC01E2069DE25200EF1E93 /* CDSymbol.h in Headers */ = {isa = PBXBuildFile; fileRef = 01AC01E0069DE25200EF1E93 /* CDSymbol.h */; };
 		01AC01E3069DE25200EF1E93 /* CDSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AC01E1069DE25200EF1E93 /* CDSymbol.m */; };
 		01AC0245069DED8500EF1E93 /* CDSymbolTable.h in Headers */ = {isa = PBXBuildFile; fileRef = 01AC0243069DED8500EF1E93 /* CDSymbolTable.h */; };
@@ -239,6 +243,10 @@
 		018B175705B6394500C95EFC /* shud10-out.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "shud10-out.txt"; path = "UnitTests/shud10-out.txt"; sourceTree = "<group>"; };
 		018B175805B6394500C95EFC /* shud11-in.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "shud11-in.txt"; path = "UnitTests/shud11-in.txt"; sourceTree = "<group>"; };
 		018B175905B6394500C95EFC /* shud11-out.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "shud11-out.txt"; path = "UnitTests/shud11-out.txt"; sourceTree = "<group>"; };
+		019A7E20087A538700969D4B /* CDFatFile.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDFatFile.h; sourceTree = "<group>"; };
+		019A7E21087A538700969D4B /* CDFatFile.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDFatFile.m; sourceTree = "<group>"; };
+		019A7E60087D204300969D4B /* CDFatArch.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDFatArch.h; sourceTree = "<group>"; };
+		019A7E61087D204300969D4B /* CDFatArch.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDFatArch.m; sourceTree = "<group>"; };
 		01A9680F05C9C2EB00CF3B9E /* shud13-in.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "shud13-in.txt"; path = "UnitTests/shud13-in.txt"; sourceTree = "<group>"; };
 		01A9681005C9C2EB00CF3B9E /* shud13-out.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = "shud13-out.txt"; path = "UnitTests/shud13-out.txt"; sourceTree = "<group>"; };
 		01AC01E0069DE25200EF1E93 /* CDSymbol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDSymbol.h; sourceTree = "<group>"; };
@@ -333,6 +341,10 @@
 		01C5C1240587C02B0052C696 /* Mach-O */ = {
 			isa = PBXGroup;
 			children = (
+				019A7E20087A538700969D4B /* CDFatFile.h */,
+				019A7E21087A538700969D4B /* CDFatFile.m */,
+				019A7E60087D204300969D4B /* CDFatArch.h */,
+				019A7E61087D204300969D4B /* CDFatArch.m */,
 				0180A79305819D7500BF5014 /* CDMachOFile.h */,
 				0180A79405819D7500BF5014 /* CDMachOFile.m */,
 				0180A7970581A5D300BF5014 /* CDLoadCommand.h */,
@@ -538,6 +550,8 @@
 				01AC01E2069DE25200EF1E93 /* CDSymbol.h in Headers */,
 				01AC0245069DED8500EF1E93 /* CDSymbolTable.h in Headers */,
 				01AC0271069DF57500EF1E93 /* CDDynamicSymbolTable.h in Headers */,
+				019A7E22087A538700969D4B /* CDFatFile.h in Headers */,
+				019A7E62087D204300969D4B /* CDFatArch.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,6 +743,8 @@
 				01AC01E3069DE25200EF1E93 /* CDSymbol.m in Sources */,
 				01AC0246069DED8500EF1E93 /* CDSymbolTable.m in Sources */,
 				01AC0272069DF57500EF1E93 /* CDDynamicSymbolTable.m in Sources */,
+				019A7E23087A538700969D4B /* CDFatFile.m in Sources */,
+				019A7E63087D204300969D4B /* CDFatArch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

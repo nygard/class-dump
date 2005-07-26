@@ -4,6 +4,8 @@
 
 #import <Foundation/NSObject.h>
 
+#include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
+
 @class NSData;
 @class CDSegmentCommand;
 
@@ -26,6 +28,7 @@
 {
     NSString *filename;
     NSData *data;
+    unsigned int archiveOffset;
     const struct mach_header *header;
     NSArray *loadCommands;
 
@@ -33,9 +36,12 @@
 }
 
 - (id)initWithFilename:(NSString *)aFilename;
+- (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
 - (void)dealloc;
 
 - (NSString *)filename;
+
+- (unsigned int)archiveOffset;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
@@ -44,6 +50,8 @@
 - (NSArray *)_processLoadCommands;
 
 - (NSArray *)loadCommands;
+- (cpu_type_t)cpuType;
+- (cpu_subtype_t)cpuSubtype;
 - (unsigned long)filetype;
 - (unsigned long)flags;
 

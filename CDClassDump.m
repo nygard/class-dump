@@ -7,6 +7,7 @@
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDDylibCommand.h"
+#import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDObjCSegmentProcessor.h"
 #import "CDStructureTable.h"
@@ -115,6 +116,8 @@ static NSMutableSet *wrapperExtensions = nil;
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
     frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+    preferredCPUType = CPU_TYPE_ANY;
+    //preferredCPUType = CPU_TYPE_POWERPC;
 
     return self;
 }
@@ -300,6 +303,11 @@ static NSMutableSet *wrapperExtensions = nil;
     outputPath = [aPath retain];
 }
 
+- (cpu_type_t)preferredCPUType;
+{
+    return preferredCPUType;
+}
+
 - (CDStructureTable *)structureTable;
 {
     return structureTable;
@@ -339,7 +347,29 @@ static NSMutableSet *wrapperExtensions = nil;
     CDMachOFile *aMachOFile;
     CDObjCSegmentProcessor *aProcessor;
 
-    aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
+    // TODO (2005-07-08): This isn't good enough.  You only have your
+    // choice on the main file.  Link frameworks MUST be the same
+    // architecture, either as a stand-alone Mach-O file or within a fat file.
+
+    // Initial combinations:
+    // 1. macho file, no cpu preference
+    // 2. macho file, cpu preference same as macho file
+    // 3. macho file, cpu preference different from macho file
+    // 4. fat file, no cpu preference
+    // 5. fat file, cpu preference contained in fat file
+    // 6. fat file, cpu preference not contained in fat file
+    //
+    // Actions:
+    // 1, 2, 4, 5: All subsequent files must be same cpu
+    // 3. Print message saying that arch isn't available in this macho file
+    // 6. Print message saying that arch isn't available in this fat file
+    //
+    // For linked frameworks/libraries, if the arch isn't available silently skip?
+
+    aMachOFile = [[CDFatFile machOFileWithFilename:aFilename preferredCPUType:preferredCPUType] retain];
+    NSLog(@"aMachOFile: %p", aMachOFile);
+    NSLog(@"----------------------------------------");
+
     [aMachOFile setDelegate:self];
 
     // TODO (2005-07-03): Look for the newer exception handling stuff.
@@ -495,6 +525,12 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 {
+    // We can't do this before the first -process, because we don't have the file mapped in yet and so don't know the cpu type.
+    if (preferredCPUType == CPU_TYPE_ANY) {
+        preferredCPUType = [aMachOFile cpuType];
+        NSLog(@"choosing cpu type: %d", preferredCPUType);
+    }
+
     if ([aDylibCommand cmd] == LC_LOAD_DYLIB && [self shouldProcessRecursively] == YES)
         [self machOFileWithID:[aDylibCommand name]];
 }

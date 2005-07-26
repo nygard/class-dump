@@ -4,6 +4,8 @@
 
 #import "CDObjCSegmentProcessor.h"
 
+#include <mach-o/arch.h>
+
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDDylibCommand.h"
@@ -76,8 +78,15 @@
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
+        const NXArchInfo *archInfo;
+
         [resultString appendString:@"/*\n"];
         [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
+
+        archInfo = NXGetArchInfoFromCpuType([machOFile cpuType], [machOFile cpuSubtype]);
+        if (archInfo != NULL)
+            [resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
+
         if ([machOFile filetype] == MH_DYLIB) {
             CDDylibCommand *identifier;
 

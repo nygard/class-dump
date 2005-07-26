@@ -6,20 +6,29 @@
 
 #import <Foundation/Foundation.h>
 #include <mach-o/loader.h>
+#include <mach-o/fat.h>
 
 #import "CDDylibCommand.h"
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
+// TODO (2005-07-08): If we try to access things in the header before we call -process, we will seg fault from dereferencing the null header pointer.
+
 @implementation CDMachOFile
 
 - (id)initWithFilename:(NSString *)aFilename;
+{
+    return [self initWithFilename:aFilename archiveOffset:0];
+}
+
+- (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
 {
     if ([super init] == nil)
         return nil;
 
     filename = [aFilename retain];
     data = nil;
+    archiveOffset = anArchiveOffset;
     header = NULL;
     loadCommands = nil;
     nonretainedDelegate = nil;
@@ -42,6 +51,11 @@
     return filename;
 }
 
+- (unsigned int)archiveOffset;
+{
+    return archiveOffset;
+}
+
 - (id)delegate;
 {
     return nonretainedDelegate;
@@ -57,7 +71,21 @@
     assert(data == nil);
 
     data = [[NSData alloc] initWithContentsOfMappedFile:filename];
-    header = [data bytes];
+    if (data == nil) {
+        NSLog(@"Couldn't read file: %@", filename);
+        return;
+        //[NSException raise:NSGenericException format:@"Couldn't read file: %@", filename];
+    }
+
+    header = [data bytes] + archiveOffset;
+    if (header->magic == FAT_MAGIC)
+        NSLog(@"FAT_MAGIC");
+    if (header->magic == FAT_CIGAM)
+        NSLog(@"FAT_CIGAM");
+#if 0
+    if (header->magic == CD_FAT_MAGIC)
+        NSLog(@"magic number matches CD_FAT_MAGIC");
+#endif
     if (header->magic != MH_MAGIC) {
         if (header->magic == MH_CIGAM)
             NSLog(@"MH_CIGAM");
@@ -101,13 +129,43 @@
     return loadCommands;
 }
 
+- (cpu_type_t)cpuType;
+{
+    if (header == NULL) {
+        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
+        return 0;
+    }
+
+    return header->cputype;
+}
+
+- (cpu_subtype_t)cpuSubtype;
+{
+    if (header == NULL) {
+        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
+        return 0;
+    }
+
+    return header->cpusubtype;
+}
+
 - (unsigned long)filetype;
 {
+    if (header == NULL) {
+        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
+        return 0;
+    }
+
     return header->filetype;
 }
 
 - (unsigned long)flags;
 {
+    if (header == NULL) {
+        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
+        return 0;
+    }
+
     return header->flags;
 }
 
@@ -256,7 +314,7 @@
     NSLog(@"vmaddr: %p, [data bytes]: %p, [segment fileoff]: %d, [segment segmentOffsetForVMAddr:vmaddr]: %d",
           vmaddr, [data bytes], [segment fileoff], [segment segmentOffsetForVMAddr:vmaddr]);
 #endif
-    ptr = [data bytes] + (vmaddr - [segment vmaddr] + [segment fileoff]);
+    ptr = [data bytes] + archiveOffset + (vmaddr - [segment vmaddr] + [segment fileoff]);
     //ptr = [data bytes] + [segment fileoff] + [segment segmentOffsetForVMAddr:vmaddr];
     return ptr;
 }
@@ -274,12 +332,12 @@
 
 - (const void *)bytes;
 {
-    return [data bytes];
+    return [data bytes] + archiveOffset;
 }
 
 - (const void *)bytesAtOffset:(unsigned long)offset;
 {
-    return [data bytes] + offset;
+    return [data bytes] + archiveOffset + offset;
 }
 
 - (NSString *)importBaseName;

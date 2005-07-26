@@ -5,6 +5,7 @@
 #import <Foundation/NSObject.h>
 
 #include <sys/types.h>
+#include <mach/machine.h> // for cpu_type_t
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
@@ -44,6 +45,7 @@
     CDTypeFormatter *structDeclarationTypeFormatter;
 
     NSMutableDictionary *frameworkNamesByClassName;
+    cpu_type_t preferredCPUType;
 }
 
 + (void)initialize;
@@ -86,6 +88,8 @@
 
 - (NSString *)outputPath;
 - (void)setOutputPath:(NSString *)aPath;
+
+- (cpu_type_t)preferredCPUType;
 
 - (CDStructureTable *)structureTable;
 - (CDStructureTable *)unionTable;
