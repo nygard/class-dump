@@ -11,7 +11,7 @@
 #define CD_FAT_MAGIC FAT_CIGAM
 #endif
 
-@class NSData, NSMutableArray;
+@class NSArray, NSData, NSMutableArray;
 @class CDFatArch, CDMachOFile;
 
 @interface CDFatFile : NSObject
@@ -22,8 +22,6 @@
     NSMutableArray *arches;
 }
 
-+ (id)machOFileWithFilename:(NSString *)aFilename preferredCPUType:(cpu_type_t)preferredCPUType;
-
 - (id)initWithFilename:(NSString *)aFilename;
 - (void)dealloc;
 
@@ -33,8 +31,9 @@
 
 - (unsigned int)fatCount;
 
-- (CDFatArch *)fatArchWithPreferredCPUType:(cpu_type_t)preferredCPUType;
 - (CDFatArch *)fatArchWithCPUType:(cpu_type_t)aCPUType;
+- (CDFatArch *)_fatArchWithCPUType:(cpu_type_t)aCPUType;
+- (CDFatArch *)localArchitecture;
 
 - (NSString *)description;
 

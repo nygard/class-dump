@@ -109,8 +109,8 @@ int main(int argc, char *argv[])
         NSString *path;
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
-        [classDump processFilename:path];
-        [classDump generateOutput];
+        if ([classDump processFilename:path] == YES)
+            [classDump generateOutput];
     }
 
     [pool release];

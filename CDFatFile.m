@@ -13,53 +13,26 @@
 
 @implementation CDFatFile
 
-+ (id)machOFileWithFilename:(NSString *)aFilename preferredCPUType:(cpu_type_t)preferredCPUType;
-{
-    NSData *data;
-    const uint32_t *magic;
-
-    // TODO (2005-07-06): We're only interested in the first 4 bytes here... check how '/usr/bin/file' does it.
-    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
-    if (data == nil) {
-        NSLog(@"Couldn't map file: %@", aFilename);
-        return nil;
-    }
-
-
-    magic = [data bytes];
-    assert(magic != NULL);
-    if (*magic == CD_FAT_MAGIC) {
-        CDFatFile *fatFile;
-        CDFatArch *fatArch;
-
-        [data release];
-        NSLog(@"CDFatFile: Fat file...");
-        fatFile = [[[CDFatFile alloc] initWithFilename:aFilename] autorelease];
-        fatArch = [fatFile fatArchWithPreferredCPUType:preferredCPUType];
-        return [[[CDMachOFile alloc] initWithFilename:aFilename archiveOffset:[fatArch offset]] autorelease];
-    }
-
-    [data release];
-
-    NSLog(@"Trying regular mach-o file.");
-    return [[[CDMachOFile alloc] initWithFilename:aFilename] autorelease];
-}
-
 - (id)initWithFilename:(NSString *)aFilename;
 {
     if ([super init] == nil)
         return nil;
 
     filename = [aFilename retain];
+
     data = [[NSData alloc] initWithContentsOfMappedFile:filename];
     if (data == nil) {
         NSLog(@"Couldn't read file: %@", filename);
-        [filename release];
         [self release];
         return nil;
     }
 
     header = [data bytes];
+    if (header->magic != CD_FAT_MAGIC) {
+        [self release];
+        return nil;
+    }
+
     arches = [[NSMutableArray alloc] init];
     [self _processFatArches];
 
@@ -103,33 +76,26 @@
     return header->nfat_arch;
 }
 
-- (CDFatArch *)fatArchWithPreferredCPUType:(cpu_type_t)preferredCPUType;
+- (CDFatArch *)fatArchWithCPUType:(cpu_type_t)aCPUType;
 {
-    NSLog(@"Looking for cpu type: %d", preferredCPUType);
-    if (preferredCPUType == CPU_TYPE_ANY) {
-        const NXArchInfo *archInfo;
+    if (aCPUType == CPU_TYPE_ANY) {
         CDFatArch *fatArch;
 
-        // Look first for the local architecture.  If not found, just pick the first one.
-        archInfo = NXGetLocalArchInfo();
-        NSLog(@"Looking first for local arch, archInfo: %p, arch: %d", archInfo, archInfo->cputype);
-        fatArch = [self fatArchWithCPUType:archInfo->cputype];
-        if (fatArch == nil && [arches count] > 0) {
-            NSLog(@"Couldn't find preferred type, picking first available arch.");
+        fatArch = [self localArchitecture];
+        if (fatArch == nil && [arches count] > 0)
             fatArch = [arches objectAtIndex:0];
-        }
 
-        NSLog(@"fatArch: %@", fatArch);
         return fatArch;
     }
 
-    return [self fatArchWithCPUType:preferredCPUType];
+    return [self _fatArchWithCPUType:aCPUType];
 }
 
-- (CDFatArch *)fatArchWithCPUType:(cpu_type_t)aCPUType;
+- (CDFatArch *)_fatArchWithCPUType:(cpu_type_t)aCPUType;
 {
     unsigned int count, index;
 
+    assert(aCPUType != CPU_TYPE_ANY);
     count = [arches count];
     for (index = 0; index < count; index++) {
         CDFatArch *fatArch;
@@ -140,6 +106,21 @@
     }
 
     return nil;
+}
+
+- (CDFatArch *)localArchitecture;
+{
+    const NXArchInfo *archInfo;
+
+    archInfo = NXGetLocalArchInfo();
+    if (archInfo == NULL) {
+        NSLog(@"Couldn't get local architecture");
+        return nil;
+    }
+
+    NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
+
+    return [self _fatArchWithCPUType:archInfo->cputype];
 }
 
 - (NSString *)description;

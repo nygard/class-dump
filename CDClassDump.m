@@ -7,6 +7,7 @@
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDDylibCommand.h"
+#import "CDFatArch.h"
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDObjCSegmentProcessor.h"
@@ -118,6 +119,7 @@ static NSMutableSet *wrapperExtensions = nil;
     frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
     preferredCPUType = CPU_TYPE_ANY;
     //preferredCPUType = CPU_TYPE_POWERPC;
+    //preferredCPUType = CPU_TYPE_I386;
 
     return self;
 }
@@ -333,17 +335,20 @@ static NSMutableSet *wrapperExtensions = nil;
     return structDeclarationTypeFormatter;
 }
 
-- (void)processFilename:(NSString *)aFilename;
+// Return YES if successful, NO if there was an error.
+- (BOOL)processFilename:(NSString *)aFilename;
 {
     NSString *adjustedPath;
 
     adjustedPath = [[self class] adjustUserSuppliedPath:aFilename];
     [self setExecutablePath:[adjustedPath stringByDeletingLastPathComponent]];
-    [self _processFilename:adjustedPath];
+    return [self _processFilename:adjustedPath];
 }
 
-- (void)_processFilename:(NSString *)aFilename;
+// Return YES if successful, NO if there was an error.
+- (BOOL)_processFilename:(NSString *)aFilename;
 {
+    CDFatFile *aFatFile;
     CDMachOFile *aMachOFile;
     CDObjCSegmentProcessor *aProcessor;
 
@@ -366,14 +371,59 @@ static NSMutableSet *wrapperExtensions = nil;
     //
     // For linked frameworks/libraries, if the arch isn't available silently skip?
 
-    aMachOFile = [[CDFatFile machOFileWithFilename:aFilename preferredCPUType:preferredCPUType] retain];
-    NSLog(@"aMachOFile: %p", aMachOFile);
-    NSLog(@"----------------------------------------");
-    if (aMachOFile == nil)
-        return;
+    NSLog(@"aFilename: %@", aFilename);
+    aFatFile = [[CDFatFile alloc] initWithFilename:aFilename];
+    NSLog(@"aFatFile: %p", aFatFile);
+    if (aFatFile == nil) {
+        // This is either not a fat file, or it couldn't be read.
+        NSLog(@"Non-fat file");
+        aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
+        if (aMachOFile == nil) {
+            // This is either not a mach-o file, or it couldn't be read.
+            fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [aFilename fileSystemRepresentation]);
+            return NO;
+        }
 
+        if (preferredCPUType == CPU_TYPE_ANY) {
+            preferredCPUType = [aMachOFile cpuType];
+            NSLog(@"(_processFilename)choosing cpu type: 0x%x", preferredCPUType);
+        } else if ([aMachOFile cpuType] != preferredCPUType) {
+            fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %s.\n",
+                    [aFilename fileSystemRepresentation], [CDNameForCPUType(preferredCPUType) UTF8String]);
+            [aMachOFile release];
+            return NO;
+        }
+    } else {
+        CDFatArch *fatArch;
+
+        NSLog(@"Fat file");
+        fatArch = [aFatFile fatArchWithCPUType:preferredCPUType];
+        if (fatArch == nil) {
+            if (preferredCPUType == CPU_TYPE_ANY)
+                fprintf(stderr, "class-dump: Fat archive (%s) did not contain any cpu types!\n", [aFilename fileSystemRepresentation]);
+            else
+                fprintf(stderr, "class-dump: Fat archive (%s) does not contain required cpu type: %s.\n",
+                        [aFilename fileSystemRepresentation], [CDNameForCPUType(preferredCPUType) UTF8String]);
+            [aFatFile release];
+            return NO;
+        }
+
+        if (preferredCPUType == CPU_TYPE_ANY) {
+            NSLog(@"... choosing arch 0x%x", [fatArch cpuType]);
+            preferredCPUType = [fatArch cpuType];
+        }
+
+        aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename archiveOffset:[fatArch offset]];
+        [aFatFile release];
+
+        if (aMachOFile == nil)
+            return NO;
+    }
+
+    NSLog(@"aMachOFile: %p", aMachOFile);
     NSLog(@"cpuType: 0x%x", [aMachOFile cpuType]);
     NSLog(@"swapped cpuType: 0x%x", NXSwapLong([aMachOFile cpuType]));
+    NSLog(@"----------------------------------------");
 
     [aMachOFile setDelegate:self];
 
@@ -382,7 +432,7 @@ static NSMutableSet *wrapperExtensions = nil;
         [aMachOFile process];
     } NS_HANDLER {
         [aMachOFile release];
-        return;
+        return NO;
     } NS_ENDHANDLER;
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
@@ -390,9 +440,12 @@ static NSMutableSet *wrapperExtensions = nil;
     [objCSegmentProcessors addObject:aProcessor];
     [aProcessor release];
 
-    [machOFilesByID setObject:aMachOFile forKey:aFilename];
+    assert([aMachOFile filename] != nil);
+    [machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
 
     [aMachOFile release];
+
+    return YES;
 }
 
 - (void)generateOutput;
@@ -530,12 +583,6 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 {
-    // We can't do this before the first -process, because we don't have the file mapped in yet and so don't know the cpu type.
-    if (preferredCPUType == CPU_TYPE_ANY) {
-        preferredCPUType = [aMachOFile cpuType];
-        NSLog(@"choosing cpu type: %d", preferredCPUType);
-    }
-
     if ([aDylibCommand cmd] == LC_LOAD_DYLIB && [self shouldProcessRecursively] == YES)
         [self machOFileWithID:[aDylibCommand name]];
 }

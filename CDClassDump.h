@@ -98,8 +98,8 @@
 - (CDTypeFormatter *)methodTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
-- (void)processFilename:(NSString *)aFilename;
-- (void)_processFilename:(NSString *)aFilename;
+- (BOOL)processFilename:(NSString *)aFilename;
+- (BOOL)_processFilename:(NSString *)aFilename;
 
 - (void)generateOutput;
 - (void)generateToStandardOut;

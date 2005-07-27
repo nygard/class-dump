@@ -5,6 +5,7 @@
 #import "CDMachOFile.h"
 
 #import <Foundation/Foundation.h>
+#include <mach-o/arch.h>
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 
@@ -15,6 +16,19 @@
 // TODO (2005-07-08): If we try to access things in the header before we call -process, we will seg fault from dereferencing the null header pointer.
 
 @implementation CDMachOFile
+
+NSString *CDNameForCPUType(cpu_type_t cpuType)
+{
+    const NXArchInfo *archInfo;
+
+    // The arch names for cpu subtype 0 work for both i386 and ppc, but the description in the archInfo won't be accurate
+    // for i386 because CPU_SUBTYPE_I386_ALL is not 0...
+    archInfo = NXGetArchInfoFromCpuType(cpuType, 0);
+    if (archInfo == NULL)
+        return nil;
+
+    return [NSString stringWithUTF8String:archInfo->name];
+}
 
 - (id)initWithFilename:(NSString *)aFilename;
 {
@@ -44,15 +58,19 @@
 
     if (header->magic == MH_MAGIC_64 || header->magic == MH_CIGAM_64) {
         NSLog(@"We don't support 64-bit Mach-O files.");
-        [data release];
+        [self release];
         return nil;
     }
 
     if (header->magic != MH_MAGIC && header->magic != MH_CIGAM) {
-        NSLog(@"Not a Mach-O file.");
-        [data release];
+        [self release];
         return nil;
     }
+
+    if (header->magic == MH_MAGIC)
+        _flags.shouldSwapBytes = NO;
+    else if (header->magic == MH_CIGAM)
+        _flags.shouldSwapBytes = YES;
 
     filename = [aFilename retain];
     loadCommands = nil;
@@ -79,6 +97,11 @@
 - (unsigned int)archiveOffset;
 {
     return archiveOffset;
+}
+
+- (BOOL)hasDifferentByteOrder;
+{
+    return _flags.shouldSwapBytes;
 }
 
 - (id)delegate;
@@ -133,6 +156,8 @@
 - (cpu_type_t)cpuType;
 {
     assert(header != NULL);
+    if (_flags.shouldSwapBytes == YES) // TODO (2005-07-27): This is an ugly method, probably best to swap structure in memory when this object is created.
+        return NXSwapInt(header->cputype);
     return header->cputype;
 }
 

@@ -32,8 +32,14 @@
     const struct mach_header *header;
     NSArray *loadCommands;
 
+    struct {
+        unsigned int shouldSwapBytes:1;
+    } _flags;
+
     id nonretainedDelegate;
 }
+
+NSString *CDNameForCPUType(cpu_type_t cpuType);
 
 - (id)initWithFilename:(NSString *)aFilename;
 - (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
@@ -42,6 +48,8 @@
 - (NSString *)filename;
 
 - (unsigned int)archiveOffset;
+
+- (BOOL)hasDifferentByteOrder;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;

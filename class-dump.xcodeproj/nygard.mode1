@@ -218,8 +218,6 @@
 			<key>Layout</key>
 			<array>
 				<dict>
-					<key>BecomeActive</key>
-					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -285,7 +283,7 @@
 							<real>186</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>144 306 921 691 0 0 1600 1002 </string>
+						<string>72 301 921 691 0 0 1600 1002 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -301,7 +299,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>CDFatFile.m</string>
+								<string>CDClassDump.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -309,22 +307,23 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>CDFatFile.m</string>
+										<string>CDClassDump.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>019A7E8908974DBA00969D4B</string>
+										<string>019A7E9E0898420900969D4B</string>
 										<key>history</key>
 										<array>
 											<string>019A7E33087A576500969D4B</string>
-											<string>019A7E39087BB05800969D4B</string>
 											<string>019A7E55087D19EE00969D4B</string>
 											<string>019A7E56087D19EE00969D4B</string>
 											<string>019A7E66087F1A5100969D4B</string>
 											<string>019A7E67087F1A5100969D4B</string>
 											<string>019A7E68087F1A5100969D4B</string>
 											<string>019A7E8508974DB300969D4B</string>
-											<string>019A7E8608974DB300969D4B</string>
+											<string>019A7E8D08981D9500969D4B</string>
+											<string>019A7E9B0898420900969D4B</string>
+											<string>019A7E9C0898420900969D4B</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -342,6 +341,9 @@
 											<string>019A7E6E087F1A5100969D4B</string>
 											<string>019A7E74087F1E1300969D4B</string>
 											<string>019A7E8708974DB300969D4B</string>
+											<string>019A7E8F08981D9500969D4B</string>
+											<string>019A7E9708982D0500969D4B</string>
+											<string>019A7E9D0898420900969D4B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -355,7 +357,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {713, 222}}</string>
 								<key>RubberWindowFrame</key>
-								<string>144 306 921 691 0 0 1600 1002 </string>
+								<string>72 301 921 691 0 0 1600 1002 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -363,6 +365,8 @@
 							<string>222pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -375,7 +379,7 @@
 								<key>Frame</key>
 								<string>{{0, 227}, {713, 423}}</string>
 								<key>RubberWindowFrame</key>
-								<string>144 306 921 691 0 0 1600 1002 </string>
+								<string>72 301 921 691 0 0 1600 1002 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -539,7 +543,7 @@
 		<string>/Users/nygard/Source/nygard/Tools/class-dump/class-dump.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>144 306 921 691 0 0 1600 1002 </string>
+	<string>72 301 921 691 0 0 1600 1002 </string>
 	<key>WindowTools</key>
 	<array>
 		<dict>
