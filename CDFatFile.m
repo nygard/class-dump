@@ -9,6 +9,8 @@
 #import "CDFatArch.h"
 #import "CDMachOFile.h"
 
+// The fat_header and fat_arch structures are stored in big endian-byte order.
+
 @implementation CDFatFile
 
 + (id)machOFileWithFilename:(NSString *)aFilename preferredCPUType:(cpu_type_t)preferredCPUType;
@@ -23,8 +25,10 @@
         return nil;
     }
 
+
     magic = [data bytes];
-    if (*magic == FAT_MAGIC) {
+    assert(magic != NULL);
+    if (*magic == CD_FAT_MAGIC) {
         CDFatFile *fatFile;
         CDFatArch *fatArch;
 

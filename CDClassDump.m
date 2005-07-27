@@ -369,6 +369,11 @@ static NSMutableSet *wrapperExtensions = nil;
     aMachOFile = [[CDFatFile machOFileWithFilename:aFilename preferredCPUType:preferredCPUType] retain];
     NSLog(@"aMachOFile: %p", aMachOFile);
     NSLog(@"----------------------------------------");
+    if (aMachOFile == nil)
+        return;
+
+    NSLog(@"cpuType: 0x%x", [aMachOFile cpuType]);
+    NSLog(@"swapped cpuType: 0x%x", NXSwapLong([aMachOFile cpuType]));
 
     [aMachOFile setDelegate:self];
 

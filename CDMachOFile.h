@@ -27,8 +27,8 @@
 @interface CDMachOFile : NSObject
 {
     NSString *filename;
-    NSData *data;
     unsigned int archiveOffset;
+    NSData *data;
     const struct mach_header *header;
     NSArray *loadCommands;
 

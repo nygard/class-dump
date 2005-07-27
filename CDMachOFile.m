@@ -26,10 +26,35 @@
     if ([super init] == nil)
         return nil;
 
-    filename = [aFilename retain];
-    data = nil;
+    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
+    if (data == nil) {
+        NSLog(@"Couldn't read file: %@", aFilename);
+        [self release];
+        return nil;
+        //[NSException raise:NSGenericException format:@"Couldn't read file: %@", filename];
+    }
+
     archiveOffset = anArchiveOffset;
-    header = NULL;
+    header = [data bytes] + archiveOffset;
+    NSLog(@"--> header->magic: 0x%x", header->magic);
+    if (header->magic == MH_MAGIC)
+        NSLog(@"MH_MAGIC");
+    if (header->magic == MH_CIGAM)
+        NSLog(@"MH_CIGAM");
+
+    if (header->magic == MH_MAGIC_64 || header->magic == MH_CIGAM_64) {
+        NSLog(@"We don't support 64-bit Mach-O files.");
+        [data release];
+        return nil;
+    }
+
+    if (header->magic != MH_MAGIC && header->magic != MH_CIGAM) {
+        NSLog(@"Not a Mach-O file.");
+        [data release];
+        return nil;
+    }
+
+    filename = [aFilename retain];
     loadCommands = nil;
     nonretainedDelegate = nil;
 
@@ -68,31 +93,7 @@
 
 - (void)process;
 {
-    assert(data == nil);
-
-    data = [[NSData alloc] initWithContentsOfMappedFile:filename];
-    if (data == nil) {
-        NSLog(@"Couldn't read file: %@", filename);
-        return;
-        //[NSException raise:NSGenericException format:@"Couldn't read file: %@", filename];
-    }
-
-    header = [data bytes] + archiveOffset;
-    if (header->magic == FAT_MAGIC)
-        NSLog(@"FAT_MAGIC");
-    if (header->magic == FAT_CIGAM)
-        NSLog(@"FAT_CIGAM");
-#if 0
-    if (header->magic == CD_FAT_MAGIC)
-        NSLog(@"magic number matches CD_FAT_MAGIC");
-#endif
     if (header->magic != MH_MAGIC) {
-        if (header->magic == MH_CIGAM)
-            NSLog(@"MH_CIGAM");
-        else
-            NSLog(@"Not a Mach-O file.");
-
-        // TODO (2003-12-14): Perhaps raise an exception or something.
         [NSException raise:NSGenericException format:@"Not a Mach-O file..."];
     }
 
@@ -131,41 +132,25 @@
 
 - (cpu_type_t)cpuType;
 {
-    if (header == NULL) {
-        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
-        return 0;
-    }
-
+    assert(header != NULL);
     return header->cputype;
 }
 
 - (cpu_subtype_t)cpuSubtype;
 {
-    if (header == NULL) {
-        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
-        return 0;
-    }
-
+    assert(header != NULL);
     return header->cpusubtype;
 }
 
 - (unsigned long)filetype;
 {
-    if (header == NULL) {
-        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
-        return 0;
-    }
-
+    assert(header != NULL);
     return header->filetype;
 }
 
 - (unsigned long)flags;
 {
-    if (header == NULL) {
-        NSLog(@"Warning: file not mapped in yet. (-%s)", _cmd);
-        return 0;
-    }
-
+    assert(header != NULL);
     return header->flags;
 }
 
