@@ -373,20 +373,16 @@ static NSMutableSet *wrapperExtensions = nil;
 
     NSLog(@"aFilename: %@", aFilename);
     aFatFile = [[CDFatFile alloc] initWithFilename:aFilename];
-    NSLog(@"aFatFile: %p", aFatFile);
     if (aFatFile == nil) {
-        // This is either not a fat file, or it couldn't be read.
-        NSLog(@"Non-fat file");
         aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
         if (aMachOFile == nil) {
-            // This is either not a mach-o file, or it couldn't be read.
             fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [aFilename fileSystemRepresentation]);
             return NO;
         }
 
         if (preferredCPUType == CPU_TYPE_ANY) {
+            NSLog(@"... choosing arch 0x%x", [aMachOFile cpuType]);
             preferredCPUType = [aMachOFile cpuType];
-            NSLog(@"(_processFilename)choosing cpu type: 0x%x", preferredCPUType);
         } else if ([aMachOFile cpuType] != preferredCPUType) {
             fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %s.\n",
                     [aFilename fileSystemRepresentation], [CDNameForCPUType(preferredCPUType) UTF8String]);
@@ -396,7 +392,6 @@ static NSMutableSet *wrapperExtensions = nil;
     } else {
         CDFatArch *fatArch;
 
-        NSLog(@"Fat file");
         fatArch = [aFatFile fatArchWithCPUType:preferredCPUType];
         if (fatArch == nil) {
             if (preferredCPUType == CPU_TYPE_ANY)
