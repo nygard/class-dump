@@ -7,8 +7,10 @@
 
 #ifdef __BIG_ENDIAN__
 #define CD_FAT_MAGIC FAT_MAGIC
+#define CD_THIS_BYTE_ORDER NX_BigEndian
 #else
 #define CD_FAT_MAGIC FAT_CIGAM
+#define CD_THIS_BYTE_ORDER NX_LittleEndian
 #endif
 
 @class NSArray, NSData, NSMutableArray;

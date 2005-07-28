@@ -12,7 +12,7 @@
 {
     CDMachOFile *nonretainedMachOFile;
 
-    const struct load_command *loadCommand;
+    struct load_command loadCommand;
 }
 
 + (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
@@ -21,7 +21,6 @@
 
 - (CDMachOFile *)machOFile;
 
-- (const void *)bytes;
 - (unsigned long)cmd;
 - (unsigned long)cmdsize;
 

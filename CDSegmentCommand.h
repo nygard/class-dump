@@ -10,7 +10,7 @@
 
 @interface CDSegmentCommand : CDLoadCommand
 {
-    const struct segment_command *segmentCommand;
+    struct segment_command segmentCommand;
 
     NSString *name;
     NSArray *sections;
@@ -19,7 +19,7 @@
 - (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (void)_processSections;
+- (void)_processSectionsWithPointer:(const void *)ptr;
 
 - (NSString *)name;
 - (unsigned long)vmaddr;

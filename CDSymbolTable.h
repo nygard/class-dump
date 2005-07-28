@@ -7,7 +7,7 @@
 
 @interface CDSymbolTable : CDLoadCommand
 {
-    const struct symtab_command *symtabCommand;
+    struct symtab_command symtabCommand;
     NSMutableArray *symbols;
 }
 

@@ -105,11 +105,13 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
+    // TODO (2005-07-27): Maybe add a flag to test whether the file has Objective-C segments, and return a different exit code.
     if (optind < argc) {
         NSString *path;
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         if ([classDump processFilename:path] == YES)
+            NSLog(@"Done processing!");
             [classDump generateOutput];
     }
 

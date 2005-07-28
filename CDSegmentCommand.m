@@ -4,7 +4,10 @@
 
 #import "CDSegmentCommand.h"
 
+#include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
+#import "CDFatFile.h"
+#import "CDMachOFile.h"
 #import "CDSection.h"
 
 @implementation CDSegmentCommand
@@ -16,22 +19,24 @@
     if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
         return nil;
 
-    segmentCommand = ptr;
-    memcpy(buf, segmentCommand->segname, 16);
+    segmentCommand = *(struct segment_command *)ptr;
+    if ([aMachOFile hasDifferentByteOrder] == YES)
+        swap_segment_command(&segmentCommand, CD_THIS_BYTE_ORDER);
+
+    memcpy(buf, segmentCommand.segname, 16);
     buf[16] = 0;
     name = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
     // Is segmentCommand->segname always going to be NULL terminated?
     //name = [[NSString alloc] initWithBytes:segmentCommand->segname length:strlen(segmentCommand->segname) encoding:NSASCIIStringEncoding];
 
-    [self _processSections];
+    [self _processSectionsWithPointer:ptr + sizeof(struct segment_command)];
 
     return self;
 }
 
-- (void)_processSections;
+- (void)_processSectionsWithPointer:(const void *)ptr;
 {
     NSMutableArray *sects;
-    const struct section *ptr;
     int count, index;
 
     // PRECONDITION: sections == nil
@@ -39,8 +44,8 @@
 
     sects = [[NSMutableArray alloc] init];
 
-    ptr = (const struct section *)(segmentCommand + 1);
-    count = segmentCommand->nsects;
+    count = segmentCommand.nsects;
+    NSLog(@"count: 0x%x", count);
     for (index = 0; index < count; index++) {
         CDSection *section;
 
@@ -48,7 +53,7 @@
         [sects addObject:section];
         [section release];
 
-        ptr++;
+        ptr += sizeof(struct section);
     }
 
     sections = [[NSArray alloc] initWithArray:sects];
@@ -70,17 +75,17 @@
 
 - (unsigned long)vmaddr;
 {
-    return segmentCommand->vmaddr;
+    return segmentCommand.vmaddr;
 }
 
 - (unsigned long)fileoff;
 {
-    return segmentCommand->fileoff;
+    return segmentCommand.fileoff;
 }
 
 - (unsigned long)flags;
 {
-    return segmentCommand->flags;
+    return segmentCommand.flags;
 }
 
 - (NSArray *)sections;
@@ -108,14 +113,14 @@
 - (NSString *)extraDescription;
 {
     return [NSString stringWithFormat:@"name: '%@', vmaddr: 0x%08x - 0x%08x [0x%08x], offset: %d, flags: 0x%x (%@), nsects: %d, sections: %@",
-                     name, segmentCommand->vmaddr, segmentCommand->vmaddr + segmentCommand->vmsize - 1, segmentCommand->vmsize, segmentCommand->fileoff,
-                     [self flags], [self flagDescription], segmentCommand->nsects, sections];
+                     name, segmentCommand.vmaddr, segmentCommand.vmaddr + segmentCommand.vmsize - 1, segmentCommand.vmsize, segmentCommand.fileoff,
+                     [self flags], [self flagDescription], segmentCommand.nsects, sections];
 }
 
 // TODO (2003-12-06): Might want to make this a range.
 - (BOOL)containsAddress:(unsigned long)vmaddr;
 {
-    return (vmaddr >= segmentCommand->vmaddr) && (vmaddr < segmentCommand->vmaddr + segmentCommand->vmsize);
+    return (vmaddr >= segmentCommand.vmaddr) && (vmaddr < segmentCommand.vmaddr + segmentCommand.vmsize);
 }
 
 - (CDSection *)sectionContainingVMAddr:(unsigned long)vmaddr;

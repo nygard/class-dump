@@ -10,6 +10,7 @@
 #import "CDMachOFile.h"
 
 // The fat_header and fat_arch structures are stored in big endian-byte order.
+// TODO (2005-07-27): For Intel, we'll need to swap those structs.
 
 @implementation CDFatFile
 

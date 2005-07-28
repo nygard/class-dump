@@ -4,9 +4,12 @@
 
 #import "CDLoadCommand.h"
 
+#include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
+#import "CDFatFile.h" // For CD_THIS_BYTE_ORDER
 #import "CDSegmentCommand.h"
 #import "CDDylibCommand.h"
+#import "CDMachOFile.h"
 #import "CDSymbolTable.h"
 #import "CDDynamicSymbolTable.h"
 
@@ -14,16 +17,21 @@
 
 + (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
 {
-    const struct load_command *lc = ptr;
+    struct load_command lc;
     Class targetClass = [CDLoadCommand class];
 
-    if (lc->cmd == LC_SEGMENT)
+    lc = *(struct load_command *)ptr;
+    if ([aMachOFile hasDifferentByteOrder] == YES)
+        swap_load_command(&lc, CD_THIS_BYTE_ORDER);
+
+    NSLog(@"cmd: 0x%x", lc.cmd);
+    if (lc.cmd == LC_SEGMENT)
         targetClass = [CDSegmentCommand class];
-    if (lc->cmd == LC_ID_DYLIB || lc->cmd == LC_LOAD_DYLIB || lc->cmd == LC_LOAD_WEAK_DYLIB)
+    if (lc.cmd == LC_ID_DYLIB || lc.cmd == LC_LOAD_DYLIB || lc.cmd == LC_LOAD_WEAK_DYLIB)
         targetClass = [CDDylibCommand class];
-    if (lc->cmd == LC_SYMTAB)
+    if (lc.cmd == LC_SYMTAB)
         targetClass = [CDSymbolTable class];
-    if (lc->cmd == LC_DYSYMTAB)
+    if (lc.cmd == LC_DYSYMTAB)
         targetClass = [CDDynamicSymbolTable class];
 
     return [[[targetClass alloc] initWithPointer:ptr machOFile:aMachOFile] autorelease];
@@ -35,7 +43,9 @@
         return nil;
 
     nonretainedMachOFile = aMachOFile;
-    loadCommand = ptr;
+    loadCommand = *(struct load_command *)ptr;
+    if ([aMachOFile hasDifferentByteOrder] == YES)
+        swap_load_command(&loadCommand, CD_THIS_BYTE_ORDER);
 
     return self;
 }
@@ -45,26 +55,19 @@
     return nonretainedMachOFile;
 }
 
-- (const void *)bytes;
-{
-    return loadCommand;
-}
-
 - (unsigned long)cmd;
 {
-    return loadCommand->cmd;
+    return loadCommand.cmd;
 }
 
 - (unsigned long)cmdsize;
 {
-    return loadCommand->cmdsize;
+    return loadCommand.cmdsize;
 }
 
 - (NSString *)commandName;
 {
-    unsigned long cmd = loadCommand->cmd;
-
-    switch (cmd) {
+    switch (loadCommand.cmd) {
       case LC_SEGMENT: return @"SEGMENT";
       case LC_SYMTAB: return @"SYMTAB";
       case LC_SYMSEG: return @"SYMSEG";
@@ -98,7 +101,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] cmd: %d (%@), cmdsize: %d // %@", NSStringFromClass([self class]), loadCommand->cmd, [self commandName], loadCommand->cmdsize, [self extraDescription]];
+    return [NSString stringWithFormat:@"[%@] cmd: %d (%@), cmdsize: %d // %@", NSStringFromClass([self class]), loadCommand.cmd, [self commandName], loadCommand.cmdsize, [self extraDescription]];
 }
 
 - (NSString *)extraDescription;

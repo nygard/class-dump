@@ -5,30 +5,7 @@
 
 @interface CDDynamicSymbolTable : CDLoadCommand
 {
-    unsigned long ilocalsym;
-    unsigned long nlocalsym;
-    unsigned long iextdefsym;
-    unsigned long nextdefsym;
-    unsigned long iundefsym;
-    unsigned long nundefsym;
-
-    unsigned long tocoff;
-    unsigned long ntoc;
-
-    unsigned long modtaboff;
-    unsigned long nmodtab;
-
-    unsigned long extrefsymoff;
-    unsigned long nextrefsyms;
-
-    unsigned long indirectsymoff;
-    unsigned long nindirectsyms;
-
-    unsigned long extreloff;
-    unsigned long nextrel;
-
-    unsigned long locreloff;
-    unsigned long nlocrel;
+    struct dysymtab_command dysymtab;
 }
 
 - (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;

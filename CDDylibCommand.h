@@ -7,7 +7,7 @@
 
 @interface CDDylibCommand : CDLoadCommand
 {
-    const struct dylib_command *dylibCommand;
+    struct dylib_command dylibCommand;
     NSString *name;
 }
 

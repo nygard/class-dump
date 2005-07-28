@@ -5,17 +5,10 @@
 #import <Foundation/NSObject.h>
 
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
+#include <mach-o/loader.h>
 
 @class NSData;
 @class CDSegmentCommand;
-
-#if 0
-@interface CDFatMachOFile : NSObject
-{
-}
-
-@end
-#endif
 
 @class NSArray;
 @class CDDylibCommand, CDMachOFile;
@@ -29,7 +22,7 @@
     NSString *filename;
     unsigned int archiveOffset;
     NSData *data;
-    const struct mach_header *header;
+    struct mach_header header;
     NSArray *loadCommands;
 
     struct {

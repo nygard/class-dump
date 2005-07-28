@@ -12,7 +12,7 @@
 {
     CDSegmentCommand *nonretainedSegment;
 
-    const struct section *section;
+    struct section section;
     NSString *segmentName;
     NSString *sectionName;
 }

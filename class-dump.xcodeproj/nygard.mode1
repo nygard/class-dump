@@ -299,7 +299,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>CDClassDump.m</string>
+								<string>CDSymbolTable.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -307,11 +307,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>CDClassDump.m</string>
+										<string>CDSymbolTable.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>019A7E9E0898420900969D4B</string>
+										<string>019A7EC408995EF800969D4B</string>
 										<key>history</key>
 										<array>
 											<string>019A7E33087A576500969D4B</string>
@@ -322,8 +322,11 @@
 											<string>019A7E68087F1A5100969D4B</string>
 											<string>019A7E8508974DB300969D4B</string>
 											<string>019A7E8D08981D9500969D4B</string>
-											<string>019A7E9B0898420900969D4B</string>
-											<string>019A7E9C0898420900969D4B</string>
+											<string>019A7EA20898549000969D4B</string>
+											<string>019A7EB3089865BF00969D4B</string>
+											<string>019A7EBB089952A000969D4B</string>
+											<string>019A7EC108995EF800969D4B</string>
+											<string>019A7EC208995EF800969D4B</string>
 										</array>
 										<key>prevStack</key>
 										<array>
@@ -344,6 +347,10 @@
 											<string>019A7E8F08981D9500969D4B</string>
 											<string>019A7E9708982D0500969D4B</string>
 											<string>019A7E9D0898420900969D4B</string>
+											<string>019A7EA40898549000969D4B</string>
+											<string>019A7EB5089865BF00969D4B</string>
+											<string>019A7EBD089952A000969D4B</string>
+											<string>019A7EC308995EF800969D4B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>

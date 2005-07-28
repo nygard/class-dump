@@ -416,8 +416,6 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 
     NSLog(@"aMachOFile: %p", aMachOFile);
-    NSLog(@"cpuType: 0x%x", [aMachOFile cpuType]);
-    NSLog(@"swapped cpuType: 0x%x", NXSwapLong([aMachOFile cpuType]));
     NSLog(@"----------------------------------------");
 
     [aMachOFile setDelegate:self];
@@ -429,6 +427,8 @@ static NSMutableSet *wrapperExtensions = nil;
         [aMachOFile release];
         return NO;
     } NS_ENDHANDLER;
+
+    NSLog(@"Creating Objective-C segment processor.");
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
     [aProcessor process];

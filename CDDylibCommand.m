@@ -4,7 +4,10 @@
 
 #import "CDDylibCommand.h"
 
+#include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
+#import "CDFatFile.h"
+#import "CDMachOFile.h"
 
 // Does this work with different endianness?
 static NSString *CDDylibVersionString(unsigned long version)
@@ -21,8 +24,11 @@ static NSString *CDDylibVersionString(unsigned long version)
     if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
         return nil;
 
-    dylibCommand = ptr;
-    str = ptr + dylibCommand->dylib.name.offset;
+    dylibCommand = *(struct dylib_command *)ptr;
+    if ([aMachOFile hasDifferentByteOrder] == YES)
+        swap_dylib_command(&dylibCommand, CD_THIS_BYTE_ORDER);
+
+    str = ptr + dylibCommand.dylib.name.offset;
     name = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
 
     return self;
@@ -41,17 +47,17 @@ static NSString *CDDylibVersionString(unsigned long version)
 
 - (unsigned long)timestamp;
 {
-    return dylibCommand->dylib.timestamp;
+    return dylibCommand.dylib.timestamp;
 }
 
 - (unsigned long)currentVersion;
 {
-    return dylibCommand->dylib.current_version;
+    return dylibCommand.dylib.current_version;
 }
 
 - (unsigned long)compatibilityVersion;
 {
-    return dylibCommand->dylib.compatibility_version;
+    return dylibCommand.dylib.compatibility_version;
 }
 
 - (NSString *)formattedCurrentVersion;

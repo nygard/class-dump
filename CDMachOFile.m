@@ -8,12 +8,12 @@
 #include <mach-o/arch.h>
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
+#include <mach-o/swap.h>
 
 #import "CDDylibCommand.h"
+#import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
-
-// TODO (2005-07-08): If we try to access things in the header before we call -process, we will seg fault from dereferencing the null header pointer.
 
 @implementation CDMachOFile
 
@@ -37,6 +37,8 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
 - (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
 {
+    const struct mach_header *headerPtr;
+
     if ([super init] == nil)
         return nil;
 
@@ -49,28 +51,31 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     }
 
     archiveOffset = anArchiveOffset;
-    header = [data bytes] + archiveOffset;
-    NSLog(@"--> header->magic: 0x%x", header->magic);
-    if (header->magic == MH_MAGIC)
+    headerPtr = [data bytes] + archiveOffset;
+    header = *headerPtr;
+    NSLog(@"--> header->magic: 0x%x", header.magic);
+    if (header.magic == MH_MAGIC)
         NSLog(@"MH_MAGIC");
-    if (header->magic == MH_CIGAM)
+    if (header.magic == MH_CIGAM)
         NSLog(@"MH_CIGAM");
 
-    if (header->magic == MH_MAGIC_64 || header->magic == MH_CIGAM_64) {
+    if (header.magic == MH_MAGIC_64 || header.magic == MH_CIGAM_64) {
         NSLog(@"We don't support 64-bit Mach-O files.");
         [self release];
         return nil;
     }
 
-    if (header->magic != MH_MAGIC && header->magic != MH_CIGAM) {
+    if (header.magic != MH_MAGIC && header.magic != MH_CIGAM) {
         [self release];
         return nil;
     }
 
-    if (header->magic == MH_MAGIC)
+    if (header.magic == MH_MAGIC)
         _flags.shouldSwapBytes = NO;
-    else if (header->magic == MH_CIGAM)
+    else if (header.magic == MH_CIGAM) {
         _flags.shouldSwapBytes = YES;
+        swap_mach_header(&header, CD_THIS_BYTE_ORDER);
+    }
 
     filename = [aFilename retain];
     loadCommands = nil;
@@ -116,11 +121,15 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
 - (void)process;
 {
-    if (header->magic != MH_MAGIC) {
+    NSLog(@" > %s", _cmd);
+#if 0
+    if (header.magic != MH_MAGIC) {
         [NSException raise:NSGenericException format:@"Not a Mach-O file..."];
     }
-
+#endif
     loadCommands = [[self _processLoadCommands] retain];
+
+    NSLog(@"<  %s", _cmd);
 }
 
 - (NSArray *)_processLoadCommands;
@@ -131,8 +140,9 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
     cmds = [NSMutableArray array];
 
-    ptr = header + 1;
-    count = header->ncmds;
+    ptr = [self bytes] + sizeof(struct mach_header);
+    count = header.ncmds;
+    NSLog(@"count: 0x%x", count);
     for (index = 0; index < count; index++) {
         CDLoadCommand *loadCommand;
 
@@ -142,6 +152,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
             [nonretainedDelegate machOFile:self loadDylib:(CDDylibCommand *)loadCommand];
         }
 
+        //NSLog(@"cmdsize: 0x%x\n", [loadCommand cmdsize]);
         ptr += [loadCommand cmdsize];
     }
 
@@ -155,28 +166,22 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
 - (cpu_type_t)cpuType;
 {
-    assert(header != NULL);
-    if (_flags.shouldSwapBytes == YES) // TODO (2005-07-27): This is an ugly method, probably best to swap structure in memory when this object is created.
-        return NXSwapInt(header->cputype);
-    return header->cputype;
+    return header.cputype;
 }
 
 - (cpu_subtype_t)cpuSubtype;
 {
-    assert(header != NULL);
-    return header->cpusubtype;
+    return header.cpusubtype;
 }
 
 - (unsigned long)filetype;
 {
-    assert(header != NULL);
-    return header->filetype;
+    return header.filetype;
 }
 
 - (unsigned long)flags;
 {
-    assert(header != NULL);
-    return header->flags;
+    return header.flags;
 }
 
 - (NSString *)filetypeDescription;
@@ -234,7 +239,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x",
-                     header->magic, header->cputype, header->cpusubtype, header->filetype, header->ncmds, header->sizeofcmds, header->flags];
+                     header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];
 }
 
 - (CDDylibCommand *)dylibIdentifier;

@@ -4,7 +4,9 @@
 
 #import "CDSection.h"
 
+#include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
+#import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDSegmentCommand.h"
 
@@ -19,15 +21,18 @@
         return nil;
 
     nonretainedSegment = aSegment;
-    section = ptr;
+    // TODO (2005-07-28): Check for null pointer...
+    section = *(struct section *)ptr;
+    if ([[[self segment] machOFile] hasDifferentByteOrder] == YES)
+        swap_section(&section, 1, CD_THIS_BYTE_ORDER);
 
     // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
 
-    memcpy(buf, section->segname, 16);
+    memcpy(buf, section.segname, 16);
     buf[16] = 0;
     segmentName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
 
-    memcpy(buf, section->sectname, 16);
+    memcpy(buf, section.sectname, 16);
     buf[16] = 0;
     sectionName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
 
@@ -66,17 +71,17 @@
 
 - (unsigned long)addr;
 {
-    return section->addr;
+    return section.addr;
 }
 
 - (unsigned long)size;
 {
-    return section->size;
+    return section.size;
 }
 
 - (unsigned long)offset;
 {
-    return section->offset;
+    return section.offset;
 }
 
 - (const void *)dataPointer;
