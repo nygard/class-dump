@@ -415,9 +415,6 @@ static NSMutableSet *wrapperExtensions = nil;
             return NO;
     }
 
-    NSLog(@"aMachOFile: %p", aMachOFile);
-    NSLog(@"----------------------------------------");
-
     [aMachOFile setDelegate:self];
 
     // TODO (2005-07-03): Look for the newer exception handling stuff.
@@ -427,8 +424,6 @@ static NSMutableSet *wrapperExtensions = nil;
         [aMachOFile release];
         return NO;
     } NS_ENDHANDLER;
-
-    NSLog(@"Creating Objective-C segment processor.");
 
     aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
     [aProcessor process];

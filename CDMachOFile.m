@@ -53,11 +53,6 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     archiveOffset = anArchiveOffset;
     headerPtr = [data bytes] + archiveOffset;
     header = *headerPtr;
-    NSLog(@"--> header->magic: 0x%x", header.magic);
-    if (header.magic == MH_MAGIC)
-        NSLog(@"MH_MAGIC");
-    if (header.magic == MH_CIGAM)
-        NSLog(@"MH_CIGAM");
 
     if (header.magic == MH_MAGIC_64 || header.magic == MH_CIGAM_64) {
         NSLog(@"We don't support 64-bit Mach-O files.");
@@ -121,15 +116,12 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
 - (void)process;
 {
-    NSLog(@" > %s", _cmd);
 #if 0
     if (header.magic != MH_MAGIC) {
         [NSException raise:NSGenericException format:@"Not a Mach-O file..."];
     }
 #endif
     loadCommands = [[self _processLoadCommands] retain];
-
-    NSLog(@"<  %s", _cmd);
 }
 
 - (NSArray *)_processLoadCommands;
@@ -142,7 +134,6 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
     ptr = [self bytes] + sizeof(struct mach_header);
     count = header.ncmds;
-    NSLog(@"count: 0x%x", count);
     for (index = 0; index < count; index++) {
         CDLoadCommand *loadCommand;
 
@@ -318,6 +309,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     segment = [self segmentContainingAddress:vmaddr];
     if (segment == NULL) {
         [self foo];
+        //NSLog(@"load commands: %@", [loadCommands description]);
         NSLog(@"pointerFromVMAddr:, vmaddr: %p, segment: %@", vmaddr, segment);
     }
     //NSLog(@"[segment name]: %@", [segment name]);

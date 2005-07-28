@@ -111,7 +111,6 @@ int main(int argc, char *argv[])
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         if ([classDump processFilename:path] == YES)
-            NSLog(@"Done processing!");
             [classDump generateOutput];
     }
 

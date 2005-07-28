@@ -107,6 +107,19 @@ struct cd_objc_protocol_method
     long types;
 };
 
+void swap_cd_objc_module(struct cd_objc_module *cd_objc_module);
+void swap_cd_objc_symtab(struct cd_objc_symtab *cd_objc_symtab);
+void swap_cd_objc_class(struct cd_objc_class *cd_objc_class);
+void swap_cd_objc_category(struct cd_objc_category *cd_objc_category);
+void swap_cd_objc_ivar_list(struct cd_objc_ivar_list *cd_objc_ivar_list);
+void swap_cd_objc_ivar(struct cd_objc_ivar *cd_objc_ivar);
+void swap_cd_objc_method_list(struct cd_objc_method_list *cd_objc_method_list);
+void swap_cd_objc_method(struct cd_objc_method *cd_objc_method);
+void swap_cd_objc_protocol_list(struct cd_objc_protocol_list *cd_objc_protocol_list);
+void swap_cd_objc_protocol(struct cd_objc_protocol *cd_objc_protocol);
+void swap_cd_objc_protocol_method_list(struct cd_objc_protocol_method_list *cd_objc_protocol_method_list);
+void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protocol_method);
+
 @class NSArray;
 @class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 

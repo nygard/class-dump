@@ -45,7 +45,6 @@
     sects = [[NSMutableArray alloc] init];
 
     count = segmentCommand.nsects;
-    NSLog(@"count: 0x%x", count);
     for (index = 0; index < count; index++) {
         CDSection *section;
 

@@ -24,7 +24,6 @@
     if ([aMachOFile hasDifferentByteOrder] == YES)
         swap_load_command(&lc, CD_THIS_BYTE_ORDER);
 
-    NSLog(@"cmd: 0x%x", lc.cmd);
     if (lc.cmd == LC_SEGMENT)
         targetClass = [CDSegmentCommand class];
     if (lc.cmd == LC_ID_DYLIB || lc.cmd == LC_LOAD_DYLIB || lc.cmd == LC_LOAD_WEAK_DYLIB)

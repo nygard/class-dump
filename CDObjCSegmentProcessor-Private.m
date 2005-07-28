@@ -17,13 +17,103 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 
+void swap_cd_objc_module(struct cd_objc_module *cd_objc_module)
+{
+    cd_objc_module->version = NSSwapLong(cd_objc_module->version);
+    cd_objc_module->size = NSSwapLong(cd_objc_module->size);
+    cd_objc_module->name = NSSwapLong(cd_objc_module->name);
+    cd_objc_module->symtab = NSSwapLong(cd_objc_module->symtab);
+}
+
+void swap_cd_objc_symtab(struct cd_objc_symtab *cd_objc_symtab)
+{
+    cd_objc_symtab->sel_ref_cnt = NSSwapLong(cd_objc_symtab->sel_ref_cnt);
+    cd_objc_symtab->refs = NSSwapLong(cd_objc_symtab->refs);
+    cd_objc_symtab->cls_def_count = NSSwapShort(cd_objc_symtab->cls_def_count);
+    cd_objc_symtab->cat_def_count = NSSwapShort(cd_objc_symtab->cat_def_count);
+}
+
+void swap_cd_objc_class(struct cd_objc_class *cd_objc_class)
+{
+    cd_objc_class->isa = NSSwapLong(cd_objc_class->isa);
+    cd_objc_class->super_class = NSSwapLong(cd_objc_class->super_class);
+    cd_objc_class->name = NSSwapLong(cd_objc_class->name);
+    cd_objc_class->version = NSSwapLong(cd_objc_class->version);
+    cd_objc_class->info = NSSwapLong(cd_objc_class->info);
+    cd_objc_class->instance_size = NSSwapLong(cd_objc_class->instance_size);
+    cd_objc_class->ivars = NSSwapLong(cd_objc_class->ivars);
+    cd_objc_class->methods = NSSwapLong(cd_objc_class->methods);
+    cd_objc_class->cache = NSSwapLong(cd_objc_class->cache);
+    cd_objc_class->protocols = NSSwapLong(cd_objc_class->protocols);
+}
+
+void swap_cd_objc_category(struct cd_objc_category *cd_objc_category)
+{
+    cd_objc_category->category_name = NSSwapLong(cd_objc_category->category_name);
+    cd_objc_category->class_name = NSSwapLong(cd_objc_category->class_name);
+    cd_objc_category->methods = NSSwapLong(cd_objc_category->methods);
+    cd_objc_category->class_methods = NSSwapLong(cd_objc_category->class_methods);
+    cd_objc_category->protocols = NSSwapLong(cd_objc_category->protocols);
+}
+
+void swap_cd_objc_ivar_list(struct cd_objc_ivar_list *cd_objc_ivar_list)
+{
+    cd_objc_ivar_list->ivar_count = NSSwapLong(cd_objc_ivar_list->ivar_count);
+}
+
+void swap_cd_objc_ivar(struct cd_objc_ivar *cd_objc_ivar)
+{
+    cd_objc_ivar->name = NSSwapLong(cd_objc_ivar->name);
+    cd_objc_ivar->type = NSSwapLong(cd_objc_ivar->type);
+    cd_objc_ivar->offset = NSSwapInt(cd_objc_ivar->offset);
+}
+
+void swap_cd_objc_method_list(struct cd_objc_method_list *cd_objc_method_list)
+{
+    cd_objc_method_list->method_count = NSSwapLong(cd_objc_method_list->method_count);
+}
+
+void swap_cd_objc_method(struct cd_objc_method *cd_objc_method)
+{
+    cd_objc_method->name = NSSwapLong(cd_objc_method->name);
+    cd_objc_method->types = NSSwapLong(cd_objc_method->types);
+    cd_objc_method->imp = NSSwapLong(cd_objc_method->imp);
+}
+
+void swap_cd_objc_protocol_list(struct cd_objc_protocol_list *cd_objc_protocol_list)
+{
+    cd_objc_protocol_list->next = NSSwapLong(cd_objc_protocol_list->next);
+    cd_objc_protocol_list->count = NSSwapLong(cd_objc_protocol_list->count);
+}
+
+void swap_cd_objc_protocol(struct cd_objc_protocol *cd_objc_protocol)
+{
+    cd_objc_protocol->isa = NSSwapLong(cd_objc_protocol->isa);
+    cd_objc_protocol->protocol_name = NSSwapLong(cd_objc_protocol->protocol_name);
+    cd_objc_protocol->protocol_list = NSSwapLong(cd_objc_protocol->protocol_list);
+    cd_objc_protocol->instance_methods = NSSwapLong(cd_objc_protocol->instance_methods);
+    cd_objc_protocol->class_methods = NSSwapLong(cd_objc_protocol->class_methods);
+}
+
+void swap_cd_objc_protocol_method_list(struct cd_objc_protocol_method_list *cd_objc_protocol_method_list)
+{
+    cd_objc_protocol_method_list->method_count = NSSwapLong(cd_objc_protocol_method_list->method_count);
+}
+
+void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protocol_method)
+{
+    cd_objc_protocol_method->name = NSSwapLong(cd_objc_protocol_method->name);
+    cd_objc_protocol_method->types = NSSwapLong(cd_objc_protocol_method->types);
+}
+
 @implementation CDObjCSegmentProcessor (Private)
 
 - (void)processModules;
 {
     CDSegmentCommand *objcSegment;
     CDSection *moduleSection;
-    const struct cd_objc_module *ptr;
+    const void *ptr;
+    struct cd_objc_module objcModule;
     int count, index;
 
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
@@ -31,17 +121,21 @@
 
     ptr = [moduleSection dataPointer];
     count = [moduleSection size] / sizeof(struct cd_objc_module);
-    for (index = 0; index < count; index++, ptr++) {
+    for (index = 0; index < count; index++, ptr += sizeof(struct cd_objc_module)) {
         CDSegmentCommand *aSegment;
         CDOCModule *aModule;
 
-        assert(ptr->size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
-        aSegment = [machOFile segmentContainingAddress:ptr->symtab];
+        objcModule = *(struct cd_objc_module *)ptr;
+        if ([machOFile hasDifferentByteOrder] == YES)
+            swap_cd_objc_module(&objcModule);
+
+        assert(objcModule.size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
+        aSegment = [machOFile segmentContainingAddress:objcModule.symtab];
 
         aModule = [[CDOCModule alloc] init];
-        [aModule setVersion:ptr->version];
-        [aModule setName:[machOFile stringFromVMAddr:ptr->name]];
-        [aModule setSymtab:[self processSymtab:ptr->symtab]];
+        [aModule setVersion:objcModule.version];
+        [aModule setName:[machOFile stringFromVMAddr:objcModule.name]];
+        [aModule setSymtab:[self processSymtab:objcModule.symtab]];
         [modules addObject:aModule];
 
         [aModule release];
@@ -52,7 +146,8 @@
 {
     CDOCSymtab *aSymtab;
 
-    const struct cd_objc_symtab *ptr;
+    const void *ptr;
+    struct cd_objc_symtab objcSymtab;
     const unsigned long *defs;
     int index, defIndex;
     NSMutableArray *classes, *categories;
@@ -63,29 +158,39 @@
         return nil;
     }
 
+    objcSymtab = *(struct cd_objc_symtab *)ptr;
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_symtab(&objcSymtab);
+
     aSymtab = [[[CDOCSymtab alloc] init] autorelease];
     classes = [[NSMutableArray alloc] init];
     categories = [[NSMutableArray alloc] init];
 
-    defs = (unsigned long *)(ptr + 1);
+    defs = (unsigned long *)(ptr + sizeof(struct cd_objc_symtab));
     defIndex = 0;
 
-    if (ptr->cls_def_count > 0) {
-        for (index = 0; index < ptr->cls_def_count; index++, defs++, defIndex++) {
+    if (objcSymtab.cls_def_count > 0) {
+        for (index = 0; index < objcSymtab.cls_def_count; index++, defs++, defIndex++) {
             CDOCClass *aClass;
 
-            aClass = [self processClassDefinition:*defs];
+            if ([machOFile hasDifferentByteOrder] == YES)
+                aClass = [self processClassDefinition:NSSwapLong(*defs)];
+            else
+                aClass = [self processClassDefinition:*defs];
             [classes addObject:aClass];
         }
     }
 
     [aSymtab setClasses:[NSArray arrayWithArray:classes]];
 
-    if (ptr->cat_def_count > 0) {
-        for (index = 0; index < ptr->cat_def_count; index++, defs++, defIndex++) {
+    if (objcSymtab.cat_def_count > 0) {
+        for (index = 0; index < objcSymtab.cat_def_count; index++, defs++, defIndex++) {
             CDOCCategory *aCategory;
 
-            aCategory = [self processCategoryDefinition:*defs];
+            if ([machOFile hasDifferentByteOrder] == YES)
+                aCategory = [self processCategoryDefinition:NSSwapLong(*defs)];
+            else
+                aCategory = [self processCategoryDefinition:*defs];
             [categories addObject:aCategory];
         }
     }
@@ -100,32 +205,44 @@
 
 - (CDOCClass *)processClassDefinition:(unsigned long)defRef;
 {
-    const struct cd_objc_class *classPtr;
+    const void *ptr;
+    struct cd_objc_class objcClass;
     CDOCClass *aClass;
     int index;
 
-    classPtr = [machOFile pointerFromVMAddr:defRef];
+    ptr = [machOFile pointerFromVMAddr:defRef];
+    objcClass = *(struct cd_objc_class *)ptr;
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_class(&objcClass);
 
     aClass = [[[CDOCClass alloc] init] autorelease];
-    [aClass setName:[machOFile stringFromVMAddr:classPtr->name]];
-    [aClass setSuperClassName:[machOFile stringFromVMAddr:classPtr->super_class]];
+    [aClass setName:[machOFile stringFromVMAddr:objcClass.name]];
+    [aClass setSuperClassName:[machOFile stringFromVMAddr:objcClass.super_class]];
 
     // Process ivars
-    if (classPtr->ivars != 0) {
-        const struct cd_objc_ivar_list *ivarsPtr;
-        const struct cd_objc_ivar *ivarPtr;
+    if (objcClass.ivars != 0) {
+        struct cd_objc_ivar_list ivar_list;
+        struct cd_objc_ivar ivar;
         NSMutableArray *ivars;
 
         ivars = [[NSMutableArray alloc] init];
-        ivarsPtr = [machOFile pointerFromVMAddr:classPtr->ivars];
-        ivarPtr = (struct cd_objc_ivar *)(ivarsPtr + 1);
+        ptr = [machOFile pointerFromVMAddr:objcClass.ivars];
+        ivar_list = *(struct cd_objc_ivar_list *)ptr;
+        if ([machOFile hasDifferentByteOrder] == YES)
+            swap_cd_objc_ivar_list(&ivar_list);
 
-        for (index = 0; index < ivarsPtr->ivar_count; index++, ivarPtr++) {
+        ptr += sizeof(struct cd_objc_ivar_list);
+
+        for (index = 0; index < ivar_list.ivar_count; index++, ptr += sizeof(struct cd_objc_ivar)) { // TODO (2005-07-28): Not sure about that increment for ptr2
             CDOCIvar *anIvar;
 
-            anIvar = [[CDOCIvar alloc] initWithName:[machOFile stringFromVMAddr:ivarPtr->name]
-                                       type:[machOFile stringFromVMAddr:ivarPtr->type]
-                                       offset:ivarPtr->offset];
+            ivar = *(struct cd_objc_ivar *)ptr;
+            if ([machOFile hasDifferentByteOrder] == YES)
+                swap_cd_objc_ivar(&ivar);
+
+            anIvar = [[CDOCIvar alloc] initWithName:[machOFile stringFromVMAddr:ivar.name]
+                                       type:[machOFile stringFromVMAddr:ivar.type]
+                                       offset:ivar.offset];
             [ivars addObject:anIvar];
             [anIvar release];
         }
@@ -135,28 +252,32 @@
     }
 
     // Process methods
-    [aClass setInstanceMethods:[self processMethods:classPtr->methods]];
+    [aClass setInstanceMethods:[self processMethods:objcClass.methods]];
 
     // Process meta class
     {
-        const struct cd_objc_class *metaClassPtr;
+        struct cd_objc_class metaClass;
 
-        metaClassPtr = [machOFile pointerFromVMAddr:classPtr->isa];
-        //assert(metaClassPtr->info & CLS_CLASS);
+        ptr = [machOFile pointerFromVMAddr:objcClass.isa];
+        metaClass = *(struct cd_objc_class *)ptr;
+        if ([machOFile hasDifferentByteOrder] == YES)
+            swap_cd_objc_class(&metaClass);
+        //assert(metaClass.info & CLS_CLASS);
 
         // Process class methods
-        [aClass setClassMethods:[self processMethods:metaClassPtr->methods]];
+        [aClass setClassMethods:[self processMethods:metaClass.methods]];
     }
 
     // Process protocols
-    [aClass addProtocolsFromArray:[self processProtocolList:classPtr->protocols]];
+    [aClass addProtocolsFromArray:[self processProtocolList:objcClass.protocols]];
 
     return aClass;
 }
 
 - (NSArray *)processProtocolList:(unsigned long)protocolListAddr;
 {
-    const struct cd_objc_protocol_list *protocolList;
+    const void *ptr;
+    struct cd_objc_protocol_list protocolList;
     const unsigned long *protocolPtrs;
     NSMutableArray *protocols;
     int index;
@@ -166,12 +287,17 @@
     if (protocolListAddr == 0)
         return protocols;
 
-    protocolList = [machOFile pointerFromVMAddr:protocolListAddr];
-    // Compiler doesn't like the double star cast.
-    protocolPtrs = (void *)(protocolList + 1);
-    //protocolPtrs = (unsigned long **)(protocolList + 1);
-    for (index = 0; index < protocolList->count; index++, protocolPtrs++) {
-        [protocols addObject:[self processProtocol:*protocolPtrs]];
+    ptr = [machOFile pointerFromVMAddr:protocolListAddr];
+    protocolList = *(struct cd_objc_protocol_list *)ptr;
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_protocol_list(&protocolList);
+
+    protocolPtrs = ptr + sizeof(struct cd_objc_protocol_list);
+    for (index = 0; index < protocolList.count; index++, protocolPtrs++) {
+        if ([machOFile hasDifferentByteOrder] == YES)
+            [protocols addObject:[self processProtocol:NSSwapLong(*protocolPtrs)]];
+        else
+            [protocols addObject:[self processProtocol:*protocolPtrs]];
     }
 
     return protocols;
@@ -179,15 +305,17 @@
 
 - (CDOCProtocol *)processProtocol:(unsigned long)protocolAddr;
 {
-    const struct cd_objc_protocol *protocolPtr;
+    struct cd_objc_protocol protocol;
     CDOCProtocol *aProtocol;
     NSString *name;
     NSArray *protocols;
 
-    protocolPtr = [machOFile pointerFromVMAddr:protocolAddr];
+    protocol = *(struct cd_objc_protocol *)[machOFile pointerFromVMAddr:protocolAddr];
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_protocol(&protocol);
 
-    name = [machOFile stringFromVMAddr:protocolPtr->protocol_name];
-    protocols = [self processProtocolList:protocolPtr->protocol_list];
+    name = [machOFile stringFromVMAddr:protocol.protocol_name];
+    protocols = [self processProtocolList:protocol.protocol_list];
 
     aProtocol = [protocolsByName objectForKey:name];
     if (aProtocol == nil) {
@@ -199,10 +327,10 @@
 
     [aProtocol addProtocolsFromArray:protocols];
     if ([[aProtocol instanceMethods] count] == 0)
-        [aProtocol setInstanceMethods:[self processProtocolMethods:protocolPtr->instance_methods]];
+        [aProtocol setInstanceMethods:[self processProtocolMethods:protocol.instance_methods]];
 
     if ([[aProtocol classMethods] count] == 0)
-        [aProtocol setClassMethods:[self processProtocolMethods:protocolPtr->class_methods]];
+        [aProtocol setClassMethods:[self processProtocolMethods:protocol.class_methods]];
 
     // TODO (2003-12-09): Maybe we should add any missing methods.  But then we'd lose the original order.
 
@@ -211,23 +339,32 @@
 
 - (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
 {
+    const void *ptr;
     NSMutableArray *methods;
-    const struct cd_objc_protocol_method_list *methodsPtr;
-    const struct cd_objc_protocol_method *methodPtr;
+    struct cd_objc_protocol_method_list methodList;
+    struct cd_objc_protocol_method method;
     int index;
 
     methods = [NSMutableArray array];
     if (methodsAddr == 0)
         return methods;
 
-    methodsPtr = [machOFile pointerFromVMAddr:methodsAddr];
-    methodPtr = (struct cd_objc_protocol_method *)(methodsPtr + 1);
+    ptr = [machOFile pointerFromVMAddr:methodsAddr];
+    methodList = *(struct cd_objc_protocol_method_list *)ptr;
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_protocol_method_list(&methodList);
 
-    for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
+    ptr += sizeof(struct cd_objc_protocol_method_list);
+
+    for (index = 0; index < methodList.method_count; index++, ptr += sizeof(struct cd_objc_protocol_method)) {
         CDOCMethod *aMethod;
 
-        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
-                                      type:[machOFile stringFromVMAddr:methodPtr->types]
+        method = *(struct cd_objc_protocol_method *)ptr;
+        if ([machOFile hasDifferentByteOrder] == YES)
+            swap_cd_objc_protocol_method(&method);
+
+        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:method.name]
+                                      type:[machOFile stringFromVMAddr:method.types]
                                       imp:0];
         [methods addObject:aMethod];
         [aMethod release];
@@ -238,24 +375,33 @@
 
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
 {
+    const void *ptr;
     NSMutableArray *methods;
-    const struct cd_objc_method_list *methodsPtr;
-    const struct cd_objc_method *methodPtr;
+    struct cd_objc_method_list methodList;
+    struct cd_objc_method method;
     int index;
 
     methods = [NSMutableArray array];
     if (methodsAddr == 0)
         return methods;
 
-    methodsPtr = [machOFile pointerFromVMAddr:methodsAddr];
-    methodPtr = (struct cd_objc_method *)(methodsPtr + 1);
+    ptr = [machOFile pointerFromVMAddr:methodsAddr];
+    methodList = *(struct cd_objc_method_list *)ptr;
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_method_list(&methodList);
 
-    for (index = 0; index < methodsPtr->method_count; index++, methodPtr++) {
+    ptr += sizeof(struct cd_objc_method_list);
+
+    for (index = 0; index < methodList.method_count; index++, ptr += sizeof(struct cd_objc_method)) {
         CDOCMethod *aMethod;
 
-        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:methodPtr->name]
-                                      type:[machOFile stringFromVMAddr:methodPtr->types]
-                                      imp:methodPtr->imp];
+        method = *(struct cd_objc_method *)ptr;
+        if ([machOFile hasDifferentByteOrder] == YES)
+            swap_cd_objc_method(&method);
+
+        aMethod = [[CDOCMethod alloc] initWithName:[machOFile stringFromVMAddr:method.name]
+                                      type:[machOFile stringFromVMAddr:method.types]
+                                      imp:method.imp];
         [methods addObject:aMethod];
         [aMethod release];
     }
@@ -265,27 +411,29 @@
 
 - (CDOCCategory *)processCategoryDefinition:(unsigned long)defRef;
 {
-    const struct cd_objc_category *categoryPtr;
+    struct cd_objc_category objcCategory;
     CDOCCategory *aCategory;
 
-    categoryPtr = [machOFile pointerFromVMAddr:defRef];
+    objcCategory = *(struct cd_objc_category *)[machOFile pointerFromVMAddr:defRef];
+    if ([machOFile hasDifferentByteOrder] == YES)
+        swap_cd_objc_category(&objcCategory);
 
     aCategory = [[[CDOCCategory alloc] init] autorelease];
-    [aCategory setName:[machOFile stringFromVMAddr:categoryPtr->category_name]];
-    [aCategory setClassName:[machOFile stringFromVMAddr:categoryPtr->class_name]];
+    [aCategory setName:[machOFile stringFromVMAddr:objcCategory.category_name]];
+    [aCategory setClassName:[machOFile stringFromVMAddr:objcCategory.class_name]];
 
     // Process methods
-    [aCategory setInstanceMethods:[self processMethods:categoryPtr->methods]];
-    [aCategory setClassMethods:[self processMethods:categoryPtr->class_methods]];
+    [aCategory setInstanceMethods:[self processMethods:objcCategory.methods]];
+    [aCategory setClassMethods:[self processMethods:objcCategory.class_methods]];
 
     // Process protocols
-    [aCategory addProtocolsFromArray:[self processProtocolList:categoryPtr->protocols]];
+    [aCategory addProtocolsFromArray:[self processProtocolList:objcCategory.protocols]];
 
     return aCategory;
 }
 
 // Protocols can reference other protocols, so we can't try to create them
-// in order.  So we create them lazily and just make sure we reference
+// in order.  Instead we create them lazily and just make sure we reference
 // all available protocols.
 
 - (void)processProtocolSection;
