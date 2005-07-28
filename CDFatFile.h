@@ -20,14 +20,14 @@
 {
     NSString *filename;
     NSData *data;
-    const struct fat_header *header;
+    struct fat_header header;
     NSMutableArray *arches;
 }
 
 - (id)initWithFilename:(NSString *)aFilename;
 - (void)dealloc;
 
-- (void)_processFatArches;
+- (void)_processFatArchesWithPointer:(const void *)ptr swapBytes:(BOOL)shouldSwapBytes;
 
 - (NSString *)filename;
 

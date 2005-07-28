@@ -4,17 +4,21 @@
 
 #import "CDFatArch.h"
 
+#import <mach-o/swap.h>
 #import <Foundation/Foundation.h>
+#import "CDFatFile.h"
 #import "CDMachOFile.h"
 
 @implementation CDFatArch
 
-- (id)initWithPointer:(const void *)ptr;
+- (id)initWithPointer:(const void *)ptr swapBytes:(BOOL)shouldSwapBytes;
 {
     if ([super init] == nil)
         return nil;
 
-    arch = ptr;
+    arch = *(struct fat_arch *)ptr;
+    if (shouldSwapBytes == YES)
+        swap_fat_arch(&arch, 1, CD_THIS_BYTE_ORDER);
 
     return self;
 }
@@ -26,33 +30,33 @@
 
 - (cpu_type_t)cpuType;
 {
-    return arch->cputype;
+    return arch.cputype;
 }
 
 - (cpu_subtype_t)cpuSubtype;
 {
-    return arch->cpusubtype;
+    return arch.cpusubtype;
 }
 
 - (uint32_t)offset;
 {
-    return arch->offset;
+    return arch.offset;
 }
 
 - (uint32_t)size;
 {
-    return arch->size;
+    return arch.size;
 }
 
 - (uint32_t)align;
 {
-    return arch->align;
+    return arch.align;
 }
 
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"cputype: %d, cpusubtype: %d, offset: 0x%x, size: 0x%x, align: %d",
-                     arch->cputype, arch->cpusubtype, arch->offset, arch->size, arch->align];
+                     arch.cputype, arch.cpusubtype, arch.offset, arch.size, arch.align];
 }
 
 @end

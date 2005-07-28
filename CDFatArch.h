@@ -7,10 +7,10 @@
 
 @interface CDFatArch : NSObject
 {
-    const struct fat_arch *arch;
+    struct fat_arch arch;
 }
 
-- (id)initWithPointer:(const void *)ptr;
+- (id)initWithPointer:(const void *)ptr swapBytes:(BOOL)shouldSwapBytes;
 - (void)dealloc;
 
 - (cpu_type_t)cpuType;

@@ -5,6 +5,7 @@
 #import "CDFatFile.h"
 
 #include <mach-o/arch.h>
+#include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
 #import "CDFatArch.h"
 #import "CDMachOFile.h"
@@ -16,9 +17,12 @@
 
 - (id)initWithFilename:(NSString *)aFilename;
 {
+    BOOL shouldSwapBytes;
+
     if ([super init] == nil)
         return nil;
 
+    shouldSwapBytes = NO;
     filename = [aFilename retain];
 
     data = [[NSData alloc] initWithContentsOfMappedFile:filename];
@@ -28,14 +32,19 @@
         return nil;
     }
 
-    header = [data bytes];
-    if (header->magic != CD_FAT_MAGIC) {
+    header = *(struct fat_header *)[data bytes];
+    if (header.magic == FAT_CIGAM) {
+        shouldSwapBytes = YES;
+        swap_fat_header(&header, CD_THIS_BYTE_ORDER);
+    }
+
+    if (header.magic != FAT_MAGIC) {
         [self release];
         return nil;
     }
 
     arches = [[NSMutableArray alloc] init];
-    [self _processFatArches];
+    [self _processFatArchesWithPointer:[data bytes] + sizeof(struct fat_header) swapBytes:shouldSwapBytes];
 
     return self;
 }
@@ -49,21 +58,18 @@
     [super dealloc];
 }
 
-- (void)_processFatArches;
+- (void)_processFatArchesWithPointer:(const void *)ptr swapBytes:(BOOL)shouldSwapBytes;
 {
     unsigned int count, index;
-    const struct fat_arch *ptr;
-
-    ptr = (struct fat_arch *)(header + 1);
 
     count = [self fatCount];
     for (index = 0; index < count; index++) {
         CDFatArch *fatArch;
 
-        fatArch = [[CDFatArch alloc] initWithPointer:ptr];
+        fatArch = [[CDFatArch alloc] initWithPointer:ptr swapBytes:shouldSwapBytes];
         [arches addObject:fatArch];
         [fatArch release];
-        ptr++;
+        ptr += sizeof(struct fat_arch);
     }
 }
 
@@ -74,7 +80,7 @@
 
 - (unsigned int)fatCount;
 {
-    return header->nfat_arch;
+    return header.nfat_arch;
 }
 
 - (CDFatArch *)fatArchWithCPUType:(cpu_type_t)aCPUType;
@@ -129,7 +135,7 @@
     return @"fat file...";
 #if 0
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x",
-                     header->magic, header->cputype, header->cpusubtype, header->filetype, header->ncmds, header->sizeofcmds, header->flags];
+                     header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];
 #endif
 }
 
