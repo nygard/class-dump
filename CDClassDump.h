@@ -90,6 +90,7 @@
 - (void)setOutputPath:(NSString *)aPath;
 
 - (cpu_type_t)preferredCPUType;
+- (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
 
 - (CDStructureTable *)structureTable;
 - (CDStructureTable *)unionTable;

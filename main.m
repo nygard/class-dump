@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <libc.h>
 #include <unistd.h>
+#include <getopt.h>
+#include <stdlib.h>
 
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
@@ -15,22 +17,25 @@ void print_usage(void)
 {
     fprintf(stderr,
             "class-dump %s\n"
-            "Usage: class-dump [options] mach-o-file\n"
+            "Usage: class-dump [options] <mach-o-file>\n"
             "\n"
             "  where options are:\n"
-            "        -a        show instance variable offsets\n"
-            "        -A        show implementation addresses\n"
-            "        -C regex  only display classes matching regular expression\n"
-            "        -H        generate header files in current directory, or directory specified with -o\n"
-            "        -I        sort classes, categories, and protocols by inheritance (overrides -s)\n"
-            "        -o dir    output directory used for -H\n"
-            "        -r        recursively expand frameworks and fixed VM shared libraries\n"
-            "        -s        sort classes and categories by name\n"
-            "        -S        sort methods by name\n"
+            "        -a             show instance variable offsets\n"
+            "        -A             show implementation addresses\n"
+            "        --arch <arch>  choose a specific architecture from a fat file (ppc, i386)\n"
+            "        -C <regex>     only display classes matching regular expression\n"
+            "        -H             generate header files in current directory, or directory specified with -o\n"
+            "        -I             sort classes, categories, and protocols by inheritance (overrides -s)\n"
+            "        -o <dir>       output directory used for -H\n"
+            "        -r             recursively expand frameworks and fixed VM shared libraries\n"
+            "        -s             sort classes and categories by name\n"
+            "        -S             sort methods by name\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
 }
+
+#define CD_OPT_ARCH 1
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +45,20 @@ int main(int argc, char *argv[])
     int ch;
     BOOL errorFlag = NO;
 
+    struct option longopts[] = {
+        { "show-ivar-offsets", no_argument, NULL, 'a' },
+        { "show-imp-addr", no_argument, NULL, 'A' },
+        { "match", required_argument, NULL, 'C' },
+        { "generate-multiple-files", no_argument, NULL, 'H' },
+        { "sort-by-inheritance", no_argument, NULL, 'I' },
+        { "output-dir", required_argument, NULL, 'o' },
+        { "recursive", no_argument, NULL, 'r' },
+        { "sort", no_argument, NULL, 's' },
+        { "sort-methods", no_argument, NULL, 'S' },
+        { "arch", required_argument, NULL, CD_OPT_ARCH},
+        { NULL, 0, NULL, 0 },
+    };
+
     if (argc == 1) {
         print_usage();
         exit(2);
@@ -47,8 +66,20 @@ int main(int argc, char *argv[])
 
     classDump = [[[CDClassDump alloc] init] autorelease];
 
-    while ( (ch = getopt(argc, argv, "aAC:HIo:rRsS")) != EOF) {
+    while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsS", longopts, NULL)) != -1) {
         switch (ch) {
+          case CD_OPT_ARCH:
+              if (!strcmp(optarg, "ppc")) {
+                  [classDump setPreferredCPUType:CPU_TYPE_POWERPC];
+              } else if (!strcmp(optarg, "i386")) {
+                  [classDump setPreferredCPUType:CPU_TYPE_I386];
+              } else {
+                  fprintf(stderr, "class-dump: Unknown arch %s\n\n", optarg);
+                  errorFlag = YES;
+              }
+
+              break;
+
           case 'a':
               [classDump setShouldShowIvarOffsets:YES];
               break;
@@ -62,7 +93,7 @@ int main(int argc, char *argv[])
               NSString *errorMessage;
 
               if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
-                  NSLog(@"Error with regex: '%@'\n\n", errorMessage);
+                  fprintf(stderr, "class-dump: Error with regex: '%s'\n\n", [errorMessage UTF8String]);
                   errorFlag = YES;
               }
               // Last one wins now.

@@ -318,6 +318,11 @@ static NSMutableSet *wrapperExtensions = nil;
     return preferredCPUType;
 }
 
+- (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
+{
+    preferredCPUType = aPreferredCPUType;
+}
+
 - (CDStructureTable *)structureTable;
 {
     return structureTable;
@@ -380,7 +385,6 @@ static NSMutableSet *wrapperExtensions = nil;
     //
     // For linked frameworks/libraries, if the arch isn't available silently skip?
 
-    NSLog(@"aFilename: %@", aFilename);
     aFatFile = [[CDFatFile alloc] initWithFilename:aFilename];
     if (aFatFile == nil) {
         aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];

@@ -299,7 +299,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>1CE0B20306471E060097A5F4</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>CDObjCSegmentProcessor-Private.m</string>
+								<string>main.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -307,14 +307,19 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>1CE0B20406471E060097A5F4</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>CDObjCSegmentProcessor-Private.m</string>
+										<string>main.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>019A7EDB0899861400969D4B</string>
+										<string>019A7EE3089EC97B00969D4B</string>
 										<key>history</key>
 										<array>
-											<string>019A7EDA0899861400969D4B</string>
+											<string>019A7EE0089EC97B00969D4B</string>
+											<string>019A7EE1089EC97B00969D4B</string>
+										</array>
+										<key>prevStack</key>
+										<array>
+											<string>019A7EE2089EC97B00969D4B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
