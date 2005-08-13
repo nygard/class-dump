@@ -1,6 +1,6 @@
 //  This file is a part of class-dump v2, a utility for examining the
 //  Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004  Steve Nygard
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2005  Steve Nygard
 
 #include <stdio.h>
 #include <libc.h>
