@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <mach-o/arch.h>
 
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
@@ -21,7 +22,7 @@ void print_usage(void)
             "  where options are:\n"
             "        -a             show instance variable offsets\n"
             "        -A             show implementation addresses\n"
-            "        --arch <arch>  choose a specific architecture from a fat file (ppc, i386)\n"
+            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, i386, etc.)\n"
             "        -C <regex>     only display classes matching regular expression\n"
             "        -H             generate header files in current directory, or directory specified with -o\n"
             "        -I             sort classes, categories, and protocols by inheritance (overrides -s)\n"
@@ -68,15 +69,17 @@ int main(int argc, char *argv[])
     while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsS", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH:
-              if (!strcmp(optarg, "ppc")) {
-                  [classDump setPreferredCPUType:CPU_TYPE_POWERPC];
-              } else if (!strcmp(optarg, "i386")) {
-                  [classDump setPreferredCPUType:CPU_TYPE_I386];
-              } else {
+          {
+              const NXArchInfo *archInfo;
+
+              archInfo = NXGetArchInfoFromName(optarg);
+              if (archInfo == NULL) {
                   fprintf(stderr, "class-dump: Unknown arch %s\n\n", optarg);
                   errorFlag = YES;
+              } else {
+                  [classDump setPreferredCPUType:archInfo->cputype];
               }
-
+          }
               break;
 
           case 'a':
