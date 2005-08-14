@@ -393,7 +393,6 @@ static NSMutableSet *wrapperExtensions = nil;
         }
 
         if (preferredCPUType == CPU_TYPE_ANY) {
-            NSLog(@"... choosing arch 0x%x", [aMachOFile cpuType]);
             preferredCPUType = [aMachOFile cpuType];
         } else if ([aMachOFile cpuType] != preferredCPUType) {
             fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %s.\n",
@@ -416,7 +415,6 @@ static NSMutableSet *wrapperExtensions = nil;
         }
 
         if (preferredCPUType == CPU_TYPE_ANY) {
-            NSLog(@"... choosing arch 0x%x", [fatArch cpuType]);
             preferredCPUType = [fatArch cpuType];
         }
 

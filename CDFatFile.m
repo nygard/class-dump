@@ -124,7 +124,7 @@
         return nil;
     }
 
-    NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
+    //NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
 
     return [self _fatArchWithCPUType:archInfo->cputype];
 }
