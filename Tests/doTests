@@ -4,8 +4,8 @@ TESTDIR=/tmp/cdt
 TESTDIR_OLD=$TESTDIR/old
 TESTDIR_NEW=$TESTDIR/new
 
-OLD_CD=/usr/local/bin/class-dump
-NEW_CD=/Local/Public/nygard/Products/class-dump
+OLD_CD=~/Unix/bin/class-dump
+NEW_CD=/Local/nygard/Products/Release/class-dump
 
 # These don't work and I don't understand why not.
 #OLD_CD_ARGS=-s -S
