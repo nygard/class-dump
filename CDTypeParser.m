@@ -317,6 +317,12 @@ NSString *CDTokenDescription(int token)
             [self match:',' allowIdentifier:YES];
             [typeName addTemplateType:[self parseTypeName]];
         }
+#if 0
+        // iPhoto 5 has types like.... vector<foo,bar<blegga> >  -- note the extra space
+        // Also, std::pair<const double, int>
+        while (lookahead == ' ')
+            [self match:' ' allowIdentifier:NO];
+#endif
         [self match:'>' allowIdentifier:NO];
     }
 
