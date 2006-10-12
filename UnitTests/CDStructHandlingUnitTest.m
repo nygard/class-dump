@@ -247,4 +247,14 @@
     [self testFilename:@"shud14"];
 }
 
+- (void)test17;
+{
+    //[self testFilename:@"shud15"];
+}
+
+- (void)test18;
+{
+    [self testFilename:@"shud16"];
+}
+
 @end

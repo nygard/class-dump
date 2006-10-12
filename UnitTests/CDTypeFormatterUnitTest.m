@@ -344,4 +344,15 @@
     [self testVariableName:@"var" type:@"^{QButton={KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}}" expectedResult:@"struct QButton *var"];
 }
 
+- (void)test2;
+{
+    NSLog(@"----------------------------------------");
+    [self testVariableName:@"var" type:@"{_opaque_pthread_mutex_t=l[40c]}" expectedResult:@"struct _opaque_pthread_mutex_t var"];
+
+    [self testVariableName:@"var" type:@"@" expectedResult:@"id var"];
+    [self testVariableName:@"var" type:@"@\"NSObject\"" expectedResult:@"NSObject *var"];
+    [self testVariableName:@"var" type:@"@\"<MyProtocol>\"" expectedResult:@"id <MyProtocol> var"];
+    NSLog(@"----------------------------------------");
+}
+
 @end
