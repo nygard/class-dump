@@ -1,0 +1,22 @@
+struct IPAlbumList {
+    void **;
+    struct vector<Album*,std::allocator<Album*>>;
+    struct _opaque_pthread_mutex_t;
+};
+
+struct _opaque_pthread_mutex_t {
+    long;
+    char [40];
+};
+
+struct vector<Album*,std::allocator<Album*>> {
+    struct {
+        struct {
+            id *;
+            id *;
+            id *;
+        };
+    };
+};
+
+    struct IPAlbumList *var;
