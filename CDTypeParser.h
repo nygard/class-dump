@@ -32,7 +32,8 @@ extern NSString *CDSyntaxError;
 
 - (NSArray *)_parseMethodType;
 - (CDType *)_parseType;
-- (CDType *)_parseTypeUseClassNameHeuristics:(BOOL)shouldUseHeuristics;
+
+- (CDType *)parseObjectType;
 
 - (NSArray *)parseUnionTypes;
 - (NSArray *)parseOptionalMembers;
@@ -42,7 +43,6 @@ extern NSString *CDSyntaxError;
 - (CDTypeName *)parseTypeName;
 - (NSString *)parseIdentifier;
 - (NSString *)parseNumber;
-- (NSString *)parseQuotedName;
 
 - (BOOL)isLookaheadInModifierSet;
 - (BOOL)isLookaheadInSimpleTypeSet;

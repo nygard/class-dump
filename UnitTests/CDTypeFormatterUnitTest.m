@@ -352,6 +352,7 @@
     [self testVariableName:@"var" type:@"@" expectedResult:@"id var"];
     [self testVariableName:@"var" type:@"@\"NSObject\"" expectedResult:@"NSObject *var"];
     [self testVariableName:@"var" type:@"@\"<MyProtocol>\"" expectedResult:@"id <MyProtocol> var"];
+    [self testVariableName:@"var" type:@"@\"<MyProtocol1,MyProtocol2>\"" expectedResult:@"id <MyProtocol1,MyProtocol2> var"];
     NSLog(@"----------------------------------------");
 }
 

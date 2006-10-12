@@ -134,12 +134,25 @@ NSString *CDTokenDescription(int token)
     return methodTypes;
 }
 
-- (CDType *)_parseType;
-{
-    return [self _parseTypeUseClassNameHeuristics:NO];
-}
+// Plain object types can be:
+//     @                     - plain id type
+//     @"NSObject"           - NSObject *
+//     @"<MyProtocol>"       - id <MyProtocol>
+// But these can also be part of a structure, with the member name in quotes before the type:
+//     i"foo"                - int foo
+//     @"foo"                - id foo
+//     @"Foo"                - Foo *
+// So this is where the class name heuristics are used.  I think.  Maybe.
+//
+// I'm going to make a simplifying assumption:  Either the structure/union has member names,
+// or is doesn't, it can't have some names and be missing others.
+// The two key tests are:
+//     {my_struct3="field1"@"field2"i}
+//     {my_struct4="field1"@"NSObject""field2"i}
+//
+// Hmm.  I think having the lexer have a quoted string token would make the lookahead easier.
 
-- (CDType *)_parseTypeUseClassNameHeuristics:(BOOL)shouldUseHeuristics;
+- (CDType *)_parseType;
 {
     CDType *result;
 
@@ -156,7 +169,7 @@ NSString *CDTokenDescription(int token)
         [self match:modifier];
 
         if ([self isLookaheadInTypeStartSet] == YES)
-            unmodifiedType = [self _parseTypeUseClassNameHeuristics:shouldUseHeuristics];
+            unmodifiedType = [self _parseType];
         else
             unmodifiedType = nil;
         result = [[CDType alloc] initModifier:modifier type:unmodifiedType];
@@ -164,7 +177,7 @@ NSString *CDTokenDescription(int token)
         CDType *type;
 
         [self match:'^'];
-        type = [self _parseTypeUseClassNameHeuristics:shouldUseHeuristics];
+        type = [self _parseType];
         result = [[CDType alloc] initPointerType:type];
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
@@ -173,18 +186,26 @@ NSString *CDTokenDescription(int token)
         number = [self parseNumber];
         result = [[CDType alloc] initBitfieldType:number];
     } else if (lookahead == '@') { // id
+        //result = [self parseObjectType];
         [self match:'@'];
 
-        if (lookahead == '"' && (shouldUseHeuristics == NO
-                                 || [[lexer peekIdentifier] isFirstLetterUppercase] == YES)) {
-            NSString *name;
+        // TODO (2006-10-11): This will need to know if we're parsing a structure member list, and if so double-peek for another quoted string...
+        if (lookahead == TK_QUOTED_STRING && ([[lexer scanner] isAtEnd] || [lexer peekChar] == '"')) {
+            NSString *str;
             CDTypeName *typeName;
 
-            name = [self parseQuotedName];
-            typeName = [[CDTypeName alloc] init];
-            [typeName setName:name];
-            result = [[CDType alloc] initIDType:typeName];
-            [typeName release];
+            str = [lexer lexText];
+            if ([str hasPrefix:@"<"] == YES && [str hasSuffix:@">"] == YES) {
+                str = [str substringWithRange:NSMakeRange(1, [str length] - 2)];
+                result = [[CDType alloc] initIDTypeWithProtocols:str];
+            } else {
+                typeName = [[CDTypeName alloc] init];
+                [typeName setName:str];
+                result = [[CDType alloc] initIDType:typeName];
+                [typeName release];
+            }
+
+            [self match:TK_QUOTED_STRING];
         } else {
             result = [[CDType alloc] initIDType:nil];
         }
@@ -241,6 +262,10 @@ NSString *CDTokenDescription(int token)
     return [result autorelease];
 }
 
+- (CDType *)parseObjectType;
+{
+}
+
 // This seems to be used in method types -- no names
 - (NSArray *)parseUnionTypes;
 {
@@ -277,7 +302,7 @@ NSString *CDTokenDescription(int token)
     NSMutableArray *result;
 
     result = [NSMutableArray array];
-    while (lookahead == '"' || [self isLookaheadInTypeSet] == YES) {
+    while (lookahead == TK_QUOTED_STRING || [self isLookaheadInTypeSet] == YES) {
         [result addObject:[self parseMember]];
     }
 
@@ -288,11 +313,13 @@ NSString *CDTokenDescription(int token)
 {
     CDType *result;
 
-    if (lookahead == '"') {
+    if (lookahead == TK_QUOTED_STRING) {
         NSString *identifier;
 
-        identifier = [self parseQuotedName];
-        result = [self _parseTypeUseClassNameHeuristics:YES];
+        identifier = [lexer lexText];
+        [self match:TK_QUOTED_STRING];
+
+        result = [self _parseType];
         [result setVariableName:identifier];
     } else {
         result = [self _parseType];
@@ -353,21 +380,6 @@ NSString *CDTokenDescription(int token)
     }
 
     return nil;
-}
-
-- (NSString *)parseQuotedName;
-{
-    [self match:'"' allowIdentifier:YES];
-    if (lookahead == '"') {
-        [self match:'"'];
-        return @"";
-    } else {
-        NSString *identifier;
-
-        identifier = [self parseIdentifier];
-        [self match:'"'];
-        return identifier;
-    }
 }
 
 - (BOOL)isLookaheadInModifierSet;

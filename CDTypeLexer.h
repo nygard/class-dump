@@ -8,6 +8,7 @@
 #define TK_NUMBER 257
 #define TK_IDENTIFIER 258
 #define T_NAMED_OBJECT 259
+#define TK_QUOTED_STRING 260
 
 @class NSCharacterSet, NSScanner;
 
@@ -38,5 +39,7 @@
 - (unichar)peekChar;
 - (NSString *)remainingString;
 - (NSString *)peekIdentifier;
+
+- (NSScanner *)scanner;
 
 @end

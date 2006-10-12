@@ -1,5 +1,6 @@
 #import "AllTests.h"
 
+#import "CDTypeLexerUnitTest.h"
 #import "CDTypeFormatterUnitTest.h"
 #import "CDTypeParserUnitTest.h"
 #import "CDStructHandlingUnitTest.h"
@@ -14,11 +15,11 @@
     suite = [TestSuite suiteWithName:@"My Tests"];
 
     // Add your tests here...
+    [suite addTest:[TestSuite suiteWithClass:[CDTypeLexerUnitTest class]]];
     [suite addTest:[TestSuite suiteWithClass:[CDTypeParserUnitTest class]]];
     [suite addTest:[TestSuite suiteWithClass:[CDTypeFormatterUnitTest class]]];
     [suite addTest:[TestSuite suiteWithClass:[CDStructHandlingUnitTest class]]];
     [suite addTest:[TestSuite suiteWithClass:[CDPathUnitTest class]]];
-
     return suite;
 }
 

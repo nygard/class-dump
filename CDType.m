@@ -19,6 +19,7 @@
         return nil;
 
     type = 0; // ??
+    protocols = nil;
     subtype = nil;
     typeName = nil;
     members = nil;
@@ -55,6 +56,17 @@
     } else {
         type = '@';
     }
+
+    return self;
+}
+
+- (id)initIDTypeWithProtocols:(NSString *)someProtocols;
+{
+    if ([self init] == nil)
+        return nil;
+
+    type = '@';
+    protocols = [someProtocols retain];
 
     return self;
 }
@@ -141,6 +153,7 @@
 
 - (void)dealloc;
 {
+    [protocols release];
     [subtype release];
     [typeName release];
     [members release];
@@ -240,10 +253,17 @@
           break;
 
       case '@':
-          if (currentName == nil)
-              result = @"id";
-          else
-              result = [NSString stringWithFormat:@"id %@", currentName];
+          if (currentName == nil) {
+              if (protocols == nil)
+                  result = @"id";
+              else
+                  result = [NSString stringWithFormat:@"id <%@>", protocols];
+          } else {
+              if (protocols == nil)
+                  result = [NSString stringWithFormat:@"id %@", currentName];
+              else
+                  result = [NSString stringWithFormat:@"id <%@> %@", protocols, currentName];
+          }
           break;
 
       case 'b':

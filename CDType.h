@@ -10,6 +10,7 @@
 @interface CDType : NSObject
 {
     int type;
+    NSString *protocols;
     CDType *subtype;
     CDTypeName *typeName;
     NSArray *members;
@@ -22,6 +23,7 @@
 - (id)init;
 - (id)initSimpleType:(int)aTypeCode;
 - (id)initIDType:(CDTypeName *)aName;
+- (id)initIDTypeWithProtocols:(NSString *)someProtocols;
 - (id)initNamedType:(CDTypeName *)aName;
 - (id)initStructType:(CDTypeName *)aName members:(NSArray *)someMembers;
 - (id)initUnionType:(CDTypeName *)aName members:(NSArray *)someMembers;

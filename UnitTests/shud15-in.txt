@@ -1,0 +1,5 @@
+{my_struct1="field1"i"field2"i}
+{my_struct2="field1"@}
+{my_struct3="field1"@"field2"i}
+{my_struct4="field1"@"NSObject""field2"i}
+{my_struct4=@"NSObject"i}

@@ -244,17 +244,13 @@
 
 - (void)test16;
 {
-    [self testFilename:@"shud14"];
+    //[self testFilename:@"shud14"];
 }
 
+// This tests the new code for dealing with named objects and field names in structures.
 - (void)test17;
 {
-    //[self testFilename:@"shud15"];
-}
-
-- (void)test18;
-{
-    [self testFilename:@"shud16"];
+    [self testFilename:@"shud15"];
 }
 
 @end

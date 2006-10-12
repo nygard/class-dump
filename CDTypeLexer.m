@@ -67,17 +67,19 @@
         return TK_EOS;
     }
 
+    if ([scanner scanString:@"\"" intoString:NULL] == YES) {
+        [scanner scanUpToString:@"\"" intoString:&str];
+        [self _setLexText:str];
+        [scanner scanString:@"\"" intoString:NULL];
+        if (shouldShowLexing == YES)
+            NSLog(@"%s [id=%d], token = TK_QUOTED_STRING (%@)", _cmd, isInIdentifierState, lexText);
+        return TK_QUOTED_STRING;
+    }
+
     if (isInIdentifierState == YES) {
         NSString *anIdentifier;
 
         //NSLog(@"Scanning in identifier state.");
-
-        if ([scanner scanString:@"\"" intoString:NULL] == YES) {
-            [self setIsInIdentifierState:NO];
-            if (shouldShowLexing == YES)
-                NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, '"', '"');
-            return '"';
-        }
 
         if ([scanner scanIdentifierIntoString:&anIdentifier] == YES) {
             [self _setLexText:anIdentifier];
@@ -102,7 +104,7 @@
     }
 
     if (shouldShowLexing == YES)
-        NSLog(@"%s [id=%d], token = TK_EOS)", _cmd, isInIdentifierState);
+        NSLog(@"%s [id=%d], token = TK_EOS", _cmd, isInIdentifierState);
 
     return TK_EOS;
 }
@@ -147,6 +149,11 @@
     [aScanner release];
 
     return nil;
+}
+
+- (NSScanner *)scanner;
+{
+    return scanner;
 }
 
 @end
