@@ -10,6 +10,7 @@
 + (NSCharacterSet *)cdOtherCharacterSet;
 + (NSCharacterSet *)cdIdentifierStartCharacterSet;
 + (NSCharacterSet *)cdIdentifierCharacterSet;
++ (NSCharacterSet *)cdTemplateTypeCharacterSet;
 
 - (NSString *)peekCharacter;
 - (unichar)peekChar;

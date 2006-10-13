@@ -15,7 +15,7 @@
 
     scanner = [[NSScanner alloc] initWithString:aString];
     [scanner setCharactersToBeSkipped:nil];
-    isInIdentifierState = NO;
+    state = CDTypeLexerStateNormal;
     shouldShowLexing = NO;
 
     return self;
@@ -29,14 +29,19 @@
     [super dealloc];
 }
 
-- (BOOL)isInIdentifierState;
+- (NSScanner *)scanner;
 {
-    return isInIdentifierState;
+    return scanner;
 }
 
-- (void)setIsInIdentifierState:(BOOL)newFlag;
+- (CDTypeLexerState)state;
 {
-    isInIdentifierState = newFlag;
+    return state;
+}
+
+- (void)setState:(CDTypeLexerState)newState;
+{
+    state = newState;
 }
 
 - (BOOL)shouldShowLexing;
@@ -63,48 +68,82 @@
 
     if ([scanner isAtEnd] == YES) {
         if (shouldShowLexing == YES)
-            NSLog(@"%s [id=%d], token = TK_EOS", _cmd, isInIdentifierState);
+            NSLog(@"%s [state=%d], token = TK_EOS", _cmd, state);
         return TK_EOS;
     }
 
-    if ([scanner scanString:@"\"" intoString:NULL] == YES) {
-        [scanner scanUpToString:@"\"" intoString:&str];
-        [self _setLexText:str];
-        [scanner scanString:@"\"" intoString:NULL];
-        if (shouldShowLexing == YES)
-            NSLog(@"%s [id=%d], token = TK_QUOTED_STRING (%@)", _cmd, isInIdentifierState, lexText);
-        return TK_QUOTED_STRING;
-    }
+    if (state == CDTypeLexerStateTemplateTypes) {
+        [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
+        // Skip whitespace, scan '<', ',', '>', and otherwise strings.
+        if ([scanner scanString:@"<" intoString:NULL] == YES) {
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, '<', '<');
+            return '<';
+        }
 
-    if (isInIdentifierState == YES) {
+        if ([scanner scanString:@">" intoString:NULL] == YES) {
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, '>', '>');
+            return '>';
+        }
+
+        if ([scanner scanString:@"," intoString:NULL] == YES) {
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, ',', ',');
+            return ',';
+        }
+
+        if ([scanner my_scanCharactersFromSet:[NSScanner cdTemplateTypeCharacterSet] intoString:&str] == YES) {
+            [self _setLexText:str];
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = TK_TEMPLATE_TYPE (%@)", _cmd, state, lexText);
+            return TK_TEMPLATE_TYPE;
+        }
+
+        NSLog(@"Ooops, fell through in template types state.");
+    } else if (state == CDTypeLexerStateIdentifier) {
         NSString *anIdentifier;
 
         //NSLog(@"Scanning in identifier state.");
+        [scanner setCharactersToBeSkipped:nil];
 
         if ([scanner scanIdentifierIntoString:&anIdentifier] == YES) {
             [self _setLexText:anIdentifier];
-            [self setIsInIdentifierState:NO];
             if (shouldShowLexing == YES)
-                NSLog(@"%s [id=%d], token = TK_IDENTIFIER (%@)", _cmd, isInIdentifierState, lexText);
+                NSLog(@"%s [state=%d], token = TK_IDENTIFIER (%@)", _cmd, state, lexText);
+            state = CDTypeLexerStateNormal;
             return TK_IDENTIFIER;
+        }
+    } else {
+        [scanner setCharactersToBeSkipped:nil];
+
+        if ([scanner scanString:@"\"" intoString:NULL] == YES) {
+            if ([scanner scanUpToString:@"\"" intoString:&str] == YES)
+                [self _setLexText:str];
+            else
+                [self _setLexText:@""];
+            [scanner scanString:@"\"" intoString:NULL];
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = TK_QUOTED_STRING (%@)", _cmd, state, lexText);
+            return TK_QUOTED_STRING;
+        }
+
+        if ([scanner my_scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str] == YES) {
+            [self _setLexText:str];
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = TK_NUMBER (%@)", _cmd, state, lexText);
+            return TK_NUMBER;
+        }
+
+        if ([scanner scanCharacter:&ch] == YES) {
+            if (shouldShowLexing == YES)
+                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, ch, ch);
+            return ch;
         }
     }
 
-    if ([scanner my_scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str] == YES) {
-        [self _setLexText:str];
-        if (shouldShowLexing == YES)
-            NSLog(@"%s [id=%d], token = TK_NUMBER (%@)", _cmd, isInIdentifierState, lexText);
-        return TK_NUMBER;
-    }
-
-    if ([scanner scanCharacter:&ch] == YES) {
-        if (shouldShowLexing == YES)
-            NSLog(@"%s [id=%d], token = %d '%c'", _cmd, isInIdentifierState, ch, ch);
-        return ch;
-    }
-
     if (shouldShowLexing == YES)
-        NSLog(@"%s [id=%d], token = TK_EOS", _cmd, isInIdentifierState);
+        NSLog(@"%s [state=%d], token = TK_EOS", _cmd, state);
 
     return TK_EOS;
 }
@@ -149,11 +188,6 @@
     [aScanner release];
 
     return nil;
-}
-
-- (NSScanner *)scanner;
-{
-    return scanner;
 }
 
 @end

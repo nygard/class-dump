@@ -56,6 +56,16 @@
     return identifierCharacterSet;
 }
 
++ (NSCharacterSet *)cdTemplateTypeCharacterSet;
+{
+    static NSCharacterSet *templateTypeCharacterSet = nil;
+
+    if (templateTypeCharacterSet == nil)
+        templateTypeCharacterSet = [[[NSCharacterSet characterSetWithCharactersInString:@"<,>"] invertedSet] retain];
+
+    return templateTypeCharacterSet;
+}
+
 - (NSString *)peekCharacter;
 {
     //[self skipCharacters];

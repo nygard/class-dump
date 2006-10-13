@@ -9,13 +9,20 @@
 #define TK_IDENTIFIER 258
 #define T_NAMED_OBJECT 259
 #define TK_QUOTED_STRING 260
+#define TK_TEMPLATE_TYPE TK_IDENTIFIER
+
+typedef enum {
+    CDTypeLexerStateNormal = 0,
+    CDTypeLexerStateIdentifier = 1,
+    CDTypeLexerStateTemplateTypes = 2,
+} CDTypeLexerState;
 
 @class NSCharacterSet, NSScanner;
 
 @interface CDTypeLexer : NSObject
 {
     NSScanner *scanner;
-    BOOL isInIdentifierState;
+    CDTypeLexerState state;
     NSString *lexText;
 
     BOOL shouldShowLexing;
@@ -24,8 +31,10 @@
 - (id)initWithString:(NSString *)aString;
 - (void)dealloc;
 
-- (BOOL)isInIdentifierState;
-- (void)setIsInIdentifierState:(BOOL)newFlag;
+- (NSScanner *)scanner;
+
+- (CDTypeLexerState)state;
+- (void)setState:(CDTypeLexerState)newState;
 
 - (BOOL)shouldShowLexing;
 - (void)setShouldShowLexing:(BOOL)newFlag;
@@ -39,7 +48,5 @@
 - (unichar)peekChar;
 - (NSString *)remainingString;
 - (NSString *)peekIdentifier;
-
-- (NSScanner *)scanner;
 
 @end

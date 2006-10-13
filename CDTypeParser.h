@@ -27,13 +27,11 @@ extern NSString *CDSyntaxError;
 @interface CDTypeParser (Private)
 
 - (void)match:(int)token;
-- (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
+- (void)match:(int)token enterState:(int)newState;
 - (void)error:(NSString *)errorString;
 
 - (NSArray *)_parseMethodType;
 - (CDType *)_parseType;
-
-- (CDType *)parseObjectType;
 
 - (NSArray *)parseUnionTypes;
 - (NSArray *)parseOptionalMembers;

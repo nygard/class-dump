@@ -88,15 +88,14 @@ NSString *CDTokenDescription(int token)
 
 - (void)match:(int)token;
 {
-    [self match:token allowIdentifier:NO];
+    [self match:token enterState:[lexer state]];
 }
 
-- (void)match:(int)token allowIdentifier:(BOOL)shouldAllowIdentifier;
+- (void)match:(int)token enterState:(int)newState;
 {
     if (lookahead == token) {
         //NSLog(@"matched %@", CDTokenDescription(token));
-        if (shouldAllowIdentifier == YES)
-            [lexer setIsInIdentifierState:YES];
+        [lexer setState:newState];
         lookahead = [lexer scanNextToken];
     } else {
         [NSException raise:CDSyntaxError format:@"expected token %@, got %@",
@@ -186,10 +185,8 @@ NSString *CDTokenDescription(int token)
         number = [self parseNumber];
         result = [[CDType alloc] initBitfieldType:number];
     } else if (lookahead == '@') { // id
-        //result = [self parseObjectType];
         [self match:'@'];
 
-        // TODO (2006-10-11): This will need to know if we're parsing a structure member list, and if so double-peek for another quoted string...
         if (lookahead == TK_QUOTED_STRING && ([[lexer scanner] isAtEnd] || [lexer peekChar] == '"')) {
             NSString *str;
             CDTypeName *typeName;
@@ -212,29 +209,34 @@ NSString *CDTokenDescription(int token)
     } else if (lookahead == '{') { // structure
         CDTypeName *typeName;
         NSArray *optionalMembers;
+        CDTypeLexerState savedState;
 
-        [self match:'{' allowIdentifier:YES];
+        savedState = [lexer state];
+        [self match:'{' enterState:CDTypeLexerStateIdentifier];
         typeName = [self parseTypeName];
         optionalMembers = [self parseOptionalMembers];
-        [self match:'}'];
+        [self match:'}' enterState:savedState];
 
         result = [[CDType alloc] initStructType:typeName members:optionalMembers];
     } else if (lookahead == '(') { // union
-        [self match:'(' allowIdentifier:YES];
+        CDTypeLexerState savedState;
+
+        savedState = [lexer state];
+        [self match:'(' enterState:CDTypeLexerStateIdentifier];
         if (lookahead == TK_IDENTIFIER) {
             CDTypeName *typeName;
             NSArray *optionalMembers;
 
             typeName = [self parseTypeName];
             optionalMembers = [self parseOptionalMembers];
-            [self match:')'];
+            [self match:')' enterState:savedState];
 
             result = [[CDType alloc] initUnionType:typeName members:optionalMembers];
         } else {
             NSArray *unionTypes;
 
             unionTypes = [self parseUnionTypes];
-            [self match:')'];
+            [self match:')' enterState:savedState];
 
             result = [[CDType alloc] initUnionType:nil members:unionTypes];
         }
@@ -260,10 +262,6 @@ NSString *CDTokenDescription(int token)
     }
 
     return [result autorelease];
-}
-
-- (CDType *)parseObjectType;
-{
 }
 
 // This seems to be used in method types -- no names
@@ -337,20 +335,19 @@ NSString *CDTokenDescription(int token)
     [typeName setName:[self parseIdentifier]];
 
     if (lookahead == '<') {
-        //NSLog(@"Matching template class...");
-        [self match:'<' allowIdentifier:YES];
+        CDTypeLexerState savedState;
+
+        savedState = [lexer state];
+        [self match:'<' enterState:CDTypeLexerStateTemplateTypes];
         [typeName addTemplateType:[self parseTypeName]];
         while (lookahead == ',') {
-            [self match:',' allowIdentifier:YES];
+            [self match:','];
             [typeName addTemplateType:[self parseTypeName]];
         }
-#if 0
+
         // iPhoto 5 has types like.... vector<foo,bar<blegga> >  -- note the extra space
         // Also, std::pair<const double, int>
-        while (lookahead == ' ')
-            [self match:' ' allowIdentifier:NO];
-#endif
-        [self match:'>' allowIdentifier:NO];
+        [self match:'>' enterState:savedState];
     }
 
     return typeName;
