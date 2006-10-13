@@ -32,19 +32,20 @@ extern NSString *CDSyntaxError;
 
 - (NSArray *)_parseMethodType;
 - (CDType *)_parseType;
+- (CDType *)_parseTypeCheckFieldNames:(BOOL)shouldCheckFieldNames;
 
 - (NSArray *)parseUnionTypes;
 - (NSArray *)parseOptionalMembers;
 - (NSArray *)parseMemberList;
-- (CDType *)parseMember;
+- (CDType *)parseMemberWithName:(BOOL)hasMemberName;
 
 - (CDTypeName *)parseTypeName;
 - (NSString *)parseIdentifier;
 - (NSString *)parseNumber;
 
-- (BOOL)isLookaheadInModifierSet;
-- (BOOL)isLookaheadInSimpleTypeSet;
-- (BOOL)isLookaheadInTypeSet;
-- (BOOL)isLookaheadInTypeStartSet;
+- (BOOL)isTokenInModifierSet:(int)aToken;
+- (BOOL)isTokenInSimpleTypeSet:(int)aToken;
+- (BOOL)isTokenInTypeSet:(int)aToken;
+- (BOOL)isTokenInTypeStartSet:(int)aToken;
 
 @end

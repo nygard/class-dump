@@ -45,6 +45,8 @@
     CDTypeParser *aTypeParser;
     CDType *result;
 
+    NSLog(@"----------------------------------------");
+    NSLog(@"str: %@", aType);
     aTypeParser = [[CDTypeParser alloc] initWithType:aType];
     [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
     result = [aTypeParser parseType];
@@ -65,11 +67,36 @@
 
 // ^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*> >=""{?=""{?="_M_start"^@"Album""_M_finish"^@"Album""_M_end_of_storage"^@"Album"}}}{_opaque_pthread_mutex_t="sig"l"opaque"[40c]}}
 
+// If the next token is not a type, use the quoted string as the object type.
+// Grr.  Need to know if this structure is using field names or not.
+
+// Field names:
+// {?="field1"^@"NSObject"} -- end of struct, use quoted string
+// {?="field1"^@"NSObject""field2"@} -- followed by field, use quoted string
+// {?="field1"^@"field2"^@} -- quoted string is followed by type, don't use quoted string for object
+
+// No field names -- always use the quoted string
+// {?=^@"NSObject"}
+// {?=^@"NSObject"^@"NSObject"}
+
 - (void)test3;
 {
-    NSString *str = @"^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*> >=\"\"{?=\"\"{?=\"_M_start\"^@\"Album\"\"_M_finish\"^@\"Album\"\"_M_end_of_storage\"^@\"Album\"}}}{_opaque_pthread_mutex_t=\"sig\"l\"opaque\"[40c]}}";
+    //NSString *str = @"^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*> >=\"\"{?=\"\"{?=\"_M_start\"^@\"Album\"\"_M_finish\"^@\"Album\"\"_M_end_of_storage\"^@\"Album\"}}}{_opaque_pthread_mutex_t=\"sig\"l\"opaque\"[40c]}}";
+    NSString *str = @"{?=\"field1\"^@\"NSObject\"}";
 
-    NSLog(@"str: %@", str);
+    str = @"{?=\"field1\"^@\"NSObject\"}";
+    [self testType:str showLexing:YES];
+
+    str = @"{?=\"field1\"^@\"NSObject\"\"field2\"@}";
+    [self testType:str showLexing:YES];
+
+    str = @"{?=\"field1\"^@\"field2\"^@}";
+    [self testType:str showLexing:YES];
+
+    str = @"{?=^@\"NSObject\"}";
+    [self testType:str showLexing:YES];
+
+    str = @"{?=^@\"NSObject\"^@\"NSObject\"}";
     [self testType:str showLexing:YES];
 }
 

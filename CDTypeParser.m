@@ -128,7 +128,7 @@ NSString *CDTokenDescription(int token)
         aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
         [methodTypes addObject:aMethodType];
         [aMethodType release];
-    } while ([self isLookaheadInTypeStartSet] == YES);
+    } while ([self isTokenInTypeStartSet:lookahead] == YES);
 
     return methodTypes;
 }
@@ -153,6 +153,11 @@ NSString *CDTokenDescription(int token)
 
 - (CDType *)_parseType;
 {
+    return [self _parseTypeCheckFieldNames:NO];
+}
+
+- (CDType *)_parseTypeCheckFieldNames:(BOOL)shouldCheckFieldNames;
+{
     CDType *result;
 
     if (lookahead == 'r'
@@ -167,8 +172,8 @@ NSString *CDTokenDescription(int token)
         modifier = lookahead;
         [self match:modifier];
 
-        if ([self isLookaheadInTypeStartSet] == YES)
-            unmodifiedType = [self _parseType];
+        if ([self isTokenInTypeStartSet:lookahead] == YES)
+            unmodifiedType = [self _parseTypeCheckFieldNames:shouldCheckFieldNames];
         else
             unmodifiedType = nil;
         result = [[CDType alloc] initModifier:modifier type:unmodifiedType];
@@ -176,7 +181,7 @@ NSString *CDTokenDescription(int token)
         CDType *type;
 
         [self match:'^'];
-        type = [self _parseType];
+        type = [self _parseTypeCheckFieldNames:shouldCheckFieldNames];
         result = [[CDType alloc] initPointerType:type];
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
@@ -186,8 +191,15 @@ NSString *CDTokenDescription(int token)
         result = [[CDType alloc] initBitfieldType:number];
     } else if (lookahead == '@') { // id
         [self match:'@'];
-
-        if (lookahead == TK_QUOTED_STRING && ([[lexer scanner] isAtEnd] || [lexer peekChar] == '"')) {
+#if 0
+        if (lookahead == TK_QUOTED_STRING) {
+            NSLog(@"%s, quoted string ahead, shouldCheckFieldNames: %d, end: %d",
+                  _cmd, shouldCheckFieldNames, [[lexer scanner] isAtEnd]);
+            if ([[lexer scanner] isAtEnd] == NO)
+                NSLog(@"next character: %d (%c), isInTypeStartSet: %d", [lexer peekChar], [lexer peekChar], [self isTokenInTypeStartSet:[lexer peekChar]]);
+        }
+#endif
+        if (lookahead == TK_QUOTED_STRING && (shouldCheckFieldNames == NO || [[lexer scanner] isAtEnd] || [self isTokenInTypeStartSet:[lexer peekChar]] == NO)) {
             NSString *str;
             CDTypeName *typeName;
 
@@ -250,7 +262,7 @@ NSString *CDTokenDescription(int token)
         [self match:']'];
 
         result = [[CDType alloc] initArrayType:type count:number];
-    } else if ([self isLookaheadInSimpleTypeSet] == YES) { // simple type
+    } else if ([self isTokenInSimpleTypeSet:lookahead] == YES) { // simple type
         int simpleType;
 
         simpleType = lookahead;
@@ -271,7 +283,7 @@ NSString *CDTokenDescription(int token)
 
     members = [NSMutableArray array];
 
-    while ([self isLookaheadInTypeSet] == YES) {
+    while ([self isTokenInTypeSet:lookahead] == YES) {
         CDType *aType;
 
         aType = [self _parseType];
@@ -298,32 +310,41 @@ NSString *CDTokenDescription(int token)
 - (NSArray *)parseMemberList;
 {
     NSMutableArray *result;
+    BOOL hasMemberNames;
 
     result = [NSMutableArray array];
-    while (lookahead == TK_QUOTED_STRING || [self isLookaheadInTypeSet] == YES) {
-        [result addObject:[self parseMember]];
+    hasMemberNames = (lookahead == TK_QUOTED_STRING);
+    //NSLog(@"%s, hasMemberNames: %d", _cmd, hasMemberNames);
+
+    if (lookahead == TK_QUOTED_STRING) {
+        while (lookahead == TK_QUOTED_STRING)
+            [result addObject:[self parseMemberWithName:YES]];
+    } else {
+        while ([self isTokenInTypeSet:lookahead] == YES)
+            [result addObject:[self parseMemberWithName:NO]];
     }
 
     return result;
 }
 
-- (CDType *)parseMember;
+- (CDType *)parseMemberWithName:(BOOL)hasMemberName;
 {
     CDType *result;
 
-    if (lookahead == TK_QUOTED_STRING) {
+    //NSLog(@" > %s, hasMemberName: %d", _cmd, hasMemberName);
+    if (hasMemberName == YES) {
         NSString *identifier;
 
         identifier = [lexer lexText];
         [self match:TK_QUOTED_STRING];
 
-        result = [self _parseType];
+        result = [self _parseTypeCheckFieldNames:hasMemberName];
         [result setVariableName:identifier];
     } else {
         result = [self _parseType];
-        //[result setVariableName:@"___"];
     }
 
+    //NSLog(@"<  %s", _cmd);
     return result;
 }
 
@@ -379,77 +400,77 @@ NSString *CDTokenDescription(int token)
     return nil;
 }
 
-- (BOOL)isLookaheadInModifierSet;
+- (BOOL)isTokenInModifierSet:(int)aToken;
 {
-    if (lookahead == 'r'
-        || lookahead == 'n'
-        || lookahead == 'N'
-        || lookahead == 'o'
-        || lookahead == 'O'
-        || lookahead == 'R'
-        || lookahead == 'V')
+    if (aToken == 'r'
+        || aToken == 'n'
+        || aToken == 'N'
+        || aToken == 'o'
+        || aToken == 'O'
+        || aToken == 'R'
+        || aToken == 'V')
         return YES;
 
     return NO;
 }
 
-- (BOOL)isLookaheadInSimpleTypeSet;
+- (BOOL)isTokenInSimpleTypeSet:(int)aToken;
 {
-    if (lookahead == 'c'
-        || lookahead == 'i'
-        || lookahead == 's'
-        || lookahead == 'l'
-        || lookahead == 'q'
-        || lookahead == 'C'
-        || lookahead == 'I'
-        || lookahead == 'S'
-        || lookahead == 'L'
-        || lookahead == 'Q'
-        || lookahead == 'f'
-        || lookahead == 'd'
-        || lookahead == 'B'
-        || lookahead == 'v'
-        || lookahead == '*'
-        || lookahead == '#'
-        || lookahead == ':'
-        || lookahead == '%'
-        || lookahead == '?')
+    if (aToken == 'c'
+        || aToken == 'i'
+        || aToken == 's'
+        || aToken == 'l'
+        || aToken == 'q'
+        || aToken == 'C'
+        || aToken == 'I'
+        || aToken == 'S'
+        || aToken == 'L'
+        || aToken == 'Q'
+        || aToken == 'f'
+        || aToken == 'd'
+        || aToken == 'B'
+        || aToken == 'v'
+        || aToken == '*'
+        || aToken == '#'
+        || aToken == ':'
+        || aToken == '%'
+        || aToken == '?')
         return YES;
 
     return NO;
 }
 
-- (BOOL)isLookaheadInTypeSet;
+- (BOOL)isTokenInTypeSet:(int)aToken;
 {
-    if ([self isLookaheadInModifierSet] == YES
-        || [self isLookaheadInSimpleTypeSet] == YES
-        || lookahead == '^'
-        || lookahead == 'b'
-        || lookahead == '@'
-        || lookahead == '{'
-        || lookahead == '('
-        || lookahead == '[')
+    if ([self isTokenInModifierSet:aToken] == YES
+        || [self isTokenInSimpleTypeSet:aToken] == YES
+        || aToken == '^'
+        || aToken == 'b'
+        || aToken == '@'
+        || aToken == '{'
+        || aToken == '('
+        || aToken == '[')
         return YES;
 
     return NO;
 }
 
-- (BOOL)isLookaheadInTypeStartSet;
+- (BOOL)isTokenInTypeStartSet:(int)aToken;
 {
-    if (lookahead == 'r'
-        || lookahead == 'n'
-        || lookahead == 'N'
-        || lookahead == 'o'
-        || lookahead == 'O'
-        || lookahead == 'R'
-        || lookahead == 'V'
-        || lookahead == '^'
-        || lookahead == 'b'
-        || lookahead == '@'
-        || lookahead == '{'
-        || lookahead == '('
-        || lookahead == '['
-        || [self isLookaheadInSimpleTypeSet] == YES)
+    if (aToken == 'r'
+        || aToken == 'n'
+        || aToken == 'N'
+        || aToken == 'o'
+        || aToken == 'O'
+        || aToken == 'R'
+        || aToken == 'V'
+        || aToken == '^'
+        || aToken == 'b'
+        || aToken == '@'
+        || aToken == '{'
+        || aToken == '('
+        || aToken == '['
+        || [self isTokenInSimpleTypeSet:aToken] == YES)
         return YES;
 
     return NO;
