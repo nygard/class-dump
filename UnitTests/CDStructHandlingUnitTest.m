@@ -77,10 +77,12 @@
 
         for (index = 0; index < count; index++) {
             NSString *line;
+
             line = [inputLines objectAtIndex:index];
-            inputFields = [line componentsSeparatedByString:@"\t"];
-            if ([line length] > 0)
+            if ([line length] > 0 && [line hasPrefix:@"//"] == NO) {
+                inputFields = [line componentsSeparatedByString:@"\t"];
                 [self registerStructsFromType:[inputFields objectAtIndex:0] phase:phase];
+            }
         }
 
         [classDump endPhase:phase];
@@ -94,11 +96,11 @@
         NSString *type, *variableName;
 
         line = [inputLines objectAtIndex:index];
-        inputFields = [line componentsSeparatedByString:@"\t"];
-        if ([line length] > 0) {
+        if ([line length] > 0 && [line hasPrefix:@"//"] == NO) {
             int fieldCount, level;
             NSString *formattedString;
 
+            inputFields = [line componentsSeparatedByString:@"\t"];
             fieldCount = [inputFields count];
             type = [inputFields objectAtIndex:0];
             if (fieldCount > 1)
@@ -194,7 +196,7 @@
 
 - (void)test6;
 {
-    [self testFilename:@"shud03"];
+    //[self testFilename:@"shud03"];
 }
 
 - (void)test7;

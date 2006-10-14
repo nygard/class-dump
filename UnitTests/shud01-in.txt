@@ -1,1 +1,2 @@
+// This tests a simple structure without field names.
 {_NSRange=II}	foo

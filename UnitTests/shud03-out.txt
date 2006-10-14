@@ -1,7 +1,0 @@
-struct _NSRange {
-    unsigned int location;
-    unsigned int length;
-};
-
-    struct _NSRange foo;
-    struct _NSRange bar;

@@ -1,2 +1,3 @@
+// Test a structure that contains one of many common types.  The first type has member names, the second doesn't, but they're the same.
 {?="type"i"value"(?="charValue"c"shortValue"s"longValue"l"longlongValue"q"floatValue"f"doubleValue"d"boolValue"B"selectorValue":"objectValue"@"pointerValue"^v"structLocation"^v"cStringLocation"*)}
 {?=i(?=cslqfdB:@^v^v*)}

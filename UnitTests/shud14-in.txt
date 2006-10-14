@@ -1,1 +1,2 @@
-^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*>>={?={?=^@^@^@}}}{_opaque_pthread_mutex_t=l[40c]}}
+// This is a type from iPhoto 5 that caused problems.
+^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*> >={?={?=^@^@^@}}}{_opaque_pthread_mutex_t=l[40c]}}

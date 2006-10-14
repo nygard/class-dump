@@ -1,2 +1,3 @@
+// This tests recognizing that two structures, one with field names and the other without, are really the same.
 {_NSRange=II}	foo
 {_NSRange="location"I"length"I}	bar

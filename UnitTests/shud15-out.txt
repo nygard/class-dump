@@ -1,24 +1,28 @@
 struct my_struct1 {
-    int field1;
-    int field2;
+    NSObject *field1;
 };
 
 struct my_struct2 {
-    id field1;
+    NSObject *field1;
+    id field2;
 };
 
 struct my_struct3 {
     id field1;
-    int field2;
+    id field2;
 };
 
 struct my_struct4 {
-    NSObject *field1;
-    int field2;
+    NSObject *;
+};
+
+struct my_struct5 {
+    NSObject *;
+    NSObject *;
 };
 
     struct my_struct1 var;
     struct my_struct2 var;
     struct my_struct3 var;
     struct my_struct4 var;
-    struct my_struct4 var;
+    struct my_struct5 var;

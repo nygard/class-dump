@@ -1,2 +1,0 @@
-{_NSRange=II}	foo
-{_NSRange="location"I"length"I}	bar

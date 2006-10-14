@@ -1,1 +1,3 @@
+// This tests a common structure that contains two other structures.
+// Note:  It looks like struct _NSSize is shown after _NSRect, but it should really be before it.
 {_NSRect={_NSPoint=ff}{_NSSize=ff}}
