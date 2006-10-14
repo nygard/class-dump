@@ -16,4 +16,7 @@
 - (void)testLoneConstType;
 - (void)testObjectQuotedStringTypes;
 
+- (void)testMissingFieldNames;
+- (void)testLowercaseClassName;
+
 @end

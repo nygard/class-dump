@@ -8,19 +8,19 @@ OLD_CD=~/Unix/bin/class-dump
 NEW_CD=/Local/nygard/Products/Release/class-dump
 
 # These don't work and I don't understand why not.
-#OLD_CD_ARGS=-s -S
-#NEW_CD_ARGS=-s -S
+OLD_CD_ARGS=-s
+NEW_CD_ARGS=-s
 
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
 foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework) do
     echo $i `basename $i .framework`
-    $OLD_CD -s $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
-    $NEW_CD $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
+    $OLD_CD $OLD_CD_ARGS $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
+    $NEW_CD $NEW_CD_ARGS $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
 done
 
 foreach i (/Applications/*.app /Applications/Utilities/*.app) do
     echo $i `basename $i .app`
-    $OLD_CD -s $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
-    $NEW_CD $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
+    $OLD_CD $OLD_CD_ARGS $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
+    $NEW_CD $NEW_CD_ARGS $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
 done

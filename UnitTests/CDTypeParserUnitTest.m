@@ -68,7 +68,7 @@
 
 - (void)testObjectQuotedStringTypes;
 {
-    NSString *str = @"{?=\"field1\"^@\"NSObject\"}";
+    NSString *str;
 
     str = @"{?=\"field1\"^@\"NSObject\"}";
     [self testType:str showLexing:NO];
@@ -83,6 +83,30 @@
     [self testType:str showLexing:NO];
 
     str = @"{?=^@\"NSObject\"^@\"NSObject\"}";
+    [self testType:str showLexing:NO];
+}
+
+- (void)testMissingFieldNames;
+{
+    NSString *str;
+
+    str = @"{?=b8b4b1b1b18\"_field1\"[8S]}";
+    [self testType:str showLexing:NO];
+}
+
+- (void)testLowercaseClassName;
+{
+    NSString *str;
+
+    str = @"@\"iToolsAccount\"";
+    [self testType:str showLexing:NO];
+}
+
+- (void)testLowercaseClassName2;
+{
+    NSString *str;
+
+    str = @"{?=@\"iToolsAccount\"}";
     [self testType:str showLexing:NO];
 }
 

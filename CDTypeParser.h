@@ -32,12 +32,12 @@ extern NSString *CDSyntaxError;
 
 - (NSArray *)_parseMethodType;
 - (CDType *)_parseType;
-- (CDType *)_parseTypeCheckFieldNames:(BOOL)shouldCheckFieldNames;
+- (CDType *)_parseTypeInStruct:(BOOL)isInStruct;
 
 - (NSArray *)parseUnionTypes;
 - (NSArray *)parseOptionalMembers;
 - (NSArray *)parseMemberList;
-- (CDType *)parseMemberWithName:(BOOL)hasMemberName;
+- (CDType *)parseMember;
 
 - (CDTypeName *)parseTypeName;
 - (NSString *)parseIdentifier;

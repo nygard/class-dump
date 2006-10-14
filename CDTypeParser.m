@@ -151,10 +151,10 @@ NSString *CDTokenDescription(int token)
 
 - (CDType *)_parseType;
 {
-    return [self _parseTypeCheckFieldNames:NO];
+    return [self _parseTypeInStruct:NO];
 }
 
-- (CDType *)_parseTypeCheckFieldNames:(BOOL)shouldCheckFieldNames;
+- (CDType *)_parseTypeInStruct:(BOOL)isInStruct;
 {
     CDType *result;
 
@@ -171,7 +171,7 @@ NSString *CDTokenDescription(int token)
         [self match:modifier];
 
         if ([self isTokenInTypeStartSet:lookahead] == YES)
-            unmodifiedType = [self _parseTypeCheckFieldNames:shouldCheckFieldNames];
+            unmodifiedType = [self _parseTypeInStruct:isInStruct];
         else
             unmodifiedType = nil;
         result = [[CDType alloc] initModifier:modifier type:unmodifiedType];
@@ -179,7 +179,7 @@ NSString *CDTokenDescription(int token)
         CDType *type;
 
         [self match:'^'];
-        type = [self _parseTypeCheckFieldNames:shouldCheckFieldNames];
+        type = [self _parseTypeInStruct:isInStruct];
         result = [[CDType alloc] initPointerType:type];
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
@@ -197,7 +197,7 @@ NSString *CDTokenDescription(int token)
                 NSLog(@"next character: %d (%c), isInTypeStartSet: %d", [lexer peekChar], [lexer peekChar], [self isTokenInTypeStartSet:[lexer peekChar]]);
         }
 #endif
-        if (lookahead == TK_QUOTED_STRING && (shouldCheckFieldNames == NO || [[lexer scanner] isAtEnd] || [self isTokenInTypeStartSet:[lexer peekChar]] == NO)) {
+        if (lookahead == TK_QUOTED_STRING && (isInStruct == NO || [[lexer lexText] isFirstLetterUppercase] == YES || [self isTokenInTypeStartSet:[lexer peekChar]] == NO)) {
             NSString *str;
             CDTypeName *typeName;
 
@@ -268,7 +268,7 @@ NSString *CDTokenDescription(int token)
         result = [[CDType alloc] initSimpleType:simpleType];
     } else {
         result = nil;
-        [NSException raise:CDSyntaxError format:@"expected (many things), got %d", lookahead];
+        [NSException raise:CDSyntaxError format:@"expected (many things), got %@", CDTokenDescription(lookahead)];
     }
 
     return [result autorelease];
@@ -308,38 +308,31 @@ NSString *CDTokenDescription(int token)
 - (NSArray *)parseMemberList;
 {
     NSMutableArray *result;
-    BOOL hasMemberNames;
 
     result = [NSMutableArray array];
-    hasMemberNames = (lookahead == TK_QUOTED_STRING);
     //NSLog(@"%s, hasMemberNames: %d", _cmd, hasMemberNames);
 
-    if (lookahead == TK_QUOTED_STRING) {
-        while (lookahead == TK_QUOTED_STRING)
-            [result addObject:[self parseMemberWithName:YES]];
-    } else {
-        while ([self isTokenInTypeSet:lookahead] == YES)
-            [result addObject:[self parseMemberWithName:NO]];
-    }
+    while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead] == YES)
+        [result addObject:[self parseMember]];
 
     return result;
 }
 
-- (CDType *)parseMemberWithName:(BOOL)hasMemberName;
+- (CDType *)parseMember;
 {
     CDType *result;
 
     //NSLog(@" > %s, hasMemberName: %d", _cmd, hasMemberName);
-    if (hasMemberName == YES) {
+    if (lookahead == TK_QUOTED_STRING) {
         NSString *identifier;
 
         identifier = [lexer lexText];
         [self match:TK_QUOTED_STRING];
 
-        result = [self _parseTypeCheckFieldNames:hasMemberName];
+        result = [self _parseTypeInStruct:YES];
         [result setVariableName:identifier];
     } else {
-        result = [self _parseType];
+        result = [self _parseTypeInStruct:YES];
     }
 
     //NSLog(@"<  %s", _cmd);
