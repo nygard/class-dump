@@ -58,7 +58,7 @@ struct tokenValuePair {
 }
 
 // The last token in expectedResults must be TK_EOS.
-- (void)lexString:(NSString *)str expectedResults:(struct tokenValuePair *)expectedResults;
+- (void)testLexingString:(NSString *)str expectedResults:(struct tokenValuePair *)expectedResults;
 {
     int token;
 
@@ -91,7 +91,7 @@ struct tokenValuePair {
         { TK_EOS,           nil,               -1 },
     };
 
-    [self lexString:str expectedResults:tokens];
+    [self testLexingString:str expectedResults:tokens];
 }
 
 - (void)testQuotedStringToken;
@@ -103,7 +103,7 @@ struct tokenValuePair {
         { TK_EOS,           nil,               -1 },
     };
 
-    [self lexString:str expectedResults:tokens];
+    [self testLexingString:str expectedResults:tokens];
 }
 
 - (void)testUnterminatedQuotedString;
@@ -115,7 +115,7 @@ struct tokenValuePair {
         { TK_EOS,           nil,               -1 },
     };
 
-    [self lexString:str expectedResults:tokens];
+    [self testLexingString:str expectedResults:tokens];
 }
 
 // The lexer should automatically switch back to normal mode after scanning one identifier.
@@ -131,7 +131,7 @@ struct tokenValuePair {
         { TK_EOS,           nil,               -1 },
     };
 
-    [self lexString:str expectedResults:tokens];
+    [self testLexingString:str expectedResults:tokens];
 }
 
 
@@ -158,7 +158,7 @@ struct tokenValuePair {
         { TK_EOS,           nil,               -1 },
     };
 
-    [self lexString:str expectedResults:tokens];
+    [self testLexingString:str expectedResults:tokens];
 }
 
 @end

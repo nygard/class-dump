@@ -18,7 +18,7 @@
 - (void)_showScannedTokens;
 - (void)showScannedTokensForString:(NSString *)str;
 
-- (void)lexString:(NSString *)str expectedResults:(struct tokenValuePair *)expectedResults;
+- (void)testLexingString:(NSString *)str expectedResults:(struct tokenValuePair *)expectedResults;
 
 - (void)testSimpleTokens;
 - (void)testQuotedStringToken;
