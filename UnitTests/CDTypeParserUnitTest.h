@@ -13,4 +13,7 @@
 - (void)testType:(NSString *)aType showLexing:(BOOL)shouldShowLexing;
 - (void)testMethodType:(NSString *)aMethodType showLexing:(BOOL)shouldShowLexing;
 
+- (void)testLoneConstType;
+- (void)testObjectQuotedStringTypes;
+
 @end

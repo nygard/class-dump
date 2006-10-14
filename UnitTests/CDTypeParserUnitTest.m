@@ -23,12 +23,14 @@
     CDTypeParser *aTypeParser;
     CDType *result;
 
-    NSLog(@"----------------------------------------");
-    NSLog(@"str: %@", aType);
+    if (shouldShowLexing) {
+        NSLog(@"----------------------------------------");
+        NSLog(@"str: %@", aType);
+    }
+
     aTypeParser = [[CDTypeParser alloc] initWithType:aType];
     [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
     result = [aTypeParser parseType];
-    NSLog(@"result: %p", result);
     [self assertNotNil:result];
     [aTypeParser release];
 }
@@ -45,30 +47,15 @@
     [aTypeParser release];
 }
 
-- (void)test1;
+- (void)testLoneConstType;
 {
     // On Panther, from WebCore, -[KWQPageState
     // initWithDocument:URL:windowProperties:locationProperties:interpreterBuiltins:]
     // has part of a method type as "r12".  "r" is const, but it doesn't modify anything.
 
     [self testMethodType:@"ri12i16" showLexing:NO]; // This works
-    [self testMethodType:@"r12i16" showLexing:YES]; // This doesn't work.
+    [self testMethodType:@"r12i16" showLexing:NO]; // This didn't work.
 }
-
-// In all of this mess, we test empty quoted strings.
-// ^{IPPhotoList=^^?{vector<IPPhotoInfo*,std::allocator<IPPhotoInfo*> >=""{?=""{?="_M_start"^^{IPPhotoInfo}"_M_finish"^^{IPPhotoInfo}"_M_end_of_storage"^^{IPPhotoInfo}}}}{_opaque_pthread_mutex_t="sig"l"opaque"[40c]}}
-
-- (void)test2;
-{
-    NSString *str = @"^{IPPhotoList=^^?{vector<IPPhotoInfo*,std::allocator<IPPhotoInfo*> >=\"\"{?=\"\"{?=\"_M_start\"^^{IPPhotoInfo}\"_M_finish\"^^{IPPhotoInfo}\"_M_end_of_storage\"^^{IPPhotoInfo}}}}{_opaque_pthread_mutex_t=\"sig\"l\"opaque\"[40c]}}";
-
-    [self testType:str showLexing:NO];
-}
-
-// ^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*> >=""{?=""{?="_M_start"^@"Album""_M_finish"^@"Album""_M_end_of_storage"^@"Album"}}}{_opaque_pthread_mutex_t="sig"l"opaque"[40c]}}
-
-// If the next token is not a type, use the quoted string as the object type.
-// Grr.  Need to know if this structure is using field names or not.
 
 // Field names:
 // {?="field1"^@"NSObject"} -- end of struct, use quoted string
@@ -79,25 +66,24 @@
 // {?=^@"NSObject"}
 // {?=^@"NSObject"^@"NSObject"}
 
-- (void)test3;
+- (void)testObjectQuotedStringTypes;
 {
-    //NSString *str = @"^{IPAlbumList=^^?{vector<Album*,std::allocator<Album*> >=\"\"{?=\"\"{?=\"_M_start\"^@\"Album\"\"_M_finish\"^@\"Album\"\"_M_end_of_storage\"^@\"Album\"}}}{_opaque_pthread_mutex_t=\"sig\"l\"opaque\"[40c]}}";
     NSString *str = @"{?=\"field1\"^@\"NSObject\"}";
 
     str = @"{?=\"field1\"^@\"NSObject\"}";
-    [self testType:str showLexing:YES];
+    [self testType:str showLexing:NO];
 
     str = @"{?=\"field1\"^@\"NSObject\"\"field2\"@}";
-    [self testType:str showLexing:YES];
+    [self testType:str showLexing:NO];
 
     str = @"{?=\"field1\"^@\"field2\"^@}";
-    [self testType:str showLexing:YES];
+    [self testType:str showLexing:NO];
 
     str = @"{?=^@\"NSObject\"}";
-    [self testType:str showLexing:YES];
+    [self testType:str showLexing:NO];
 
     str = @"{?=^@\"NSObject\"^@\"NSObject\"}";
-    [self testType:str showLexing:YES];
+    [self testType:str showLexing:NO];
 }
 
 @end
