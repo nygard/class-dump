@@ -60,7 +60,7 @@
     return self;
 }
 
-- (id)initIDTypeWithProtocols:(NSString *)someProtocols;
+- (id)initIDTypeWithProtocols:(NSArray *)someProtocols;
 {
     if ([self init] == nil)
         return nil;
@@ -257,12 +257,12 @@
               if (protocols == nil)
                   result = @"id";
               else
-                  result = [NSString stringWithFormat:@"id <%@>", protocols];
+                  result = [NSString stringWithFormat:@"id <%@>", [protocols componentsJoinedByString:@", "]];
           } else {
               if (protocols == nil)
                   result = [NSString stringWithFormat:@"id %@", currentName];
               else
-                  result = [NSString stringWithFormat:@"id <%@> %@", protocols, currentName];
+                  result = [NSString stringWithFormat:@"id <%@> %@", [protocols componentsJoinedByString:@", "], currentName];
           }
           break;
 

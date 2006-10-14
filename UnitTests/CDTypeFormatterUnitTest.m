@@ -63,7 +63,7 @@
 
 - (void)testModifiers;
 {
-    // The Distributed Object modifiers (in, inout, out, bycopy, byref, oneway) are only for method paramters/return
+    // The Distributed Object modifiers (in, inout, out, bycopy, byref, oneway) are only for method parameters/return
     // values, so they will never have a variable name.
 
     // TODO (2003-12-20): Check whether const makes sense for ivars.
@@ -108,7 +108,7 @@
     [self testVariableName:@"var" type:@"^f" expectedResult:@"float *var"];
     [self testVariableName:@"var" type:@"^d" expectedResult:@"double *var"];
     [self testVariableName:@"var" type:@"^B" expectedResult:@"_Bool *var"];
-    [self testVariableName:@"var" type:@"^v" expectedResult:@"void *var"]; // TODO: Doesn't make sense
+    [self testVariableName:@"var" type:@"^v" expectedResult:@"void *var"];
     [self testVariableName:@"var" type:@"^*" expectedResult:@"char **var"];
     [self testVariableName:@"var" type:@"^#" expectedResult:@"Class *var"];
     [self testVariableName:@"var" type:@"^:" expectedResult:@"SEL *var"];
@@ -129,6 +129,7 @@
     [self testVariableName:@"var" type:@"b63" expectedResult:@"unsigned int var:63"];
     [self testVariableName:@"var" type:@"b64" expectedResult:@"unsigned int var:64"];
     [self testVariableName:@"var" type:@"b65" expectedResult:@"unsigned int var:65"];
+    [self testVariableName:nil type:@"b3" expectedResult:@"unsigned int :3"];
 
     [self testVariableName:@"var" type:@"b" expectedResult:@"unsigned int var:(null)"]; // Don't we always expect a number?
 }
@@ -147,24 +148,6 @@
 
     [self testVariableName:@"var" type:@"[8[12f]]" expectedResult:@"float var[8][12]"];
     //[self testVariableName:@"var" type:@"[8b3]" expectedResult:@"int var:3[8]"]; // Don't know if this is even valid!
-
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
-    //[self testVariableName:@"var" type:@"" expectedResult:@""];
 }
 
 - (void)testStructType;
@@ -173,15 +156,11 @@
     [self testVariableName:@"var" type:@"{?}" expectedResult:@"struct var"]; // expected, but not correct.  Test these in struct/union handling unit tests
     [self testVariableName:@"var" type:@"{NSStreamFunctions}" expectedResult:@"struct NSStreamFunctions var"];
     [self testVariableName:@"var" type:@"{__ssFlags=\"delegateLearnsWords\"b1\"delegateForgetsWords\"b1\"busy\"b1\"_reserved\"b29}" expectedResult:@"struct __ssFlags var"];
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
 }
 
 - (void)testUnionType;
 {
     [self testVariableName:@"_tokenBuffer" type:@"(?=\"ascii\"*\"unicode\"^S)" expectedResult:@"union _tokenBuffer"]; // expected, but not correct.  Test these in struct/union handling unit tests
-    //[self testVariableName:@"" type:@"" expectedResult:@""];
 }
 
 // I have diagrams of these cases
@@ -326,7 +305,7 @@
     //[self parseAndEncodeType:@""];
 }
 
-- (void)test1;
+- (void)testTemplateTypes;
 {
     [self testVariableName:@"var" type:@"r" expectedResult:@"const var"];
 
@@ -344,16 +323,12 @@
     [self testVariableName:@"var" type:@"^{QButton={KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}}" expectedResult:@"struct QButton *var"];
 }
 
-- (void)test2;
+- (void)testIdProtocolTypes;
 {
-    NSLog(@"----------------------------------------");
-    [self testVariableName:@"var" type:@"{_opaque_pthread_mutex_t=l[40c]}" expectedResult:@"struct _opaque_pthread_mutex_t var"];
-
     [self testVariableName:@"var" type:@"@" expectedResult:@"id var"];
     [self testVariableName:@"var" type:@"@\"NSObject\"" expectedResult:@"NSObject *var"];
     [self testVariableName:@"var" type:@"@\"<MyProtocol>\"" expectedResult:@"id <MyProtocol> var"];
-    [self testVariableName:@"var" type:@"@\"<MyProtocol1,MyProtocol2>\"" expectedResult:@"id <MyProtocol1,MyProtocol2> var"];
-    NSLog(@"----------------------------------------");
+    [self testVariableName:@"var" type:@"@\"<MyProtocol1,MyProtocol2>\"" expectedResult:@"id <MyProtocol1, MyProtocol2> var"];
 }
 
 @end

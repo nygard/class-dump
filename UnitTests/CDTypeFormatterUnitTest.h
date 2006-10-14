@@ -30,8 +30,7 @@
 - (void)parseAndEncodeType:(NSString *)originalType;
 - (void)testEncoding;
 
-- (void)test1;
-
-- (void)test2;
+- (void)testTemplateTypes;
+- (void)testIdProtocolTypes;
 
 @end

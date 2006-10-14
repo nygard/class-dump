@@ -206,7 +206,7 @@ NSString *CDTokenDescription(int token)
             str = [lexer lexText];
             if ([str hasPrefix:@"<"] == YES && [str hasSuffix:@">"] == YES) {
                 str = [str substringWithRange:NSMakeRange(1, [str length] - 2)];
-                result = [[CDType alloc] initIDTypeWithProtocols:str];
+                result = [[CDType alloc] initIDTypeWithProtocols:[str componentsSeparatedByString:@","]];
             } else {
                 typeName = [[CDTypeName alloc] init];
                 [typeName setName:str];
