@@ -141,15 +141,13 @@ NSString *CDTokenDescription(int token)
 //     i"foo"                - int foo
 //     @"foo"                - id foo
 //     @"Foo"                - Foo *
-// So this is where the class name heuristics are used.  I think.  Maybe.
+// So this is where we need to be careful.
 //
 // I'm going to make a simplifying assumption:  Either the structure/union has member names,
 // or is doesn't, it can't have some names and be missing others.
 // The two key tests are:
 //     {my_struct3="field1"@"field2"i}
 //     {my_struct4="field1"@"NSObject""field2"i}
-//
-// Hmm.  I think having the lexer have a quoted string token would make the lookahead easier.
 
 - (CDType *)_parseType;
 {
@@ -366,8 +364,6 @@ NSString *CDTokenDescription(int token)
             [typeName addTemplateType:[self parseTypeName]];
         }
 
-        // iPhoto 5 has types like.... vector<foo,bar<blegga> >  -- note the extra space
-        // Also, std::pair<const double, int>
         [self match:'>' enterState:savedState];
     }
 

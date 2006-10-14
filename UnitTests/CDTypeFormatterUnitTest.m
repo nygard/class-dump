@@ -321,6 +321,8 @@
           expectedResult:@"struct QValueList<KWQSlot> var"];
     [self testVariableName:@"var" type:@"{KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}" expectedResult:@"struct KWQSignal var"];
     [self testVariableName:@"var" type:@"^{QButton={KWQSignal=^{QObject}^{KWQSignal}*{QValueList<KWQSlot>={KWQValueListImpl={KWQRefPtr<KWQValueListImpl::KWQValueListPrivate>=^{KWQValueListPrivate}}}}}}" expectedResult:@"struct QButton *var"];
+
+    [self testVariableName:@"var" type:@"{std::pair<const double, int>=i}" expectedResult:@"struct std::pair<const double, int> var"];
 }
 
 - (void)testIdProtocolTypes;
