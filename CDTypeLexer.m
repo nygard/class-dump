@@ -73,8 +73,8 @@
     }
 
     if (state == CDTypeLexerStateTemplateTypes) {
+        // Skip whitespace, scan '<', ',', '>'.  Everything else is lumped together as a string.
         [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
-        // Skip whitespace, scan '<', ',', '>', and otherwise strings.
         if ([scanner scanString:@"<" intoString:NULL] == YES) {
             if (shouldShowLexing == YES)
                 NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, '<', '<');

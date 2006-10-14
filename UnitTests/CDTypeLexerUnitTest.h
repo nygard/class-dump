@@ -15,9 +15,15 @@
 
 - (void)_setupLexerForString:(NSString *)str;
 - (void)_cleanupLexer;
-
 - (void)_showScannedTokens;
 - (void)showScannedTokensForString:(NSString *)str;
-- (void)test1;
+
+- (void)lexString:(NSString *)str expectedResults:(struct tokenValuePair *)expectedResults;
+
+- (void)testSimpleTokens;
+- (void)testQuotedStringToken;
+- (void)testUnterminatedQuotedString;
+- (void)testIdentifierToken;
+- (void)testTemplateTokens;
 
 @end

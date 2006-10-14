@@ -6,6 +6,12 @@
 #import <Foundation/Foundation.h>
 #import "CDTypeLexer.h"
 
+struct tokenValuePair {
+    int token;
+    NSString *value;
+    int nextState;
+};
+
 @implementation CDTypeLexerUnitTest
 
 - (void)setUp;
@@ -51,39 +57,88 @@
     [self _cleanupLexer];
 }
 
-- (void)test1;
+// The last token in expectedResults must be TK_EOS.
+- (void)lexString:(NSString *)str expectedResults:(struct tokenValuePair *)expectedResults;
 {
-    [self showScannedTokensForString:@"^@"];
-    [self showScannedTokensForString:@"\"field1\"@\"NSObject\"\"field2\"iic"];
-    [self showScannedTokensForString:@"iiiiiii"];
-}
-
-- (void)test2;
-{
-    NSString *str = @"iiiiiiiiii)ii\"foo\"iii";
+    int token;
 
     [self _setupLexerForString:str];
-    [lexer setState:CDTypeLexerStateIdentifier];
-    [self _showScannedTokens];
+    //NSLog(@"str: %@", [lexer string]);
+    //[lexer setShouldShowLexing:YES];
+
+    while (expectedResults->token != TK_EOS) {
+        token = [lexer scanNextToken];
+        [self assertInt:token equals:expectedResults->token];
+        if (expectedResults->value != nil)
+            [self assert:[lexer lexText] equals:expectedResults->value];
+        if (expectedResults->nextState != -1)
+            [lexer setState:expectedResults->nextState];
+        expectedResults++;
+    }
+
+    [self assertInt:[lexer scanNextToken] equals:TK_EOS];
+
     [self _cleanupLexer];
 }
 
-// This is testing a quoted string that isn't terminated...
-- (void)test3;
+- (void)testSimpleTokens;
 {
-    [self showScannedTokensForString:@"@\"NSObject"];
+    NSString *str = @"i^@";
+    struct tokenValuePair tokens[] = {
+        { 'i',              nil,               -1 },
+        { '^',              nil,               -1 },
+        { '@',              nil,               -1 },
+        { TK_EOS,           nil,               -1 },
+    };
+
+    [self lexString:str expectedResults:tokens];
 }
 
-struct tokenValuePair {
-    int token;
-    NSString *value;
-    int nextState;
-};
+- (void)testQuotedStringToken;
+{
+    NSString *str = @"@\"NSObject\"";
+    struct tokenValuePair tokens[] = {
+        { '@',              nil,               -1 },
+        { TK_QUOTED_STRING, @"NSObject",       -1 },
+        { TK_EOS,           nil,               -1 },
+    };
 
-- (void)test4;
+    [self lexString:str expectedResults:tokens];
+}
+
+- (void)testUnterminatedQuotedString;
+{
+    NSString *str = @"@\"NSObject";
+    struct tokenValuePair tokens[] = {
+        { '@',              nil,               -1 },
+        { TK_QUOTED_STRING, @"NSObject",       -1 },
+        { TK_EOS,           nil,               -1 },
+    };
+
+    [self lexString:str expectedResults:tokens];
+}
+
+// The lexer should automatically switch back to normal mode after scanning one identifier.
+- (void)testIdentifierToken;
+{
+    NSString *str = @"iii)ii";
+    struct tokenValuePair tokens[] = {
+        { 'i',              nil,               CDTypeLexerStateIdentifier },
+        { TK_IDENTIFIER,    @"ii",             -1 },
+        { ')',              nil,               -1 },
+        { 'i',              nil,               -1 },
+        { 'i',              nil,               -1 },
+        { TK_EOS,           nil,               -1 },
+    };
+
+    [self lexString:str expectedResults:tokens];
+}
+
+
+// This tests a more complicated C++ template type, and makes sure the space between the '>'s is ignored.
+- (void)testTemplateTokens;
 {
     NSString *str = @"{vector<IPPhotoInfo*,std::allocator<IPPhotoInfo*> >=iic}";
-    int token;
     struct tokenValuePair tokens[] = {
         { '{',              nil,               CDTypeLexerStateIdentifier },
         { TK_IDENTIFIER,    @"vector",         -1 },
@@ -102,25 +157,8 @@ struct tokenValuePair {
         { '}',              nil,               -1 },
         { TK_EOS,           nil,               -1 },
     };
-    struct tokenValuePair *expectedResults = tokens;
 
-    [self _setupLexerForString:str];
-    NSLog(@"str: %@", [lexer string]);
-    [lexer setShouldShowLexing:YES];
-
-    while (expectedResults->token != TK_EOS) {
-        token = [lexer scanNextToken];
-        [self assertInt:token equals:expectedResults->token];
-        if (expectedResults->value != nil)
-            [self assert:[lexer lexText] equals:expectedResults->value];
-        if (expectedResults->nextState != -1)
-            [lexer setState:expectedResults->nextState];
-        expectedResults++;
-    }
-
-    [self assertInt:[lexer scanNextToken] equals:TK_EOS];
-
-    [self _cleanupLexer];
+    [self lexString:str expectedResults:tokens];
 }
 
 @end
