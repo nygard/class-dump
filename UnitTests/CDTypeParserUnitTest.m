@@ -18,6 +18,21 @@
 {
 }
 
+- (void)testType:(NSString *)aType showLexing:(BOOL)shouldShowLexing;
+{
+    CDTypeParser *aTypeParser;
+    CDType *result;
+
+    NSLog(@"----------------------------------------");
+    NSLog(@"str: %@", aType);
+    aTypeParser = [[CDTypeParser alloc] initWithType:aType];
+    [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
+    result = [aTypeParser parseType];
+    NSLog(@"result: %p", result);
+    [self assertNotNil:result];
+    [aTypeParser release];
+}
+
 - (void)testMethodType:(NSString *)aMethodType showLexing:(BOOL)shouldShowLexing;
 {
     CDTypeParser *aTypeParser;
@@ -38,21 +53,6 @@
 
     [self testMethodType:@"ri12i16" showLexing:NO]; // This works
     [self testMethodType:@"r12i16" showLexing:YES]; // This doesn't work.
-}
-
-- (void)testType:(NSString *)aType showLexing:(BOOL)shouldShowLexing;
-{
-    CDTypeParser *aTypeParser;
-    CDType *result;
-
-    NSLog(@"----------------------------------------");
-    NSLog(@"str: %@", aType);
-    aTypeParser = [[CDTypeParser alloc] initWithType:aType];
-    [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
-    result = [aTypeParser parseType];
-    NSLog(@"result: %p", result);
-    [self assertNotNil:result];
-    [aTypeParser release];
 }
 
 // In all of this mess, we test empty quoted strings.

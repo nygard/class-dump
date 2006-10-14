@@ -183,6 +183,7 @@
 
 - (void)test4;
 {
+    // I'm guessing that "shud" could stand for Struct Handling Unittest Data.
     [self testFilename:@"shud01"];
 }
 

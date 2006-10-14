@@ -10,6 +10,7 @@
 - (void)setUp;
 - (void)tearDown;
 
+- (void)testType:(NSString *)aType showLexing:(BOOL)shouldShowLexing;
 - (void)testMethodType:(NSString *)aMethodType showLexing:(BOOL)shouldShowLexing;
 
 @end

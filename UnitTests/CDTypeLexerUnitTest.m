@@ -106,6 +106,18 @@ struct tokenValuePair {
     [self testLexingString:str expectedResults:tokens];
 }
 
+- (void)testEmptyQuotedStringToken;
+{
+    NSString *str = @"@\"\"";
+    struct tokenValuePair tokens[] = {
+        { '@',              nil,               -1 },
+        { TK_QUOTED_STRING, @"",               -1 },
+        { TK_EOS,           nil,               -1 },
+    };
+
+    [self testLexingString:str expectedResults:tokens];
+}
+
 - (void)testUnterminatedQuotedString;
 {
     NSString *str = @"@\"NSObject";

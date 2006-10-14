@@ -22,6 +22,7 @@
 
 - (void)testSimpleTokens;
 - (void)testQuotedStringToken;
+- (void)testEmptyQuotedStringToken;
 - (void)testUnterminatedQuotedString;
 - (void)testIdentifierToken;
 - (void)testTemplateTokens;
