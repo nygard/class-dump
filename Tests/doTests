@@ -7,9 +7,9 @@ TESTDIR_NEW=$TESTDIR/new
 OLD_CD=~/Unix/bin/class-dump
 NEW_CD=/Local/nygard/Products/Release/class-dump
 
-# These don't work and I don't understand why not.
-OLD_CD_ARGS=-s
-NEW_CD_ARGS=-s -t
+# These seem to be unhappy without the quotes...
+OLD_CD_ARGS="-s"
+NEW_CD_ARGS="-s -t"
 
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
