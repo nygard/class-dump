@@ -28,6 +28,7 @@
         unsigned int shouldShowIvarOffsets:1;
         unsigned int shouldShowMethodAddresses:1;
         unsigned int shouldMatchRegex:1;
+        unsigned int shouldShowHeader:1;
     } flags;
 
     regex_t compiledRegex;
@@ -81,6 +82,9 @@
 
 - (BOOL)shouldMatchRegex;
 - (void)setShouldMatchRegex:(BOOL)newFlag;
+
+- (BOOL)shouldShowHeader;
+- (void)setShouldShowHeader:(BOOL)newFlag;
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;

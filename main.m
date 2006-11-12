@@ -30,6 +30,7 @@ void print_usage(void)
             "        -r             recursively expand frameworks and fixed VM shared libraries\n"
             "        -s             sort classes and categories by name\n"
             "        -S             sort methods by name\n"
+            "        -t             suppress header in output, for testing\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -56,6 +57,7 @@ int main(int argc, char *argv[])
         { "sort", no_argument, NULL, 's' },
         { "sort-methods", no_argument, NULL, 'S' },
         { "arch", required_argument, NULL, CD_OPT_ARCH},
+        { "suppress-header", no_argument, NULL, 't' },
         { NULL, 0, NULL, 0 },
     };
 
@@ -66,7 +68,7 @@ int main(int argc, char *argv[])
 
     classDump = [[[CDClassDump alloc] init] autorelease];
 
-    while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsS", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsSt", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH:
           {
@@ -124,6 +126,10 @@ int main(int argc, char *argv[])
 
           case 'S':
               [classDump setShouldSortMethods:YES];
+              break;
+
+          case 't':
+              [classDump setShouldShowHeader:NO];
               break;
 
           case '?':
