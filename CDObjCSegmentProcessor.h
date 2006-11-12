@@ -17,6 +17,7 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
+- (BOOL)hasModules;
 - (void)process;
 
 - (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;

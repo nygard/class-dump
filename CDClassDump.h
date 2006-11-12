@@ -95,6 +95,7 @@
 - (cpu_type_t)preferredCPUType;
 - (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
 
+- (BOOL)containsObjectiveCSegments;
 - (CDStructureTable *)structureTable;
 - (CDStructureTable *)unionTable;
 

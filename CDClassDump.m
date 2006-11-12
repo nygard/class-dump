@@ -334,6 +334,19 @@ static NSMutableSet *wrapperExtensions = nil;
     preferredCPUType = aPreferredCPUType;
 }
 
+- (BOOL)containsObjectiveCSegments;
+{
+    unsigned int count, index;
+
+    count = [objCSegmentProcessors count];
+    for (index = 0; index < count; index++) {
+        if ([[objCSegmentProcessors objectAtIndex:index] hasModules])
+            return YES;
+    }
+
+    return NO;
+}
+
 - (CDStructureTable *)structureTable;
 {
     return structureTable;
@@ -481,11 +494,16 @@ static NSMutableSet *wrapperExtensions = nil;
     resultString = [[NSMutableString alloc] init];
 
     [self appendHeaderToString:resultString];
-    [self appendStructuresToString:resultString symbolReferences:nil];
 
-    count = [objCSegmentProcessors count];
-    for (index = 0; index < count; index++) {
-        [[objCSegmentProcessors objectAtIndex:index] appendFormattedString:resultString classDump:self];
+    if ([self containsObjectiveCSegments]) {
+        [self appendStructuresToString:resultString symbolReferences:nil];
+
+        count = [objCSegmentProcessors count];
+        for (index = 0; index < count; index++) {
+            [[objCSegmentProcessors objectAtIndex:index] appendFormattedString:resultString classDump:self];
+        }
+    } else {
+        [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];
     }
 
     data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
@@ -497,6 +515,11 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)generateSeparateHeaders;
 {
     int count, index;
+
+    if ([self containsObjectiveCSegments] == NO) {
+        NSLog(@"Warning: This file does not contain any Objective-C runtime information.");
+        return;
+    }
 
     [self buildClassFrameworks];
 

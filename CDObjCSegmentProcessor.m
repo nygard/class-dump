@@ -44,6 +44,11 @@
     [super dealloc];
 }
 
+- (BOOL)hasModules;
+{
+    return [modules count] > 0;
+}
+
 - (void)process;
 {
     [self processProtocolSection];
