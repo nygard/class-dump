@@ -130,10 +130,23 @@
 {
     NSRange matchedRange;
     unsigned int currentLocation;
-
-    //[self skipCharacters];
+    NSCharacterSet *skipSet;
 
     currentLocation = [self scanLocation];
+
+    // Skip over characters
+    skipSet = [self charactersToBeSkipped];
+    while ([self isAtEnd] == NO) {
+        unichar ch;
+
+        ch = [[self string] characterAtIndex:currentLocation];
+        if ([skipSet characterIsMember:ch] == NO)
+            break;
+
+        currentLocation++;
+        [self setScanLocation:currentLocation];
+    }
+
     matchedRange.location = currentLocation;
     matchedRange.length = 0;
 

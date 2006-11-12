@@ -54,7 +54,7 @@
     if ([templateTypes count] == 0)
         return name;
 
-    return [NSString stringWithFormat:@"%@<%@>", name, [templateTypes componentsJoinedByString:@","]];
+    return [NSString stringWithFormat:@"%@<%@>", name, [templateTypes componentsJoinedByString:@", "]];
 }
 
 - (BOOL)isTemplateType;

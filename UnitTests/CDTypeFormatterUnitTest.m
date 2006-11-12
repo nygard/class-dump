@@ -313,7 +313,7 @@
           expectedResult:@"struct KWQRefPtr<KWQValueListImpl::KWQValueListPrivate> var"];
 
     [self testVariableName:@"var" type:@"{QValueList<foo<bar>,foo<baz>,bar<blegga>>=i}"
-          expectedResult:@"struct QValueList<foo<bar>,foo<baz>,bar<blegga>> var"];
+          expectedResult:@"struct QValueList<foo<bar>, foo<baz>, bar<blegga>> var"];
     [self testVariableName:@"var" type:@"{QValueList<KWQSlot<foobar>>=i}" expectedResult:@"struct QValueList<KWQSlot<foobar>> var"];
     [self testVariableName:@"var" type:@"{QValueList<KWQSlot>=i}" expectedResult:@"struct QValueList<KWQSlot> var"];
     [self testVariableName:@"var"
