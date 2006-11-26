@@ -8,7 +8,7 @@
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
-#define CLASS_DUMP_VERSION @"3.1.1"
+#define CLASS_DUMP_VERSION @"3.1.2 dev"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
@@ -106,6 +106,7 @@
 - (BOOL)processFilename:(NSString *)aFilename;
 - (BOOL)_processFilename:(NSString *)aFilename;
 
+- (void)find:(NSString *)str;
 - (void)generateOutput;
 - (void)generateToStandardOut;
 - (void)generateSeparateHeaders;

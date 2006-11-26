@@ -45,4 +45,7 @@
 - (NSString *)sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+- (void)findMethod:(NSString *)str classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences appendResultToString:(NSMutableString *)resultString;
+
 @end

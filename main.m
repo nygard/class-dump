@@ -31,6 +31,7 @@ void print_usage(void)
             "        -s             sort classes and categories by name\n"
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
+            "        -f <str>       find string\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -42,6 +43,8 @@ int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CDClassDump *classDump;
+    BOOL shouldFind = NO;
+    NSString *searchString = nil;
 
     int ch;
     BOOL errorFlag = NO;
@@ -50,6 +53,7 @@ int main(int argc, char *argv[])
         { "show-ivar-offsets", no_argument, NULL, 'a' },
         { "show-imp-addr", no_argument, NULL, 'A' },
         { "match", required_argument, NULL, 'C' },
+        { "find", required_argument, NULL, 'f' },
         { "generate-multiple-files", no_argument, NULL, 'H' },
         { "sort-by-inheritance", no_argument, NULL, 'I' },
         { "output-dir", required_argument, NULL, 'o' },
@@ -68,7 +72,7 @@ int main(int argc, char *argv[])
 
     classDump = [[[CDClassDump alloc] init] autorelease];
 
-    while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsSt", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH:
           {
@@ -101,8 +105,15 @@ int main(int argc, char *argv[])
                   errorFlag = YES;
               }
               // Last one wins now.
-          }
               break;
+          }
+
+          case 'f':
+          {
+              shouldFind = YES;
+              searchString = [NSString stringWithUTF8String:optarg];
+              break;
+          }
 
           case 'H':
               [classDump setShouldGenerateSeparateHeaders:YES];
@@ -149,8 +160,12 @@ int main(int argc, char *argv[])
         NSString *path;
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
-        if ([classDump processFilename:path] == YES)
-            [classDump generateOutput];
+        if ([classDump processFilename:path] == YES) {
+            if (shouldFind) {
+                [classDump find:searchString];
+            } else
+                [classDump generateOutput];
+        }
     }
 
     [pool release];

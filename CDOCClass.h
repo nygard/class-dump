@@ -25,4 +25,6 @@
 - (NSString *)identifier;
 - (NSArray *)dependancies;
 
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+
 @end

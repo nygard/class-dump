@@ -208,4 +208,79 @@
     return [[self sortableName] compare:[otherProtocol sortableName]];
 }
 
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+{
+    NSMutableString *resultString = [NSMutableString string];
+
+    [resultString appendFormat:@"@protocol %@", name];
+    if ([protocols count] > 0) {
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+    }
+
+    return resultString;
+}
+
+- (void)findMethod:(NSString *)str classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences appendResultToString:(NSMutableString *)resultString;
+{
+    int count, index;
+    NSArray *methods;
+    BOOL flag = NO;
+
+    if ([aClassDump shouldSortMethods] == YES)
+        methods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = classMethods;
+
+    count = [methods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            CDOCMethod *method;
+            NSRange range;
+
+            method = [methods objectAtIndex:index];
+            range = [[method name] rangeOfString:str];
+            if (range.length > 0) {
+                if (flag == NO) {
+                    [resultString appendString:[self findTag:symbolReferences]];
+                    [resultString appendString:@"\n"];
+                    flag = YES;
+                }
+                [resultString appendString:@"+ "];
+                [[methods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+                [resultString appendString:@"\n"];
+            }
+        }
+    }
+
+    if ([aClassDump shouldSortMethods] == YES)
+        methods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = instanceMethods;
+
+    count = [methods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            CDOCMethod *method;
+            NSRange range;
+
+            method = [methods objectAtIndex:index];
+            range = [[method name] rangeOfString:str];
+            if (range.length > 0) {
+                if (flag == NO) {
+                    [resultString appendString:[self findTag:symbolReferences]];
+                    [resultString appendString:@"\n"];
+                    flag = YES;
+                }
+                [resultString appendString:@"- "];
+                [[methods objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+                [resultString appendString:@"\n"];
+            }
+        }
+    }
+
+    if (flag)
+        [resultString appendString:@"\n"];
+}
+
 @end

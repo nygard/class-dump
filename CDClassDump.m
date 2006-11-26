@@ -473,6 +473,25 @@ static NSMutableSet *wrapperExtensions = nil;
     return YES;
 }
 
+- (void)find:(NSString *)str;
+{
+    NSMutableString *resultString;
+    unsigned int count, index;
+    NSData *data;
+
+    resultString = [[NSMutableString alloc] init];
+
+    count = [objCSegmentProcessors count];
+    for (index = 0; index < count; index++) {
+        [[objCSegmentProcessors objectAtIndex:index] find:str classDump:self appendResultToString:resultString];
+    }
+
+    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+
+    [resultString release];
+}
+
 - (void)generateOutput;
 {
     [self registerPhase:1];

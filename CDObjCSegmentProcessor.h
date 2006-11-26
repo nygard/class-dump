@@ -28,4 +28,6 @@
 - (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary;
 - (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 
+- (void)find:(NSString *)str classDump:(CDClassDump *)aClassDump appendResultToString:(NSMutableString *)resultString;
+
 @end

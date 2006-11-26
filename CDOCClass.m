@@ -118,4 +118,20 @@
     return [NSArray arrayWithObject:superClassName];
 }
 
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+{
+    NSMutableString *resultString = [NSMutableString string];
+
+    [resultString appendFormat:@"@interface %@", name];
+    if (superClassName != nil)
+        [resultString appendFormat:@" : %@", superClassName];
+
+    if ([protocols count] > 0) {
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+    }
+
+    return resultString;
+}
+
 @end
