@@ -213,10 +213,8 @@
     NSMutableString *resultString = [NSMutableString string];
 
     [resultString appendFormat:@"@protocol %@", name];
-    if ([protocols count] > 0) {
+    if ([protocols count] > 0)
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
-    }
 
     return resultString;
 }

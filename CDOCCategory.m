@@ -71,4 +71,16 @@
     return [NSArray arrayWithObject:className];
 }
 
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+{
+    NSMutableString *resultString = [NSMutableString string];
+
+    [resultString appendFormat:@"@interface %@ (%@)", className, name];
+
+    if ([protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+
+    return resultString;
+}
+
 @end
