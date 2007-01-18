@@ -795,8 +795,7 @@ static NSMutableSet *wrapperExtensions = nil;
         NSString *str;
         NSData *data;
 
-        NSLog(@"filename: %@", [[machOFiles lastObject] filename]);
-        str = [[machOFiles lastObject] loadCommandString];
+        str = [[machOFiles lastObject] loadCommandString:YES];
         data = [str dataUsingEncoding:NSUTF8StringEncoding];
         [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
     }

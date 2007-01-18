@@ -36,6 +36,6 @@
 
 - (CDSection *)sectionWithName:(NSString *)aName;
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 @end

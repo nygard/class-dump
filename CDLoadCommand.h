@@ -27,6 +27,6 @@
 - (NSString *)description;
 - (NSString *)extraDescription;
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 @end

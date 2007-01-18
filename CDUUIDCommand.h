@@ -15,6 +15,6 @@
 - (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 @end

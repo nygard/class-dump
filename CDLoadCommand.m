@@ -113,7 +113,7 @@
     return @"";
 }
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
     [resultString appendFormat:@"     cmd LC_%@\n", [self commandName]];
     [resultString appendFormat:@" cmdsize %u\n", loadCommand.cmdsize];

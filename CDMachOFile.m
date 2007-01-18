@@ -398,7 +398,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     return NO;
 }
 
-- (NSString *)loadCommandString;
+- (NSString *)loadCommandString:(BOOL)isVerbose;
 {
     NSMutableString *resultString;
     unsigned int count, index;
@@ -410,7 +410,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
         [resultString appendFormat:@"Load command %u\n", index];
         loadCommand = [loadCommands objectAtIndex:index];
-        [loadCommand appendToString:resultString];
+        [loadCommand appendToString:resultString verbose:isVerbose];
         [resultString appendString:@"\n"];
     }
 

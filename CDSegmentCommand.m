@@ -112,6 +112,9 @@
     if (flags & SG_PROTECTED_VERSION_1)
         [setFlags addObject:@"PROTECTED_VERSION_1"];
 
+    if ([setFlags count] == 0)
+        return @"(none)";
+
     return [setFlags componentsJoinedByString:@" "];
 }
 
@@ -170,9 +173,23 @@
     return nil;
 }
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
-    [super appendToString:resultString];
+    [super appendToString:resultString verbose:isVerbose];
+
+    [resultString appendFormat:@"  segname %@\n", [self name]];
+    [resultString appendFormat:@"   vmaddr 0x%08x\n", segmentCommand.vmaddr];
+    [resultString appendFormat:@"   vmsize 0x%08x\n", segmentCommand.vmsize];
+    [resultString appendFormat:@"  fileoff %d\n", segmentCommand.fileoff];
+    [resultString appendFormat:@" filesize %d\n", segmentCommand.filesize];
+    [resultString appendFormat:@"  maxprot 0x%08x\n", segmentCommand.maxprot];
+    [resultString appendFormat:@" initprot 0x%08x\n", segmentCommand.initprot];
+    [resultString appendFormat:@"   nsects %d\n", segmentCommand.nsects];
+
+    if (isVerbose)
+        [resultString appendFormat:@"    flags %@\n", [self flagDescription]];
+    else
+        [resultString appendFormat:@"    flags 0x%x\n", segmentCommand.flags];
 }
 
 @end

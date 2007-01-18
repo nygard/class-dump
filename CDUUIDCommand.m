@@ -45,14 +45,14 @@
     [super dealloc];
 }
 
-- (void)appendToString:(NSMutableString *)resultString;
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
     unsigned int index;
     CFUUIDBytes uuidBytes;
     UInt8 *bytePtr = (UInt8 *)&uuidBytes;
     UInt8 byte;
 
-    [super appendToString:resultString];
+    [super appendToString:resultString verbose:isVerbose];
 
     uuidBytes = CFUUIDGetUUIDBytes(uuid);
     [resultString appendString:@"    uuid"];
