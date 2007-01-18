@@ -26,6 +26,8 @@
 - (unsigned long)flags;
 - (NSArray *)sections;
 
+- (BOOL)isProtected;
+
 - (NSString *)flagDescription;
 - (NSString *)extraDescription;
 

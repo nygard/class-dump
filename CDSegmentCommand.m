@@ -91,6 +91,11 @@
     return sections;
 }
 
+- (BOOL)isProtected;
+{
+    return (segmentCommand.flags & SG_PROTECTED_VERSION_1) == SG_PROTECTED_VERSION_1;
+}
+
 - (NSString *)flagDescription;
 {
     NSMutableArray *setFlags;
@@ -104,6 +109,8 @@
         [setFlags addObject:@"FVMLIB"];
     if (flags & SG_NORELOC)
         [setFlags addObject:@"NORELOC"];
+    if (flags & SG_PROTECTED_VERSION_1)
+        [setFlags addObject:@"PROTECTED_VERSION_1"];
 
     return [setFlags componentsJoinedByString:@" "];
 }
