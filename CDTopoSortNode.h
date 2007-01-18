@@ -14,7 +14,7 @@ typedef enum {
 
 @interface CDTopoSortNode : NSObject
 {
-    id <CDTopologicalSort> representedObject;
+    id <CDTopologicalSort> sortableObject;
 
     NSMutableSet *dependancies;
     CDNodeColor color;
@@ -24,7 +24,7 @@ typedef enum {
 - (void)dealloc;
 
 - (NSString *)identifier;
-- (id <CDTopologicalSort>)representedObject;
+- (id <CDTopologicalSort>)sortableObject;
 
 - (NSArray *)dependancies;
 - (void)addDependancy:(NSString *)anIdentifier;

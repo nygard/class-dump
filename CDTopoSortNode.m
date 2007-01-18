@@ -13,18 +13,18 @@
     if ([super init] == nil)
         return nil;
 
-    representedObject = [anObject retain];
+    sortableObject = [anObject retain];
     dependancies = [[NSMutableSet alloc] init];
     color = CDWhiteNodeColor;
 
-    [self addDependanciesFromArray:[representedObject dependancies]];
+    [self addDependanciesFromArray:[sortableObject dependancies]];
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [representedObject release];
+    [sortableObject release];
     [dependancies release];
 
     [super dealloc];
@@ -32,12 +32,12 @@
 
 - (NSString *)identifier;
 {
-    return [representedObject identifier];
+    return [sortableObject identifier];
 }
 
-- (id)representedObject;
+- (id <CDTopologicalSort>)sortableObject;
 {
-    return representedObject;
+    return sortableObject;
 }
 
 - (NSArray *)dependancies;
@@ -101,7 +101,7 @@
         }
     }
 
-    [sortedArray addObject:[self representedObject]];
+    [sortedArray addObject:[self sortableObject]];
     [self setColor:CDBlackNodeColor];
 }
 
