@@ -36,4 +36,6 @@
 
 - (CDSection *)sectionWithName:(NSString *)aName;
 
+- (void)appendToString:(NSMutableString *)resultString;
+
 @end

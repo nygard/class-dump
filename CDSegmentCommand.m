@@ -170,4 +170,9 @@
     return nil;
 }
 
+- (void)appendToString:(NSMutableString *)resultString;
+{
+    [super appendToString:resultString];
+}
+
 @end

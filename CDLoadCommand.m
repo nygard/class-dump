@@ -11,6 +11,7 @@
 #import "CDMachOFile.h"
 #import "CDSymbolTable.h"
 #import "CDDynamicSymbolTable.h"
+#import "CDUUIDCommand.h"
 
 @implementation CDLoadCommand
 
@@ -31,6 +32,8 @@
         targetClass = [CDSymbolTable class];
     if (lc.cmd == LC_DYSYMTAB)
         targetClass = [CDDynamicSymbolTable class];
+    if (lc.cmd == LC_UUID)
+        targetClass = [CDUUIDCommand class];
 
     return [[[targetClass alloc] initWithPointer:ptr machOFile:aMachOFile] autorelease];
 }
@@ -90,6 +93,9 @@
       case LC_TWOLEVEL_HINTS: return @"TWOLEVEL_HINTS";
       case LC_PREBIND_CKSUM: return @"PREBIND_CKSUM";
       case LC_LOAD_WEAK_DYLIB: return @"LOAD_WEAK_DYLIB";
+      case LC_SEGMENT_64: return @"SEGMENT_64";
+      case LC_ROUTINES_64: return @"ROUTINES_64";
+      case LC_UUID: return @"UUID";
       default:
           break;
     }
@@ -109,7 +115,7 @@
 
 - (void)appendToString:(NSMutableString *)resultString;
 {
-    [resultString appendFormat:@"      cmd %@\n", [self commandName]];
+    [resultString appendFormat:@"      cmd LC_%@\n", [self commandName]];
     [resultString appendFormat:@"  cmdsize %u\n", loadCommand.cmdsize];
 }
 

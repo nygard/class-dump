@@ -7,6 +7,30 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01021F0C0B5F1E4F00F464A8 /* CDUUIDCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */; };
+		01021F0D0B5F1E5300F464A8 /* CDUUIDCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */; };
+		01021F0E0B5F1E5400F464A8 /* CDUUIDCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01021F0A0B5F1E4F00F464A8 /* CDUUIDCommand.h */; };
+		01021F0F0B5F1E5500F464A8 /* CDSymbolTable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ACC08AE9CDC003E99F8 /* CDSymbolTable.h */; };
+		01021F100B5F1E5600F464A8 /* CDSymbol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ACA08AE9CDC003E99F8 /* CDSymbol.h */; };
+		01021F110B5F1E5700F464A8 /* CDSegmentCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC808AE9CDC003E99F8 /* CDSegmentCommand.h */; };
+		01021F120B5F1E5700F464A8 /* CDSection.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC608AE9CDC003E99F8 /* CDSection.h */; };
+		01021F130B5F1E5900F464A8 /* CDMachOFile.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC408AE9CDC003E99F8 /* CDMachOFile.h */; };
+		01021F140B5F1E5900F464A8 /* CDLoadCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC208AE9CDC003E99F8 /* CDLoadCommand.h */; };
+		01021F150B5F1E5A00F464A8 /* CDFatFile.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC008AE9CDC003E99F8 /* CDFatFile.h */; };
+		01021F160B5F1E5B00F464A8 /* CDFatArch.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ABE08AE9CDC003E99F8 /* CDFatArch.h */; };
+		01021F170B5F1E5B00F464A8 /* CDDynamicSymbolTable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ABC08AE9CDC003E99F8 /* CDDynamicSymbolTable.h */; };
+		01021F180B5F1E5C00F464A8 /* CDDylibCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ABA08AE9CDC003E99F8 /* CDDylibCommand.h */; };
+		01021F190B5F1E6000F464A8 /* NSString-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AB008AE9C9D003E99F8 /* NSString-Extensions.h */; };
+		01021F1A0B5F1E6400F464A8 /* NSScanner-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AAE08AE9C9D003E99F8 /* NSScanner-Extensions.h */; };
+		01021F1B0B5F1E6500F464A8 /* NSObject-CDExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */; };
+		01021F1C0B5F1E6600F464A8 /* NSArray-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */; };
+		01021F1D0B5F1E6A00F464A8 /* CDClassDump.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1808AE9D6D003E99F8 /* CDClassDump.h */; };
+		01021F1E0B5F1E6C00F464A8 /* CDObjCSegmentProcessor-Private.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1A08AE9D6D003E99F8 /* CDObjCSegmentProcessor-Private.h */; };
+		01021F1F0B5F1E6D00F464A8 /* CDObjCSegmentProcessor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1C08AE9D6D003E99F8 /* CDObjCSegmentProcessor.h */; };
+		01021F200B5F1E6E00F464A8 /* CDStructureTable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1E08AE9D6D003E99F8 /* CDStructureTable.h */; };
+		01021F210B5F1E7000F464A8 /* CDSymbolReferences.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B2008AE9D6D003E99F8 /* CDSymbolReferences.h */; };
+		01021F220B5F1E7100F464A8 /* CDTopologicalSortProtocol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B2208AE9D6D003E99F8 /* CDTopologicalSortProtocol.h */; };
+		01021F230B5F1E7200F464A8 /* CDTopoSortNode.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B2308AE9D6D003E99F8 /* CDTopoSortNode.h */; };
 		012E2AB308AE9C9D003E99F8 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		012E2AB508AE9C9D003E99F8 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		012E2AB708AE9C9D003E99F8 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
@@ -92,12 +116,36 @@
 			dstPath = /usr/share/man/man1/;
 			dstSubfolderSpec = 0;
 			files = (
+				01021F0E0B5F1E5400F464A8 /* CDUUIDCommand.h in CopyFiles */,
+				01021F0F0B5F1E5500F464A8 /* CDSymbolTable.h in CopyFiles */,
+				01021F100B5F1E5600F464A8 /* CDSymbol.h in CopyFiles */,
+				01021F110B5F1E5700F464A8 /* CDSegmentCommand.h in CopyFiles */,
+				01021F120B5F1E5700F464A8 /* CDSection.h in CopyFiles */,
+				01021F130B5F1E5900F464A8 /* CDMachOFile.h in CopyFiles */,
+				01021F140B5F1E5900F464A8 /* CDLoadCommand.h in CopyFiles */,
+				01021F150B5F1E5A00F464A8 /* CDFatFile.h in CopyFiles */,
+				01021F160B5F1E5B00F464A8 /* CDFatArch.h in CopyFiles */,
+				01021F170B5F1E5B00F464A8 /* CDDynamicSymbolTable.h in CopyFiles */,
+				01021F180B5F1E5C00F464A8 /* CDDylibCommand.h in CopyFiles */,
+				01021F190B5F1E6000F464A8 /* NSString-Extensions.h in CopyFiles */,
+				01021F1A0B5F1E6400F464A8 /* NSScanner-Extensions.h in CopyFiles */,
+				01021F1B0B5F1E6500F464A8 /* NSObject-CDExtensions.h in CopyFiles */,
+				01021F1C0B5F1E6600F464A8 /* NSArray-Extensions.h in CopyFiles */,
+				01021F1D0B5F1E6A00F464A8 /* CDClassDump.h in CopyFiles */,
+				01021F1E0B5F1E6C00F464A8 /* CDObjCSegmentProcessor-Private.h in CopyFiles */,
+				01021F1F0B5F1E6D00F464A8 /* CDObjCSegmentProcessor.h in CopyFiles */,
+				01021F200B5F1E6E00F464A8 /* CDStructureTable.h in CopyFiles */,
+				01021F210B5F1E7000F464A8 /* CDSymbolReferences.h in CopyFiles */,
+				01021F220B5F1E7100F464A8 /* CDTopologicalSortProtocol.h in CopyFiles */,
+				01021F230B5F1E7200F464A8 /* CDTopoSortNode.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01021F0A0B5F1E4F00F464A8 /* CDUUIDCommand.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDUUIDCommand.h; sourceTree = "<group>"; };
+		01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDUUIDCommand.m; sourceTree = "<group>"; };
 		012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extensions.h"; sourceTree = "<group>"; };
 		012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extensions.m"; sourceTree = "<group>"; };
 		012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSObject-CDExtensions.h"; sourceTree = "<group>"; };
@@ -293,6 +341,8 @@
 				012E2ACB08AE9CDC003E99F8 /* CDSymbol.m */,
 				012E2ACC08AE9CDC003E99F8 /* CDSymbolTable.h */,
 				012E2ACD08AE9CDC003E99F8 /* CDSymbolTable.m */,
+				01021F0A0B5F1E4F00F464A8 /* CDUUIDCommand.h */,
+				01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */,
 			);
 			name = "Mach-O";
 			sourceTree = "<group>";
@@ -535,6 +585,7 @@
 				0154A041090789BD002FA8F1 /* CDOCClass.m in Sources */,
 				0154A042090789BE002FA8F1 /* CDOCCategory.m in Sources */,
 				01A905F50ADDF11000DAEDBA /* CDTypeLexerUnitTest.m in Sources */,
+				01021F0C0B5F1E4F00F464A8 /* CDUUIDCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -576,6 +627,7 @@
 				012E2B2E08AE9D6D003E99F8 /* CDSymbolReferences.m in Sources */,
 				012E2B3108AE9D6D003E99F8 /* CDTopoSortNode.m in Sources */,
 				012E2B3308AE9D8F003E99F8 /* main.m in Sources */,
+				01021F0D0B5F1E5300F464A8 /* CDUUIDCommand.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
