@@ -34,6 +34,7 @@
     regex_t compiledRegex;
     NSString *outputPath;
 
+    NSMutableArray *machOFiles;
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objCSegmentProcessors;
 
@@ -92,6 +93,8 @@
 - (NSString *)outputPath;
 - (void)setOutputPath:(NSString *)aPath;
 
+- (NSArray *)machOFiles;
+
 - (cpu_type_t)preferredCPUType;
 - (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
 
@@ -105,6 +108,7 @@
 
 - (BOOL)processFilename:(NSString *)aFilename;
 - (BOOL)_processFilename:(NSString *)aFilename;
+- (void)processObjectiveCSegments;
 
 - (void)find:(NSString *)str;
 - (void)generateOutput;
@@ -136,5 +140,7 @@
 - (NSString *)frameworkForClassName:(NSString *)aClassName;
 
 - (void)appendImportForClassName:(NSString *)aClassName toString:(NSMutableString *)resultString;
+
+- (void)showLoadCommands;
 
 @end

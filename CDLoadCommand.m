@@ -109,8 +109,8 @@
 
 - (void)appendToString:(NSMutableString *)resultString;
 {
-    [resultString appendFormat:@"      cmd %@", [self commandName]];
-    [resultString appendFormat:@"  cmdsize %u", loadCommand.cmdsize];
+    [resultString appendFormat:@"      cmd %@\n", [self commandName]];
+    [resultString appendFormat:@"  cmdsize %u\n", loadCommand.cmdsize];
 }
 
 @end

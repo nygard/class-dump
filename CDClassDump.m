@@ -94,6 +94,7 @@ static NSMutableSet *wrapperExtensions = nil;
 
     executablePath = nil;
 
+    machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objCSegmentProcessors = [[NSMutableArray alloc] init];
 
@@ -138,6 +139,7 @@ static NSMutableSet *wrapperExtensions = nil;
     [executablePath release];
     [outputPath release];
 
+    [machOFiles release];
     [machOFilesByID release];
     [objCSegmentProcessors release];
 
@@ -324,6 +326,11 @@ static NSMutableSet *wrapperExtensions = nil;
     outputPath = [aPath retain];
 }
 
+- (NSArray *)machOFiles;
+{
+    return machOFiles;
+}
+
 - (cpu_type_t)preferredCPUType;
 {
     return preferredCPUType;
@@ -388,7 +395,6 @@ static NSMutableSet *wrapperExtensions = nil;
 {
     CDFatFile *aFatFile;
     CDMachOFile *aMachOFile;
-    CDObjCSegmentProcessor *aProcessor;
 
     // TODO (2005-07-08): This isn't good enough.  You only have your
     // choice on the main file.  Link frameworks MUST be the same
@@ -460,17 +466,31 @@ static NSMutableSet *wrapperExtensions = nil;
         return NO;
     } NS_ENDHANDLER;
 
-    aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:aMachOFile];
-    [aProcessor process];
-    [objCSegmentProcessors addObject:aProcessor];
-    [aProcessor release];
-
     assert([aMachOFile filename] != nil);
+    [machOFiles addObject:aMachOFile];
     [machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
 
     [aMachOFile release];
 
     return YES;
+}
+
+- (void)processObjectiveCSegments;
+{
+    unsigned int count, index;
+
+    count = [machOFiles count];
+    for (index = 0; index < count; index++) {
+        CDMachOFile *machOFile;
+        CDObjCSegmentProcessor *aProcessor;
+
+        machOFile = [machOFiles objectAtIndex:index];
+
+        aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:machOFile];
+        [aProcessor process];
+        [objCSegmentProcessors addObject:aProcessor];
+        [aProcessor release];
+    }
 }
 
 - (void)find:(NSString *)str;
@@ -766,6 +786,19 @@ static NSMutableSet *wrapperExtensions = nil;
             [resultString appendFormat:@"#import \"%@.h\"\n\n", aClassName];
         else
             [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, aClassName];
+    }
+}
+
+- (void)showLoadCommands;
+{
+    if ([machOFiles count] > 0) {
+        NSString *str;
+        NSData *data;
+
+        NSLog(@"filename: %@", [[machOFiles lastObject] filename]);
+        str = [[machOFiles lastObject] loadCommandString];
+        data = [str dataUsingEncoding:NSUTF8StringEncoding];
+        [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
     }
 }
 
