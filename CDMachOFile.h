@@ -72,4 +72,6 @@ NSString *CDNameForCPUType(cpu_type_t cpuType);
 
 - (NSString *)importBaseName;
 
+- (BOOL)hasProtectedSegments;
+
 @end

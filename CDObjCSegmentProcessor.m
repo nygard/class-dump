@@ -81,7 +81,7 @@
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
-    if ([protocolNames count] > 0 || [allClasses count] > 0) {
+    if ([protocolNames count] > 0 || [allClasses count] > 0 || [machOFile hasProtectedSegments]) {
         const NXArchInfo *archInfo;
 
         [resultString appendString:@"/*\n"];
@@ -99,6 +99,9 @@
                 [resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
                               [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
         }
+
+        if ([machOFile hasProtectedSegments])
+            [resultString appendString:@" *       (This file has protected segments -- Objective-C information may be missing.)\n"];
         [resultString appendString:@" */\n\n"];
     }
 

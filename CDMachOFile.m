@@ -186,6 +186,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
       case MH_DYLINKER: return @"DYLINKER";
       case MH_BUNDLE: return @"BUNDLE";
       case MH_DYLIB_STUB: return @"DYLIB_STUB";
+      case MH_DSYM: return @"DSYM";
       default:
           break;
     }
@@ -222,6 +223,22 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
         [setFlags addObject:@"NOMULTIDEFS"];
     if (flags & MH_NOFIXPREBINDING)
         [setFlags addObject:@"NOFIXPREBINDING"];
+    if (flags & MH_PREBINDABLE)
+        [setFlags addObject:@"PREBINDABLE"];
+    if (flags & MH_ALLMODSBOUND)
+        [setFlags addObject:@"ALLMODSBOUND"];
+    if (flags & MH_SUBSECTIONS_VIA_SYMBOLS)
+        [setFlags addObject:@"SUBSECTIONS_VIA_SYMBOLS"];
+    if (flags & MH_CANONICAL)
+        [setFlags addObject:@"CANONICAL"];
+    if (flags & MH_WEAK_DEFINES)
+        [setFlags addObject:@"WEAK_DEFINES"];
+    if (flags & MH_BINDS_TO_WEAK)
+        [setFlags addObject:@"BINDS_TO_WEAK"];
+    if (flags & MH_ALLOW_STACK_EXECUTION)
+        [setFlags addObject:@"ALLOW_STACK_EXECUTION"];
+    if (flags & LC_REQ_DYLD)
+        [setFlags addObject:@"REQ_DYLD"];
 
     return [setFlags componentsJoinedByString:@" "];
 }
@@ -316,6 +333,10 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
         //[self showWarning:[NSString stringWithFormat:@"addr %p in segment %@, required segment is %@", vmaddr, [segment name], aSegmentName]];
         return NULL;
     }
+    if ([segment isProtected]) {
+        //NSLog(@"Arg, a protected segment.");
+        return NULL;
+    }
 #if 0
     NSLog(@"vmaddr: %p, [data bytes]: %p, [segment fileoff]: %d, [segment segmentOffsetForVMAddr:vmaddr]: %d",
           vmaddr, [data bytes], [segment fileoff], [segment segmentOffsetForVMAddr:vmaddr]);
@@ -359,6 +380,22 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     }
 
     return nil;
+}
+
+- (BOOL)hasProtectedSegments;
+{
+    unsigned int count, index;
+
+    count = [loadCommands count];
+    for (index = 0; index < count; index++) {
+        CDLoadCommand *loadCommand;
+
+        loadCommand = [loadCommands objectAtIndex:index];
+        if ([loadCommand isKindOfClass:[CDSegmentCommand class]] && [(CDSegmentCommand *)loadCommand isProtected])
+            return YES;
+    }
+
+    return NO;
 }
 
 @end
