@@ -55,14 +55,14 @@
     [super appendToString:resultString];
 
     uuidBytes = CFUUIDGetUUIDBytes(uuid);
-    [resultString appendString:@"     uuid"];
+    [resultString appendString:@"    uuid"];
     for (index = 0; index < 8; index++) {
         byte = bytePtr[index];
         [resultString appendFormat:@" 0x%02x", byte];
     }
 
     [resultString appendString:@"\n"];
-    [resultString appendString:@"         "];
+    [resultString appendString:@"        "];
     for (index = 0; index < 8; index++) {
         byte = bytePtr[8 + index];
         [resultString appendFormat:@" 0x%02x", byte];
