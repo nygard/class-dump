@@ -74,4 +74,6 @@ NSString *CDNameForCPUType(cpu_type_t cpuType);
 
 - (BOOL)hasProtectedSegments;
 
+- (NSString *)loadCommandString;
+
 @end

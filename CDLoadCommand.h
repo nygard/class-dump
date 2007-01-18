@@ -27,4 +27,6 @@
 - (NSString *)description;
 - (NSString *)extraDescription;
 
+- (void)appendToString:(NSMutableString *)resultString;
+
 @end

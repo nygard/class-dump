@@ -398,4 +398,24 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     return NO;
 }
 
+- (NSString *)loadCommandString;
+{
+    NSMutableString *resultString;
+    unsigned int count, index;
+
+    resultString = [NSMutableString string];
+    count = [loadCommands count];
+    for (index = 0; index < count; index++) {
+        CDLoadCommand *loadCommand;
+
+        [resultString appendFormat:@"Load command %u\n", index];
+        loadCommand = [loadCommands objectAtIndex:index];
+        [loadCommand appendToString:resultString];
+        [resultString appendString:@"\n"];
+    }
+
+    return resultString;
+}
+
+
 @end
