@@ -75,5 +75,6 @@ NSString *CDNameForCPUType(cpu_type_t cpuType);
 - (BOOL)hasProtectedSegments;
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;
+- (NSString *)headerString:(BOOL)isVerbose;
 
 @end

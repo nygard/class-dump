@@ -169,6 +169,7 @@ int main(int argc, char *argv[])
             } else
                 [classDump generateOutput];
 #else
+            [classDump showHeader];
             [classDump showLoadCommands];
 #endif
         }

@@ -141,6 +141,7 @@
 
 - (void)appendImportForClassName:(NSString *)aClassName toString:(NSMutableString *)resultString;
 
+- (void)showHeader;
 - (void)showLoadCommands;
 
 @end

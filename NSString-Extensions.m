@@ -51,4 +51,12 @@
     return [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:letterRange.location]];
 }
 
+- (void)print;
+{
+    NSData *data;
+
+    data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+}
+
 @end

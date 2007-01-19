@@ -5,6 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "NSString-Extensions.h"
 #import "CDDylibCommand.h"
 #import "CDFatArch.h"
 #import "CDFatFile.h"
@@ -789,15 +790,17 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 }
 
+- (void)showHeader;
+{
+    if ([machOFiles count] > 0) {
+        [[[machOFiles lastObject] headerString:YES] print];
+    }
+}
+
 - (void)showLoadCommands;
 {
     if ([machOFiles count] > 0) {
-        NSString *str;
-        NSData *data;
-
-        str = [[machOFiles lastObject] loadCommandString:YES];
-        data = [str dataUsingEncoding:NSUTF8StringEncoding];
-        [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+        [[[machOFiles lastObject] loadCommandString:YES] print];
     }
 }
 

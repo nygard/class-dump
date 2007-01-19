@@ -14,7 +14,17 @@
 #import "CDLoadCommand.h"
 #import "CDSegmentCommand.h"
 
-@implementation CDMachOFile
+NSString *CDMagicNumberString(uint32_t magic)
+{
+    switch (magic) {
+      case MH_MAGIC: return @"MH_MAGIC";
+      case MH_CIGAM: return @"MH_CIGAM";
+      case MH_MAGIC_64: return @"MH_MAGIC_64";
+      case MH_CIGAM_64: return @"MH_CIGAM_64";
+    }
+
+    return [NSString stringWithFormat:@"0x%08x", magic];
+}
 
 NSString *CDNameForCPUType(cpu_type_t cpuType)
 {
@@ -28,6 +38,8 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
 
     return [NSString stringWithUTF8String:archInfo->name];
 }
+
+@implementation CDMachOFile
 
 - (id)initWithFilename:(NSString *)aFilename;
 {
@@ -417,5 +429,24 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     return resultString;
 }
 
+- (NSString *)headerString:(BOOL)isVerbose;
+{
+    NSMutableString *resultString;
+
+    resultString = [NSMutableString string];
+    [resultString appendString:@"Mach header\n"];
+    [resultString appendString:@"      magic cputype cpusubtype   filetype ncmds sizeofcmds      flags\n"];
+    // Grr, %11@ doesn't work.
+    if (isVerbose)
+        [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5u %10u %@\n",
+                      CDMagicNumberString(header.magic), CDNameForCPUType(header.cputype), header.cpusubtype,
+                      [self filetypeDescription], header.ncmds, header.sizeofcmds, [self flagDescription]];
+    else
+        [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5u %10u 0x%08x\n",
+                      header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];
+    [resultString appendString:@"\n"];
+
+    return resultString;
+}
 
 @end

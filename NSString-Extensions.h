@@ -12,4 +12,6 @@
 
 - (BOOL)isFirstLetterUppercase;
 
+- (void)print;
+
 @end
