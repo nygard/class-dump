@@ -324,10 +324,17 @@ NSString *CDTokenDescription(int token)
 
     //NSLog(@" > %s, hasMemberName: %d", _cmd, hasMemberName);
     if (lookahead == TK_QUOTED_STRING) {
-        NSString *identifier;
+        NSString *identifier = nil;
 
-        identifier = [lexer lexText];
-        [self match:TK_QUOTED_STRING];
+        while (lookahead == TK_QUOTED_STRING) {
+            if (identifier == nil)
+                identifier = [lexer lexText];
+            else {
+                // TextMate 1.5.4 has structures like... "storage""stack"{etc} -- two quoted strings next to each other.
+                identifier = [NSString stringWithFormat:@"%@__%@", identifier, [lexer lexText]];
+            }
+            [self match:TK_QUOTED_STRING];
+        }
 
         result = [self _parseTypeInStruct:YES];
         [result setVariableName:identifier];
@@ -365,15 +372,14 @@ NSString *CDTokenDescription(int token)
 
 - (NSString *)parseIdentifier;
 {
-    if (lookahead == TK_IDENTIFIER) {
-        NSString *result;
+    NSString *result = nil;
 
+    if (lookahead == TK_IDENTIFIER) {
         result = [lexer lexText];
         [self match:TK_IDENTIFIER];
-        return result;
     }
 
-    return nil;
+    return result;
 }
 
 - (NSString *)parseNumber;
