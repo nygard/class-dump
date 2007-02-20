@@ -20,9 +20,8 @@
 
     NSMutableSet *forcedTypedefs;
 
-    NSMutableSet *structureSignatures; // generated during phase 1
-    NSMutableArray *structureTypes; // generated during phase 1
-    NSMutableDictionary *replacementSignatures; // generated at end of phase 1
+    NSMutableDictionary *keyTypeStringsByBareTypeStrings; // Phase 1.  Keyed on -bareTypeString.  Values are mutable sets of the keyTypeStrings.
+    NSMutableDictionary *replacementSignatures; // generated at end of phase 1.  Maps bareTypeStrings to keyTypeStrings.
 
     struct {
         unsigned int shouldDebug:1;

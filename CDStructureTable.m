@@ -12,6 +12,20 @@
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
 
+// Phase 1, registration: Only looks at anonymous (no name, or name is "?") structures
+// Phase 1, finish: - sets up replacementSignatures
+// Phase 1, results: - replacementSignatures used in phase 2, remapping of some sort
+//                   - replacementSignatures used in -replacementForType:
+//
+// The goal of phase 1 is to build a mapping of annonymous structures that don't have member names, to unambiguous keyTypeStrings that do have member names.
+// For example, if we have a union (?="thin"[128c]"fat"[128S]), this generates this mapping:
+//     (?=[128c][128S]) = (?="thin"[128c]"fat"[128S])
+// So if we find unions like this (?=[128c][128S]), we can replace it with one that has member names.
+// On the other hand, if we have two unions that have different member names but have the same structure, we can't unambigously map from the bareTypeString to one with member names.
+// For example, (?="thin"[128c]"fat"[128S]) and (?="foo"[128c]"bar"[128S]) both have (?=[128c][128S]) as the bareTypeString.
+
+
+
 @implementation CDStructureTable
 
 - (id)init;
@@ -28,9 +42,8 @@
     forcedTypedefs = [[NSMutableSet alloc] init];
 
     anonymousBaseName = nil;
-    structureSignatures = [[NSMutableSet alloc] init];
-    structureTypes = [[NSMutableArray alloc] init];
     replacementSignatures = [[NSMutableDictionary alloc] init];
+    keyTypeStringsByBareTypeStrings = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -45,9 +58,8 @@
 
     [forcedTypedefs release];
     [anonymousBaseName release];
-    [structureSignatures release];
-    [structureTypes release];
     [replacementSignatures release];
+    [keyTypeStringsByBareTypeStrings release];
 
     [super dealloc];
 }
@@ -93,7 +105,7 @@
 - (void)logPhase1Data;
 {
     NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
-    NSLog(@"structureSignatures: %@", [structureSignatures description]);
+    NSLog(@"keyTypeStringsByBareTypeStrings:\n%@", keyTypeStringsByBareTypeStrings);
 }
 
 // Some anonymous structs don't have member names, but others do.
@@ -104,35 +116,27 @@
 
 - (void)finishPhase1;
 {
-    int count, index;
-    CDType *aType;
-    NSMutableSet *ambiguousSignatures;
+    NSArray *keys;
+    unsigned int count, index;
 
     //NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
-    ambiguousSignatures = [[NSMutableSet alloc] init];
-
-    count = [structureTypes count];
+    keys = [keyTypeStringsByBareTypeStrings allKeys];
+    count = [keys count];
     for (index = 0; index < count; index++) {
-        NSString *keySignature, *bareSignature;
+        NSString *key;
+        NSMutableSet *value;
 
-        aType = [structureTypes objectAtIndex:index];
-        keySignature = [aType keyTypeString];
-        bareSignature = [aType bareTypeString];
-        if ([keySignature isEqual:bareSignature] == NO && [ambiguousSignatures containsObject:bareSignature] == NO) {
-            //NSLog(@"%d: %@ != %@", index, keySignature, bareSignature);
-            if ([replacementSignatures objectForKey:bareSignature] == nil) {
-                [replacementSignatures setObject:keySignature forKey:bareSignature];
-            } else {
-                [replacementSignatures removeObjectForKey:bareSignature];
-                [ambiguousSignatures addObject:bareSignature];
-            }
+        key = [keys objectAtIndex:index];
+        value = [keyTypeStringsByBareTypeStrings objectForKey:key];
+        [value removeObject:key]; // Remove the bare string.  This should leave only ones with member names.
+        // If there's more than one, it means they have different member names.
+        if ([value count] == 1) {
+            [replacementSignatures setObject:[value anyObject] forKey:key];
+        } else if ([value count] == 2) {
+            if (flags.shouldDebug)
+                NSLog(@"%s, %@ -> (%u) %@", _cmd, key, [value count], value);
         }
     }
-
-    //NSLog(@"replacementSignatures: %@", [replacementSignatures description]);
-    //NSLog(@"ambiguousSignatures: %@", [ambiguousSignatures description]);
-
-    [ambiguousSignatures release];
 }
 
 - (void)logInfo;
@@ -268,14 +272,22 @@
     NSString *aName;
 
     //NSLog(@" > %s", _cmd);
-    //NSLog(@"keySignature: %@ (%d)", [aStructure keyTypeString], [structureSignatures containsObject:[aStructure keyTypeString]]);
+    //NSLog(@"keySignature: %@", [aStructure keyTypeString]);
 
     aName = [[aStructure typeName] description];
     if (aName == nil || [aName isEqual:@"?"] == YES) {
-        if ([structureSignatures containsObject:[aStructure keyTypeString]] == NO) {
-            [structureSignatures addObject:[aStructure keyTypeString]];
-            [structureTypes addObject:aStructure];
+        NSString *bareStr, *keyStr;
+        NSMutableSet *values;
+
+        bareStr = [aStructure bareTypeString]; // No member names at all
+        keyStr = [aStructure keyTypeString]; // Only top level member names
+        values = [keyTypeStringsByBareTypeStrings objectForKey:bareStr];
+        if (values == nil) {
+            values = [[NSMutableSet alloc] init];
+            [keyTypeStringsByBareTypeStrings setObject:values forKey:bareStr];
+            [values release];
         }
+        [values addObject:keyStr];
     }
 
     //NSLog(@"<  %s", _cmd);
