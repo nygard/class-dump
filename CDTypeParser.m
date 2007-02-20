@@ -381,7 +381,12 @@ NSString *CDTokenDescription(int token)
 
         [self match:'>' enterState:savedState];
     }
-
+#if 0
+    // This breaks a bunch of the unit tests... need to figure out what's up with that first.
+    // We'll treat "?" as no name, returning nil here instead of testing the type name for this later.
+    if ([[typeName name] isEqualToString:@"?"] && [typeName isTemplateType] == NO)
+        typeName = nil;
+#endif
     return typeName;
 }
 
