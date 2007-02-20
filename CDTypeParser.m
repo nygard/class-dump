@@ -12,6 +12,7 @@
 #import "NSString-Extensions.h"
 
 NSString *CDSyntaxError = @"Syntax Error";
+NSString *CDTypeParserErrorDomain = @"CDTypeParserErrorDomain";
 
 NSString *CDTokenDescription(int token)
 {
@@ -46,17 +47,24 @@ NSString *CDTokenDescription(int token)
     return lexer;
 }
 
-- (NSArray *)parseMethodType;
+- (NSArray *)parseMethodType:(NSError **)error;
 {
     NSArray *result;
+
+    *error = nil;
 
     NS_DURING {
         lookahead = [lexer scanNextToken];
         result = [self _parseMethodType];
     } NS_HANDLER {
-        NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %@", [lexer string]);
-        NSLog(@"remaining string: %@", [lexer remainingString]);
+        NSDictionary *userInfo;
+
+        userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:localException, @"exception",
+                                         [lexer string], @"type",
+                                         [lexer remainingString], @"remaining string",
+                                         nil];
+        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:0 userInfo:userInfo];
+        [userInfo release];
 
         result = nil;
     } NS_ENDHANDLER;
@@ -64,17 +72,24 @@ NSString *CDTokenDescription(int token)
     return result;
 }
 
-- (CDType *)parseType;
+- (CDType *)parseType:(NSError **)error;
 {
     CDType *result;
+
+    *error = nil;
 
     NS_DURING {
         lookahead = [lexer scanNextToken];
         result = [self _parseType];
     } NS_HANDLER {
-        NSLog(@"caught exception: %@", localException);
-        NSLog(@"type: %@", [lexer string]);
-        NSLog(@"remaining string: %@", [lexer remainingString]);
+        NSDictionary *userInfo;
+
+        userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:localException, @"exception",
+                                         [lexer string], @"type",
+                                         [lexer remainingString], @"remaining string",
+                                         nil];
+        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:0 userInfo:userInfo];
+        [userInfo release];
 
         result = nil;
     } NS_ENDHANDLER;

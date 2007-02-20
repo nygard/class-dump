@@ -7,6 +7,7 @@
 @class CDMethodType, CDType, CDTypeLexer, CDTypeName;
 
 extern NSString *CDSyntaxError;
+extern NSString *CDTypeParserErrorDomain;
 
 @interface CDTypeParser : NSObject
 {
@@ -19,8 +20,8 @@ extern NSString *CDSyntaxError;
 
 - (CDTypeLexer *)lexer;
 
-- (NSArray *)parseMethodType;
-- (CDType *)parseType;
+- (NSArray *)parseMethodType:(NSError **)error;
+- (CDType *)parseType:(NSError **)error;
 
 @end
 

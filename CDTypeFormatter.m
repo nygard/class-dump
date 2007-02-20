@@ -92,6 +92,7 @@
     CDType *resultType;
     NSMutableString *resultString;
     NSString *specialCase;
+    NSError *error;
 
     //NSLog(@"%s, shouldExpandStructures: %d", _cmd, shouldExpandStructures);
     //NSLog(@" > %s", _cmd);
@@ -109,10 +110,11 @@
 
     aParser = [[CDTypeParser alloc] initWithType:type];
     [[aParser lexer] setShouldShowLexing:shouldShowLexing];
-    resultType = [aParser parseType];
+    resultType = [aParser parseType:&error];
     //NSLog(@"resultType: %p", resultType);
 
     if (resultType == nil) {
+        NSLog(@"Error: %@", error);
         [aParser release];
         //NSLog(@"<  %s", _cmd);
         return nil;
@@ -134,11 +136,12 @@
     CDTypeParser *aParser;
     NSArray *methodTypes;
     NSMutableString *resultString;
+    NSError *error;
 
     aParser = [[CDTypeParser alloc] initWithType:type];
-    methodTypes = [aParser parseMethodType];
+    methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@", methodName);
+        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, error);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {

@@ -93,9 +93,10 @@
     count = [ivars count];
     for (index = 0; index < count; index++) {
         CDType *aType;
+        NSError *error;
 
         parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
-        aType = [parser parseType];
+        aType = [parser parseType:&error];
         [aType phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
         [parser release];
     }

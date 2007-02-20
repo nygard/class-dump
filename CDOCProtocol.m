@@ -179,10 +179,12 @@
 
     count = [methods count];
     for (index = 0; index < count; index++) {
+        NSError *error;
+
         parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[methods objectAtIndex:index] type]];
-        methodTypes = [parser parseMethodType];
+        methodTypes = [parser parseMethodType:&error];
         if (methodTypes == nil)
-            NSLog(@"Warning: Parsing method types failed, %@", [(CDOCMethod *)[methods objectAtIndex:index] name]);
+            NSLog(@"Warning: Parsing method types failed, %@, %@", [(CDOCMethod *)[methods objectAtIndex:index] name], error);
         [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
         [parser release];
     }
