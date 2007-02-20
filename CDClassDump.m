@@ -688,7 +688,7 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
 {
-    CDType *replacementType, *searchType;
+    CDType *searchType;
     CDStructureTable *targetTable;
 
     if (level == 0 && aFormatter == structDeclarationTypeFormatter)
@@ -701,10 +701,8 @@ static NSMutableSet *wrapperExtensions = nil;
     }
 
     // We need to catch top level replacements, not just replacements for struct members.
-    replacementType = [targetTable replacementForType:structType];
-    if (replacementType != nil)
-        searchType = replacementType;
-    else
+    searchType = [targetTable replacementForType:structType];
+    if (searchType == nil)
         searchType = structType;
 
     return [targetTable typedefNameForStructureType:searchType];
