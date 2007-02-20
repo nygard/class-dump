@@ -653,6 +653,7 @@
         return;
     }
 
+    //NSLog(@"****************************************");
     for (index = 0; index < count; index++) {
         CDType *thisMember, *otherMember;
         CDTypeName *thisTypeName, *otherTypeName;
@@ -672,7 +673,7 @@
             ; // It seems to be okay if one of them didn't have a name
             //NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
         else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
-            NSLog(@"Warning: (2) type names don't match, %@ vs %@.", thisTypeName, otherTypeName);
+            NSLog(@"Warning: (2) type names don't match:\n\t%@ vs \n\t%@.", thisTypeName, otherTypeName);
 
         if (otherVariableName != nil) {
             if (thisVariableName == nil)
