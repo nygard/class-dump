@@ -11,12 +11,12 @@ mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
 foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework) do
     echo $i `basename $i .framework`
-    $OLD_CD -s $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
+    $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
 done
 
 foreach i (/Applications/*.app /Applications/Utilities/*.app) do
     echo $i `basename $i .app`
-    $OLD_CD -s $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
+    $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
 done
