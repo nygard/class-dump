@@ -41,9 +41,12 @@
 {
     CDTypeParser *parser;
     CDType *type;
+    NSError *error;
 
     parser = [[CDTypeParser alloc] initWithType:aTypeString];
-    type = [parser parseType];
+    type = [parser parseType:&error];
+    if (error != nil)
+        NSLog(@"Error: %@", error);
     [type phase:phase registerStructuresWithObject:classDump usedInMethod:NO];
     [parser release];
 }

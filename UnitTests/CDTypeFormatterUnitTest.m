@@ -204,11 +204,14 @@
     CDTypeParser *typeParser;
     CDType *parsedType;
     NSString *reencodedType;
+    NSError *error;
 
     typeParser = [[[CDTypeParser alloc] initWithType:originalType] autorelease];
     [self assertNotNil:typeParser message:@"Failed to create parser"];
 
-    parsedType = [typeParser parseType];
+    parsedType = [typeParser parseType:&error];
+    if (error != nil)
+        NSLog(@"Error: %@", error);
     [self assertNotNil:parsedType message:@"Failed to parse"];
 
     reencodedType = [parsedType typeString];
