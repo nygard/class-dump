@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         if ([classDump processFilename:path] == YES) {
-#if 0
+#if 1
             [classDump processObjectiveCSegments];
 
             if (shouldFind) {
