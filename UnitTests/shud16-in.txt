@@ -1,0 +1,4 @@
+// TextMate 1.5.4 has structures like... "storage""stack"{etc} -- two quoted strings next to each other.
+// It looks like this is a problem with the name rather than a problem with missing types -- when I compared
+// it to a case that didn't have names the types matched up perfectly.
+{my_struct1="storage""stack"i}

@@ -1,0 +1,5 @@
+struct my_struct1 {
+    int storage__stack;
+};
+
+    struct my_struct1 var;
