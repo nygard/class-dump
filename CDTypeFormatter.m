@@ -214,7 +214,7 @@
         }
 
         if (noMoreTypes == YES) {
-            NSLog(@" /* Error: Ran out of types for this method. */");
+            [resultString appendString:@" /* Error: Ran out of types for this method. */"];
         }
     }
 
