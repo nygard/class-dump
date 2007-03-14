@@ -60,6 +60,7 @@
     int count, index;
     NSMutableArray *allClasses;
     NSArray *protocolNames;
+    NSXMLElement *fileElement = [NSXMLElement elementWithName:@"file"];
 
     allClasses = [[NSMutableArray alloc] init];
 
@@ -83,7 +84,6 @@
 
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
         const NXArchInfo *archInfo;
-        NSXMLElement *fileElement = [NSXMLElement elementWithName:@"file"];
         NSXMLElement *nameElement = [NSXMLElement elementWithName:@"name"];
 
         [nameElement setStringValue:[machOFile filename]];
@@ -112,7 +112,7 @@
         CDOCProtocol *aProtocol;
 
         aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol addToXMLElement:xmlElement classDump:aClassDump symbolReferences:nil];
+        [aProtocol addToXMLElement:fileElement classDump:aClassDump symbolReferences:nil];
     }
 
     if ([aClassDump shouldSortClassesByInheritance] == YES) {
@@ -122,7 +122,7 @@
 
     count = [allClasses count];
     for (index = 0; index < count; index++)
-        [[allClasses objectAtIndex:index] addToXMLElement:xmlElement classDump:aClassDump symbolReferences:nil];
+        [[allClasses objectAtIndex:index] addToXMLElement:fileElement classDump:aClassDump symbolReferences:nil];
 
     [allClasses release];
 }
