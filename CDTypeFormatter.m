@@ -91,6 +91,7 @@
     CDType *resultType;
     NSString *resultString;
     NSString *specialCase;
+    NSError *error;
     NSArray *typeComponents;
     NSDictionary *resultDict;
 
@@ -107,7 +108,7 @@
 
     aParser = [[CDTypeParser alloc] initWithType:type];
     [[aParser lexer] setShouldShowLexing:shouldShowLexing];
-    resultType = [aParser parseType];
+    resultType = [aParser parseType:&error];
     //NSLog(@"resultType: %p", resultType);
 
     if (resultType == nil) {
@@ -185,13 +186,14 @@
 {
     CDTypeParser *aParser;
     NSArray *methodTypes;
+    NSError *error;
     NSMutableDictionary *typeDict;
     NSMutableArray *parameterTypes;
 
     aParser = [[CDTypeParser alloc] initWithType:type];
-    methodTypes = [aParser parseMethodType];
+    methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@", methodName);
+        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, error);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {
