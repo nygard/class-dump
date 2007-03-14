@@ -81,7 +81,7 @@
         }
 
         if ([aClassDump shouldShowMethodAddresses] == YES && imp != 0)
-            [methodElement addChild:[NSXMLElement elementWithName:@"imp" stringValue:[NSString stringWithFormat:@"0x%08x", imp]]];
+            [methodElement addChild:[NSXMLElement elementWithName:@"address" stringValue:[NSString stringWithFormat:@"0x%08x", imp]]];
     } else
         [methodElement addChild:[NSXMLNode commentWithStringValue:[NSString stringWithFormat:@"Error parsing type: %@, name: %@", type, name]]];
 
