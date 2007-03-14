@@ -7,21 +7,20 @@
 
 <!ELEMENT protocol (name, adopted-protocols?, class-method*, instance-method*)>
 <!ELEMENT class (name, superclass?, adopted-protocols?, ivar*, class-method*, instance-method*)>
-<!ELEMENT category (name, classname, adopted-protocols?, class-method*, instance-method*)>
+<!ELEMENT category (name, class-name, adopted-protocols?, class-method*, instance-method*)>
 
-<!ELEMENT class-method (selector, return-type, parameters?)>
-<!ELEMENT instance-method (selector, return-type, parameters?)>
+<!ELEMENT class-method (selector, return-type, parameter*)>
+<!ELEMENT instance-method (selector, return-type, parameter*)>
 <!ELEMENT adopted-protocols (name*)>
 
 <!ELEMENT parameter (name, type)>
 <!ELEMENT ivar (name, type, type-suffix?)> <!-- merge with parameter -->
 
 <!ELEMENT name (#PCDATA)>
-<!ELEMENT classname (#PCDATA)>
+<!ELEMENT class-name (#PCDATA)>
 <!ELEMENT superclass (#PCDATA)>
 <!ELEMENT selector (#PCDATA)>
 <!ELEMENT return-type (#PCDATA)>
-<!ELEMENT parameters (parameter*)>
 <!ELEMENT type (#PCDATA)>
 <!ELEMENT type-suffix (#PCDATA)>
 

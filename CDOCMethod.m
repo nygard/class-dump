@@ -53,7 +53,6 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%08x",
-
                      NSStringFromClass([self class]), name, type, imp];
 }
 
@@ -65,22 +64,20 @@
     [methodElement addChild:[NSXMLElement elementWithName:@"selector" stringValue:name]];
     formattedTypes = [[aClassDump methodTypeFormatter] formattedTypesForMethodName:name type:type symbolReferences:symbolReferences];
     if (formattedTypes != nil) {
+        int count, index;
+        NSArray *parameterTypes = [formattedTypes valueForKey:@"parametertypes"];
 
         [methodElement addChild:[NSXMLElement elementWithName:@"return-type" stringValue:[formattedTypes valueForKey:@"return-type"]]];
-        NSArray *parameterTypes = [formattedTypes valueForKey:@"parametertypes"];
-        int count, index;
         count = [parameterTypes count];
         if (count > 0) {
-            NSXMLElement *parametersElement = [NSXMLElement elementWithName:@"parameters"];
             for (index = 0; index < count; index++) {
-                [parametersElement addChild:[NSXMLElement elementWithName:@"parameter"
-                                                          children:[NSArray arrayWithObjects:
-                                                                                [NSXMLElement elementWithName:@"name" stringValue:[[parameterTypes objectAtIndex:index] valueForKey:@"name"]],
-                                                                            [NSXMLElement elementWithName:@"type" stringValue:[[parameterTypes objectAtIndex:index] valueForKey:@"type"]],
-                                                                            nil]
-                                                          attributes:nil]];
+                [methodElement addChild:[NSXMLElement elementWithName:@"parameter"
+                                                      children:[NSArray arrayWithObjects:
+                                                                            [NSXMLElement elementWithName:@"name" stringValue:[[parameterTypes objectAtIndex:index] valueForKey:@"name"]],
+                                                                        [NSXMLElement elementWithName:@"type" stringValue:[[parameterTypes objectAtIndex:index] valueForKey:@"type"]],
+                                                                        nil]
+                                                      attributes:nil]];
             }
-            [methodElement addChild:parametersElement];
         }
 
         if ([aClassDump shouldShowMethodAddresses] == YES && imp != 0)

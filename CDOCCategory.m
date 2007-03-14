@@ -40,7 +40,7 @@
     NSXMLElement *categoryElement = [NSXMLElement elementWithName:@"category"];
 
     [categoryElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
-    [categoryElement addChild:[NSXMLElement elementWithName:@"classname" stringValue:className]];
+    [categoryElement addChild:[NSXMLElement elementWithName:@"class-name" stringValue:className]];
 
     if ([protocols count] > 0) {
         NSArray *protocolsArray = [protocols arrayByMappingSelector:@selector(name)];
