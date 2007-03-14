@@ -17,6 +17,11 @@
 
 <!ELEMENT class-method (selector, return-type, parameter*, address?)>
 <!ELEMENT instance-method (selector, return-type, parameter*, address?)>
+
+<!-- Or how about !ELEMENT method (selector, return-type, parameter*, address?)>
+                  !ATTLIST type (class | instance) #REQUIRED>
+  -->
+
 <!ELEMENT adopted-protocols (name*)>
 
 <!ELEMENT parameter (name, type)>
