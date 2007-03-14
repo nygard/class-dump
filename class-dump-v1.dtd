@@ -1,13 +1,13 @@
 <!-- class-dump DTD -->
 <!-- Public ID: -//codethecode.com//DTD class-dump Development 1//EN -->
 <!-- System ID: http://www.codethecode.com/formats/class-dump-v1.dtd -->
-<!-- xmllint -dtdvalid class-dump-v1.dtd t0.xml - - noout, plus you need to make sure the system ID is this filename -->
+<!-- xmllint -dtdvalid class-dump-v1.dtd t0.xml - - noout (** can't have double dash in comment **), plus you need to make sure the system ID is this filename -->
 
 <!ELEMENT class-dump ((protocol | class | category)*)>
 
-<!ELEMENT protocol (name, incorporates?, class-method*, instance-method*)>
-<!ELEMENT class (name, superclass?, adopts?, ivar*, class-method*, instance-method*)>
-<!ELEMENT category (name, classname, adopts?, class-method*, instance-method*)>
+<!ELEMENT protocol (name, adopted-protocols?, class-method*, instance-method*)>
+<!ELEMENT class (name, superclass?, adopted-protocols?, ivar*, class-method*, instance-method*)>
+<!ELEMENT category (name, classname, adopted-protocols?, class-method*, instance-method*)>
 
 <!ELEMENT name (#PCDATA)>
 <!ELEMENT classname (#PCDATA)>
@@ -15,18 +15,13 @@
 <!ELEMENT class-method (selector, return-type, parameters?)>
 <!ELEMENT instance-method (selector, return-type, parameters?)>
 
-<!ELEMENT protocol-ref (#PCDATA)>
-
 <!ELEMENT selector (#PCDATA)>
 <!ELEMENT return-type (#PCDATA)>
 <!ELEMENT parameters (parameter*)>
 <!ELEMENT type (#PCDATA)>
 <!ELEMENT type-suffix (#PCDATA)>
 
-<!ELEMENT incorporates (protocol-ref*)> <!-- This is a bit wierd.  Here is just has PCDATA.  Change into some sort of reference. -->
-<!ELEMENT adopts (protocol-ref*)> <!-- merge with incorporates -->
-
-<!-- How about just adopted-protocols (name*) -->
+<!ELEMENT adopted-protocols (name*)>
 
 <!ELEMENT parameter (name, type)>
 <!ELEMENT ivar (name, type, type-suffix?)> <!-- merge with parameter -->

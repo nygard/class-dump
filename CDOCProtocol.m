@@ -130,10 +130,10 @@
         NSMutableArray *incorporatedProtocolElements = [NSMutableArray arrayWithCapacity:count];
 
         for (index = 0; index < count; index++) {
-            [incorporatedProtocolElements addObject:[NSXMLElement elementWithName:@"protocol-ref" stringValue:[protocolsArray objectAtIndex:index]]];
+            [incorporatedProtocolElements addObject:[NSXMLElement elementWithName:@"name" stringValue:[protocolsArray objectAtIndex:index]]];
         }
 
-        [protocolElement addChild:[NSXMLElement elementWithName:@"incorporates" children:incorporatedProtocolElements attributes:nil]];
+        [protocolElement addChild:[NSXMLElement elementWithName:@"adopted-protocols" children:incorporatedProtocolElements attributes:nil]];
         [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
     }
 
