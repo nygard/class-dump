@@ -29,6 +29,7 @@
         unsigned int shouldShowMethodAddresses:1;
         unsigned int shouldMatchRegex:1;
         unsigned int shouldShowHeader:1;
+        unsigned int shouldGenerateXML:1;
     } flags;
 
     regex_t compiledRegex;
@@ -87,6 +88,9 @@
 - (BOOL)shouldShowHeader;
 - (void)setShouldShowHeader:(BOOL)newFlag;
 
+- (BOOL)shouldGenerateXML;
+- (void)setShouldGenerateXML:(BOOL)newFlag;
+
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;
 
@@ -112,6 +116,7 @@
 
 - (void)find:(NSString *)str;
 - (void)generateOutput;
+- (void)generateXMLToStandardOut;
 - (void)generateToStandardOut;
 - (void)generateSeparateHeaders;
 - (void)generateStructureHeader;

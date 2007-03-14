@@ -24,6 +24,7 @@ void print_usage(void)
             "        -A             show implementation addresses\n"
             "        --arch <arch>  choose a specific architecture from a universal binary (ppc, i386, etc.)\n"
             "        -C <regex>     only display classes matching regular expression\n"
+            "        -f <str>       find string\n"
             "        -H             generate header files in current directory, or directory specified with -o\n"
             "        -I             sort classes, categories, and protocols by inheritance (overrides -s)\n"
             "        -o <dir>       output directory used for -H\n"
@@ -31,7 +32,7 @@ void print_usage(void)
             "        -s             sort classes and categories by name\n"
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
-            "        -f <str>       find string\n"
+            "        -x             generate XML output\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -60,8 +61,9 @@ int main(int argc, char *argv[])
         { "recursive", no_argument, NULL, 'r' },
         { "sort", no_argument, NULL, 's' },
         { "sort-methods", no_argument, NULL, 'S' },
-        { "arch", required_argument, NULL, CD_OPT_ARCH},
+        { "arch", required_argument, NULL, CD_OPT_ARCH },
         { "suppress-header", no_argument, NULL, 't' },
+        { "generate-xml", no_argument, NULL, 'x' },
         { NULL, 0, NULL, 0 },
     };
 
@@ -72,7 +74,7 @@ int main(int argc, char *argv[])
 
     classDump = [[[CDClassDump alloc] init] autorelease];
 
-    while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsStx", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH:
           {
@@ -141,6 +143,10 @@ int main(int argc, char *argv[])
 
           case 't':
               [classDump setShouldShowHeader:NO];
+              break;
+
+          case 'x':
+              [classDump setShouldGenerateXML:YES];
               break;
 
           case '?':

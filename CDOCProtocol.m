@@ -115,6 +115,32 @@
                      NSStringFromClass([self class]), name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
+- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
+        return;
+
+    NSXMLElement *protocolElement = [NSXMLElement elementWithName:@"protocol"];
+    [protocolElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
+    if ([protocols count] > 0) {
+        int count, index;
+        NSArray *protocolsArray = [protocols arrayByMappingSelector:@selector(name)];
+        count = [protocolsArray count];
+
+        NSMutableArray *incorporatedProtocolElements = [NSMutableArray arrayWithCapacity:count];
+
+        for (index = 0; index < count; index++) {
+            [incorporatedProtocolElements addObject:[NSXMLElement elementWithName:@"protocol" stringValue:[protocolsArray objectAtIndex:index]]];
+        }
+
+        [protocolElement addChild:[NSXMLElement elementWithName:@"incorporates" children:incorporatedProtocolElements attributes:nil]];
+        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+    }
+
+    [self addMethodsToXMLElement:protocolElement classDump:aClassDump symbolReferences:symbolReferences];
+    [xmlElement addChild:protocolElement];
+}
+
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
@@ -129,6 +155,35 @@
     [resultString appendString:@"\n"];
     [self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
     [resultString appendString:@"@end\n\n"];
+}
+
+- (void)addMethodsToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+    int count, index;
+    NSArray *methods;
+
+    if ([aClassDump shouldSortMethods] == YES)
+        methods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = classMethods;
+
+    count = [methods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++)
+            [[methods objectAtIndex:index] addToXMLElement:xmlElement asClassMethod:YES classDump:aClassDump symbolReferences:symbolReferences];
+    }
+
+    if ([aClassDump shouldSortMethods] == YES)
+        methods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = instanceMethods;
+
+    count = [methods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [[methods objectAtIndex:index] addToXMLElement:xmlElement asClassMethod:NO classDump:aClassDump symbolReferences:symbolReferences];
+        }
+    }
 }
 
 - (void)appendMethodsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
