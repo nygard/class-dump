@@ -84,9 +84,8 @@
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
         const NXArchInfo *archInfo;
         NSXMLElement *fileElement = [NSXMLElement elementWithName:@"file"];
-        NSXMLElement *nameElement;
+        NSXMLElement *nameElement = [NSXMLElement elementWithName:@"name"];
 
-        nameElement = [NSXMLElement elementWithName:@"name"];
         [nameElement setStringValue:[machOFile filename]];
         [fileElement addChild:nameElement];
 
