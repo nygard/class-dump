@@ -3,7 +3,13 @@
 <!-- System ID: http://www.codethecode.com/formats/class-dump-v1.dtd -->
 <!-- xmllint -dtdvalid class-dump-v1.dtd t0.xml - - noout (** can't have double dash in comment **), plus you need to make sure the system ID is this filename -->
 
-<!ELEMENT class-dump ((protocol | class | category)*)>
+<!ELEMENT class-dump (file, (protocol | class | category)*)>
+
+<!ELEMENT file (name)>
+<!ATTLIST file arch CDATA #IMPLIED
+               current-version CDATA #REQUIRED
+               compatibility-version CDATA #REQUIRED
+               >
 
 <!ELEMENT protocol (name, adopted-protocols?, class-method*, instance-method*)>
 <!ELEMENT class (name, superclass?, adopted-protocols?, ivar*, class-method*, instance-method*)>
@@ -23,5 +29,3 @@
 <!ELEMENT return-type (#PCDATA)>
 <!ELEMENT type (#PCDATA)>
 <!ELEMENT type-suffix (#PCDATA)>
-
-

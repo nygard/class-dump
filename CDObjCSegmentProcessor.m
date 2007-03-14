@@ -83,22 +83,29 @@
 
     if ([protocolNames count] > 0 || [allClasses count] > 0) {
         const NXArchInfo *archInfo;
-        NSMutableString *resultString = [NSMutableString string];
-        [resultString appendFormat:@"File: %@\n", [machOFile filename]];
+        NSXMLElement *fileElement = [NSXMLElement elementWithName:@"file"];
+        NSXMLElement *nameElement;
+
+        nameElement = [NSXMLElement elementWithName:@"name"];
+        [nameElement setStringValue:[machOFile filename]];
+        [fileElement addChild:nameElement];
 
         archInfo = NXGetArchInfoFromCpuType([machOFile cpuType], [machOFile cpuSubtype]);
-        if (archInfo != NULL)
-            [resultString appendFormat:@"Arch: %s (%s)\n", archInfo->description, archInfo->name];
+        if (archInfo != NULL) {
+            [fileElement addAttribute:[NSXMLNode attributeWithName:@"arch" stringValue:[NSString stringWithFormat:@"%s", archInfo->name]]];
+        }
 
         if ([machOFile filetype] == MH_DYLIB) {
             CDDylibCommand *identifier;
 
             identifier = [machOFile dylibIdentifier];
-            if (identifier != nil)
-                [resultString appendFormat:@"       Current version: %@, Compatibility version: %@",
-                              [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
+            if (identifier != nil) {
+                [fileElement addAttribute:[NSXMLNode attributeWithName:@"current-version" stringValue:[identifier formattedCurrentVersion]]];
+                [fileElement addAttribute:[NSXMLNode attributeWithName:@"compatibility-version" stringValue:[identifier formattedCompatibilityVersion]]];
+            }
         }
-        [xmlElement addChild:[NSXMLNode commentWithStringValue:resultString]];
+
+        [xmlElement addChild:fileElement];
     }
 
     count = [protocolNames count];
