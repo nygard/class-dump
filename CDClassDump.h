@@ -29,7 +29,7 @@
         unsigned int shouldShowMethodAddresses:1;
         unsigned int shouldMatchRegex:1;
         unsigned int shouldShowHeader:1;
-		unsigned int shouldGenerateXML:1;
+        unsigned int shouldGenerateXML:1;
     } flags;
 
     regex_t compiledRegex;

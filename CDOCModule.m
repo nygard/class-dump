@@ -80,11 +80,11 @@
 
 - (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
 {
-	NSXMLElement *moduleElement = [NSXMLElement elementWithName:@"module"];
-	[moduleElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
-	[symtab addToXMLElement:moduleElement classDump:aClassDump];
-	[xmlElement addChild:moduleElement];
+    NSXMLElement *moduleElement = [NSXMLElement elementWithName:@"module"];
 
+    [moduleElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
+    [symtab addToXMLElement:moduleElement classDump:aClassDump];
+    [xmlElement addChild:moduleElement];
 }
 
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;

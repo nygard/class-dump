@@ -57,9 +57,9 @@ int main(int argc, char *argv[])
         { "recursive", no_argument, NULL, 'r' },
         { "sort", no_argument, NULL, 's' },
         { "sort-methods", no_argument, NULL, 'S' },
-        { "arch", required_argument, NULL, CD_OPT_ARCH},
+        { "arch", required_argument, NULL, CD_OPT_ARCH },
         { "suppress-header", no_argument, NULL, 't' },
-		{ "generate-xml", no_argument, NULL, 'x' },
+        { "generate-xml", no_argument, NULL, 'x' },
         { NULL, 0, NULL, 0 },
     };
 
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
           case 'x':
               [classDump setShouldGenerateXML:YES];
               break;
-			  
+
           case '?':
           default:
               errorFlag = YES;
