@@ -27,6 +27,7 @@
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 - (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
 
+- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 - (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 

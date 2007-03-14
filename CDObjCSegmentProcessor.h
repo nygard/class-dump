@@ -20,6 +20,7 @@
 - (BOOL)hasModules;
 - (void)process;
 
+- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
 - (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 

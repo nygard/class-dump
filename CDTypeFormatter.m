@@ -85,6 +85,56 @@
     return nil;
 }
 
+- (NSDictionary *)formattedTypeComponentsForType:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+    CDTypeParser *aParser;
+    CDType *resultType;
+    NSString *resultString;
+    NSString *specialCase;
+	NSArray *typeComponents;
+	NSDictionary *resultDict;
+	
+    //NSLog(@"%s, shouldExpandStructures: %d", _cmd, shouldExpandStructures);
+    //NSLog(@" > %s", _cmd);
+    //NSLog(@"name: '%@', type: '%@', level: %d", name, type, level);
+	
+    // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
+    specialCase = [self _specialCaseVariable:nil type:type];
+    if (specialCase != nil) {
+		// TODO: this works, because _specialCaseVariable:type: always returns just BOOL at the moment
+        return [NSDictionary dictionaryWithObject:specialCase forKey:@"type"];
+    }
+	
+    aParser = [[CDTypeParser alloc] initWithType:type];
+    [[aParser lexer] setShouldShowLexing:shouldShowLexing];
+    resultType = [aParser parseType];
+    //NSLog(@"resultType: %p", resultType);
+	
+    if (resultType == nil) {
+        [aParser release];
+        //NSLog(@"<  %s", _cmd);
+        return nil;
+    }
+	
+	// special marker '|' used as name, as that character surely is invalid as a declarator
+	// we split on that to find out if there is a "type suffix" like bitfield length in the type string
+    resultString = [resultType formattedString:@"|" formatter:self level:0 symbolReferences:symbolReferences];
+	typeComponents = [resultString componentsSeparatedByString:@"|"];
+	// there should never be more than two parts!
+	assert([typeComponents count] == 2);
+	if ([typeComponents count] == 2) {
+		NSString *suffix = [typeComponents objectAtIndex:1];
+		resultDict = [NSMutableDictionary dictionaryWithObject:[(NSString *)[typeComponents objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] 
+														forKey:@"type"];
+		if ([suffix length] != 0)
+			[resultDict setValue:suffix forKey:@"typesuffix"]; 
+	}
+    [aParser release];
+	
+    //NSLog(@"<  %s", _cmd);
+    return resultDict;
+}
+
 // TODO (2004-01-28): See if we can pass in the actual CDType.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
@@ -127,6 +177,98 @@
 
     //NSLog(@"<  %s", _cmd);
     return resultString;
+}
+
+- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+	CDTypeParser *aParser;
+    NSArray *methodTypes;
+    NSMutableDictionary *typeDict;
+	NSMutableArray *parameterTypes;
+	
+    aParser = [[CDTypeParser alloc] initWithType:type];
+    methodTypes = [aParser parseMethodType];
+    if (methodTypes == nil)
+        NSLog(@"Warning: Parsing method types failed, %@", methodName);
+    [aParser release];
+	
+    if (methodTypes == nil || [methodTypes count] == 0) {
+        return nil;
+    }
+	
+    typeDict = [NSMutableDictionary dictionary];
+    {
+        int count, index;
+        BOOL noMoreTypes;
+        CDMethodType *aMethodType;
+        NSScanner *scanner;
+        NSString *specialCase;
+		
+        count = [methodTypes count];
+        index = 0;
+        noMoreTypes = NO;
+		
+        aMethodType = [methodTypes objectAtIndex:index];
+        /*if ([[aMethodType type] isIDType] == NO)*/ {
+            NSString *str;
+			
+            specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+            if (specialCase != nil) {
+                [typeDict setValue:specialCase forKey:@"returntype"];
+            } else {
+                str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                if (str != nil)
+                    [typeDict setValue:str forKey:@"returntype"];
+            }
+        }
+		
+        index += 3;
+		
+		parameterTypes = [NSMutableArray array];
+		[typeDict setValue:parameterTypes forKey:@"parametertypes"];
+		
+        scanner = [[NSScanner alloc] initWithString:methodName];
+        while ([scanner isAtEnd] == NO) {
+            NSString *str;
+			
+            // We can have unnamed paramenters, :::
+            if ([scanner scanUpToString:@":" intoString:&str] == YES) {
+                //NSLog(@"str += '%@'", str);
+//				int unnamedCount, unnamedIndex;
+//				unnamedCount = [str length];
+//				for (unnamedIndex = 0; unnamedIndex < unnamedCount; unnamedIndex++)
+//					[parameterTypes addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"type", @"", @"name", nil]];
+            }
+            if ([scanner scanString:@":" intoString:NULL] == YES) {
+                NSString *typeString;
+				
+                if (index >= count) {
+                    noMoreTypes = YES;
+                } else {
+					NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+					
+                    aMethodType = [methodTypes objectAtIndex:index];
+                    specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+                    if (specialCase != nil) {
+                        [parameter setValue:specialCase forKey:@"type"];
+                    } else {
+                        typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                        //if ([[aMethodType type] isIDType] == NO)
+                        [parameter setValue:typeString forKey:@"type"];
+                    }
+					[parameter setValue:[NSString stringWithFormat:@"fp%@", [aMethodType offset]] forKey:@"name"];
+					[parameterTypes addObject:parameter];
+                    index++;
+                }
+            }
+        }
+		
+        if (noMoreTypes == YES) {
+            NSLog(@" /* Error: Ran out of types for this method. */");
+        }
+    }
+	
+    return typeDict;
 }
 
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;

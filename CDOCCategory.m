@@ -32,6 +32,36 @@
     className = [newClassName retain];
 }
 
+- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self sortableName]] == NO)
+        return;
+
+	NSXMLElement *categoryElement = [NSXMLElement elementWithName:@"category"];
+	
+	[categoryElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
+	[categoryElement addChild:[NSXMLElement elementWithName:@"classname" stringValue:className]];
+	
+    if ([protocols count] > 0) {
+		NSArray *protocolsArray = [protocols arrayByMappingSelector:@selector(name)];
+		unsigned count = [protocolsArray count];
+		unsigned index;
+		
+		NSMutableArray *adoptedProtocolElements = [NSMutableArray arrayWithCapacity:count];
+		
+		for (index = 0; index < count; index++) {
+			[adoptedProtocolElements addObject:[NSXMLElement elementWithName:@"protocol" stringValue:[protocolsArray objectAtIndex:index]]];
+		}
+		
+		[categoryElement addChild:[NSXMLElement elementWithName:@"adopts" children:adoptedProtocolElements attributes:nil]];
+        [symbolReferences addProtocolNamesFromArray:protocolsArray];
+    }
+
+	[self addMethodsToXMLElement:categoryElement classDump:aClassDump symbolReferences:symbolReferences];
+
+	[xmlElement addChild:categoryElement];
+}
+
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self sortableName]] == NO)

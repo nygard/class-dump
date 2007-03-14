@@ -240,6 +240,16 @@ static NSMutableSet *wrapperExtensions = nil;
     flags.shouldShowMethodAddresses = newFlag;
 }
 
+- (BOOL)shouldGenerateXML
+{
+	return flags.shouldGenerateXML;
+}
+
+- (void)setShouldGenerateXML:(BOOL)newFlag
+{
+	flags.shouldGenerateXML = newFlag;
+}
+
 - (BOOL)shouldMatchRegex;
 {
     return flags.shouldMatchRegex;
@@ -479,10 +489,38 @@ static NSMutableSet *wrapperExtensions = nil;
     [self registerPhase:2];
     [self generateMemberNames];
 
-    if ([self shouldGenerateSeparateHeaders] == YES)
-        [self generateSeparateHeaders];
-    else
-        [self generateToStandardOut];
+	if ([self shouldGenerateXML] == YES) 
+		[self generateXMLToStandardOut];
+	else
+		if ([self shouldGenerateSeparateHeaders] == YES)
+			[self generateSeparateHeaders];
+		else
+			[self generateToStandardOut];
+}
+
+- (void)generateXMLToStandardOut;
+{
+	NSXMLDocument *xmlDoc;
+	int count, index;
+	NSData *data;
+	
+	xmlDoc = [[NSXMLDocument alloc] initWithRootElement:[NSXMLElement elementWithName:@"classdump"]];
+
+    if ([self containsObjectiveCSegments]) {
+#warning TODO structures
+        //[self appendStructuresToString:resultString symbolReferences:nil];
+		
+        count = [objCSegmentProcessors count];
+        for (index = 0; index < count; index++) {
+            [[objCSegmentProcessors objectAtIndex:index] addToXMLElement:[xmlDoc rootElement] classDump:self];
+        }
+    } else {
+		[[xmlDoc rootElement] addChild:[NSXMLNode commentWithStringValue:@"This file does not contain any Objective-C runtime information."]];
+    }
+
+	data = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
+	[(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+	[xmlDoc release];
 }
 
 - (void)generateToStandardOut;

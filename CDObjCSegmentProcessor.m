@@ -55,6 +55,73 @@
     [self processModules];
 }
 
+- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
+{
+    int count, index;
+    NSMutableArray *allClasses;
+    NSArray *protocolNames;
+	
+    allClasses = [[NSMutableArray alloc] init];
+	
+    count = [modules count];
+    for (index = 0; index < count; index++) {
+        NSArray *moduleClasses, *moduleCategories;
+		
+        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
+        if (moduleClasses != nil)
+            [allClasses addObjectsFromArray:moduleClasses];
+		
+        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
+        if (moduleCategories != nil)
+            [allClasses addObjectsFromArray:moduleCategories];
+    }
+	
+    // TODO: Sort protocols by dependency
+    // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
+    // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
+    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+	
+    if ([protocolNames count] > 0 || [allClasses count] > 0) {
+        const NXArchInfo *archInfo;
+		NSMutableString *resultString = [NSMutableString string];
+		[resultString appendFormat:@"File: %@\n", [machOFile filename]];
+		 
+		archInfo = NXGetArchInfoFromCpuType([machOFile cpuType], [machOFile cpuSubtype]);
+		if (archInfo != NULL)
+			[resultString appendFormat:@"Arch: %s (%s)\n", archInfo->description, archInfo->name];
+		
+		if ([machOFile filetype] == MH_DYLIB) {
+			CDDylibCommand *identifier;
+			
+			identifier = [machOFile dylibIdentifier];
+			if (identifier != nil)
+				[resultString appendFormat:@"       Current version: %@, Compatibility version: %@",
+					[identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
+		}
+		[xmlElement addChild:[NSXMLNode commentWithStringValue:resultString]];
+    }
+
+    count = [protocolNames count];
+    for (index = 0; index < count; index++) {
+        CDOCProtocol *aProtocol;
+		
+        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
+        [aProtocol addToXMLElement:xmlElement classDump:aClassDump symbolReferences:nil];
+    }
+	
+    if ([aClassDump shouldSortClassesByInheritance] == YES) {
+        [allClasses sortTopologically];
+    } else if ([aClassDump shouldSortClasses] == YES)
+        [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+	
+    count = [allClasses count];
+    for (index = 0; index < count; index++)
+        [[allClasses objectAtIndex:index] addToXMLElement:xmlElement classDump:aClassDump symbolReferences:nil];
+	
+    [allClasses release];
+	
+}
+
 - (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 {
     int count, index;

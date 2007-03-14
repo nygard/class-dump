@@ -35,7 +35,7 @@
     return [representedObject identifier];
 }
 
-- (id)representedObject;
+- (id <CDTopologicalSort>)representedObject;
 {
     return representedObject;
 }

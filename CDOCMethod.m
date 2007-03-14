@@ -57,6 +57,40 @@
                      NSStringFromClass([self class]), name, type, imp];
 }
 
+- (void)addToXMLElement:(NSXMLElement *)xmlElement asClassMethod:(BOOL)asClassMethod classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+	NSXMLElement *methodElement = [NSXMLElement elementWithName:(asClassMethod ? @"classmethod" : @"instancemethod")];
+	NSDictionary *formattedTypes;
+	
+	[methodElement addChild:[NSXMLElement elementWithName:@"selector" stringValue:name]];
+	formattedTypes = [[aClassDump methodTypeFormatter] formattedTypesForMethodName:name type:type symbolReferences:symbolReferences];
+    if (formattedTypes != nil) {
+        
+		[methodElement addChild:[NSXMLElement elementWithName:@"returntype" stringValue:[formattedTypes valueForKey:@"returntype"]]];
+		NSArray *parameterTypes = [formattedTypes valueForKey:@"parametertypes"];
+		int count, index;
+		count = [parameterTypes count];
+		if (count > 0) {
+			NSXMLElement *parametersElement = [NSXMLElement elementWithName:@"parameters"];
+			for (index = 0; index < count; index++) {
+				[parametersElement addChild:[NSXMLElement elementWithName:@"parameter" 
+														  children:[NSArray arrayWithObjects:
+															  [NSXMLElement elementWithName:@"name" stringValue:[[parameterTypes objectAtIndex:index] valueForKey:@"name"]],
+															  [NSXMLElement elementWithName:@"type" stringValue:[[parameterTypes objectAtIndex:index] valueForKey:@"type"]],
+															  nil]
+														attributes:nil]];
+			}
+			[methodElement addChild:parametersElement];
+		}
+		
+        if ([aClassDump shouldShowMethodAddresses] == YES && imp != 0)
+            [methodElement addChild:[NSXMLElement elementWithName:@"imp" stringValue:[NSString stringWithFormat:@"0x%08x", imp]]];
+    } else
+        [methodElement addChild:[NSXMLNode commentWithStringValue:[NSString stringWithFormat:@"Error parsing type: %@, name: %@", type, name]]];
+	
+	[xmlElement addChild:methodElement];
+}
+
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *formattedString;

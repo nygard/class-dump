@@ -31,6 +31,7 @@ void print_usage(void)
             "        -s             sort classes and categories by name\n"
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
+			"        -x             generate XML output\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -58,6 +59,7 @@ int main(int argc, char *argv[])
         { "sort-methods", no_argument, NULL, 'S' },
         { "arch", required_argument, NULL, CD_OPT_ARCH},
         { "suppress-header", no_argument, NULL, 't' },
+		{ "generate-xml", no_argument, NULL, 'x' },
         { NULL, 0, NULL, 0 },
     };
 
@@ -68,7 +70,7 @@ int main(int argc, char *argv[])
 
     classDump = [[[CDClassDump alloc] init] autorelease];
 
-    while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsSt", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "aAC:HIo:rRsStx", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH:
           {
@@ -132,6 +134,10 @@ int main(int argc, char *argv[])
               [classDump setShouldShowHeader:NO];
               break;
 
+          case 'x':
+              [classDump setShouldGenerateXML:YES];
+              break;
+			  
           case '?':
           default:
               errorFlag = YES;
