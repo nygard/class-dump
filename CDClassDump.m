@@ -17,6 +17,10 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
+NSString *CDClassDumpVersion1PublicID = @"-//codethecode.com//DTD class-dump Development 1//EN";
+//NSString *CDClassDumpVersion1SystemID = @"http://www.codethecode.com/formats/class-dump-v1.dtd";
+NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
+
 @implementation CDClassDump
 
 static NSMutableSet *wrapperExtensions = nil;
@@ -86,6 +90,16 @@ static NSMutableSet *wrapperExtensions = nil;
         return fullyResolvedPath;
 
     return [basePath stringByAppendingString:[fullyResolvedPath substringFromIndex:[resolvedBasePath length]]];
+}
+
++ (NSString *)currentPublicID;
+{
+    return CDClassDumpVersion1PublicID;
+}
+
++ (NSString *)currentSystemID;
+{
+    return CDClassDumpVersion1SystemID;
 }
 
 - (id)init;
@@ -539,11 +553,23 @@ static NSMutableSet *wrapperExtensions = nil;
 
 - (void)generateXMLToStandardOut;
 {
-    NSXMLDocument *xmlDoc;
+    NSString *emptyXMLDocumentString;
+    NSString *rootElementName = @"classdump";
+    NSXMLDocument *xmlDocument;
     int count, index;
     NSData *data;
+    NSError *error;
 
-    xmlDoc = [[NSXMLDocument alloc] initWithRootElement:[NSXMLElement elementWithName:@"classdump"]];
+    emptyXMLDocumentString = [NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8'?>\n<!DOCTYPE %@ PUBLIC \"%@\" \"%@\">\n<%@>\n</%@>\n",
+                                       rootElementName, [[self class] currentPublicID], [[self class] currentSystemID],
+                                       rootElementName, rootElementName];
+
+    xmlDocument = [[NSXMLDocument alloc] initWithXMLString:emptyXMLDocumentString options:NSXMLNodeOptionsNone error:&error];
+    if (xmlDocument == nil) {
+        NSLog(@"Could not create empty xml document: %@", error);
+        [xmlDocument release];
+        return;
+    }
 
     if ([self containsObjectiveCSegments]) {
 #warning TODO structures
@@ -551,15 +577,15 @@ static NSMutableSet *wrapperExtensions = nil;
 
         count = [objCSegmentProcessors count];
         for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] addToXMLElement:[xmlDoc rootElement] classDump:self];
+            [[objCSegmentProcessors objectAtIndex:index] addToXMLElement:[xmlDocument rootElement] classDump:self];
         }
     } else {
-        [[xmlDoc rootElement] addChild:[NSXMLNode commentWithStringValue:@"This file does not contain any Objective-C runtime information."]];
+        [[xmlDocument rootElement] addChild:[NSXMLNode commentWithStringValue:@"This file does not contain any Objective-C runtime information."]];
     }
 
-    data = [xmlDoc XMLDataWithOptions:NSXMLNodePrettyPrint];
+    data = [xmlDocument XMLDataWithOptions:NSXMLNodePrettyPrint];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
-    [xmlDoc release];
+    [xmlDocument release];
 }
 
 - (void)generateToStandardOut;

@@ -1,0 +1,31 @@
+<!-- class-dump DTD -->
+<!-- Public ID: -//codethecode.com//DTD class-dump Development 1//EN -->
+<!-- System ID: http://www.codethecode.com/formats/class-dump-v1.dtd -->
+<!-- xmllint -dtdvalid class-dump-v1.dtd t0.xml - - noout, plus you need to make sure the system ID is this filename -->
+
+<!ELEMENT classdump ((protocol | class | category)*)>
+
+<!ELEMENT protocol (name, incorporates?, classmethod*, instancemethod*)>
+<!ELEMENT class (name, superclass?, adopts?, ivar*, classmethod*, instancemethod*)>
+<!ELEMENT category (name, classname, adopts?, classmethod*, instancemethod*)>
+
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT classname (#PCDATA)>
+<!ELEMENT superclass (#PCDATA)>
+<!ELEMENT classmethod (selector, returntype, parameters?)>
+<!ELEMENT instancemethod (selector, returntype, parameters?)>
+
+<!ELEMENT protocol-ref (#PCDATA)>
+
+<!ELEMENT selector (#PCDATA)>
+<!ELEMENT returntype (#PCDATA)>
+<!ELEMENT parameters (parameter*)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT typesuffix (#PCDATA)>
+
+<!ELEMENT incorporates (protocol-ref*)> <!-- This is a bit wierd.  Here is just has PCDATA.  Change into some sort of reference. -->
+<!ELEMENT adopts (protocol-ref*)> <!-- merge with incorporates -->
+
+<!ELEMENT parameter (name, type)>
+<!ELEMENT ivar (name, type, typesuffix?)> <!-- merge with parameter -->
+

@@ -55,6 +55,9 @@
 + (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
 + (NSString *)adjustUserSuppliedPath:(NSString *)path;
 
++ (NSString *)currentPublicID;
++ (NSString *)currentSystemID;
+
 - (id)init;
 - (void)dealloc;
 

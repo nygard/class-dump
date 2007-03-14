@@ -50,7 +50,7 @@
         NSMutableArray *adoptedProtocolElements = [NSMutableArray arrayWithCapacity:count];
 
         for (index = 0; index < count; index++) {
-            [adoptedProtocolElements addObject:[NSXMLElement elementWithName:@"protocol" stringValue:[protocolsArray objectAtIndex:index]]];
+            [adoptedProtocolElements addObject:[NSXMLElement elementWithName:@"protocol-ref" stringValue:[protocolsArray objectAtIndex:index]]];
         }
 
         [categoryElement addChild:[NSXMLElement elementWithName:@"adopts" children:adoptedProtocolElements attributes:nil]];
