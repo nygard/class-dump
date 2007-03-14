@@ -62,9 +62,9 @@
 
     if (formattedTypeDict != nil) {
         [ivarElement addChild:[NSXMLElement elementWithName:@"type" stringValue:[formattedTypeDict objectForKey:@"type"]]];
-        NSString *typeSuffix = [formattedTypeDict objectForKey:@"typesuffix"];
-        if (typeSuffix)
-            [ivarElement addChild:[NSXMLElement elementWithName:@"typesuffix" stringValue:typeSuffix]];
+        NSString *typeSuffix = [formattedTypeDict objectForKey:@"type-suffix"];
+        if (typeSuffix != nil)
+            [ivarElement addChild:[NSXMLElement elementWithName:@"type-suffix" stringValue:typeSuffix]];
         if ([aClassDump shouldShowIvarOffsets] == YES)
             [ivarElement addChild:[NSXMLElement elementWithName:@"offset" stringValue:[NSString stringWithFormat:@"0x%x", offset]]];
     } else

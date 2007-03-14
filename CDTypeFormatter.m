@@ -128,7 +128,7 @@
         resultDict = [NSMutableDictionary dictionaryWithObject:[(NSString *)[typeComponents objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]
                                           forKey:@"type"];
         if ([suffix length] != 0)
-            [resultDict setValue:suffix forKey:@"typesuffix"];
+            [resultDict setValue:suffix forKey:@"type-suffix"];
     }
     [aParser release];
 
@@ -218,11 +218,11 @@
 
             specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
             if (specialCase != nil) {
-                [typeDict setValue:specialCase forKey:@"returntype"];
+                [typeDict setValue:specialCase forKey:@"return-type"];
             } else {
                 str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
                 if (str != nil)
-                    [typeDict setValue:str forKey:@"returntype"];
+                    [typeDict setValue:str forKey:@"return-type"];
             }
         }
 

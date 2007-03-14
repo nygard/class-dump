@@ -59,14 +59,14 @@
 
 - (void)addToXMLElement:(NSXMLElement *)xmlElement asClassMethod:(BOOL)asClassMethod classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSXMLElement *methodElement = [NSXMLElement elementWithName:(asClassMethod ? @"classmethod" : @"instancemethod")];
+    NSXMLElement *methodElement = [NSXMLElement elementWithName:(asClassMethod ? @"class-method" : @"instance-method")];
     NSDictionary *formattedTypes;
 
     [methodElement addChild:[NSXMLElement elementWithName:@"selector" stringValue:name]];
     formattedTypes = [[aClassDump methodTypeFormatter] formattedTypesForMethodName:name type:type symbolReferences:symbolReferences];
     if (formattedTypes != nil) {
 
-        [methodElement addChild:[NSXMLElement elementWithName:@"returntype" stringValue:[formattedTypes valueForKey:@"returntype"]]];
+        [methodElement addChild:[NSXMLElement elementWithName:@"return-type" stringValue:[formattedTypes valueForKey:@"return-type"]]];
         NSArray *parameterTypes = [formattedTypes valueForKey:@"parametertypes"];
         int count, index;
         count = [parameterTypes count];

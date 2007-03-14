@@ -554,7 +554,7 @@ static NSMutableSet *wrapperExtensions = nil;
 - (void)generateXMLToStandardOut;
 {
     NSString *emptyXMLDocumentString;
-    NSString *rootElementName = @"classdump";
+    NSString *rootElementName = @"class-dump";
     NSXMLDocument *xmlDocument;
     int count, index;
     NSData *data;
