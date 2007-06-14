@@ -3,8 +3,14 @@
 
 #import "CDFindMethodVisitor.h"
 
+#import "NSArray-Extensions.h"
 #import "CDClassDump.h"
 #import "CDObjCSegmentProcessor.h"
+#import "CDMachOFile.h"
+#import "CDOCProtocol.h"
+#import "CDDylibCommand.h"
+#import "CDOCClass.h"
+#import "CDOCCategory.h"
 
 @implementation CDFindMethodVisitor
 
@@ -14,6 +20,9 @@
         return nil;
 
     findString = nil;
+    resultString = [[NSMutableString alloc] init];
+    context = nil;
+    hasShownContext = NO;
 
     return self;
 }
@@ -21,6 +30,8 @@
 - (void)dealloc;
 {
     [findString release];
+    [resultString release];
+    [context release];
 
     [super dealloc];
 }
@@ -39,7 +50,123 @@
     findString = [newFindString retain];
 }
 
-- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
+- (void)setContext:(CDOCProtocol *)newContext;
+{
+    if (newContext == context)
+        return;
+
+    [context release];
+    context = [newContext retain];
+
+    hasShownContext = NO;
+}
+
+- (void)showContextIfNecessary;
+{
+    if (hasShownContext == NO) {
+        [resultString appendString:[context findTag:nil]];
+        [resultString appendString:@"\n"];
+        hasShownContext = YES;
+    }
+}
+
+- (void)willBeginVisiting;
+{
+    [super willBeginVisiting];
+
+    [classDump appendHeaderToString:resultString];
+
+    if ([classDump containsObjectiveCSegments]) {
+        //[classDump appendStructuresToString:resultString symbolReferences:nil];
+        //[resultString appendString:@"// [structures go here]\n"];
+    } else {
+        [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];
+    }
+}
+
+- (void)didEndVisiting;
+{
+    [self writeResultToStandardOutput];
+}
+
+- (void)writeResultToStandardOutput;
+{
+    NSData *data;
+
+    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+}
+
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    [self setContext:aProtocol];
+}
+
+- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    if (hasShownContext)
+        [resultString appendString:@"\n"];
+}
+
+- (void)willVisitClass:(CDOCClass *)aClass;
+{
+    [self setContext:aClass];
+}
+
+- (void)didVisitClass:(CDOCClass *)aClass;
+{
+    if (hasShownContext)
+        [resultString appendString:@"\n"];
+}
+
+- (void)willVisitIvarsOfClass:(CDOCClass *)aClass;
+{
+}
+
+- (void)didVisitIvarsOfClass:(CDOCClass *)aClass;
+{
+}
+
+- (void)willVisitCategory:(CDOCCategory *)aCategory;
+{
+    [self setContext:aCategory];
+}
+
+- (void)didVisitCategory:(CDOCCategory *)aCategory;
+{
+    if (hasShownContext)
+        [resultString appendString:@"\n"];
+}
+
+- (void)visitClassMethod:(CDOCMethod *)aMethod;
+{
+    NSRange range;
+
+    range = [[aMethod name] rangeOfString:findString];
+    if (range.length > 0) {
+        [self showContextIfNecessary];
+
+        [resultString appendString:@"+ "];
+        [aMethod appendToString:resultString classDump:classDump symbolReferences:nil];
+        [resultString appendString:@"\n"];
+    }
+}
+
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+{
+    NSRange range;
+
+    range = [[aMethod name] rangeOfString:findString];
+    if (range.length > 0) {
+        [self showContextIfNecessary];
+
+        [resultString appendString:@"- "];
+        [aMethod appendToString:resultString classDump:classDump symbolReferences:nil];
+        [resultString appendString:@"\n"];
+    }
+}
+
+- (void)visitIvar:(CDOCIvar *)anIvar;
 {
 }
 
