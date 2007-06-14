@@ -43,6 +43,9 @@
 		0112617A0C21346600B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */; };
 		0112617B0C21346900B9C4E0 /* CDXMLClassDumpVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261780C21346600B9C4E0 /* CDXMLClassDumpVisitor.h */; };
 		0112617C0C21346900B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */; };
+		011262000C21665E00B9C4E0 /* CDMultiFileGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261FF0C21665E00B9C4E0 /* CDMultiFileGenerator.m */; };
+		011262010C21665E00B9C4E0 /* CDMultiFileGenerator.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261FE0C21665E00B9C4E0 /* CDMultiFileGenerator.h */; };
+		011262020C21665E00B9C4E0 /* CDMultiFileGenerator.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261FF0C21665E00B9C4E0 /* CDMultiFileGenerator.m */; };
 		012E2AB308AE9C9D003E99F8 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		012E2AB508AE9C9D003E99F8 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		012E2AB708AE9C9D003E99F8 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
@@ -178,6 +181,7 @@
 				0112616C0C21313300B9C4E0 /* CDFindMethodVisitor.h in CopyFiles */,
 				0112616E0C21313500B9C4E0 /* CDVisitor.h in CopyFiles */,
 				0112617B0C21346900B9C4E0 /* CDXMLClassDumpVisitor.h in CopyFiles */,
+				011262010C21665E00B9C4E0 /* CDMultiFileGenerator.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -194,6 +198,8 @@
 		011261660C21312C00B9C4E0 /* CDVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDVisitor.m; sourceTree = "<group>"; };
 		011261780C21346600B9C4E0 /* CDXMLClassDumpVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDXMLClassDumpVisitor.h; sourceTree = "<group>"; };
 		011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDXMLClassDumpVisitor.m; sourceTree = "<group>"; };
+		011261FE0C21665E00B9C4E0 /* CDMultiFileGenerator.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDMultiFileGenerator.h; sourceTree = "<group>"; };
+		011261FF0C21665E00B9C4E0 /* CDMultiFileGenerator.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDMultiFileGenerator.m; sourceTree = "<group>"; };
 		012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extensions.h"; sourceTree = "<group>"; };
 		012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extensions.m"; sourceTree = "<group>"; };
 		012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSObject-CDExtensions.h"; sourceTree = "<group>"; };
@@ -355,6 +361,8 @@
 				011261660C21312C00B9C4E0 /* CDVisitor.m */,
 				011261780C21346600B9C4E0 /* CDXMLClassDumpVisitor.h */,
 				011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */,
+				011261FE0C21665E00B9C4E0 /* CDMultiFileGenerator.h */,
+				011261FF0C21665E00B9C4E0 /* CDMultiFileGenerator.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -679,6 +687,7 @@
 				011261680C21312C00B9C4E0 /* CDFindMethodVisitor.m in Sources */,
 				011261690C21312C00B9C4E0 /* CDVisitor.m in Sources */,
 				0112617A0C21346600B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */,
+				011262000C21665E00B9C4E0 /* CDMultiFileGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +734,7 @@
 				0112616D0C21313400B9C4E0 /* CDFindMethodVisitor.m in Sources */,
 				0112616F0C21313500B9C4E0 /* CDVisitor.m in Sources */,
 				0112617C0C21346900B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */,
+				011262020C21665E00B9C4E0 /* CDMultiFileGenerator.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
