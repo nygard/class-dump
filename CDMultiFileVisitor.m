@@ -101,16 +101,13 @@
 
 - (void)generateStructureHeader;
 {
-#if 0
-    NSMutableString *resultString;
     NSString *filename;
-    CDSymbolReferences *symbolReferences;
     NSString *referenceString;
-    unsigned int referenceIndex;
 
-    resultString = [[NSMutableString alloc] init];
+    [resultString setString:@""];
     [classDump appendHeaderToString:resultString];
 
+    NSParameterAssert(symbolReferences == nil);
     symbolReferences = [[CDSymbolReferences alloc] init];
     referenceIndex = [resultString length];
 
@@ -127,8 +124,7 @@
     [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 
     [symbolReferences release];
-    [resultString release];
-#endif
+    symbolReferences = nil;
 }
 
 - (void)willBeginVisiting;
