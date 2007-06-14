@@ -66,7 +66,7 @@
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 }
 
-- (void)visitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
+- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 {
 }
 

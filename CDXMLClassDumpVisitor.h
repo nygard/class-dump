@@ -20,6 +20,6 @@
 
 - (void)writeResultToStandardOutput;
 
-- (void)visitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
+- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 
 @end

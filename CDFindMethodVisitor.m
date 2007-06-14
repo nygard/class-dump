@@ -39,7 +39,7 @@
     findString = [newFindString retain];
 }
 
-- (void)visitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
+- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 {
 }
 

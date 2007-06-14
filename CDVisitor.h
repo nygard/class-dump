@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDObjCSegmentProcessor, CDOCProtocol;
+@class CDClassDump, CDObjCSegmentProcessor, CDOCProtocol, CDOCMethod, CDOCIvar, CDOCClass, CDOCCategory;
 
 @interface CDVisitor : NSObject
 {
@@ -21,11 +21,25 @@
 - (void)willBeginVisiting;
 - (void)didEndVisiting;
 
-- (void)willVisitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
-- (void)visitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
-- (void)didVisitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
+- (void)willVisitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
+- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
+- (void)didVisitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 - (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+
+- (void)willVisitClass:(CDOCClass *)aClass;
+- (void)didVisitClass:(CDOCClass *)aClass;
+
+- (void)willVisitIvarsOfClass:(CDOCClass *)aClass;
+- (void)didVisitIvarsOfClass:(CDOCClass *)aClass;
+
+- (void)willVisitCategory:(CDOCCategory *)aCategory;
+- (void)didVisitCategory:(CDOCCategory *)aCategory;
+
+- (void)visitClassMethod:(CDOCMethod *)aMethod;
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+
+- (void)visitIvar:(CDOCIvar *)anIvar;
 
 @end

@@ -16,6 +16,6 @@
 - (NSString *)findString;
 - (void)setFindString:(NSString *)newFindString;
 
-- (void)visitObjectiveCSegmentProcessor:(CDObjCSegmentProcessor *)anObjCSegmentProcessor;
+- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 
 @end
