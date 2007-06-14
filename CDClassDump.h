@@ -99,6 +99,7 @@
 - (void)setOutputPath:(NSString *)aPath;
 
 - (NSArray *)machOFiles;
+- (NSArray *)objCSegmentProcessors;
 
 - (cpu_type_t)preferredCPUType;
 - (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
@@ -117,6 +118,8 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 - (void)find:(NSString *)str;
+
+- (void)registerStuff;
 - (void)generateOutput;
 - (void)generateXMLToStandardOut;
 - (void)generateToStandardOut;

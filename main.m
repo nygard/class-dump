@@ -15,6 +15,7 @@
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"
 #import "CDXMLClassDumpVisitor.h"
+#import "CDMultiFileGenerator.h"
 
 void print_usage(void)
 {
@@ -47,8 +48,11 @@ int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CDClassDump *classDump;
+    CDMultiFileGenerator *multiFileGenerator;
     BOOL shouldFind = NO;
     NSString *searchString = nil;
+    BOOL shouldGenerateSeparateHeaders = NO;
+    BOOL shouldGenerateXML = NO;
 
     int ch;
     BOOL errorFlag = NO;
@@ -76,6 +80,8 @@ int main(int argc, char *argv[])
     }
 
     classDump = [[[CDClassDump alloc] init] autorelease];
+    multiFileGenerator = [[[CDMultiFileGenerator alloc] init] autorelease];
+    [multiFileGenerator setClassDump:classDump];
 
     while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsStx", longopts, NULL)) != -1) {
         switch (ch) {
@@ -121,7 +127,7 @@ int main(int argc, char *argv[])
           }
 
           case 'H':
-              [classDump setShouldGenerateSeparateHeaders:YES];
+              shouldGenerateSeparateHeaders = YES;
               break;
 
           case 'I':
@@ -129,7 +135,7 @@ int main(int argc, char *argv[])
               break;
 
           case 'o':
-              [classDump setOutputPath:[NSString stringWithCString:optarg]];
+              [multiFileGenerator setOutputPath:[NSString stringWithCString:optarg]];
               break;
 
           case 'r':
@@ -149,7 +155,7 @@ int main(int argc, char *argv[])
               break;
 
           case 'x':
-              [classDump setShouldGenerateXML:YES];
+              shouldGenerateXML = YES;
               break;
 
           case '?':
@@ -172,6 +178,7 @@ int main(int argc, char *argv[])
         if ([classDump processFilename:path] == YES) {
 #if 1
             [classDump processObjectiveCSegments];
+            [classDump registerStuff];
 
 #if 0
             if (shouldFind) {
@@ -187,6 +194,12 @@ int main(int argc, char *argv[])
                 [visitor setFindString:searchString];
                 [classDump recursivelyVisit:visitor];
                 [visitor release];
+            } else if (shouldGenerateSeparateHeaders) {
+                // TODO (2007-06-14): single/multi file generators, plus text/xml output...
+                NSLog(@"Need to generate separate headers.");
+                [multiFileGenerator generateOutput];
+            } else if (shouldGenerateXML) {
+                NSLog(@"Need to generate XML.");
             } else {
                 CDClassDumpVisitor *visitor;
 

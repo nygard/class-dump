@@ -320,6 +320,11 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     return machOFiles;
 }
 
+- (NSArray *)objCSegmentProcessors;
+{
+    return objCSegmentProcessors;
+}
+
 - (cpu_type_t)preferredCPUType;
 {
     return preferredCPUType;
@@ -489,10 +494,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 {
     NSLog(@"%s, visitor=%@", _cmd, aVisitor);
 
-    [self registerPhase:1];
-    [self registerPhase:2];
-    [self generateMemberNames];
-
     [aVisitor willBeginVisiting];
 
     if ([self containsObjectiveCSegments]) {
@@ -525,12 +526,15 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [resultString release];
 }
 
-- (void)generateOutput;
+- (void)registerStuff;
 {
     [self registerPhase:1];
     [self registerPhase:2];
     [self generateMemberNames];
+}
 
+- (void)generateOutput;
+{
     if ([self shouldGenerateXML] == YES)
         [self generateXMLToStandardOut];
     else if ([self shouldGenerateSeparateHeaders] == YES)
