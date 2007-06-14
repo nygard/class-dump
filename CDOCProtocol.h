@@ -36,6 +36,8 @@
 - (NSArray *)instanceMethods;
 - (void)setInstanceMethods:(NSArray *)newInstanceMethods;
 
+- (BOOL)hasMethods;
+
 - (NSString *)description;
 - (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
@@ -52,5 +54,6 @@
 - (void)findMethod:(NSString *)str classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences appendResultToString:(NSMutableString *)resultString;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisitMethods:(CDVisitor *)aVisitor;
 
 @end

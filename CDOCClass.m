@@ -11,6 +11,7 @@
 #import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
+#import "CDVisitor.h"
 
 @implementation CDOCClass
 
@@ -142,6 +143,24 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
+    unsigned int count, index;
+
+    if ([[aVisitor classDump] shouldMatchRegex] == YES && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+        return;
+
+    [aVisitor willVisitClass:self];
+
+    [aVisitor willVisitIvarsOfClass:self];
+    count = [ivars count];
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            [aVisitor visitIvar:[ivars objectAtIndex:index]];
+        }
+    }
+    [aVisitor didVisitIvarsOfClass:self];
+
+    [self recursivelyVisitMethods:aVisitor];
+    [aVisitor didVisitClass:self];
 }
 
 //

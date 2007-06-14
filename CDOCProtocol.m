@@ -110,6 +110,11 @@
     instanceMethods = [newInstanceMethods retain];
 }
 
+- (BOOL)hasMethods;
+{
+    return [classMethods count] > 0 || [instanceMethods count] > 0;
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] name: %@, protocols: %d, class methods: %d, instance methods: %d",
@@ -345,8 +350,36 @@
         return;
 
     [aVisitor willVisitProtocol:self];
-    //[self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+    [self recursivelyVisitMethods:aVisitor];
     [aVisitor didVisitProtocol:self];
+}
+
+- (void)recursivelyVisitMethods:(CDVisitor *)aVisitor;
+{
+    int count, index;
+    NSArray *methods;
+
+    if ([[aVisitor classDump] shouldSortMethods] == YES)
+        methods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = classMethods;
+
+    count = [methods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++)
+            [aVisitor visitClassMethod:[methods objectAtIndex:index]];
+    }
+
+    if ([[aVisitor classDump] shouldSortMethods] == YES)
+        methods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    else
+        methods = instanceMethods;
+
+    count = [methods count];
+    if (count > 0) {
+        for (index = 0; index < count; index++)
+            [aVisitor visitInstanceMethod:[methods objectAtIndex:index]];
+    }
 }
 
 @end

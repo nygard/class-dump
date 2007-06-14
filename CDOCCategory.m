@@ -8,6 +8,7 @@
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"
 #import "NSArray-Extensions.h"
+#import "CDVisitor.h"
 
 @implementation CDOCCategory
 
@@ -86,6 +87,12 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
+    if ([[aVisitor classDump] shouldMatchRegex] == YES && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+        return;
+
+    [aVisitor willVisitCategory:self];
+    [self recursivelyVisitMethods:aVisitor];
+    [aVisitor didVisitCategory:self];
 }
 
 //
