@@ -23,52 +23,15 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 
 @implementation CDClassDump
 
-static NSMutableSet *wrapperExtensions = nil;
-
-+ (void)initialize;
-{
-    // TODO (old): Try grabbing these from an environment variable.
-    wrapperExtensions = [[NSMutableSet alloc] init];
-    [wrapperExtensions addObject:@"app"];
-    [wrapperExtensions addObject:@"framework"];
-    [wrapperExtensions addObject:@"bundle"];
-    [wrapperExtensions addObject:@"palette"];
-    [wrapperExtensions addObject:@"plugin"];
-}
-
-// How does this handle something ending in "/"?
-
-+ (BOOL)isWrapperAtPath:(NSString *)path;
-{
-    return [wrapperExtensions containsObject:[path pathExtension]];
-}
-
-+ (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
-{
-    NSString *base, *extension, *mainFile;
-
-    base = [wrapperPath lastPathComponent];
-    extension = [base pathExtension];
-    base = [base stringByDeletingPathExtension];
-
-    if ([@"framework" isEqual:extension] == YES) {
-        mainFile = [NSString stringWithFormat:@"%@/%@", wrapperPath, base];
-    } else {
-        // app, bundle, palette, plugin
-        mainFile = [NSString stringWithFormat:@"%@/Contents/MacOS/%@", wrapperPath, base];
-    }
-
-    return mainFile;
-}
-
 // Allow user to specify wrapper instead of the actual Mach-O file.
 + (NSString *)adjustUserSuppliedPath:(NSString *)path;
 {
     NSString *fullyResolvedPath, *basePath, *resolvedBasePath;
+    NSBundle *bundle;
 
-    if ([self isWrapperAtPath:path] == YES) {
-        path = [self pathToMainFileOfWrapper:path];
-    }
+    bundle = [NSBundle bundleWithPath:path];
+    if ([bundle executablePath] != nil)
+        path = [bundle executablePath];
 
     fullyResolvedPath = [path stringByResolvingSymlinksInPath];
     basePath = [path stringByDeletingLastPathComponent];

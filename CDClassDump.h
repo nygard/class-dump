@@ -50,9 +50,6 @@
     cpu_type_t preferredCPUType;
 }
 
-+ (void)initialize;
-+ (BOOL)isWrapperAtPath:(NSString *)path;
-+ (NSString *)pathToMainFileOfWrapper:(NSString *)wrapperPath;
 + (NSString *)adjustUserSuppliedPath:(NSString *)path;
 
 + (NSString *)currentPublicID;
