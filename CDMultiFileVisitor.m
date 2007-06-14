@@ -187,4 +187,44 @@
     symbolReferences = nil;
 }
 
+- (void)willVisitCategory:(CDOCCategory *)aCategory;
+{
+    // First, we set up some context...
+    [resultString setString:@""];
+    [classDump appendHeaderToString:resultString];
+
+    NSParameterAssert(symbolReferences == nil);
+    symbolReferences = [[CDSymbolReferences alloc] init];
+
+    [self appendImportForClassName:[aCategory className]];
+    referenceIndex = [resultString length];
+
+    // And then generate the regular output
+    [super willVisitCategory:aCategory];
+}
+
+- (void)didVisitCategory:(CDOCCategory *)aCategory;
+{
+    NSString *referenceString;
+    NSString *filename;
+
+    // Generate the regular output
+    [super didVisitCategory:aCategory];
+
+    // Then insert the imports and write the file.
+    [symbolReferences removeClassName:[aCategory className]];
+    referenceString = [symbolReferences referenceString];
+    if (referenceString != nil)
+        [resultString insertString:referenceString atIndex:referenceIndex];
+
+    filename = [NSString stringWithFormat:@"%@-%@.h", [aCategory className], [aCategory name]];
+    if (outputPath != nil)
+        filename = [outputPath stringByAppendingPathComponent:filename];
+
+    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+
+    [symbolReferences release];
+    symbolReferences = nil;
+}
+
 @end

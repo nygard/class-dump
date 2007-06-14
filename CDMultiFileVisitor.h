@@ -33,4 +33,7 @@
 - (void)willVisitClass:(CDOCClass *)aClass;
 - (void)didVisitClass:(CDOCClass *)aClass;
 
+- (void)willVisitCategory:(CDOCCategory *)aCategory;
+- (void)didVisitCategory:(CDOCCategory *)aCategory;
+
 @end
