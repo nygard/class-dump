@@ -30,7 +30,5 @@
 
 - (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
-- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
-- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 
 @end

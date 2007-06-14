@@ -103,7 +103,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [structDeclarationTypeFormatter setBaseLevel:0];
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
-    frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
     preferredCPUType = CPU_TYPE_ANY;
     //preferredCPUType = CPU_TYPE_POWERPC;
     //preferredCPUType = CPU_TYPE_I386;
@@ -116,7 +115,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 - (void)dealloc;
 {
     [executablePath release];
-    [outputPath release];
 
     [machOFiles release];
     [machOFilesByID release];
@@ -128,8 +126,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [ivarTypeFormatter release];
     [methodTypeFormatter release];
     [structDeclarationTypeFormatter release];
-
-    [frameworkNamesByClassName release];
 
     if (flags.shouldMatchRegex == YES)
         regfree(&compiledRegex);
@@ -159,16 +155,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
 {
     flags.shouldProcessRecursively = newFlag;
-}
-
-- (BOOL)shouldGenerateSeparateHeaders;
-{
-    return flags.shouldGenerateSeparateHeaders;
-}
-
-- (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
-{
-    flags.shouldGenerateSeparateHeaders = newFlag;
 }
 
 - (BOOL)shouldSortClasses;
@@ -299,20 +285,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     }
 
     return YES;
-}
-
-- (NSString *)outputPath;
-{
-    return outputPath;
-}
-
-- (void)setOutputPath:(NSString *)aPath;
-{
-    if (aPath == outputPath)
-        return;
-
-    [outputPath release];
-    outputPath = [aPath retain];
 }
 
 - (NSArray *)machOFiles;
@@ -534,8 +506,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 {
     if ([self shouldGenerateXML] == YES)
         [self generateXMLToStandardOut];
-    else if ([self shouldGenerateSeparateHeaders] == YES)
-        [self generateSeparateHeaders];
     else
         [self generateToStandardOut];
 }
@@ -601,74 +571,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 
-    [resultString release];
-}
-
-- (void)generateSeparateHeaders;
-{
-    int count, index;
-
-    if ([self containsObjectiveCSegments] == NO) {
-        NSLog(@"Warning: This file does not contain any Objective-C runtime information.");
-        return;
-    }
-
-    [self buildClassFrameworks];
-
-    if (outputPath != nil) {
-        NSFileManager *fileManager;
-        BOOL isDirectory;
-
-        fileManager = [NSFileManager defaultManager];
-        if ([fileManager fileExistsAtPath:outputPath isDirectory:&isDirectory] == NO) {
-            BOOL result;
-
-            result = [fileManager createDirectoryAtPath:outputPath attributes:nil];
-            if (result == NO) {
-                NSLog(@"Error: Couldn't create output directory: %@", outputPath);
-                return;
-            }
-        } else if (isDirectory == NO) {
-            NSLog(@"Error: File exists at output path: %@", outputPath);
-            return;
-        }
-    }
-
-    [self generateStructureHeader];
-
-    count = [objCSegmentProcessors count];
-    for (index = 0; index < count; index++) {
-        [[objCSegmentProcessors objectAtIndex:index] generateSeparateHeadersClassDump:self];
-    }
-}
-
-- (void)generateStructureHeader;
-{
-    NSMutableString *resultString;
-    NSString *filename;
-    CDSymbolReferences *symbolReferences;
-    NSString *referenceString;
-    unsigned int referenceIndex;
-
-    resultString = [[NSMutableString alloc] init];
-    [self appendHeaderToString:resultString];
-
-    symbolReferences = [[CDSymbolReferences alloc] init];
-    referenceIndex = [resultString length];
-
-    [self appendStructuresToString:resultString symbolReferences:symbolReferences];
-
-    referenceString = [symbolReferences referenceString];
-    if (referenceString != nil)
-        [resultString insertString:referenceString atIndex:referenceIndex];
-
-    filename = @"CDStructures.h";
-    if (outputPath != nil)
-        filename = [outputPath stringByAppendingPathComponent:filename];
-
-    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
-
-    [symbolReferences release];
     [resultString release];
 }
 
@@ -815,29 +717,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 {
     [structureTable generateMemberNames];
     [unionTable generateMemberNames];
-}
-
-- (void)buildClassFrameworks;
-{
-    [objCSegmentProcessors makeObjectsPerformSelector:@selector(registerClassesWithObject:) withObject:frameworkNamesByClassName];
-}
-
-- (NSString *)frameworkForClassName:(NSString *)aClassName;
-{
-    return [frameworkNamesByClassName objectForKey:aClassName];
-}
-
-- (void)appendImportForClassName:(NSString *)aClassName toString:(NSMutableString *)resultString;
-{
-    if (aClassName != nil) {
-        NSString *classFramework;
-
-        classFramework = [self frameworkForClassName:aClassName];
-        if (classFramework == nil)
-            [resultString appendFormat:@"#import \"%@.h\"\n\n", aClassName];
-        else
-            [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, aClassName];
-    }
 }
 
 - (void)showHeader;

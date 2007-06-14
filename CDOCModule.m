@@ -93,14 +93,4 @@
     [symtab appendToString:resultString classDump:aClassDump];
 }
 
-- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary frameworkName:(NSString *)aFrameworkName;
-{
-    [symtab registerClassesWithObject:aDictionary frameworkName:aFrameworkName];
-}
-
-- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
-{
-    [symtab generateSeparateHeadersClassDump:aClassDump];
-}
-
 @end

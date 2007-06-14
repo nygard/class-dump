@@ -21,7 +21,6 @@
 
     struct {
         unsigned int shouldProcessRecursively:1;
-        unsigned int shouldGenerateSeparateHeaders:1;
         unsigned int shouldSortClasses:1; // And categories, protocols
         unsigned int shouldSortClassesByInheritance:1; // And categories, protocols
         unsigned int shouldSortMethods:1;
@@ -34,7 +33,6 @@
     } flags;
 
     regex_t compiledRegex;
-    NSString *outputPath;
 
     NSMutableArray *machOFiles;
     NSMutableDictionary *machOFilesByID;
@@ -47,7 +45,6 @@
     CDTypeFormatter *methodTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 
-    NSMutableDictionary *frameworkNamesByClassName;
     cpu_type_t preferredCPUType;
 }
 
@@ -64,9 +61,6 @@
 
 - (BOOL)shouldProcessRecursively;
 - (void)setShouldProcessRecursively:(BOOL)newFlag;
-
-- (BOOL)shouldGenerateSeparateHeaders;
-- (void)setShouldGenerateSeparateHeaders:(BOOL)newFlag;
 
 - (BOOL)shouldSortClasses;
 - (void)setShouldSortClasses:(BOOL)newFlag;
@@ -95,9 +89,6 @@
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;
 
-- (NSString *)outputPath;
-- (void)setOutputPath:(NSString *)aPath;
-
 - (NSArray *)machOFiles;
 - (NSArray *)objCSegmentProcessors;
 
@@ -123,8 +114,6 @@
 - (void)generateOutput;
 - (void)generateXMLToStandardOut;
 - (void)generateToStandardOut;
-- (void)generateSeparateHeaders;
-- (void)generateStructureHeader;
 
 - (void)logInfo;
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
@@ -145,11 +134,6 @@
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
 - (void)generateMemberNames;
-
-- (void)buildClassFrameworks;
-- (NSString *)frameworkForClassName:(NSString *)aClassName;
-
-- (void)appendImportForClassName:(NSString *)aClassName toString:(NSMutableString *)resultString;
 
 - (void)showHeader;
 - (void)showLoadCommands;

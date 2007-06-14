@@ -232,30 +232,6 @@
     return [NSString stringWithFormat:@"[%@] machOFile: %@", NSStringFromClass([self class]), [machOFile filename]];
 }
 
-- (void)registerClassesWithObject:(NSMutableDictionary *)aDictionary;
-{
-    NSString *importBaseName;
-
-    importBaseName = [machOFile importBaseName];
-    if (importBaseName != nil) {
-        int count, index;
-
-        count = [modules count];
-        for (index = 0; index < count; index++) {
-            [[modules objectAtIndex:index] registerClassesWithObject:aDictionary frameworkName:importBaseName];
-        }
-    }
-}
-
-- (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
-{
-    int count, index;
-
-    count = [modules count];
-    for (index = 0; index < count; index++)
-        [[modules objectAtIndex:index] generateSeparateHeadersClassDump:aClassDump];
-}
-
 - (void)find:(NSString *)str classDump:(CDClassDump *)aClassDump appendResultToString:(NSMutableString *)resultString;
 {
     int count, index;
