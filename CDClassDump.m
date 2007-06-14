@@ -473,7 +473,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 {
     unsigned int count, index;
 
-    NSLog(@" > %s", _cmd);
     count = [machOFiles count];
     for (index = 0; index < count; index++) {
         CDMachOFile *machOFile;
@@ -486,14 +485,11 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
         [objCSegmentProcessors addObject:aProcessor];
         [aProcessor release];
     }
-    NSLog(@"<  %s", _cmd);
 }
 
 // This visits everything segment processors, classes, categories.  It skips over modules.  Need something to visit modules so we can generate separate headers.
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    NSLog(@"%s, visitor=%@", _cmd, aVisitor);
-
     [aVisitor willBeginVisiting];
 
     if ([self containsObjectiveCSegments]) {
