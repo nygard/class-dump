@@ -15,7 +15,7 @@
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"
 #import "CDXMLClassDumpVisitor.h"
-#import "CDMultiFileGenerator.h"
+#import "CDMultiFileVisitor.h"
 
 void print_usage(void)
 {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CDClassDump *classDump;
-    CDMultiFileGenerator *multiFileGenerator;
+    CDMultiFileVisitor *multiFileVisitor;
     BOOL shouldFind = NO;
     NSString *searchString = nil;
     BOOL shouldGenerateSeparateHeaders = NO;
@@ -80,8 +80,8 @@ int main(int argc, char *argv[])
     }
 
     classDump = [[[CDClassDump alloc] init] autorelease];
-    multiFileGenerator = [[[CDMultiFileGenerator alloc] init] autorelease];
-    [multiFileGenerator setClassDump:classDump];
+    multiFileVisitor = [[[CDMultiFileVisitor alloc] init] autorelease];
+    [multiFileVisitor setClassDump:classDump];
 
     while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsStx", longopts, NULL)) != -1) {
         switch (ch) {
@@ -135,7 +135,7 @@ int main(int argc, char *argv[])
               break;
 
           case 'o':
-              [multiFileGenerator setOutputPath:[NSString stringWithCString:optarg]];
+              [multiFileVisitor setOutputPath:[NSString stringWithCString:optarg]];
               break;
 
           case 'r':
@@ -196,8 +196,7 @@ int main(int argc, char *argv[])
                 [visitor release];
             } else if (shouldGenerateSeparateHeaders) {
                 // TODO (2007-06-14): single/multi file generators, plus text/xml output...
-                NSLog(@"Need to generate separate headers.");
-                [multiFileGenerator generateOutput];
+                [classDump recursivelyVisit:multiFileVisitor];
             } else if (shouldGenerateXML) {
                 NSLog(@"Need to generate XML.");
             } else {

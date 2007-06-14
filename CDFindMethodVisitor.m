@@ -72,8 +72,6 @@
 
 - (void)willBeginVisiting;
 {
-    [super willBeginVisiting];
-
     [classDump appendHeaderToString:resultString];
 
     if ([classDump containsObjectiveCSegments]) {

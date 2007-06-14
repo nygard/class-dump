@@ -498,6 +498,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
         count = [objCSegmentProcessors count];
         for (index = 0; index < count; index++)
             [[objCSegmentProcessors objectAtIndex:index] recursivelyVisit:aVisitor];
+    } else {
     }
 
     [aVisitor didEndVisiting];
