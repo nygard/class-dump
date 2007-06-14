@@ -158,26 +158,8 @@
     [self appendImportForClassName:[aClass superClassName]];
     referenceIndex = [resultString length];
 
+    // And then generate the regular output
     [super willVisitClass:aClass];
-
-#if 0
-    {
-        NSArray *protocols;
-
-        // Then generate the regular output
-        [resultString appendFormat:@"@interface %@", [aClass name]];
-        if ([aClass superClassName] != nil)
-            [resultString appendFormat:@" : %@", [aClass superClassName]];
-
-        protocols = [aClass protocols];
-        if ([protocols count] > 0) {
-            [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-            [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
-        }
-
-        [resultString appendString:@"\n"];
-    }
-#endif
 }
 
 - (void)didVisitClass:(CDOCClass *)aClass;
@@ -187,12 +169,6 @@
 
     // Generate the regular output
     [super didVisitClass:aClass];
-#if 0
-    if ([aClass hasMethods])
-        [resultString appendString:@"\n"];
-
-    [resultString appendString:@"@end\n\n"];
-#endif
 
     // Then insert the imports and write the file.
     [symbolReferences removeClassName:[aClass name]];
