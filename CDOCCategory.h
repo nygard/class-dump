@@ -22,6 +22,8 @@
 
 - (NSString *)sortableName;
 
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+
 // CDTopologicalSort protocol
 - (NSString *)identifier;
 - (NSArray *)dependancies;

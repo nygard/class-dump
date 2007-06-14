@@ -12,6 +12,9 @@
 #import "NSString-Extensions.h"
 
 #import "CDClassDump.h"
+#import "CDFindMethodVisitor.h"
+#import "CDClassDumpVisitor.h"
+#import "CDXMLClassDumpVisitor.h"
 
 void print_usage(void)
 {
@@ -170,10 +173,29 @@ int main(int argc, char *argv[])
 #if 1
             [classDump processObjectiveCSegments];
 
+#if 0
             if (shouldFind) {
                 [classDump find:searchString];
             } else
                 [classDump generateOutput];
+#else
+            if (shouldFind) {
+                CDFindMethodVisitor *visitor;
+
+                visitor = [[CDFindMethodVisitor alloc] init];
+                [visitor setClassDump:classDump];
+                [visitor setFindString:searchString];
+                [classDump recursivelyVisit:visitor];
+                [visitor release];
+            } else {
+                CDClassDumpVisitor *visitor;
+
+                visitor = [[CDClassDumpVisitor alloc] init];
+                [visitor setClassDump:classDump];
+                [classDump recursivelyVisit:visitor];
+                [visitor release];
+            }
+#endif
 #else
             [classDump showHeader];
             [classDump showLoadCommands];

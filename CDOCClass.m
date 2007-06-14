@@ -140,6 +140,10 @@
     }
 }
 
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+{
+}
+
 //
 // CDTopologicalSort protocol
 //

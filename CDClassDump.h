@@ -13,6 +13,7 @@
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;
 @class CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
+@class CDVisitor;
 
 @interface CDClassDump : NSObject <CDStructureRegistration>
 {
@@ -114,6 +115,7 @@
 - (BOOL)_processFilename:(NSString *)aFilename;
 - (void)processObjectiveCSegments;
 
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
 - (void)find:(NSString *)str;
 - (void)generateOutput;
 - (void)generateXMLToStandardOut;

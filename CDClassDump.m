@@ -16,6 +16,7 @@
 #import "CDType.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
+#import "CDVisitor.h"
 
 NSString *CDClassDumpVersion1PublicID = @"-//codethecode.com//DTD class-dump Development 1//EN";
 //NSString *CDClassDumpVersion1SystemID = @"http://www.codethecode.com/formats/class-dump-v1.dtd";
@@ -467,6 +468,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 {
     unsigned int count, index;
 
+    NSLog(@" > %s", _cmd);
     count = [machOFiles count];
     for (index = 0; index < count; index++) {
         CDMachOFile *machOFile;
@@ -479,6 +481,29 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
         [objCSegmentProcessors addObject:aProcessor];
         [aProcessor release];
     }
+    NSLog(@"<  %s", _cmd);
+}
+
+// This visits everything segment processors, classes, categories.  It skips over modules.  Need something to visit modules so we can generate separate headers.
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+{
+    NSLog(@"%s, visitor=%@", _cmd, aVisitor);
+
+    [self registerPhase:1];
+    [self registerPhase:2];
+    [self generateMemberNames];
+
+    [aVisitor willBeginVisiting];
+
+    if ([self containsObjectiveCSegments]) {
+        int count, index;
+
+        count = [objCSegmentProcessors count];
+        for (index = 0; index < count; index++)
+            [[objCSegmentProcessors objectAtIndex:index] recursivelyVisit:aVisitor];
+    }
+
+    [aVisitor didEndVisiting];
 }
 
 - (void)find:(NSString *)str;
@@ -535,7 +560,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     }
 
     if ([self containsObjectiveCSegments]) {
-#warning TODO structures
+//#warning TODO structures
         //[self appendStructuresToString:resultString symbolReferences:nil];
 
         count = [objCSegmentProcessors count];

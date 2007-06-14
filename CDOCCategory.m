@@ -84,6 +84,10 @@
     return [NSString stringWithFormat:@"%@ (%@)", className, name];
 }
 
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+{
+}
+
 //
 // CDTopologicalSort protocol
 //

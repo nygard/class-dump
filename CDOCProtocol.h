@@ -7,6 +7,7 @@
 
 @class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
 @class CDClassDump, CDSymbolReferences;
+@class CDVisitor;
 
 @interface CDOCProtocol : NSObject
 {
@@ -49,5 +50,7 @@
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)findMethod:(NSString *)str classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences appendResultToString:(NSMutableString *)resultString;
+
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 @end

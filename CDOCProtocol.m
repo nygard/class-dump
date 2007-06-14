@@ -10,6 +10,7 @@
 #import "CDOCSymtab.h"
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
+#import "CDVisitor.h"
 
 @implementation CDOCProtocol
 
@@ -336,6 +337,16 @@
 
     if (flag)
         [resultString appendString:@"\n"];
+}
+
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+{
+    if ([[aVisitor classDump] shouldMatchRegex] == YES && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+        return;
+
+    [aVisitor willVisitProtocol:self];
+    //[self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
+    [aVisitor didVisitProtocol:self];
 }
 
 @end

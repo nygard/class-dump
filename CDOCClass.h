@@ -22,6 +22,8 @@
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+
 // CDTopologicalSort protocol
 - (NSString *)identifier;
 - (NSArray *)dependancies;

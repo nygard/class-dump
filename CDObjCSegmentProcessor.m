@@ -20,6 +20,7 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
+#import "CDVisitor.h"
 
 @implementation CDObjCSegmentProcessor
 
@@ -42,6 +43,11 @@
     [protocolsByName release];
 
     [super dealloc];
+}
+
+- (CDMachOFile *)machOFile;
+{
+    return machOFile;
 }
 
 - (BOOL)hasModules;
@@ -310,6 +316,60 @@
         [[allClasses objectAtIndex:index] findMethod:str classDump:aClassDump symbolReferences:nil appendResultToString:resultString];
 
     [allClasses release];
+}
+
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+{
+    int count, index;
+    NSMutableArray *allClasses;
+    NSArray *protocolNames;
+
+    allClasses = [[NSMutableArray alloc] init];
+
+    count = [modules count];
+    for (index = 0; index < count; index++) {
+        NSArray *moduleClasses, *moduleCategories;
+
+        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
+        if (moduleClasses != nil)
+            [allClasses addObjectsFromArray:moduleClasses];
+
+        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
+        if (moduleCategories != nil)
+            [allClasses addObjectsFromArray:moduleCategories];
+    }
+
+    // TODO: Sort protocols by dependency
+    // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
+    // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
+    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+
+    [aVisitor willVisitObjectiveCSegmentProcessor:self];
+
+    if ([protocolNames count] > 0 || [allClasses count] > 0 || [machOFile hasProtectedSegments]) {
+        [aVisitor visitObjectiveCSegmentProcessor:self];
+    }
+
+    count = [protocolNames count];
+    for (index = 0; index < count; index++) {
+        CDOCProtocol *aProtocol;
+
+        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
+        [aProtocol recursivelyVisit:aVisitor];
+    }
+
+    if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
+        [allClasses sortTopologically];
+    } else if ([[aVisitor classDump] shouldSortClasses] == YES)
+        [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+
+    count = [allClasses count];
+    for (index = 0; index < count; index++)
+        [[allClasses objectAtIndex:index] recursivelyVisit:aVisitor];
+
+    [allClasses release];
+
+    [aVisitor didVisitObjectiveCSegmentProcessor:self];
 }
 
 @end

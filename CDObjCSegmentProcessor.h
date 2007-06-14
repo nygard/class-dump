@@ -6,6 +6,7 @@
 
 @class NSArray, NSMutableArray, NSMutableDictionary, NSMutableString, NSString;
 @class CDClassDump, CDMachOFile;
+@class CDVisitor;
 
 @interface CDObjCSegmentProcessor : NSObject
 {
@@ -16,6 +17,8 @@
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
+
+- (CDMachOFile *)machOFile;
 
 - (BOOL)hasModules;
 - (void)process;
@@ -30,5 +33,7 @@
 - (void)generateSeparateHeadersClassDump:(CDClassDump *)aClassDump;
 
 - (void)find:(NSString *)str classDump:(CDClassDump *)aClassDump appendResultToString:(NSMutableString *)resultString;
+
+- (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 @end
