@@ -476,38 +476,11 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [aVisitor didEndVisiting];
 }
 
-- (void)find:(NSString *)str;
-{
-    NSMutableString *resultString;
-    unsigned int count, index;
-    NSData *data;
-
-    resultString = [[NSMutableString alloc] init];
-
-    count = [objCSegmentProcessors count];
-    for (index = 0; index < count; index++) {
-        [[objCSegmentProcessors objectAtIndex:index] find:str classDump:self appendResultToString:resultString];
-    }
-
-    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
-    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
-
-    [resultString release];
-}
-
 - (void)registerStuff;
 {
     [self registerPhase:1];
     [self registerPhase:2];
     [self generateMemberNames];
-}
-
-- (void)generateOutput;
-{
-    if ([self shouldGenerateXML] == YES)
-        [self generateXMLToStandardOut];
-    else
-        [self generateToStandardOut];
 }
 
 - (void)generateXMLToStandardOut;
@@ -545,33 +518,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     data = [xmlDocument XMLDataWithOptions:NSXMLNodePrettyPrint];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
     [xmlDocument release];
-}
-
-- (void)generateToStandardOut;
-{
-    NSMutableString *resultString;
-    int count, index;
-    NSData *data;
-
-    resultString = [[NSMutableString alloc] init];
-
-    [self appendHeaderToString:resultString];
-
-    if ([self containsObjectiveCSegments]) {
-        [self appendStructuresToString:resultString symbolReferences:nil];
-
-        count = [objCSegmentProcessors count];
-        for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] appendFormattedString:resultString classDump:self];
-        }
-    } else {
-        [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];
-    }
-
-    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
-    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
-
-    [resultString release];
 }
 
 - (void)logInfo;

@@ -80,17 +80,4 @@
         [[categories objectAtIndex:index] addToXMLElement:xmlElement classDump:aClassDump symbolReferences:nil];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
-{
-    int count, index;
-
-    count = [classes count];
-    for (index = 0; index < count; index++)
-        [[classes objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];
-
-    count = [categories count];
-    for (index = 0; index < count; index++)
-        [[categories objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:nil];
-}
-
 @end

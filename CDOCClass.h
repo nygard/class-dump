@@ -19,15 +19,13 @@
 - (void)setIvars:(NSArray *)newIvars;
 
 - (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 // CDTopologicalSort protocol
 - (NSString *)identifier;
 - (NSArray *)dependancies;
-
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 
 @end

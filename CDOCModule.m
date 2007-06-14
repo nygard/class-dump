@@ -87,10 +87,4 @@
     [xmlElement addChild:moduleElement];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
-{
-    [resultString appendFormat:@"/*\n * %@\n */\n\n", name];
-    [symtab appendToString:resultString classDump:aClassDump];
-}
-
 @end

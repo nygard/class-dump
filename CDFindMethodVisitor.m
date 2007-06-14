@@ -11,6 +11,7 @@
 #import "CDDylibCommand.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
+#import "CDOCMethod.h"
 
 @implementation CDFindMethodVisitor
 

@@ -89,39 +89,6 @@
     [xmlElement addChild:classElement];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
-{
-    int count, index;
-
-    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
-        return;
-
-    [resultString appendFormat:@"@interface %@", name];
-    if (superClassName != nil)
-        [resultString appendFormat:@" : %@", superClassName];
-
-    if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
-    }
-
-    [resultString appendString:@"\n{\n"];
-    count = [ivars count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            [[ivars objectAtIndex:index] appendToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
-            [resultString appendString:@"\n"];
-        }
-    }
-
-    [resultString appendString:@"}\n\n"];
-    [self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
-
-    if ([classMethods count] > 0 || [instanceMethods count] > 0)
-        [resultString appendString:@"\n"];
-    [resultString appendString:@"@end\n\n"];
-}
-
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     int count, index;
@@ -139,6 +106,20 @@
         [aType phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
         [parser release];
     }
+}
+
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+{
+    NSMutableString *resultString = [NSMutableString string];
+
+    [resultString appendFormat:@"@interface %@", name];
+    if (superClassName != nil)
+        [resultString appendFormat:@" : %@", superClassName];
+
+    if ([protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+
+    return resultString;
 }
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
@@ -178,20 +159,6 @@
         return [NSArray array];
 
     return [NSArray arrayWithObject:superClassName];
-}
-
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
-{
-    NSMutableString *resultString = [NSMutableString string];
-
-    [resultString appendFormat:@"@interface %@", name];
-    if (superClassName != nil)
-        [resultString appendFormat:@" : %@", superClassName];
-
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-
-    return resultString;
 }
 
 @end

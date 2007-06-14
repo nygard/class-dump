@@ -29,6 +29,5 @@
 - (NSString *)formattedString;
 
 - (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 
 @end

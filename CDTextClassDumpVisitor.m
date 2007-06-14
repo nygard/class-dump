@@ -14,6 +14,7 @@
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
+#import "CDOCMethod.h"
 
 @implementation CDTextClassDumpVisitor
 

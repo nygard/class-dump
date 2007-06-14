@@ -108,12 +108,9 @@
 - (void)processObjectiveCSegments;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
-- (void)find:(NSString *)str;
 
 - (void)registerStuff;
-- (void)generateOutput;
 - (void)generateXMLToStandardOut;
-- (void)generateToStandardOut;
 
 - (void)logInfo;
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;

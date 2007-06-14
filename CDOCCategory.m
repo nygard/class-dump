@@ -63,26 +63,21 @@
     [xmlElement addChild:categoryElement];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
-{
-    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self sortableName]] == NO)
-        return;
-
-    [resultString appendFormat:@"@interface %@ (%@)", className, name];
-
-    if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
-    }
-
-    [resultString appendString:@"\n"];
-    [self appendMethodsToString:resultString classDump:aClassDump symbolReferences:symbolReferences];
-    [resultString appendString:@"@end\n\n"];
-}
-
 - (NSString *)sortableName;
 {
     return [NSString stringWithFormat:@"%@ (%@)", className, name];
+}
+
+- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+{
+    NSMutableString *resultString = [NSMutableString string];
+
+    [resultString appendFormat:@"@interface %@ (%@)", className, name];
+
+    if ([protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+
+    return resultString;
 }
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
@@ -110,18 +105,6 @@
         return [NSArray array];
 
     return [NSArray arrayWithObject:className];
-}
-
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
-{
-    NSMutableString *resultString = [NSMutableString string];
-
-    [resultString appendFormat:@"@interface %@ (%@)", className, name];
-
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-
-    return resultString;
 }
 
 @end

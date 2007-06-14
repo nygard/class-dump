@@ -26,12 +26,9 @@
 - (void)process;
 
 - (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
-- (void)appendFormattedString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 - (NSString *)description;
-
-- (void)find:(NSString *)str classDump:(CDClassDump *)aClassDump appendResultToString:(NSMutableString *)resultString;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
