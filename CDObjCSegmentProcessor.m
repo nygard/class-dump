@@ -50,6 +50,11 @@
     return machOFile;
 }
 
+- (NSArray *)modules;
+{
+    return modules;
+}
+
 - (BOOL)hasModules;
 {
     return [modules count] > 0;
@@ -344,10 +349,10 @@
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
-    [aVisitor willVisitObjectiveCSegmentProcessor:self];
+    [aVisitor willVisitObjectiveCSegment:self];
 
     if ([protocolNames count] > 0 || [allClasses count] > 0 || [machOFile hasProtectedSegments]) {
-        [aVisitor visitObjectiveCSegmentProcessor:self];
+        [aVisitor visitObjectiveCSegment:self];
     }
 
     count = [protocolNames count];
@@ -369,7 +374,7 @@
 
     [allClasses release];
 
-    [aVisitor didVisitObjectiveCSegmentProcessor:self];
+    [aVisitor didVisitObjectiveCSegment:self];
 }
 
 @end

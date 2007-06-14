@@ -20,6 +20,8 @@
 
 - (CDMachOFile *)machOFile;
 
+- (NSArray *)modules;
+
 - (BOOL)hasModules;
 - (void)process;
 
