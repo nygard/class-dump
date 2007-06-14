@@ -149,7 +149,6 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     struct cd_objc_symtab objcSymtab;
     const unsigned long *defs;
     int index, defIndex;
-    NSMutableArray *classes, *categories;
 
     // TODO: Should we convert to pointer here or in caller?
     ptr = [machOFile pointerFromVMAddr:symtab segmentName:@"__OBJC"];
@@ -162,8 +161,6 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
         swap_cd_objc_symtab(&objcSymtab);
 
     aSymtab = [[[CDOCSymtab alloc] init] autorelease];
-    classes = [[NSMutableArray alloc] init];
-    categories = [[NSMutableArray alloc] init];
 
     defs = (unsigned long *)(ptr + sizeof(struct cd_objc_symtab));
     defIndex = 0;
@@ -178,11 +175,9 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
                 aClass = [self processClassDefinition:*defs];
 
             if (aClass != nil)
-                [classes addObject:aClass];
+                [aSymtab addClass:aClass];
         }
     }
-
-    [aSymtab setClasses:[NSArray arrayWithArray:classes]];
 
     if (objcSymtab.cat_def_count > 0) {
         for (index = 0; index < objcSymtab.cat_def_count; index++, defs++, defIndex++) {
@@ -194,14 +189,9 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
                 aCategory = [self processCategoryDefinition:*defs];
 
             if (aCategory != nil)
-                [categories addObject:aCategory];
+                [aSymtab addCategory:aCategory];
         }
     }
-
-    [aSymtab setCategories:[NSArray arrayWithArray:categories]];
-
-    [classes release];
-    [categories release];
 
     return aSymtab;
 }

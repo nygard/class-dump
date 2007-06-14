@@ -3,7 +3,6 @@
 
 #import "CDOCSymtab.h"
 
-#import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
@@ -16,8 +15,8 @@
     if ([super init] == nil)
         return nil;
 
-    classes = nil;
-    categories = nil;
+    classes = [[NSMutableArray alloc] init];
+    categories = [[NSMutableArray alloc] init];
 
     return self;
 }
@@ -35,13 +34,9 @@
     return classes;
 }
 
-- (void)setClasses:(NSArray *)newClasses;
+- (void)addClass:(CDOCClass *)aClass;
 {
-    if (newClasses == classes)
-        return;
-
-    [classes release];
-    classes = [newClasses retain];
+    [classes addObject:aClass];
 }
 
 - (NSArray *)categories;
@@ -49,13 +44,9 @@
     return categories;
 }
 
-- (void)setCategories:(NSArray *)newCategories;
+- (void)addCategory:(CDOCCategory *)aCategory;
 {
-    if (newCategories == categories)
-        return;
-
-    [categories release];
-    categories = [newCategories retain];
+    [categories addObject:aCategory];
 }
 
 - (NSString *)description;

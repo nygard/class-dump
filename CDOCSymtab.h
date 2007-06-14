@@ -1,26 +1,26 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
 
-#import <Foundation/NSObject.h>
+#import <Foundation/Foundation.h>
 #import "CDStructureRegistrationProtocol.h"
 
-@class NSArray, NSMutableDictionary, NSMutableString;
 @class CDClassDump;
+@class CDOCCategory, CDOCClass;
 
 @interface CDOCSymtab : NSObject
 {
-    NSArray *classes;
-    NSArray *categories;
+    NSMutableArray *classes;
+    NSMutableArray *categories;
 }
 
 - (id)init;
 - (void)dealloc;
 
 - (NSArray *)classes;
-- (void)setClasses:(NSArray *)newClasses;
+- (void)addClass:(CDOCClass *)aClass;
 
 - (NSArray *)categories;
-- (void)setCategories:(NSArray *)newCategories;
+- (void)addCategory:(CDOCCategory *)aCategory;
 
 - (NSString *)description;
 
