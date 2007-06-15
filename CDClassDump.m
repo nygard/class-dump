@@ -207,16 +207,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     flags.shouldShowMethodAddresses = newFlag;
 }
 
-- (BOOL)shouldGenerateXML;
-{
-    return flags.shouldGenerateXML;
-}
-
-- (void)setShouldGenerateXML:(BOOL)newFlag;
-{
-    flags.shouldGenerateXML = newFlag;
-}
-
 - (BOOL)shouldMatchRegex;
 {
     return flags.shouldMatchRegex;
@@ -481,43 +471,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [self registerPhase:1];
     [self registerPhase:2];
     [self generateMemberNames];
-}
-
-- (void)generateXMLToStandardOut;
-{
-    NSString *emptyXMLDocumentString;
-    NSString *rootElementName = @"class-dump";
-    NSXMLDocument *xmlDocument;
-    int count, index;
-    NSData *data;
-    NSError *error;
-
-    emptyXMLDocumentString = [NSString stringWithFormat:@"<?xml version='1.0' encoding='UTF-8'?>\n<!DOCTYPE %@ PUBLIC \"%@\" \"%@\">\n<%@>\n</%@>\n",
-                                       rootElementName, [[self class] currentPublicID], [[self class] currentSystemID],
-                                       rootElementName, rootElementName];
-
-    xmlDocument = [[NSXMLDocument alloc] initWithXMLString:emptyXMLDocumentString options:NSXMLNodeOptionsNone error:&error];
-    if (xmlDocument == nil) {
-        NSLog(@"Could not create empty xml document: %@", error);
-        [xmlDocument release];
-        return;
-    }
-
-    if ([self containsObjectiveCSegments]) {
-//#warning TODO structures
-        //[self appendStructuresToString:resultString symbolReferences:nil];
-
-        count = [objCSegmentProcessors count];
-        for (index = 0; index < count; index++) {
-            [[objCSegmentProcessors objectAtIndex:index] addToXMLElement:[xmlDocument rootElement] classDump:self];
-        }
-    } else {
-        [[xmlDocument rootElement] addChild:[NSXMLNode commentWithStringValue:@"This file does not contain any Objective-C runtime information."]];
-    }
-
-    data = [xmlDocument XMLDataWithOptions:NSXMLNodePrettyPrint];
-    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
-    [xmlDocument release];
 }
 
 - (void)logInfo;

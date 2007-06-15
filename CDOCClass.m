@@ -51,44 +51,6 @@
     ivars = [newIvars retain];
 }
 
-- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
-{
-    int count, index;
-    NSXMLElement *classElement;
-
-    if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[self name]] == NO)
-        return;
-
-    classElement = [NSXMLElement elementWithName:@"class"];
-    [classElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
-
-    if (superClassName != nil)
-        [classElement addChild:[NSXMLElement elementWithName:@"superclass" stringValue:superClassName]];
-
-    if ([protocols count] > 0) {
-        NSArray *protocolsArray = [protocols arrayByMappingSelector:@selector(name)];
-        count = [protocolsArray count];
-
-        NSMutableArray *adoptedProtocolElements = [NSMutableArray arrayWithCapacity:count];
-
-        for (index = 0; index < count; index++) {
-            [adoptedProtocolElements addObject:[NSXMLElement elementWithName:@"name" stringValue:[protocolsArray objectAtIndex:index]]];
-        }
-
-        [classElement addChild:[NSXMLElement elementWithName:@"adopted-protocols" children:adoptedProtocolElements attributes:nil]];
-        [symbolReferences addProtocolNamesFromArray:protocolsArray];
-    }
-
-    count = [ivars count];
-    if (count > 0) {
-        for (index = 0; index < count; index++)
-            [[ivars objectAtIndex:index] addToXMLElement:classElement classDump:aClassDump symbolReferences:symbolReferences];
-    }
-
-    [self addMethodsToXMLElement:classElement classDump:aClassDump symbolReferences:symbolReferences];
-    [xmlElement addChild:classElement];
-}
-
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
     int count, index;

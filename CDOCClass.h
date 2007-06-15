@@ -18,7 +18,6 @@
 - (NSArray *)ivars;
 - (void)setIvars:(NSArray *)newIvars;
 
-- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;

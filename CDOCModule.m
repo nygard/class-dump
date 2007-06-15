@@ -77,14 +77,4 @@
     return [NSString stringWithFormat:@"/*\n * %@\n */\n", name];
 }
 
-
-- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump;
-{
-    NSXMLElement *moduleElement = [NSXMLElement elementWithName:@"module"];
-
-    [moduleElement addChild:[NSXMLElement elementWithName:@"name" stringValue:name]];
-    [symtab addToXMLElement:moduleElement classDump:aClassDump];
-    [xmlElement addChild:moduleElement];
-}
-
 @end

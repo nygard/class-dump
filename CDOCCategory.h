@@ -17,8 +17,6 @@
 - (NSString *)className;
 - (void)setClassName:(NSString *)newClassName;
 
-- (void)addToXMLElement:(NSXMLElement *)xmlElement classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
-
 - (NSString *)sortableName;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;

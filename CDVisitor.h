@@ -39,7 +39,6 @@
 
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
-
 - (void)visitIvar:(CDOCIvar *)anIvar;
 
 @end

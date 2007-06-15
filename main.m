@@ -198,7 +198,12 @@ int main(int argc, char *argv[])
                 // TODO (2007-06-14): single/multi file generators, plus text/xml output...
                 [classDump recursivelyVisit:multiFileVisitor];
             } else if (shouldGenerateXML) {
-                NSLog(@"Need to generate XML.");
+                CDXMLClassDumpVisitor *visitor;
+
+                visitor = [[CDXMLClassDumpVisitor alloc] init];
+                [visitor setClassDump:classDump];
+                [classDump recursivelyVisit:visitor];
+                [visitor release];
             } else {
                 CDClassDumpVisitor *visitor;
 
