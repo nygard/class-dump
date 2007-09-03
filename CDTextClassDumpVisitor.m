@@ -100,6 +100,26 @@
     [resultString appendString:@"@end\n\n"];
 }
 
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    NSArray *protocols;
+
+    [resultString appendFormat:@"@protocol %@", [aProtocol name]];
+
+    protocols = [aProtocol protocols];
+    if ([protocols count] > 0) {
+        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+    }
+
+    [resultString appendString:@"\n"];
+}
+
+- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    [resultString appendString:@"@end\n\n"];
+}
+
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 {
     [resultString appendString:@"+ "];

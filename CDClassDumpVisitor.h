@@ -14,7 +14,4 @@
 
 - (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
-
 @end

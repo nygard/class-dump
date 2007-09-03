@@ -27,6 +27,9 @@
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 - (void)didVisitCategory:(CDOCCategory *)aCategory;
 
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
 - (void)visitIvar:(CDOCIvar *)anIvar;

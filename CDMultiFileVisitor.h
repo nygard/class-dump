@@ -36,4 +36,7 @@
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 - (void)didVisitCategory:(CDOCCategory *)aCategory;
 
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+
 @end

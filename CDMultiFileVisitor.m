@@ -223,4 +223,44 @@
     symbolReferences = nil;
 }
 
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    [resultString setString:@""];
+    [classDump appendHeaderToString:resultString];
+
+    NSParameterAssert(symbolReferences == nil);
+    symbolReferences = [[CDSymbolReferences alloc] init];
+
+    //[self appendImportForClassName:[aClass superClassName]];
+    referenceIndex = [resultString length];
+
+    // And then generate the regular output
+    [super willVisitProtocol:aProtocol];
+}
+
+- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    NSString *referenceString;
+    NSString *filename;
+
+    // Generate the regular output
+    [super didVisitProtocol:aProtocol];
+
+    // Then insert the imports and write the file.
+    //[symbolReferences removeClassName:[aClass name]];
+    //[symbolReferences removeClassName:[aClass superClassName]];
+    referenceString = [symbolReferences referenceString];
+    if (referenceString != nil)
+        [resultString insertString:referenceString atIndex:referenceIndex];
+
+    filename = [NSString stringWithFormat:@"%@-Protocol.h", [aProtocol name]];
+    if (outputPath != nil)
+        filename = [outputPath stringByAppendingPathComponent:filename];
+
+    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+
+    [symbolReferences release];
+    symbolReferences = nil;
+}
+
 @end
