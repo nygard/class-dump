@@ -70,7 +70,7 @@
     names = [self protocols];
     count = [names count];
     for (index = 0; index < count; index++) {
-        [resultString appendFormat:@"#import \"%@Protocol.h\"\n", [names objectAtIndex:index]];
+        [resultString appendFormat:@"#import \"%@-Protocol.h\"\n", [names objectAtIndex:index]];
     }
     if (count > 0)
         [resultString appendString:@"\n"];
