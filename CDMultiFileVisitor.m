@@ -231,7 +231,6 @@
     NSParameterAssert(symbolReferences == nil);
     symbolReferences = [[CDSymbolReferences alloc] init];
 
-    //[self appendImportForClassName:[aClass superClassName]];
     referenceIndex = [resultString length];
 
     // And then generate the regular output
@@ -247,8 +246,6 @@
     [super didVisitProtocol:aProtocol];
 
     // Then insert the imports and write the file.
-    //[symbolReferences removeClassName:[aClass name]];
-    //[symbolReferences removeClassName:[aClass superClassName]];
     referenceString = [symbolReferences referenceString];
     if (referenceString != nil)
         [resultString insertString:referenceString atIndex:referenceIndex];
