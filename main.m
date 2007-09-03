@@ -36,7 +36,7 @@ void print_usage(void)
             "        -s             sort classes and categories by name\n"
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
-            "        -x             generate XML output\n"
+            //"        -x             generate XML output\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     BOOL shouldFind = NO;
     NSString *searchString = nil;
     BOOL shouldGenerateSeparateHeaders = NO;
-    BOOL shouldGenerateXML = NO;
+    //BOOL shouldGenerateXML = NO;
 
     int ch;
     BOOL errorFlag = NO;
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         { "sort-methods", no_argument, NULL, 'S' },
         { "arch", required_argument, NULL, CD_OPT_ARCH },
         { "suppress-header", no_argument, NULL, 't' },
-        { "generate-xml", no_argument, NULL, 'x' },
+        //{ "generate-xml", no_argument, NULL, 'x' },
         { NULL, 0, NULL, 0 },
     };
 
@@ -153,11 +153,11 @@ int main(int argc, char *argv[])
           case 't':
               [classDump setShouldShowHeader:NO];
               break;
-
+#if 0
           case 'x':
               shouldGenerateXML = YES;
               break;
-
+#endif
           case '?':
           default:
               errorFlag = YES;
@@ -197,6 +197,7 @@ int main(int argc, char *argv[])
             } else if (shouldGenerateSeparateHeaders) {
                 // TODO (2007-06-14): single/multi file generators, plus text/xml output...
                 [classDump recursivelyVisit:multiFileVisitor];
+#if 0
             } else if (shouldGenerateXML) {
                 CDXMLClassDumpVisitor *visitor;
 
@@ -204,6 +205,7 @@ int main(int argc, char *argv[])
                 [visitor setClassDump:classDump];
                 [classDump recursivelyVisit:visitor];
                 [visitor release];
+#endif
             } else {
                 CDClassDumpVisitor *visitor;
 
