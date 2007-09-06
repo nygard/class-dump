@@ -17,6 +17,7 @@
         return nil;
 
     frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+    frameworkNamesByProtocolName = [[NSMutableDictionary alloc] init];
     frameworkName = nil;
 
     return self;
@@ -25,6 +26,7 @@
 - (void)dealloc;
 {
     [frameworkNamesByClassName release];
+    [frameworkNamesByProtocolName release];
     [frameworkName release];
 
     [super dealloc];
@@ -33,6 +35,11 @@
 - (NSDictionary *)frameworkNamesByClassName;
 {
     return frameworkNamesByClassName;
+}
+
+- (NSDictionary *)frameworkNamesByProtocolName;
+{
+    return frameworkNamesByProtocolName;
 }
 
 - (NSString *)frameworkName;
@@ -58,6 +65,13 @@
 {
     if (frameworkName != nil) {
         [frameworkNamesByClassName setObject:frameworkName forKey:[aClass name]];
+    }
+}
+
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+{
+    if (frameworkName != nil) {
+        [frameworkNamesByProtocolName setObject:frameworkName forKey:[aProtocol name]];
     }
 }
 

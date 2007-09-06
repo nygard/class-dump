@@ -8,6 +8,7 @@
 @interface CDClassFrameworkVisitor : CDVisitor
 {
     NSMutableDictionary *frameworkNamesByClassName;
+    NSMutableDictionary *frameworkNamesByProtocolName;
     NSString *frameworkName;
 }
 
@@ -15,11 +16,13 @@
 - (void)dealloc;
 
 - (NSDictionary *)frameworkNamesByClassName;
+- (NSDictionary *)frameworkNamesByProtocolName;
 
 - (NSString *)frameworkName;
 - (void)setFrameworkName:(NSString *)newFrameworkName;
 
 - (void)willVisitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
 - (void)willVisitClass:(CDOCClass *)aClass;
+- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 
 @end

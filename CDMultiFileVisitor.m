@@ -19,7 +19,6 @@
         return nil;
 
     outputPath = nil;
-    frameworkNamesByClassName = nil;
 
     return self;
 }
@@ -27,7 +26,6 @@
 - (void)dealloc;
 {
     [outputPath release];
-    [frameworkNamesByClassName release];
 
     [super dealloc];
 }
@@ -70,33 +68,14 @@
 
 - (void)buildClassFrameworks;
 {
-    if (frameworkNamesByClassName == nil) {
-        CDClassFrameworkVisitor *visitor;
+    CDClassFrameworkVisitor *visitor;
 
-        visitor = [[CDClassFrameworkVisitor alloc] init];
-        [visitor setClassDump:classDump];
-        [classDump recursivelyVisit:visitor];
-        frameworkNamesByClassName = [[visitor frameworkNamesByClassName] retain];
-        [visitor release];
-    }
-}
-
-- (NSString *)frameworkForClassName:(NSString *)aClassName;
-{
-    return [frameworkNamesByClassName objectForKey:aClassName];
-}
-
-- (void)appendImportForClassName:(NSString *)aClassName;
-{
-    if (aClassName != nil) {
-        NSString *classFramework;
-
-        classFramework = [self frameworkForClassName:aClassName];
-        if (classFramework == nil)
-            [resultString appendFormat:@"#import \"%@.h\"\n\n", aClassName];
-        else
-            [resultString appendFormat:@"#import <%@/%@.h>\n\n", classFramework, aClassName];
-    }
+    visitor = [[CDClassFrameworkVisitor alloc] init];
+    [visitor setClassDump:classDump];
+    [classDump recursivelyVisit:visitor];
+    [symbolReferences setFrameworkNamesByClassName:[visitor frameworkNamesByClassName]];
+    [symbolReferences setFrameworkNamesByProtocolName:[visitor frameworkNamesByProtocolName]];
+    [visitor release];
 }
 
 - (void)generateStructureHeader;
@@ -107,8 +86,7 @@
     [resultString setString:@""];
     [classDump appendHeaderToString:resultString];
 
-    NSParameterAssert(symbolReferences == nil);
-    symbolReferences = [[CDSymbolReferences alloc] init];
+    [symbolReferences removeAllReferences];
     referenceIndex = [resultString length];
 
     [classDump appendStructuresToString:resultString symbolReferences:symbolReferences];
@@ -122,9 +100,6 @@
         filename = [outputPath stringByAppendingPathComponent:filename];
 
     [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
-
-    [symbolReferences release];
-    symbolReferences = nil;
 }
 
 - (void)willBeginVisiting;
@@ -144,14 +119,19 @@
 
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
+    NSString *str;
+
     // First, we set up some context...
     [resultString setString:@""];
     [classDump appendHeaderToString:resultString];
 
-    NSParameterAssert(symbolReferences == nil);
-    symbolReferences = [[CDSymbolReferences alloc] init];
+    [symbolReferences removeAllReferences];
+    str = [symbolReferences importStringForClassName:[aClass superClassName]];
+    if (str != nil) {
+        [resultString appendString:str];
+        [resultString appendString:@"\n"];
+    }
 
-    [self appendImportForClassName:[aClass superClassName]];
     referenceIndex = [resultString length];
 
     // And then generate the regular output
@@ -178,21 +158,22 @@
         filename = [outputPath stringByAppendingPathComponent:filename];
 
     [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
-
-    [symbolReferences release];
-    symbolReferences = nil;
 }
 
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 {
+    NSString *str;
+
     // First, we set up some context...
     [resultString setString:@""];
     [classDump appendHeaderToString:resultString];
 
-    NSParameterAssert(symbolReferences == nil);
-    symbolReferences = [[CDSymbolReferences alloc] init];
-
-    [self appendImportForClassName:[aCategory className]];
+    [symbolReferences removeAllReferences];
+    str = [symbolReferences importStringForClassName:[aCategory className]];
+    if (str != nil) {
+        [resultString appendString:str];
+        [resultString appendString:@"\n"];
+    }
     referenceIndex = [resultString length];
 
     // And then generate the regular output
@@ -218,9 +199,6 @@
         filename = [outputPath stringByAppendingPathComponent:filename];
 
     [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
-
-    [symbolReferences release];
-    symbolReferences = nil;
 }
 
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
@@ -228,9 +206,7 @@
     [resultString setString:@""];
     [classDump appendHeaderToString:resultString];
 
-    NSParameterAssert(symbolReferences == nil);
-    symbolReferences = [[CDSymbolReferences alloc] init];
-
+    [symbolReferences removeAllReferences];
     referenceIndex = [resultString length];
 
     // And then generate the regular output
@@ -255,9 +231,6 @@
         filename = [outputPath stringByAppendingPathComponent:filename];
 
     [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
-
-    [symbolReferences release];
-    symbolReferences = nil;
 }
 
 @end

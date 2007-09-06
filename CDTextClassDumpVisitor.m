@@ -24,7 +24,7 @@
         return nil;
 
     resultString = [[NSMutableString alloc] init];
-    symbolReferences = nil;
+    symbolReferences = [[CDSymbolReferences alloc] init];
 
     return self;
 }

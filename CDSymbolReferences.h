@@ -7,12 +7,21 @@
 
 @interface CDSymbolReferences : NSObject
 {
+    NSDictionary *frameworkNamesByClassName;
+    NSDictionary *frameworkNamesByProtocolName;
+
     NSMutableSet *classes;
     NSMutableSet *protocols;
 }
 
 - (id)init;
 - (void)dealloc;
+
+- (void)setFrameworkNamesByClassName:(NSDictionary *)newValue;
+- (void)setFrameworkNamesByProtocolName:(NSDictionary *)newValue;
+
+- (NSString *)frameworkForClassName:(NSString *)aClassName;
+- (NSString *)frameworkForProtocolName:(NSString *)aProtocolName;
 
 - (NSArray *)classes;
 - (void)addClassName:(NSString *)aClassName;
@@ -26,5 +35,9 @@
 
 - (void)_appendToString:(NSMutableString *)resultString;
 - (NSString *)referenceString;
+
+- (void)removeAllReferences;
+- (NSString *)importStringForClassName:(NSString *)aClassName;
+- (NSString *)importStringForProtocolName:(NSString *)aProtocolName;
 
 @end

@@ -10,7 +10,6 @@
 @interface CDMultiFileVisitor : CDTextClassDumpVisitor
 {
     NSString *outputPath;
-    NSMutableDictionary *frameworkNamesByClassName;
     unsigned int referenceIndex;
 }
 
@@ -23,9 +22,7 @@
 - (void)createOutputPathIfNecessary;
 
 - (void)buildClassFrameworks;
-- (NSString *)frameworkForClassName:(NSString *)aClassName;
 
-- (void)appendImportForClassName:(NSString *)aClassName;
 - (void)generateStructureHeader;
 
 - (void)willBeginVisiting;
