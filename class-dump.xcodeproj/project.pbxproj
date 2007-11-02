@@ -40,9 +40,6 @@
 		0112616D0C21313400B9C4E0 /* CDFindMethodVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261640C21312C00B9C4E0 /* CDFindMethodVisitor.m */; };
 		0112616E0C21313500B9C4E0 /* CDVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261650C21312C00B9C4E0 /* CDVisitor.h */; };
 		0112616F0C21313500B9C4E0 /* CDVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261660C21312C00B9C4E0 /* CDVisitor.m */; };
-		0112617A0C21346600B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */; };
-		0112617B0C21346900B9C4E0 /* CDXMLClassDumpVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261780C21346600B9C4E0 /* CDXMLClassDumpVisitor.h */; };
-		0112617C0C21346900B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */; };
 		011262340C21844200B9C4E0 /* CDClassFrameworkVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262330C21844200B9C4E0 /* CDClassFrameworkVisitor.m */; };
 		011262350C21844200B9C4E0 /* CDClassFrameworkVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011262320C21844200B9C4E0 /* CDClassFrameworkVisitor.h */; };
 		011262360C21844200B9C4E0 /* CDClassFrameworkVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262330C21844200B9C4E0 /* CDClassFrameworkVisitor.m */; };
@@ -186,7 +183,6 @@
 				0112616A0C21313100B9C4E0 /* CDClassDumpVisitor.h in CopyFiles */,
 				0112616C0C21313300B9C4E0 /* CDFindMethodVisitor.h in CopyFiles */,
 				0112616E0C21313500B9C4E0 /* CDVisitor.h in CopyFiles */,
-				0112617B0C21346900B9C4E0 /* CDXMLClassDumpVisitor.h in CopyFiles */,
 				011262350C21844200B9C4E0 /* CDClassFrameworkVisitor.h in CopyFiles */,
 				011262440C218CAD00B9C4E0 /* CDMultiFileVisitor.h in CopyFiles */,
 				0112625B0C21909400B9C4E0 /* CDTextClassDumpVisitor.h in CopyFiles */,
@@ -204,8 +200,6 @@
 		011261640C21312C00B9C4E0 /* CDFindMethodVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDFindMethodVisitor.m; sourceTree = "<group>"; };
 		011261650C21312C00B9C4E0 /* CDVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDVisitor.h; sourceTree = "<group>"; };
 		011261660C21312C00B9C4E0 /* CDVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDVisitor.m; sourceTree = "<group>"; };
-		011261780C21346600B9C4E0 /* CDXMLClassDumpVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDXMLClassDumpVisitor.h; sourceTree = "<group>"; };
-		011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDXMLClassDumpVisitor.m; sourceTree = "<group>"; };
 		011262320C21844200B9C4E0 /* CDClassFrameworkVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDClassFrameworkVisitor.h; sourceTree = "<group>"; };
 		011262330C21844200B9C4E0 /* CDClassFrameworkVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDClassFrameworkVisitor.m; sourceTree = "<group>"; };
 		011262410C218CAD00B9C4E0 /* CDMultiFileVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDMultiFileVisitor.h; sourceTree = "<group>"; };
@@ -371,8 +365,6 @@
 				011261640C21312C00B9C4E0 /* CDFindMethodVisitor.m */,
 				011261650C21312C00B9C4E0 /* CDVisitor.h */,
 				011261660C21312C00B9C4E0 /* CDVisitor.m */,
-				011261780C21346600B9C4E0 /* CDXMLClassDumpVisitor.h */,
-				011261790C21346600B9C4E0 /* CDXMLClassDumpVisitor.m */,
 				011262320C21844200B9C4E0 /* CDClassFrameworkVisitor.h */,
 				011262330C21844200B9C4E0 /* CDClassFrameworkVisitor.m */,
 				011262410C218CAD00B9C4E0 /* CDMultiFileVisitor.h */,
@@ -704,7 +696,6 @@
 				011261670C21312C00B9C4E0 /* CDClassDumpVisitor.m in Sources */,
 				011261680C21312C00B9C4E0 /* CDFindMethodVisitor.m in Sources */,
 				011261690C21312C00B9C4E0 /* CDVisitor.m in Sources */,
-				0112617A0C21346600B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */,
 				011262340C21844200B9C4E0 /* CDClassFrameworkVisitor.m in Sources */,
 				011262430C218CAD00B9C4E0 /* CDMultiFileVisitor.m in Sources */,
 				0112625A0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */,
@@ -753,7 +744,6 @@
 				0112616B0C21313200B9C4E0 /* CDClassDumpVisitor.m in Sources */,
 				0112616D0C21313400B9C4E0 /* CDFindMethodVisitor.m in Sources */,
 				0112616F0C21313500B9C4E0 /* CDVisitor.m in Sources */,
-				0112617C0C21346900B9C4E0 /* CDXMLClassDumpVisitor.m in Sources */,
 				011262360C21844200B9C4E0 /* CDClassFrameworkVisitor.m in Sources */,
 				011262450C218CAD00B9C4E0 /* CDMultiFileVisitor.m in Sources */,
 				0112625C0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */,
