@@ -61,8 +61,10 @@
                           [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
     }
 
-    if ([machOFile hasProtectedSegments])
-        [resultString appendString:@" *       (This file has protected segments -- Objective-C information may be missing.)\n"];
+    if ([machOFile hasProtectedSegments]) {
+        [resultString appendString:@" *       (This file has protected segments -- Objective-C information may be missing.\n"];
+        [resultString appendString:@" *        Try dumping a differnt architecture, or deprotect it first.)\n"];
+    }
     [resultString appendString:@" */\n\n"];
 }
 
