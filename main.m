@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 
     if (argc == 1) {
         print_usage();
-        exit(2);
+        exit(0);
     }
 
     classDump = [[[CDClassDump alloc] init] autorelease];
