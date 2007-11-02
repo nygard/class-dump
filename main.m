@@ -14,7 +14,7 @@
 #import "CDClassDump.h"
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"
-#import "CDXMLClassDumpVisitor.h"
+//#import "CDXMLClassDumpVisitor.h"
 #import "CDMultiFileVisitor.h"
 
 void print_usage(void)
@@ -176,16 +176,13 @@ int main(int argc, char *argv[])
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
         if ([classDump processFilename:path] == YES) {
-#if 1
+#if 0
+            [classDump showHeader];
+            [classDump showLoadCommands];
+#else
             [classDump processObjectiveCSegments];
             [classDump registerStuff];
 
-#if 0
-            if (shouldFind) {
-                [classDump find:searchString];
-            } else
-                [classDump generateOutput];
-#else
             if (shouldFind) {
                 CDFindMethodVisitor *visitor;
 
@@ -214,10 +211,6 @@ int main(int argc, char *argv[])
                 [classDump recursivelyVisit:visitor];
                 [visitor release];
             }
-#endif
-#else
-            [classDump showHeader];
-            [classDump showLoadCommands];
 #endif
         }
     }
