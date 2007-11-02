@@ -9,7 +9,7 @@ NEW_CD=~/Unix/bin/class-dump-3.1.2
 
 echo "Starting tests at `date`"
 
-ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app | wc
+ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app | wc
 
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
@@ -19,7 +19,7 @@ foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFramewo
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
 done
 
-foreach i (/Applications/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app) do
+foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app) do
     echo $i `basename $i .app`
     $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
