@@ -49,8 +49,6 @@
     cpu_type_t preferredCPUType;
 }
 
-+ (NSString *)adjustUserSuppliedPath:(NSString *)path;
-
 + (NSString *)currentPublicID;
 + (NSString *)currentSystemID;
 

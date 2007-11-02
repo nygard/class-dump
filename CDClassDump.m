@@ -24,44 +24,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 
 @implementation CDClassDump
 
-// Allow user to specify wrapper instead of the actual Mach-O file.
-+ (NSString *)adjustUserSuppliedPath:(NSString *)path;
-{
-    NSString *fullyResolvedPath, *basePath, *resolvedBasePath;
-    NSBundle *bundle;
-
-    bundle = [NSBundle bundleWithPath:path];
-    if (bundle != nil) {
-        if ([bundle executablePath] == nil) {
-            // TODO (2007-11-02): Maybe it would be good to use NSError here.
-            fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [path fileSystemRepresentation]);
-            return nil;
-        }
-        path = [bundle executablePath];
-    }
-
-    fullyResolvedPath = [path stringByResolvingSymlinksInPath];
-    basePath = [path stringByDeletingLastPathComponent];
-    resolvedBasePath = [basePath stringByResolvingSymlinksInPath];
-    //NSLog(@"fullyResolvedPath: %@", fullyResolvedPath);
-    //NSLog(@"basePath:          %@", basePath);
-    //NSLog(@"resolvedBasePath:  %@", resolvedBasePath);
-
-    // I don't want to resolve all of the symlinks, just the ones starting from the wrapper.
-    // If I have a symlink from my home directory to /System/Library/Frameworks/AppKit.framework, I want to see the
-    // path to my home directory.
-    // This is an easy way to cheat so that we don't have to deal with NSFileManager ourselves.
-
-    // This is clever, but it fails when the symlink goes outside of the wrapper.  For example, currently
-    // /System/Library/PrivateFrameworks/ICACameraPriv.framework/ICACameraPriv is a symbolic link to
-    // ../../Frameworks/ICADevices.framework/Versions/A/ICADevices and so now we check to make sure the
-    // first parts of the paths are the same.
-    if ([fullyResolvedPath hasPrefix:resolvedBasePath] == NO)
-        return fullyResolvedPath;
-
-    return [basePath stringByAppendingString:[fullyResolvedPath substringFromIndex:[resolvedBasePath length]]];
-}
-
 + (NSString *)currentPublicID;
 {
     return CDClassDumpVersion1PublicID;
@@ -344,14 +306,26 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 // Return YES if successful, NO if there was an error.
 - (BOOL)processFilename:(NSString *)aFilename;
 {
-    NSString *adjustedPath;
+    NSBundle *bundle;
+    NSString *path;
 
-    adjustedPath = [[self class] adjustUserSuppliedPath:aFilename];
-    if (adjustedPath == nil)
-        return NO;
-    [self setExecutablePath:[adjustedPath stringByDeletingLastPathComponent]];
+    // I give up, all the methods dealing with paths seem to resolve symlinks with a vengence.
+    bundle = [NSBundle bundleWithPath:aFilename];
+    if (bundle != nil) {
+        if ([bundle executablePath] == nil) {
+            // TODO (2007-11-02): Maybe it would be good to use NSError here.
+            fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);
+            return NO;
+        }
 
-    return [self _processFilename:adjustedPath];
+        path = [bundle executablePath];
+    } else {
+        path = [aFilename stringByStandardizingPath];
+    }
+
+    [self setExecutablePath:[path stringByDeletingLastPathComponent]];
+
+    return [self _processFilename:path];
 }
 
 // Return YES if successful, NO if there was an error.

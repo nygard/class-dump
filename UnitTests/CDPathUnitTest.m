@@ -4,74 +4,19 @@
 #import "CDPathUnitTest.h"
 
 #import <Foundation/Foundation.h>
-#import "CDClassDump.h"
 
 @implementation CDPathUnitTest
 
-- (void)setUp;
+- (void)testPrivateSyncFramework;
 {
-    NSFileManager *fileManager;
-    NSDictionary *fileAttributes;
+    NSString *path = @"/System/Library/PrivateFrameworks/SyndicationUI.framework";
+    NSBundle *bundle;
 
-    fileManager = [NSFileManager defaultManager];
-    fileAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:0700], NSFilePosixPermissions,
-                                       nil];
-
-    [fileManager createDirectoryAtPath:[@"~/tmp" stringByExpandingTildeInPath] attributes:fileAttributes];
-    [fileManager createDirectoryAtPath:[@"~/tmp/ClassDumpTest" stringByExpandingTildeInPath] attributes:fileAttributes];
-    [fileManager createDirectoryAtPath:[@"~/tmp/ClassDumpTest/out" stringByExpandingTildeInPath] attributes:fileAttributes];
-    [fileManager removeFileAtPath:[@"~/tmp/ClassDumpTest/Foundation.framework" stringByExpandingTildeInPath] handler:nil];
-    [fileManager createSymbolicLinkAtPath:[@"~/tmp/ClassDumpTest/Foundation.framework" stringByExpandingTildeInPath]
-                 pathContent:@"/System/Library/Frameworks/Foundation.framework"];
-}
-
-- (void)tearDown;
-{
-    NSFileManager *fileManager;
-
-    fileManager = [NSFileManager defaultManager];
-
-    // This is recursive.  Kind of scary with the ~.
-    [fileManager removeFileAtPath:[@"~/tmp/ClassDumpTest" stringByExpandingTildeInPath] handler:nil];
-}
-
-- (void)_testPath:(NSString *)sourcePath expectedResult:(NSString *)expectedResult;
-{
-    NSString *result;
-
-    result = [CDClassDump adjustUserSuppliedPath:sourcePath];
-    NSLog(@"----------------------------------------");
-    NSLog(@"input: %@", sourcePath);
-    NSLog(@"expected result: %@", expectedResult);
-    NSLog(@"actual result:   %@", result);
-    NSLog(@"result: %@", result);
-    STAssertEqualObjects(expectedResult, result, @"Expected result didn't match result...");
-    //[self assert:result equals:expectedResult];
-}
-
-- (void)testPaths;
-{
-    [self _testPath:@"/System/Library/Frameworks/Foundation.framework/Foundation"
-          expectedResult:@"/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation"];
-#if 0
-    [self _testPath:@"/System/Library/Frameworks/Foundation.framework"
-          expectedResult:@"/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation"];
-    [self _testPath:@"~/tmp/ClassDumpTest/Foundation.framework"
-          expectedResult:@"~/tmp/ClassDumpTest/Foundation.framework/Versions/C/Foundation"];
-#endif
-}
-
-- (void)testDotDot;
-{
-#if 0
-    BOOL result;
-
-    result = [[NSFileManager defaultManager] changeCurrentDirectoryPath:[@"~/tmp/ClassDumpTest/out" stringByExpandingTildeInPath]];
-    //[self assertTrue:result message:@"Change directory to ~/tmp/ClassDumpTest/out"];
-
-    [self _testPath:@"../Foundation.framework"
-          expectedResult:@"../Foundation.framework/Versions/C/Foundation"];
-#endif
+    bundle = [NSBundle bundleWithPath:path];
+    STAssertNotNil(bundle, @"%@ doesn't seem to exist, we can remove this test now.", path);
+    if (bundle != nil) {
+        //STAssertNotNil([bundle executablePath], @"This fails on 10.5.  Executable path for %@", path);
+    }
 }
 
 @end

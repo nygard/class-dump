@@ -9,7 +9,6 @@
 {
 }
 
-- (void)setUp;
-- (void)tearDown;
+- (void)testPrivateSyncFramework;
 
 @end
