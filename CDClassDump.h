@@ -10,7 +10,7 @@
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
-#define CLASS_DUMP_VERSION @"3.1.2 dev"
+#define CLASS_DUMP_VERSION @"3.1.2"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDMachOFile;

@@ -28,7 +28,7 @@ void print_usage(void)
             "        -A             show implementation addresses\n"
             "        --arch <arch>  choose a specific architecture from a universal binary (ppc, i386, etc.)\n"
             "        -C <regex>     only display classes matching regular expression\n"
-            "        -f <str>       find string\n"
+            "        -f <str>       find string in method name\n"
             "        -H             generate header files in current directory, or directory specified with -o\n"
             "        -I             sort classes, categories, and protocols by inheritance (overrides -s)\n"
             "        -o <dir>       output directory used for -H\n"
