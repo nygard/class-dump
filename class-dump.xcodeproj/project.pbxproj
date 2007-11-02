@@ -620,6 +620,7 @@
 		08FB7793FE84155DC02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 012E2A9408AE9B4F003E99F8 /* Build configuration list for PBXProject "class-dump" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* class-dump */;
 			projectDirPath = "";
@@ -629,6 +630,7 @@
 					ProjectRef = 016908F00B8A9E4F003060CF /* ObjcUnit.xcodeproj */;
 				},
 			);
+			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* class-dump */,
 				01549F710903BF88002FA8F1 /* All Tests */,
