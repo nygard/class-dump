@@ -7,6 +7,8 @@ TESTDIR_NEW=$TESTDIR/new
 OLD_CD=~/Unix/bin/class-dump
 NEW_CD=/Local/nygard/Products/Release/class-dump
 
+ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app | wc
+
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
 foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework) do
@@ -15,7 +17,7 @@ foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFramewo
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
 done
 
-foreach i (/Applications/*.app /Applications/Utilities/*.app) do
+foreach i (/Applications/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app) do
     echo $i `basename $i .app`
     $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
