@@ -81,19 +81,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		016908F50B8A9E50003060CF /* PBXContainerItemProxy */ = {
+		012FF1C30CDB932000F31E61 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 016908F00B8A9E4F003060CF /* ObjcUnit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 01549FCE090714AA002FA8F1;
-			remoteInfo = ObjcUnit;
-		};
-		016908F70B8A9E50003060CF /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 016908F00B8A9E4F003060CF /* ObjcUnit.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 01549FFF090714AA002FA8F1;
-			remoteInfo = ObjcUnitTest;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 012FF1890CDB886C00F31E61 /* CDUnitTests */;
+			remoteInfo = CDUnitTests;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -260,7 +253,6 @@
 		012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CDUnitTests-Info.plist"; sourceTree = "<group>"; };
 		012FF1A40CDB8A4800F31E61 /* MyFirstTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstTestCase.h; path = UnitTests/MyFirstTestCase.h; sourceTree = "<group>"; };
 		012FF1A50CDB8A4800F31E61 /* MyFirstTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyFirstTestCase.m; path = UnitTests/MyFirstTestCase.m; sourceTree = "<group>"; };
-		016908F00B8A9E4F003060CF /* ObjcUnit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ObjcUnit.xcodeproj; path = ../../ThirdParty/ObjcUnit/ObjcUnit/ObjcUnit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
@@ -469,15 +461,6 @@
 			name = "OCUnit tests";
 			sourceTree = "<group>";
 		};
-		016908F10B8A9E50003060CF /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				016908F60B8A9E50003060CF /* ObjcUnit.framework */,
-				016908F80B8A9E50003060CF /* ObjcUnitTest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		08FB7794FE84155DC02AAC07 /* class-dump */ = {
 			isa = PBXGroup;
 			children = (
@@ -505,7 +488,6 @@
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				016908F00B8A9E4F003060CF /* ObjcUnit.xcodeproj */,
 				08FB779EFE84155DC02AAC07 /* Foundation.framework */,
 			);
 			name = "External Frameworks and Libraries";
@@ -559,6 +541,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				012FF1C40CDB932000F31E61 /* PBXTargetDependency */,
 			);
 			name = "class-dump";
 			productInstallPath = "$(HOME)/bin";
@@ -576,12 +559,6 @@
 			hasScannedForEncodings = 1;
 			mainGroup = 08FB7794FE84155DC02AAC07 /* class-dump */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 016908F10B8A9E50003060CF /* Products */;
-					ProjectRef = 016908F00B8A9E4F003060CF /* ObjcUnit.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				8DD76F960486AA7600D96B5E /* class-dump */,
@@ -589,23 +566,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		016908F60B8A9E50003060CF /* ObjcUnit.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ObjcUnit.framework;
-			remoteRef = 016908F50B8A9E50003060CF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		016908F80B8A9E50003060CF /* ObjcUnitTest */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = ObjcUnitTest;
-			remoteRef = 016908F70B8A9E50003060CF /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		012FF1850CDB886C00F31E61 /* Resources */ = {
@@ -691,6 +651,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		012FF1C40CDB932000F31E61 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 012FF1890CDB886C00F31E61 /* CDUnitTests */;
+			targetProxy = 012FF1C30CDB932000F31E61 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		012E2A9108AE9B4F003E99F8 /* Debug */ = {

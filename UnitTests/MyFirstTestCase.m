@@ -13,10 +13,10 @@
 
 - (void)testSomething;
 {
-	NSLog(@"%s", __PRETTY_FUNCTION__);
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     STAssertEquals(32, 32,
-                   @"Centigrade freezing point should be 32, but was %d instead!", 
-                   32);
+                   @"Centigrade freezing point should be 32, but was %d instead!",
+                   33);
 }
 
 @end

@@ -122,6 +122,7 @@ int main(int argc, char *argv[])
           case 'f':
           {
               shouldFind = YES;
+
               searchString = [NSString stringWithUTF8String:optarg];
               break;
           }
