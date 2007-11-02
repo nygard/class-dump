@@ -1,13 +1,9 @@
-//
-//  MyFirstTestCase.h
-//  class-dump
-//
-//  Created by Steve Nygard on 2007-11-02.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
-//
+// -*- mode: ObjC -*-
+
+//  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
 
 #import <SenTestingKit/SenTestingKit.h>
-
 
 @interface MyFirstTestCase : SenTestCase
 {
