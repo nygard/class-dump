@@ -28,6 +28,17 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 + (NSString *)adjustUserSuppliedPath:(NSString *)path;
 {
     NSString *fullyResolvedPath, *basePath, *resolvedBasePath;
+    NSBundle *bundle;
+
+    bundle = [NSBundle bundleWithPath:path];
+    if (bundle != nil) {
+        if ([bundle executablePath] == nil) {
+            // TODO (2007-11-02): Maybe it would be good to use NSError here.
+            fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [path fileSystemRepresentation]);
+            return nil;
+        }
+        path = [bundle executablePath];
+    }
 
     fullyResolvedPath = [path stringByResolvingSymlinksInPath];
     basePath = [path stringByDeletingLastPathComponent];
@@ -333,21 +344,11 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 // Return YES if successful, NO if there was an error.
 - (BOOL)processFilename:(NSString *)aFilename;
 {
-    NSBundle *bundle;
-    NSString *path, *adjustedPath;
+    NSString *adjustedPath;
 
-    bundle = [NSBundle bundleWithPath:aFilename];
-    if (bundle != nil) {
-        if ([bundle executablePath] == nil) {
-            fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);
-            return NO;
-        }
-        path = [bundle executablePath];
-    } else {
-        path = aFilename;
-    }
-
-    adjustedPath = [[self class] adjustUserSuppliedPath:path];
+    adjustedPath = [[self class] adjustUserSuppliedPath:aFilename];
+    if (adjustedPath == nil)
+        return NO;
     [self setExecutablePath:[adjustedPath stringByDeletingLastPathComponent]];
 
     return [self _processFilename:adjustedPath];
