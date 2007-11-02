@@ -192,7 +192,6 @@ int main(int argc, char *argv[])
                 [classDump recursivelyVisit:visitor];
                 [visitor release];
             } else if (shouldGenerateSeparateHeaders) {
-                // TODO (2007-06-14): single/multi file generators, plus text/xml output...
                 [classDump recursivelyVisit:multiFileVisitor];
 #if 0
             } else if (shouldGenerateXML) {
