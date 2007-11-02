@@ -4,8 +4,10 @@ TESTDIR=/tmp/cdt
 TESTDIR_OLD=$TESTDIR/old
 TESTDIR_NEW=$TESTDIR/new
 
-OLD_CD=~/Unix/bin/class-dump
-NEW_CD=/Local/nygard/Products/Release/class-dump
+OLD_CD=~/Unix/bin/class-dump-3.1.1
+NEW_CD=~/Unix/bin/class-dump-3.1.2
+
+echo "Starting tests at `date`"
 
 ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app | wc
 
@@ -22,3 +24,5 @@ foreach i (/Applications/*.app /Applications/Utilities/*.app /Developer/Applicat
     $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
     $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
 done
+
+echo "Ended tests at `date`"
