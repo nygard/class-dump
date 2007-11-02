@@ -28,11 +28,6 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 + (NSString *)adjustUserSuppliedPath:(NSString *)path;
 {
     NSString *fullyResolvedPath, *basePath, *resolvedBasePath;
-    NSBundle *bundle;
-
-    bundle = [NSBundle bundleWithPath:path];
-    if ([bundle executablePath] != nil)
-        path = [bundle executablePath];
 
     fullyResolvedPath = [path stringByResolvingSymlinksInPath];
     basePath = [path stringByDeletingLastPathComponent];
@@ -338,9 +333,16 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 // Return YES if successful, NO if there was an error.
 - (BOOL)processFilename:(NSString *)aFilename;
 {
+    NSBundle *bundle;
     NSString *adjustedPath;
 
-    adjustedPath = [[self class] adjustUserSuppliedPath:aFilename];
+    bundle = [NSBundle bundleWithPath:aFilename];
+    if ([bundle executablePath] == nil) {
+        fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);
+        return NO;
+    }
+
+    adjustedPath = [[self class] adjustUserSuppliedPath:[bundle executablePath]];
     [self setExecutablePath:[adjustedPath stringByDeletingLastPathComponent]];
 
     return [self _processFilename:adjustedPath];
