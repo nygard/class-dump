@@ -1,3 +1,5 @@
+// -*- mode: ObjC -*-
+
 #import <ObjcUnit/ObjcUnit.h>
 
 @interface AllTests : NSObject
