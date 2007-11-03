@@ -120,6 +120,7 @@
 		012FF22C0CDBA19500F31E61 /* CDUUIDCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */; };
 		012FF28B0CDC577600F31E61 /* CDTypeLexerUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */; };
 		012FF2900CDC590F00F31E61 /* CDTypeParserUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7F08AE9E45003E99F8 /* CDTypeParserUnitTest.m */; };
+		012FF2950CDC64A800F31E61 /* AllTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7708AE9E45003E99F8 /* AllTests.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -674,6 +675,7 @@
 				012FF22C0CDBA19500F31E61 /* CDUUIDCommand.m in Sources */,
 				012FF28B0CDC577600F31E61 /* CDTypeLexerUnitTest.m in Sources */,
 				012FF2900CDC590F00F31E61 /* CDTypeParserUnitTest.m in Sources */,
+				012FF2950CDC64A800F31E61 /* AllTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -823,6 +825,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "CDUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTEST = "$(PROJECT_DIR)/UnitTests/otest-all";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
@@ -848,6 +851,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
 				INFOPLIST_FILE = "CDUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
+				OTEST = "$(PROJECT_DIR)/UnitTests/otest-all";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Cocoa,
