@@ -127,10 +127,4 @@
     [self testType:@"{vector<<unnamed>::AnimationChunk,std::allocator<<unnamed>::AnimationChunk> >=II}" showLexing:NO];
 }
 
-- (void)testFoobar;
-{
-    [self testMethodType:@"12@0:48" showLexing:YES];
-
-}
-
 @end
