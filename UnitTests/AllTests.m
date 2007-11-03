@@ -67,6 +67,8 @@
     //[order addObject:[CDTypeLexerUnitTest class]];
     //[order addObject:[CDTypeParserUnitTest class]];
 
+    NSLog(@"order: %@", order);
+
     allTests = [SenTestSuite testSuiteWithName:@"All Tests"];
     orderedTests = [SenTestSuite testSuiteWithName:@"Ordered Tests"];
     unorderedTests = [SenTestSuite testSuiteWithName:@"Unordered Tests"];
@@ -95,8 +97,8 @@
             aClass = [allTestCaseSubclasses objectAtIndex:index];
             if ([used containsObject:aClass] == NO) {
                 NSLog(@"Adding unordered test: %@", aClass);
-                //[orderedTests addTest:[SenTestSuite testSuiteForTestCaseClass:aClass]];
-                [orderedTests addTest:[aClass defaultTestSuite]];
+                //[unorderedTests addTest:[SenTestSuite testSuiteForTestCaseClass:aClass]];
+                [unorderedTests addTest:[aClass defaultTestSuite]];
                 [used addObject:aClass];
             }
         }
