@@ -1,11 +1,11 @@
 // -*- mode: ObjC -*-
 
-#import <ObjcUnit/ObjcUnit.h>
+#import <SenTestingKit/SenTestingKit.h>
 
-@interface AllTests : NSObject
+@interface AllTests : SenTestCase
 {
 }
 
-+ (TestSuite *)suite;
++ (id)defaultTestSuite;
 
 @end
