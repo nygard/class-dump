@@ -43,6 +43,29 @@
 		0112625B0C21909400B9C4E0 /* CDTextClassDumpVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011262580C21909400B9C4E0 /* CDTextClassDumpVisitor.h */; };
 		0112625C0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262590C21909400B9C4E0 /* CDTextClassDumpVisitor.m */; };
 		0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7D08AE9E45003E99F8 /* CDTypeFormatterUnitTest.m */; };
+		0114EDE10CDC9E8F0061F80F /* CDStructHandlingUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7B08AE9E45003E99F8 /* CDStructHandlingUnitTest.m */; };
+		0114EDED0CDCA3430061F80F /* shud01-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3608AE9DCD003E99F8 /* shud01-in.txt */; };
+		0114EDEE0CDCA3440061F80F /* shud01-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3708AE9DCD003E99F8 /* shud01-out.txt */; };
+		0114EDEF0CDCA3550061F80F /* shud02-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3808AE9DCD003E99F8 /* shud02-in.txt */; };
+		0114EDF00CDCA3560061F80F /* shud02-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3908AE9DCD003E99F8 /* shud02-out.txt */; };
+		0114EDF10CDCA3590061F80F /* shud04-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3C08AE9DCD003E99F8 /* shud04-in.txt */; };
+		0114EDF20CDCA35A0061F80F /* shud04-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3D08AE9DCD003E99F8 /* shud04-out.txt */; };
+		0114EDF30CDCA35C0061F80F /* shud05-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3E08AE9DCD003E99F8 /* shud05-in.txt */; };
+		0114EDF40CDCA35C0061F80F /* shud05-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B3F08AE9DCD003E99F8 /* shud05-out.txt */; };
+		0114EDF50CDCA35D0061F80F /* shud06-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4008AE9DCD003E99F8 /* shud06-in.txt */; };
+		0114EDF60CDCA35E0061F80F /* shud06-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4108AE9DCD003E99F8 /* shud06-out.txt */; };
+		0114EDF70CDCA35F0061F80F /* shud07-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4208AE9DCD003E99F8 /* shud07-in.txt */; };
+		0114EDF80CDCA3600061F80F /* shud07-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4308AE9DCD003E99F8 /* shud07-out.txt */; };
+		0114EDF90CDCA3620061F80F /* shud08-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4408AE9DCD003E99F8 /* shud08-in.txt */; };
+		0114EDFA0CDCA3620061F80F /* shud08-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4508AE9DCD003E99F8 /* shud08-out.txt */; };
+		0114EDFB0CDCA3630061F80F /* shud09-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4608AE9DCD003E99F8 /* shud09-in.txt */; };
+		0114EDFC0CDCA3640061F80F /* shud09-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4708AE9DCD003E99F8 /* shud09-out.txt */; };
+		0114EDFD0CDCA3650061F80F /* shud10-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4808AE9DCD003E99F8 /* shud10-in.txt */; };
+		0114EDFE0CDCA3660061F80F /* shud10-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4908AE9DCD003E99F8 /* shud10-out.txt */; };
+		0114EDFF0CDCA3670061F80F /* shud11-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4A08AE9DCD003E99F8 /* shud11-in.txt */; };
+		0114EE000CDCA3680061F80F /* shud11-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4B08AE9DCD003E99F8 /* shud11-out.txt */; };
+		0114EE010CDCA3690061F80F /* shud13-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4C08AE9DCD003E99F8 /* shud13-in.txt */; };
+		0114EE020CDCA36A0061F80F /* shud13-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 012E2B4D08AE9DCD003E99F8 /* shud13-out.txt */; };
 		012E2AB308AE9C9D003E99F8 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		012E2AB508AE9C9D003E99F8 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		012E2AB708AE9C9D003E99F8 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
@@ -435,7 +458,7 @@
 			name = "Type Parsing/Lexing";
 			sourceTree = "<group>";
 		};
-		012E2B3508AE9DAE003E99F8 /* Unit Tests */ = {
+		012E2B3508AE9DAE003E99F8 /* Unit Test Data */ = {
 			isa = PBXGroup;
 			children = (
 				012E2B3608AE9DCD003E99F8 /* shud01-in.txt */,
@@ -463,13 +486,13 @@
 				012E2B4C08AE9DCD003E99F8 /* shud13-in.txt */,
 				012E2B4D08AE9DCD003E99F8 /* shud13-out.txt */,
 			);
-			name = "Unit Tests";
+			name = "Unit Test Data";
 			sourceTree = "<group>";
 		};
 		012E2B7508AE9E01003E99F8 /* Unit Testing */ = {
 			isa = PBXGroup;
 			children = (
-				012E2B3508AE9DAE003E99F8 /* Unit Tests */,
+				012E2B3508AE9DAE003E99F8 /* Unit Test Data */,
 				012E2B7608AE9E45003E99F8 /* AllTests.h */,
 				012E2B7708AE9E45003E99F8 /* AllTests.m */,
 				01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */,
@@ -606,6 +629,28 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0114EDED0CDCA3430061F80F /* shud01-in.txt in Resources */,
+				0114EDEE0CDCA3440061F80F /* shud01-out.txt in Resources */,
+				0114EDEF0CDCA3550061F80F /* shud02-in.txt in Resources */,
+				0114EDF00CDCA3560061F80F /* shud02-out.txt in Resources */,
+				0114EDF10CDCA3590061F80F /* shud04-in.txt in Resources */,
+				0114EDF20CDCA35A0061F80F /* shud04-out.txt in Resources */,
+				0114EDF30CDCA35C0061F80F /* shud05-in.txt in Resources */,
+				0114EDF40CDCA35C0061F80F /* shud05-out.txt in Resources */,
+				0114EDF50CDCA35D0061F80F /* shud06-in.txt in Resources */,
+				0114EDF60CDCA35E0061F80F /* shud06-out.txt in Resources */,
+				0114EDF70CDCA35F0061F80F /* shud07-in.txt in Resources */,
+				0114EDF80CDCA3600061F80F /* shud07-out.txt in Resources */,
+				0114EDF90CDCA3620061F80F /* shud08-in.txt in Resources */,
+				0114EDFA0CDCA3620061F80F /* shud08-out.txt in Resources */,
+				0114EDFB0CDCA3630061F80F /* shud09-in.txt in Resources */,
+				0114EDFC0CDCA3640061F80F /* shud09-out.txt in Resources */,
+				0114EDFD0CDCA3650061F80F /* shud10-in.txt in Resources */,
+				0114EDFE0CDCA3660061F80F /* shud10-out.txt in Resources */,
+				0114EDFF0CDCA3670061F80F /* shud11-in.txt in Resources */,
+				0114EE000CDCA3680061F80F /* shud11-out.txt in Resources */,
+				0114EE010CDCA3690061F80F /* shud13-in.txt in Resources */,
+				0114EE020CDCA36A0061F80F /* shud13-out.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -678,6 +723,7 @@
 				012FF2900CDC590F00F31E61 /* CDTypeParserUnitTest.m in Sources */,
 				012FF2950CDC64A800F31E61 /* AllTests.m in Sources */,
 				0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */,
+				0114EDE10CDC9E8F0061F80F /* CDStructHandlingUnitTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

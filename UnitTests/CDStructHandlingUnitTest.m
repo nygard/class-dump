@@ -34,7 +34,7 @@
     NSString *result;
 
     result = [[classDump ivarTypeFormatter] formatVariable:aVariableName type:aType symbolReferences:nil];
-    [self assert:result equals:expectedResult];
+    STAssertEqualObjects(expectedResult, result, @"");
 }
 
 - (void)registerStructsFromType:(NSString *)aTypeString phase:(int)phase;
@@ -45,8 +45,8 @@
 
     parser = [[CDTypeParser alloc] initWithType:aTypeString];
     type = [parser parseType:&error];
-    if (error != nil)
-        NSLog(@"Error: %@", error);
+    STAssertNotNil(type, @"-[CDTypeParser parseType:] error: %@", error);
+
     [type phase:phase registerStructuresWithObject:classDump usedInMethod:NO];
     [parser release];
 }
@@ -60,13 +60,17 @@
     NSArray *inputLines, *inputFields;
     int phase;
     int count, index;
+    NSBundle *bundle;
 
     NSLog(@"***** %@", testFilename);
 
     resultString = [NSMutableString string];
 
-    inputFilename = [testFilename stringByAppendingString:@"-in.txt"];
-    outputFilename = [testFilename stringByAppendingString:@"-out.txt"];
+    bundle = [NSBundle bundleForClass:[self class]];
+    inputFilename = [bundle pathForResource:[testFilename stringByAppendingString:@"-in"] ofType:@"txt"];
+    outputFilename = [bundle pathForResource:[testFilename stringByAppendingString:@"-out"] ofType:@"txt"];
+    //inputFilename = [testFilename stringByAppendingString:@"-in.txt"];
+    //outputFilename = [testFilename stringByAppendingString:@"-out.txt"];
 
     inputContents = [NSString stringWithContentsOfFile:inputFilename];
     expectedOutputContents = [NSString stringWithContentsOfFile:outputFilename];
@@ -126,17 +130,17 @@
         }
     }
 
-    [self assert:resultString equals:expectedOutputContents message:testFilename];
+    STAssertEqualObjects(expectedOutputContents, resultString, @"test file: %@", testFilename);
 }
 
 #if 1
-- (void)test1;
+- (void)test01;
 {
     NSString *first = @"{_NSRange=II}";
     int phase;
 
-    [self assertNotNil:classDump message:@"classDump"];
-    [self assertNotNil:[classDump ivarTypeFormatter] message:@"[classDump ivarTypeFormatter]"];
+    STAssertNotNil(classDump, @"classDump");
+    STAssertNotNil([classDump ivarTypeFormatter], @"[classDump ivarTypeFormatter]");
 
     for (phase = 1; phase <= 2; phase++)
         [self registerStructsFromType:first phase:phase];
@@ -146,7 +150,7 @@
     // Test {_NSRange=II}
 }
 
-- (void)test2;
+- (void)test02;
 {
     NSString *first = @"{_NSRange=II}";
     NSString *second = @"{_NSRange=\"location\"I\"length\"I}";
@@ -166,7 +170,7 @@
     // Test {_NSRange="location"I"length"I}
 }
 
-- (void)test3;
+- (void)test03;
 {
     NSString *first = @"{_NSRange=\"location\"I\"length\"I}";
     NSString *second = @"{_NSRange=II}";
@@ -186,33 +190,33 @@
     // Test {_NSRange=II}
 }
 
-- (void)test4;
+- (void)test04;
 {
     // I'm guessing that "shud" could stand for Struct Handling Unittest Data.
     [self testFilename:@"shud01"];
 }
 
-- (void)test5;
+- (void)test05;
 {
     [self testFilename:@"shud02"];
 }
 
-- (void)test6;
+- (void)test06;
 {
     //[self testFilename:@"shud03"];
 }
 
-- (void)test7;
+- (void)test07;
 {
     [self testFilename:@"shud04"];
 }
 
-- (void)test8;
+- (void)test08;
 {
     [self testFilename:@"shud05"];
 }
 
-- (void)test9;
+- (void)test09;
 {
     [self testFilename:@"shud06"];
 }
