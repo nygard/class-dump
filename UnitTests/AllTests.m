@@ -70,8 +70,8 @@
     NSLog(@"order: %@", order);
 
     allTests = [SenTestSuite testSuiteWithName:@"All Tests"];
-    orderedTests = [SenTestSuite testSuiteWithName:@"Ordered Tests"];
-    unorderedTests = [SenTestSuite testSuiteWithName:@"Unordered Tests"];
+    orderedTests = [SenTestSuite testSuiteWithName:@"Order"];
+    unorderedTests = [SenTestSuite testSuiteWithName:@"Chaos"];
     [allTests addTest:orderedTests];
     [allTests addTest:unorderedTests];
 
