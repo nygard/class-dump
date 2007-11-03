@@ -13,4 +13,12 @@
                    33);
 }
 
+#if 0
++ (id)defaultTestSuite;
+{
+    NSLog(@"Here...");
+    return nil;
+}
+#endif
+
 @end

@@ -15,6 +15,7 @@
     bundle = [NSBundle bundleWithPath:path];
     STAssertNotNil(bundle, @"%@ doesn't seem to exist, we can remove this test now.", path);
     if (bundle != nil) {
+        STAssertNil([bundle executablePath], @"This fails on 10.5.  It's fixed if you see this!  Executable path for %@", path);
         //STAssertNotNil([bundle executablePath], @"This fails on 10.5.  Executable path for %@", path);
     }
 }
