@@ -62,15 +62,13 @@
     int count, index;
     NSBundle *bundle;
 
-    NSLog(@"***** %@", testFilename);
+    //NSLog(@"***** %@", testFilename);
 
     resultString = [NSMutableString string];
 
     bundle = [NSBundle bundleForClass:[self class]];
     inputFilename = [bundle pathForResource:[testFilename stringByAppendingString:@"-in"] ofType:@"txt"];
     outputFilename = [bundle pathForResource:[testFilename stringByAppendingString:@"-out"] ofType:@"txt"];
-    //inputFilename = [testFilename stringByAppendingString:@"-in.txt"];
-    //outputFilename = [testFilename stringByAppendingString:@"-out.txt"];
 
     inputContents = [NSString stringWithContentsOfFile:inputFilename];
     expectedOutputContents = [NSString stringWithContentsOfFile:outputFilename];
