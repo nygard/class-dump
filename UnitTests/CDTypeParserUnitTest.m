@@ -4,6 +4,8 @@
 #import "CDTypeParserUnitTest.h"
 
 #import <Foundation/Foundation.h>
+#import "NSError-CDExtensions.h"
+
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
@@ -32,7 +34,7 @@
     aTypeParser = [[CDTypeParser alloc] initWithType:aType];
     [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
     result = [aTypeParser parseType:&error];
-    STAssertNotNil(result, @"-[CDTypeParser parseType:] error: %@", error);
+    STAssertNotNil(result, @"-[CDTypeParser parseType:] error: %@", [error myExplanation]);
     [aTypeParser release];
 }
 
@@ -45,7 +47,7 @@
     aTypeParser = [[CDTypeParser alloc] initWithType:aMethodType];
     [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
     result = [aTypeParser parseMethodType:&error];
-    STAssertNotNil(result, @"-[CDTypeParser parseMethodType:] error: %@", error);
+    STAssertNotNil(result, @"-[CDTypeParser parseMethodType:] error: %@", [error myExplanation]);
     [aTypeParser release];
 }
 
@@ -123,6 +125,12 @@
     [self testType:@"{vector<<unnamed>::AnimationChunk>=II}" showLexing:NO];
     [self testType:@"{vector<<unnamed>::AnimationChunk>=II}" showLexing:NO];
     [self testType:@"{vector<<unnamed>::AnimationChunk,std::allocator<<unnamed>::AnimationChunk> >=II}" showLexing:NO];
+}
+
+- (void)testFoobar;
+{
+    [self testMethodType:@"12@0:48" showLexing:YES];
+
 }
 
 @end

@@ -4,6 +4,8 @@
 #import "CDTypeFormatterUnitTest.h"
 
 #import <Foundation/Foundation.h>
+#import "NSError-CDExtensions.h"
+
 #import "CDType.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeLexer.h"
@@ -47,7 +49,7 @@
     STAssertNotNil(typeParser, @"Failed to create parser");
 
     parsedType = [typeParser parseType:&error];
-    STAssertNotNil(parsedType, @"-[CDTypeParser parseType:] error: %@", error);
+    STAssertNotNil(parsedType, @"-[CDTypeParser parseType:] error: %@", [error myExplanation]);
 
     reencodedType = [parsedType typeString];
     STAssertEqualObjects(originalType, reencodedType, @"");

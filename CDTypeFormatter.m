@@ -5,6 +5,7 @@
 
 #include <assert.h>
 #import <Foundation/Foundation.h>
+#import "NSError-CDExtensions.h"
 #import "NSScanner-Extensions.h"
 #import "NSString-Extensions.h"
 #import "CDClassDump.h" // not ideal
@@ -193,7 +194,7 @@
     aParser = [[CDTypeParser alloc] initWithType:type];
     methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, error);
+        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, [error myExplanation]);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {
@@ -285,7 +286,7 @@
     aParser = [[CDTypeParser alloc] initWithType:type];
     methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, error);
+        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, [error myExplanation]);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {

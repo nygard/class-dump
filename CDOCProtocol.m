@@ -5,6 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
+#import "NSError-CDExtensions.h"
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDOCSymtab.h"
@@ -140,7 +141,7 @@
         parser = [[CDTypeParser alloc] initWithType:[(CDOCMethod *)[methods objectAtIndex:index] type]];
         methodTypes = [parser parseMethodType:&error];
         if (methodTypes == nil)
-            NSLog(@"Warning: Parsing method types failed, %@, %@", [(CDOCMethod *)[methods objectAtIndex:index] name], error);
+            NSLog(@"Warning: Parsing method types failed, %@, %@", [(CDOCMethod *)[methods objectAtIndex:index] name], [error myExplanation]);
         [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
         [parser release];
     }

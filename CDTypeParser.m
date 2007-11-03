@@ -66,12 +66,25 @@ NSString *CDTokenDescription(int token)
         result = [self _parseMethodType];
     } NS_HANDLER {
         NSDictionary *userInfo;
+        int code;
 
-        userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:localException, @"exception",
-                                         [lexer string], @"type",
-                                         [lexer remainingString], @"remaining string",
-                                         nil];
-        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:0 userInfo:userInfo];
+        // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
+        if ([[localException name] isEqual:CDSyntaxError]) {
+            code = CDTypeParserCodeSyntaxError;
+            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
+                                             [NSString stringWithFormat:@"Syntax Error, %@:\n\t     type: %@\n\tremaining: %@",
+                                                       [localException reason], [lexer string], [lexer remainingString]], @"explanation",
+                                             [lexer string], @"type",
+                                             [lexer remainingString], @"remaining string",
+                                             nil];
+        } else {
+            code = CDTypeParserCodeDefault;
+            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[localException reason], @"reason",
+                                             [lexer string], @"type",
+                                             [lexer remainingString], @"remaining string",
+                                             nil];
+        }
+        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:code userInfo:userInfo];
         [userInfo release];
 
         result = nil;
@@ -91,12 +104,25 @@ NSString *CDTokenDescription(int token)
         result = [self _parseType];
     } NS_HANDLER {
         NSDictionary *userInfo;
+        int code;
 
-        userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:localException, @"exception",
-                                         [lexer string], @"type",
-                                         [lexer remainingString], @"remaining string",
-                                         nil];
-        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:0 userInfo:userInfo];
+        // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
+        if ([[localException name] isEqual:CDSyntaxError]) {
+            code = CDTypeParserCodeSyntaxError;
+            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
+                                             [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@",
+                                                       [localException reason], [lexer string], [lexer remainingString]], @"explanation",
+                                             [lexer string], @"type",
+                                             [lexer remainingString], @"remaining string",
+                                             nil];
+        } else {
+            code = CDTypeParserCodeDefault;
+            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[localException reason], @"reason",
+                                             [lexer string], @"type",
+                                             [lexer remainingString], @"remaining string",
+                                             nil];
+        }
+        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:code userInfo:userInfo];
         [userInfo release];
 
         result = nil;
@@ -143,9 +169,14 @@ NSString *CDTokenDescription(int token)
 
     // Has to have at least one pair for the return type;
     // Probably needs at least two more, for object and selector
+    // So it must be <type><number><type><number><type><number>.  Three pairs at a minimum.
 
     do {
-        type = [self _parseType];
+        NS_DURING {
+            type = [self _parseType];
+        } NS_HANDLER {
+            [localException raise];
+        } NS_ENDHANDLER;
         number = [self parseNumber];
 
         aMethodType = [[CDMethodType alloc] initWithType:type offset:number];

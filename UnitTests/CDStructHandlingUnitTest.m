@@ -4,6 +4,8 @@
 #import "CDStructHandlingUnitTest.h"
 
 #import <Foundation/Foundation.h>
+#import "NSError-CDExtensions.h"
+
 #import "CDClassDump.h"
 #import "CDType.h"
 #import "CDTypeFormatter.h"
@@ -45,7 +47,7 @@
 
     parser = [[CDTypeParser alloc] initWithType:aTypeString];
     type = [parser parseType:&error];
-    STAssertNotNil(type, @"-[CDTypeParser parseType:] error: %@", error);
+    STAssertNotNil(type, @"-[CDTypeParser parseType:] error: %@", [error myExplanation]);
 
     [type phase:phase registerStructuresWithObject:classDump usedInMethod:NO];
     [parser release];

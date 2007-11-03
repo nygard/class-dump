@@ -72,6 +72,8 @@
 		0114EE170CDCA56D0061F80F /* shud15-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0114EE110CDCA56D0061F80F /* shud15-out.txt */; };
 		0114EE180CDCA56D0061F80F /* shud16-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0114EE120CDCA56D0061F80F /* shud16-in.txt */; };
 		0114EE190CDCA56D0061F80F /* shud16-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0114EE130CDCA56D0061F80F /* shud16-out.txt */; };
+		0114EE6D0CDCC4880061F80F /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
+		0114EE6E0CDCC4880061F80F /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
 		012E2AB308AE9C9D003E99F8 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		012E2AB508AE9C9D003E99F8 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		012E2AB708AE9C9D003E99F8 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
@@ -215,6 +217,8 @@
 		0114EE110CDCA56D0061F80F /* shud15-out.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "shud15-out.txt"; path = "UnitTests/shud15-out.txt"; sourceTree = "<group>"; };
 		0114EE120CDCA56D0061F80F /* shud16-in.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "shud16-in.txt"; path = "UnitTests/shud16-in.txt"; sourceTree = "<group>"; };
 		0114EE130CDCA56D0061F80F /* shud16-out.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "shud16-out.txt"; path = "UnitTests/shud16-out.txt"; sourceTree = "<group>"; };
+		0114EE6B0CDCC4880061F80F /* NSError-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSError-CDExtensions.h"; sourceTree = "<group>"; };
+		0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError-CDExtensions.m"; sourceTree = "<group>"; };
 		012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extensions.h"; sourceTree = "<group>"; };
 		012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extensions.m"; sourceTree = "<group>"; };
 		012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSObject-CDExtensions.h"; sourceTree = "<group>"; };
@@ -390,6 +394,8 @@
 			children = (
 				012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */,
 				012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */,
+				0114EE6B0CDCC4880061F80F /* NSError-CDExtensions.h */,
+				0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */,
 				012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */,
 				012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */,
 				012E2AAE08AE9C9D003E99F8 /* NSScanner-Extensions.h */,
@@ -748,6 +754,7 @@
 				012FF2950CDC64A800F31E61 /* AllTests.m in Sources */,
 				0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */,
 				0114EDE10CDC9E8F0061F80F /* CDStructHandlingUnitTest.m in Sources */,
+				0114EE6D0CDCC4880061F80F /* NSError-CDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -796,6 +803,7 @@
 				011262360C21844200B9C4E0 /* CDClassFrameworkVisitor.m in Sources */,
 				011262450C218CAD00B9C4E0 /* CDMultiFileVisitor.m in Sources */,
 				0112625C0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */,
+				0114EE6E0CDCC4880061F80F /* NSError-CDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
