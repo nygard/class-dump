@@ -36,6 +36,23 @@
     STAssertEqualObjects(expectedResult, result, @"");
 }
 
+- (void)parseAndEncodeType:(NSString *)originalType;
+{
+    CDTypeParser *typeParser;
+    CDType *parsedType;
+    NSString *reencodedType;
+    NSError *error;
+
+    typeParser = [[[CDTypeParser alloc] initWithType:originalType] autorelease];
+    STAssertNotNil(typeParser, @"Failed to create parser");
+
+    parsedType = [typeParser parseType:&error];
+    STAssertNotNil(parsedType, @"-[CDTypeParser parseType:] error: %@", error);
+
+    reencodedType = [parsedType typeString];
+    STAssertEqualObjects(originalType, reencodedType, @"");
+}
+
 - (void)testBasicTypes;
 {
     //[self variableName:@"var" testType:@"i" expectedResult:@"int var"];
@@ -199,23 +216,6 @@
 }
 #endif
 
-- (void)parseAndEncodeType:(NSString *)originalType;
-{
-    CDTypeParser *typeParser;
-    CDType *parsedType;
-    NSString *reencodedType;
-    NSError *error;
-
-    typeParser = [[[CDTypeParser alloc] initWithType:originalType] autorelease];
-    STAssertNotNil(typeParser, @"Failed to create parser");
-
-    parsedType = [typeParser parseType:&error];
-    STAssertNotNil(parsedType, @"-[CDTypeParser parseType:] error: %@", error);
-
-    reencodedType = [parsedType typeString];
-    STAssertEqualObjects(originalType, reencodedType, @"");
-}
-
 - (void)testEncoding;
 {
     [self parseAndEncodeType:@"c"];
@@ -333,5 +333,19 @@
     [self testVariableName:@"var" type:@"@\"<MyProtocol>\"" expectedResult:@"id <MyProtocol> var"];
     [self testVariableName:@"var" type:@"@\"<MyProtocol1,MyProtocol2>\"" expectedResult:@"id <MyProtocol1, MyProtocol2> var"];
 }
+
+- (void)testPages08;
+{
+    // Pages '08 has this bit in it: {vector<<unnamed>::AnimationChunk,std::allocator<<unnamed>::AnimationChunk> >=II}
+
+    [self testVariableName:@"var" type:@"{unnamed=II}" expectedResult:@"struct unnamed var"];
+    [self testVariableName:@"var" type:@"{vector<unnamed>=II}" expectedResult:@"struct vector<unnamed> var"];
+    [self testVariableName:@"var" type:@"{vector<unnamed::blegga>=II}" expectedResult:@"struct vector<unnamed::blegga> var"];
+    [self testVariableName:@"var" type:@"{vector<<unnamed>::blegga>=II}" expectedResult:@"struct vector<unnamed::blegga> var"];
+    [self testVariableName:@"var" type:@"{vector<<unnamed>::AnimationChunk>=II}" expectedResult:@"struct vector<unnamed::AnimationChunk> var"];
+    [self testVariableName:@"var" type:@"{vector<<unnamed>::AnimationChunk,std::allocator<<unnamed>::AnimationChunk> >=II}"
+          expectedResult:@"struct vector<unnamed::AnimationChunk, std::allocator<unnamed::AnimationChunk>> var"];
+}
+
 
 @end

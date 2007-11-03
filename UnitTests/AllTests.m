@@ -1,14 +1,11 @@
 #import "AllTests.h"
 
-#if 0
-#import "CDStructHandlingUnitTest.h"
-#endif
-
 #import "MyFirstTestCase.h"
 #import "CDPathUnitTest.h"
 #import "CDTypeLexerUnitTest.h"
 #import "CDTypeParserUnitTest.h"
 #import "CDTypeFormatterUnitTest.h"
+#import "CDStructHandlingUnitTest.h"
 
 @interface NSObject (SenTestRuntimeUtilities)
 
@@ -21,6 +18,7 @@
 
 @implementation AllTests
 
+// This is here to help me understand what the original method does.  Formatting/naming is key to understanding.
 + (void)_foo_updateCache;
 {
     NSEnumerator *testCaseEnumerator;
@@ -65,6 +63,8 @@
     [order addObject:[CDPathUnitTest class]];
     [order addObject:[CDTypeLexerUnitTest class]];
     [order addObject:[CDTypeParserUnitTest class]];
+    //[order addObject:[CDTypeFormatterUnitTest class]];
+    [order addObject:[CDStructHandlingUnitTest class]];
     [order addObject:[CDTypeFormatterUnitTest class]];
 
     NSLog(@"order: %@", order);

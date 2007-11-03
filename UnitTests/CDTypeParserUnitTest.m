@@ -112,4 +112,17 @@
     [self testType:str showLexing:NO];
 }
 
+- (void)testPages08;
+{
+    // Pages '08 has this bit in it: {vector<<unnamed>::AnimationChunk,std::allocator<<unnamed>::AnimationChunk> >=II}
+
+    [self testType:@"{unnamed=II}" showLexing:NO];
+    [self testType:@"{vector<unnamed>=II}" showLexing:NO];
+    [self testType:@"{vector<unnamed::blegga>=II}" showLexing:NO];
+    [self testType:@"{vector<<unnamed>::blegga>=II}" showLexing:NO];
+    [self testType:@"{vector<<unnamed>::AnimationChunk>=II}" showLexing:NO];
+    [self testType:@"{vector<<unnamed>::AnimationChunk>=II}" showLexing:NO];
+    [self testType:@"{vector<<unnamed>::AnimationChunk,std::allocator<<unnamed>::AnimationChunk> >=II}" showLexing:NO];
+}
+
 @end

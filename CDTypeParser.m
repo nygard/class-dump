@@ -26,11 +26,19 @@ NSString *CDTokenDescription(int token)
 
 - (id)initWithType:(NSString *)aType;
 {
+    NSMutableString *str;
+
     if ([super init] == nil)
         return nil;
 
-    lexer = [[CDTypeLexer alloc] initWithString:aType];
+    // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
+    str = [aType mutableCopy];
+    [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [aType length])];
+
+    lexer = [[CDTypeLexer alloc] initWithString:str];
     lookahead = 0;
+
+    [str release];
 
     return self;
 }
@@ -387,6 +395,7 @@ NSString *CDTokenDescription(int token)
     if ([[typeName name] isEqualToString:@"?"] && [typeName isTemplateType] == NO)
         typeName = nil;
 #endif
+
     return typeName;
 }
 
