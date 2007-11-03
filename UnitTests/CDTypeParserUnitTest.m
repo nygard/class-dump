@@ -32,9 +32,7 @@
     aTypeParser = [[CDTypeParser alloc] initWithType:aType];
     [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
     result = [aTypeParser parseType:&error];
-    if (error != nil)
-        NSLog(@"Error: %@", error);
-    [self assertNotNil:result];
+    STAssertNotNil(result, @"-[CDTypeParser parseType:] error: %@", error);
     [aTypeParser release];
 }
 
@@ -47,9 +45,7 @@
     aTypeParser = [[CDTypeParser alloc] initWithType:aMethodType];
     [[aTypeParser lexer] setShouldShowLexing:shouldShowLexing];
     result = [aTypeParser parseMethodType:&error];
-    if (error != nil)
-        NSLog(@"Error: %@", error);
-    [self assertNotNil:result];
+    STAssertNotNil(result, @"-[CDTypeParser parseMethodType:] error: %@", error);
     [aTypeParser release];
 }
 
