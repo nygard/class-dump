@@ -166,7 +166,7 @@
     //NSLog(@"resultType: %p", resultType);
 
     if (resultType == nil) {
-        NSLog(@"Error: %@", error);
+        NSLog(@"Couldn't parse return type: %@", [error myExplanation]);
         [aParser release];
         //NSLog(@"<  %s", _cmd);
         return nil;
