@@ -38,7 +38,7 @@ struct tokenValuePair {
     int token;
 
     NSLog(@"----------------------------------------");
-    [self assertNotNil:lexer];
+    STAssertNotNil(lexer, @"");
 
     NSLog(@"str: %@", [lexer string]);
 
@@ -68,15 +68,16 @@ struct tokenValuePair {
 
     while (expectedResults->token != TK_EOS) {
         token = [lexer scanNextToken];
-        [self assertInt:token equals:expectedResults->token];
+        STAssertEquals(expectedResults->token, token, @"");
         if (expectedResults->value != nil)
-            [self assert:[lexer lexText] equals:expectedResults->value];
+            STAssertEqualObjects(expectedResults->value, [lexer lexText], @"");
         if (expectedResults->nextState != -1)
             [lexer setState:expectedResults->nextState];
         expectedResults++;
     }
 
-    [self assertInt:[lexer scanNextToken] equals:TK_EOS];
+    token = [lexer scanNextToken];
+    STAssertEquals(TK_EOS, token, @"");
 
     [self _cleanupLexer];
 }

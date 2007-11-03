@@ -118,6 +118,7 @@
 		012FF2290CDBA15D00F31E61 /* CDMultiFileVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262420C218CAD00B9C4E0 /* CDMultiFileVisitor.m */; };
 		012FF22A0CDBA15E00F31E61 /* CDTextClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262590C21909400B9C4E0 /* CDTextClassDumpVisitor.m */; };
 		012FF22C0CDBA19500F31E61 /* CDUUIDCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */; };
+		012FF28B0CDC577600F31E61 /* CDTypeLexerUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -670,6 +671,7 @@
 				012FF2290CDBA15D00F31E61 /* CDMultiFileVisitor.m in Sources */,
 				012FF22A0CDBA15E00F31E61 /* CDTextClassDumpVisitor.m in Sources */,
 				012FF22C0CDBA19500F31E61 /* CDUUIDCommand.m in Sources */,
+				012FF28B0CDC577600F31E61 /* CDTypeLexerUnitTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
