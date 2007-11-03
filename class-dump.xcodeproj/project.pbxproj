@@ -42,6 +42,7 @@
 		011262450C218CAD00B9C4E0 /* CDMultiFileVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262420C218CAD00B9C4E0 /* CDMultiFileVisitor.m */; };
 		0112625B0C21909400B9C4E0 /* CDTextClassDumpVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011262580C21909400B9C4E0 /* CDTextClassDumpVisitor.h */; };
 		0112625C0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262590C21909400B9C4E0 /* CDTextClassDumpVisitor.m */; };
+		0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7D08AE9E45003E99F8 /* CDTypeFormatterUnitTest.m */; };
 		012E2AB308AE9C9D003E99F8 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		012E2AB508AE9C9D003E99F8 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		012E2AB708AE9C9D003E99F8 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
@@ -676,6 +677,7 @@
 				012FF28B0CDC577600F31E61 /* CDTypeLexerUnitTest.m in Sources */,
 				012FF2900CDC590F00F31E61 /* CDTypeParserUnitTest.m in Sources */,
 				012FF2950CDC64A800F31E61 /* AllTests.m in Sources */,
+				0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,15 +1,14 @@
 #import "AllTests.h"
 
 #if 0
-#import "CDTypeFormatterUnitTest.h"
 #import "CDStructHandlingUnitTest.h"
-#import "CDPathUnitTest.h"
 #endif
 
 #import "MyFirstTestCase.h"
 #import "CDPathUnitTest.h"
 #import "CDTypeLexerUnitTest.h"
 #import "CDTypeParserUnitTest.h"
+#import "CDTypeFormatterUnitTest.h"
 
 @interface NSObject (SenTestRuntimeUtilities)
 
@@ -64,8 +63,9 @@
     order = [NSMutableArray array];
     [order addObject:[MyFirstTestCase class]];
     [order addObject:[CDPathUnitTest class]];
-    //[order addObject:[CDTypeLexerUnitTest class]];
-    //[order addObject:[CDTypeParserUnitTest class]];
+    [order addObject:[CDTypeLexerUnitTest class]];
+    [order addObject:[CDTypeParserUnitTest class]];
+    [order addObject:[CDTypeFormatterUnitTest class]];
 
     NSLog(@"order: %@", order);
 
@@ -96,7 +96,6 @@
 
             aClass = [allTestCaseSubclasses objectAtIndex:index];
             if ([used containsObject:aClass] == NO) {
-                NSLog(@"Adding unordered test: %@", aClass);
                 //[unorderedTests addTest:[SenTestSuite testSuiteForTestCaseClass:aClass]];
                 [unorderedTests addTest:[aClass defaultTestSuite]];
                 [used addObject:aClass];

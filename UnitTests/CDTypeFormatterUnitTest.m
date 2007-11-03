@@ -33,7 +33,7 @@
     NSString *result;
 
     result = [typeFormatter formatVariable:aVariableName type:aType symbolReferences:nil];
-    [self assert:result equals:expectedResult];
+    STAssertEqualObjects(expectedResult, result, @"");
 }
 
 - (void)testBasicTypes;
@@ -207,15 +207,13 @@
     NSError *error;
 
     typeParser = [[[CDTypeParser alloc] initWithType:originalType] autorelease];
-    [self assertNotNil:typeParser message:@"Failed to create parser"];
+    STAssertNotNil(typeParser, @"Failed to create parser");
 
     parsedType = [typeParser parseType:&error];
-    if (error != nil)
-        NSLog(@"Error: %@", error);
-    [self assertNotNil:parsedType message:@"Failed to parse"];
+    STAssertNotNil(parsedType, @"-[CDTypeParser parseType:] error: %@", error);
 
     reencodedType = [parsedType typeString];
-    [self assert:reencodedType equals:originalType];
+    STAssertEqualObjects(originalType, reencodedType, @"");
 }
 
 - (void)testEncoding;
