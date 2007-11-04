@@ -71,6 +71,7 @@
 - (BOOL)isBasicallyEqual:(CDType *)otherType;
 - (BOOL)isStructureEqual:(CDType *)otherType;
 
+- (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
 
 - (void)generateMemberNames;

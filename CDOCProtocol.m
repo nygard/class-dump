@@ -142,7 +142,8 @@
         methodTypes = [parser parseMethodType:&error];
         if (methodTypes == nil)
             NSLog(@"Warning: Parsing method types failed, %@, %@", [(CDOCMethod *)[methods objectAtIndex:index] name], [error myExplanation]);
-        [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
+        else
+            [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
         [parser release];
     }
 }

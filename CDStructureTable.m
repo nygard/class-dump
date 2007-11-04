@@ -45,6 +45,8 @@
     replacementSignatures = [[NSMutableDictionary alloc] init];
     keyTypeStringsByBareTypeStrings = [[NSMutableDictionary alloc] init];
 
+    flags.shouldDebug = NO;
+
     return self;
 }
 
@@ -337,8 +339,12 @@
         } else {
             //NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
 
-            [previousType mergeWithType:aStructure];
+            if ([previousType canMergeWithType:aStructure]) {
+                NSLog(@"Case zulu");
+                [previousType mergeWithType:aStructure];
+            }
 
+            // Not sure what we should do with this if we couldn't merge the types...
             if (shouldCountReferences == YES) {
                 NSNumber *oldCount;
 
@@ -357,8 +363,9 @@
 
         CDType *existingType;
 
+        //NSLog(@"Looking up name in structuresByName: %@", aName);
         existingType = [structuresByName objectForKey:aName];
-        //NSLog(@"Named structure: %@ %@, existingType: %@", aName, [aStructure typeString], [existingType typeString]);
+        //NSLog(@"\nNamed structure: %@\n   existingType: %@", [aStructure typeString], [existingType typeString]);
         //NSLog(@"keySignature: %@", keySignature);
         if (existingType == nil) {
             [structuresByName setObject:aStructure forKey:aName];
@@ -367,13 +374,15 @@
             NSString *before;
 
             before = [existingType keyTypeString];
-            [existingType mergeWithType:aStructure];
-            if ([self shouldDebug] == YES) {
-                if ([before isEqual:[existingType keyTypeString]] == NO) {
-                    NSLog(@"Merging %@ with %@", before, [aStructure keyTypeString]);
-                    NSLog(@"Merged result: %@", [existingType keyTypeString]);
-                } else {
-                    //NSLog(@"No change from merging types.");
+            if ([existingType canMergeWithType:aStructure]) {
+                [existingType mergeWithType:aStructure];
+                if ([self shouldDebug] == YES) {
+                    if ([before isEqual:[existingType keyTypeString]] == NO) {
+                        NSLog(@"Merging %@ with %@", before, [aStructure keyTypeString]);
+                        NSLog(@"Merged result: %@", [existingType keyTypeString]);
+                    } else {
+                        //NSLog(@"No change from merging types.");
+                    }
                 }
             }
         }

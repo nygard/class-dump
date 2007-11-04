@@ -623,12 +623,83 @@
     return [[self bareTypeString] isEqual:[otherType bareTypeString]];
 }
 
-// Merge struct/union member names
+- (BOOL)canMergeWithType:(CDType *)otherType;
+{
+    int count, index;
+    int otherCount;
+    NSArray *otherMembers;
+
+    if ([self type] != [otherType type])
+        return NO;
+
+    if (subtype != nil && [subtype canMergeWithType:[otherType subtype]] == NO)
+        return NO;
+
+    if (subtype == nil && [otherType subtype] != nil)
+        return NO;
+
+    otherMembers = [otherType members];
+    count = [members count];
+    otherCount = [otherMembers count];
+
+    //NSLog(@"members: %p", members);
+    //NSLog(@"otherMembers: %p", otherMembers);
+    //NSLog(@"%s, count: %u, otherCount: %u", _cmd, count, otherCount);
+
+    if (otherCount == 0)
+        return NO;
+
+    if (count != 0 && count != otherCount)
+        return NO;
+
+    // count == 0 is ok: we just have a name in that case.
+    if (count == otherCount) {
+        for (index = 0; index < count; index++) { // Oooh
+            CDType *thisMember, *otherMember;
+            CDTypeName *thisTypeName, *otherTypeName;
+            NSString *thisVariableName, *otherVariableName;
+
+            thisMember = [members objectAtIndex:index];
+            otherMember = [otherMembers objectAtIndex:index];
+
+            thisTypeName = [thisMember typeName];
+            otherTypeName = [otherMember typeName];
+            thisVariableName = [thisMember variableName];
+            otherVariableName = [otherMember variableName];
+
+            // It seems to be okay if one of them didn't have a name
+            if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
+                return NO;
+
+            if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO)
+                return NO;
+        }
+    }
+
+    return YES;
+}
+
+// Merge struct/union member names.  Should check using -canMergeWithType: first.
 - (void)mergeWithType:(CDType *)otherType;
 {
     int count, index;
     int otherCount;
     NSArray *otherMembers;
+#if 0
+    {
+        CDTypeFormatter *typeFormatter;
+        NSString *str;
+
+        NSLog(@"**********************************************************************");
+        NSLog(@"Merging types");
+        typeFormatter = [[CDTypeFormatter alloc] init];
+        str = [self formattedString:nil formatter:typeFormatter level:0 symbolReferences:nil];
+        NSLog(@"first:  %@", str);
+        str = [otherType formattedString:nil formatter:typeFormatter level:0 symbolReferences:nil];
+        NSLog(@"second: %@", str);
+        [typeFormatter release];
+    }
+#endif
 
     if ([self type] != [otherType type]) {
         NSLog(@"Warning: Trying to merge different types in %s", _cmd);
@@ -648,6 +719,7 @@
     } else if (count == 0 && otherCount != 0) {
         [self setMembers:otherMembers];
     } else if (count != otherCount) {
+        // Not so bad after all.  Even kind of common.  Consider _flags.
         NSLog(@"Warning: Types have different number of members.  This is bad. (%d vs %d)", count, otherCount);
         NSLog(@"%@ vs %@", [self typeString], [otherType typeString]);
         return;
@@ -672,8 +744,10 @@
         if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil))
             ; // It seems to be okay if one of them didn't have a name
             //NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
-        else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
+        else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO) {
             NSLog(@"Warning: (2) type names don't match:\n\t%@ vs \n\t%@.", thisTypeName, otherTypeName);
+            // In this case, we should skip the merge.
+        }
 
         if (otherVariableName != nil) {
             if (thisVariableName == nil)
