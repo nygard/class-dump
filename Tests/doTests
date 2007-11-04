@@ -12,28 +12,44 @@ ARCH_CD=~/Unix/bin/class-dump-3.1.2
 
 echo "Starting tests at `date`"
 
-ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app | wc
+ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /Volumes/BigData/TestApplications/*.app | wc
 
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
+
+# arch = none check for FWAVCPrivate.framework, KAdminClient, Kernel, SyndicationUI
 
 foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework) do
     echo $i `basename $i .framework`
     arches=(`$ARCH_CD --list-arches $i`)
     foreach arch ($arches) do
-        echo $arch
-        $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt"
-        $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .framework`-$arch-framework.txt"
+        if [ $arch = "none" ]; then
+            $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
+            $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
+        else
+            echo $arch
+            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt"
+            $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .framework`-$arch-framework.txt"
+        fi
     done
 done
 
-foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app) do
+foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /Volumes/BigData/TestApplications/*.app) do
     echo $i `basename $i .app`
     arches=(`$ARCH_CD --list-arches $i`)
     foreach arch ($arches) do
-        echo $arch
-        $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt"
-        $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .app`-$arch-app.txt"
+        if [ $arch = "none" ]; then
+            $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
+            $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
+        else
+            echo $arch
+            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt"
+            $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .app`-$arch-app.txt"
+        fi
     done
 done
+
+echo "Removing results for unsupported 64-bit architectures:"
+rm -f /tmp/cdt/*/*ppc64*
+rm -f /tmp/cdt/*/*x86_64*
 
 echo "Ended tests at `date`"
