@@ -378,7 +378,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
         }
 
         if (preferredArchName == nil) {
-            preferredArchName = [aMachOFile archName];
+            [self setPreferredArchName:[aMachOFile archName]];
         } else if ([[aMachOFile archName] isEqual:preferredArchName] == NO) {
             fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %@.\n",
                     [aFilename fileSystemRepresentation], [preferredArchName UTF8String]);
