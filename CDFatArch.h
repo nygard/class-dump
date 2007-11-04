@@ -22,4 +22,6 @@
 
 - (NSString *)description;
 
+- (NSString *)archName;
+
 @end

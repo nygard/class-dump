@@ -58,4 +58,10 @@
                      arch.cputype, arch.cpusubtype, arch.offset, arch.size, arch.align];
 }
 
+// Must not return nil.
+- (NSString *)archName;
+{
+    return CDNameForCPUType(arch.cputype, arch.cpusubtype);
+}
+
 @end

@@ -71,9 +71,8 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [structDeclarationTypeFormatter setBaseLevel:0];
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
-    preferredCPUType = CPU_TYPE_ANY;
-    //preferredCPUType = CPU_TYPE_POWERPC;
-    //preferredCPUType = CPU_TYPE_I386;
+    // These can be ppc, ppc7400, ppc64, i386, x86_64
+    preferredCPUType = nil; // Any cpu type is fine.
 
     flags.shouldShowHeader = YES;
 
@@ -97,6 +96,8 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
 
     if (flags.shouldMatchRegex == YES)
         regfree(&compiledRegex);
+
+    [preferredCPUType release];
 
     [super dealloc];
 }
@@ -255,14 +256,18 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     return objCSegmentProcessors;
 }
 
-- (cpu_type_t)preferredCPUType;
+- (NSString *)preferredCPUType;
 {
     return preferredCPUType;
 }
 
-- (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
+- (void)setPreferredCPUType:(NSString *)newCPUType;
 {
-    preferredCPUType = aPreferredCPUType;
+    if (newCPUType == preferredCPUType)
+        return;
+
+    [preferredCPUType release];
+    preferredCPUType = [newCPUType retain];
 }
 
 - (BOOL)containsObjectiveCSegments;
@@ -303,8 +308,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     return structDeclarationTypeFormatter;
 }
 
-// Return YES if successful, NO if there was an error.
-- (BOOL)processFilename:(NSString *)aFilename;
++ (NSString *)executablePathForFilename:(NSString *)aFilename;
 {
     NSBundle *bundle;
     NSString *path;
@@ -312,15 +316,27 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     // I give up, all the methods dealing with paths seem to resolve symlinks with a vengence.
     bundle = [NSBundle bundleWithPath:aFilename];
     if (bundle != nil) {
-        if ([bundle executablePath] == nil) {
-            // TODO (2007-11-02): Maybe it would be good to use NSError here.
-            fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);
-            return NO;
-        }
+        if ([bundle executablePath] == nil)
+            return nil;
 
         path = [[[bundle executablePath] stringByResolvingSymlinksInPath] stringByStandardizingPath];
     } else {
         path = [[aFilename stringByResolvingSymlinksInPath] stringByStandardizingPath];
+    }
+
+    return path;
+}
+
+// Return YES if successful, NO if there was an error.
+- (BOOL)processFilename:(NSString *)aFilename;
+{
+    NSString *path;
+
+    path = [CDClassDump executablePathForFilename:aFilename];
+    if (path == nil) {
+        // TODO (2007-11-02): Maybe it would be good to use NSError here.
+        fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);
+        return NO;
     }
 
     [self setExecutablePath:[path stringByDeletingLastPathComponent]];
@@ -361,30 +377,30 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
             return NO;
         }
 
-        if (preferredCPUType == CPU_TYPE_ANY) {
-            preferredCPUType = [aMachOFile cpuType];
-        } else if ([aMachOFile cpuType] != preferredCPUType) {
-            fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %s.\n",
-                    [aFilename fileSystemRepresentation], [CDNameForCPUType(preferredCPUType) UTF8String]);
+        if (preferredCPUType == nil) {
+            preferredCPUType = [aMachOFile archName];
+        } else if ([[aMachOFile archName] isEqual:preferredCPUType] == NO) {
+            fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %@.\n",
+                    [aFilename fileSystemRepresentation], [preferredCPUType UTF8String]);
             [aMachOFile release];
             return NO;
         }
     } else {
         CDFatArch *fatArch;
 
-        fatArch = [aFatFile fatArchWithCPUType:preferredCPUType];
+        fatArch = [aFatFile fatArchWithName:preferredCPUType];
         if (fatArch == nil) {
-            if (preferredCPUType == CPU_TYPE_ANY)
+            if (preferredCPUType == nil)
                 fprintf(stderr, "class-dump: Fat archive (%s) did not contain any cpu types!\n", [aFilename fileSystemRepresentation]);
             else
                 fprintf(stderr, "class-dump: Fat archive (%s) does not contain required cpu type: %s.\n",
-                        [aFilename fileSystemRepresentation], [CDNameForCPUType(preferredCPUType) UTF8String]);
+                        [aFilename fileSystemRepresentation], [preferredCPUType UTF8String]);
             [aFatFile release];
             return NO;
         }
 
-        if (preferredCPUType == CPU_TYPE_ANY) {
-            preferredCPUType = [fatArch cpuType];
+        if (preferredCPUType == nil) {
+            [self setPreferredCPUType:[fatArch archName]];
         }
 
         aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename archiveOffset:[fatArch offset]];

@@ -14,8 +14,9 @@
 #import "CDClassDump.h"
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"
-//#import "CDXMLClassDumpVisitor.h"
 #import "CDMultiFileVisitor.h"
+#import "CDMachOFile.h"
+#import "CDFatFile.h"
 
 void print_usage(void)
 {
@@ -26,7 +27,7 @@ void print_usage(void)
             "  where options are:\n"
             "        -a             show instance variable offsets\n"
             "        -A             show implementation addresses\n"
-            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, i386, etc.)\n"
+            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc7400, ppc64, i386, x86_64, etc.)\n"
             "        -C <regex>     only display classes matching regular expression\n"
             "        -f <str>       find string in method name\n"
             "        -H             generate header files in current directory, or directory specified with -o\n"
@@ -36,6 +37,7 @@ void print_usage(void)
             "        -s             sort classes and categories by name\n"
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
+            "        --list-arches  list the arches in the file, then exit\n"
             //"        -x             generate XML output\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
@@ -43,6 +45,7 @@ void print_usage(void)
 }
 
 #define CD_OPT_ARCH 1
+#define CD_OPT_LIST_ARCHES 2
 
 int main(int argc, char *argv[])
 {
@@ -52,7 +55,7 @@ int main(int argc, char *argv[])
     BOOL shouldFind = NO;
     NSString *searchString = nil;
     BOOL shouldGenerateSeparateHeaders = NO;
-    //BOOL shouldGenerateXML = NO;
+    BOOL shouldListArches = NO;
 
     int ch;
     BOOL errorFlag = NO;
@@ -69,8 +72,8 @@ int main(int argc, char *argv[])
         { "sort", no_argument, NULL, 's' },
         { "sort-methods", no_argument, NULL, 'S' },
         { "arch", required_argument, NULL, CD_OPT_ARCH },
+        { "list-arches", no_argument, NULL, CD_OPT_LIST_ARCHES },
         { "suppress-header", no_argument, NULL, 't' },
-        //{ "generate-xml", no_argument, NULL, 'x' },
         { NULL, 0, NULL, 0 },
     };
 
@@ -94,9 +97,13 @@ int main(int argc, char *argv[])
                   fprintf(stderr, "class-dump: Unknown arch %s\n\n", optarg);
                   errorFlag = YES;
               } else {
-                  [classDump setPreferredCPUType:archInfo->cputype];
+                  [classDump setPreferredCPUType:[NSString stringWithUTF8String:optarg]];
               }
           }
+              break;
+
+          case CD_OPT_LIST_ARCHES:
+              shouldListArches = YES;
               break;
 
           case 'a':
@@ -154,11 +161,7 @@ int main(int argc, char *argv[])
           case 't':
               [classDump setShouldShowHeader:NO];
               break;
-#if 0
-          case 'x':
-              shouldGenerateXML = YES;
-              break;
-#endif
+
           case '?':
           default:
               errorFlag = YES;
@@ -176,42 +179,54 @@ int main(int argc, char *argv[])
         NSString *path;
 
         path = [NSString stringWithFileSystemRepresentation:argv[optind]];
-        if ([classDump processFilename:path] == YES) {
-#if 0
-            [classDump showHeader];
-            [classDump showLoadCommands];
-#else
-            [classDump processObjectiveCSegments];
-            [classDump registerStuff];
+        if (shouldListArches) {
+            NSString *executablePath;
 
-            if (shouldFind) {
-                CDFindMethodVisitor *visitor;
-
-                visitor = [[CDFindMethodVisitor alloc] init];
-                [visitor setClassDump:classDump];
-                [visitor setFindString:searchString];
-                [classDump recursivelyVisit:visitor];
-                [visitor release];
-            } else if (shouldGenerateSeparateHeaders) {
-                [classDump recursivelyVisit:multiFileVisitor];
-#if 0
-            } else if (shouldGenerateXML) {
-                CDXMLClassDumpVisitor *visitor;
-
-                visitor = [[CDXMLClassDumpVisitor alloc] init];
-                [visitor setClassDump:classDump];
-                [classDump recursivelyVisit:visitor];
-                [visitor release];
-#endif
+            executablePath = [CDClassDump executablePathForFilename:path];
+            if (executablePath == nil) {
+                printf("none\n");
             } else {
-                CDClassDumpVisitor *visitor;
+                id macho;
 
-                visitor = [[CDClassDumpVisitor alloc] init];
-                [visitor setClassDump:classDump];
-                [classDump recursivelyVisit:visitor];
-                [visitor release];
+                macho = [CDMachOFile machOFileWithFilename:executablePath];
+                if (macho == nil) {
+                    printf("none\n");
+                } else {
+                    if ([macho isKindOfClass:[CDMachOFile class]]) {
+                        printf("%s\n", [[macho archName] UTF8String]);
+                    } else {
+                        printf("%s\n", [[[macho archNames] componentsJoinedByString:@" "] UTF8String]);
+                    }
+                }
             }
+        } else {
+            if ([classDump processFilename:path] == YES) {
+#if 0
+                [classDump showHeader];
+                [classDump showLoadCommands];
 #endif
+                [classDump processObjectiveCSegments];
+                [classDump registerStuff];
+
+                if (shouldFind) {
+                    CDFindMethodVisitor *visitor;
+
+                    visitor = [[CDFindMethodVisitor alloc] init];
+                    [visitor setClassDump:classDump];
+                    [visitor setFindString:searchString];
+                    [classDump recursivelyVisit:visitor];
+                    [visitor release];
+                } else if (shouldGenerateSeparateHeaders) {
+                    [classDump recursivelyVisit:multiFileVisitor];
+                } else {
+                    CDClassDumpVisitor *visitor;
+
+                    visitor = [[CDClassDumpVisitor alloc] init];
+                    [visitor setClassDump:classDump];
+                    [classDump recursivelyVisit:visitor];
+                    [visitor release];
+                }
+            }
         }
     }
 

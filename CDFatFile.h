@@ -34,10 +34,12 @@
 
 - (unsigned int)fatCount;
 
-- (CDFatArch *)fatArchWithCPUType:(cpu_type_t)aCPUType;
-- (CDFatArch *)_fatArchWithCPUType:(cpu_type_t)aCPUType;
+- (CDFatArch *)fatArchWithName:(NSString *)archName;
+- (CDFatArch *)_fatArchWithName:(NSString *)archName;
 - (CDFatArch *)localArchitecture;
 
 - (NSString *)description;
+
+- (NSArray *)archNames;
 
 @end

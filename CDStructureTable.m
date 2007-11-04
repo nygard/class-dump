@@ -340,7 +340,7 @@
             //NSLog(@"Already registered this anonymous struct, previous: %@, current: %@", [previousType typeString], typeString);
 
             if ([previousType canMergeWithType:aStructure]) {
-                NSLog(@"Case zulu");
+                //NSLog(@"Case zulu"); // Happens lots with i386 AppKit.
                 [previousType mergeWithType:aStructure];
             }
 

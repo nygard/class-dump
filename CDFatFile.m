@@ -82,9 +82,9 @@
     return header.nfat_arch;
 }
 
-- (CDFatArch *)fatArchWithCPUType:(cpu_type_t)aCPUType;
+- (CDFatArch *)fatArchWithName:(NSString *)archName;
 {
-    if (aCPUType == CPU_TYPE_ANY) {
+    if (archName == nil) {
         CDFatArch *fatArch;
 
         fatArch = [self localArchitecture];
@@ -94,20 +94,19 @@
         return fatArch;
     }
 
-    return [self _fatArchWithCPUType:aCPUType];
+    return [self _fatArchWithName:archName];
 }
 
-- (CDFatArch *)_fatArchWithCPUType:(cpu_type_t)aCPUType;
+- (CDFatArch *)_fatArchWithName:(NSString *)archName;
 {
     unsigned int count, index;
 
-    assert(aCPUType != CPU_TYPE_ANY);
     count = [arches count];
     for (index = 0; index < count; index++) {
         CDFatArch *fatArch;
 
         fatArch = [arches objectAtIndex:index];
-        if ([fatArch cpuType] == aCPUType)
+        if ([[fatArch archName] isEqual:archName])
             return fatArch;
     }
 
@@ -126,16 +125,30 @@
 
     //NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
 
-    return [self _fatArchWithCPUType:archInfo->cputype];
+    // TODO (2007-11-04): Hmm.  Search first for exact match, then fall back to main cputype.
+    return [self _fatArchWithName:CDNameForCPUType(archInfo->cputype, archInfo->cpusubtype)];
 }
 
 - (NSString *)description;
 {
-    return @"fat file...";
+    return [NSString stringWithFormat:@"[%p]CDFatFile with %u arches", self, [self fatCount]];
 #if 0
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x",
                      header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];
 #endif
+}
+
+- (NSArray *)archNames;
+{
+    NSMutableArray *archNames;
+    unsigned int count, index;
+
+    archNames = [NSMutableArray array];
+    count = [arches count];
+    for (index = 0; index < count; index++)
+        [archNames addObject:[[arches objectAtIndex:index] archName]];
+
+    return archNames;
 }
 
 @end

@@ -33,7 +33,9 @@
     id nonretainedDelegate;
 }
 
-NSString *CDNameForCPUType(cpu_type_t cpuType);
+extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
+
++ (id)machOFileWithFilename:(NSString *)aFilename;
 
 - (id)initWithFilename:(NSString *)aFilename;
 - (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
@@ -78,5 +80,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType);
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
+
+- (NSString *)archName;
 
 @end

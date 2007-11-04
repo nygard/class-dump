@@ -26,20 +26,38 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [NSString stringWithFormat:@"0x%08x", magic];
 }
 
-NSString *CDNameForCPUType(cpu_type_t cpuType)
+NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     const NXArchInfo *archInfo;
 
-    // The arch names for cpu subtype 0 work for both i386 and ppc, but the description in the archInfo won't be accurate
-    // for i386 because CPU_SUBTYPE_I386_ALL is not 0...
-    archInfo = NXGetArchInfoFromCpuType(cpuType, 0);
+    archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
     if (archInfo == NULL)
-        return nil;
+        return @"unknown";
 
     return [NSString stringWithUTF8String:archInfo->name];
 }
 
 @implementation CDMachOFile
+
+// Returns either a CDMachOFile or CDFatFile.
++ (id)machOFileWithFilename:(NSString *)aFilename;
+{
+    CDFatFile *aFatFile;
+    CDMachOFile *aMachOFile;
+
+    aFatFile = [[[CDFatFile alloc] initWithFilename:aFilename] autorelease];
+    if (aFatFile == nil) {
+        aMachOFile = [[[CDMachOFile alloc] initWithFilename:aFilename] autorelease];
+        if (aMachOFile == nil) {
+            fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [aFilename fileSystemRepresentation]);
+            return nil;
+        }
+
+        return aMachOFile;
+    }
+
+    return aFatFile;
+}
 
 - (id)initWithFilename:(NSString *)aFilename;
 {
@@ -439,7 +457,7 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     // Grr, %11@ doesn't work.
     if (isVerbose)
         [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5u %10u %@\n",
-                      CDMagicNumberString(header.magic), CDNameForCPUType(header.cputype), header.cpusubtype,
+                      CDMagicNumberString(header.magic), CDNameForCPUType(header.cputype, header.cpusubtype), header.cpusubtype,
                       [self filetypeDescription], header.ncmds, header.sizeofcmds, [self flagDescription]];
     else
         [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5u %10u 0x%08x\n",
@@ -447,6 +465,12 @@ NSString *CDNameForCPUType(cpu_type_t cpuType)
     [resultString appendString:@"\n"];
 
     return resultString;
+}
+
+// Must not return nil.
+- (NSString *)archName;
+{
+    return CDNameForCPUType(header.cputype, header.cpusubtype);
 }
 
 @end

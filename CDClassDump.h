@@ -6,7 +6,6 @@
 #import <Foundation/NSObject.h>
 
 #include <sys/types.h>
-#include <mach/machine.h> // for cpu_type_t
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
@@ -46,7 +45,7 @@
     CDTypeFormatter *methodTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 
-    cpu_type_t preferredCPUType;
+    NSString *preferredCPUType;
 }
 
 + (NSString *)currentPublicID;
@@ -88,8 +87,9 @@
 - (NSArray *)machOFiles;
 - (NSArray *)objCSegmentProcessors;
 
-- (cpu_type_t)preferredCPUType;
-- (void)setPreferredCPUType:(cpu_type_t)aPreferredCPUType;
+// TODO (2007-11-04): Rename preferredArchName?
+- (NSString *)preferredCPUType;
+- (void)setPreferredCPUType:(NSString *)newCPUType;
 
 - (BOOL)containsObjectiveCSegments;
 - (CDStructureTable *)structureTable;
@@ -99,6 +99,7 @@
 - (CDTypeFormatter *)methodTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
++ (NSString *)executablePathForFilename:(NSString *)aFilename;
 - (BOOL)processFilename:(NSString *)aFilename;
 - (BOOL)_processFilename:(NSString *)aFilename;
 - (void)processObjectiveCSegments;
