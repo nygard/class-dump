@@ -245,7 +245,9 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 
                 name = [machOFile stringFromVMAddr:ivar.name];
                 type = [machOFile stringFromVMAddr:ivar.type];
-                if (name != nil && type != nil) {
+                // bitfields don't need names.
+                // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
+                if (type != nil) {
                     CDOCIvar *anIvar;
 
                     anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:ivar.offset];
