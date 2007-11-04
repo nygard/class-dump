@@ -21,8 +21,8 @@ foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFramewo
     arches=(`$ARCH_CD --list-arches $i`)
     foreach arch ($arches) do
         echo $arch
-        $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt"
-        $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-$arch-framework.txt"
+        $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt"
+        $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .framework`-$arch-framework.txt"
     done
 done
 
@@ -31,8 +31,8 @@ foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.a
     arches=(`$ARCH_CD --list-arches $i`)
     foreach arch ($arches) do
         echo $arch
-        $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt"
-        $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-$arch-app.txt"
+        $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt"
+        $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .app`-$arch-app.txt"
     done
 done
 
