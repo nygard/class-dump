@@ -45,7 +45,7 @@
     CDTypeFormatter *methodTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 
-    NSString *preferredCPUType;
+    NSString *preferredArchName;
 }
 
 + (NSString *)currentPublicID;
@@ -87,9 +87,8 @@
 - (NSArray *)machOFiles;
 - (NSArray *)objCSegmentProcessors;
 
-// TODO (2007-11-04): Rename preferredArchName?
-- (NSString *)preferredCPUType;
-- (void)setPreferredCPUType:(NSString *)newCPUType;
+- (NSString *)preferredArchName;
+- (void)setPreferredArchName:(NSString *)newArchName;
 
 - (BOOL)containsObjectiveCSegments;
 - (CDStructureTable *)structureTable;

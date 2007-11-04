@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
                   fprintf(stderr, "class-dump: Unknown arch %s\n\n", optarg);
                   errorFlag = YES;
               } else {
-                  [classDump setPreferredCPUType:[NSString stringWithUTF8String:optarg]];
+                  [classDump setPreferredArchName:[NSString stringWithUTF8String:optarg]];
               }
           }
               break;

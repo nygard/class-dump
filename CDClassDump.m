@@ -72,7 +72,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
     // These can be ppc, ppc7400, ppc64, i386, x86_64
-    preferredCPUType = nil; // Any cpu type is fine.
+    preferredArchName = nil; // Any cpu type is fine.
 
     flags.shouldShowHeader = YES;
 
@@ -97,7 +97,7 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     if (flags.shouldMatchRegex == YES)
         regfree(&compiledRegex);
 
-    [preferredCPUType release];
+    [preferredArchName release];
 
     [super dealloc];
 }
@@ -256,18 +256,18 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
     return objCSegmentProcessors;
 }
 
-- (NSString *)preferredCPUType;
+- (NSString *)preferredArchName;
 {
-    return preferredCPUType;
+    return preferredArchName;
 }
 
-- (void)setPreferredCPUType:(NSString *)newCPUType;
+- (void)setPreferredArchName:(NSString *)newArchName;
 {
-    if (newCPUType == preferredCPUType)
+    if (newArchName == preferredArchName)
         return;
 
-    [preferredCPUType release];
-    preferredCPUType = [newCPUType retain];
+    [preferredArchName release];
+    preferredArchName = [newArchName retain];
 }
 
 - (BOOL)containsObjectiveCSegments;
@@ -377,30 +377,30 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
             return NO;
         }
 
-        if (preferredCPUType == nil) {
-            preferredCPUType = [aMachOFile archName];
-        } else if ([[aMachOFile archName] isEqual:preferredCPUType] == NO) {
+        if (preferredArchName == nil) {
+            preferredArchName = [aMachOFile archName];
+        } else if ([[aMachOFile archName] isEqual:preferredArchName] == NO) {
             fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %@.\n",
-                    [aFilename fileSystemRepresentation], [preferredCPUType UTF8String]);
+                    [aFilename fileSystemRepresentation], [preferredArchName UTF8String]);
             [aMachOFile release];
             return NO;
         }
     } else {
         CDFatArch *fatArch;
 
-        fatArch = [aFatFile fatArchWithName:preferredCPUType];
+        fatArch = [aFatFile fatArchWithName:preferredArchName];
         if (fatArch == nil) {
-            if (preferredCPUType == nil)
+            if (preferredArchName == nil)
                 fprintf(stderr, "class-dump: Fat archive (%s) did not contain any cpu types!\n", [aFilename fileSystemRepresentation]);
             else
                 fprintf(stderr, "class-dump: Fat archive (%s) does not contain required cpu type: %s.\n",
-                        [aFilename fileSystemRepresentation], [preferredCPUType UTF8String]);
+                        [aFilename fileSystemRepresentation], [preferredArchName UTF8String]);
             [aFatFile release];
             return NO;
         }
 
-        if (preferredCPUType == nil) {
-            [self setPreferredCPUType:[fatArch archName]];
+        if (preferredArchName == nil) {
+            [self setPreferredArchName:[fatArch archName]];
         }
 
         aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename archiveOffset:[fatArch offset]];
