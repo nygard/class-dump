@@ -5,10 +5,14 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
+@class CDClassDump;
+
 @interface CDPathUnitTest : SenTestCase
 {
+    CDClassDump *classDump;
 }
 
-- (void)testPrivateSyncFramework;
+- (void)setUp;
+- (void)tearDown;
 
 @end

@@ -318,9 +318,9 @@ NSString *CDClassDumpVersion1SystemID = @"class-dump-v1.dtd";
             return NO;
         }
 
-        path = [bundle executablePath];
+        path = [[[bundle executablePath] stringByResolvingSymlinksInPath] stringByStandardizingPath];
     } else {
-        path = [aFilename stringByStandardizingPath];
+        path = [[aFilename stringByResolvingSymlinksInPath] stringByStandardizingPath];
     }
 
     [self setExecutablePath:[path stringByDeletingLastPathComponent]];
