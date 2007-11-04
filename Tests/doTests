@@ -7,6 +7,9 @@ TESTDIR_NEW=$TESTDIR/new
 OLD_CD=~/Unix/bin/class-dump-3.1.1
 NEW_CD=~/Unix/bin/class-dump-3.1.2
 
+# Must be a version that supports --list-arches
+ARCH_CD=~/Unix/bin/class-dump-3.1.2
+
 echo "Starting tests at `date`"
 
 ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app | wc
@@ -15,14 +18,22 @@ mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
 foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework) do
     echo $i `basename $i .framework`
-    $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .framework`-framework.txt"
-    $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
+    arches=(`$ARCH_CD --list-arches $i`)
+    foreach arch ($arches) do
+        echo $arch
+        $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt"
+        $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-$arch-framework.txt"
+    done
 done
 
 foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app) do
     echo $i `basename $i .app`
-    $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-app.txt"
-    $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
+    arches=(`$ARCH_CD --list-arches $i`)
+    foreach arch ($arches) do
+        echo $arch
+        $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt"
+        $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-$arch-app.txt"
+    done
 done
 
 echo "Ended tests at `date`"
