@@ -1,6 +1,5 @@
 #import "AllTests.h"
 
-#import "MyFirstTestCase.h"
 #import "CDPathUnitTest.h"
 #import "CDTypeLexerUnitTest.h"
 #import "CDTypeParserUnitTest.h"
@@ -59,7 +58,6 @@
     unsigned int count, index;
 
     order = [NSMutableArray array];
-    [order addObject:[MyFirstTestCase class]];
     [order addObject:[CDPathUnitTest class]];
     [order addObject:[CDTypeLexerUnitTest class]];
     [order addObject:[CDTypeParserUnitTest class]];
