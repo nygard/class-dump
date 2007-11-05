@@ -4,4 +4,4 @@ if [ "${OTEST_TEST_CLASS}" = "" ]; then
     OTEST_TEST_CLASS="AllTests"
 fi
 
-/Developer/Tools/otest -SenTest ${OTEST_TEST_CLASS} $*
+${DEVELOPER_DIR}/Tools/otest -SenTest ${OTEST_TEST_CLASS} $*
