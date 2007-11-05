@@ -108,7 +108,6 @@
 		012E2B2E08AE9D6D003E99F8 /* CDSymbolReferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2108AE9D6D003E99F8 /* CDSymbolReferences.m */; };
 		012E2B3108AE9D6D003E99F8 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2408AE9D6D003E99F8 /* CDTopoSortNode.m */; };
 		012E2B3308AE9D8F003E99F8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B3208AE9D8F003E99F8 /* main.m */; };
-		012FF1A60CDB8A4800F31E61 /* MyFirstTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 012FF1A50CDB8A4800F31E61 /* MyFirstTestCase.m */; };
 		012FF1CA0CDB984000F31E61 /* CDPathUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7908AE9E45003E99F8 /* CDPathUnitTest.m */; };
 		012FF2010CDBA11400F31E61 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		012FF2020CDBA11F00F31E61 /* CDSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ACD08AE9CDC003E99F8 /* CDSymbolTable.m */; };
@@ -183,7 +182,6 @@
 		013182CC0CDF6EE400EC5A2C /* shud16-in.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0114EE120CDCA56D0061F80F /* shud16-in.txt */; };
 		013182CD0CDF6EE400EC5A2C /* shud16-out.txt in Resources */ = {isa = PBXBuildFile; fileRef = 0114EE130CDCA56D0061F80F /* shud16-out.txt */; };
 		013182CE0CDF6EE400EC5A2C /* CDUnitTests-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */; };
-		013182D00CDF6EE400EC5A2C /* MyFirstTestCase.m in Sources */ = {isa = PBXBuildFile; fileRef = 012FF1A50CDB8A4800F31E61 /* MyFirstTestCase.m */; };
 		013182D10CDF6EE400EC5A2C /* CDPathUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7908AE9E45003E99F8 /* CDPathUnitTest.m */; };
 		013182D20CDF6EE400EC5A2C /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		013182D30CDF6EE400EC5A2C /* CDSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ACD08AE9CDC003E99F8 /* CDSymbolTable.m */; };
@@ -403,8 +401,6 @@
 		012E2B8008AE9E45003E99F8 /* test_main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = test_main.m; path = UnitTests/test_main.m; sourceTree = "<group>"; };
 		012FF18A0CDB886C00F31E61 /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CDUnitTests-Info.plist"; sourceTree = "<group>"; };
-		012FF1A40CDB8A4800F31E61 /* MyFirstTestCase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MyFirstTestCase.h; path = UnitTests/MyFirstTestCase.h; sourceTree = "<group>"; };
-		012FF1A50CDB8A4800F31E61 /* MyFirstTestCase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MyFirstTestCase.m; path = UnitTests/MyFirstTestCase.m; sourceTree = "<group>"; };
 		013183060CDF6EE400EC5A2C /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
@@ -605,8 +601,6 @@
 				012E2B3508AE9DAE003E99F8 /* Unit Test Data */,
 				012E2B7608AE9E45003E99F8 /* AllTests.h */,
 				012E2B7708AE9E45003E99F8 /* AllTests.m */,
-				012FF1A40CDB8A4800F31E61 /* MyFirstTestCase.h */,
-				012FF1A50CDB8A4800F31E61 /* MyFirstTestCase.m */,
 				012E2B7808AE9E45003E99F8 /* CDPathUnitTest.h */,
 				012E2B7908AE9E45003E99F8 /* CDPathUnitTest.m */,
 				01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */,
@@ -841,7 +835,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				012FF1A60CDB8A4800F31E61 /* MyFirstTestCase.m in Sources */,
 				012FF1CA0CDB984000F31E61 /* CDPathUnitTest.m in Sources */,
 				012FF2010CDBA11400F31E61 /* NSArray-Extensions.m in Sources */,
 				012FF2020CDBA11F00F31E61 /* CDSymbolTable.m in Sources */,
@@ -896,7 +889,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				013182D00CDF6EE400EC5A2C /* MyFirstTestCase.m in Sources */,
 				013182D10CDF6EE400EC5A2C /* CDPathUnitTest.m in Sources */,
 				013182D20CDF6EE400EC5A2C /* NSArray-Extensions.m in Sources */,
 				013182D30CDF6EE400EC5A2C /* CDSymbolTable.m in Sources */,
@@ -1123,7 +1115,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "/Users/nygard/Source/nygard/Tools/class-dump/CDUnitTests.plist";
+				INFOPLIST_FILE = "/Users/nygard/Source/nygard/Tools/class-dump/CDUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTEST = "$(PROJECT_DIR)/UnitTests/otest-all";
 				OTHER_LDFLAGS = (
@@ -1149,7 +1141,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Cocoa.framework/Headers/Cocoa.h";
-				INFOPLIST_FILE = "/Users/nygard/Source/nygard/Tools/class-dump/CDUnitTests.plist";
+				INFOPLIST_FILE = "/Users/nygard/Source/nygard/Tools/class-dump/CDUnitTests-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTEST = "$(PROJECT_DIR)/UnitTests/otest-all";
 				OTHER_LDFLAGS = (
