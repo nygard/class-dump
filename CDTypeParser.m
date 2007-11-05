@@ -191,10 +191,10 @@ NSString *CDTokenDescription(int token)
 //     @                     - plain id type
 //     @"NSObject"           - NSObject *
 //     @"<MyProtocol>"       - id <MyProtocol>
-// But these can also be part of a structure, with the member name in quotes before the type:
-//     i"foo"                - int foo
-//     @"foo"                - id foo
-//     @"Foo"                - Foo *
+// But these can also be part of a structure, with the field name in quotes before the type:
+//     "foo"i"bar"i                - int foo, int bar
+//     "foo"@"bar"i                - id foo, int bar
+//     "foo"@"Foo""bar"i           - Foo *foo, int bar
 // So this is where we need to be careful.
 //
 // I'm going to make a simplifying assumption:  Either the structure/union has member names,
@@ -364,7 +364,6 @@ NSString *CDTokenDescription(int token)
     NSMutableArray *result;
 
     result = [NSMutableArray array];
-    //NSLog(@"%s, hasMemberNames: %d", _cmd, hasMemberNames);
 
     while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead] == YES)
         [result addObject:[self parseMember]];
@@ -376,7 +375,8 @@ NSString *CDTokenDescription(int token)
 {
     CDType *result;
 
-    //NSLog(@" > %s, hasMemberName: %d", _cmd, hasMemberName);
+    //NSLog(@" > %s", _cmd);
+
     if (lookahead == TK_QUOTED_STRING) {
         NSString *identifier = nil;
 

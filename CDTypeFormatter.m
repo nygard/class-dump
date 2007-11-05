@@ -146,10 +146,6 @@
     NSString *specialCase;
     NSError *error;
 
-    //NSLog(@"%s, shouldExpandStructures: %d", _cmd, shouldExpandStructures);
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"name: '%@', type: '%@', level: %d", name, type, level);
-
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
     specialCase = [self _specialCaseVariable:name type:type];
     if (specialCase != nil) {
@@ -179,7 +175,6 @@
 
     [aParser release];
 
-    //NSLog(@"<  %s", _cmd);
     return resultString;
 }
 
