@@ -24,6 +24,8 @@
 // On the other hand, if we have two unions that have different member names but have the same structure, we can't unambigously map from the bareTypeString to one with member names.
 // For example, (?="thin"[128c]"fat"[128S]) and (?="foo"[128c]"bar"[128S]) both have (?=[128c][128S]) as the bareTypeString.
 
+// In a marvel of efficiency, it looks like we parse every type _three_ times!
+
 
 
 @implementation CDStructureTable
