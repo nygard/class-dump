@@ -8,39 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		01021F0D0B5F1E5300F464A8 /* CDUUIDCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 01021F0B0B5F1E4F00F464A8 /* CDUUIDCommand.m */; };
-		01021F0E0B5F1E5400F464A8 /* CDUUIDCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 01021F0A0B5F1E4F00F464A8 /* CDUUIDCommand.h */; };
-		01021F0F0B5F1E5500F464A8 /* CDSymbolTable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ACC08AE9CDC003E99F8 /* CDSymbolTable.h */; };
-		01021F100B5F1E5600F464A8 /* CDSymbol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ACA08AE9CDC003E99F8 /* CDSymbol.h */; };
-		01021F110B5F1E5700F464A8 /* CDSegmentCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC808AE9CDC003E99F8 /* CDSegmentCommand.h */; };
-		01021F120B5F1E5700F464A8 /* CDSection.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC608AE9CDC003E99F8 /* CDSection.h */; };
-		01021F130B5F1E5900F464A8 /* CDMachOFile.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC408AE9CDC003E99F8 /* CDMachOFile.h */; };
-		01021F140B5F1E5900F464A8 /* CDLoadCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC208AE9CDC003E99F8 /* CDLoadCommand.h */; };
-		01021F150B5F1E5A00F464A8 /* CDFatFile.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AC008AE9CDC003E99F8 /* CDFatFile.h */; };
-		01021F160B5F1E5B00F464A8 /* CDFatArch.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ABE08AE9CDC003E99F8 /* CDFatArch.h */; };
-		01021F170B5F1E5B00F464A8 /* CDDynamicSymbolTable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ABC08AE9CDC003E99F8 /* CDDynamicSymbolTable.h */; };
-		01021F180B5F1E5C00F464A8 /* CDDylibCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2ABA08AE9CDC003E99F8 /* CDDylibCommand.h */; };
-		01021F190B5F1E6000F464A8 /* NSString-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AB008AE9C9D003E99F8 /* NSString-Extensions.h */; };
-		01021F1A0B5F1E6400F464A8 /* NSScanner-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AAE08AE9C9D003E99F8 /* NSScanner-Extensions.h */; };
-		01021F1B0B5F1E6500F464A8 /* NSObject-CDExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */; };
-		01021F1C0B5F1E6600F464A8 /* NSArray-Extensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */; };
-		01021F1D0B5F1E6A00F464A8 /* CDClassDump.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1808AE9D6D003E99F8 /* CDClassDump.h */; };
-		01021F1E0B5F1E6C00F464A8 /* CDObjCSegmentProcessor-Private.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1A08AE9D6D003E99F8 /* CDObjCSegmentProcessor-Private.h */; };
-		01021F1F0B5F1E6D00F464A8 /* CDObjCSegmentProcessor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1C08AE9D6D003E99F8 /* CDObjCSegmentProcessor.h */; };
-		01021F200B5F1E6E00F464A8 /* CDStructureTable.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B1E08AE9D6D003E99F8 /* CDStructureTable.h */; };
-		01021F210B5F1E7000F464A8 /* CDSymbolReferences.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B2008AE9D6D003E99F8 /* CDSymbolReferences.h */; };
-		01021F220B5F1E7100F464A8 /* CDTopologicalSortProtocol.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B2208AE9D6D003E99F8 /* CDTopologicalSortProtocol.h */; };
-		01021F230B5F1E7200F464A8 /* CDTopoSortNode.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 012E2B2308AE9D6D003E99F8 /* CDTopoSortNode.h */; };
-		0112616A0C21313100B9C4E0 /* CDClassDumpVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261610C21312C00B9C4E0 /* CDClassDumpVisitor.h */; };
 		0112616B0C21313200B9C4E0 /* CDClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261620C21312C00B9C4E0 /* CDClassDumpVisitor.m */; };
-		0112616C0C21313300B9C4E0 /* CDFindMethodVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261630C21312C00B9C4E0 /* CDFindMethodVisitor.h */; };
 		0112616D0C21313400B9C4E0 /* CDFindMethodVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261640C21312C00B9C4E0 /* CDFindMethodVisitor.m */; };
-		0112616E0C21313500B9C4E0 /* CDVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011261650C21312C00B9C4E0 /* CDVisitor.h */; };
 		0112616F0C21313500B9C4E0 /* CDVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261660C21312C00B9C4E0 /* CDVisitor.m */; };
-		011262350C21844200B9C4E0 /* CDClassFrameworkVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011262320C21844200B9C4E0 /* CDClassFrameworkVisitor.h */; };
 		011262360C21844200B9C4E0 /* CDClassFrameworkVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262330C21844200B9C4E0 /* CDClassFrameworkVisitor.m */; };
-		011262440C218CAD00B9C4E0 /* CDMultiFileVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011262410C218CAD00B9C4E0 /* CDMultiFileVisitor.h */; };
 		011262450C218CAD00B9C4E0 /* CDMultiFileVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262420C218CAD00B9C4E0 /* CDMultiFileVisitor.m */; };
-		0112625B0C21909400B9C4E0 /* CDTextClassDumpVisitor.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 011262580C21909400B9C4E0 /* CDTextClassDumpVisitor.h */; };
 		0112625C0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262590C21909400B9C4E0 /* CDTextClassDumpVisitor.m */; };
 		0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7D08AE9E45003E99F8 /* CDTypeFormatterUnitTest.m */; };
 		0114EDE10CDC9E8F0061F80F /* CDStructHandlingUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7B08AE9E45003E99F8 /* CDStructHandlingUnitTest.m */; };
@@ -231,46 +203,6 @@
 		013182FF0CDF6EE400EC5A2C /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		8DD76F9E0486AA7600D96B5E /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
-			files = (
-				01021F0E0B5F1E5400F464A8 /* CDUUIDCommand.h in CopyFiles */,
-				01021F0F0B5F1E5500F464A8 /* CDSymbolTable.h in CopyFiles */,
-				01021F100B5F1E5600F464A8 /* CDSymbol.h in CopyFiles */,
-				01021F110B5F1E5700F464A8 /* CDSegmentCommand.h in CopyFiles */,
-				01021F120B5F1E5700F464A8 /* CDSection.h in CopyFiles */,
-				01021F130B5F1E5900F464A8 /* CDMachOFile.h in CopyFiles */,
-				01021F140B5F1E5900F464A8 /* CDLoadCommand.h in CopyFiles */,
-				01021F150B5F1E5A00F464A8 /* CDFatFile.h in CopyFiles */,
-				01021F160B5F1E5B00F464A8 /* CDFatArch.h in CopyFiles */,
-				01021F170B5F1E5B00F464A8 /* CDDynamicSymbolTable.h in CopyFiles */,
-				01021F180B5F1E5C00F464A8 /* CDDylibCommand.h in CopyFiles */,
-				01021F190B5F1E6000F464A8 /* NSString-Extensions.h in CopyFiles */,
-				01021F1A0B5F1E6400F464A8 /* NSScanner-Extensions.h in CopyFiles */,
-				01021F1B0B5F1E6500F464A8 /* NSObject-CDExtensions.h in CopyFiles */,
-				01021F1C0B5F1E6600F464A8 /* NSArray-Extensions.h in CopyFiles */,
-				01021F1D0B5F1E6A00F464A8 /* CDClassDump.h in CopyFiles */,
-				01021F1E0B5F1E6C00F464A8 /* CDObjCSegmentProcessor-Private.h in CopyFiles */,
-				01021F1F0B5F1E6D00F464A8 /* CDObjCSegmentProcessor.h in CopyFiles */,
-				01021F200B5F1E6E00F464A8 /* CDStructureTable.h in CopyFiles */,
-				01021F210B5F1E7000F464A8 /* CDSymbolReferences.h in CopyFiles */,
-				01021F220B5F1E7100F464A8 /* CDTopologicalSortProtocol.h in CopyFiles */,
-				01021F230B5F1E7200F464A8 /* CDTopoSortNode.h in CopyFiles */,
-				0112616A0C21313100B9C4E0 /* CDClassDumpVisitor.h in CopyFiles */,
-				0112616C0C21313300B9C4E0 /* CDFindMethodVisitor.h in CopyFiles */,
-				0112616E0C21313500B9C4E0 /* CDVisitor.h in CopyFiles */,
-				011262350C21844200B9C4E0 /* CDClassFrameworkVisitor.h in CopyFiles */,
-				011262440C218CAD00B9C4E0 /* CDMultiFileVisitor.h in CopyFiles */,
-				0112625B0C21909400B9C4E0 /* CDTextClassDumpVisitor.h in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		01021F0A0B5F1E4F00F464A8 /* CDUUIDCommand.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDUUIDCommand.h; sourceTree = "<group>"; };
@@ -708,7 +640,6 @@
 			buildPhases = (
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
-				8DD76F9E0486AA7600D96B5E /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1026,7 +957,7 @@
 				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = "$(HOME)/bin";
+				INSTALL_PATH = /;
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 				ZERO_LINK = NO;
