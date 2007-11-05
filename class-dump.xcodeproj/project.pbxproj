@@ -771,7 +771,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/zsh;
-			shellScript = "#!/bin/zsh\n\necho \"pwd:\" `pwd`\necho svn export . $DSTROOT/src\n\npushd $DSTROOT/src\nmv README ..\nrm -rf hold notes TODO keys.txt BuildRelease.class-dump\npopd\n";
+			shellScript = "#!/bin/zsh\n\necho \"pwd:\" `pwd`\nsvn export . $DSTROOT/src\n\nif [ -e $DSTROOT/src ]; then\n    pushd $DSTROOT/src\n    mv README ..\n    rm -rf hold notes TODO keys.txt BuildRelease.class-dump\n    popd\nfi\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
