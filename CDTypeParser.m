@@ -172,11 +172,7 @@ NSString *CDTokenDescription(int token)
     // So it must be <type><number><type><number><type><number>.  Three pairs at a minimum.
 
     do {
-        NS_DURING {
-            type = [self _parseType];
-        } NS_HANDLER {
-            [localException raise];
-        } NS_ENDHANDLER;
+        type = [self _parseType];
         number = [self parseNumber];
 
         aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
