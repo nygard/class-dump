@@ -330,7 +330,6 @@
 		012E2B7D08AE9E45003E99F8 /* CDTypeFormatterUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeFormatterUnitTest.m; path = UnitTests/CDTypeFormatterUnitTest.m; sourceTree = "<group>"; };
 		012E2B7E08AE9E45003E99F8 /* CDTypeParserUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeParserUnitTest.h; path = UnitTests/CDTypeParserUnitTest.h; sourceTree = "<group>"; };
 		012E2B7F08AE9E45003E99F8 /* CDTypeParserUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeParserUnitTest.m; path = UnitTests/CDTypeParserUnitTest.m; sourceTree = "<group>"; };
-		012E2B8008AE9E45003E99F8 /* test_main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = test_main.m; path = UnitTests/test_main.m; sourceTree = "<group>"; };
 		012FF18A0CDB886C00F31E61 /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CDUnitTests-Info.plist"; sourceTree = "<group>"; };
 		013183060CDF6EE400EC5A2C /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -530,6 +529,7 @@
 		012E2B7508AE9E01003E99F8 /* OCUnit tests */ = {
 			isa = PBXGroup;
 			children = (
+				012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */,
 				012E2B3508AE9DAE003E99F8 /* Unit Test Data */,
 				012E2B7608AE9E45003E99F8 /* AllTests.h */,
 				012E2B7708AE9E45003E99F8 /* AllTests.m */,
@@ -543,7 +543,6 @@
 				012E2B7D08AE9E45003E99F8 /* CDTypeFormatterUnitTest.m */,
 				012E2B7A08AE9E45003E99F8 /* CDStructHandlingUnitTest.h */,
 				012E2B7B08AE9E45003E99F8 /* CDStructHandlingUnitTest.m */,
-				012E2B8008AE9E45003E99F8 /* test_main.m */,
 			);
 			name = "OCUnit tests";
 			sourceTree = "<group>";
@@ -557,7 +556,6 @@
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				012E2B7508AE9E01003E99F8 /* OCUnit tests */,
-				012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */,
 			);
 			name = "class-dump";
 			sourceTree = "<group>";
