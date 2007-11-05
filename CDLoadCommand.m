@@ -48,6 +48,8 @@
     if ([aMachOFile hasDifferentByteOrder] == YES)
         swap_load_command(&loadCommand, CD_THIS_BYTE_ORDER);
 
+    mustUnderstandToExecute = (loadCommand.cmd & LC_REQ_DYLD) != 0;
+
     return self;
 }
 
@@ -69,38 +71,38 @@
 - (NSString *)commandName;
 {
     switch (loadCommand.cmd) {
-      case LC_SEGMENT: return @"SEGMENT";
-      case LC_SYMTAB: return @"SYMTAB";
-      case LC_SYMSEG: return @"SYMSEG";
-      case LC_THREAD: return @"THREAD";
-      case LC_UNIXTHREAD: return @"UNIXTHREAD";
-      case LC_LOADFVMLIB: return @"LOADFVMLIB";
-      case LC_IDFVMLIB: return @"IDFVMLIB";
-      case LC_IDENT: return @"IDENT";
-      case LC_FVMFILE: return @"FVMFILE";
-      case LC_PREPAGE: return @"PREPAGE";
-      case LC_DYSYMTAB: return @"DYSYMTAB";
-      case LC_LOAD_DYLIB: return @"LOAD_DYLIB";
-      case LC_ID_DYLIB: return @"ID_DYLIB";
-      case LC_LOAD_DYLINKER: return @"LOAD_DYLINKER";
-      case LC_ID_DYLINKER: return @"ID_DYLINKER";
-      case LC_PREBOUND_DYLIB: return @"PREBOUND_DYLIB";
-      case LC_ROUTINES: return @"ROUTINES";
-      case LC_SUB_FRAMEWORK: return @"SUB_FRAMEWORK";
-      case LC_SUB_UMBRELLA: return @"SUB_UMBRELLA";
-      case LC_SUB_CLIENT: return @"SUB_CLIENT";
-      case LC_SUB_LIBRARY: return @"SUB_LIBRARY";
-      case LC_TWOLEVEL_HINTS: return @"TWOLEVEL_HINTS";
-      case LC_PREBIND_CKSUM: return @"PREBIND_CKSUM";
-      case LC_LOAD_WEAK_DYLIB: return @"LOAD_WEAK_DYLIB";
-      case LC_SEGMENT_64: return @"SEGMENT_64";
-      case LC_ROUTINES_64: return @"ROUTINES_64";
-      case LC_UUID: return @"UUID";
+      case LC_SEGMENT: return @"LC_SEGMENT";
+      case LC_SYMTAB: return @"LC_SYMTAB";
+      case LC_SYMSEG: return @"LC_SYMSEG";
+      case LC_THREAD: return @"LC_THREAD";
+      case LC_UNIXTHREAD: return @"LC_UNIXTHREAD";
+      case LC_LOADFVMLIB: return @"LC_LOADFVMLIB";
+      case LC_IDFVMLIB: return @"LC_IDFVMLIB";
+      case LC_IDENT: return @"LC_IDENT";
+      case LC_FVMFILE: return @"LC_FVMFILE";
+      case LC_PREPAGE: return @"LC_PREPAGE";
+      case LC_DYSYMTAB: return @"LC_DYSYMTAB";
+      case LC_LOAD_DYLIB: return @"LC_LOAD_DYLIB";
+      case LC_ID_DYLIB: return @"LC_ID_DYLIB";
+      case LC_LOAD_DYLINKER: return @"LC_LOAD_DYLINKER";
+      case LC_ID_DYLINKER: return @"LC_ID_DYLINKER";
+      case LC_PREBOUND_DYLIB: return @"LC_PREBOUND_DYLIB";
+      case LC_ROUTINES: return @"LC_ROUTINES";
+      case LC_SUB_FRAMEWORK: return @"LC_SUB_FRAMEWORK";
+      case LC_SUB_UMBRELLA: return @"LC_SUB_UMBRELLA";
+      case LC_SUB_CLIENT: return @"LC_SUB_CLIENT";
+      case LC_SUB_LIBRARY: return @"LC_SUB_LIBRARY";
+      case LC_TWOLEVEL_HINTS: return @"LC_TWOLEVEL_HINTS";
+      case LC_PREBIND_CKSUM: return @"LC_PREBIND_CKSUM";
+      case LC_LOAD_WEAK_DYLIB: return @"LC_LOAD_WEAK_DYLIB";
+      case LC_SEGMENT_64: return @"LC_SEGMENT_64";
+      case LC_ROUTINES_64: return @"LC_ROUTINES_64";
+      case LC_UUID: return @"LC_UUID";
       default:
           break;
     }
 
-    return @"<unknown load command>";
+    return [NSString stringWithFormat:@"0x%08x", loadCommand.cmd];
 }
 
 - (NSString *)description;
@@ -115,8 +117,16 @@
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
-    [resultString appendFormat:@"     cmd LC_%@\n", [self commandName]];
+    [resultString appendFormat:@"     cmd %@", [self commandName]];
+    if ([self mustUnderstandToExecute])
+        [resultString appendFormat:@" (must understand to execute)"];
+    [resultString appendFormat:@"\n"];
     [resultString appendFormat:@" cmdsize %u\n", loadCommand.cmdsize];
+}
+
+- (BOOL)mustUnderstandToExecute;
+{
+    return mustUnderstandToExecute;
 }
 
 @end

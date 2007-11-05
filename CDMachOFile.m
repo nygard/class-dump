@@ -267,8 +267,17 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
         [setFlags addObject:@"BINDS_TO_WEAK"];
     if (flags & MH_ALLOW_STACK_EXECUTION)
         [setFlags addObject:@"ALLOW_STACK_EXECUTION"];
-    if (flags & LC_REQ_DYLD)
-        [setFlags addObject:@"REQ_DYLD"];
+#if 0
+    // 10.5 only, but I'm still using the 10.4 sdk.
+    if (flags & MH_ROOT_SAFE)
+        [setFlags addObject:@"ROOT_SAFE"];
+    if (flags & MH_SETUID_SAFE)
+        [setFlags addObject:@"SETUID_SAFE"];
+    if (flags & MH_NO_REEXPORTED_DYLIBS)
+        [setFlags addObject:@"NO_REEXPORTED_DYLIBS"];
+    if (flags & MH_PIE)
+        [setFlags addObject:@"PIE"];
+#endif
 
     return [setFlags componentsJoinedByString:@" "];
 }

@@ -14,6 +14,7 @@
     CDMachOFile *nonretainedMachOFile;
 
     struct load_command loadCommand;
+    BOOL mustUnderstandToExecute;
 }
 
 + (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
@@ -30,5 +31,7 @@
 - (NSString *)extraDescription;
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
+
+- (BOOL)mustUnderstandToExecute;
 
 @end

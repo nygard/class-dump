@@ -204,6 +204,7 @@ int main(int argc, char *argv[])
 #if 0
                 [classDump showHeader];
                 [classDump showLoadCommands];
+                exit(5);
 #endif
                 [classDump processObjectiveCSegments];
                 [classDump registerStuff];
