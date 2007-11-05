@@ -48,9 +48,6 @@
     NSString *preferredArchName;
 }
 
-+ (NSString *)currentPublicID;
-+ (NSString *)currentSystemID;
-
 - (id)init;
 - (void)dealloc;
 

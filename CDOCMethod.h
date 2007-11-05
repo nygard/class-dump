@@ -23,7 +23,6 @@
 - (unsigned long)imp;
 
 - (NSString *)description;
-- (void)addToXMLElement:(NSXMLElement *)xmlElement asClassMethod:(BOOL)asClassMethod classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;

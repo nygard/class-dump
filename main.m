@@ -38,7 +38,6 @@ void print_usage(void)
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
             "        --list-arches  list the arches in the file, then exit\n"
-            //"        -x             generate XML output\n"
             ,
             [CLASS_DUMP_VERSION UTF8String]
        );
@@ -86,7 +85,7 @@ int main(int argc, char *argv[])
     multiFileVisitor = [[[CDMultiFileVisitor alloc] init] autorelease];
     [multiFileVisitor setClassDump:classDump];
 
-    while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsStx", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH:
           {
