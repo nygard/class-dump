@@ -6,6 +6,8 @@
 #include <mach-o/arch.h>
 #include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
+
+#import "CDDataCursor.h"
 #import "CDFatArch.h"
 #import "CDMachOFile.h"
 
@@ -16,8 +18,16 @@
 
 - (id)initWithData:(NSData *)someData;
 {
+    CDDataCursor *cursor;
+    unsigned int magicNumber;
+
     if ([super init] == nil)
         return nil;
+
+    cursor = [[CDDataCursor alloc] initWithData:someData];
+    [cursor readBigInt32:&magicNumber];
+    NSLog(@"magic: 0x%x", magicNumber);
+    [cursor release];
 
     return self;
 }
