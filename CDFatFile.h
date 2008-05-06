@@ -19,18 +19,17 @@
 
 @interface CDFatFile : NSObject
 {
-    NSString *filename;
     NSData *data;
     struct fat_header header;
     NSMutableArray *arches;
 }
 
+- (id)initWithData:(NSData *)someData;
+
 - (id)initWithFilename:(NSString *)aFilename;
 - (void)dealloc;
 
 - (void)_processFatArchesWithPointer:(const void *)ptr swapBytes:(BOOL)shouldSwapBytes;
-
-- (NSString *)filename;
 
 - (unsigned int)fatCount;
 

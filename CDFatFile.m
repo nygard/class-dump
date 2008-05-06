@@ -14,6 +14,14 @@
 
 @implementation CDFatFile
 
+- (id)initWithData:(NSData *)someData;
+{
+    if ([super init] == nil)
+        return nil;
+
+    return self;
+}
+
 - (id)initWithFilename:(NSString *)aFilename;
 {
     BOOL shouldSwapBytes;
@@ -22,11 +30,10 @@
         return nil;
 
     shouldSwapBytes = NO;
-    filename = [aFilename retain];
 
-    data = [[NSData alloc] initWithContentsOfMappedFile:filename];
+    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
     if (data == nil) {
-        NSLog(@"Couldn't read file: %@", filename);
+        NSLog(@"Couldn't read file: %@", aFilename);
         [self release];
         return nil;
     }
@@ -50,7 +57,6 @@
 
 - (void)dealloc;
 {
-    [filename release];
     [data release];
     [arches release];
 
@@ -70,11 +76,6 @@
         [fatArch release];
         ptr += sizeof(struct fat_arch);
     }
-}
-
-- (NSString *)filename;
-{
-    return filename;
 }
 
 - (unsigned int)fatCount;
@@ -131,7 +132,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%p]CDFatFile with %u arches", self, [self fatCount]];
+    return [NSString stringWithFormat:@"[%p] CDFatFile with %u arches", self, [self fatCount]];
 #if 0
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x",
                      header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];

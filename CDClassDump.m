@@ -333,8 +333,18 @@
 // Return YES if successful, NO if there was an error.
 - (BOOL)_processFilename:(NSString *)aFilename;
 {
+    NSData *data;
     CDFatFile *aFatFile;
     CDMachOFile *aMachOFile;
+
+    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
+    {
+        CDFatFile *f1;
+
+        f1 = [[CDFatFile alloc] initWithData:data];
+        NSLog(@"f1: %@", f1);
+        [f1 release];
+    }
 
     // TODO (2005-07-08): This isn't good enough.  You only have your
     // choice on the main file.  Link frameworks MUST be the same
@@ -373,6 +383,8 @@
         }
     } else {
         CDFatArch *fatArch;
+
+        NSLog(@"aFatFile: %@", aFatFile);
 
         fatArch = [aFatFile fatArchWithName:preferredArchName];
         if (fatArch == nil) {
