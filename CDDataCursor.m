@@ -51,12 +51,12 @@
 }
 
 // Return NO on failure.
-- (BOOL)readLittleInt16:(unsigned short *)value;
+- (BOOL)readLittleInt16:(uint16_t *)value;
 {
-    if (offset + sizeof(unsigned short) <= [data length]) {
+    if (offset + sizeof(uint16_t) <= [data length]) {
         if (value != NULL)
             *value = OSReadLittleInt16([data bytes], offset);
-        offset += sizeof(unsigned short);
+        offset += sizeof(uint16_t);
     } else {
         NSLog(@"%s, Trying to read past end.", _cmd);
         return NO;
@@ -66,12 +66,12 @@
 }
 
 // Return NO on failure.
-- (BOOL)readLittleInt32:(unsigned int *)value;
+- (BOOL)readLittleInt32:(uint32_t *)value;
 {
-    if (offset + sizeof(unsigned int) <= [data length]) {
+    if (offset + sizeof(uint32_t) <= [data length]) {
         if (value != NULL)
             *value = OSReadLittleInt32([data bytes], offset);
-        offset += sizeof(unsigned int);
+        offset += sizeof(uint32_t);
     } else {
         NSLog(@"%s, Trying to read past end.", _cmd);
         return NO;
@@ -81,12 +81,12 @@
 }
 
 // Return NO on failure.
-- (BOOL)readBigInt16:(unsigned short *)value;
+- (BOOL)readBigInt16:(uint16_t *)value;
 {
-    if (offset + sizeof(unsigned short) <= [data length]) {
+    if (offset + sizeof(uint16_t) <= [data length]) {
         if (value != NULL)
             *value = OSReadBigInt16([data bytes], offset);
-        offset += sizeof(unsigned short);
+        offset += sizeof(uint16_t);
     } else {
         NSLog(@"%s, Trying to read past end.", _cmd);
         return NO;
@@ -96,12 +96,12 @@
 }
 
 // Return NO on failure.
-- (BOOL)readBigInt32:(unsigned int *)value;
+- (BOOL)readBigInt32:(uint32_t *)value;
 {
-    if (offset + sizeof(unsigned int) <= [data length]) {
+    if (offset + sizeof(uint32_t) <= [data length]) {
         if (value != NULL)
             *value = OSReadBigInt32([data bytes], offset);
-        offset += sizeof(unsigned int);
+        offset += sizeof(uint32_t);
     } else {
         NSLog(@"%s, Trying to read past end.", _cmd);
         return NO;

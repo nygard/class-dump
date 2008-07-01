@@ -20,11 +20,11 @@
 - (NSUInteger)offset;
 - (BOOL)seekToPosition:(NSUInteger)newOffset;
 
-- (BOOL)readLittleInt16:(unsigned short *)value;
-- (BOOL)readLittleInt32:(unsigned int *)value;
+- (BOOL)readLittleInt16:(uint16_t *)value;
+- (BOOL)readLittleInt32:(uint32_t *)value;
 
-- (BOOL)readBigInt16:(unsigned short *)value;
-- (BOOL)readBigInt32:(unsigned int *)value;
+- (BOOL)readBigInt16:(uint16_t *)value;
+- (BOOL)readBigInt32:(uint32_t *)value;
 
 - (BOOL)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
 - (NSData *)readDataWithLength:(NSUInteger)length;
