@@ -4,14 +4,23 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
 
 #import <Foundation/NSObject.h>
-#include <mach-o/fat.h>
+
+@class CDDataCursor;
 
 @interface CDFatArch : NSObject
 {
-    struct fat_arch arch;
+    cpu_type_t cputype;
+    cpu_subtype_t cpusubtype;
+    uint32_t offset;
+    uint32_t size;
+    uint32_t align;
+
+    BOOL uses64BitABI;
+
+    //CDMachOFile *machOFile; // Lazily create this.
 }
 
-- (id)initWithPointer:(const void *)ptr swapBytes:(BOOL)shouldSwapBytes;
+- (id)initWithDataCursor:(CDDataCursor *)cursor;
 - (void)dealloc;
 
 - (cpu_type_t)cpuType;
@@ -19,6 +28,8 @@
 - (uint32_t)offset;
 - (uint32_t)size;
 - (uint32_t)align;
+
+- (BOOL)uses64BitABI;
 
 - (NSString *)description;
 
