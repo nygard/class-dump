@@ -345,6 +345,7 @@
         NSLog(@"f1: %@", f1);
         [f1 release];
     }
+    [data release];
 
     // TODO (2005-07-08): This isn't good enough.  You only have your
     // choice on the main file.  Link frameworks MUST be the same
