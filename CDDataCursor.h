@@ -9,6 +9,7 @@
 {
     NSData *data;
     NSUInteger offset;
+    BOOL isLittleEndian;
 }
 
 - (id)initWithData:(NSData *)someData;
@@ -25,6 +26,12 @@
 
 - (BOOL)readBigInt16:(uint16_t *)value;
 - (BOOL)readBigInt32:(uint32_t *)value;
+
+- (BOOL)isLittleEndian;
+- (void)setIsLittleEndian:(BOOL)newFlag;
+
+- (BOOL)readInt16:(uint16_t *)value;
+- (BOOL)readInt32:(uint32_t *)value;
 
 - (BOOL)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
 - (NSData *)readDataWithLength:(NSUInteger)length;

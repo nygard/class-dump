@@ -12,6 +12,7 @@
 
     data = [someData retain];
     offset = 0;
+    isLittleEndian = YES;
 
     return self;
 }
@@ -108,6 +109,32 @@
     }
 
     return YES;
+}
+
+- (BOOL)isLittleEndian;
+{
+    return isLittleEndian;
+}
+
+- (void)setIsLittleEndian:(BOOL)newFlag;
+{
+    isLittleEndian = newFlag;
+}
+
+- (BOOL)readInt16:(uint16_t *)value;
+{
+    if (isLittleEndian)
+        return [self readLittleInt16:value];
+
+    return [self readBigInt16:value];
+}
+
+- (BOOL)readInt32:(uint32_t *)value;
+{
+    if (isLittleEndian)
+        return [self readLittleInt32:value];
+
+    return [self readBigInt32:value];
 }
 
 // Return NO on failure.
