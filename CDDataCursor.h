@@ -5,11 +5,17 @@
 
 #import <Foundation/Foundation.h>
 
+enum {
+    CDByteOrderLittleEndian = 0,
+    CDByteOrderBigEndian = 1,
+};
+typedef NSUInteger CDByteOrder;
+
 @interface CDDataCursor : NSObject
 {
     NSData *data;
     NSUInteger offset;
-    BOOL isLittleEndian;
+    CDByteOrder byteOrder;
 }
 
 - (id)initWithData:(NSData *)someData;
@@ -27,8 +33,8 @@
 - (BOOL)readBigInt16:(uint16_t *)value;
 - (BOOL)readBigInt32:(uint32_t *)value;
 
-- (BOOL)isLittleEndian;
-- (void)setIsLittleEndian:(BOOL)newFlag;
+- (CDByteOrder)byteOrder;
+- (void)setByteOrder:(CDByteOrder)newByteOrder;
 
 - (BOOL)readInt16:(uint16_t *)value;
 - (BOOL)readInt32:(uint32_t *)value;

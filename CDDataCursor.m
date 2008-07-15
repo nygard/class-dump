@@ -12,7 +12,7 @@
 
     data = [someData retain];
     offset = 0;
-    isLittleEndian = YES;
+    byteOrder = CDByteOrderLittleEndian;
 
     return self;
 }
@@ -111,19 +111,19 @@
     return YES;
 }
 
-- (BOOL)isLittleEndian;
+- (CDByteOrder)byteOrder;
 {
-    return isLittleEndian;
+    return byteOrder;
 }
 
-- (void)setIsLittleEndian:(BOOL)newFlag;
+- (void)setByteOrder:(CDByteOrder)newByteOrder;
 {
-    isLittleEndian = newFlag;
+    byteOrder = newByteOrder;
 }
 
 - (BOOL)readInt16:(uint16_t *)value;
 {
-    if (isLittleEndian)
+    if (byteOrder == CDByteOrderLittleEndian)
         return [self readLittleInt16:value];
 
     return [self readBigInt16:value];
@@ -131,7 +131,7 @@
 
 - (BOOL)readInt32:(uint32_t *)value;
 {
-    if (isLittleEndian)
+    if (byteOrder == CDByteOrderLittleEndian)
         return [self readLittleInt32:value];
 
     return [self readBigInt32:value];
