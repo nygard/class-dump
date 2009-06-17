@@ -3,7 +3,7 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
 
-#import <Foundation/NSObject.h>
+#import "CDFile.h"
 
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 #include <mach-o/loader.h>
@@ -20,7 +20,7 @@
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
 @end
 
-@interface CDMachOFile : NSObject
+@interface CDMachOFile : CDFile
 {
     //NSString *filename;
     NSData *data;
@@ -44,12 +44,13 @@
     id nonretainedDelegate;
 }
 
-extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
-
 + (id)machOFileWithFilename:(NSString *)aFilename;
 
 - (id)initWithData:(NSData *)_data;
 - (void)dealloc;
+
+- (NSString *)bestMatchForLocalArch;
+- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
 
 - (NSString *)filename;
 

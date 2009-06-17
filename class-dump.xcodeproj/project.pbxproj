@@ -202,6 +202,7 @@
 		013182FE0CDF6EE400EC5A2C /* CDStructHandlingUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7B08AE9E45003E99F8 /* CDStructHandlingUnitTest.m */; };
 		013182FF0CDF6EE400EC5A2C /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
 		017F9C9A0DD0F66400EC8D0A /* CDDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F9C990DD0F66400EC8D0A /* CDDataCursor.m */; };
+		01FB21E40FE926D60081556C /* CDFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 01FB21E30FE926D60081556C /* CDFile.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -338,6 +339,8 @@
 		017F9C990DD0F66400EC8D0A /* CDDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDataCursor.m; sourceTree = "<group>"; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
+		01FB21E20FE926D60081556C /* CDFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDFile.h; sourceTree = "<group>"; };
+		01FB21E30FE926D60081556C /* CDFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDFile.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump_Prefix.pch"; sourceTree = "<group>"; };
 		8DD76FA10486AA7600D96B5E /* class-dump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "class-dump"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -427,18 +430,20 @@
 		012E2AA708AE9C54003E99F8 /* Mach-O */ = {
 			isa = PBXGroup;
 			children = (
+				01FB21E20FE926D60081556C /* CDFile.h */,
+				01FB21E30FE926D60081556C /* CDFile.m */,
+				012E2AC008AE9CDC003E99F8 /* CDFatFile.h */,
+				012E2AC108AE9CDC003E99F8 /* CDFatFile.m */,
+				012E2AC408AE9CDC003E99F8 /* CDMachOFile.h */,
+				012E2AC508AE9CDC003E99F8 /* CDMachOFile.m */,
 				012E2ABA08AE9CDC003E99F8 /* CDDylibCommand.h */,
 				012E2ABB08AE9CDC003E99F8 /* CDDylibCommand.m */,
 				012E2ABC08AE9CDC003E99F8 /* CDDynamicSymbolTable.h */,
 				012E2ABD08AE9CDC003E99F8 /* CDDynamicSymbolTable.m */,
 				012E2ABE08AE9CDC003E99F8 /* CDFatArch.h */,
 				012E2ABF08AE9CDC003E99F8 /* CDFatArch.m */,
-				012E2AC008AE9CDC003E99F8 /* CDFatFile.h */,
-				012E2AC108AE9CDC003E99F8 /* CDFatFile.m */,
 				012E2AC208AE9CDC003E99F8 /* CDLoadCommand.h */,
 				012E2AC308AE9CDC003E99F8 /* CDLoadCommand.m */,
-				012E2AC408AE9CDC003E99F8 /* CDMachOFile.h */,
-				012E2AC508AE9CDC003E99F8 /* CDMachOFile.m */,
 				012E2AC608AE9CDC003E99F8 /* CDSection.h */,
 				012E2AC708AE9CDC003E99F8 /* CDSection.m */,
 				012E2AC808AE9CDC003E99F8 /* CDSegmentCommand.h */,
@@ -934,6 +939,7 @@
 				0112625C0C21909400B9C4E0 /* CDTextClassDumpVisitor.m in Sources */,
 				0114EE6E0CDCC4880061F80F /* NSError-CDExtensions.m in Sources */,
 				017F9C9A0DD0F66400EC8D0A /* CDDataCursor.m in Sources */,
+				01FB21E40FE926D60081556C /* CDFile.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

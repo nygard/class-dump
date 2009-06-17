@@ -40,75 +40,168 @@
 }
 
 // Return NO on failure.
-- (BOOL)seekToPosition:(NSUInteger)newOffset;
+- (void)seekToPosition:(NSUInteger)newOffset;
 {
     if (newOffset <= [data length]) {
         offset = newOffset;
-        return YES;
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to seek past end of data."];
     }
-
-    NSLog(@"Trying to seek past end.");
-    return NO;
 }
 
-// Return NO on failure.
-- (BOOL)readLittleInt16:(uint16_t *)value;
+- (void)advanceByLength:(NSUInteger)length;
 {
-    if (offset + sizeof(uint16_t) <= [data length]) {
-        if (value != NULL)
-            *value = OSReadLittleInt16([data bytes], offset);
-        offset += sizeof(uint16_t);
-    } else {
-        NSLog(@"%s, Trying to read past end.", _cmd);
-        return NO;
-    }
-
-    return YES;
+    [self seekToPosition:offset + length];
 }
 
-// Return NO on failure.
-- (BOOL)readLittleInt32:(uint32_t *)value;
+- (NSUInteger)remaining;
 {
-    if (offset + sizeof(uint32_t) <= [data length]) {
-        if (value != NULL)
-            *value = OSReadLittleInt32([data bytes], offset);
-        offset += sizeof(uint32_t);
-    } else {
-        NSLog(@"%s, Trying to read past end.", _cmd);
-        return NO;
-    }
-
-    return YES;
+    return [data length] - offset;
 }
 
-// Return NO on failure.
-- (BOOL)readBigInt16:(uint16_t *)value;
+- (uint8_t)readByte;
 {
-    if (offset + sizeof(uint16_t) <= [data length]) {
-        if (value != NULL)
-            *value = OSReadBigInt16([data bytes], offset);
-        offset += sizeof(uint16_t);
-    } else {
-        NSLog(@"%s, Trying to read past end.", _cmd);
-        return NO;
-    }
+    const uint8_t *ptr;
 
-    return YES;
+    ptr = [data bytes] + offset;
+    offset += 1;
+
+    return *ptr;
 }
 
-// Return NO on failure.
-- (BOOL)readBigInt32:(uint32_t *)value;
+- (uint16_t)readLittleInt16;
 {
-    if (offset + sizeof(uint32_t) <= [data length]) {
-        if (value != NULL)
-            *value = OSReadBigInt32([data bytes], offset);
-        offset += sizeof(uint32_t);
+    uint16_t result;
+
+    if (offset + sizeof(result) <= [data length]) {
+        result = OSReadLittleInt16([data bytes], offset);
+        offset += sizeof(result);
     } else {
-        NSLog(@"%s, Trying to read past end.", _cmd);
-        return NO;
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        result = 0;
     }
 
-    return YES;
+    return result;
+}
+
+- (uint32_t)readLittleInt32;
+{
+    uint32_t result;
+
+    if (offset + sizeof(result) <= [data length]) {
+        result = OSReadLittleInt32([data bytes], offset);
+        offset += sizeof(result);
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        result = 0;
+    }
+
+    return result;
+}
+
+- (uint64_t)readLittleInt64;
+{
+    uint64_t result;
+
+    if (offset + sizeof(result) <= [data length]) {
+        result = OSReadLittleInt64([data bytes], offset);
+        offset += sizeof(result);
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        result = 0;
+    }
+
+    return result;
+}
+
+- (uint16_t)readBigInt16;
+{
+    uint16_t result;
+
+    if (offset + sizeof(result) <= [data length]) {
+        result = OSReadBigInt16([data bytes], offset);
+        offset += sizeof(result);
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        result = 0;
+    }
+
+    return result;
+}
+
+- (uint32_t)readBigInt32;
+{
+    uint32_t result;
+
+    if (offset + sizeof(result) <= [data length]) {
+        result = OSReadBigInt32([data bytes], offset);
+        offset += sizeof(result);
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        result = 0;
+    }
+
+    return result;
+}
+
+- (uint64_t)readBigInt64;
+{
+    uint64_t result;
+
+    if (offset + sizeof(result) <= [data length]) {
+        result = OSReadBigInt64([data bytes], offset);
+        offset += sizeof(result);
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        result = 0;
+    }
+
+    return result;
+}
+
+- (float)readLittleFloat32;
+{
+    uint32_t val;
+
+    val = [self readLittleInt32];
+    return *(float *)&val;
+}
+
+- (float)readBigFloat32;
+{
+    uint32_t val;
+
+    val = [self readBigInt32];
+    return *(float *)&val;
+}
+
+- (double)readLittleFloat64;
+{
+    uint32_t v1, v2, *ptr;
+    double dval;
+
+    v1 = [self readLittleInt32];
+    v2 = [self readLittleInt32];
+    ptr = (uint32_t *)&dval;
+    *ptr++ = v1;
+    *ptr++ = v2;
+
+    return dval;
+}
+
+- (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
+{
+    if (offset + length <= [data length]) {
+        [targetData appendBytes:[self bytes] length:length];
+        offset += length;
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+    }
+}
+
+- (BOOL)isAtEnd;
+{
+    return offset >= [data length];
 }
 
 - (CDByteOrder)byteOrder;
@@ -121,50 +214,32 @@
     byteOrder = newByteOrder;
 }
 
-- (BOOL)readInt16:(uint16_t *)value;
+//
+// Read using the current byteOrder
+//
+
+- (uint16_t)readInt16;
 {
     if (byteOrder == CDByteOrderLittleEndian)
-        return [self readLittleInt16:value];
+        return [self readLittleInt16];
 
-    return [self readBigInt16:value];
+    return [self readBigInt16];
 }
 
-- (BOOL)readInt32:(uint32_t *)value;
+- (uint32_t)readInt32;
 {
     if (byteOrder == CDByteOrderLittleEndian)
-        return [self readLittleInt32:value];
+        return [self readLittleInt32];
 
-    return [self readBigInt32:value];
+    return [self readBigInt32];
 }
 
-// Return NO on failure.
-- (BOOL)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
+- (uint64_t)readInt64;
 {
-    if (offset + length <= [data length]) {
-        [targetData appendBytes:([self bytes] + offset) length:length];
-        offset += length;
-    } else {
-        NSLog(@"%s, Trying to read past end.", _cmd);
-        return NO;
-    }
+    if (byteOrder == CDByteOrderLittleEndian)
+        return [self readLittleInt64];
 
-    return YES;
-}
-
-// Return nil on failure.
-- (NSData *)readDataWithLength:(NSUInteger)length;
-{
-    NSData *result = nil;
-
-    if (offset + length <= [data length]) {
-        // No copy didn't work... alignment problems.  Let's not worry about efficiency for now.
-        result = [NSData dataWithBytes:([self bytes] + offset) length:length];
-        offset += length;
-    } else {
-        NSLog(@"%s, Trying to read past end.", _cmd);
-    }
-
-    return result;
+    return [self readBigInt64];
 }
 
 @end

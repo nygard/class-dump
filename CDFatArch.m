@@ -16,35 +16,11 @@
     if ([super init] == nil)
         return nil;
 
-    if ([cursor readBigInt32:(uint32_t *)&cputype] == NO) {
-        NSLog(@"cputype read failed");
-        [self release];
-        return nil;
-    }
-
-    if ([cursor readBigInt32:(uint32_t *)&cpusubtype] == NO) {
-        NSLog(@"cpu subtype read failed");
-        [self release];
-        return nil;
-    }
-
-    if ([cursor readBigInt32:&offset] == NO) {
-        NSLog(@"size offset failed");
-        [self release];
-        return nil;
-    }
-
-    if ([cursor readBigInt32:&size] == NO) {
-        NSLog(@"size read failed");
-        [self release];
-        return nil;
-    }
-
-    if ([cursor readBigInt32:&align] == NO) {
-        NSLog(@"align read failed");
-        [self release];
-        return nil;
-    }
+    cputype = [cursor readBigInt32];
+    cpusubtype = [cursor readBigInt32];
+    offset = [cursor readBigInt32];
+    size = [cursor readBigInt32];
+    align = [cursor readBigInt32];
 
     uses64BitABI = (cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
     cputype &= ~CPU_ARCH_MASK;
@@ -103,6 +79,12 @@
         return CDNameForCPUType(cputype | CPU_ARCH_ABI64, cpusubtype);
 
     return CDNameForCPUType(cputype, cpusubtype);
+}
+
+- (CDMachOFile *)machOFile;
+{
+    NSLog(@"CDFatArch %s", _cmd);
+    return nil;
 }
 
 @end

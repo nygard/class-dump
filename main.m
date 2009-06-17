@@ -15,6 +15,7 @@
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"
 #import "CDMultiFileVisitor.h"
+#import "CDFile.h"
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
 
@@ -27,7 +28,7 @@ void print_usage(void)
             "  where options are:\n"
             "        -a             show instance variable offsets\n"
             "        -A             show implementation addresses\n"
-            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc7400, ppc64, i386, x86_64, etc.)\n"
+            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64)\n"
             "        -C <regex>     only display classes matching regular expression\n"
             "        -f <str>       find string in method name\n"
             "        -H             generate header files in current directory, or directory specified with -o\n"
@@ -55,6 +56,7 @@ int main(int argc, char *argv[])
     NSString *searchString = nil;
     BOOL shouldGenerateSeparateHeaders = NO;
     BOOL shouldListArches = NO;
+    NSString *archName = nil;
 
     int ch;
     BOOL errorFlag = NO;
@@ -87,19 +89,18 @@ int main(int argc, char *argv[])
 
     while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
         switch (ch) {
-          case CD_OPT_ARCH:
-          {
+          case CD_OPT_ARCH: {
               const NXArchInfo *archInfo;
 
               archInfo = NXGetArchInfoFromName(optarg);
               if (archInfo == NULL) {
-                  fprintf(stderr, "class-dump: Unknown arch %s\n\n", optarg);
+                  fprintf(stderr, "Error: Unknown arch %s\n\n", optarg);
                   errorFlag = YES;
               } else {
-                  [classDump setPreferredArchName:[NSString stringWithUTF8String:optarg]];
+                  archName = [NSString stringWithUTF8String:optarg];
               }
-          }
               break;
+          }
 
           case CD_OPT_LIST_ARCHES:
               shouldListArches = YES;
@@ -113,8 +114,7 @@ int main(int argc, char *argv[])
               [classDump setShouldShowMethodAddresses:YES];
               break;
 
-          case 'C':
-          {
+          case 'C': {
               NSString *errorMessage;
 
               if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
@@ -125,8 +125,7 @@ int main(int argc, char *argv[])
               break;
           }
 
-          case 'f':
-          {
+          case 'f': {
               shouldFind = YES;
 
               searchString = [NSString stringWithUTF8String:optarg];
@@ -199,6 +198,54 @@ int main(int argc, char *argv[])
                 }
             }
         } else {
+            {
+                NSString *p2;
+                CDFile *file;
+                NSData *data;
+
+                p2 = [CDClassDump executablePathForFilename:path];
+                NSLog(@"path: %@", path);
+                NSLog(@"p2:   %@", p2);
+
+                data = [[NSData alloc] initWithContentsOfMappedFile:p2];
+                file = [CDFile fileWithData:data];
+                if (file == nil) {
+                    fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [p2 UTF8String]);
+                    exit(1);
+                }
+
+                if (archName == nil) {
+                    archName = [file bestMatchForLocalArch];
+                    //NSLog(@"No arch specified, best match for local arch is: %@", archName);
+                } else {
+                    //NSLog(@"chosen arch: %@", archName);
+                }
+
+                [classDump setTargetArchName:archName];
+
+                [data release];
+
+                {
+                    const NXArchInfo *archInfo;
+                    const NXArchInfo *allArches, *ptr;
+
+                    archInfo = NXGetLocalArchInfo();
+                    if (archInfo == NULL) {
+                        NSLog(@"Couldn't get local architecture");
+                    }
+
+                    NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
+
+                    ptr = allArches = NXGetAllArchInfos();
+                    while (ptr->name != NULL) {
+                        NSLog(@"cputype: %08x, cpusubtype: %08x, byteorder: %08x, name: %s, description: %s",
+                              ptr->cputype, ptr->cpusubtype, ptr->byteorder, ptr->name, ptr->description);
+                        ptr++;
+                    }
+                }
+
+            }
+            exit(0);
             if ([classDump processFilename:path] == YES) {
 #if 0
                 [classDump showHeader];

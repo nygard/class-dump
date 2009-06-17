@@ -45,7 +45,7 @@
     CDTypeFormatter *methodTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 
-    NSString *preferredArchName;
+    NSString *targetArchName;
 }
 
 - (id)init;
@@ -84,8 +84,8 @@
 - (NSArray *)machOFiles;
 - (NSArray *)objCSegmentProcessors;
 
-- (NSString *)preferredArchName;
-- (void)setPreferredArchName:(NSString *)newArchName;
+- (NSString *)targetArchName;
+- (void)setTargetArchName:(NSString *)newArchName;
 
 - (BOOL)containsObjectiveCSegments;
 - (CDStructureTable *)structureTable;

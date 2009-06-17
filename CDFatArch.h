@@ -6,6 +6,7 @@
 #import <Foundation/NSObject.h>
 
 @class CDDataCursor;
+@class CDMachOFile;
 
 @interface CDFatArch : NSObject
 {
@@ -34,5 +35,7 @@
 - (NSString *)description;
 
 - (NSString *)archName;
+
+- (CDMachOFile *)machOFile;
 
 @end

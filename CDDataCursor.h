@@ -25,21 +25,35 @@ typedef NSUInteger CDByteOrder;
 - (const void *)bytes;
 
 - (NSUInteger)offset;
-- (BOOL)seekToPosition:(NSUInteger)newOffset;
+- (void)seekToPosition:(NSUInteger)newOffset;
+- (void)advanceByLength:(NSUInteger)length;
+- (NSUInteger)remaining;
 
-- (BOOL)readLittleInt16:(uint16_t *)value;
-- (BOOL)readLittleInt32:(uint32_t *)value;
+- (uint8_t)readByte;
 
-- (BOOL)readBigInt16:(uint16_t *)value;
-- (BOOL)readBigInt32:(uint32_t *)value;
+- (uint16_t)readLittleInt16;
+- (uint32_t)readLittleInt32;
+- (uint64_t)readLittleInt64;
+
+- (uint16_t)readBigInt16;
+- (uint32_t)readBigInt32;
+- (uint64_t)readBigInt64;
+
+- (float)readLittleFloat32;
+- (float)readBigFloat32;
+
+- (double)readLittleFloat64;
+//- (double)readBigFloat64;
+
+- (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
+- (BOOL)isAtEnd;
 
 - (CDByteOrder)byteOrder;
 - (void)setByteOrder:(CDByteOrder)newByteOrder;
 
-- (BOOL)readInt16:(uint16_t *)value;
-- (BOOL)readInt32:(uint32_t *)value;
-
-- (BOOL)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
-- (NSData *)readDataWithLength:(NSUInteger)length;
+// Read using the current byteOrder
+- (uint16_t)readInt16;
+- (uint32_t)readInt32;
+- (uint64_t)readInt64;
 
 @end

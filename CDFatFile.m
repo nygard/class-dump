@@ -19,17 +19,13 @@
     CDDataCursor *cursor;
     unsigned int magicNumber, count, index;
 
-    if ([super init] == nil)
+    if ([super initWithData:data] == nil)
         return nil;
 
     arches = [[NSMutableArray alloc] init];
 
     cursor = [[CDDataCursor alloc] initWithData:data];
-    if ([cursor readBigInt32:&magicNumber] == NO) {
-        [cursor release];
-        [self release];
-        return nil;
-    }
+    magicNumber = [cursor readBigInt32];
 
     NSLog(@"magic: 0x%x", magicNumber);
     if (magicNumber != FAT_MAGIC) {
@@ -38,12 +34,7 @@
         return nil;
     }
 
-    if ([cursor readBigInt32:&count] == NO) {
-        [cursor release];
-        [self release];
-        return nil;
-    }
-
+    count = [cursor readBigInt32];
     NSLog(@"count: %u", count);
     for (index = 0; index < count; index++) {
         CDFatArch *arch;
@@ -67,44 +58,77 @@
     [super dealloc];
 }
 
-- (CDFatArch *)fatArchWithName:(NSString *)archName;
+
+// Case 1: no arch specified
+//  - check main file for these, then lock down on that arch:
+//    - local arch, 32 bit
+//    - local arch, 64 bit
+//    - any arch, 32 bit
+//    - any arch, 64 bit
+//
+// Case 2: you specified a specific arch (i386, x86_64, ppc, ppc7400, ppc64, etc.)
+//  - only that arch
+//
+// In either case, we can ignore the cpu subtype
+
+- (NSString *)bestMatchForLocalArch;
 {
-    if (archName == nil) {
-        CDFatArch *fatArch;
+    const NXArchInfo *archInfo;
+    cpu_type_t targetType;
 
-        fatArch = [self localArchitecture];
-        if (fatArch == nil && [arches count] > 0)
-            fatArch = [arches objectAtIndex:0];
-
-        return fatArch;
+    archInfo = NXGetLocalArchInfo();
+    if (archInfo == NULL) {
+        fprintf(stderr, "Error: Couldn't get local architecture\n");
+        return nil;
     }
 
-    return [self _fatArchWithName:archName];
-}
+    targetType = archInfo->cputype & ~CPU_ARCH_MASK;
 
-- (CDFatArch *)_fatArchWithName:(NSString *)archName;
-{
-    for (CDFatArch *arch in arches)
-        if ([[arch archName] isEqual:archName])
-            return arch;
+    // This architecture, 32 bit
+    for (CDFatArch *fatArch in arches) {
+        if ([fatArch cpuType] == targetType && [fatArch uses64BitABI] == NO)
+            return [fatArch archName];
+    }
+
+    // This architecture, 64 bit
+    for (CDFatArch *fatArch in arches) {
+        if ([fatArch cpuType] == targetType && [fatArch uses64BitABI])
+            return [fatArch archName];
+    }
+
+    // Any architecture, 32 bit
+    for (CDFatArch *fatArch in arches) {
+        if ([fatArch uses64BitABI] == NO)
+            return [fatArch archName];
+    }
+
+    // Any architecture, 64 bit
+    for (CDFatArch *fatArch in arches) {
+        if ([fatArch uses64BitABI])
+            return [fatArch archName];
+    }
+
+    // Any architecture
+    if ([arches count] > 0)
+        return [arches objectAtIndex:0];
 
     return nil;
 }
 
-- (CDFatArch *)localArchitecture;
+- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
 {
     const NXArchInfo *archInfo;
 
-    archInfo = NXGetLocalArchInfo();
-    if (archInfo == NULL) {
-        NSLog(@"Couldn't get local architecture");
+    archInfo = NXGetArchInfoFromName([name UTF8String]);
+    if (archInfo == NULL)
         return nil;
+
+    for (CDFatArch *arch in arches) {
+        if ([arch cpuType] == archInfo->cputype)
+            return [arch machOFile];
     }
 
-    //NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
-
-    // TODO (2007-11-04): Hmm.  Search first for exact match, then fall back to main cputype.
-    return [self _fatArchWithName:CDNameForCPUType(archInfo->cputype, archInfo->cpusubtype)];
+    return nil;
 }
 
 - (NSString *)description;

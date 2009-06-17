@@ -58,7 +58,7 @@
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
     // These can be ppc, ppc7400, ppc64, i386, x86_64
-    preferredArchName = nil; // Any cpu type is fine.
+    targetArchName = nil;
 
     flags.shouldShowHeader = YES;
 
@@ -83,7 +83,7 @@
     if (flags.shouldMatchRegex == YES)
         regfree(&compiledRegex);
 
-    [preferredArchName release];
+    [targetArchName release];
 
     [super dealloc];
 }
@@ -242,18 +242,19 @@
     return objCSegmentProcessors;
 }
 
-- (NSString *)preferredArchName;
+- (NSString *)targetArchName;
 {
-    return preferredArchName;
+    return targetArchName;
 }
 
-- (void)setPreferredArchName:(NSString *)newArchName;
+- (void)setTargetArchName:(NSString *)newArchName;
 {
-    if (newArchName == preferredArchName)
+    NSLog(@"new: %@, old: %@", newArchName, targetArchName);
+    if (newArchName == targetArchName)
         return;
 
-    [preferredArchName release];
-    preferredArchName = [newArchName retain];
+    [targetArchName release];
+    targetArchName = [newArchName retain];
 }
 
 - (BOOL)containsObjectiveCSegments;
@@ -334,7 +335,6 @@
 - (BOOL)_processFilename:(NSString *)aFilename;
 {
     NSData *data;
-    CDFatFile *aFatFile;
     CDMachOFile *aMachOFile;
 
     data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
@@ -352,67 +352,8 @@
     }
     [data release];
 
-    // TODO (2005-07-08): This isn't good enough.  You only have your
-    // choice on the main file.  Link frameworks MUST be the same
-    // architecture, either as a stand-alone Mach-O file or within a fat file.
-
-    // Initial combinations:
-    // 1. macho file, no cpu preference
-    // 2. macho file, cpu preference same as macho file
-    // 3. macho file, cpu preference different from macho file
-    // 4. fat file, no cpu preference
-    // 5. fat file, cpu preference contained in fat file
-    // 6. fat file, cpu preference not contained in fat file
-    //
-    // Actions:
-    // 1, 2, 4, 5: All subsequent files must be same cpu
-    // 3. Print message saying that arch isn't available in this macho file
-    // 6. Print message saying that arch isn't available in this fat file
-    //
-    // For linked frameworks/libraries, if the arch isn't available silently skip?
-
-    aFatFile = [[CDFatFile alloc] initWithFilename:aFilename];
-    if (aFatFile == nil) {
-        aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename];
-        if (aMachOFile == nil) {
-            fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [aFilename fileSystemRepresentation]);
-            return NO;
-        }
-
-        if (preferredArchName == nil) {
-            [self setPreferredArchName:[aMachOFile archName]];
-        } else if ([[aMachOFile archName] isEqual:preferredArchName] == NO) {
-            fprintf(stderr, "class-dump: Mach-O file (%s) does not contain required cpu type: %@.\n",
-                    [aFilename fileSystemRepresentation], [preferredArchName UTF8String]);
-            [aMachOFile release];
-            return NO;
-        }
-    } else {
-        CDFatArch *fatArch;
-
-        NSLog(@"aFatFile: %@", aFatFile);
-
-        fatArch = [aFatFile fatArchWithName:preferredArchName];
-        if (fatArch == nil) {
-            if (preferredArchName == nil)
-                fprintf(stderr, "class-dump: Fat archive (%s) did not contain any cpu types!\n", [aFilename fileSystemRepresentation]);
-            else
-                fprintf(stderr, "class-dump: Fat archive (%s) does not contain required cpu type: %s.\n",
-                        [aFilename fileSystemRepresentation], [preferredArchName UTF8String]);
-            [aFatFile release];
-            return NO;
-        }
-
-        if (preferredArchName == nil) {
-            [self setPreferredArchName:[fatArch archName]];
-        }
-
-        aMachOFile = [[CDMachOFile alloc] initWithFilename:aFilename archiveOffset:[fatArch offset]];
-        [aFatFile release];
-
-        if (aMachOFile == nil)
-            return NO;
-    }
+    // We need to find the macho file with the target arch name, set it to aMachOFile
+    aMachOFile = nil;
 
     [aMachOFile setDelegate:self];
 

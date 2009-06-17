@@ -27,17 +27,6 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [NSString stringWithFormat:@"0x%08x", magic];
 }
 
-NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
-{
-    const NXArchInfo *archInfo;
-
-    archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
-    if (archInfo == NULL)
-        return @"unknown";
-
-    return [NSString stringWithUTF8String:archInfo->name];
-}
-
 @implementation CDMachOFile
 
 // Returns either a CDMachOFile or CDFatFile.
@@ -75,11 +64,7 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
         return nil;
 
     cursor = [[CDDataCursor alloc] initWithData:_data];
-    if ([cursor readLittleInt32:&magic] == NO) {
-        [cursor release];
-        [self release];
-        return nil;
-    }
+    magic = [cursor readLittleInt32];
 
     NSLog(@"magic: 0x%x", magic);
     if (magic == MH_MAGIC) {
@@ -102,9 +87,7 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     NSLog(@"byte order: %d", byteOrder);
     [cursor setByteOrder:byteOrder];
 
-    if ([cursor readInt32:(uint32_t *)&cputype] == NO) {
-        NSLog(@"read failed");
-    }
+    cputype = [cursor readInt32];
     NSLog(@"cputype: 0x%08x", cputype);
 
     _flags.uses64BitABI = (cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
@@ -162,6 +145,25 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     nonretainedDelegate = nil;
 
     [super dealloc];
+}
+
+- (NSString *)bestMatchForLocalArch;
+{
+    return CDNameForCPUType(cputype, cpusubtype);
+}
+
+- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+{
+    const NXArchInfo *archInfo;
+
+    archInfo = NXGetArchInfoFromName([name UTF8String]);
+    if (archInfo == NULL)
+        return nil;
+
+    if (archInfo->cputype == cputype)
+        return self;
+
+    return nil;
 }
 
 - (NSString *)filename;
