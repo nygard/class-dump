@@ -8,6 +8,8 @@
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 #include <mach-o/loader.h>
 
+#import "CDDataCursor.h" // For CDByteOrder
+
 @class NSData;
 @class CDSegmentCommand;
 
@@ -20,14 +22,23 @@
 
 @interface CDMachOFile : NSObject
 {
-    NSString *filename;
-    unsigned int archiveOffset;
+    //NSString *filename;
     NSData *data;
-    struct mach_header header;
-    NSArray *loadCommands;
+
+    uint32_t magic; // This is read in and stored in little endian order.
+    cpu_type_t cputype;
+    cpu_subtype_t cpusubtype;
+    uint32_t filetype;
+    uint32_t flags; // header flags
+
+    CDByteOrder byteOrder;
+
+    //struct mach_header header;
+
+    NSMutableArray *loadCommands;
 
     struct {
-        unsigned int shouldSwapBytes:1;
+        unsigned int uses64BitABI:1;
     } _flags;
 
     id nonretainedDelegate;
@@ -37,15 +48,10 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 
 + (id)machOFileWithFilename:(NSString *)aFilename;
 
-- (id)initWithFilename:(NSString *)aFilename;
-- (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
+- (id)initWithData:(NSData *)_data;
 - (void)dealloc;
 
 - (NSString *)filename;
-
-- (unsigned int)archiveOffset;
-
-- (BOOL)hasDifferentByteOrder;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
@@ -53,11 +59,12 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 - (void)process;
 - (NSArray *)_processLoadCommands;
 
-- (NSArray *)loadCommands;
 - (cpu_type_t)cpuType;
 - (cpu_subtype_t)cpuSubtype;
-- (unsigned long)filetype;
-- (unsigned long)flags;
+- (uint32_t)filetype;
+- (uint32_t)flags;
+
+- (NSArray *)loadCommands;
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
@@ -82,5 +89,8 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 - (NSString *)headerString:(BOOL)isVerbose;
 
 - (NSString *)archName;
+
+// To remove:
+- (BOOL)hasDifferentByteOrder;
 
 @end

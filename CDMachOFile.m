@@ -9,6 +9,7 @@
 #include <mach-o/fat.h>
 #include <mach-o/swap.h>
 
+#import "CDDataCursor.h"
 #import "CDDylibCommand.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
@@ -42,28 +43,79 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 // Returns either a CDMachOFile or CDFatFile.
 + (id)machOFileWithFilename:(NSString *)aFilename;
 {
+    NSData *data;
     CDFatFile *aFatFile;
     CDMachOFile *aMachOFile;
 
-    aFatFile = [[[CDFatFile alloc] initWithFilename:aFilename] autorelease];
+    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
+
+    aFatFile = [[[CDFatFile alloc] initWithData:data] autorelease];
     if (aFatFile == nil) {
-        aMachOFile = [[[CDMachOFile alloc] initWithFilename:aFilename] autorelease];
+        aMachOFile = [[[CDMachOFile alloc] initWithData:data] autorelease];
         if (aMachOFile == nil) {
             fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [aFilename fileSystemRepresentation]);
+            [data release];
             return nil;
         }
 
+        NSLog(@"amof: %@", aMachOFile);
         return aMachOFile;
     }
+
+    [data release];
 
     return aFatFile;
 }
 
-- (id)initWithFilename:(NSString *)aFilename;
+- (id)initWithData:(NSData *)_data;
 {
-    return [self initWithFilename:aFilename archiveOffset:0];
+    CDDataCursor *cursor;
+
+    if ([super init] == nil)
+        return nil;
+
+    cursor = [[CDDataCursor alloc] initWithData:_data];
+    if ([cursor readLittleInt32:&magic] == NO) {
+        [cursor release];
+        [self release];
+        return nil;
+    }
+
+    NSLog(@"magic: 0x%x", magic);
+    if (magic == MH_MAGIC) {
+        byteOrder = CDByteOrderLittleEndian;
+    } else if (magic == MH_MAGIC_64) {
+        NSLog(@"64 bit header...");
+        byteOrder = CDByteOrderLittleEndian;
+    } if (magic == MH_CIGAM) {
+        byteOrder = CDByteOrderBigEndian;
+    } else if (magic == MH_CIGAM_64) {
+        NSLog(@"64 bit header...");
+        byteOrder = CDByteOrderBigEndian;
+    } else {
+        NSLog(@"Not a mach-o file.");
+        [cursor release];
+        [self release];
+        return nil;
+    }
+
+    NSLog(@"byte order: %d", byteOrder);
+    [cursor setByteOrder:byteOrder];
+
+    if ([cursor readInt32:(uint32_t *)&cputype] == NO) {
+        NSLog(@"read failed");
+    }
+    NSLog(@"cputype: 0x%08x", cputype);
+
+    _flags.uses64BitABI = (cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+    cputype &= ~CPU_ARCH_MASK;
+
+    nonretainedDelegate = nil;
+
+    return self;
 }
 
+#if 0
 - (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
 {
     const struct mach_header *headerPtr;
@@ -94,23 +146,17 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
         return nil;
     }
 
-    if (header.magic == MH_MAGIC)
-        _flags.shouldSwapBytes = NO;
-    else if (header.magic == MH_CIGAM) {
-        _flags.shouldSwapBytes = YES;
-        swap_mach_header(&header, CD_THIS_BYTE_ORDER);
-    }
-
     filename = [aFilename retain];
-    loadCommands = nil;
+    loadCommands = [[NSMutableArray alloc] init];
     nonretainedDelegate = nil;
 
     return self;
 }
+#endif
 
 - (void)dealloc;
 {
-    [filename release];
+    //[filename release];
     [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
     [data release];
     nonretainedDelegate = nil;
@@ -120,17 +166,7 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 - (NSString *)filename;
 {
-    return filename;
-}
-
-- (unsigned int)archiveOffset;
-{
-    return archiveOffset;
-}
-
-- (BOOL)hasDifferentByteOrder;
-{
-    return _flags.shouldSwapBytes;
+    return nil;
 }
 
 - (id)delegate;
@@ -145,16 +181,12 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 - (void)process;
 {
-#if 0
-    if (header.magic != MH_MAGIC) {
-        [NSException raise:NSGenericException format:@"Not a Mach-O file..."];
-    }
-#endif
     loadCommands = [[self _processLoadCommands] retain];
 }
 
 - (NSArray *)_processLoadCommands;
 {
+#if 0
     NSMutableArray *cmds;
     int count, index;
     const void *ptr;
@@ -177,31 +209,33 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     }
 
     return [NSArray arrayWithArray:cmds];;
+#endif
+    return nil;
+}
+
+- (cpu_type_t)cpuType;
+{
+    return cputype;
+}
+
+- (cpu_subtype_t)cpuSubtype;
+{
+    return cpusubtype;
+}
+
+- (uint32_t)filetype;
+{
+    return filetype;
+}
+
+- (uint32_t)flags;
+{
+    return flags;
 }
 
 - (NSArray *)loadCommands;
 {
     return loadCommands;
-}
-
-- (cpu_type_t)cpuType;
-{
-    return header.cputype;
-}
-
-- (cpu_subtype_t)cpuSubtype;
-{
-    return header.cpusubtype;
-}
-
-- (unsigned long)filetype;
-{
-    return header.filetype;
-}
-
-- (unsigned long)flags;
-{
-    return header.flags;
 }
 
 - (NSString *)filetypeDescription;
@@ -227,7 +261,6 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 - (NSString *)flagDescription;
 {
     NSMutableArray *setFlags;
-    unsigned long flags;
 
     setFlags = [NSMutableArray array];
     flags = [self flags];
@@ -267,7 +300,7 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
         [setFlags addObject:@"BINDS_TO_WEAK"];
     if (flags & MH_ALLOW_STACK_EXECUTION)
         [setFlags addObject:@"ALLOW_STACK_EXECUTION"];
-#if 0
+#if 1
     // 10.5 only, but I'm still using the 10.4 sdk.
     if (flags & MH_ROOT_SAFE)
         [setFlags addObject:@"ROOT_SAFE"];
@@ -284,8 +317,8 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x",
-                     header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];
+    return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d",
+                     magic, cputype, cpusubtype, filetype, [loadCommands count], 0, flags, _flags.uses64BitABI];
 }
 
 - (CDDylibCommand *)dylibIdentifier;
@@ -355,6 +388,7 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 - (const void *)pointerFromVMAddr:(unsigned long)vmaddr segmentName:(NSString *)aSegmentName;
 {
+#if 0
     CDSegmentCommand *segment;
     const void *ptr;
 
@@ -383,6 +417,8 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     ptr = [data bytes] + archiveOffset + (vmaddr - [segment vmaddr] + [segment fileoff]);
     //ptr = [data bytes] + [segment fileoff] + [segment segmentOffsetForVMAddr:vmaddr];
     return ptr;
+#endif
+    return NULL;
 }
 
 - (NSString *)stringFromVMAddr:(unsigned long)vmaddr;
@@ -398,16 +434,17 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 - (const void *)bytes;
 {
-    return [data bytes] + archiveOffset;
+    return [data bytes];
 }
 
 - (const void *)bytesAtOffset:(unsigned long)offset;
 {
-    return [data bytes] + archiveOffset + offset;
+    return [data bytes] + offset;
 }
 
 - (NSString *)importBaseName;
 {
+#if 0
     if ([self filetype] == MH_DYLIB) {
         NSString *str;
 
@@ -417,7 +454,7 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
         return str;
     }
-
+#endif
     return nil;
 }
 
@@ -466,11 +503,11 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     // Grr, %11@ doesn't work.
     if (isVerbose)
         [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5u %10u %@\n",
-                      CDMagicNumberString(header.magic), CDNameForCPUType(header.cputype, header.cpusubtype), header.cpusubtype,
-                      [self filetypeDescription], header.ncmds, header.sizeofcmds, [self flagDescription]];
+                      CDMagicNumberString(magic), CDNameForCPUType(cputype, cpusubtype), cpusubtype,
+                      [self filetypeDescription], [loadCommands count], 0, [self flagDescription]];
     else
         [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5u %10u 0x%08x\n",
-                      header.magic, header.cputype, header.cpusubtype, header.filetype, header.ncmds, header.sizeofcmds, header.flags];
+                      magic, cputype, cpusubtype, filetype, [loadCommands count], 0, flags];
     [resultString appendString:@"\n"];
 
     return resultString;
@@ -479,7 +516,16 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 // Must not return nil.
 - (NSString *)archName;
 {
-    return CDNameForCPUType(header.cputype, header.cpusubtype);
+    return CDNameForCPUType(cputype, cpusubtype);
+}
+
+//
+// To remove:
+//
+
+- (BOOL)hasDifferentByteOrder;
+{
+    return NO;
 }
 
 @end

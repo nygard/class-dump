@@ -340,10 +340,15 @@
     data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
     {
         CDFatFile *f1;
+        CDMachOFile *f2;
 
         f1 = [[CDFatFile alloc] initWithData:data];
         NSLog(@"f1: %@", f1);
         [f1 release];
+
+        f2 = [[CDMachOFile alloc] initWithData:data];
+        NSLog(@"f2: %@", f2);
+        [f2 release];
     }
     [data release];
 
