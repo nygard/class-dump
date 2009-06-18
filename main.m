@@ -224,26 +224,6 @@ int main(int argc, char *argv[])
                 [classDump setTargetArchName:archName];
 
                 [data release];
-
-                {
-                    const NXArchInfo *archInfo;
-                    const NXArchInfo *allArches, *ptr;
-
-                    archInfo = NXGetLocalArchInfo();
-                    if (archInfo == NULL) {
-                        NSLog(@"Couldn't get local architecture");
-                    }
-
-                    NSLog(@"Local arch: %d, %s (%s)", archInfo->cputype, archInfo->description, archInfo->name);
-
-                    ptr = allArches = NXGetAllArchInfos();
-                    while (ptr->name != NULL) {
-                        NSLog(@"cputype: %08x, cpusubtype: %08x, byteorder: %08x, name: %s, description: %s",
-                              ptr->cputype, ptr->cpusubtype, ptr->byteorder, ptr->name, ptr->description);
-                        ptr++;
-                    }
-                }
-
             }
             exit(0);
             if ([classDump processFilename:path] == YES) {
