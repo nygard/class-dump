@@ -13,6 +13,7 @@
 #import "CDDynamicSymbolTable.h"
 #import "CDUUIDCommand.h"
 #import "CDUnknownLoadCommand.h"
+#import "CDLinkeditData.h"
 
 @implementation CDLoadCommand
 
@@ -26,16 +27,24 @@
     val = [cursor peekInt32];
     NSLog(@"load command: 0x%08x", val);
 
-    if (val == LC_SEGMENT)
-        targetClass = [CDSegmentCommand class];
-    if (val == LC_ID_DYLIB || val == LC_LOAD_DYLIB || val == LC_LOAD_WEAK_DYLIB)
-        targetClass = [CDDylibCommand class];
-    if (val == LC_SYMTAB)
-        targetClass = [CDSymbolTable class];
-    if (val == LC_DYSYMTAB)
-        targetClass = [CDDynamicSymbolTable class];
-    if (val == LC_UUID)
-        targetClass = [CDUUIDCommand class];
+    switch (val) {
+      case LC_SEGMENT: targetClass = [CDSegmentCommand class]; break;
+      case LC_ID_DYLIB:
+      case LC_LOAD_DYLIB:
+      case LC_LOAD_WEAK_DYLIB:
+      case LC_REEXPORT_DYLIB:
+          targetClass = [CDDylibCommand class];
+          break;
+      case LC_SYMTAB:
+          targetClass = [CDSymbolTable class];
+          break;
+      case LC_DYSYMTAB: targetClass = [CDDynamicSymbolTable class]; break;
+      case LC_UUID: targetClass = [CDUUIDCommand class]; break;
+      case LC_CODE_SIGNATURE:
+      case LC_SEGMENT_SPLIT_INFO:
+          targetClass = [CDLinkeditData class];
+          break;
+    };
 
     NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
 
@@ -101,6 +110,11 @@
       case LC_SEGMENT_64: return @"LC_SEGMENT_64";
       case LC_ROUTINES_64: return @"LC_ROUTINES_64";
       case LC_UUID: return @"LC_UUID";
+      case LC_RPATH: return @"LC_RPATH";
+      case LC_CODE_SIGNATURE: return @"LC_CODE_SIGNATURE";
+      case LC_REEXPORT_DYLIB: return @"LC_REEXPORT_DYLIB";
+      case LC_LAZY_LOAD_DYLIB: return @"LC_LAZY_LOAD_DYLIB";
+      case LC_ENCRYPTION_INFO: return @"LC_ENCRYPTION_INFO";
       default:
           break;
     }
