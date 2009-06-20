@@ -23,9 +23,7 @@
     Class targetClass = [CDUnknownLoadCommand class];
     unsigned int val;
 
-    NSLog(@"----------------------------------------------------------------------");
     val = [cursor peekInt32];
-    NSLog(@"load command: 0x%08x", val);
 
     switch (val) {
       case LC_SEGMENT: targetClass = [CDSegmentCommand class]; break;
@@ -44,9 +42,11 @@
       case LC_SEGMENT_SPLIT_INFO:
           targetClass = [CDLinkeditData class];
           break;
+      default:
+          NSLog(@"Unknown load command: 0x%08x", val);
     };
 
-    NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
+    //NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
 
     return [[[targetClass alloc] initWithDataCursor:cursor machOFile:aMachOFile] autorelease];
 }
