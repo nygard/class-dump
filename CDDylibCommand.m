@@ -33,16 +33,16 @@ static NSString *CDDylibVersionString(unsigned long version)
     dylibCommand.dylib.current_version = [cursor readInt32];
     dylibCommand.dylib.compatibility_version = [cursor readInt32];
 
-    NSLog(@"commandOffset: 0x%08x", commandOffset);
-    NSLog(@"dylibCommand.dylib.name.offset: 0x%08x", dylibCommand.dylib.name.offset);
-    NSLog(@"offset after fixed dylib struct: %08x", [cursor offset]);
-    NSLog(@"off1 + off2: 0x%08x", commandOffset + dylibCommand.dylib.name.offset);
+    //NSLog(@"commandOffset: 0x%08x", commandOffset);
+    //NSLog(@"dylibCommand.dylib.name.offset: 0x%08x", dylibCommand.dylib.name.offset);
+    //NSLog(@"offset after fixed dylib struct: %08x", [cursor offset]);
+    //NSLog(@"off1 + off2: 0x%08x", commandOffset + dylibCommand.dylib.name.offset);
 
     length = dylibCommand.cmdsize - sizeof(dylibCommand);
-    NSLog(@"expected length: %u", length);
+    //NSLog(@"expected length: %u", length);
 
     name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    NSLog(@"name: %@", name);
+    //NSLog(@"name: %@", name);
 
     return self;
 }
@@ -50,6 +50,7 @@ static NSString *CDDylibVersionString(unsigned long version)
 - (void)dealloc;
 {
     [name release];
+
     [super dealloc];
 }
 
