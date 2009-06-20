@@ -95,7 +95,6 @@
 - (CDTypeFormatter *)methodTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
-+ (NSString *)executablePathForFilename:(NSString *)aFilename;
 - (BOOL)processFilename:(NSString *)aFilename;
 - (BOOL)_processFilename:(NSString *)aFilename;
 - (void)processObjectiveCSegments;

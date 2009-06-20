@@ -3,8 +3,6 @@
 
 #import "NSString-Extensions.h"
 
-#import <Foundation/Foundation.h>
-
 @implementation NSString (CDExtensions)
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)str;
@@ -57,6 +55,25 @@
 
     data = [self dataUsingEncoding:NSUTF8StringEncoding];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+}
+
+- (NSString *)executablePathForFilename;
+{
+    NSBundle *bundle;
+    NSString *path;
+
+    // I give up, all the methods dealing with paths seem to resolve symlinks with a vengence.
+    bundle = [NSBundle bundleWithPath:self];
+    if (bundle != nil) {
+        if ([bundle executablePath] == nil)
+            return nil;
+
+        path = [[[bundle executablePath] stringByResolvingSymlinksInPath] stringByStandardizingPath];
+    } else {
+        path = [[self stringByResolvingSymlinksInPath] stringByStandardizingPath];
+    }
+
+    return path;
 }
 
 @end

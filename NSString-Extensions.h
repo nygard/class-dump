@@ -3,7 +3,7 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
 
-#import <Foundation/NSString.h>
+#import <Foundation/Foundation.h>
 
 @interface NSString (CDExtensions)
 
@@ -15,5 +15,7 @@
 - (BOOL)isFirstLetterUppercase;
 
 - (void)print;
+
+- (NSString *)executablePathForFilename;
 
 @end

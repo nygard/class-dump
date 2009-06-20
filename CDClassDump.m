@@ -295,31 +295,12 @@
     return structDeclarationTypeFormatter;
 }
 
-+ (NSString *)executablePathForFilename:(NSString *)aFilename;
-{
-    NSBundle *bundle;
-    NSString *path;
-
-    // I give up, all the methods dealing with paths seem to resolve symlinks with a vengence.
-    bundle = [NSBundle bundleWithPath:aFilename];
-    if (bundle != nil) {
-        if ([bundle executablePath] == nil)
-            return nil;
-
-        path = [[[bundle executablePath] stringByResolvingSymlinksInPath] stringByStandardizingPath];
-    } else {
-        path = [[aFilename stringByResolvingSymlinksInPath] stringByStandardizingPath];
-    }
-
-    return path;
-}
-
 // Return YES if successful, NO if there was an error.
 - (BOOL)processFilename:(NSString *)aFilename;
 {
     NSString *path;
 
-    path = [CDClassDump executablePathForFilename:aFilename];
+    path = [aFilename executablePathForFilename];
     if (path == nil) {
         // TODO (2007-11-02): Maybe it would be good to use NSError here.
         fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);

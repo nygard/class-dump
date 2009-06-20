@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
         if (shouldListArches) {
             NSString *executablePath;
 
-            executablePath = [CDClassDump executablePathForFilename:path];
+            executablePath = [path executablePathForFilename];
             if (executablePath == nil) {
                 printf("none\n");
             } else {
@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
                 CDFile *file;
                 NSData *data;
 
-                p2 = [CDClassDump executablePathForFilename:path];
+                p2 = [path executablePathForFilename];
                 NSLog(@"path: %@", path);
                 NSLog(@"p2:   %@", p2);
 
