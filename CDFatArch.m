@@ -16,17 +16,17 @@
     if ([super init] == nil)
         return nil;
 
-    cputype = [cursor readBigInt32];
-    cpusubtype = [cursor readBigInt32];
-    offset = [cursor readBigInt32];
-    size = [cursor readBigInt32];
-    align = [cursor readBigInt32];
+    fatArch.cputype = [cursor readBigInt32];
+    fatArch.cpusubtype = [cursor readBigInt32];
+    fatArch.offset = [cursor readBigInt32];
+    fatArch.size = [cursor readBigInt32];
+    fatArch.align = [cursor readBigInt32];
 
-    uses64BitABI = (cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
-    cputype &= ~CPU_ARCH_MASK;
+    uses64BitABI = (fatArch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+    fatArch.cputype &= ~CPU_ARCH_MASK;
 #if 0
     NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
-          uses64BitABI, cputype, cpusubtype, offset, size, align);
+          uses64BitABI, fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
 #endif
     return self;
 }
@@ -38,27 +38,27 @@
 
 - (cpu_type_t)cpuType;
 {
-    return cputype;
+    return fatArch.cputype;
 }
 
 - (cpu_subtype_t)cpuSubtype;
 {
-    return cpusubtype;
+    return fatArch.cpusubtype;
 }
 
 - (uint32_t)offset;
 {
-    return offset;
+    return fatArch.offset;
 }
 
 - (uint32_t)size;
 {
-    return size;
+    return fatArch.size;
 }
 
 - (uint32_t)align;
 {
-    return align;
+    return fatArch.align;
 }
 
 - (BOOL)uses64BitABI;
@@ -69,16 +69,17 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
-                     uses64BitABI, cputype, cpusubtype, offset, offset, size, size, align, 1<<align, [self archName]];
+                     uses64BitABI, fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.offset, fatArch.size, fatArch.size,
+                     fatArch.align, 1 << fatArch.align, [self archName]];
 }
 
 // Must not return nil.
 - (NSString *)archName;
 {
     if (uses64BitABI)
-        return CDNameForCPUType(cputype | CPU_ARCH_ABI64, cpusubtype);
+        return CDNameForCPUType(fatArch.cputype | CPU_ARCH_ABI64, fatArch.cpusubtype);
 
-    return CDNameForCPUType(cputype, cpusubtype);
+    return CDNameForCPUType(fatArch.cputype, fatArch.cpusubtype);
 }
 
 - (CDMachOFile *)machOFile;

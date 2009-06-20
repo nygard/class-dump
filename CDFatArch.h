@@ -5,16 +5,14 @@
 
 #import <Foundation/NSObject.h>
 
+#include <mach-o/fat.h>
+
 @class CDDataCursor;
 @class CDMachOFile;
 
 @interface CDFatArch : NSObject
 {
-    cpu_type_t cputype;
-    cpu_subtype_t cpusubtype;
-    uint32_t offset;
-    uint32_t size;
-    uint32_t align;
+    struct fat_arch fatArch;
 
     BOOL uses64BitABI;
 
