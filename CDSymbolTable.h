@@ -10,18 +10,22 @@
 @interface CDSymbolTable : CDLoadCommand
 {
     struct symtab_command symtabCommand;
+
     NSMutableArray *symbols;
 }
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
+
+- (uint32_t)cmd;
+- (uint32_t)cmdsize;
 
 - (void)_process;
 
-- (unsigned long)symoff;
-- (unsigned long)nsyms;
-- (unsigned long)stroff;
-- (unsigned long)strsize;
+- (uint32_t)symoff;
+- (uint32_t)nsyms;
+- (uint32_t)stroff;
+- (uint32_t)strsize;
 
 - (NSString *)extraDescription;
 

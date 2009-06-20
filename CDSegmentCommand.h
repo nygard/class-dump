@@ -14,18 +14,19 @@
     struct segment_command segmentCommand;
 
     NSString *name;
-    NSArray *sections;
+    NSMutableArray *sections;
 }
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (void)_processSectionsWithPointer:(const void *)ptr;
+- (uint32_t)cmd;
+- (uint32_t)cmdsize;
 
 - (NSString *)name;
-- (unsigned long)vmaddr;
-- (unsigned long)fileoff;
-- (unsigned long)flags;
+- (uint32_t)vmaddr;
+- (uint32_t)fileoff;
+- (uint32_t)flags;
 - (NSArray *)sections;
 
 - (BOOL)isProtected;

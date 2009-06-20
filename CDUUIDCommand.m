@@ -7,33 +7,36 @@
 
 @implementation CDUUIDCommand
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    const struct uuid_command *uuidCommand;
+    unsigned int index;
 
-    if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    uuidCommand = ptr;
-    //uuid = CFUUIDCreateFromUUIDBytes(kCFAllocatorDefault, uuidCommand->uuid);
+    uuidCommand.cmd = [cursor readInt32];
+    uuidCommand.cmdsize = [cursor readInt32];
+    for (index = 0; index < 16; index++) {
+        uuidCommand.uuid[index] = [cursor readByte];
+    }
     // Lovely API
     uuid = CFUUIDCreateWithBytes(kCFAllocatorDefault,
-                                 uuidCommand->uuid[0],
-                                 uuidCommand->uuid[1],
-                                 uuidCommand->uuid[2],
-                                 uuidCommand->uuid[3],
-                                 uuidCommand->uuid[4],
-                                 uuidCommand->uuid[5],
-                                 uuidCommand->uuid[6],
-                                 uuidCommand->uuid[7],
-                                 uuidCommand->uuid[8],
-                                 uuidCommand->uuid[9],
-                                 uuidCommand->uuid[10],
-                                 uuidCommand->uuid[11],
-                                 uuidCommand->uuid[12],
-                                 uuidCommand->uuid[13],
-                                 uuidCommand->uuid[14],
-                                 uuidCommand->uuid[15]);
+                                 uuidCommand.uuid[0],
+                                 uuidCommand.uuid[1],
+                                 uuidCommand.uuid[2],
+                                 uuidCommand.uuid[3],
+                                 uuidCommand.uuid[4],
+                                 uuidCommand.uuid[5],
+                                 uuidCommand.uuid[6],
+                                 uuidCommand.uuid[7],
+                                 uuidCommand.uuid[8],
+                                 uuidCommand.uuid[9],
+                                 uuidCommand.uuid[10],
+                                 uuidCommand.uuid[11],
+                                 uuidCommand.uuid[12],
+                                 uuidCommand.uuid[13],
+                                 uuidCommand.uuid[14],
+                                 uuidCommand.uuid[15]);
 
     return self;
 }
@@ -43,6 +46,17 @@
     CFRelease(uuid);
 
     [super dealloc];
+}
+
+- (uint32_t)cmd;
+{
+    return uuidCommand.cmd;
+}
+
+- (uint32_t)cmdsize;
+{
+
+    return uuidCommand.cmdsize;
 }
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;

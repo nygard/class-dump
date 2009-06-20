@@ -12,43 +12,42 @@
 #import "CDSymbolTable.h"
 #import "CDDynamicSymbolTable.h"
 #import "CDUUIDCommand.h"
+#import "CDUnknownLoadCommand.h"
 
 @implementation CDLoadCommand
 
-+ (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+//+ (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
++ (id)loadCommandWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    struct load_command lc;
-    Class targetClass = [CDLoadCommand class];
+    Class targetClass = [CDUnknownLoadCommand class];
+    unsigned int val;
 
-    lc = *(struct load_command *)ptr;
-    if ([aMachOFile hasDifferentByteOrder] == YES)
-        swap_load_command(&lc, CD_THIS_BYTE_ORDER);
+    NSLog(@"----------------------------------------------------------------------");
+    val = [cursor peekInt32];
+    NSLog(@"load command: 0x%08x", val);
 
-    if (lc.cmd == LC_SEGMENT)
+    if (val == LC_SEGMENT)
         targetClass = [CDSegmentCommand class];
-    if (lc.cmd == LC_ID_DYLIB || lc.cmd == LC_LOAD_DYLIB || lc.cmd == LC_LOAD_WEAK_DYLIB)
+    if (val == LC_ID_DYLIB || val == LC_LOAD_DYLIB || val == LC_LOAD_WEAK_DYLIB)
         targetClass = [CDDylibCommand class];
-    if (lc.cmd == LC_SYMTAB)
+    if (val == LC_SYMTAB)
         targetClass = [CDSymbolTable class];
-    if (lc.cmd == LC_DYSYMTAB)
+    if (val == LC_DYSYMTAB)
         targetClass = [CDDynamicSymbolTable class];
-    if (lc.cmd == LC_UUID)
+    if (val == LC_UUID)
         targetClass = [CDUUIDCommand class];
 
-    return [[[targetClass alloc] initWithPointer:ptr machOFile:aMachOFile] autorelease];
+    NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
+
+    return [[[targetClass alloc] initWithDataCursor:cursor machOFile:aMachOFile] autorelease];
 }
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
     if ([super init] == nil)
         return nil;
 
     nonretainedMachOFile = aMachOFile;
-    loadCommand = *(struct load_command *)ptr;
-    if ([aMachOFile hasDifferentByteOrder] == YES)
-        swap_load_command(&loadCommand, CD_THIS_BYTE_ORDER);
-
-    mustUnderstandToExecute = (loadCommand.cmd & LC_REQ_DYLD) != 0;
 
     return self;
 }
@@ -58,19 +57,23 @@
     return nonretainedMachOFile;
 }
 
-- (unsigned long)cmd;
+- (uint32_t)cmd;
 {
-    return loadCommand.cmd;
+    // Implement in subclasses
+    [NSException raise:NSGenericException format:@"Must implement method in subclasses."];
+    return 0;
 }
 
-- (unsigned long)cmdsize;
+- (uint32_t)cmdsize;
 {
-    return loadCommand.cmdsize;
+    // Implement in subclasses
+    [NSException raise:NSGenericException format:@"Must implement method in subclasses."];
+    return 0;
 }
 
 - (NSString *)commandName;
 {
-    switch (loadCommand.cmd) {
+    switch ([self cmd]) {
       case LC_SEGMENT: return @"LC_SEGMENT";
       case LC_SYMTAB: return @"LC_SYMTAB";
       case LC_SYMSEG: return @"LC_SYMSEG";
@@ -102,12 +105,13 @@
           break;
     }
 
-    return [NSString stringWithFormat:@"0x%08x", loadCommand.cmd];
+    return [NSString stringWithFormat:@"0x%08x", [self cmd]];
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] cmd: %d (%@), cmdsize: %d // %@", NSStringFromClass([self class]), loadCommand.cmd, [self commandName], loadCommand.cmdsize, [self extraDescription]];
+    return [NSString stringWithFormat:@"[%@] cmd: %d (%@), cmdsize: %d // %@",
+                     NSStringFromClass([self class]), [self cmd], [self commandName], [self cmdsize], [self extraDescription]];
 }
 
 - (NSString *)extraDescription;
@@ -121,12 +125,12 @@
     if ([self mustUnderstandToExecute])
         [resultString appendFormat:@" (must understand to execute)"];
     [resultString appendFormat:@"\n"];
-    [resultString appendFormat:@" cmdsize %u\n", loadCommand.cmdsize];
+    [resultString appendFormat:@" cmdsize %u\n", [self cmdsize]];
 }
 
 - (BOOL)mustUnderstandToExecute;
 {
-    return mustUnderstandToExecute;
+    return ([self cmd] & LC_REQ_DYLD) != 0;
 }
 
 @end

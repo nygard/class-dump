@@ -9,11 +9,16 @@
 
 @interface CDUUIDCommand : CDLoadCommand
 {
+    struct uuid_command uuidCommand;
+
     CFUUIDRef uuid;
 }
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
+
+- (uint32_t)cmd;
+- (uint32_t)cmdsize;
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 

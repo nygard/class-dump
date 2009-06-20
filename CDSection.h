@@ -7,7 +7,7 @@
 #include <mach-o/loader.h>
 
 @class NSString;
-@class CDMachOFile, CDSegmentCommand;
+@class CDDataCursor, CDMachOFile, CDSegmentCommand;
 
 @interface CDSection : NSObject
 {
@@ -18,7 +18,7 @@
     NSString *sectionName;
 }
 
-- (id)initWithPointer:(const void *)ptr segment:(CDSegmentCommand *)aSegment;
+- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegmentCommand *)aSegment;
 - (void)dealloc;
 
 - (CDSegmentCommand *)segment;

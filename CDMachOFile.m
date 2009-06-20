@@ -59,6 +59,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (id)initWithData:(NSData *)_data;
 {
     CDDataCursor *cursor;
+    unsigned int ncmds, sizeofcmds;
 
     if ([super init] == nil)
         return nil;
@@ -66,17 +67,19 @@ NSString *CDMagicNumberString(uint32_t magic)
     cursor = [[CDDataCursor alloc] initWithData:_data];
     magic = [cursor readLittleInt32];
 
-    NSLog(@"magic: 0x%x", magic);
+    NSLog(@"(testing macho) magic: 0x%x", magic);
     if (magic == MH_MAGIC) {
         byteOrder = CDByteOrderLittleEndian;
+    } else if (magic == MH_CIGAM) {
+        byteOrder = CDByteOrderBigEndian;
+#if 0
     } else if (magic == MH_MAGIC_64) {
         NSLog(@"64 bit header...");
         byteOrder = CDByteOrderLittleEndian;
-    } if (magic == MH_CIGAM) {
-        byteOrder = CDByteOrderBigEndian;
     } else if (magic == MH_CIGAM_64) {
         NSLog(@"64 bit header...");
         byteOrder = CDByteOrderBigEndian;
+#endif
     } else {
         NSLog(@"Not a mach-o file.");
         [cursor release];
@@ -90,10 +93,36 @@ NSString *CDMagicNumberString(uint32_t magic)
     cputype = [cursor readInt32];
     NSLog(@"cputype: 0x%08x", cputype);
 
+    cpusubtype = [cursor readInt32];
+    filetype = [cursor readInt32];
+    ncmds = [cursor readInt32];
+    sizeofcmds = [cursor readInt32];
+    flags = [cursor readInt32];
+
+    NSLog(@"cpusubtype: 0x%08x", cpusubtype);
+    NSLog(@"filetype: 0x%08x", filetype);
+    NSLog(@"ncmds: %u", ncmds);
+    NSLog(@"sizeofcmds: %u", sizeofcmds);
+    NSLog(@"flags: 0x%08x", flags);
+
     _flags.uses64BitABI = (cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
     cputype &= ~CPU_ARCH_MASK;
 
     nonretainedDelegate = nil;
+
+    // Now read the load commands.
+    {
+        unsigned int index;
+
+        for (index = 0; index < ncmds; index++) {
+            id loadCommand;
+
+            loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
+            if (loadCommand != nil)
+                [loadCommands addObject:loadCommand];
+            NSLog(@"loadCommand: %@", loadCommand);
+        }
+    }
 
     return self;
 }

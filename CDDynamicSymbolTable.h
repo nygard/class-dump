@@ -10,6 +10,9 @@
     struct dysymtab_command dysymtab;
 }
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+
+- (uint32_t)cmd;
+- (uint32_t)cmdsize;
 
 @end

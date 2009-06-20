@@ -27,7 +27,7 @@
     cursor = [[CDDataCursor alloc] initWithData:data];
     magicNumber = [cursor readBigInt32];
 
-    NSLog(@"magic: 0x%x", magicNumber);
+    NSLog(@"(testing fat) magic: 0x%x", magicNumber);
     if (magicNumber != FAT_MAGIC) {
         [cursor release];
         [self release];

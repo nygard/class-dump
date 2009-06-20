@@ -16,19 +16,33 @@ static NSString *CDDylibVersionString(unsigned long version)
 
 @implementation CDDylibCommand
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    const char *str;
+    NSUInteger commandOffset;
+    NSUInteger length;
 
-    if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    dylibCommand = *(struct dylib_command *)ptr;
-    if ([aMachOFile hasDifferentByteOrder] == YES)
-        swap_dylib_command(&dylibCommand, CD_THIS_BYTE_ORDER);
+    commandOffset = [cursor offset];
+    dylibCommand.cmd = [cursor readInt32];
+    dylibCommand.cmdsize = [cursor readInt32];
 
-    str = ptr + dylibCommand.dylib.name.offset;
-    name = [[NSString alloc] initWithBytes:str length:strlen(str) encoding:NSASCIIStringEncoding];
+    dylibCommand.dylib.name.offset = [cursor readInt32];
+    dylibCommand.dylib.timestamp = [cursor readInt32];
+    dylibCommand.dylib.current_version = [cursor readInt32];
+    dylibCommand.dylib.compatibility_version = [cursor readInt32];
+
+    NSLog(@"commandOffset: 0x%08x", commandOffset);
+    NSLog(@"dylibCommand.dylib.name.offset: 0x%08x", dylibCommand.dylib.name.offset);
+    NSLog(@"offset after fixed dylib struct: %08x", [cursor offset]);
+    NSLog(@"off1 + off2: 0x%08x", commandOffset + dylibCommand.dylib.name.offset);
+
+    length = dylibCommand.cmdsize - sizeof(dylibCommand);
+    NSLog(@"expected length: %u", length);
+
+    name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+    NSLog(@"name: %@", name);
 
     return self;
 }
@@ -39,22 +53,32 @@ static NSString *CDDylibVersionString(unsigned long version)
     [super dealloc];
 }
 
+- (uint32_t)cmd;
+{
+    return dylibCommand.cmd;
+}
+
+- (uint32_t)cmdsize;
+{
+    return dylibCommand.cmdsize;
+}
+
 - (NSString *)name;
 {
     return name;
 }
 
-- (unsigned long)timestamp;
+- (uint32_t)timestamp;
 {
     return dylibCommand.dylib.timestamp;
 }
 
-- (unsigned long)currentVersion;
+- (uint32_t)currentVersion;
 {
     return dylibCommand.dylib.current_version;
 }
 
-- (unsigned long)compatibilityVersion;
+- (uint32_t)compatibilityVersion;
 {
     return dylibCommand.dylib.compatibility_version;
 }

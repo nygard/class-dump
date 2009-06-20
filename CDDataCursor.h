@@ -46,6 +46,7 @@ typedef NSUInteger CDByteOrder;
 //- (double)readBigFloat64;
 
 - (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
+- (void)readBytesOfLength:(NSUInteger)length intoBuffer:(void *)buf;
 - (BOOL)isAtEnd;
 
 - (CDByteOrder)byteOrder;
@@ -55,5 +56,9 @@ typedef NSUInteger CDByteOrder;
 - (uint16_t)readInt16;
 - (uint32_t)readInt32;
 - (uint64_t)readInt64;
+
+- (uint32_t)peekInt32;
+
+- (NSString *)readStringOfLength:(NSUInteger)length encoding:(NSStringEncoding)encoding;
 
 @end

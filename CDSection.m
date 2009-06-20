@@ -12,7 +12,7 @@
 @implementation CDSection
 
 // Just to resolve multiple different definitions...
-- (id)initWithPointer:(const void *)ptr segment:(CDSegmentCommand *)aSegment;
+- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegmentCommand *)aSegment;
 {
     char buf[17];
 
@@ -20,10 +20,18 @@
         return nil;
 
     nonretainedSegment = aSegment;
-    // TODO (2005-07-28): Check for null pointer...
-    section = *(struct section *)ptr;
-    if ([[[self segment] machOFile] hasDifferentByteOrder] == YES)
-        swap_section(&section, 1, CD_THIS_BYTE_ORDER);
+
+    [cursor readBytesOfLength:16 intoBuffer:section.sectname];
+    [cursor readBytesOfLength:16 intoBuffer:section.segname];
+    section.addr = [cursor readInt32];
+    section.size = [cursor readInt32];
+    section.offset = [cursor readInt32];
+    section.align = [cursor readInt32];
+    section.reloff = [cursor readInt32];
+    section.nreloc = [cursor readInt32];
+    section.flags = [cursor readInt32];
+    section.reserved1 = [cursor readInt32];
+    section.reserved2 = [cursor readInt32];
 
     // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
 

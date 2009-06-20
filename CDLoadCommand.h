@@ -7,24 +7,21 @@
 
 #include <mach-o/loader.h>
 
-@class CDMachOFile;
+@class CDDataCursor, CDMachOFile;
 
 @interface CDLoadCommand : NSObject
 {
     CDMachOFile *nonretainedMachOFile;
-
-    struct load_command loadCommand;
-    BOOL mustUnderstandToExecute;
 }
 
-+ (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
++ (id)loadCommandWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 
 - (CDMachOFile *)machOFile;
 
-- (unsigned long)cmd;
-- (unsigned long)cmdsize;
+- (uint32_t)cmd;
+- (uint32_t)cmdsize;
 
 - (NSString *)commandName;
 - (NSString *)description;

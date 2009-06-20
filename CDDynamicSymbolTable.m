@@ -11,15 +11,33 @@
 
 @implementation CDDynamicSymbolTable
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    dysymtab = *(struct dysymtab_command *)ptr;
-    if ([aMachOFile hasDifferentByteOrder] == YES)
-        swap_dysymtab_command(&dysymtab, CD_THIS_BYTE_ORDER);
-#if 0
+    dysymtab.cmd = [cursor readInt32];
+    dysymtab.cmdsize = [cursor readInt32];
+
+    dysymtab.ilocalsym = [cursor readInt32];
+    dysymtab.nlocalsym = [cursor readInt32];
+    dysymtab.iextdefsym = [cursor readInt32];
+    dysymtab.nextdefsym = [cursor readInt32];
+    dysymtab.iundefsym = [cursor readInt32];
+    dysymtab.nundefsym = [cursor readInt32];
+    dysymtab.tocoff = [cursor readInt32];
+    dysymtab.ntoc = [cursor readInt32];
+    dysymtab.modtaboff = [cursor readInt32];
+    dysymtab.nmodtab = [cursor readInt32];
+    dysymtab.extrefsymoff = [cursor readInt32];
+    dysymtab.nextrefsyms = [cursor readInt32];
+    dysymtab.indirectsymoff = [cursor readInt32];
+    dysymtab.nindirectsyms = [cursor readInt32];
+    dysymtab.extreloff = [cursor readInt32];
+    dysymtab.nextrel = [cursor readInt32];
+    dysymtab.locreloff = [cursor readInt32];
+    dysymtab.nlocrel = [cursor readInt32];
+#if 1
     NSLog(@"ilocalsym:      0x%08x  %d", dysymtab.ilocalsym, dysymtab.ilocalsym);
     NSLog(@"nlocalsym:      0x%08x  %d", dysymtab.nlocalsym, dysymtab.nlocalsym);
     NSLog(@"iextdefsym:     0x%08x  %d", dysymtab.iextdefsym, dysymtab.iextdefsym);
@@ -43,6 +61,16 @@
     NSLog(@"nlocrel:        0x%08x  %d", dysymtab.nlocrel, dysymtab.nlocrel);
 #endif
     return self;
+}
+
+- (uint32_t)cmd;
+{
+    return dysymtab.cmd;
+}
+
+- (uint32_t)cmdsize;
+{
+    return dysymtab.cmdsize;
 }
 
 @end

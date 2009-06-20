@@ -12,13 +12,16 @@
     NSString *name;
 }
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
+- (uint32_t)cmd;
+- (uint32_t)cmdsize;
+
 - (NSString *)name;
-- (unsigned long)timestamp;
-- (unsigned long)currentVersion;
-- (unsigned long)compatibilityVersion;
+- (uint32_t)timestamp;
+- (uint32_t)currentVersion;
+- (uint32_t)compatibilityVersion;
 
 - (NSString *)formattedCurrentVersion;
 - (NSString *)formattedCompatibilityVersion;

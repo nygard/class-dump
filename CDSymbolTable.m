@@ -10,12 +10,19 @@
 
 @implementation CDSymbolTable
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    symtabCommand = *(struct symtab_command *)ptr;
+    symtabCommand.cmd = [cursor readInt32];
+    symtabCommand.cmdsize = [cursor readInt32];
+
+    symtabCommand.symoff = [cursor readInt32];
+    symtabCommand.nsyms = [cursor readInt32];
+    symtabCommand.stroff = [cursor readInt32];
+    symtabCommand.strsize = [cursor readInt32];
+
     symbols = [[NSMutableArray alloc] init];
 
     [self _process];
@@ -30,6 +37,16 @@
     [symbols release];
 
     [super dealloc];
+}
+
+- (uint32_t)cmd;
+{
+    return symtabCommand.cmd;
+}
+
+- (uint32_t)cmdsize;
+{
+    return symtabCommand.cmdsize;
 }
 
 - (void)_process;
@@ -80,22 +97,22 @@
 #endif
 }
 
-- (unsigned long)symoff;
+- (uint32_t)symoff;
 {
     return symtabCommand.symoff;
 }
 
-- (unsigned long)nsyms;
+- (uint32_t)nsyms;
 {
     return symtabCommand.nsyms;
 }
 
-- (unsigned long)stroff;
+- (uint32_t)stroff;
 {
     return symtabCommand.stroff;
 }
 
-- (unsigned long)strsize;
+- (uint32_t)strsize;
 {
     return symtabCommand.strsize;
 }

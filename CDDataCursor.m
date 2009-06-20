@@ -192,7 +192,17 @@
 - (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
 {
     if (offset + length <= [data length]) {
-        [targetData appendBytes:[self bytes] length:length];
+        [targetData appendBytes:[data bytes] + offset length:length];
+        offset += length;
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+    }
+}
+
+- (void)readBytesOfLength:(NSUInteger)length intoBuffer:(void *)buf;
+{
+    if (offset + length <= [data length]) {
+        memcpy(buf, [data bytes] + offset, length);
         offset += length;
     } else {
         [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
@@ -240,6 +250,33 @@
         return [self readLittleInt64];
 
     return [self readBigInt64];
+}
+
+- (uint32_t)peekInt32;
+{
+    NSUInteger savedOffset;
+    uint32_t val;
+
+    savedOffset = offset;
+    val = [self readInt32];
+    offset = savedOffset;
+
+    return val;
+}
+
+- (NSString *)readStringOfLength:(NSUInteger)length encoding:(NSStringEncoding)encoding;
+{
+    if (offset + length <= [data length]) {
+        NSString *str;
+
+        str = [[[NSString alloc] initWithBytes:[data bytes] + offset length:length encoding:encoding] autorelease];;
+        offset += length;
+        return str;
+    } else {
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+    }
+
+    return nil;
 }
 
 @end

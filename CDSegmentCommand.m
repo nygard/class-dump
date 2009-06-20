@@ -11,51 +11,49 @@
 
 @implementation CDSegmentCommand
 
-- (id)initWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    char buf[17];
-
-    if ([super initWithPointer:ptr machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    segmentCommand = *(struct segment_command *)ptr;
-    if ([aMachOFile hasDifferentByteOrder] == YES)
-        swap_segment_command(&segmentCommand, CD_THIS_BYTE_ORDER);
+    segmentCommand.cmd = [cursor readInt32];
+    segmentCommand.cmdsize = [cursor readInt32];
 
-    memcpy(buf, segmentCommand.segname, 16);
-    buf[16] = 0;
-    name = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-    // Is segmentCommand->segname always going to be NULL terminated?
-    //name = [[NSString alloc] initWithBytes:segmentCommand->segname length:strlen(segmentCommand->segname) encoding:NSASCIIStringEncoding];
+    [cursor readBytesOfLength:16 intoBuffer:segmentCommand.segname];
+    segmentCommand.vmaddr = [cursor readInt32];
+    segmentCommand.vmsize = [cursor readInt32];
+    segmentCommand.fileoff = [cursor readInt32];
+    segmentCommand.filesize = [cursor readInt32];
+    segmentCommand.maxprot = [cursor readInt32];
+    segmentCommand.initprot = [cursor readInt32];
+    segmentCommand.nsects = [cursor readInt32];
+    segmentCommand.flags = [cursor readInt32];
 
-    [self _processSectionsWithPointer:ptr + sizeof(struct segment_command)];
+    {
+        char buf[17];
 
-    return self;
-}
-
-- (void)_processSectionsWithPointer:(const void *)ptr;
-{
-    NSMutableArray *sects;
-    int count, index;
-
-    // PRECONDITION: sections == nil
-    // POSTCONDITION: sections != nil
-
-    sects = [[NSMutableArray alloc] init];
-
-    count = segmentCommand.nsects;
-    for (index = 0; index < count; index++) {
-        CDSection *section;
-
-        section = [[CDSection alloc] initWithPointer:ptr segment:self];
-        [sects addObject:section];
-        [section release];
-
-        ptr += sizeof(struct section);
+        memcpy(buf, segmentCommand.segname, 16);
+        buf[16] = 0;
+        name = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+        if ([name length] >= 16) {
+            NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", name);
+        }
     }
 
-    sections = [[NSArray alloc] initWithArray:sects];
-    [sects release];
+    {
+        unsigned int index;
+
+        sections = [[NSMutableArray alloc] init];
+        for (index = 0; index < segmentCommand.nsects; index++) {
+            CDSection *section;
+
+            section = [[CDSection alloc] initWithDataCursor:cursor segment:self];
+            [sections addObject:section];
+            [section release];
+        }
+    }
+
+    return self;
 }
 
 - (void)dealloc;
@@ -66,22 +64,32 @@
     [super dealloc];
 }
 
+- (uint32_t)cmd;
+{
+    return segmentCommand.cmd;
+}
+
+- (uint32_t)cmdsize;
+{
+    return segmentCommand.cmdsize;
+}
+
 - (NSString *)name;
 {
     return name;
 }
 
-- (unsigned long)vmaddr;
+- (uint32_t)vmaddr;
 {
     return segmentCommand.vmaddr;
 }
 
-- (unsigned long)fileoff;
+- (uint32_t)fileoff;
 {
     return segmentCommand.fileoff;
 }
 
-- (unsigned long)flags;
+- (uint32_t)flags;
 {
     return segmentCommand.flags;
 }
