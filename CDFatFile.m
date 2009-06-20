@@ -17,7 +17,8 @@
 - (id)initWithData:(NSData *)data;
 {
     CDDataCursor *cursor;
-    unsigned int magicNumber, count, index;
+    unsigned int index;
+    struct fat_header header;
 
     if ([super initWithData:data] == nil)
         return nil;
@@ -25,18 +26,18 @@
     arches = [[NSMutableArray alloc] init];
 
     cursor = [[CDDataCursor alloc] initWithData:data];
-    magicNumber = [cursor readBigInt32];
+    header.magic = [cursor readBigInt32];
 
-    NSLog(@"(testing fat) magic: 0x%x", magicNumber);
-    if (magicNumber != FAT_MAGIC) {
+    NSLog(@"(testing fat) magic: 0x%x", header.magic);
+    if (header.magic != FAT_MAGIC) {
         [cursor release];
         [self release];
         return nil;
     }
 
-    count = [cursor readBigInt32];
-    NSLog(@"count: %u", count);
-    for (index = 0; index < count; index++) {
+    header.nfat_arch = [cursor readBigInt32];
+    NSLog(@"nfat_arch: %u", header.nfat_arch);
+    for (index = 0; index < header.nfat_arch; index++) {
         CDFatArch *arch;
 
         arch = [[CDFatArch alloc] initWithDataCursor:cursor];

@@ -59,24 +59,23 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (id)initWithData:(NSData *)_data;
 {
     CDDataCursor *cursor;
-    unsigned int ncmds, sizeofcmds;
 
     if ([super init] == nil)
         return nil;
 
     cursor = [[CDDataCursor alloc] initWithData:_data];
-    magic = [cursor readLittleInt32];
+    header.magic = [cursor readLittleInt32];
 
-    NSLog(@"(testing macho) magic: 0x%x", magic);
-    if (magic == MH_MAGIC) {
+    NSLog(@"(testing macho) magic: 0x%x", header.magic);
+    if (header.magic == MH_MAGIC) {
         byteOrder = CDByteOrderLittleEndian;
-    } else if (magic == MH_CIGAM) {
+    } else if (header.magic == MH_CIGAM) {
         byteOrder = CDByteOrderBigEndian;
 #if 0
-    } else if (magic == MH_MAGIC_64) {
+    } else if (header.magic == MH_MAGIC_64) {
         NSLog(@"64 bit header...");
         byteOrder = CDByteOrderLittleEndian;
-    } else if (magic == MH_CIGAM_64) {
+    } else if (header.magic == MH_CIGAM_64) {
         NSLog(@"64 bit header...");
         byteOrder = CDByteOrderBigEndian;
 #endif
@@ -90,23 +89,23 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSLog(@"byte order: %d", byteOrder);
     [cursor setByteOrder:byteOrder];
 
-    cputype = [cursor readInt32];
-    NSLog(@"cputype: 0x%08x", cputype);
+    header.cputype = [cursor readInt32];
+    NSLog(@"cputype: 0x%08x", header.cputype);
 
-    cpusubtype = [cursor readInt32];
-    filetype = [cursor readInt32];
-    ncmds = [cursor readInt32];
-    sizeofcmds = [cursor readInt32];
-    flags = [cursor readInt32];
+    header.cpusubtype = [cursor readInt32];
+    header.filetype = [cursor readInt32];
+    header.ncmds = [cursor readInt32];
+    header.sizeofcmds = [cursor readInt32];
+    header.flags = [cursor readInt32];
 
-    NSLog(@"cpusubtype: 0x%08x", cpusubtype);
-    NSLog(@"filetype: 0x%08x", filetype);
-    NSLog(@"ncmds: %u", ncmds);
-    NSLog(@"sizeofcmds: %u", sizeofcmds);
-    NSLog(@"flags: 0x%08x", flags);
+    NSLog(@"cpusubtype: 0x%08x", header.cpusubtype);
+    NSLog(@"filetype: 0x%08x", header.filetype);
+    NSLog(@"ncmds: %u", header.ncmds);
+    NSLog(@"sizeofcmds: %u", header.sizeofcmds);
+    NSLog(@"flags: 0x%08x", header.flags);
 
-    _flags.uses64BitABI = (cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
-    cputype &= ~CPU_ARCH_MASK;
+    _flags.uses64BitABI = (header.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+    header.cputype &= ~CPU_ARCH_MASK;
 
     nonretainedDelegate = nil;
 
@@ -114,7 +113,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     {
         unsigned int index;
 
-        for (index = 0; index < ncmds; index++) {
+        for (index = 0; index < header.ncmds; index++) {
             id loadCommand;
 
             loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
@@ -178,7 +177,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (NSString *)bestMatchForLocalArch;
 {
-    return CDNameForCPUType(cputype, cpusubtype);
+    return CDNameForCPUType(header.cputype, header.cpusubtype);
 }
 
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
@@ -189,7 +188,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (archInfo == NULL)
         return nil;
 
-    if (archInfo->cputype == cputype)
+    if (archInfo->cputype == header.cputype)
         return self;
 
     return nil;
@@ -212,56 +211,31 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (void)process;
 {
-    loadCommands = [[self _processLoadCommands] retain];
-}
-
-- (NSArray *)_processLoadCommands;
-{
-#if 0
-    NSMutableArray *cmds;
-    int count, index;
-    const void *ptr;
-
-    cmds = [NSMutableArray array];
-
-    ptr = [self bytes] + sizeof(struct mach_header);
-    count = header.ncmds;
-    for (index = 0; index < count; index++) {
-        CDLoadCommand *loadCommand;
-
-        loadCommand = [CDLoadCommand loadCommandWithPointer:ptr machOFile:self];
-        [cmds addObject:loadCommand];
-        if ([loadCommand isKindOfClass:[CDDylibCommand class]] == YES) {
+    for (CDLoadCommand *loadCommand in loadCommands) {
+        if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
             [nonretainedDelegate machOFile:self loadDylib:(CDDylibCommand *)loadCommand];
         }
-
-        //NSLog(@"cmdsize: 0x%x\n", [loadCommand cmdsize]);
-        ptr += [loadCommand cmdsize];
     }
-
-    return [NSArray arrayWithArray:cmds];;
-#endif
-    return nil;
 }
 
 - (cpu_type_t)cpuType;
 {
-    return cputype;
+    return header.cputype;
 }
 
 - (cpu_subtype_t)cpuSubtype;
 {
-    return cpusubtype;
+    return header.cpusubtype;
 }
 
 - (uint32_t)filetype;
 {
-    return filetype;
+    return header.filetype;
 }
 
 - (uint32_t)flags;
 {
-    return flags;
+    return header.flags;
 }
 
 - (NSArray *)loadCommands;
@@ -294,52 +268,51 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSMutableArray *setFlags;
 
     setFlags = [NSMutableArray array];
-    flags = [self flags];
-    if (flags & MH_NOUNDEFS)
+    if (header.flags & MH_NOUNDEFS)
         [setFlags addObject:@"NOUNDEFS"];
-    if (flags & MH_INCRLINK)
+    if (header.flags & MH_INCRLINK)
         [setFlags addObject:@"INCRLINK"];
-    if (flags & MH_DYLDLINK)
+    if (header.flags & MH_DYLDLINK)
         [setFlags addObject:@"DYLDLINK"];
-    if (flags & MH_BINDATLOAD)
+    if (header.flags & MH_BINDATLOAD)
         [setFlags addObject:@"BINDATLOAD"];
-    if (flags & MH_PREBOUND)
+    if (header.flags & MH_PREBOUND)
         [setFlags addObject:@"PREBOUND"];
-    if (flags & MH_SPLIT_SEGS)
+    if (header.flags & MH_SPLIT_SEGS)
         [setFlags addObject:@"SPLIT_SEGS"];
-    if (flags & MH_LAZY_INIT)
+    if (header.flags & MH_LAZY_INIT)
         [setFlags addObject:@"LAZY_INIT"];
-    if (flags & MH_TWOLEVEL)
+    if (header.flags & MH_TWOLEVEL)
         [setFlags addObject:@"TWOLEVEL"];
-    if (flags & MH_FORCE_FLAT)
+    if (header.flags & MH_FORCE_FLAT)
         [setFlags addObject:@"FORCE_FLAT"];
-    if (flags & MH_NOMULTIDEFS)
+    if (header.flags & MH_NOMULTIDEFS)
         [setFlags addObject:@"NOMULTIDEFS"];
-    if (flags & MH_NOFIXPREBINDING)
+    if (header.flags & MH_NOFIXPREBINDING)
         [setFlags addObject:@"NOFIXPREBINDING"];
-    if (flags & MH_PREBINDABLE)
+    if (header.flags & MH_PREBINDABLE)
         [setFlags addObject:@"PREBINDABLE"];
-    if (flags & MH_ALLMODSBOUND)
+    if (header.flags & MH_ALLMODSBOUND)
         [setFlags addObject:@"ALLMODSBOUND"];
-    if (flags & MH_SUBSECTIONS_VIA_SYMBOLS)
+    if (header.flags & MH_SUBSECTIONS_VIA_SYMBOLS)
         [setFlags addObject:@"SUBSECTIONS_VIA_SYMBOLS"];
-    if (flags & MH_CANONICAL)
+    if (header.flags & MH_CANONICAL)
         [setFlags addObject:@"CANONICAL"];
-    if (flags & MH_WEAK_DEFINES)
+    if (header.flags & MH_WEAK_DEFINES)
         [setFlags addObject:@"WEAK_DEFINES"];
-    if (flags & MH_BINDS_TO_WEAK)
+    if (header.flags & MH_BINDS_TO_WEAK)
         [setFlags addObject:@"BINDS_TO_WEAK"];
-    if (flags & MH_ALLOW_STACK_EXECUTION)
+    if (header.flags & MH_ALLOW_STACK_EXECUTION)
         [setFlags addObject:@"ALLOW_STACK_EXECUTION"];
 #if 1
     // 10.5 only, but I'm still using the 10.4 sdk.
-    if (flags & MH_ROOT_SAFE)
+    if (header.flags & MH_ROOT_SAFE)
         [setFlags addObject:@"ROOT_SAFE"];
-    if (flags & MH_SETUID_SAFE)
+    if (header.flags & MH_SETUID_SAFE)
         [setFlags addObject:@"SETUID_SAFE"];
-    if (flags & MH_NO_REEXPORTED_DYLIBS)
+    if (header.flags & MH_NO_REEXPORTED_DYLIBS)
         [setFlags addObject:@"NO_REEXPORTED_DYLIBS"];
-    if (flags & MH_PIE)
+    if (header.flags & MH_PIE)
         [setFlags addObject:@"PIE"];
 #endif
 
@@ -349,18 +322,12 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d",
-                     magic, cputype, cpusubtype, filetype, [loadCommands count], 0, flags, _flags.uses64BitABI];
+                     header.magic, header.cputype, header.cpusubtype, header.filetype, [loadCommands count], 0, header.flags, _flags.uses64BitABI];
 }
 
 - (CDDylibCommand *)dylibIdentifier;
 {
-    int count, index;
-
-    count = [loadCommands count];
-    for (index = 0; index < count; index++) {
-        CDLoadCommand *loadCommand;
-
-        loadCommand = [loadCommands objectAtIndex:index];
+    for (CDLoadCommand *loadCommand in loadCommands) {
         if ([loadCommand cmd] == LC_ID_DYLIB)
             return (CDDylibCommand *)loadCommand;
     }
@@ -370,13 +337,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (CDSegmentCommand *)segmentWithName:(NSString *)segmentName;
 {
-    int count, index;
-
-    count = [loadCommands count];
-    for (index = 0; index < count; index++) {
-        id loadCommand;
-
-        loadCommand = [loadCommands objectAtIndex:index];
+    for (id loadCommand in loadCommands) {
         if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
             return loadCommand;
         }
@@ -387,13 +348,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (CDSegmentCommand *)segmentContainingAddress:(unsigned long)vmaddr;
 {
-    int count, index;
-
-    count = [loadCommands count];
-    for (index = 0; index < count; index++) {
-        id loadCommand;
-
-        loadCommand = [loadCommands objectAtIndex:index];
+    for (id loadCommand in loadCommands) {
         if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [loadCommand containsAddress:vmaddr] == YES) {
             return loadCommand;
         }
@@ -491,13 +446,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (BOOL)hasProtectedSegments;
 {
-    unsigned int count, index;
-
-    count = [loadCommands count];
-    for (index = 0; index < count; index++) {
-        CDLoadCommand *loadCommand;
-
-        loadCommand = [loadCommands objectAtIndex:index];
+    for (CDLoadCommand *loadCommand in loadCommands) {
         if ([loadCommand isKindOfClass:[CDSegmentCommand class]] && [(CDSegmentCommand *)loadCommand isProtected])
             return YES;
     }
@@ -534,11 +483,11 @@ NSString *CDMagicNumberString(uint32_t magic)
     // Grr, %11@ doesn't work.
     if (isVerbose)
         [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5u %10u %@\n",
-                      CDMagicNumberString(magic), CDNameForCPUType(cputype, cpusubtype), cpusubtype,
+                      CDMagicNumberString(header.magic), CDNameForCPUType(header.cputype, header.cpusubtype), header.cpusubtype,
                       [self filetypeDescription], [loadCommands count], 0, [self flagDescription]];
     else
         [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5u %10u 0x%08x\n",
-                      magic, cputype, cpusubtype, filetype, [loadCommands count], 0, flags];
+                      header.magic, header.cputype, header.cpusubtype, header.filetype, [loadCommands count], 0, header.flags];
     [resultString appendString:@"\n"];
 
     return resultString;
@@ -547,7 +496,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 // Must not return nil.
 - (NSString *)archName;
 {
-    return CDNameForCPUType(cputype, cpusubtype);
+    return CDNameForCPUType(header.cputype, header.cpusubtype);
 }
 
 //

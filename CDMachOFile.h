@@ -25,15 +25,8 @@
     //NSString *filename;
     NSData *data;
 
-    uint32_t magic; // This is read in and stored in little endian order.
-    cpu_type_t cputype;
-    cpu_subtype_t cpusubtype;
-    uint32_t filetype;
-    uint32_t flags; // header flags
-
+    struct mach_header header; // header.magic is read in and stored in little endian order.(?)
     CDByteOrder byteOrder;
-
-    //struct mach_header header;
 
     NSMutableArray *loadCommands;
 
@@ -58,7 +51,6 @@
 - (void)setDelegate:(id)newDelegate;
 
 - (void)process;
-- (NSArray *)_processLoadCommands;
 
 - (cpu_type_t)cpuType;
 - (cpu_subtype_t)cpuSubtype;
