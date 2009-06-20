@@ -4,7 +4,8 @@
 #import "CDFile.h"
 
 #import "CDFatFile.h"
-#import "CDMachOFile.h"
+#import "CDMachO32File.h"
+#import "CDMachO64File.h"
 
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
@@ -25,7 +26,12 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
     aFatFile = [[[CDFatFile alloc] initWithData:data] autorelease];
     if (aFatFile == nil) {
-        return [[[CDMachOFile alloc] initWithData:data] autorelease];
+        CDMachOFile *machOFile;
+
+        machOFile = [[[CDMachO32File alloc] initWithData:data] autorelease];
+        if (machOFile == nil)
+            machOFile = [[[CDMachO64File alloc] initWithData:data] autorelease];
+        return machOFile;
     }
 
     return aFatFile;

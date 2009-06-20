@@ -25,7 +25,6 @@
     //NSString *filename;
     NSData *data;
 
-    struct mach_header header; // header.magic is read in and stored in little endian order.(?)
     CDByteOrder byteOrder;
 
     NSMutableArray *loadCommands;
@@ -42,6 +41,8 @@
 - (id)initWithData:(NSData *)_data;
 - (void)dealloc;
 
+- (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
+
 - (NSString *)bestMatchForLocalArch;
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
 
@@ -52,8 +53,9 @@
 
 - (void)process;
 
-- (cpu_type_t)cpuType;
-- (cpu_subtype_t)cpuSubtype;
+- (uint32_t)magic;
+- (cpu_type_t)cputype;
+- (cpu_subtype_t)cpusubtype;
 - (uint32_t)filetype;
 - (uint32_t)flags;
 
@@ -61,7 +63,6 @@
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
-- (NSString *)description;
 
 - (CDDylibCommand *)dylibIdentifier;
 

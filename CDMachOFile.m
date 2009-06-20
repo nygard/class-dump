@@ -58,72 +58,30 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (id)initWithData:(NSData *)_data;
 {
-    CDDataCursor *cursor;
-
     if ([super init] == nil)
         return nil;
 
-    cursor = [[CDDataCursor alloc] initWithData:_data];
-    header.magic = [cursor readLittleInt32];
-
-    NSLog(@"(testing macho) magic: 0x%x", header.magic);
-    if (header.magic == MH_MAGIC) {
-        byteOrder = CDByteOrderLittleEndian;
-    } else if (header.magic == MH_CIGAM) {
-        byteOrder = CDByteOrderBigEndian;
-#if 0
-    } else if (header.magic == MH_MAGIC_64) {
-        NSLog(@"64 bit header...");
-        byteOrder = CDByteOrderLittleEndian;
-    } else if (header.magic == MH_CIGAM_64) {
-        NSLog(@"64 bit header...");
-        byteOrder = CDByteOrderBigEndian;
-#endif
-    } else {
-        NSLog(@"Not a mach-o file.");
-        [cursor release];
-        [self release];
-        return nil;
-    }
-
-    NSLog(@"byte order: %d", byteOrder);
-    [cursor setByteOrder:byteOrder];
-
-    header.cputype = [cursor readInt32];
-    NSLog(@"cputype: 0x%08x", header.cputype);
-
-    header.cpusubtype = [cursor readInt32];
-    header.filetype = [cursor readInt32];
-    header.ncmds = [cursor readInt32];
-    header.sizeofcmds = [cursor readInt32];
-    header.flags = [cursor readInt32];
-
-    NSLog(@"cpusubtype: 0x%08x", header.cpusubtype);
-    NSLog(@"filetype: 0x%08x", header.filetype);
-    NSLog(@"ncmds: %u", header.ncmds);
-    NSLog(@"sizeofcmds: %u", header.sizeofcmds);
-    NSLog(@"flags: 0x%08x", header.flags);
-
-    _flags.uses64BitABI = (header.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
-    header.cputype &= ~CPU_ARCH_MASK;
-
+    data = nil;
+    byteOrder = CDByteOrderLittleEndian;
+    loadCommands = [[NSMutableArray alloc] init];
+    _flags.uses64BitABI = NO;
     nonretainedDelegate = nil;
 
-    // Now read the load commands.
-    {
-        unsigned int index;
-
-        for (index = 0; index < header.ncmds; index++) {
-            id loadCommand;
-
-            loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
-            if (loadCommand != nil)
-                [loadCommands addObject:loadCommand];
-            NSLog(@"loadCommand: %@", loadCommand);
-        }
-    }
-
     return self;
+}
+
+- (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
+{
+    uint32_t index;
+
+    for (index = 0; index < count; index++) {
+        id loadCommand;
+
+        loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
+        if (loadCommand != nil)
+            [loadCommands addObject:loadCommand];
+        NSLog(@"loadCommand: %@", loadCommand);
+    }
 }
 
 #if 0
@@ -177,7 +135,8 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (NSString *)bestMatchForLocalArch;
 {
-    return CDNameForCPUType(header.cputype, header.cpusubtype);
+    // Implement in subclasses
+    return nil;
 }
 
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
@@ -188,7 +147,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (archInfo == NULL)
         return nil;
 
-    if (archInfo->cputype == header.cputype)
+    if (archInfo->cputype == [self cputype])
         return self;
 
     return nil;
@@ -218,24 +177,34 @@ NSString *CDMagicNumberString(uint32_t magic)
     }
 }
 
-- (cpu_type_t)cpuType;
+- (uint32_t)magic;
 {
-    return header.cputype;
+    // Implement in subclasses.
+    return 0;
 }
 
-- (cpu_subtype_t)cpuSubtype;
+- (cpu_type_t)cputype;
 {
-    return header.cpusubtype;
+    // Implement in subclasses.
+    return 0;
+}
+
+- (cpu_subtype_t)cpusubtype;
+{
+    // Implement in subclasses.
+    return 0;
 }
 
 - (uint32_t)filetype;
 {
-    return header.filetype;
+    // Implement in subclasses.
+    return 0;
 }
 
 - (uint32_t)flags;
 {
-    return header.flags;
+    // Implement in subclasses.
+    return 0;
 }
 
 - (NSArray *)loadCommands;
@@ -266,63 +235,59 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (NSString *)flagDescription;
 {
     NSMutableArray *setFlags;
+    uint32_t flags;
 
     setFlags = [NSMutableArray array];
-    if (header.flags & MH_NOUNDEFS)
+    flags = [self flags];
+    if (flags & MH_NOUNDEFS)
         [setFlags addObject:@"NOUNDEFS"];
-    if (header.flags & MH_INCRLINK)
+    if (flags & MH_INCRLINK)
         [setFlags addObject:@"INCRLINK"];
-    if (header.flags & MH_DYLDLINK)
+    if (flags & MH_DYLDLINK)
         [setFlags addObject:@"DYLDLINK"];
-    if (header.flags & MH_BINDATLOAD)
+    if (flags & MH_BINDATLOAD)
         [setFlags addObject:@"BINDATLOAD"];
-    if (header.flags & MH_PREBOUND)
+    if (flags & MH_PREBOUND)
         [setFlags addObject:@"PREBOUND"];
-    if (header.flags & MH_SPLIT_SEGS)
+    if (flags & MH_SPLIT_SEGS)
         [setFlags addObject:@"SPLIT_SEGS"];
-    if (header.flags & MH_LAZY_INIT)
+    if (flags & MH_LAZY_INIT)
         [setFlags addObject:@"LAZY_INIT"];
-    if (header.flags & MH_TWOLEVEL)
+    if (flags & MH_TWOLEVEL)
         [setFlags addObject:@"TWOLEVEL"];
-    if (header.flags & MH_FORCE_FLAT)
+    if (flags & MH_FORCE_FLAT)
         [setFlags addObject:@"FORCE_FLAT"];
-    if (header.flags & MH_NOMULTIDEFS)
+    if (flags & MH_NOMULTIDEFS)
         [setFlags addObject:@"NOMULTIDEFS"];
-    if (header.flags & MH_NOFIXPREBINDING)
+    if (flags & MH_NOFIXPREBINDING)
         [setFlags addObject:@"NOFIXPREBINDING"];
-    if (header.flags & MH_PREBINDABLE)
+    if (flags & MH_PREBINDABLE)
         [setFlags addObject:@"PREBINDABLE"];
-    if (header.flags & MH_ALLMODSBOUND)
+    if (flags & MH_ALLMODSBOUND)
         [setFlags addObject:@"ALLMODSBOUND"];
-    if (header.flags & MH_SUBSECTIONS_VIA_SYMBOLS)
+    if (flags & MH_SUBSECTIONS_VIA_SYMBOLS)
         [setFlags addObject:@"SUBSECTIONS_VIA_SYMBOLS"];
-    if (header.flags & MH_CANONICAL)
+    if (flags & MH_CANONICAL)
         [setFlags addObject:@"CANONICAL"];
-    if (header.flags & MH_WEAK_DEFINES)
+    if (flags & MH_WEAK_DEFINES)
         [setFlags addObject:@"WEAK_DEFINES"];
-    if (header.flags & MH_BINDS_TO_WEAK)
+    if (flags & MH_BINDS_TO_WEAK)
         [setFlags addObject:@"BINDS_TO_WEAK"];
-    if (header.flags & MH_ALLOW_STACK_EXECUTION)
+    if (flags & MH_ALLOW_STACK_EXECUTION)
         [setFlags addObject:@"ALLOW_STACK_EXECUTION"];
 #if 1
     // 10.5 only, but I'm still using the 10.4 sdk.
-    if (header.flags & MH_ROOT_SAFE)
+    if (flags & MH_ROOT_SAFE)
         [setFlags addObject:@"ROOT_SAFE"];
-    if (header.flags & MH_SETUID_SAFE)
+    if (flags & MH_SETUID_SAFE)
         [setFlags addObject:@"SETUID_SAFE"];
-    if (header.flags & MH_NO_REEXPORTED_DYLIBS)
+    if (flags & MH_NO_REEXPORTED_DYLIBS)
         [setFlags addObject:@"NO_REEXPORTED_DYLIBS"];
-    if (header.flags & MH_PIE)
+    if (flags & MH_PIE)
         [setFlags addObject:@"PIE"];
 #endif
 
     return [setFlags componentsJoinedByString:@" "];
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d",
-                     header.magic, header.cputype, header.cpusubtype, header.filetype, [loadCommands count], 0, header.flags, _flags.uses64BitABI];
 }
 
 - (CDDylibCommand *)dylibIdentifier;
@@ -483,11 +448,11 @@ NSString *CDMagicNumberString(uint32_t magic)
     // Grr, %11@ doesn't work.
     if (isVerbose)
         [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5u %10u %@\n",
-                      CDMagicNumberString(header.magic), CDNameForCPUType(header.cputype, header.cpusubtype), header.cpusubtype,
+                      CDMagicNumberString([self magic]), [self archName], [self cpusubtype],
                       [self filetypeDescription], [loadCommands count], 0, [self flagDescription]];
     else
         [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5u %10u 0x%08x\n",
-                      header.magic, header.cputype, header.cpusubtype, header.filetype, [loadCommands count], 0, header.flags];
+                      [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags]];
     [resultString appendString:@"\n"];
 
     return resultString;
@@ -496,7 +461,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 // Must not return nil.
 - (NSString *)archName;
 {
-    return CDNameForCPUType(header.cputype, header.cpusubtype);
+    return CDNameForCPUType([self cputype], [self cpusubtype]);
 }
 
 //
