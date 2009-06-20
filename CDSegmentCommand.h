@@ -6,7 +6,6 @@
 #import "CDLoadCommand.h"
 #include <mach-o/loader.h>
 
-@class NSArray;
 @class CDSection;
 
 @interface CDSegmentCommand : CDLoadCommand

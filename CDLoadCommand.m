@@ -14,6 +14,7 @@
 #import "CDUUIDCommand.h"
 #import "CDUnknownLoadCommand.h"
 #import "CDLinkeditData.h"
+#import "CDSegment64.h"
 
 @implementation CDLoadCommand
 
@@ -27,6 +28,7 @@
 
     switch (val) {
       case LC_SEGMENT: targetClass = [CDSegmentCommand class]; break;
+      case LC_SEGMENT_64: targetClass = [CDSegment64 class]; break;
       case LC_ID_DYLIB:
       case LC_LOAD_DYLIB:
       case LC_LOAD_WEAK_DYLIB:

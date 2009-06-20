@@ -1,18 +1,13 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
+//  Copyright (C) 2009 Steve Nygard.  All rights reserved.
 
-#import "CDSection.h"
+#import "CDSection64.h"
 
-#include <mach-o/swap.h>
-#import <Foundation/Foundation.h>
-#import "CDFatFile.h"
-#import "CDMachOFile.h"
-#import "CDSegmentCommand.h"
+#import "CDDataCursor.h"
 
-@implementation CDSection
+@implementation CDSection64
 
-// Just to resolve multiple different definitions...
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegmentCommand *)aSegment;
+- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegment64 *)aSegment;
 {
     char buf[17];
 
@@ -23,8 +18,8 @@
 
     [cursor readBytesOfLength:16 intoBuffer:section.sectname];
     [cursor readBytesOfLength:16 intoBuffer:section.segname];
-    section.addr = [cursor readInt32];
-    section.size = [cursor readInt32];
+    section.addr = [cursor readInt64];
+    section.size = [cursor readInt64];
     section.offset = [cursor readInt32];
     section.align = [cursor readInt32];
     section.reloff = [cursor readInt32];
@@ -32,6 +27,7 @@
     section.flags = [cursor readInt32];
     section.reserved1 = [cursor readInt32];
     section.reserved2 = [cursor readInt32];
+    section.reserved3 = [cursor readInt32];
 
     // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
 
@@ -56,7 +52,7 @@
     [super dealloc];
 }
 
-- (CDSegmentCommand *)segment;
+- (CDSegment64 *)segment;
 {
     return nonretainedSegment;
 }
@@ -74,43 +70,6 @@
 - (NSString *)sectionName;
 {
     return sectionName;
-}
-
-- (uint32_t)addr;
-{
-    return section.addr;
-}
-
-- (uint32_t)size;
-{
-    return section.size;
-}
-
-- (uint32_t)offset;
-{
-    return section.offset;
-}
-
-- (const void *)dataPointer;
-{
-    return [[self machOFile] bytes] + [self offset];
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
-                     [self addr], [self offset], [self size], [self size], segmentName, sectionName];
-}
-
-- (BOOL)containsAddress:(unsigned long)vmaddr;
-{
-    // TODO (2003-12-06): And what happens when the filesize of the segment is less than the vmsize?
-    return (vmaddr >= [self addr]) && (vmaddr < [self addr] + [self size]);
-}
-
-- (unsigned long)segmentOffsetForVMAddr:(unsigned long)vmaddr;
-{
-    return vmaddr - [self addr];
 }
 
 @end
