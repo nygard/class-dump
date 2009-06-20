@@ -48,7 +48,7 @@
     [resultString appendString:@"/*\n"];
     [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
 
-    archInfo = NXGetArchInfoFromCpuType([machOFile cpuType], [machOFile cpuSubtype]);
+    archInfo = NXGetArchInfoFromCpuType([machOFile cputype], [machOFile cpusubtype]);
     if (archInfo != NULL)
         [resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
 
