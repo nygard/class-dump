@@ -126,7 +126,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] cmd: %d (%@), cmdsize: %d // %@",
+    return [NSString stringWithFormat:@"[%@] cmd: 0x%08x (%@), cmdsize: %d // %@",
                      NSStringFromClass([self class]), [self cmd], [self commandName], [self cmdsize], [self extraDescription]];
 }
 
