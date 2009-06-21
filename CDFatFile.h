@@ -19,7 +19,7 @@
     NSMutableArray *arches;
 }
 
-- (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)someData;
 - (void)dealloc;
 
 - (NSString *)bestMatchForLocalArch;

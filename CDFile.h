@@ -16,11 +16,22 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 
 @interface CDFile : NSObject
 {
+    NSString *filename;
+    NSData *data;
+    NSUInteger offset; // Or perhaps dataOffset, archiveOffset
 }
 
-+ (id)fileWithData:(NSData *)data;
+// Returns CDFatFile, CDMachO32File, or CDMachO64File.
++ (id)fileWithData:(NSData *)somData;
 
-- (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)someData;
+- (void)dealloc;
+
+- (NSString *)filename;
+- (void)setFilename:(NSString *)newName;
+
+- (NSUInteger)offset;
+- (void)setOffset:(NSUInteger)newOffset;
 
 - (NSString *)bestMatchForLocalArch;
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;

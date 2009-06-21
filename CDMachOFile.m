@@ -29,33 +29,6 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 @implementation CDMachOFile
 
-// Returns either a CDMachOFile or CDFatFile.
-+ (id)machOFileWithFilename:(NSString *)aFilename;
-{
-    NSData *data;
-    CDFatFile *aFatFile;
-    CDMachOFile *aMachOFile;
-
-    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
-
-    aFatFile = [[[CDFatFile alloc] initWithData:data] autorelease];
-    if (aFatFile == nil) {
-        aMachOFile = [[[CDMachOFile alloc] initWithData:data] autorelease];
-        if (aMachOFile == nil) {
-            fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [aFilename fileSystemRepresentation]);
-            [data release];
-            return nil;
-        }
-
-        NSLog(@"amof: %@", aMachOFile);
-        return aMachOFile;
-    }
-
-    [data release];
-
-    return aFatFile;
-}
-
 - (id)initWithData:(NSData *)_data;
 {
     if ([super init] == nil)
@@ -84,48 +57,8 @@ NSString *CDMagicNumberString(uint32_t magic)
     }
 }
 
-#if 0
-- (id)initWithFilename:(NSString *)aFilename archiveOffset:(unsigned int)anArchiveOffset;
-{
-    const struct mach_header *headerPtr;
-
-    if ([super init] == nil)
-        return nil;
-
-    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
-    if (data == nil) {
-        NSLog(@"Couldn't read file: %@", aFilename);
-        [self release];
-        return nil;
-        //[NSException raise:NSGenericException format:@"Couldn't read file: %@", filename];
-    }
-
-    archiveOffset = anArchiveOffset;
-    headerPtr = [data bytes] + archiveOffset;
-    header = *headerPtr;
-
-    if (header.magic == MH_MAGIC_64 || header.magic == MH_CIGAM_64) {
-        NSLog(@"We don't support 64-bit Mach-O files.");
-        [self release];
-        return nil;
-    }
-
-    if (header.magic != MH_MAGIC && header.magic != MH_CIGAM) {
-        [self release];
-        return nil;
-    }
-
-    filename = [aFilename retain];
-    loadCommands = [[NSMutableArray alloc] init];
-    nonretainedDelegate = nil;
-
-    return self;
-}
-#endif
-
 - (void)dealloc;
 {
-    //[filename release];
     [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
     [data release];
     nonretainedDelegate = nil;
@@ -150,11 +83,6 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (archInfo->cputype == [self cputype])
         return self;
 
-    return nil;
-}
-
-- (NSString *)filename;
-{
     return nil;
 }
 
@@ -388,14 +316,13 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [data bytes];
 }
 
-- (const void *)bytesAtOffset:(unsigned long)offset;
+- (const void *)bytesAtOffset:(NSUInteger)anOffset;
 {
-    return [data bytes] + offset;
+    return [data bytes] + anOffset;
 }
 
 - (NSString *)importBaseName;
 {
-#if 0
     if ([self filetype] == MH_DYLIB) {
         NSString *str;
 
@@ -405,7 +332,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
         return str;
     }
-#endif
+
     return nil;
 }
 

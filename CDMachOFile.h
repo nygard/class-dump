@@ -22,9 +22,6 @@
 
 @interface CDMachOFile : CDFile
 {
-    //NSString *filename;
-    NSData *data;
-
     CDByteOrder byteOrder;
 
     NSMutableArray *loadCommands;
@@ -36,8 +33,6 @@
     id nonretainedDelegate;
 }
 
-+ (id)machOFileWithFilename:(NSString *)aFilename;
-
 - (id)initWithData:(NSData *)_data;
 - (void)dealloc;
 
@@ -45,8 +40,6 @@
 
 - (NSString *)bestMatchForLocalArch;
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
-
-- (NSString *)filename;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
@@ -73,7 +66,7 @@
 - (NSString *)stringFromVMAddr:(unsigned long)vmaddr;
 
 - (const void *)bytes;
-- (const void *)bytesAtOffset:(unsigned long)offset;
+- (const void *)bytesAtOffset:(NSUInteger)anOffset;
 
 - (NSString *)importBaseName;
 

@@ -174,59 +174,63 @@ int main(int argc, char *argv[])
 
     // TODO (2005-07-27): Maybe add a flag to test whether the file has Objective-C segments, and return a different exit code.
     if (optind < argc) {
-        NSString *path;
+        NSString *arg, *executablePath;
 
-        path = [NSString stringWithFileSystemRepresentation:argv[optind]];
+        arg = [NSString stringWithFileSystemRepresentation:argv[optind]];
+        executablePath = [arg executablePathForFilename];
         if (shouldListArches) {
-            NSString *executablePath;
-
-            executablePath = [path executablePathForFilename];
             if (executablePath == nil) {
                 printf("none\n");
             } else {
+                NSData *data;
                 id macho;
 
-                macho = [CDMachOFile machOFileWithFilename:executablePath];
+                data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
+                macho = [CDFile fileWithData:data];
+                [macho setFilename:executablePath];
                 if (macho == nil) {
                     printf("none\n");
                 } else {
                     if ([macho isKindOfClass:[CDMachOFile class]]) {
                         printf("%s\n", [[macho archName] UTF8String]);
-                    } else {
+                    } else if ([macho isKindOfClass:[CDFatFile class]]) {
                         printf("%s\n", [[[macho archNames] componentsJoinedByString:@" "] UTF8String]);
                     }
                 }
-            }
-        } else {
-            {
-                NSString *p2;
-                CDFile *file;
-                NSData *data;
-
-                p2 = [path executablePathForFilename];
-                NSLog(@"path: %@", path);
-                NSLog(@"p2:   %@", p2);
-
-                data = [[NSData alloc] initWithContentsOfMappedFile:p2];
-                file = [CDFile fileWithData:data];
-                if (file == nil) {
-                    fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [p2 UTF8String]);
-                    exit(1);
-                }
-
-                if (archName == nil) {
-                    archName = [file bestMatchForLocalArch];
-                    //NSLog(@"No arch specified, best match for local arch is: %@", archName);
-                } else {
-                    //NSLog(@"chosen arch: %@", archName);
-                }
-
-                [classDump setTargetArchName:archName];
-
                 [data release];
             }
-            exit(0);
-            if ([classDump processFilename:path] == YES) {
+        } else {
+            CDFile *file;
+            NSData *data;
+
+            if (executablePath == nil) {
+                fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [arg fileSystemRepresentation]);
+                exit(1);
+            }
+
+            data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
+            file = [CDFile fileWithData:data];
+            [file setFilename:executablePath];
+            if (file == nil) {
+                fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
+                exit(1);
+            }
+
+            if (archName == nil) {
+                archName = [file bestMatchForLocalArch];
+                //NSLog(@"No arch specified, best match for local arch is: %@", archName);
+            } else {
+                //NSLog(@"chosen arch: %@", archName);
+            }
+
+            [classDump setTargetArchName:archName];
+            [classDump setExecutablePath:[executablePath stringByDeletingLastPathComponent]];
+
+            NSLog(@"----------------------------------------------------------------------");
+            NSLog(@"About to process file from main().");
+
+            // NO, we have the file already: file
+            if ([classDump processFile:file]) {
 #if 0
                 [classDump showHeader];
                 [classDump showLoadCommands];
@@ -254,6 +258,8 @@ int main(int argc, char *argv[])
                     [visitor release];
                 }
             }
+
+            [data release];
         }
     }
 

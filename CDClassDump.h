@@ -12,7 +12,7 @@
 #define CLASS_DUMP_VERSION @"3.1.3 dev"
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
-@class CDDylibCommand, CDMachOFile;
+@class CDDylibCommand, CDFile, CDMachOFile;
 @class CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
 @class CDVisitor;
 
@@ -95,8 +95,8 @@
 - (CDTypeFormatter *)methodTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
-- (BOOL)processFilename:(NSString *)aFilename;
 - (BOOL)_processFilename:(NSString *)aFilename;
+- (BOOL)processFile:(CDFile *)aFile;
 - (void)processObjectiveCSegments;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;

@@ -296,45 +296,32 @@
 }
 
 // Return YES if successful, NO if there was an error.
-- (BOOL)processFilename:(NSString *)aFilename;
-{
-    NSString *path;
-
-    path = [aFilename executablePathForFilename];
-    if (path == nil) {
-        // TODO (2007-11-02): Maybe it would be good to use NSError here.
-        fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [aFilename fileSystemRepresentation]);
-        return NO;
-    }
-
-    [self setExecutablePath:[path stringByDeletingLastPathComponent]];
-
-    return [self _processFilename:path];
-}
-
-// Return YES if successful, NO if there was an error.
 - (BOOL)_processFilename:(NSString *)aFilename;
 {
     NSData *data;
-    CDMachOFile *aMachOFile;
+    CDFile *aFile;
 
     data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
-    {
-        CDFatFile *f1;
-        CDMachOFile *f2;
 
-        f1 = [[CDFatFile alloc] initWithData:data];
-        NSLog(@"f1: %@", f1);
-        [f1 release];
+    aFile = [CDFile fileWithData:data];
+    NSLog(@"aFile: %@", aFile);
+    [aFile setFilename:aFilename];
 
-        f2 = [[CDMachOFile alloc] initWithData:data];
-        NSLog(@"f2: %@", f2);
-        [f2 release];
-    }
     [data release];
 
+    if (aFile == nil)
+        return NO;
+
+    return [self processFile:aFile];
+}
+
+- (BOOL)processFile:(CDFile *)aFile;
+{
+    CDMachOFile *aMachOFile;
+
     // We need to find the macho file with the target arch name, set it to aMachOFile
-    aMachOFile = nil;
+    aMachOFile = [aFile machOFileWithArchName:targetArchName];
+    NSLog(@"aMachOFile: %@", aMachOFile);
 
     [aMachOFile setDelegate:self];
 

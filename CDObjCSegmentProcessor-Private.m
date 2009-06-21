@@ -128,6 +128,8 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
         if ([machOFile hasDifferentByteOrder] == YES)
             swap_cd_objc_module(&objcModule);
 
+        NSLog(@"objcModule.size: %u", objcModule.size);
+        NSLog(@"sizeof(struct cd_objc_module): %u", sizeof(struct cd_objc_module));
         assert(objcModule.size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
         aSegment = [machOFile segmentContainingAddress:objcModule.symtab];
 

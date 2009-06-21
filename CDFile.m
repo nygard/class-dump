@@ -20,29 +20,65 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 @implementation CDFile
 
-+ (id)fileWithData:(NSData *)data;
++ (id)fileWithData:(NSData *)someData;
 {
     CDFatFile *aFatFile;
 
-    aFatFile = [[[CDFatFile alloc] initWithData:data] autorelease];
+    aFatFile = [[[CDFatFile alloc] initWithData:someData] autorelease];
     if (aFatFile == nil) {
         CDMachOFile *machOFile;
 
-        machOFile = [[[CDMachO32File alloc] initWithData:data] autorelease];
+        machOFile = [[[CDMachO32File alloc] initWithData:someData] autorelease];
         if (machOFile == nil)
-            machOFile = [[[CDMachO64File alloc] initWithData:data] autorelease];
+            machOFile = [[[CDMachO64File alloc] initWithData:someData] autorelease];
         return machOFile;
     }
 
     return aFatFile;
 }
 
-- (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)someData;
 {
     if ([super init] == nil)
         return nil;
 
+    filename = nil;
+    data = [someData retain];
+    offset = 0;
+
     return self;
+}
+
+- (void)dealloc;
+{
+    [filename release];
+    [data release];
+
+    [super dealloc];
+}
+
+- (NSString *)filename;
+{
+    return filename;
+}
+
+- (void)setFilename:(NSString *)newName;
+{
+    if (newName == filename)
+        return;
+
+    [filename release];
+    filename = [newName retain];
+}
+
+- (NSUInteger)offset;
+{
+    return offset;
+}
+
+- (void)setOffset:(NSUInteger)newOffset;
+{
+    offset = newOffset;
 }
 
 - (NSString *)bestMatchForLocalArch;
