@@ -38,7 +38,6 @@ NSString *CDMagicNumberString(uint32_t magic)
     byteOrder = CDByteOrderLittleEndian;
     loadCommands = [[NSMutableArray alloc] init];
     _flags.uses64BitABI = NO;
-    nonretainedDelegate = nil;
 
     return self;
 }
@@ -61,7 +60,6 @@ NSString *CDMagicNumberString(uint32_t magic)
 {
     [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
     [data release];
-    nonretainedDelegate = nil;
 
     [super dealloc];
 }
@@ -84,25 +82,6 @@ NSString *CDMagicNumberString(uint32_t magic)
         return self;
 
     return nil;
-}
-
-- (id)delegate;
-{
-    return nonretainedDelegate;
-}
-
-- (void)setDelegate:(id)newDelegate;
-{
-    nonretainedDelegate = newDelegate;
-}
-
-- (void)process;
-{
-    for (CDLoadCommand *loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
-            [nonretainedDelegate machOFile:self loadDylib:(CDDylibCommand *)loadCommand];
-        }
-    }
 }
 
 - (uint32_t)magic;

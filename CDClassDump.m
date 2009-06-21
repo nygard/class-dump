@@ -323,11 +323,13 @@
     aMachOFile = [aFile machOFileWithArchName:targetArchName];
     NSLog(@"aMachOFile: %@", aMachOFile);
 
-    [aMachOFile setDelegate:self];
-
     // TODO (2005-07-03): Look for the newer exception handling stuff.
     NS_DURING {
-        [aMachOFile process];
+        for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
+            if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
+                [self machOFile:aMachOFile loadDylib:(CDDylibCommand *)loadCommand];
+            }
+        }
     } NS_HANDLER {
         [aMachOFile release];
         return NO;

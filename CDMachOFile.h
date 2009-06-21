@@ -29,8 +29,6 @@
     struct {
         unsigned int uses64BitABI:1;
     } _flags;
-
-    id nonretainedDelegate;
 }
 
 - (id)initWithData:(NSData *)_data;
@@ -40,11 +38,6 @@
 
 - (NSString *)bestMatchForLocalArch;
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
-
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
-
-- (void)process;
 
 - (uint32_t)magic;
 - (cpu_type_t)cputype;
