@@ -61,25 +61,26 @@ NSString *CDTokenDescription(int token)
 
     *error = nil;
 
-    NS_DURING {
+    @try {
         lookahead = [lexer scanNextToken];
         result = [self _parseMethodType];
-    } NS_HANDLER {
+    }
+    @catch (NSException *exception) {
         NSDictionary *userInfo;
         int code;
 
         // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
-        if ([[localException name] isEqual:CDSyntaxError]) {
+        if ([[exception name] isEqual:CDSyntaxError]) {
             code = CDTypeParserCodeSyntaxError;
             userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
                                              [NSString stringWithFormat:@"Syntax Error, %@:\n\t     type: %@\n\tremaining: %@",
-                                                       [localException reason], [lexer string], [lexer remainingString]], @"explanation",
+                                                       [exception reason], [lexer string], [lexer remainingString]], @"explanation",
                                              [lexer string], @"type",
                                              [lexer remainingString], @"remaining string",
                                              nil];
         } else {
             code = CDTypeParserCodeDefault;
-            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[localException reason], @"reason",
+            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[exception reason], @"reason",
                                              [lexer string], @"type",
                                              [lexer remainingString], @"remaining string",
                                              nil];
@@ -88,7 +89,7 @@ NSString *CDTokenDescription(int token)
         [userInfo release];
 
         result = nil;
-    } NS_ENDHANDLER;
+    }
 
     return result;
 }
@@ -99,25 +100,26 @@ NSString *CDTokenDescription(int token)
 
     *error = nil;
 
-    NS_DURING {
+    @try {
         lookahead = [lexer scanNextToken];
         result = [self _parseType];
-    } NS_HANDLER {
+    }
+    @catch (NSException *exception) {
         NSDictionary *userInfo;
         int code;
 
         // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
-        if ([[localException name] isEqual:CDSyntaxError]) {
+        if ([[exception name] isEqual:CDSyntaxError]) {
             code = CDTypeParserCodeSyntaxError;
             userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
                                              [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@",
-                                                       [localException reason], [lexer string], [lexer remainingString]], @"explanation",
+                                                       [exception reason], [lexer string], [lexer remainingString]], @"explanation",
                                              [lexer string], @"type",
                                              [lexer remainingString], @"remaining string",
                                              nil];
         } else {
             code = CDTypeParserCodeDefault;
-            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[localException reason], @"reason",
+            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[exception reason], @"reason",
                                              [lexer string], @"type",
                                              [lexer remainingString], @"remaining string",
                                              nil];
@@ -126,7 +128,7 @@ NSString *CDTokenDescription(int token)
         [userInfo release];
 
         result = nil;
-    } NS_ENDHANDLER;
+    }
 
     return result;
 }

@@ -324,8 +324,7 @@
     NSLog(@"aMachOFile: %@", aMachOFile);
 
     if ([self shouldProcessRecursively]) {
-        // TODO (2005-07-03): Look for the newer exception handling stuff.
-        NS_DURING {
+        @try {
             for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
                 if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
                     CDDylibCommand *aDylibCommand;
@@ -335,10 +334,11 @@
                         [self machOFileWithID:[aDylibCommand name]]; // Processes as a side effect
                 }
             }
-        } NS_HANDLER {
+        }
+        @catch (NSException *exception) {
             [aMachOFile release];
             return NO;
-        } NS_ENDHANDLER;
+        }
     }
 
     assert([aMachOFile filename] != nil);
