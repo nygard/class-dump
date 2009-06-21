@@ -141,15 +141,9 @@
 
 - (CDSection *)sectionContainingVMAddr:(unsigned long)vmaddr;
 {
-    int count, index;
-
-    count = [sections count];
-    for (index = 0; index < count; index++) {
-        CDSection *aSection;
-
-        aSection = [sections objectAtIndex:index];
-        if ([aSection containsAddress:vmaddr] == YES)
-            return aSection;
+    for (CDSection *section in sections) {
+        if ([section containsAddress:vmaddr] == YES)
+            return section;
     }
 
     return nil;

@@ -259,11 +259,8 @@
 
 - (BOOL)containsObjectiveCSegments;
 {
-    unsigned int count, index;
-
-    count = [objCSegmentProcessors count];
-    for (index = 0; index < count; index++) {
-        if ([[objCSegmentProcessors objectAtIndex:index] hasModules])
+    for (CDObjCSegmentProcessor *processor in objCSegmentProcessors) {
+        if ([processor hasModules])
             return YES;
     }
 
@@ -352,14 +349,8 @@
 
 - (void)processObjectiveCSegments;
 {
-    unsigned int count, index;
-
-    count = [machOFiles count];
-    for (index = 0; index < count; index++) {
-        CDMachOFile *machOFile;
+    for (CDMachOFile *machOFile in machOFiles) {
         CDObjCSegmentProcessor *aProcessor;
-
-        machOFile = [machOFiles objectAtIndex:index];
 
         aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:machOFile];
         [aProcessor process];
@@ -374,12 +365,8 @@
     [aVisitor willBeginVisiting];
 
     if ([self containsObjectiveCSegments]) {
-        int count, index;
-
-        count = [objCSegmentProcessors count];
-        for (index = 0; index < count; index++)
-            [[objCSegmentProcessors objectAtIndex:index] recursivelyVisit:aVisitor];
-    } else {
+        for (CDObjCSegmentProcessor *processor in objCSegmentProcessors)
+            [processor recursivelyVisit:aVisitor];
     }
 
     [aVisitor didEndVisiting];
@@ -477,13 +464,11 @@
 - (void)registerPhase:(int)phase;
 {
     NSAutoreleasePool *pool;
-    int count, index;
 
     pool = [[NSAutoreleasePool alloc] init];
 
-    count = [objCSegmentProcessors count];
-    for (index = 0; index < count; index++) {
-        [[objCSegmentProcessors objectAtIndex:index] registerStructuresWithObject:self phase:phase];
+    for (CDObjCSegmentProcessor *processor in objCSegmentProcessors) {
+        [processor registerStructuresWithObject:self phase:phase];
     }
 
     [self endPhase:phase];
