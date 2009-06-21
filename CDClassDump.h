@@ -108,8 +108,6 @@
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 
-- (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
-
 - (void)appendHeaderToString:(NSMutableString *)resultString;
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;

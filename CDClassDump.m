@@ -323,17 +323,23 @@
     aMachOFile = [aFile machOFileWithArchName:targetArchName];
     NSLog(@"aMachOFile: %@", aMachOFile);
 
-    // TODO (2005-07-03): Look for the newer exception handling stuff.
-    NS_DURING {
-        for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
-            if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
-                [self machOFile:aMachOFile loadDylib:(CDDylibCommand *)loadCommand];
+    if ([self shouldProcessRecursively]) {
+        // TODO (2005-07-03): Look for the newer exception handling stuff.
+        NS_DURING {
+            for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
+                if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
+                    CDDylibCommand *aDylibCommand;
+
+                    aDylibCommand = (CDDylibCommand *)loadCommand;
+                    if ([aDylibCommand cmd] == LC_LOAD_DYLIB)
+                        [self machOFileWithID:[aDylibCommand name]]; // Processes as a side effect
+                }
             }
-        }
-    } NS_HANDLER {
-        [aMachOFile release];
-        return NO;
-    } NS_ENDHANDLER;
+        } NS_HANDLER {
+            [aMachOFile release];
+            return NO;
+        } NS_ENDHANDLER;
+    }
 
     assert([aMachOFile filename] != nil);
     [machOFiles addObject:aMachOFile];
@@ -420,12 +426,6 @@
     }
 
     return aMachOFile;
-}
-
-- (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDDylibCommand *)aDylibCommand;
-{
-    if ([aDylibCommand cmd] == LC_LOAD_DYLIB && [self shouldProcessRecursively] == YES)
-        [self machOFileWithID:[aDylibCommand name]];
 }
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
