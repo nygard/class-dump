@@ -37,6 +37,12 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     return aFatFile;
 }
 
+- (id)init;
+{
+    [NSException raise:@"RejectUnusedImplementation" format:@"-initWithData: is the designated initializer"];
+    return nil;
+}
+
 - (id)initWithData:(NSData *)someData;
 {
     if ([super init] == nil)
@@ -69,6 +75,11 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
     [filename release];
     filename = [newName retain];
+}
+
+- (NSData *)data;
+{
+    return data;
 }
 
 - (NSUInteger)offset;

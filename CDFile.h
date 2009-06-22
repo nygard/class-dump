@@ -30,6 +30,8 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 - (NSString *)filename;
 - (void)setFilename:(NSString *)newName;
 
+- (NSData *)data;
+
 - (NSUInteger)offset;
 - (void)setOffset:(NSUInteger)newOffset;
 
