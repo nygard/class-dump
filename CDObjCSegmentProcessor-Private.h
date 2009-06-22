@@ -89,11 +89,11 @@ struct cd_objc_protocol_list
 
 struct cd_objc_protocol
 {
-    long isa;
-    long protocol_name;
-    long protocol_list;
-    long instance_methods;
-    long class_methods;
+    uint32_t isa;
+    uint32_t protocol_name;
+    uint32_t protocol_list;
+    uint32_t instance_methods;
+    uint32_t class_methods;
 };
 
 struct cd_objc_protocol_method_list
