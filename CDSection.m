@@ -45,6 +45,9 @@
 
     //NSLog(@"segmentName: '%@', sectionName: '%@'", segmentName, sectionName);
 
+    data = nil;
+    _flags.hasLoadedData = NO;
+
     return self;
 }
 
@@ -52,6 +55,7 @@
 {
     [segmentName release];
     [sectionName release];
+    [data release];
 
     [super dealloc];
 }
@@ -91,26 +95,46 @@
     return section.offset;
 }
 
+- (NSData *)data;
+{
+    if (_flags.hasLoadedData == NO) {
+        data = [[NSData alloc] initWithBytes:[[nonretainedSegment machOFile] machODataBytes] + section.offset length:section.size];
+        _flags.hasLoadedData = YES;
+    }
+
+    return data;
+}
+
+- (void)unloadData;
+{
+    if (_flags.hasLoadedData) {
+        _flags.hasLoadedData = NO;
+        [data release];
+        data = nil;
+    }
+}
+
 - (const void *)dataPointer;
 {
-    return [[self machOFile] bytes] + [self offset];
+    return [[self machOFile] bytes] + section.offset;
 }
 
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
-                     [self addr], [self offset], [self size], [self size], segmentName, sectionName];
+                     section.addr, section.offset, section.size, section.size, segmentName, sectionName];
 }
 
-- (BOOL)containsAddress:(unsigned long)vmaddr;
+- (BOOL)containsAddress:(uint32_t)address;
 {
     // TODO (2003-12-06): And what happens when the filesize of the segment is less than the vmsize?
-    return (vmaddr >= [self addr]) && (vmaddr < [self addr] + [self size]);
+    return (address >= section.addr) && (address < section.addr + section.size);
 }
 
-- (unsigned long)segmentOffsetForVMAddr:(unsigned long)vmaddr;
+- (uint32_t)fileOffsetForAddress:(uint32_t)address;
 {
-    return vmaddr - [self addr];
+    NSParameterAssert([self containsAddress:address]);
+    return section.offset + address - section.addr;
 }
 
 @end

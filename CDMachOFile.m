@@ -31,10 +31,9 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (id)initWithData:(NSData *)_data;
 {
-    if ([super init] == nil)
+    if ([super initWithData:_data] == nil)
         return nil;
 
-    data = nil;
     byteOrder = CDByteOrderLittleEndian;
     loadCommands = [[NSMutableArray alloc] init];
     _flags.uses64BitABI = NO;
@@ -239,14 +238,13 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSLog(@"Warning: %@", aWarning);
 }
 
-- (const void *)pointerFromVMAddr:(unsigned long)vmaddr;
+- (const void *)pointerFromVMAddr:(uint32_t)vmaddr;
 {
     return [self pointerFromVMAddr:vmaddr segmentName:nil]; // Any segment is fine
 }
 
-- (const void *)pointerFromVMAddr:(unsigned long)vmaddr segmentName:(NSString *)aSegmentName;
+- (const void *)pointerFromVMAddr:(uint32_t)vmaddr segmentName:(NSString *)aSegmentName;
 {
-#if 0
     CDSegmentCommand *segment;
     const void *ptr;
 
@@ -265,21 +263,18 @@ NSString *CDMagicNumberString(uint32_t magic)
         return NULL;
     }
     if ([segment isProtected]) {
-        //NSLog(@"Arg, a protected segment.");
+        NSLog(@"Arg, a protected segment.");
         return NULL;
     }
 #if 0
     NSLog(@"vmaddr: %p, [data bytes]: %p, [segment fileoff]: %d, [segment segmentOffsetForVMAddr:vmaddr]: %d",
           vmaddr, [data bytes], [segment fileoff], [segment segmentOffsetForVMAddr:vmaddr]);
 #endif
-    ptr = [data bytes] + archiveOffset + (vmaddr - [segment vmaddr] + [segment fileoff]);
-    //ptr = [data bytes] + [segment fileoff] + [segment segmentOffsetForVMAddr:vmaddr];
+    ptr = [data bytes] + offset + [segment fileOffsetForAddress:vmaddr];
     return ptr;
-#endif
-    return NULL;
 }
 
-- (NSString *)stringFromVMAddr:(unsigned long)vmaddr;
+- (NSString *)stringFromVMAddr:(uint32_t)vmaddr;
 {
     const void *ptr;
 
@@ -288,6 +283,42 @@ NSString *CDMagicNumberString(uint32_t magic)
         return nil;
 
     return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
+}
+
+- (const void *)machODataBytes;
+{
+    return [data bytes] + offset;
+}
+
+- (NSUInteger)dataOffsetForAddress:(uint32_t)addr;
+{
+    CDSegmentCommand *segment;
+
+    if (addr == 0)
+        return 0;
+
+    segment = [self segmentContainingAddress:addr];
+    if (segment == NULL) {
+        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", addr);
+        exit(5);
+        return 0;
+    }
+
+    if ([segment isProtected]) {
+        NSLog(@"Error: Segment is protected.");
+        exit(5);
+    }
+
+#if 0
+    NSLog(@"---------->");
+    NSLog(@"segment is: %@", segment);
+    NSLog(@"addr: 0x%08x", addr);
+    NSLog(@"CDFile offset:    0x%08x", offset);
+    NSLog(@"file off for addr: 0x%08x", [segment fileOffsetForAddress:addr]);
+    NSLog(@"data offset:      0x%08x", offset + [segment fileOffsetForAddress:addr]);
+    NSLog(@"<----------");
+#endif
+    return offset + [segment fileOffsetForAddress:addr];
 }
 
 - (const void *)bytes;
@@ -368,6 +399,14 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (NSString *)archName;
 {
     return CDNameForCPUType([self cputype], [self cpusubtype]);
+}
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, offset: %p",
+                     NSStringFromClass([self class]), self,
+                     [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
+                     filename, data, offset];
 }
 
 //

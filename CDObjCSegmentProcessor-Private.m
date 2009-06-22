@@ -486,6 +486,43 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return aCategory;
 }
 
+- (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
+{
+    NSNumber *key;
+    CDOCProtocol *aProtocol;
+
+    key = [NSNumber numberWithUnsignedInt:address];
+    aProtocol = [protocolsByAddress objectForKey:key];
+    if (aProtocol == nil) {
+        CDDataCursor *cursor;
+        uint32_t v1, v2, v3, v4, v5;
+        NSString *name;
+
+        NSLog(@"Creating new protocol from address: 0x%08x", address);
+        aProtocol = [[[CDOCProtocol alloc] init] autorelease];
+        [protocolsByAddress setObject:aProtocol forKey:key];
+
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+
+        v1 = [cursor readLittleInt32];
+        v2 = [cursor readLittleInt32];
+        v3 = [cursor readLittleInt32];
+        v4 = [cursor readLittleInt32];
+        v5 = [cursor readLittleInt32];
+        name = [machOFile stringFromVMAddr:v2];
+        NSLog(@"data offset for %08x: %08x", v2, [machOFile dataOffsetForAddress:v2]);
+        NSLog(@"v1-5: 0x%08x 0x%08x (%@) 0x%08x 0x%08x 0x%08x", v1, v2, name, v3, v4, v5);
+
+
+        [cursor release];
+    } else {
+        NSLog(@"Found existing protocol at address: 0x%08x", address);
+    }
+
+    return aProtocol;
+}
+
 // Protocols can reference other protocols, so we can't try to create them
 // in order.  Instead we create them lazily and just make sure we reference
 // all available protocols.
@@ -494,18 +531,61 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 {
     CDSegmentCommand *objcSegment;
     CDSection *protocolSection;
-    unsigned long addr;
+    uint32_t addr;
     CDOCProtocol *aProtocol;
     int count, index;
 
+    NSData *data;
+    CDDataCursor *cursor;
+
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
+    NSLog(@"objcSegment: %@", objcSegment);
+    [objcSegment writeSectionData];
+
     protocolSection = [objcSegment sectionWithName:@"__protocol"];
+    NSLog(@"protocolSection: %@", protocolSection);
+
+    data = [protocolSection data];
+    NSLog(@"data: %p, len: %u", data, [data length]);
+
+    NSLog(@"addr: 0x%08x", [protocolSection addr]);
+    NSLog(@"section file offset: 0x%08x", [protocolSection offset]);
+    NSLog(@"dataOffsetForAddress: 0x%08x", [machOFile dataOffsetForAddress:[protocolSection addr]]);
+    [self protocolAtAddress:[protocolSection addr]];
+    [self protocolAtAddress:[protocolSection addr]];
+    exit(99);
+
+    cursor = [[CDDataCursor alloc] initWithData:data];
+    while ([cursor isAtEnd] == NO) {
+        uint32_t p_isa, protocol_name, protocol_list, instance_methods, class_methods;
+
+        p_isa = [cursor readLittleInt32];
+        protocol_name = [cursor readLittleInt32];
+        protocol_list = [cursor readLittleInt32];
+        instance_methods = [cursor readLittleInt32];
+        class_methods = [cursor readLittleInt32];
+
+        NSLog(@"isa:0x%08x name:0x%08x plist:0x%08x imeth:0x%08x cmeth:0x%08x", p_isa, protocol_name, protocol_list, instance_methods, class_methods);
+        if (protocol_list != 0) {
+            CDSegmentCommand *seg;
+            CDSection *sect;
+
+            seg = [machOFile segmentContainingAddress:protocol_list];
+            sect = [seg sectionContainingAddress:protocol_list];
+            NSLog(@"plist: 0x%08x", protocol_list);
+            NSLog(@"seg: %@", seg);
+            NSLog(@"sect: %@", sect);
+        }
+    }
+    [cursor release];
 
     addr = [protocolSection addr];
 
     count = [protocolSection size] / sizeof(struct cd_objc_protocol);
     for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol))
         aProtocol = [self processProtocol:addr];
+
+    exit(99);
 }
 
 - (void)checkUnreferencedProtocols;

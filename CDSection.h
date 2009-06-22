@@ -16,6 +16,11 @@
     struct section section;
     NSString *segmentName;
     NSString *sectionName;
+
+    NSData *data;
+    struct {
+        unsigned int hasLoadedData:1;
+    } _flags;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegmentCommand *)aSegment;
@@ -30,11 +35,14 @@
 - (uint32_t)size;
 - (uint32_t)offset;
 
+- (NSData *)data;
+- (void)unloadData;
+
 - (const void *)dataPointer; // Has no access to the mach-o file
 
 - (NSString *)description;
 
-- (BOOL)containsAddress:(unsigned long)vmaddr;
-- (unsigned long)segmentOffsetForVMAddr:(unsigned long)vmaddr;
+- (BOOL)containsAddress:(uint32_t)address;
+- (uint32_t)fileOffsetForAddress:(uint32_t)address;
 
 @end

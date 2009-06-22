@@ -33,11 +33,16 @@
 - (NSString *)flagDescription;
 - (NSString *)extraDescription;
 
-- (BOOL)containsAddress:(unsigned long)vmaddr;
-- (unsigned long)segmentOffsetForVMAddr:(unsigned long)vmaddr;
+//- (const void *)segmentDataBytes;
 
+- (BOOL)containsAddress:(uint32_t)vmaddr;
+- (CDSection *)sectionContainingAddress:(uint32_t)vmaddr;
 - (CDSection *)sectionWithName:(NSString *)aName;
+//- (uint32_t)segmentOffsetForVMAddr:(uint32_t)vmaddr;
+- (uint32_t)fileOffsetForAddress:(uint32_t)address;
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
+
+- (void)writeSectionData;
 
 @end

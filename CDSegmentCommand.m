@@ -133,46 +133,53 @@
                      [self flags], [self flagDescription], segmentCommand.nsects, sections];
 }
 
+#if 0
+- (const void *)segmentDataBytes;
+{
+    return [[nonretainedMachOFile data] bytes] + [nonretainedMachOFile offset] + segmentCommand.fileoff;
+}
+#endif
+
 // TODO (2003-12-06): Might want to make this a range.
-- (BOOL)containsAddress:(unsigned long)vmaddr;
+- (BOOL)containsAddress:(uint32_t)vmaddr;
 {
     return (vmaddr >= segmentCommand.vmaddr) && (vmaddr < segmentCommand.vmaddr + segmentCommand.vmsize);
 }
 
-- (CDSection *)sectionContainingVMAddr:(unsigned long)vmaddr;
+- (CDSection *)sectionContainingAddress:(uint32_t)vmaddr;
 {
     for (CDSection *section in sections) {
-        if ([section containsAddress:vmaddr] == YES)
+        if ([section containsAddress:vmaddr])
             return section;
     }
 
     return nil;
 }
 
-- (unsigned long)segmentOffsetForVMAddr:(unsigned long)vmaddr;
-{
-    CDSection *section;
-
-    section = [self sectionContainingVMAddr:vmaddr];
-    NSLog(@"section: %@", section);
-
-    return [section segmentOffsetForVMAddr:vmaddr];
-}
-
 - (CDSection *)sectionWithName:(NSString *)aName;
 {
-    int count, index;
-
-    count = [sections count];
-    for (index = 0; index < count; index++) {
-        CDSection *aSection;
-
-        aSection = [sections objectAtIndex:index];
-        if ([[aSection sectionName] isEqual:aName] == YES)
-            return aSection;
+    for (CDSection *section in sections) {
+        if ([[section sectionName] isEqual:aName])
+            return section;
     }
 
     return nil;
+}
+
+#if 0
+- (uint32_t)segmentOffsetForVMAddr:(uint32_t)vmaddr;
+{
+    CDSection *section;
+
+    section = [self sectionContainingAddress:vmaddr];
+    NSLog(@"section: %@", section);
+    return [section segmentOffsetForVMAddr:vmaddr];
+}
+#endif
+
+- (uint32_t)fileOffsetForAddress:(uint32_t)address;
+{
+    return [[self sectionContainingAddress:address] fileOffsetForAddress:address];
 }
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
@@ -192,6 +199,16 @@
         [resultString appendFormat:@"    flags %@\n", [self flagDescription]];
     else
         [resultString appendFormat:@"    flags 0x%x\n", segmentCommand.flags];
+}
+
+- (void)writeSectionData;
+{
+    unsigned int index = 0;
+
+    for (CDSection *section in sections) {
+        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, [section sectionName]] atomically:NO];
+        index++;
+    }
 }
 
 @end

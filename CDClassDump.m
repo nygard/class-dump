@@ -352,6 +352,8 @@
     for (CDMachOFile *machOFile in machOFiles) {
         CDObjCSegmentProcessor *aProcessor;
 
+        NSLog(@"----------------------------------------------------------------------");
+        NSLog(@"machOFile: %@", machOFile);
         aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objCSegmentProcessors addObject:aProcessor];

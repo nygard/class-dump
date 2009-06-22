@@ -135,6 +135,9 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 - (NSArray *)processMethods:(unsigned long)methodsAddr;
 - (CDOCCategory *)processCategoryDefinition:(unsigned long)defRef;
 
+
+- (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
+
 - (void)processProtocolSection;
 - (void)checkUnreferencedProtocols;
 

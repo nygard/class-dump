@@ -83,10 +83,4 @@
     return CDNameForCPUType(header.cputype, header.cpusubtype);
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d",
-                     header.magic, header.cputype, header.cpusubtype, header.filetype, [loadCommands count], 0, header.flags, _flags.uses64BitABI];
-}
-
 @end

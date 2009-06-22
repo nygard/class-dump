@@ -20,6 +20,4 @@
 
 - (NSString *)bestMatchForLocalArch;
 
-- (NSString *)description;
-
 @end

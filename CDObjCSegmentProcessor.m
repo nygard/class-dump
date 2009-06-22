@@ -32,6 +32,7 @@
     machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
+    protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -41,6 +42,7 @@
     [machOFile release];
     [modules release];
     [protocolsByName release];
+    [protocolsByAddress release];
 
     [super dealloc];
 }
