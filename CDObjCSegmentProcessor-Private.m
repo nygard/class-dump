@@ -511,13 +511,91 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
         v4 = [cursor readLittleInt32];
         v5 = [cursor readLittleInt32];
         name = [machOFile stringFromVMAddr:v2];
+        [aProtocol setName:name]; // Need to set name before adding to another protocol
         //NSLog(@"data offset for %08x: %08x", v2, [machOFile dataOffsetForAddress:v2]);
-        NSLog(@"[@ %08x] v1-5: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x (%@)", address, v1, v2, v3, v4, v5, name);
+        //NSLog(@"[@ %08x] v1-5: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x (%@)", address, v1, v2, v3, v4, v5, name);
 
+        {
+            uint32_t count, index;
+
+            // Protocols
+            if (v3 != 0) {
+                uint32_t val;
+
+                [cursor setOffset:[machOFile dataOffsetForAddress:v3]];
+                val = [cursor readLittleInt32];
+                NSParameterAssert(val == 0); // next pointer, let me know if it's ever not zero
+                //NSLog(@"val: 0x%08x", val);
+                count = [cursor readLittleInt32];
+                //NSLog(@"protocol count: %08x", count);
+                for (index = 0; index < count; index++) {
+                    CDOCProtocol *anotherProtocol;
+
+                    val = [cursor readLittleInt32];
+                    //NSLog(@"val[%2d]: 0x%08x", index, val);
+                    anotherProtocol = [self protocolAtAddress:val];
+                    if (anotherProtocol != nil) {
+                        [aProtocol addProtocol:anotherProtocol];
+                    } else {
+                        NSLog(@"Note: another protocol was nil.");
+                    }
+                }
+            }
+
+            // Instance methods
+            if (v4 != 0) {
+                [cursor setOffset:[machOFile dataOffsetForAddress:v4]];
+                count = [cursor readLittleInt32];
+                //NSLog(@"instance method count: %08x", count);
+
+                for (index = 0; index < count; index++) {
+                    NSString *name, *type;
+
+                    name = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
+                    type = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
+                    //NSLog(@"name: %@", name);
+                    //NSLog(@"type: %@", type);
+                    if (name != nil && type != nil) {
+                        CDOCMethod *method;
+
+                        method = [[CDOCMethod alloc] initWithName:name type:type];
+                        [aProtocol addInstanceMethod:method];
+                        [method release];
+                    } else {
+                        NSLog(@"Note: name or type is nil.");
+                    }
+                }
+            }
+
+            // Class methods
+            if (v5 != 0) {
+                [cursor setOffset:[machOFile dataOffsetForAddress:v5]];
+                count = [cursor readLittleInt32];
+                //NSLog(@"class method count: %08x", count);
+
+                for (index = 0; index < count; index++) {
+                    NSString *name, *type;
+
+                    name = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
+                    type = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
+                    //NSLog(@"name: %@", name);
+                    //NSLog(@"type: %@", type);
+                    if (name != nil && type != nil) {
+                        CDOCMethod *method;
+
+                        method = [[CDOCMethod alloc] initWithName:name type:type];
+                        [aProtocol addClassMethod:method];
+                        [method release];
+                    } else {
+                        NSLog(@"Note: name or type is nil.");
+                    }
+                }
+            }
+        }
 
         [cursor release];
     } else {
-        NSLog(@"Found existing protocol at address: 0x%08x", address);
+        //NSLog(@"Found existing protocol at address: 0x%08x", address);
     }
 
     return aProtocol;
@@ -528,6 +606,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 // all available protocols.
 
 // Many of the protocol structures share the same name, but have differnt method lists.  Create them all, then merge/unique by name after.
+// Perhaps a bit more work than necessary, but at least I can see exactly what is happening.
 - (void)processProtocolSection;
 {
     CDSegmentCommand *objcSegment;
@@ -543,6 +622,52 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol))
         [self protocolAtAddress:addr]; // Forces them to be loaded
 
+    // Now unique the protocols by name and store in protocolsByName
+
+    for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDOCProtocol *p1, *p2;
+
+        p1 = [protocolsByAddress objectForKey:key];
+        p2 = [protocolsByName objectForKey:[p1 name]];
+        if (p2 == nil) {
+            p2 = [[CDOCProtocol alloc] init];
+            [p2 setName:[p1 name]];
+            [protocolsByName setObject:p2 forKey:[p2 name]];
+            // adopted protocols still not set, will want uniqued instances
+            [p2 release];
+        } else {
+        }
+    }
+
+    //NSLog(@"uniqued protocol names: %@", [[[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@", "]);
+
+    // And finally fill in adopted protocols, instance and class methods
+    for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDOCProtocol *p1, *uniqueProtocol;
+
+        p1 = [protocolsByAddress objectForKey:key];
+        uniqueProtocol = [protocolsByName objectForKey:[p1 name]];
+        for (CDOCProtocol *p2 in [p1 protocols])
+            [uniqueProtocol addProtocol:[protocolsByName objectForKey:[p2 name]]];
+
+        if ([[uniqueProtocol classMethods] count] == 0) {
+            for (CDOCMethod *method in [p1 classMethods])
+                [uniqueProtocol addClassMethod:method];
+        } else {
+            NSParameterAssert([[uniqueProtocol classMethods] count] == [[p1 classMethods] count]);
+        }
+
+        if ([[uniqueProtocol instanceMethods] count] == 0) {
+            for (CDOCMethod *method in [p1 instanceMethods])
+                [uniqueProtocol addInstanceMethod:method];
+        } else {
+            NSParameterAssert([[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
+        }
+    }
+
+    [protocolsByAddress removeAllObjects];
+
+    NSLog(@"protocolsByName: %@", protocolsByName);
     exit(99);
 }
 

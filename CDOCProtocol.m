@@ -22,8 +22,8 @@
 
     name = nil;
     protocols = [[NSMutableArray alloc] init];
-    classMethods = nil;
-    instanceMethods = nil;
+    classMethods = [[NSMutableArray alloc] init];
+    instanceMethods = [[NSMutableArray alloc] init];
     adoptedProtocolNames = [[NSMutableSet alloc] init];
 
     return self;
@@ -88,13 +88,9 @@
     return classMethods;
 }
 
-- (void)setClassMethods:(NSArray *)newClassMethods;
+- (void)addClassMethod:(CDOCMethod *)method;
 {
-    if (newClassMethods == classMethods)
-        return;
-
-    [classMethods release];
-    classMethods = [newClassMethods retain];
+    [classMethods addObject:method];
 }
 
 - (NSArray *)instanceMethods;
@@ -102,13 +98,9 @@
     return instanceMethods;
 }
 
-- (void)setInstanceMethods:(NSArray *)newInstanceMethods;
+- (void)addInstanceMethod:(CDOCMethod *)method;
 {
-    if (newInstanceMethods == instanceMethods)
-        return;
-
-    [instanceMethods release];
-    instanceMethods = [newInstanceMethods retain];
+    [instanceMethods addObject:method];
 }
 
 - (BOOL)hasMethods;
@@ -118,8 +110,8 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, protocols: %d, class methods: %d, instance methods: %d",
-                     NSStringFromClass([self class]), name, [protocols count], [classMethods count], [instanceMethods count]];
+    return [NSString stringWithFormat:@"<%@:%p> name: %@, protocols: %d, class methods: %d, instance methods: %d",
+                     NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;

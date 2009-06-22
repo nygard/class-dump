@@ -15,14 +15,24 @@
     return nil;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(unsigned long)anImp;
+- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(uint32_t)anImp;
+{
+    if ([self initWithName:aName type:aType] == nil)
+        return nil;
+
+    [self setImp:anImp];
+
+    return self;
+}
+
+- (id)initWithName:(NSString *)aName type:(NSString *)aType;
 {
     if ([super init] == nil)
         return nil;
 
     name = [aName retain];
     type = [aType retain];
-    imp = anImp;
+    imp = 0;
 
     return self;
 }
@@ -45,9 +55,14 @@
     return type;
 }
 
-- (unsigned long)imp;
+- (uint32_t)imp;
 {
     return imp;
+}
+
+- (void)setImp:(uint32_t)newValue;
+{
+    imp = newValue;
 }
 
 - (NSString *)description;
@@ -73,6 +88,11 @@
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 {
     return [name compare:[otherMethod name]];
+}
+
+- (id)copyWithZone:(NSZone *)zone;
+{
+    return [[CDOCMethod alloc] initWithName:name type:type imp:imp];
 }
 
 @end

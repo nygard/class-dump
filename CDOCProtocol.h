@@ -3,20 +3,21 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2007  Steve Nygard
 
-#import <Foundation/NSObject.h>
+#import <Foundation/Foundation.h>
 
 #import "CDStructureRegistrationProtocol.h"
 
 @class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
 @class CDClassDump, CDSymbolReferences;
 @class CDVisitor;
+@class CDOCMethod;
 
 @interface CDOCProtocol : NSObject
 {
     NSString *name;
     NSMutableArray *protocols;
-    NSArray *classMethods;
-    NSArray *instanceMethods;
+    NSMutableArray *classMethods;
+    NSMutableArray *instanceMethods;
 
     NSMutableSet *adoptedProtocolNames;
 }
@@ -33,10 +34,10 @@
 - (void)addProtocolsFromArray:(NSArray *)newProtocols;
 
 - (NSArray *)classMethods;
-- (void)setClassMethods:(NSArray *)newClassMethods;
+- (void)addClassMethod:(CDOCMethod *)method;
 
 - (NSArray *)instanceMethods;
-- (void)setInstanceMethods:(NSArray *)newInstanceMethods;
+- (void)addInstanceMethod:(CDOCMethod *)method;
 
 - (BOOL)hasMethods;
 
