@@ -40,7 +40,7 @@
 }
 
 // Return NO on failure.
-- (void)seekToPosition:(NSUInteger)newOffset;
+- (void)setOffset:(NSUInteger)newOffset;
 {
     if (newOffset <= [data length]) {
         offset = newOffset;
@@ -51,7 +51,7 @@
 
 - (void)advanceByLength:(NSUInteger)length;
 {
-    [self seekToPosition:offset + length];
+    [self setOffset:offset + length];
 }
 
 - (NSUInteger)remaining;

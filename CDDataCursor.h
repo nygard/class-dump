@@ -25,7 +25,7 @@ typedef NSUInteger CDByteOrder;
 - (const void *)bytes;
 
 - (NSUInteger)offset;
-- (void)seekToPosition:(NSUInteger)newOffset;
+- (void)setOffset:(NSUInteger)newOffset;
 - (void)advanceByLength:(NSUInteger)length;
 - (NSUInteger)remaining;
 
