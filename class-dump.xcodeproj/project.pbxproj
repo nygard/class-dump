@@ -996,6 +996,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "$(HOME)/bin";
+				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 				ZERO_LINK = YES;
@@ -1018,6 +1019,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /;
+				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 				ZERO_LINK = NO;

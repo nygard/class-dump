@@ -318,7 +318,6 @@
 
     // We need to find the macho file with the target arch name, set it to aMachOFile
     aMachOFile = [aFile machOFileWithArchName:targetArchName];
-    NSLog(@"aMachOFile: %@", aMachOFile);
 
     if ([self shouldProcessRecursively]) {
         @try {

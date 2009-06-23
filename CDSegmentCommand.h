@@ -14,6 +14,8 @@
 
     NSString *name;
     NSMutableArray *sections;
+
+    NSMutableData *decryptedData;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
@@ -44,5 +46,7 @@
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 - (void)writeSectionData;
+
+- (NSData *)decryptedData;
 
 @end

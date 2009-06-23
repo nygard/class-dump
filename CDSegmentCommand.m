@@ -8,6 +8,7 @@
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDSection.h"
+#include <openssl/aes.h>
 
 @implementation CDSegmentCommand
 
@@ -53,6 +54,8 @@
         }
     }
 
+    decryptedData = nil;
+
     return self;
 }
 
@@ -60,6 +63,7 @@
 {
     [name release];
     [sections release];
+    [decryptedData release];
 
     [super dealloc];
 }
@@ -209,6 +213,57 @@
         [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, [section sectionName]] atomically:NO];
         index++;
     }
+}
+
+- (NSData *)decryptedData;
+{
+    if ([self isProtected] == NO)
+        return nil;
+
+    if (decryptedData == nil) {
+        NSData *srcData;
+        const void *src;
+        void *dest;
+        unsigned int index, count;
+        uint8_t k1[32] = { 0x6f, 0x75, 0x72, 0x68, 0x61, 0x72, 0x64, 0x77, 0x6f, 0x72, 0x6b, 0x62, 0x79, 0x74, 0x68, 0x65,
+                           0x73, 0x65, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x67, 0x75, 0x61, 0x72, 0x64, 0x65, 0x64, 0x70, 0x6c, };
+        uint8_t k2[32] = { 0x65, 0x61, 0x73, 0x65, 0x64, 0x6f, 0x6e, 0x74, 0x73, 0x74, 0x65, 0x61, 0x6c, 0x28, 0x63, 0x29,
+                           0x41, 0x70, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x72, 0x49, 0x6e, 0x63, };
+        AES_KEY key1, key2;
+
+
+        AES_set_decrypt_key(k1, 256, &key1);
+        AES_set_decrypt_key(k2, 256, &key2);
+
+        //NSLog(@"filesize: %08x, pagesize: %04x", segmentCommand.filesize, PAGE_SIZE);
+        NSParameterAssert((segmentCommand.filesize % PAGE_SIZE) == 0);
+        decryptedData = [[NSMutableData alloc] initWithLength:segmentCommand.filesize];
+
+        srcData = [nonretainedMachOFile data];
+        src = [nonretainedMachOFile machODataBytes] + segmentCommand.fileoff;
+        dest = [decryptedData mutableBytes];
+
+        count = segmentCommand.filesize / PAGE_SIZE;
+        for (index = 0; index < count; index++) {
+            if (index < 3) {
+                //NSLog(@"src = %08x, not encrypted", src);
+                memcpy(dest, src, PAGE_SIZE);
+            } else {
+                unsigned char iv1[AES_BLOCK_SIZE];
+                unsigned char iv2[AES_BLOCK_SIZE];
+
+                //NSLog(@"src = %08x, encrypted", src);
+                memset(iv1, 0, AES_BLOCK_SIZE);
+                memset(iv2, 0, AES_BLOCK_SIZE);
+                AES_cbc_encrypt(src, dest, PAGE_SIZE / 2, &key1, iv1, AES_DECRYPT);
+                AES_cbc_encrypt(src + PAGE_SIZE / 2, dest + PAGE_SIZE / 2, PAGE_SIZE / 2, &key2, iv2, AES_DECRYPT);
+            }
+            src += PAGE_SIZE;
+            dest += PAGE_SIZE;
+        }
+    }
+
+    return decryptedData;
 }
 
 @end

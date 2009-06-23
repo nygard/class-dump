@@ -242,8 +242,33 @@ static BOOL debug = NO;
 
 - (NSString *)stringAtAddress:(uint32_t)address;
 {
+    CDSegmentCommand *segment;
+
     NSUInteger anOffset;
     const void *ptr;
+
+    if (address == 0)
+        return nil;
+
+    segment = [self segmentContainingAddress:address];
+    if (segment == nil) {
+        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", address);
+        exit(5);
+        return nil;
+    }
+
+    if ([segment isProtected]) {
+        NSData *d2;
+        NSUInteger d2Offset;
+
+        d2 = [segment decryptedData];
+        d2Offset = [segment fileOffsetForAddress:address] - [segment fileoff];
+        if (d2Offset == 0)
+            return nil;
+
+        ptr = [d2 bytes] + d2Offset;
+        return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
+    }
 
     anOffset = [self dataOffsetForAddress:address];
     if (anOffset == 0)
@@ -272,7 +297,7 @@ static BOOL debug = NO;
         return 0;
 
     segment = [self segmentContainingAddress:address];
-    if (segment == NULL) {
+    if (segment == nil) {
         NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", address);
         exit(5);
         return 0;

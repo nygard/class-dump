@@ -62,8 +62,7 @@
     }
 
     if ([machOFile hasProtectedSegments]) {
-        [resultString appendString:@" *       (This file has protected segments -- Objective-C information may be missing.\n"];
-        [resultString appendString:@" *        Try dumping a different architecture, or deprotect it first.)\n"];
+        [resultString appendString:@" *       (This file has protected segments, decrypting.)\n"];
     }
     [resultString appendString:@" */\n\n"];
 }
