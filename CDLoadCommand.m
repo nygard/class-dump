@@ -37,7 +37,7 @@
           targetClass = [CDLCDylib class];
           break;
       case LC_SYMTAB:
-          targetClass = [CDSymbolTable class];
+          targetClass = [CDLCSymbolTable class];
           break;
       case LC_DYSYMTAB: targetClass = [CDLCDynamicSymbolTable class]; break;
       case LC_UUID: targetClass = [CDUUIDCommand class]; break;

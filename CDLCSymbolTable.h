@@ -5,7 +5,7 @@
 
 #import "CDLoadCommand.h"
 
-@interface CDSymbolTable : CDLoadCommand
+@interface CDLCSymbolTable : CDLoadCommand
 {
     struct symtab_command symtabCommand;
 

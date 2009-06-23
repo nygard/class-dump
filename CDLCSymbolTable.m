@@ -10,7 +10,7 @@
 #import "CDMachOFile.h"
 #import "CDSymbol.h"
 
-@implementation CDSymbolTable
+@implementation CDLCSymbolTable
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
