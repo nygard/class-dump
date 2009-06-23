@@ -15,7 +15,7 @@
 #import "CDOCProtocol.h"
 #import "CDOCSymtab.h"
 #import "CDSection.h"
-#import "CDSegmentCommand.h"
+#import "CDLCSegment32.h"
 #import "NSArray-Extensions.h"
 
 @implementation CDObjCSegmentProcessor (Private)

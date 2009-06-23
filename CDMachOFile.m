@@ -5,17 +5,16 @@
 
 #import "CDMachOFile.h"
 
-#import <Foundation/Foundation.h>
 #include <mach-o/arch.h>
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 #include <mach-o/swap.h>
 
 #import "CDDataCursor.h"
-#import "CDDylibCommand.h"
+#import "CDLCDylib.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
-#import "CDSegmentCommand.h"
+#import "CDLCSegment32.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {

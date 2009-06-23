@@ -6,16 +6,16 @@
 #import "CDLoadCommand.h"
 
 #include <mach-o/swap.h>
-#import <Foundation/Foundation.h>
-#import "CDSegmentCommand.h"
-#import "CDDylibCommand.h"
+
+#import "CDLCDylib.h"
+#import "CDLCDynamicSymbolTable.h"
+#import "CDLCLinkeditData.h"
+#import "CDLCSegment32.h"
+#import "CDLCSegment64.h"
+#import "CDLCSymbolTable.h"
+#import "CDLCUUID.h"
+#import "CDLCUnknown.h"
 #import "CDMachOFile.h"
-#import "CDSymbolTable.h"
-#import "CDDynamicSymbolTable.h"
-#import "CDUUIDCommand.h"
-#import "CDUnknownLoadCommand.h"
-#import "CDLinkeditData.h"
-#import "CDSegment64.h"
 
 @implementation CDLoadCommand
 

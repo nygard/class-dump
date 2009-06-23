@@ -12,7 +12,7 @@
 #import "CDObjCSegmentProcessor.h"
 #import "CDMachOFile.h"
 #import "CDOCProtocol.h"
-#import "CDDylibCommand.h"
+#import "CDLCDylib.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"

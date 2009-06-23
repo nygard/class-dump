@@ -8,9 +8,9 @@
 #import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "NSString-Extensions.h"
-#import "CDDylibCommand.h"
 #import "CDFatArch.h"
 #import "CDFatFile.h"
+#import "CDLCDylib.h"
 #import "CDMachOFile.h"
 #import "CDObjCSegmentProcessor.h"
 #import "CDStructureTable.h"

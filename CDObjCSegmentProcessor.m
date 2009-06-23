@@ -7,9 +7,8 @@
 
 #include <mach-o/arch.h>
 
-#import <Foundation/Foundation.h>
 #import "CDClassDump.h"
-#import "CDDylibCommand.h"
+#import "CDLCDylib.h"
 #import "CDMachOFile.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
@@ -19,7 +18,7 @@
 #import "CDOCProtocol.h"
 #import "CDOCSymtab.h"
 #import "CDSection.h"
-#import "CDSegmentCommand.h"
+#import "CDLCSegment32.h"
 #import "NSArray-Extensions.h"
 #import "CDObjCSegmentProcessor-Private.h"
 #import "CDVisitor.h"
