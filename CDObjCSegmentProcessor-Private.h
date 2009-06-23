@@ -108,7 +108,6 @@ struct cd_objc_protocol_method
     uint32_t types;
 };
 
-@class NSArray;
 @class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 
 @interface CDObjCSegmentProcessor (Private)

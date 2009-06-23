@@ -5,8 +5,6 @@
 
 #import "CDLoadCommand.h"
 
-@class NSMutableArray;
-
 @interface CDSymbolTable : CDLoadCommand
 {
     struct symtab_command symtabCommand;

@@ -11,7 +11,6 @@
 #define CD_THIS_BYTE_ORDER NX_LittleEndian
 #endif
 
-@class NSArray, NSData, NSMutableArray;
 @class CDFatArch, CDMachOFile;
 
 @interface CDFatFile : CDFile

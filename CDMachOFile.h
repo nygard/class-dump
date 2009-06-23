@@ -10,10 +10,7 @@
 
 #import "CDDataCursor.h" // For CDByteOrder
 
-@class NSData;
 @class CDSegmentCommand;
-
-@class NSArray;
 @class CDDylibCommand, CDMachOFile;
 
 @protocol CDMachOFileDelegate

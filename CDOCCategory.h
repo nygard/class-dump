@@ -6,7 +6,6 @@
 #import "CDOCProtocol.h"
 #import "CDTopologicalSortProtocol.h"
 
-@class NSArray, NSMutableString, NSString;
 @class CDSymbolReferences;
 
 @interface CDOCCategory : CDOCProtocol <CDTopologicalSort>

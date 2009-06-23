@@ -6,7 +6,6 @@
 #import <Foundation/Foundation.h>
 #include <mach-o/loader.h>
 
-@class NSString;
 @class CDDataCursor, CDMachOFile, CDSegmentCommand;
 
 @interface CDSection : NSObject

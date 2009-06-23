@@ -5,7 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class NSMutableString, NSString;
 @class CDClassDump, CDSymbolReferences;
 
 @interface CDOCMethod : NSObject <NSCopying>

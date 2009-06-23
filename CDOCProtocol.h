@@ -7,7 +7,6 @@
 
 #import "CDStructureRegistrationProtocol.h"
 
-@class NSArray, NSMutableArray, NSMutableSet, NSMutableString, NSString;
 @class CDClassDump, CDSymbolReferences;
 @class CDVisitor;
 @class CDOCMethod;
