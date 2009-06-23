@@ -224,10 +224,10 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (CDSegmentCommand *)segmentContainingAddress:(unsigned long)vmaddr;
+- (CDSegmentCommand *)segmentContainingAddress:(uint32_t)address;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [loadCommand containsAddress:vmaddr] == YES) {
+        if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [loadCommand containsAddress:address] == YES) {
             return loadCommand;
         }
     }
@@ -235,59 +235,21 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (void)foo;
-{
-    NSLog(@"busted");
-}
-
 - (void)showWarning:(NSString *)aWarning;
 {
     NSLog(@"Warning: %@", aWarning);
 }
 
-- (const void *)pointerFromVMAddr:(uint32_t)vmaddr;
-{
-    return [self pointerFromVMAddr:vmaddr segmentName:nil]; // Any segment is fine
-}
-
-- (const void *)pointerFromVMAddr:(uint32_t)vmaddr segmentName:(NSString *)aSegmentName;
-{
-    CDSegmentCommand *segment;
-    const void *ptr;
-
-    if (vmaddr == 0)
-        return NULL;
-
-    segment = [self segmentContainingAddress:vmaddr];
-    if (segment == NULL) {
-        [self foo];
-        //NSLog(@"load commands: %@", [loadCommands description]);
-        NSLog(@"pointerFromVMAddr:, vmaddr: %p, segment: %@", vmaddr, segment);
-    }
-    //NSLog(@"[segment name]: %@", [segment name]);
-    if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
-        //[self showWarning:[NSString stringWithFormat:@"addr %p in segment %@, required segment is %@", vmaddr, [segment name], aSegmentName]];
-        return NULL;
-    }
-    if ([segment isProtected]) {
-        NSLog(@"Arg, a protected segment.");
-        return NULL;
-    }
-#if 0
-    NSLog(@"vmaddr: %p, [data bytes]: %p, [segment fileoff]: %d, [segment segmentOffsetForVMAddr:vmaddr]: %d",
-          vmaddr, [data bytes], [segment fileoff], [segment segmentOffsetForVMAddr:vmaddr]);
-#endif
-    ptr = [data bytes] + offset + [segment fileOffsetForAddress:vmaddr];
-    return ptr;
-}
-
 - (NSString *)stringAtAddress:(uint32_t)address;
 {
+    NSUInteger anOffset;
     const void *ptr;
 
-    ptr = [self pointerFromVMAddr:address];
-    if (ptr == NULL)
+    anOffset = [self dataOffsetForAddress:address];
+    if (anOffset == 0)
         return nil;
+
+    ptr = [data bytes] + anOffset;
 
     return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
 }
@@ -297,21 +259,21 @@ static BOOL debug = NO;
     return [data bytes] + offset;
 }
 
-- (NSUInteger)dataOffsetForAddress:(uint32_t)addr;
+- (NSUInteger)dataOffsetForAddress:(uint32_t)address;
 {
-    return [self dataOffsetForAddress:addr segmentName:nil];
+    return [self dataOffsetForAddress:address segmentName:nil];
 }
 
-- (NSUInteger)dataOffsetForAddress:(uint32_t)addr segmentName:(NSString *)aSegmentName;
+- (NSUInteger)dataOffsetForAddress:(uint32_t)address segmentName:(NSString *)aSegmentName;
 {
     CDSegmentCommand *segment;
 
-    if (addr == 0)
+    if (address == 0)
         return 0;
 
-    segment = [self segmentContainingAddress:addr];
+    segment = [self segmentContainingAddress:address];
     if (segment == NULL) {
-        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", addr);
+        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", address);
         exit(5);
         return 0;
     }
@@ -319,7 +281,7 @@ static BOOL debug = NO;
     if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
         // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
         // i.e. section offset is 0.
-        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08x, %@)", addr, aSegmentName);
+        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08x, %@)", address, aSegmentName);
         //NSLog(@"\tsegment was: %@", segment);
         //exit(5);
         return 0;
@@ -333,13 +295,13 @@ static BOOL debug = NO;
 #if 0
     NSLog(@"---------->");
     NSLog(@"segment is: %@", segment);
-    NSLog(@"addr: 0x%08x", addr);
+    NSLog(@"address: 0x%08x", address);
     NSLog(@"CDFile offset:    0x%08x", offset);
-    NSLog(@"file off for addr: 0x%08x", [segment fileOffsetForAddress:addr]);
-    NSLog(@"data offset:      0x%08x", offset + [segment fileOffsetForAddress:addr]);
+    NSLog(@"file off for address: 0x%08x", [segment fileOffsetForAddress:address]);
+    NSLog(@"data offset:      0x%08x", offset + [segment fileOffsetForAddress:address]);
     NSLog(@"<----------");
 #endif
-    return offset + [segment fileOffsetForAddress:addr];
+    return offset + [segment fileOffsetForAddress:address];
 }
 
 - (const void *)bytes;

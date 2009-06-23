@@ -55,14 +55,12 @@
 - (CDDylibCommand *)dylibIdentifier;
 
 - (CDSegmentCommand *)segmentWithName:(NSString *)segmentName;
-- (CDSegmentCommand *)segmentContainingAddress:(unsigned long)vmaddr;
-- (const void *)pointerFromVMAddr:(uint32_t)vmaddr;
-- (const void *)pointerFromVMAddr:(uint32_t)vmaddr segmentName:(NSString *)aSegmentName;
+- (CDSegmentCommand *)segmentContainingAddress:(uint32_t)address;
 - (NSString *)stringAtAddress:(uint32_t)address;
 
 - (const void *)machODataBytes;
-- (NSUInteger)dataOffsetForAddress:(uint32_t)addr;
-- (NSUInteger)dataOffsetForAddress:(uint32_t)addr segmentName:(NSString *)aSegmentName;
+- (NSUInteger)dataOffsetForAddress:(uint32_t)address;
+- (NSUInteger)dataOffsetForAddress:(uint32_t)address segmentName:(NSString *)aSegmentName;
 
 - (const void *)bytes;
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;
