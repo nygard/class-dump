@@ -7,84 +7,84 @@
 
 // Section: __module_info
 struct cd_objc_module {
-    unsigned long version;
-    unsigned long size;
-    unsigned long name;
-    unsigned long symtab;
+    uint32_t version;
+    uint32_t size;
+    uint32_t name;
+    uint32_t symtab;
 };
 
 // Section: __symbols
 struct cd_objc_symtab
 {
-    long sel_ref_cnt;
-    long refs; // not used until runtime?
-    short cls_def_count;
-    short cat_def_count;
+    uint32_t sel_ref_cnt;
+    uint32_t refs; // not used until runtime?
+    uint16_t cls_def_count;
+    uint16_t cat_def_count;
     //long class_pointer;
 };
 
 // Section: __class
 struct cd_objc_class
 {
-    long isa;
-    long super_class;
-    long name;
-    long version;
-    long info;
-    long instance_size;
-    long ivars;
-    long methods;
-    long cache;
-    long protocols;
+    uint32_t isa;
+    uint32_t super_class;
+    uint32_t name;
+    uint32_t version;
+    uint32_t info;
+    uint32_t instance_size;
+    uint32_t ivars;
+    uint32_t methods;
+    uint32_t cache;
+    uint32_t protocols;
 };
 
 // Section: ??
 struct cd_objc_category
 {
-    long category_name;
-    long class_name;
-    long methods;
-    long class_methods;
-    long protocols;
+    uint32_t category_name;
+    uint32_t class_name;
+    uint32_t methods;
+    uint32_t class_methods;
+    uint32_t protocols;
 };
 
 // Section: __instance_vars
 struct cd_objc_ivar_list
 {
-    long ivar_count;
+    uint32_t ivar_count;
     // Followed by ivars
 };
 
 // Section: __instance_vars
 struct cd_objc_ivar
 {
-    long name;
-    long type;
-    int offset;
+    uint32_t name;
+    uint32_t type;
+    uint32_t offset;
 };
 
 // Section: __inst_meth
 struct cd_objc_method_list
 {
-    long _obsolete;
-    long method_count;
+    uint32_t _obsolete;
+    uint32_t method_count;
     // Followed by methods
 };
 
 // Section: __inst_meth
 struct cd_objc_method
 {
-    long name;
-    long types;
-    long imp;
+    uint32_t name;
+    uint32_t types;
+    uint32_t imp;
 };
 
 
 struct cd_objc_protocol_list
 {
-    long next;
-    long count;
-    //long list;
+    uint32_t next;
+    uint32_t count;
+    //uint32_t list;
 };
 
 struct cd_objc_protocol
@@ -98,18 +98,16 @@ struct cd_objc_protocol
 
 struct cd_objc_protocol_method_list
 {
-    long method_count;
+    uint32_t method_count;
     // Followed by methods
 };
 
 struct cd_objc_protocol_method
 {
-    long name;
-    long types;
+    uint32_t name;
+    uint32_t types;
 };
 
-void swap_cd_objc_module(struct cd_objc_module *cd_objc_module);
-void swap_cd_objc_symtab(struct cd_objc_symtab *cd_objc_symtab);
 void swap_cd_objc_class(struct cd_objc_class *cd_objc_class);
 void swap_cd_objc_category(struct cd_objc_category *cd_objc_category);
 void swap_cd_objc_ivar_list(struct cd_objc_ivar_list *cd_objc_ivar_list);
@@ -127,13 +125,16 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 @interface CDObjCSegmentProcessor (Private)
 
 - (void)processModules;
-- (CDOCSymtab *)processSymtab:(unsigned long)symtab;
-- (CDOCClass *)processClassDefinition:(unsigned long)defRef;
-- (NSArray *)processProtocolList:(unsigned long)protocolListAddr;
-- (CDOCProtocol *)processProtocol:(unsigned long)protocolAddr;
-- (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
-- (NSArray *)processMethods:(unsigned long)methodsAddr;
-- (CDOCCategory *)processCategoryDefinition:(unsigned long)defRef;
+- (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
+- (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
+
+
+- (CDOCClass *)processClassDefinition:(uint32_t)defRef;
+- (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
+- (CDOCProtocol *)processProtocol:(uint32_t)protocolAddr;
+- (NSArray *)processProtocolMethods:(uint32_t)methodsAddr;
+- (NSArray *)processMethods:(uint32_t)methodsAddr;
+- (CDOCCategory *)processCategoryDefinition:(uint32_t)defRef;
 
 
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;

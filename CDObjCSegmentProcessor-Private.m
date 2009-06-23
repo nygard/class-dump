@@ -16,22 +16,6 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 
-void swap_cd_objc_module(struct cd_objc_module *cd_objc_module)
-{
-    cd_objc_module->version = NSSwapLong(cd_objc_module->version);
-    cd_objc_module->size = NSSwapLong(cd_objc_module->size);
-    cd_objc_module->name = NSSwapLong(cd_objc_module->name);
-    cd_objc_module->symtab = NSSwapLong(cd_objc_module->symtab);
-}
-
-void swap_cd_objc_symtab(struct cd_objc_symtab *cd_objc_symtab)
-{
-    cd_objc_symtab->sel_ref_cnt = NSSwapLong(cd_objc_symtab->sel_ref_cnt);
-    cd_objc_symtab->refs = NSSwapLong(cd_objc_symtab->refs);
-    cd_objc_symtab->cls_def_count = NSSwapShort(cd_objc_symtab->cls_def_count);
-    cd_objc_symtab->cat_def_count = NSSwapShort(cd_objc_symtab->cat_def_count);
-}
-
 void swap_cd_objc_class(struct cd_objc_class *cd_objc_class)
 {
     cd_objc_class->isa = NSSwapLong(cd_objc_class->isa);
@@ -111,94 +95,161 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 {
     CDSegmentCommand *objcSegment;
     CDSection *moduleSection;
-    const void *ptr;
-    struct cd_objc_module objcModule;
-    int count, index;
+    NSData *sectionData;
+    CDDataCursor *cursor;
 
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
+    [objcSegment writeSectionData];
     moduleSection = [objcSegment sectionWithName:@"__module_info"];
+    sectionData = [moduleSection data];
 
-    ptr = [moduleSection dataPointer];
-    count = [moduleSection size] / sizeof(struct cd_objc_module);
-    for (index = 0; index < count; index++, ptr += sizeof(struct cd_objc_module)) {
-        CDSegmentCommand *aSegment;
-        CDOCModule *aModule;
+    cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    while ([cursor isAtEnd] == NO) {
+        struct cd_objc_module objcModule;
+        CDOCModule *module;
+        NSString *name;
 
-        objcModule = *(struct cd_objc_module *)ptr;
-        if ([machOFile hasDifferentByteOrder] == YES)
-            swap_cd_objc_module(&objcModule);
+        objcModule.version = [cursor readLittleInt32];
+        objcModule.size = [cursor readLittleInt32];
+        objcModule.name = [cursor readLittleInt32];
+        objcModule.symtab = [cursor readLittleInt32];
 
-        NSLog(@"objcModule.size: %u", objcModule.size);
-        NSLog(@"sizeof(struct cd_objc_module): %u", sizeof(struct cd_objc_module));
+        //NSLog(@"objcModule.size: %u", objcModule.size);
+        //NSLog(@"sizeof(struct cd_objc_module): %u", sizeof(struct cd_objc_module));
         assert(objcModule.size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
-        aSegment = [machOFile segmentContainingAddress:objcModule.symtab];
 
-        aModule = [[CDOCModule alloc] init];
-        [aModule setVersion:objcModule.version];
-        [aModule setName:[machOFile stringFromVMAddr:objcModule.name]];
-        [aModule setSymtab:[self processSymtab:objcModule.symtab]];
-        [modules addObject:aModule];
+        name = [machOFile stringFromVMAddr:objcModule.name];
+        if (name != nil && [name length] > 0)
+            NSLog(@"Note: a module name is set: %@", name);
 
-        [aModule release];
+        //NSLog(@"%08x %08x %08x %08x - '%@'", objcModule.version, objcModule.size, objcModule.name, objcModule.symtab, name);
+        //NSLog(@"\tsect: %@", [[machOFile segmentContainingAddress:objcModule.name] sectionContainingAddress:objcModule.name]);
+        NSLog(@"symtab: %08x", objcModule.symtab);
+
+        module = [[CDOCModule alloc] init];
+        [module setVersion:objcModule.version];
+        [module setName:[machOFile stringFromVMAddr:objcModule.name]];
+        [module setSymtab:[self processSymtabAtAddress:objcModule.symtab]];
+        [modules addObject:module];
+
+        [module release];
     }
+
+    [cursor release];
 }
 
-- (CDOCSymtab *)processSymtab:(unsigned long)symtab;
+//- (CDOCSymtab *)processSymtab:(uint32_t)symtab;
+- (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
 {
-    CDOCSymtab *aSymtab;
-
-    const void *ptr;
+    CDDataCursor *cursor;
     struct cd_objc_symtab objcSymtab;
-    const unsigned long *defs;
-    int index, defIndex;
+    CDOCSymtab *aSymtab = nil;
+    unsigned int index;
 
-    // TODO: Should we convert to pointer here or in caller?
-    ptr = [machOFile pointerFromVMAddr:symtab segmentName:@"__OBJC"];
-    if (ptr == NULL) {
-        return nil;
-    }
+    //----------------------------------------
 
-    objcSymtab = *(struct cd_objc_symtab *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_symtab(&objcSymtab);
+    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setOffset:[machOFile dataOffsetForAddress:address segmentName:@"__OBJC"]];
+    //[cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    NSLog(@"cursor offset: %08x", [cursor offset]);
+    if ([cursor offset] != 0) {
+        objcSymtab.sel_ref_cnt = [cursor readLittleInt32];
+        objcSymtab.refs = [cursor readLittleInt32];
+        objcSymtab.cls_def_count = [cursor readLittleInt16];
+        objcSymtab.cat_def_count = [cursor readLittleInt16];
+        NSLog(@"[@ %08x]: %08x %08x %04x %04x", address, objcSymtab.sel_ref_cnt, objcSymtab.refs, objcSymtab.cls_def_count, objcSymtab.cat_def_count);
 
-    aSymtab = [[[CDOCSymtab alloc] init] autorelease];
+        aSymtab = [[[CDOCSymtab alloc] init] autorelease];
 
-    defs = (unsigned long *)(ptr + sizeof(struct cd_objc_symtab));
-    defIndex = 0;
-
-    if (objcSymtab.cls_def_count > 0) {
-        for (index = 0; index < objcSymtab.cls_def_count; index++, defs++, defIndex++) {
+        for (index = 0; index < objcSymtab.cls_def_count; index++) {
             CDOCClass *aClass;
+            uint32_t val;
 
-            if ([machOFile hasDifferentByteOrder] == YES)
-                aClass = [self processClassDefinition:NSSwapLong(*defs)];
-            else
-                aClass = [self processClassDefinition:*defs];
+            val = [cursor readLittleInt32];
+            NSLog(@"%4d: %08x", index, val);
 
+            aClass = [self processClassDefinitionAtAddress:val];
             if (aClass != nil)
                 [aSymtab addClass:aClass];
         }
-    }
+#if 0
+        exit(99);
 
-    if (objcSymtab.cat_def_count > 0) {
-        for (index = 0; index < objcSymtab.cat_def_count; index++, defs++, defIndex++) {
+        for (index = 0; index < objcSymtab.cat_def_count; index++) {
             CDOCCategory *aCategory;
+            uint32_t val;
 
-            if ([machOFile hasDifferentByteOrder] == YES)
-                aCategory = [self processCategoryDefinition:NSSwapLong(*defs)];
-            else
-                aCategory = [self processCategoryDefinition:*defs];
+            val = [cursor readLittleInt32];
+            NSLog(@"%4d: %08x", index, val);
 
+            aCategory = [self processCategoryDefinitionAtAddress:val];
             if (aCategory != nil)
                 [aSymtab addCategory:aCategory];
         }
+#endif
     }
+
+    [cursor release];
+
 
     return aSymtab;
 }
 
-- (CDOCClass *)processClassDefinition:(unsigned long)defRef;
+- (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
+{
+    CDDataCursor *cursor;
+    struct cd_objc_class objcClass;
+    CDOCClass *aClass;
+    NSString *name;
+
+    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+
+    objcClass.isa = [cursor readLittleInt32];
+    objcClass.super_class = [cursor readLittleInt32];
+    objcClass.name = [cursor readLittleInt32];
+    objcClass.version = [cursor readLittleInt32];
+    objcClass.info = [cursor readLittleInt32];
+    objcClass.instance_size = [cursor readLittleInt32];
+    objcClass.ivars = [cursor readLittleInt32];
+    objcClass.methods = [cursor readLittleInt32];
+    objcClass.cache = [cursor readLittleInt32];
+    objcClass.protocols = [cursor readLittleInt32];
+
+    name = [machOFile stringFromVMAddr:objcClass.name];
+    NSLog(@"name: %08x", objcClass.name);
+    NSLog(@"name = %@", name);
+    if (name == nil) {
+        NSLog(@"Note: objcClass.name was %08x, returning nil string.", objcClass.name);
+        return nil;
+    }
+
+    aClass = [[[CDOCClass alloc] init] autorelease];
+    [aClass setName:name];
+
+    [aClass setSuperClassName:[machOFile stringFromVMAddr:objcClass.super_class]];
+    //NSLog(@"[aClass superClassName]: %@", [aClass superClassName]);
+
+    // Process ivars
+    if (objcClass.ivars != 0) {
+    }
+
+    // Process methods
+    //[aClass setInstanceMethods:[self processMethods:objcClass.methods]];
+
+    // Process meta class
+    {
+    }
+
+    // Process protocols
+    //[aClass addProtocolsFromArray:[self processProtocolList:objcClass.protocols]];
+
+    [cursor release];
+
+    return aClass;
+}
+
+- (CDOCClass *)processClassDefinition:(uint32_t)defRef;
 {
     const void *ptr;
     struct cd_objc_class objcClass;
@@ -288,11 +339,11 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return aClass;
 }
 
-- (NSArray *)processProtocolList:(unsigned long)protocolListAddr;
+- (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
 {
     const void *ptr;
     struct cd_objc_protocol_list protocolList;
-    const unsigned long *protocolPtrs;
+    const uint32_t *protocolPtrs;
     NSMutableArray *protocols;
     int index;
 
@@ -325,7 +376,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return protocols;
 }
 
-- (CDOCProtocol *)processProtocol:(unsigned long)protocolAddr;
+- (CDOCProtocol *)processProtocol:(uint32_t)protocolAddr;
 {
     const void *ptr;
     struct cd_objc_protocol protocol;
@@ -367,7 +418,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return aProtocol;
 }
 
-- (NSArray *)processProtocolMethods:(unsigned long)methodsAddr;
+- (NSArray *)processProtocolMethods:(uint32_t)methodsAddr;
 {
     const void *ptr;
     NSMutableArray *methods;
@@ -410,7 +461,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return [methods reversedArray];
 }
 
-- (NSArray *)processMethods:(unsigned long)methodsAddr;
+- (NSArray *)processMethods:(uint32_t)methodsAddr;
 {
     const void *ptr;
     NSMutableArray *methods;
@@ -453,7 +504,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return [methods reversedArray];
 }
 
-- (CDOCCategory *)processCategoryDefinition:(unsigned long)defRef;
+- (CDOCCategory *)processCategoryDefinition:(uint32_t)defRef;
 {
     const void *ptr;
     struct cd_objc_category objcCategory;
@@ -668,7 +719,6 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     [protocolsByAddress removeAllObjects];
 
     NSLog(@"protocolsByName: %@", protocolsByName);
-    exit(99);
 }
 
 - (void)checkUnreferencedProtocols;
