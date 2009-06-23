@@ -58,7 +58,7 @@
 - (CDSegmentCommand *)segmentContainingAddress:(unsigned long)vmaddr;
 - (const void *)pointerFromVMAddr:(uint32_t)vmaddr;
 - (const void *)pointerFromVMAddr:(uint32_t)vmaddr segmentName:(NSString *)aSegmentName;
-- (NSString *)stringFromVMAddr:(uint32_t)vmaddr; // TODO: Rename stringAtAddress:
+- (NSString *)stringAtAddress:(uint32_t)address;
 
 - (const void *)machODataBytes;
 - (NSUInteger)dataOffsetForAddress:(uint32_t)addr;

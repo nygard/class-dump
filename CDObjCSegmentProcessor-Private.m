@@ -46,7 +46,7 @@
         //NSLog(@"sizeof(struct cd_objc_module): %u", sizeof(struct cd_objc_module));
         assert(objcModule.size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
 
-        name = [machOFile stringFromVMAddr:objcModule.name];
+        name = [machOFile stringAtAddress:objcModule.name];
         if (name != nil && [name length] > 0)
             NSLog(@"Note: a module name is set: %@", name);
 
@@ -56,7 +56,7 @@
 
         module = [[CDOCModule alloc] init];
         [module setVersion:objcModule.version];
-        [module setName:[machOFile stringFromVMAddr:objcModule.name]];
+        [module setName:[machOFile stringAtAddress:objcModule.name]];
         [module setSymtab:[self processSymtabAtAddress:objcModule.symtab]];
         [modules addObject:module];
 
@@ -141,7 +141,7 @@
     objcClass.cache = [cursor readInt32];
     objcClass.protocols = [cursor readInt32];
 
-    name = [machOFile stringFromVMAddr:objcClass.name];
+    name = [machOFile stringAtAddress:objcClass.name];
     //NSLog(@"name: %08x", objcClass.name);
     //NSLog(@"name = %@", name);
     if (name == nil) {
@@ -152,7 +152,7 @@
 
     aClass = [[[CDOCClass alloc] init] autorelease];
     [aClass setName:name];
-    [aClass setSuperClassName:[machOFile stringFromVMAddr:objcClass.super_class]];
+    [aClass setSuperClassName:[machOFile stringAtAddress:objcClass.super_class]];
     //NSLog(@"[aClass superClassName]: %@", [aClass superClassName]);
 
     // Process ivars
@@ -173,8 +173,8 @@
             objcIvar.type = [cursor readInt32];
             objcIvar.offset = [cursor readInt32];
 
-            name = [machOFile stringFromVMAddr:objcIvar.name];
-            type = [machOFile stringFromVMAddr:objcIvar.type];
+            name = [machOFile stringAtAddress:objcIvar.name];
+            type = [machOFile stringAtAddress:objcIvar.type];
 
             // bitfields don't need names.
             // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
@@ -312,8 +312,8 @@
             else
                 objcMethod.imp = [cursor readInt32];
 
-            name = [machOFile stringFromVMAddr:objcMethod.name];
-            type = [machOFile stringFromVMAddr:objcMethod.types];
+            name = [machOFile stringAtAddress:objcMethod.name];
+            type = [machOFile stringAtAddress:objcMethod.types];
             if (name != nil && type != nil) {
                 CDOCMethod *method;
 
@@ -351,7 +351,7 @@
         objcCategory.class_methods = [cursor readInt32];
         objcCategory.protocols = [cursor readInt32];
 
-        name = [machOFile stringFromVMAddr:objcCategory.category_name];
+        name = [machOFile stringAtAddress:objcCategory.category_name];
         if (name == nil) {
             NSLog(@"Note: objcCategory.category_name was %08x, returning nil.", objcCategory.category_name);
             [cursor release];
@@ -360,7 +360,7 @@
 
         aCategory = [[[CDOCCategory alloc] init] autorelease];
         [aCategory setName:name];
-        [aCategory setClassName:[machOFile stringFromVMAddr:objcCategory.class_name]];
+        [aCategory setClassName:[machOFile stringAtAddress:objcCategory.class_name]];
 
         for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.methods])
             [aCategory addInstanceMethod:method];
@@ -401,7 +401,7 @@
         v3 = [cursor readInt32];
         v4 = [cursor readInt32];
         v5 = [cursor readInt32];
-        name = [machOFile stringFromVMAddr:v2];
+        name = [machOFile stringAtAddress:v2];
         [aProtocol setName:name]; // Need to set name before adding to another protocol
         //NSLog(@"data offset for %08x: %08x", v2, [machOFile dataOffsetForAddress:v2]);
         //NSLog(@"[@ %08x] v1-5: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x (%@)", address, v1, v2, v3, v4, v5, name);

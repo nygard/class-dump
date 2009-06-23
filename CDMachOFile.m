@@ -281,11 +281,11 @@ static BOOL debug = NO;
     return ptr;
 }
 
-- (NSString *)stringFromVMAddr:(uint32_t)vmaddr;
+- (NSString *)stringAtAddress:(uint32_t)address;
 {
     const void *ptr;
 
-    ptr = [self pointerFromVMAddr:vmaddr];
+    ptr = [self pointerFromVMAddr:address];
     if (ptr == NULL)
         return nil;
 
