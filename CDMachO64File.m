@@ -7,14 +7,15 @@
 
 @implementation CDMachO64File
 
-- (id)initWithData:(NSData *)_data;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
     CDDataCursor *cursor;
 
-    if ([super init] == nil)
+    if ([super initWithData:someData offset:anOffset] == nil)
         return nil;
 
-    cursor = [[CDDataCursor alloc] initWithData:_data];
+    cursor = [[CDDataCursor alloc] initWithData:someData];
+    [cursor setOffset:offset];
     header.magic = [cursor readLittleInt32];
 
     NSLog(@"(testing macho 64) magic: 0x%x", header.magic);

@@ -5,14 +5,16 @@
 
 @implementation CDMachO32File
 
-- (id)initWithData:(NSData *)_data;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
     CDDataCursor *cursor;
 
-    if ([super initWithData:_data] == nil)
+    if ([super initWithData:someData offset:anOffset] == nil)
         return nil;
 
-    cursor = [[CDDataCursor alloc] initWithData:_data];
+    cursor = [[CDDataCursor alloc] initWithData:someData];
+    NSLog(@"CDMachO32File - setting offset to %08x", offset);
+    [cursor setOffset:offset];
     header.magic = [cursor readLittleInt32];
 
     NSLog(@"(testing macho 32) magic: 0x%x", header.magic);

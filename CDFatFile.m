@@ -14,18 +14,19 @@
 
 @implementation CDFatFile
 
-- (id)initWithData:(NSData *)someData;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
     CDDataCursor *cursor;
     unsigned int index;
     struct fat_header header;
 
-    if ([super initWithData:someData] == nil)
+    if ([super initWithData:someData offset:anOffset] == nil)
         return nil;
 
     arches = [[NSMutableArray alloc] init];
 
     cursor = [[CDDataCursor alloc] initWithData:someData];
+    [cursor setOffset:offset];
     header.magic = [cursor readBigInt32];
 
     NSLog(@"(testing fat) magic: 0x%x", header.magic);
@@ -41,6 +42,7 @@
         CDFatArch *arch;
 
         arch = [[CDFatArch alloc] initWithDataCursor:cursor];
+        [arch setFatFile:self];
         [arches addObject:arch];
         [arch release];
     }

@@ -16,6 +16,8 @@
     if ([super init] == nil)
         return nil;
 
+    nonretainedFatFile = nil;
+
     fatArch.cputype = [cursor readBigInt32];
     fatArch.cpusubtype = [cursor readBigInt32];
     fatArch.offset = [cursor readBigInt32];
@@ -28,11 +30,16 @@
     NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
           uses64BitABI, fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
 #endif
+
+    machOFile = nil;
+
     return self;
 }
 
 - (void)dealloc;
 {
+    [machOFile release];
+
     [super dealloc];
 }
 
@@ -66,6 +73,16 @@
     return uses64BitABI;
 }
 
+- (CDFatFile *)fatFile;
+{
+    return nonretainedFatFile;
+}
+
+- (void)setFatFile:(CDFatFile *)newFatFile;
+{
+    nonretainedFatFile = [newFatFile retain];
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
@@ -84,8 +101,14 @@
 
 - (CDMachOFile *)machOFile;
 {
-    NSLog(@"CDFatArch %s", _cmd);
-    return nil;
+    if (machOFile == nil) {
+        //NSLog(@"nonretainedFatFile: %p", nonretainedFatFile);
+        //NSLog(@"nrff data: %p", [nonretainedFatFile data]);
+        machOFile = [[CDFile fileWithData:[nonretainedFatFile data] offset:fatArch.offset] retain];
+        [machOFile setFilename:[nonretainedFatFile filename]];
+    }
+
+    return machOFile;
 }
 
 @end

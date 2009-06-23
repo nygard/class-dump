@@ -22,9 +22,10 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 }
 
 // Returns CDFatFile, CDMachO32File, or CDMachO64File.
-+ (id)fileWithData:(NSData *)somData;
++ (id)fileWithData:(NSData *)someData;
++ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 
-- (id)initWithData:(NSData *)someData;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 - (void)dealloc;
 
 - (NSString *)filename;

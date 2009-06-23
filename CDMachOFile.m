@@ -29,9 +29,9 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 @implementation CDMachOFile
 
-- (id)initWithData:(NSData *)_data;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
-    if ([super initWithData:_data] == nil)
+    if ([super initWithData:someData offset:anOffset] == nil)
         return nil;
 
     byteOrder = CDByteOrderLittleEndian;

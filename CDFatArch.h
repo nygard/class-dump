@@ -8,15 +8,17 @@
 #include <mach-o/fat.h>
 
 @class CDDataCursor;
-@class CDMachOFile;
+@class CDFatFile, CDMachOFile;
 
 @interface CDFatArch : NSObject
 {
+    CDFatFile *nonretainedFatFile;
+
     struct fat_arch fatArch;
 
     BOOL uses64BitABI;
 
-    //CDMachOFile *machOFile; // Lazily create this.
+    CDMachOFile *machOFile; // Lazily create this.
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
@@ -29,6 +31,9 @@
 - (uint32_t)align;
 
 - (BOOL)uses64BitABI;
+
+- (CDFatFile *)fatFile;
+- (void)setFatFile:(CDFatFile *)newFatFile;
 
 - (NSString *)description;
 

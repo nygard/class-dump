@@ -31,7 +31,7 @@
     } _flags;
 }
 
-- (id)initWithData:(NSData *)_data;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 - (void)dealloc;
 
 - (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;

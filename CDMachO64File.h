@@ -10,7 +10,7 @@
     struct mach_header_64 header;
 }
 
-- (id)initWithData:(NSData *)_data;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 
 - (uint32_t)magic;
 - (cpu_type_t)cputype;

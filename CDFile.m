@@ -22,15 +22,22 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 + (id)fileWithData:(NSData *)someData;
 {
-    CDFatFile *aFatFile;
+    return [self fileWithData:someData offset:0];
+}
 
-    aFatFile = [[[CDFatFile alloc] initWithData:someData] autorelease];
++ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+{
+    CDFatFile *aFatFile = nil;
+
+    if (anOffset == 0)
+        aFatFile = [[[CDFatFile alloc] initWithData:someData offset:anOffset] autorelease];
+
     if (aFatFile == nil) {
         CDMachOFile *machOFile;
 
-        machOFile = [[[CDMachO32File alloc] initWithData:someData] autorelease];
+        machOFile = [[[CDMachO32File alloc] initWithData:someData offset:anOffset] autorelease];
         if (machOFile == nil)
-            machOFile = [[[CDMachO64File alloc] initWithData:someData] autorelease];
+            machOFile = [[[CDMachO64File alloc] initWithData:someData offset:anOffset] autorelease];
         return machOFile;
     }
 
@@ -43,14 +50,14 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     return nil;
 }
 
-- (id)initWithData:(NSData *)someData;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
     if ([super init] == nil)
         return nil;
 
     filename = nil;
     data = [someData retain];
-    offset = 0;
+    offset = anOffset;
 
     return self;
 }
