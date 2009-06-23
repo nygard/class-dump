@@ -31,15 +31,16 @@
     sectionData = [moduleSection data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO) {
         struct cd_objc_module objcModule;
         CDOCModule *module;
         NSString *name;
 
-        objcModule.version = [cursor readLittleInt32];
-        objcModule.size = [cursor readLittleInt32];
-        objcModule.name = [cursor readLittleInt32];
-        objcModule.symtab = [cursor readLittleInt32];
+        objcModule.version = [cursor readInt32];
+        objcModule.size = [cursor readInt32];
+        objcModule.name = [cursor readInt32];
+        objcModule.symtab = [cursor readInt32];
 
         //NSLog(@"objcModule.size: %u", objcModule.size);
         //NSLog(@"sizeof(struct cd_objc_module): %u", sizeof(struct cd_objc_module));
@@ -75,14 +76,15 @@
     //----------------------------------------
 
     cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setByteOrder:[machOFile byteOrder]];
     [cursor setOffset:[machOFile dataOffsetForAddress:address segmentName:@"__OBJC"]];
     //[cursor setOffset:[machOFile dataOffsetForAddress:address]];
     //NSLog(@"cursor offset: %08x", [cursor offset]);
     if ([cursor offset] != 0) {
-        objcSymtab.sel_ref_cnt = [cursor readLittleInt32];
-        objcSymtab.refs = [cursor readLittleInt32];
-        objcSymtab.cls_def_count = [cursor readLittleInt16];
-        objcSymtab.cat_def_count = [cursor readLittleInt16];
+        objcSymtab.sel_ref_cnt = [cursor readInt32];
+        objcSymtab.refs = [cursor readInt32];
+        objcSymtab.cls_def_count = [cursor readInt16];
+        objcSymtab.cat_def_count = [cursor readInt16];
         //NSLog(@"[@ %08x]: %08x %08x %04x %04x", address, objcSymtab.sel_ref_cnt, objcSymtab.refs, objcSymtab.cls_def_count, objcSymtab.cat_def_count);
 
         aSymtab = [[[CDOCSymtab alloc] init] autorelease];
@@ -91,7 +93,7 @@
             CDOCClass *aClass;
             uint32_t val;
 
-            val = [cursor readLittleInt32];
+            val = [cursor readInt32];
             //NSLog(@"%4d: %08x", index, val);
 
             aClass = [self processClassDefinitionAtAddress:val];
@@ -103,7 +105,7 @@
             CDOCCategory *aCategory;
             uint32_t val;
 
-            val = [cursor readLittleInt32];
+            val = [cursor readInt32];
             //NSLog(@"%4d: %08x", index, val);
 
             aCategory = [self processCategoryDefinitionAtAddress:val];
@@ -125,18 +127,19 @@
     NSString *name;
 
     cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setByteOrder:[machOFile byteOrder]];
     [cursor setOffset:[machOFile dataOffsetForAddress:address]];
 
-    objcClass.isa = [cursor readLittleInt32];
-    objcClass.super_class = [cursor readLittleInt32];
-    objcClass.name = [cursor readLittleInt32];
-    objcClass.version = [cursor readLittleInt32];
-    objcClass.info = [cursor readLittleInt32];
-    objcClass.instance_size = [cursor readLittleInt32];
-    objcClass.ivars = [cursor readLittleInt32];
-    objcClass.methods = [cursor readLittleInt32];
-    objcClass.cache = [cursor readLittleInt32];
-    objcClass.protocols = [cursor readLittleInt32];
+    objcClass.isa = [cursor readInt32];
+    objcClass.super_class = [cursor readInt32];
+    objcClass.name = [cursor readInt32];
+    objcClass.version = [cursor readInt32];
+    objcClass.info = [cursor readInt32];
+    objcClass.instance_size = [cursor readInt32];
+    objcClass.ivars = [cursor readInt32];
+    objcClass.methods = [cursor readInt32];
+    objcClass.cache = [cursor readInt32];
+    objcClass.protocols = [cursor readInt32];
 
     name = [machOFile stringFromVMAddr:objcClass.name];
     //NSLog(@"name: %08x", objcClass.name);
@@ -160,15 +163,15 @@
         [cursor setOffset:[machOFile dataOffsetForAddress:objcClass.ivars]];
         NSParameterAssert([cursor offset] != 0);
 
-        count = [cursor readLittleInt32];
+        count = [cursor readInt32];
         ivars = [[NSMutableArray alloc] init];
         for (index = 0; index < count; index++) {
             struct cd_objc_ivar objcIvar;
             NSString *name, *type;
 
-            objcIvar.name = [cursor readLittleInt32];
-            objcIvar.type = [cursor readLittleInt32];
-            objcIvar.offset = [cursor readLittleInt32];
+            objcIvar.name = [cursor readInt32];
+            objcIvar.type = [cursor readInt32];
+            objcIvar.offset = [cursor readInt32];
 
             name = [machOFile stringFromVMAddr:objcIvar.name];
             type = [machOFile stringFromVMAddr:objcIvar.type];
@@ -201,16 +204,16 @@
 
         [cursor setOffset:[machOFile dataOffsetForAddress:objcClass.isa]];
 
-        metaClass.isa = [cursor readLittleInt32];
-        metaClass.super_class = [cursor readLittleInt32];
-        metaClass.name = [cursor readLittleInt32];
-        metaClass.version = [cursor readLittleInt32];
-        metaClass.info = [cursor readLittleInt32];
-        metaClass.instance_size = [cursor readLittleInt32];
-        metaClass.ivars = [cursor readLittleInt32];
-        metaClass.methods = [cursor readLittleInt32];
-        metaClass.cache = [cursor readLittleInt32];
-        metaClass.protocols = [cursor readLittleInt32];
+        metaClass.isa = [cursor readInt32];
+        metaClass.super_class = [cursor readInt32];
+        metaClass.name = [cursor readInt32];
+        metaClass.version = [cursor readInt32];
+        metaClass.info = [cursor readInt32];
+        metaClass.instance_size = [cursor readInt32];
+        metaClass.ivars = [cursor readInt32];
+        metaClass.methods = [cursor readInt32];
+        metaClass.cache = [cursor readInt32];
+        metaClass.protocols = [cursor readInt32];
 
 #if 0
         // TODO (2009-06-23): See if there's anything else interesting here.
@@ -244,16 +247,17 @@
         uint32_t index;
 
         cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
         [cursor setOffset:[machOFile dataOffsetForAddress:address]];
 
-        protocolList.next = [cursor readLittleInt32];
-        protocolList.count = [cursor readLittleInt32];
+        protocolList.next = [cursor readInt32];
+        protocolList.count = [cursor readInt32];
 
         for (index = 0; index < protocolList.count; index++) {
             uint32_t val;
             CDOCProtocol *protocol, *uniqueProtocol;
 
-            val = [cursor readLittleInt32];
+            val = [cursor readInt32];
             protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInt:val]];
             //NSLog(@"%3d protocol @ %08x: %@", index, val, [protocol name]);
             if (protocol != nil) {
@@ -280,21 +284,22 @@
     methods = [NSMutableArray array];
 
     cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setByteOrder:[machOFile byteOrder]];
     [cursor setOffset:[machOFile dataOffsetForAddress:address]];
     if ([cursor offset] != 0) {
         struct cd_objc_method_list methodList;
         uint32_t index;
 
-        methodList._obsolete = [cursor readLittleInt32];
-        methodList.method_count = [cursor readLittleInt32];
+        methodList._obsolete = [cursor readInt32];
+        methodList.method_count = [cursor readInt32];
 
         for (index = 0; index < methodList.method_count; index++) {
             struct cd_objc_method objcMethod;
             NSString *name, *type;
 
-            objcMethod.name = [cursor readLittleInt32];
-            objcMethod.types = [cursor readLittleInt32];
-            objcMethod.imp = [cursor readLittleInt32];
+            objcMethod.name = [cursor readInt32];
+            objcMethod.types = [cursor readInt32];
+            objcMethod.imp = [cursor readInt32];
 
             name = [machOFile stringFromVMAddr:objcMethod.name];
             type = [machOFile stringFromVMAddr:objcMethod.types];
@@ -323,13 +328,14 @@
         NSString *name;
 
         cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
         [cursor setOffset:[machOFile dataOffsetForAddress:address]];
 
-        objcCategory.category_name = [cursor readLittleInt32];
-        objcCategory.class_name = [cursor readLittleInt32];
-        objcCategory.methods = [cursor readLittleInt32];
-        objcCategory.class_methods = [cursor readLittleInt32];
-        objcCategory.protocols = [cursor readLittleInt32];
+        objcCategory.category_name = [cursor readInt32];
+        objcCategory.class_name = [cursor readInt32];
+        objcCategory.methods = [cursor readInt32];
+        objcCategory.class_methods = [cursor readInt32];
+        objcCategory.protocols = [cursor readInt32];
 
         name = [machOFile stringFromVMAddr:objcCategory.category_name];
         if (name == nil) {
@@ -373,13 +379,14 @@
         [protocolsByAddress setObject:aProtocol forKey:key];
 
         cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
         [cursor setOffset:[machOFile dataOffsetForAddress:address]];
 
-        v1 = [cursor readLittleInt32];
-        v2 = [cursor readLittleInt32];
-        v3 = [cursor readLittleInt32];
-        v4 = [cursor readLittleInt32];
-        v5 = [cursor readLittleInt32];
+        v1 = [cursor readInt32];
+        v2 = [cursor readInt32];
+        v3 = [cursor readInt32];
+        v4 = [cursor readInt32];
+        v5 = [cursor readInt32];
         name = [machOFile stringFromVMAddr:v2];
         [aProtocol setName:name]; // Need to set name before adding to another protocol
         //NSLog(@"data offset for %08x: %08x", v2, [machOFile dataOffsetForAddress:v2]);
@@ -393,15 +400,15 @@
                 uint32_t val;
 
                 [cursor setOffset:[machOFile dataOffsetForAddress:v3]];
-                val = [cursor readLittleInt32];
+                val = [cursor readInt32];
                 NSParameterAssert(val == 0); // next pointer, let me know if it's ever not zero
                 //NSLog(@"val: 0x%08x", val);
-                count = [cursor readLittleInt32];
+                count = [cursor readInt32];
                 //NSLog(@"protocol count: %08x", count);
                 for (index = 0; index < count; index++) {
                     CDOCProtocol *anotherProtocol;
 
-                    val = [cursor readLittleInt32];
+                    val = [cursor readInt32];
                     //NSLog(@"val[%2d]: 0x%08x", index, val);
                     anotherProtocol = [self protocolAtAddress:val];
                     if (anotherProtocol != nil) {
@@ -415,14 +422,14 @@
             // Instance methods
             if (v4 != 0) {
                 [cursor setOffset:[machOFile dataOffsetForAddress:v4]];
-                count = [cursor readLittleInt32];
+                count = [cursor readInt32];
                 //NSLog(@"instance method count: %08x", count);
 
                 for (index = 0; index < count; index++) {
                     NSString *name, *type;
 
-                    name = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
-                    type = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
+                    name = [machOFile stringFromVMAddr:[cursor readInt32]];
+                    type = [machOFile stringFromVMAddr:[cursor readInt32]];
                     //NSLog(@"name: %@", name);
                     //NSLog(@"type: %@", type);
                     if (name != nil && type != nil) {
@@ -440,14 +447,14 @@
             // Class methods
             if (v5 != 0) {
                 [cursor setOffset:[machOFile dataOffsetForAddress:v5]];
-                count = [cursor readLittleInt32];
+                count = [cursor readInt32];
                 //NSLog(@"class method count: %08x", count);
 
                 for (index = 0; index < count; index++) {
                     NSString *name, *type;
 
-                    name = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
-                    type = [machOFile stringFromVMAddr:[cursor readLittleInt32]];
+                    name = [machOFile stringFromVMAddr:[cursor readInt32]];
+                    type = [machOFile stringFromVMAddr:[cursor readInt32]];
                     //NSLog(@"name: %@", name);
                     //NSLog(@"type: %@", type);
                     if (name != nil && type != nil) {

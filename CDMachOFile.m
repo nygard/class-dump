@@ -63,6 +63,11 @@ NSString *CDMagicNumberString(uint32_t magic)
     [super dealloc];
 }
 
+- (CDByteOrder)byteOrder;
+{
+    return byteOrder;
+}
+
 - (NSString *)bestMatchForLocalArch;
 {
     // Implement in subclasses
@@ -421,15 +426,6 @@ NSString *CDMagicNumberString(uint32_t magic)
                      NSStringFromClass([self class]), self,
                      [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
                      filename, data, offset];
-}
-
-//
-// To remove:
-//
-
-- (BOOL)hasDifferentByteOrder;
-{
-    return NO;
 }
 
 @end

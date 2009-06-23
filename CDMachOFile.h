@@ -36,6 +36,8 @@
 
 - (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
 
+- (CDByteOrder)byteOrder;
+
 - (NSString *)bestMatchForLocalArch;
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
 
@@ -75,8 +77,5 @@
 - (NSString *)archName;
 
 - (NSString *)description;
-
-// To remove:
-- (BOOL)hasDifferentByteOrder;
 
 @end
