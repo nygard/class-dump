@@ -40,7 +40,7 @@
           targetClass = [CDLCSymbolTable class];
           break;
       case LC_DYSYMTAB: targetClass = [CDLCDynamicSymbolTable class]; break;
-      case LC_UUID: targetClass = [CDUUIDCommand class]; break;
+      case LC_UUID: targetClass = [CDLCUUID class]; break;
       case LC_CODE_SIGNATURE:
       case LC_SEGMENT_SPLIT_INFO:
           targetClass = [CDLCLinkeditData class];

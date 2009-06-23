@@ -7,7 +7,7 @@
 
 #import <CoreFoundation/CoreFoundation.h>
 
-@interface CDUUIDCommand : CDLoadCommand
+@interface CDLCUUID : CDLoadCommand
 {
     struct uuid_command uuidCommand;
 

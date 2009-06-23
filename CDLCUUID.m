@@ -7,7 +7,7 @@
 
 #import "CDMachOFile.h"
 
-@implementation CDUUIDCommand
+@implementation CDLCUUID
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
