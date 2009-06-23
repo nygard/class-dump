@@ -61,7 +61,6 @@ static BOOL debug = NO;
 - (void)dealloc;
 {
     [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
-    [data release];
 
     [super dealloc];
 }
