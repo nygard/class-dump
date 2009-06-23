@@ -7,7 +7,6 @@
 
 #include <mach-o/swap.h>
 #import <Foundation/Foundation.h>
-#import "CDFatFile.h" // For CD_THIS_BYTE_ORDER
 #import "CDSegmentCommand.h"
 #import "CDDylibCommand.h"
 #import "CDMachOFile.h"

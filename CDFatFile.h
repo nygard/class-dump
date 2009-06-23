@@ -5,12 +5,6 @@
 
 #import "CDFile.h"
 
-#ifdef __BIG_ENDIAN__
-#define CD_THIS_BYTE_ORDER NX_BigEndian
-#else
-#define CD_THIS_BYTE_ORDER NX_LittleEndian
-#endif
-
 @class CDFatArch, CDMachOFile;
 
 @interface CDFatFile : CDFile
