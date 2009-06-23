@@ -51,7 +51,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
         if (loadCommand != nil)
             [loadCommands addObject:loadCommand];
-        NSLog(@"loadCommand: %@", loadCommand);
+        //NSLog(@"loadCommand: %@", loadCommand);
     }
 }
 
@@ -312,8 +312,8 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
         // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
         // i.e. section offset is 0.
-        NSLog(@"Error: Couldn't find address in specified segment (%08x, %@)", addr, aSegmentName);
-        NSLog(@"\tsegment was: %@", segment);
+        NSLog(@"Note: Couldn't find address in specified segment (%08x, %@)", addr, aSegmentName);
+        //NSLog(@"\tsegment was: %@", segment);
         //exit(5);
         return 0;
     }

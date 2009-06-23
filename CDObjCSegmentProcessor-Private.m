@@ -16,79 +16,6 @@
 #import "CDSegmentCommand.h"
 #import "NSArray-Extensions.h"
 
-void swap_cd_objc_class(struct cd_objc_class *cd_objc_class)
-{
-    cd_objc_class->isa = NSSwapLong(cd_objc_class->isa);
-    cd_objc_class->super_class = NSSwapLong(cd_objc_class->super_class);
-    cd_objc_class->name = NSSwapLong(cd_objc_class->name);
-    cd_objc_class->version = NSSwapLong(cd_objc_class->version);
-    cd_objc_class->info = NSSwapLong(cd_objc_class->info);
-    cd_objc_class->instance_size = NSSwapLong(cd_objc_class->instance_size);
-    cd_objc_class->ivars = NSSwapLong(cd_objc_class->ivars);
-    cd_objc_class->methods = NSSwapLong(cd_objc_class->methods);
-    cd_objc_class->cache = NSSwapLong(cd_objc_class->cache);
-    cd_objc_class->protocols = NSSwapLong(cd_objc_class->protocols);
-}
-
-void swap_cd_objc_category(struct cd_objc_category *cd_objc_category)
-{
-    cd_objc_category->category_name = NSSwapLong(cd_objc_category->category_name);
-    cd_objc_category->class_name = NSSwapLong(cd_objc_category->class_name);
-    cd_objc_category->methods = NSSwapLong(cd_objc_category->methods);
-    cd_objc_category->class_methods = NSSwapLong(cd_objc_category->class_methods);
-    cd_objc_category->protocols = NSSwapLong(cd_objc_category->protocols);
-}
-
-void swap_cd_objc_ivar_list(struct cd_objc_ivar_list *cd_objc_ivar_list)
-{
-    cd_objc_ivar_list->ivar_count = NSSwapLong(cd_objc_ivar_list->ivar_count);
-}
-
-void swap_cd_objc_ivar(struct cd_objc_ivar *cd_objc_ivar)
-{
-    cd_objc_ivar->name = NSSwapLong(cd_objc_ivar->name);
-    cd_objc_ivar->type = NSSwapLong(cd_objc_ivar->type);
-    cd_objc_ivar->offset = NSSwapInt(cd_objc_ivar->offset);
-}
-
-void swap_cd_objc_method_list(struct cd_objc_method_list *cd_objc_method_list)
-{
-    cd_objc_method_list->method_count = NSSwapLong(cd_objc_method_list->method_count);
-}
-
-void swap_cd_objc_method(struct cd_objc_method *cd_objc_method)
-{
-    cd_objc_method->name = NSSwapLong(cd_objc_method->name);
-    cd_objc_method->types = NSSwapLong(cd_objc_method->types);
-    cd_objc_method->imp = NSSwapLong(cd_objc_method->imp);
-}
-
-void swap_cd_objc_protocol_list(struct cd_objc_protocol_list *cd_objc_protocol_list)
-{
-    cd_objc_protocol_list->next = NSSwapLong(cd_objc_protocol_list->next);
-    cd_objc_protocol_list->count = NSSwapLong(cd_objc_protocol_list->count);
-}
-
-void swap_cd_objc_protocol(struct cd_objc_protocol *cd_objc_protocol)
-{
-    cd_objc_protocol->isa = NSSwapLong(cd_objc_protocol->isa);
-    cd_objc_protocol->protocol_name = NSSwapLong(cd_objc_protocol->protocol_name);
-    cd_objc_protocol->protocol_list = NSSwapLong(cd_objc_protocol->protocol_list);
-    cd_objc_protocol->instance_methods = NSSwapLong(cd_objc_protocol->instance_methods);
-    cd_objc_protocol->class_methods = NSSwapLong(cd_objc_protocol->class_methods);
-}
-
-void swap_cd_objc_protocol_method_list(struct cd_objc_protocol_method_list *cd_objc_protocol_method_list)
-{
-    cd_objc_protocol_method_list->method_count = NSSwapLong(cd_objc_protocol_method_list->method_count);
-}
-
-void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protocol_method)
-{
-    cd_objc_protocol_method->name = NSSwapLong(cd_objc_protocol_method->name);
-    cd_objc_protocol_method->types = NSSwapLong(cd_objc_protocol_method->types);
-}
-
 @implementation CDObjCSegmentProcessor (Private)
 
 - (void)processModules;
@@ -124,7 +51,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 
         //NSLog(@"%08x %08x %08x %08x - '%@'", objcModule.version, objcModule.size, objcModule.name, objcModule.symtab, name);
         //NSLog(@"\tsect: %@", [[machOFile segmentContainingAddress:objcModule.name] sectionContainingAddress:objcModule.name]);
-        NSLog(@"symtab: %08x", objcModule.symtab);
+        //NSLog(@"symtab: %08x", objcModule.symtab);
 
         module = [[CDOCModule alloc] init];
         [module setVersion:objcModule.version];
@@ -156,7 +83,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
         objcSymtab.refs = [cursor readLittleInt32];
         objcSymtab.cls_def_count = [cursor readLittleInt16];
         objcSymtab.cat_def_count = [cursor readLittleInt16];
-        NSLog(@"[@ %08x]: %08x %08x %04x %04x", address, objcSymtab.sel_ref_cnt, objcSymtab.refs, objcSymtab.cls_def_count, objcSymtab.cat_def_count);
+        //NSLog(@"[@ %08x]: %08x %08x %04x %04x", address, objcSymtab.sel_ref_cnt, objcSymtab.refs, objcSymtab.cls_def_count, objcSymtab.cat_def_count);
 
         aSymtab = [[[CDOCSymtab alloc] init] autorelease];
 
@@ -212,8 +139,8 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     objcClass.protocols = [cursor readLittleInt32];
 
     name = [machOFile stringFromVMAddr:objcClass.name];
-    NSLog(@"name: %08x", objcClass.name);
-    NSLog(@"name = %@", name);
+    //NSLog(@"name: %08x", objcClass.name);
+    //NSLog(@"name = %@", name);
     if (name == nil) {
         NSLog(@"Note: objcClass.name was %08x, returning nil.", objcClass.name);
         [cursor release];
@@ -342,55 +269,6 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return protocols;
 }
 
-- (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
-{
-    // Obsolete
-    return nil;
-}
-
-- (NSArray *)processProtocolMethods:(uint32_t)methodsAddr;
-{
-    const void *ptr;
-    NSMutableArray *methods;
-    struct cd_objc_protocol_method_list methodList;
-    struct cd_objc_protocol_method method;
-    int index;
-
-    methods = [NSMutableArray array];
-    if (methodsAddr == 0)
-        return methods;
-
-    ptr = [machOFile pointerFromVMAddr:methodsAddr];
-    if (ptr == NULL)
-        return nil;
-
-    methodList = *(struct cd_objc_protocol_method_list *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_protocol_method_list(&methodList);
-
-    ptr += sizeof(struct cd_objc_protocol_method_list);
-
-    for (index = 0; index < methodList.method_count; index++, ptr += sizeof(struct cd_objc_protocol_method)) {
-        NSString *name, *type;
-
-        method = *(struct cd_objc_protocol_method *)ptr;
-        if ([machOFile hasDifferentByteOrder] == YES)
-            swap_cd_objc_protocol_method(&method);
-
-        name = [machOFile stringFromVMAddr:method.name];
-        type = [machOFile stringFromVMAddr:method.types];
-        if (name != nil && type != nil) {
-            CDOCMethod *aMethod;
-
-            aMethod = [[CDOCMethod alloc] initWithName:name type:type imp:0];
-            [methods addObject:aMethod];
-            [aMethod release];
-        }
-    }
-
-    return [methods reversedArray];
-}
-
 - (NSArray *)processMethodsAtAddress:(uint32_t)address;
 {
     CDDataCursor *cursor;
@@ -435,83 +313,45 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return [methods reversedArray];
 }
 
-- (NSArray *)processMethods:(uint32_t)methodsAddr;
-{
-    const void *ptr;
-    NSMutableArray *methods;
-    struct cd_objc_method_list methodList;
-    struct cd_objc_method method;
-    int index;
-
-    methods = [NSMutableArray array];
-    if (methodsAddr == 0)
-        return methods;
-
-    ptr = [machOFile pointerFromVMAddr:methodsAddr];
-    if (ptr == NULL)
-        return nil;
-
-    methodList = *(struct cd_objc_method_list *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_method_list(&methodList);
-
-    ptr += sizeof(struct cd_objc_method_list);
-
-    for (index = 0; index < methodList.method_count; index++, ptr += sizeof(struct cd_objc_method)) {
-        NSString *name, *type;
-
-        method = *(struct cd_objc_method *)ptr;
-        if ([machOFile hasDifferentByteOrder] == YES)
-            swap_cd_objc_method(&method);
-
-        name = [machOFile stringFromVMAddr:method.name];
-        type = [machOFile stringFromVMAddr:method.types];
-        if (name != nil && type != nil) {
-            CDOCMethod *aMethod;
-
-            aMethod = [[CDOCMethod alloc] initWithName:name type:type imp:method.imp];
-            [methods addObject:aMethod];
-            [aMethod release];
-        }
-    }
-
-    return [methods reversedArray];
-}
-
 - (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
 {
-    return nil;
-}
+    CDOCCategory *aCategory = nil;
 
-- (CDOCCategory *)processCategoryDefinition:(uint32_t)defRef;
-{
-    const void *ptr;
-    struct cd_objc_category objcCategory;
-    NSString *name;
-    CDOCCategory *aCategory;
+    if (address != 0) {
+        CDDataCursor *cursor;
+        struct cd_objc_category objcCategory;
+        NSString *name;
 
-    ptr = [machOFile pointerFromVMAddr:defRef];
-    if (ptr == NULL)
-        return nil;
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
 
-    objcCategory = *(struct cd_objc_category *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_category(&objcCategory);
+        objcCategory.category_name = [cursor readLittleInt32];
+        objcCategory.class_name = [cursor readLittleInt32];
+        objcCategory.methods = [cursor readLittleInt32];
+        objcCategory.class_methods = [cursor readLittleInt32];
+        objcCategory.protocols = [cursor readLittleInt32];
 
-    name = [machOFile stringFromVMAddr:objcCategory.category_name];
-    if (name == nil)
-        return nil;
+        name = [machOFile stringFromVMAddr:objcCategory.category_name];
+        if (name == nil) {
+            NSLog(@"Note: objcCategory.category_name was %08x, returning nil.", objcCategory.category_name);
+            [cursor release];
+            return nil;
+        }
 
-    aCategory = [[[CDOCCategory alloc] init] autorelease];
-    [aCategory setName:name];
-    [aCategory setClassName:[machOFile stringFromVMAddr:objcCategory.class_name]];
+        aCategory = [[[CDOCCategory alloc] init] autorelease];
+        [aCategory setName:name];
+        [aCategory setClassName:[machOFile stringFromVMAddr:objcCategory.class_name]];
 
-    // Process methods
-    [aCategory setInstanceMethods:[self processMethods:objcCategory.methods]];
-    [aCategory setClassMethods:[self processMethods:objcCategory.class_methods]];
+        for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.methods])
+            [aCategory addInstanceMethod:method];
 
-    // Process protocols
-    [aCategory addProtocolsFromArray:[self processProtocolList:objcCategory.protocols]];
+        for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.class_methods])
+            [aCategory addClassMethod:method];
+
+        [aCategory addProtocolsFromArray:[self uniquedProtocolListAtAddress:objcCategory.protocols]];
+
+        [cursor release];
+    }
 
     return aCategory;
 }
@@ -695,9 +535,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
         }
     }
 
-    //[protocolsByAddress removeAllObjects];
-
-    NSLog(@"protocolsByName: %@", protocolsByName);
+    //NSLog(@"protocolsByName: %@", protocolsByName);
 }
 
 - (void)checkUnreferencedProtocols;

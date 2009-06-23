@@ -108,17 +108,6 @@ struct cd_objc_protocol_method
     uint32_t types;
 };
 
-void swap_cd_objc_class(struct cd_objc_class *cd_objc_class);
-void swap_cd_objc_category(struct cd_objc_category *cd_objc_category);
-void swap_cd_objc_ivar_list(struct cd_objc_ivar_list *cd_objc_ivar_list);
-void swap_cd_objc_ivar(struct cd_objc_ivar *cd_objc_ivar);
-void swap_cd_objc_method_list(struct cd_objc_method_list *cd_objc_method_list);
-void swap_cd_objc_method(struct cd_objc_method *cd_objc_method);
-void swap_cd_objc_protocol_list(struct cd_objc_protocol_list *cd_objc_protocol_list);
-void swap_cd_objc_protocol(struct cd_objc_protocol *cd_objc_protocol);
-void swap_cd_objc_protocol_method_list(struct cd_objc_protocol_method_list *cd_objc_protocol_method_list);
-void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protocol_method);
-
 @class NSArray;
 @class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 
@@ -128,17 +117,8 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 - (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
 - (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
 - (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
-
-- (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
 - (NSArray *)processMethodsAtAddress:(uint32_t)address;
-
-
-- (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
-- (NSArray *)processProtocolMethods:(uint32_t)methodsAddr;
-- (NSArray *)processMethods:(uint32_t)methodsAddr;
-- (CDOCCategory *)processCategoryDefinition:(uint32_t)defRef;
-
-
+- (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
 
 - (void)processProtocolSection;
