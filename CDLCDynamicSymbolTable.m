@@ -11,7 +11,7 @@
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 
-@implementation CDDynamicSymbolTable
+@implementation CDLCDynamicSymbolTable
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {

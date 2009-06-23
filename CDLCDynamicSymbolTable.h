@@ -5,7 +5,7 @@
 
 #import "CDLoadCommand.h"
 
-@interface CDDynamicSymbolTable : CDLoadCommand
+@interface CDLCDynamicSymbolTable : CDLoadCommand
 {
     struct dysymtab_command dysymtab;
 }
