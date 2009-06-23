@@ -8,7 +8,7 @@
 
 @class CDSection;
 
-@interface CDSegmentCommand : CDLoadCommand
+@interface CDLCSegment32 : CDLoadCommand
 {
     struct segment_command segmentCommand;
 

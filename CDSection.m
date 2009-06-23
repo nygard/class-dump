@@ -13,7 +13,7 @@
 @implementation CDSection
 
 // Just to resolve multiple different definitions...
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegmentCommand *)aSegment;
+- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 {
     char buf[17];
 
@@ -61,7 +61,7 @@
     [super dealloc];
 }
 
-- (CDSegmentCommand *)segment;
+- (CDLCSegment32 *)segment;
 {
     return nonretainedSegment;
 }

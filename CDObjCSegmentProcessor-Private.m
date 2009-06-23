@@ -22,7 +22,7 @@
 
 - (void)processModules;
 {
-    CDSegmentCommand *objcSegment;
+    CDLCSegment32 *objcSegment;
     CDSection *moduleSection;
     NSData *sectionData;
     CDDataCursor *cursor;
@@ -459,7 +459,7 @@
 // Perhaps a bit more work than necessary, but at least I can see exactly what is happening.
 - (void)processProtocolSection;
 {
-    CDSegmentCommand *objcSegment;
+    CDLCSegment32 *objcSegment;
     CDSection *protocolSection;
     uint32_t addr;
     int count, index;

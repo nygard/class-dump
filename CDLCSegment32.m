@@ -12,7 +12,7 @@
 #import "CDSection.h"
 #include <openssl/aes.h>
 
-@implementation CDSegmentCommand
+@implementation CDLCSegment32
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {

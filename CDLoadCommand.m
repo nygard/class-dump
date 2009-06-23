@@ -28,7 +28,7 @@
     val = [cursor peekInt32];
 
     switch (val) {
-      case LC_SEGMENT: targetClass = [CDSegmentCommand class]; break;
+      case LC_SEGMENT: targetClass = [CDLCSegment32 class]; break;
       case LC_SEGMENT_64: targetClass = [CDSegment64 class]; break;
       case LC_ID_DYLIB:
       case LC_LOAD_DYLIB:

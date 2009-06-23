@@ -214,10 +214,10 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (CDSegmentCommand *)segmentWithName:(NSString *)segmentName;
+- (CDLCSegment32 *)segmentWithName:(NSString *)segmentName;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
+        if ([loadCommand isKindOfClass:[CDLCSegment32 class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
             return loadCommand;
         }
     }
@@ -225,10 +225,10 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (CDSegmentCommand *)segmentContainingAddress:(uint32_t)address;
+- (CDLCSegment32 *)segmentContainingAddress:(uint32_t)address;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDSegmentCommand class]] == YES && [loadCommand containsAddress:address] == YES) {
+        if ([loadCommand isKindOfClass:[CDLCSegment32 class]] == YES && [loadCommand containsAddress:address] == YES) {
             return loadCommand;
         }
     }
@@ -243,7 +243,7 @@ static BOOL debug = NO;
 
 - (NSString *)stringAtAddress:(uint32_t)address;
 {
-    CDSegmentCommand *segment;
+    CDLCSegment32 *segment;
 
     NSUInteger anOffset;
     const void *ptr;
@@ -292,7 +292,7 @@ static BOOL debug = NO;
 
 - (NSUInteger)dataOffsetForAddress:(uint32_t)address segmentName:(NSString *)aSegmentName;
 {
-    CDSegmentCommand *segment;
+    CDLCSegment32 *segment;
 
     if (address == 0)
         return 0;
@@ -358,7 +358,7 @@ static BOOL debug = NO;
 - (BOOL)hasProtectedSegments;
 {
     for (CDLoadCommand *loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDSegmentCommand class]] && [(CDSegmentCommand *)loadCommand isProtected])
+        if ([loadCommand isKindOfClass:[CDLCSegment32 class]] && [(CDLCSegment32 *)loadCommand isProtected])
             return YES;
     }
 
