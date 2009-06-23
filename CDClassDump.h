@@ -9,7 +9,12 @@
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
-#define CLASS_DUMP_VERSION @"3.1.3 dev"
+#define CLASS_DUMP_BASE_VERSION "3.2"
+#ifdef DEBUG
+#define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION " (Debug version compiled " __DATE__ " " __TIME__ ")"
+#else
+#define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION
+#endif
 
 @class NSMutableArray, NSMutableDictionary, NSMutableSet, NSMutableString, NSString;
 @class CDDylibCommand, CDFile, CDMachOFile;

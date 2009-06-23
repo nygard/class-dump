@@ -40,7 +40,7 @@ void print_usage(void)
             "        -t             suppress header in output, for testing\n"
             "        --list-arches  list the arches in the file, then exit\n"
             ,
-            [CLASS_DUMP_VERSION UTF8String]
+            CLASS_DUMP_VERSION
        );
 }
 
