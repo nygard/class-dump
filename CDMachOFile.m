@@ -27,6 +27,8 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [NSString stringWithFormat:@"0x%08x", magic];
 }
 
+static BOOL debug = NO;
+
 @implementation CDMachOFile
 
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
@@ -317,7 +319,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
         // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
         // i.e. section offset is 0.
-        NSLog(@"Note: Couldn't find address in specified segment (%08x, %@)", addr, aSegmentName);
+        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08x, %@)", addr, aSegmentName);
         //NSLog(@"\tsegment was: %@", segment);
         //exit(5);
         return 0;

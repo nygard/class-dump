@@ -118,6 +118,7 @@ struct cd_objc_protocol_method
 - (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
 - (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
 - (NSArray *)processMethodsAtAddress:(uint32_t)address;
+- (NSArray *)processMethodsAtAddress:(uint32_t)address isFromProtocolDefinition:(BOOL)isFromProtocolDefinition;
 - (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
 

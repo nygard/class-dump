@@ -275,6 +275,11 @@
 
 - (NSArray *)processMethodsAtAddress:(uint32_t)address;
 {
+    return [self processMethodsAtAddress:address isFromProtocolDefinition:NO];
+}
+
+- (NSArray *)processMethodsAtAddress:(uint32_t)address isFromProtocolDefinition:(BOOL)isFromProtocolDefinition;
+{
     CDDataCursor *cursor;
     NSMutableArray *methods;
 
@@ -290,7 +295,10 @@
         struct cd_objc_method_list methodList;
         uint32_t index;
 
-        methodList._obsolete = [cursor readInt32];
+        if (isFromProtocolDefinition)
+            methodList._obsolete = 0;
+        else
+            methodList._obsolete = [cursor readInt32];
         methodList.method_count = [cursor readInt32];
 
         for (index = 0; index < methodList.method_count; index++) {
@@ -299,7 +307,10 @@
 
             objcMethod.name = [cursor readInt32];
             objcMethod.types = [cursor readInt32];
-            objcMethod.imp = [cursor readInt32];
+            if (isFromProtocolDefinition)
+                objcMethod.imp = 0;
+            else
+                objcMethod.imp = [cursor readInt32];
 
             name = [machOFile stringFromVMAddr:objcMethod.name];
             type = [machOFile stringFromVMAddr:objcMethod.types];
@@ -309,6 +320,9 @@
                 method = [[CDOCMethod alloc] initWithName:name type:type imp:objcMethod.imp];
                 [methods addObject:method];
                 [method release];
+            } else {
+                if (name == nil) NSLog(@"Note: Method name was nil (%08x, %p)", objcMethod.name, name);
+                if (type == nil) NSLog(@"Note: Method type was nil (%08x, %p)", objcMethod.types, type);
             }
         }
     }
@@ -420,54 +434,12 @@
             }
 
             // Instance methods
-            if (v4 != 0) {
-                [cursor setOffset:[machOFile dataOffsetForAddress:v4]];
-                count = [cursor readInt32];
-                //NSLog(@"instance method count: %08x", count);
-
-                for (index = 0; index < count; index++) {
-                    NSString *name, *type;
-
-                    name = [machOFile stringFromVMAddr:[cursor readInt32]];
-                    type = [machOFile stringFromVMAddr:[cursor readInt32]];
-                    //NSLog(@"name: %@", name);
-                    //NSLog(@"type: %@", type);
-                    if (name != nil && type != nil) {
-                        CDOCMethod *method;
-
-                        method = [[CDOCMethod alloc] initWithName:name type:type];
-                        [aProtocol addInstanceMethod:method];
-                        [method release];
-                    } else {
-                        NSLog(@"Note: name or type is nil.");
-                    }
-                }
-            }
+            for (CDOCMethod *method in [self processMethodsAtAddress:v4 isFromProtocolDefinition:YES])
+                [aProtocol addInstanceMethod:method];
 
             // Class methods
-            if (v5 != 0) {
-                [cursor setOffset:[machOFile dataOffsetForAddress:v5]];
-                count = [cursor readInt32];
-                //NSLog(@"class method count: %08x", count);
-
-                for (index = 0; index < count; index++) {
-                    NSString *name, *type;
-
-                    name = [machOFile stringFromVMAddr:[cursor readInt32]];
-                    type = [machOFile stringFromVMAddr:[cursor readInt32]];
-                    //NSLog(@"name: %@", name);
-                    //NSLog(@"type: %@", type);
-                    if (name != nil && type != nil) {
-                        CDOCMethod *method;
-
-                        method = [[CDOCMethod alloc] initWithName:name type:type];
-                        [aProtocol addClassMethod:method];
-                        [method release];
-                    } else {
-                        NSLog(@"Note: name or type is nil.");
-                    }
-                }
-            }
+            for (CDOCMethod *method in [self processMethodsAtAddress:v5 isFromProtocolDefinition:YES])
+                [aProtocol addClassMethod:method];
         }
 
         [cursor release];
