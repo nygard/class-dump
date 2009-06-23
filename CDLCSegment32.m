@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
-#import "CDSection.h"
+#import "CDSection32.h"
 #include <openssl/aes.h>
 
 @implementation CDLCSegment32
