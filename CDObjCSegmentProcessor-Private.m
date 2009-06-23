@@ -26,7 +26,6 @@
     CDDataCursor *cursor;
 
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
-    [objcSegment writeSectionData];
     moduleSection = [objcSegment sectionWithName:@"__module_info"];
     sectionData = [moduleSection data];
 
