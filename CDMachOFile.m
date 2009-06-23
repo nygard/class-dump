@@ -204,11 +204,11 @@ static BOOL debug = NO;
     return [setFlags componentsJoinedByString:@" "];
 }
 
-- (CDDylibCommand *)dylibIdentifier;
+- (CDLCDylib *)dylibIdentifier;
 {
     for (CDLoadCommand *loadCommand in loadCommands) {
         if ([loadCommand cmd] == LC_ID_DYLIB)
-            return (CDDylibCommand *)loadCommand;
+            return (CDLCDylib *)loadCommand;
     }
 
     return nil;

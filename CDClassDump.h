@@ -16,7 +16,7 @@
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION
 #endif
 
-@class CDDylibCommand, CDFile, CDMachOFile;
+@class CDLCDylib, CDFile, CDMachOFile;
 @class CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
 @class CDVisitor;
 

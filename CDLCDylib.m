@@ -16,7 +16,7 @@ static NSString *CDDylibVersionString(unsigned long version)
     return [NSString stringWithFormat:@"%d.%d.%d", version >> 16, (version >> 8) & 0xff, version & 0xff];
 }
 
-@implementation CDDylibCommand
+@implementation CDLCDylib
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {

@@ -55,7 +55,7 @@
         [resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
 
     if ([machOFile filetype] == MH_DYLIB) {
-        CDDylibCommand *identifier;
+        CDLCDylib *identifier;
 
         identifier = [machOFile dylibIdentifier];
         if (identifier != nil)

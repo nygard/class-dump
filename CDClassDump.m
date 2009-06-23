@@ -324,10 +324,10 @@
     if ([self shouldProcessRecursively]) {
         @try {
             for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
-                if ([loadCommand isKindOfClass:[CDDylibCommand class]]) {
-                    CDDylibCommand *aDylibCommand;
+                if ([loadCommand isKindOfClass:[CDLCDylib class]]) {
+                    CDLCDylib *aDylibCommand;
 
-                    aDylibCommand = (CDDylibCommand *)loadCommand;
+                    aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB)
                         [self machOFileWithID:[aDylibCommand name]]; // Processes as a side effect
                 }

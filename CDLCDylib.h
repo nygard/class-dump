@@ -6,7 +6,7 @@
 #import "CDLoadCommand.h"
 #include <mach-o/loader.h>
 
-@interface CDDylibCommand : CDLoadCommand
+@interface CDLCDylib : CDLoadCommand
 {
     struct dylib_command dylibCommand;
     NSString *name;

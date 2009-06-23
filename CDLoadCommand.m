@@ -34,7 +34,7 @@
       case LC_LOAD_DYLIB:
       case LC_LOAD_WEAK_DYLIB:
       case LC_REEXPORT_DYLIB:
-          targetClass = [CDDylibCommand class];
+          targetClass = [CDLCDylib class];
           break;
       case LC_SYMTAB:
           targetClass = [CDSymbolTable class];
