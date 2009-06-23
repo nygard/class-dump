@@ -342,8 +342,6 @@
     [machOFiles addObject:aMachOFile];
     [machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
 
-    [aMachOFile release];
-
     return YES;
 }
 
@@ -353,7 +351,6 @@
         CDObjCSegmentProcessor *aProcessor;
 
         NSLog(@"----------------------------------------------------------------------");
-        NSLog(@"machOFile: %@", machOFile);
         aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objCSegmentProcessors addObject:aProcessor];
