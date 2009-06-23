@@ -60,6 +60,7 @@
 
 - (const void *)machODataBytes;
 - (NSUInteger)dataOffsetForAddress:(uint32_t)addr;
+- (NSUInteger)dataOffsetForAddress:(uint32_t)addr segmentName:(NSString *)aSegmentName;
 
 - (const void *)bytes;
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;

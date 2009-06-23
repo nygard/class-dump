@@ -292,6 +292,11 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (NSUInteger)dataOffsetForAddress:(uint32_t)addr;
 {
+    return [self dataOffsetForAddress:addr segmentName:nil];
+}
+
+- (NSUInteger)dataOffsetForAddress:(uint32_t)addr segmentName:(NSString *)aSegmentName;
+{
     CDSegmentCommand *segment;
 
     if (addr == 0)
@@ -301,6 +306,15 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (segment == NULL) {
         NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", addr);
         exit(5);
+        return 0;
+    }
+
+    if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
+        // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
+        // i.e. section offset is 0.
+        NSLog(@"Error: Couldn't find address in specified segment (%08x, %@)", addr, aSegmentName);
+        NSLog(@"\tsegment was: %@", segment);
+        //exit(5);
         return 0;
     }
 
