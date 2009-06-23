@@ -22,7 +22,7 @@
 //+ (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
 + (id)loadCommandWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    Class targetClass = [CDUnknownLoadCommand class];
+    Class targetClass = [CDLCUnknown class];
     unsigned int val;
 
     val = [cursor peekInt32];

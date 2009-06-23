@@ -5,7 +5,7 @@
 
 #import "CDLoadCommand.h"
 
-@interface CDUnknownLoadCommand : CDLoadCommand
+@interface CDLCUnknown : CDLoadCommand
 {
     struct load_command loadCommand;
 

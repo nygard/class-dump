@@ -7,7 +7,7 @@
 
 #import "CDDataCursor.h"
 
-@implementation CDUnknownLoadCommand
+@implementation CDLCUnknown
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
