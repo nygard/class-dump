@@ -127,11 +127,13 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
 - (void)processModules;
 - (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
 - (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
+- (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
+
+- (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
+- (NSArray *)processMethodsAtAddress:(uint32_t)address;
 
 
-- (CDOCClass *)processClassDefinition:(uint32_t)defRef;
 - (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
-- (CDOCProtocol *)processProtocol:(uint32_t)protocolAddr;
 - (NSArray *)processProtocolMethods:(uint32_t)methodsAddr;
 - (NSArray *)processMethods:(uint32_t)methodsAddr;
 - (CDOCCategory *)processCategoryDefinition:(uint32_t)defRef;

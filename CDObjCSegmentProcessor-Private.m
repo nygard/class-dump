@@ -138,7 +138,6 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     [cursor release];
 }
 
-//- (CDOCSymtab *)processSymtab:(uint32_t)symtab;
 - (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
 {
     CDDataCursor *cursor;
@@ -151,7 +150,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
     [cursor setOffset:[machOFile dataOffsetForAddress:address segmentName:@"__OBJC"]];
     //[cursor setOffset:[machOFile dataOffsetForAddress:address]];
-    NSLog(@"cursor offset: %08x", [cursor offset]);
+    //NSLog(@"cursor offset: %08x", [cursor offset]);
     if ([cursor offset] != 0) {
         objcSymtab.sel_ref_cnt = [cursor readLittleInt32];
         objcSymtab.refs = [cursor readLittleInt32];
@@ -166,31 +165,27 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
             uint32_t val;
 
             val = [cursor readLittleInt32];
-            NSLog(@"%4d: %08x", index, val);
+            //NSLog(@"%4d: %08x", index, val);
 
             aClass = [self processClassDefinitionAtAddress:val];
             if (aClass != nil)
                 [aSymtab addClass:aClass];
         }
-#if 0
-        exit(99);
 
         for (index = 0; index < objcSymtab.cat_def_count; index++) {
             CDOCCategory *aCategory;
             uint32_t val;
 
             val = [cursor readLittleInt32];
-            NSLog(@"%4d: %08x", index, val);
+            //NSLog(@"%4d: %08x", index, val);
 
             aCategory = [self processCategoryDefinitionAtAddress:val];
             if (aCategory != nil)
                 [aSymtab addCategory:aCategory];
         }
-#endif
     }
 
     [cursor release];
-
 
     return aSymtab;
 }
@@ -220,202 +215,137 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     NSLog(@"name: %08x", objcClass.name);
     NSLog(@"name = %@", name);
     if (name == nil) {
-        NSLog(@"Note: objcClass.name was %08x, returning nil string.", objcClass.name);
+        NSLog(@"Note: objcClass.name was %08x, returning nil.", objcClass.name);
+        [cursor release];
         return nil;
     }
 
     aClass = [[[CDOCClass alloc] init] autorelease];
     [aClass setName:name];
-
     [aClass setSuperClassName:[machOFile stringFromVMAddr:objcClass.super_class]];
     //NSLog(@"[aClass superClassName]: %@", [aClass superClassName]);
 
     // Process ivars
     if (objcClass.ivars != 0) {
+        uint32_t count, index;
+        NSMutableArray *ivars;
+
+        [cursor setOffset:[machOFile dataOffsetForAddress:objcClass.ivars]];
+        NSParameterAssert([cursor offset] != 0);
+
+        count = [cursor readLittleInt32];
+        ivars = [[NSMutableArray alloc] init];
+        for (index = 0; index < count; index++) {
+            struct cd_objc_ivar objcIvar;
+            NSString *name, *type;
+
+            objcIvar.name = [cursor readLittleInt32];
+            objcIvar.type = [cursor readLittleInt32];
+            objcIvar.offset = [cursor readLittleInt32];
+
+            name = [machOFile stringFromVMAddr:objcIvar.name];
+            type = [machOFile stringFromVMAddr:objcIvar.type];
+
+            // bitfields don't need names.
+            // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
+            if (type != nil) {
+                CDOCIvar *anIvar;
+
+                anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset];
+                [ivars addObject:anIvar];
+                [anIvar release];
+            }
+        }
+
+        [aClass setIvars:[NSArray arrayWithArray:ivars]];
+        [ivars release];
     }
 
-    // Process methods
-    //[aClass setInstanceMethods:[self processMethods:objcClass.methods]];
+    // Process instance methods
+    for (CDOCMethod *method in [self processMethodsAtAddress:objcClass.methods])
+        [aClass addInstanceMethod:method];
 
     // Process meta class
     {
+        struct cd_objc_class metaClass;
+
+        NSParameterAssert(objcClass.isa != 0);
+        //NSLog(@"meta class, isa = %08x", objcClass.isa);
+
+        [cursor setOffset:[machOFile dataOffsetForAddress:objcClass.isa]];
+
+        metaClass.isa = [cursor readLittleInt32];
+        metaClass.super_class = [cursor readLittleInt32];
+        metaClass.name = [cursor readLittleInt32];
+        metaClass.version = [cursor readLittleInt32];
+        metaClass.info = [cursor readLittleInt32];
+        metaClass.instance_size = [cursor readLittleInt32];
+        metaClass.ivars = [cursor readLittleInt32];
+        metaClass.methods = [cursor readLittleInt32];
+        metaClass.cache = [cursor readLittleInt32];
+        metaClass.protocols = [cursor readLittleInt32];
+
+#if 0
+        // TODO (2009-06-23): See if there's anything else interesting here.
+        NSLog(@"metaclass= isa:%08x super:%08x  name:%08x ver:%08x  info:%08x isize:%08x  ivar:%08x meth:%08x  cache:%08x proto:%08x",
+              metaClass.isa, metaClass.super_class, metaClass.name, metaClass.version, metaClass.info, metaClass.instance_size,
+              metaClass.ivars, metaClass.methods, metaClass.cache, metaClass.protocols);
+#endif
+        // Process class methods
+        for (CDOCMethod *method in [self processMethodsAtAddress:metaClass.methods])
+            [aClass addClassMethod:method];
     }
 
     // Process protocols
-    //[aClass addProtocolsFromArray:[self processProtocolList:objcClass.protocols]];
+    [aClass addProtocolsFromArray:[self uniquedProtocolListAtAddress:objcClass.protocols]];
 
     [cursor release];
 
     return aClass;
 }
 
-- (CDOCClass *)processClassDefinition:(uint32_t)defRef;
+// Returns list of uniqued protocols.
+- (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
 {
-    const void *ptr;
-    struct cd_objc_class objcClass;
-    CDOCClass *aClass;
-    int index;
-    NSString *name;
-
-    ptr = [machOFile pointerFromVMAddr:defRef];
-    if (ptr == NULL)
-        return nil;
-
-    objcClass = *(struct cd_objc_class *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_class(&objcClass);
-
-    name = [machOFile stringFromVMAddr:objcClass.name];
-    if (name == nil)
-        return nil;
-
-    aClass = [[[CDOCClass alloc] init] autorelease];
-    [aClass setName:name];
-    [aClass setSuperClassName:[machOFile stringFromVMAddr:objcClass.super_class]];
-
-    // Process ivars
-    if (objcClass.ivars != 0) {
-        ptr = [machOFile pointerFromVMAddr:objcClass.ivars];
-
-        if (ptr != NULL) {
-            struct cd_objc_ivar_list ivar_list;
-            struct cd_objc_ivar ivar;
-            NSMutableArray *ivars;
-
-            ivar_list = *(struct cd_objc_ivar_list *)ptr;
-            if ([machOFile hasDifferentByteOrder] == YES)
-                swap_cd_objc_ivar_list(&ivar_list);
-
-            ptr += sizeof(struct cd_objc_ivar_list);
-            ivars = [[NSMutableArray alloc] init];
-
-            for (index = 0; index < ivar_list.ivar_count; index++, ptr += sizeof(struct cd_objc_ivar)) { // TODO (2005-07-28): Not sure about that increment for ptr2
-                NSString *name, *type;
-
-                ivar = *(struct cd_objc_ivar *)ptr;
-                if ([machOFile hasDifferentByteOrder] == YES)
-                    swap_cd_objc_ivar(&ivar);
-
-                name = [machOFile stringFromVMAddr:ivar.name];
-                type = [machOFile stringFromVMAddr:ivar.type];
-                // bitfields don't need names.
-                // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
-                if (type != nil) {
-                    CDOCIvar *anIvar;
-
-                    anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:ivar.offset];
-                    [ivars addObject:anIvar];
-                    [anIvar release];
-                }
-            }
-
-            [aClass setIvars:[NSArray arrayWithArray:ivars]];
-            [ivars release];
-        }
-    }
-
-    // Process methods
-    [aClass setInstanceMethods:[self processMethods:objcClass.methods]];
-
-    // Process meta class
-    {
-        ptr = [machOFile pointerFromVMAddr:objcClass.isa];
-        if (ptr != NULL) {
-            struct cd_objc_class metaClass;
-
-            metaClass = *(struct cd_objc_class *)ptr;
-            if ([machOFile hasDifferentByteOrder] == YES)
-                swap_cd_objc_class(&metaClass);
-            //assert(metaClass.info & CLS_CLASS);
-
-            // Process class methods
-            [aClass setClassMethods:[self processMethods:metaClass.methods]];
-        }
-    }
-
-    // Process protocols
-    [aClass addProtocolsFromArray:[self processProtocolList:objcClass.protocols]];
-
-    return aClass;
-}
-
-- (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
-{
-    const void *ptr;
-    struct cd_objc_protocol_list protocolList;
-    const uint32_t *protocolPtrs;
     NSMutableArray *protocols;
-    int index;
 
     protocols = [[[NSMutableArray alloc] init] autorelease];;
 
-    if (protocolListAddr == 0)
-        return protocols;
+    if (address != 0) {
+        CDDataCursor *cursor;
+        struct cd_objc_protocol_list protocolList;
+        uint32_t index;
 
-    ptr = [machOFile pointerFromVMAddr:protocolListAddr];
-    if (ptr == NULL)
-        return nil;
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
 
-    protocolList = *(struct cd_objc_protocol_list *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_protocol_list(&protocolList);
+        protocolList.next = [cursor readLittleInt32];
+        protocolList.count = [cursor readLittleInt32];
 
-    protocolPtrs = ptr + sizeof(struct cd_objc_protocol_list);
-    for (index = 0; index < protocolList.count; index++, protocolPtrs++) {
-        CDOCProtocol *protocol;
+        for (index = 0; index < protocolList.count; index++) {
+            uint32_t val;
+            CDOCProtocol *protocol, *uniqueProtocol;
 
-        if ([machOFile hasDifferentByteOrder] == YES)
-            protocol = [self processProtocol:NSSwapLong(*protocolPtrs)];
-        else
-            protocol = [self processProtocol:*protocolPtrs];
+            val = [cursor readLittleInt32];
+            protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInt:val]];
+            //NSLog(@"%3d protocol @ %08x: %@", index, val, [protocol name]);
+            if (protocol != nil) {
+                uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
+                if (uniqueProtocol != nil)
+                    [protocols addObject:uniqueProtocol];
+            }
+        }
 
-        if (protocol != nil)
-            [protocols addObject:protocol];
+        [cursor release];
     }
 
     return protocols;
 }
 
-- (CDOCProtocol *)processProtocol:(uint32_t)protocolAddr;
+- (NSArray *)processProtocolList:(uint32_t)protocolListAddr;
 {
-    const void *ptr;
-    struct cd_objc_protocol protocol;
-    CDOCProtocol *aProtocol;
-    NSString *name;
-    NSArray *protocols;
-
-    ptr = [machOFile pointerFromVMAddr:protocolAddr];
-    if (ptr == NULL)
-        return nil;
-
-    protocol = *(struct cd_objc_protocol *)ptr;
-    if ([machOFile hasDifferentByteOrder] == YES)
-        swap_cd_objc_protocol(&protocol);
-
-    name = [machOFile stringFromVMAddr:protocol.protocol_name];
-    if (name == nil)
-        return nil;
-
-    protocols = [self processProtocolList:protocol.protocol_list];
-
-    aProtocol = [protocolsByName objectForKey:name];
-    if (aProtocol == nil) {
-        aProtocol = [[[CDOCProtocol alloc] init] autorelease];
-        [aProtocol setName:name];
-
-        [protocolsByName setObject:aProtocol forKey:name];
-    }
-
-    [aProtocol addProtocolsFromArray:protocols];
-    if ([[aProtocol instanceMethods] count] == 0)
-        [aProtocol setInstanceMethods:[self processProtocolMethods:protocol.instance_methods]];
-
-    if ([[aProtocol classMethods] count] == 0)
-        [aProtocol setClassMethods:[self processProtocolMethods:protocol.class_methods]];
-
-    // TODO (2003-12-09): Maybe we should add any missing methods.  But then we'd lose the original order.
-
-    return aProtocol;
+    // Obsolete
+    return nil;
 }
 
 - (NSArray *)processProtocolMethods:(uint32_t)methodsAddr;
@@ -461,6 +391,50 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     return [methods reversedArray];
 }
 
+- (NSArray *)processMethodsAtAddress:(uint32_t)address;
+{
+    CDDataCursor *cursor;
+    NSMutableArray *methods;
+
+    if (address == 0)
+        return [NSArray array];
+
+    methods = [NSMutableArray array];
+
+    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    if ([cursor offset] != 0) {
+        struct cd_objc_method_list methodList;
+        uint32_t index;
+
+        methodList._obsolete = [cursor readLittleInt32];
+        methodList.method_count = [cursor readLittleInt32];
+
+        for (index = 0; index < methodList.method_count; index++) {
+            struct cd_objc_method objcMethod;
+            NSString *name, *type;
+
+            objcMethod.name = [cursor readLittleInt32];
+            objcMethod.types = [cursor readLittleInt32];
+            objcMethod.imp = [cursor readLittleInt32];
+
+            name = [machOFile stringFromVMAddr:objcMethod.name];
+            type = [machOFile stringFromVMAddr:objcMethod.types];
+            if (name != nil && type != nil) {
+                CDOCMethod *method;
+
+                method = [[CDOCMethod alloc] initWithName:name type:type imp:objcMethod.imp];
+                [methods addObject:method];
+                [method release];
+            }
+        }
+    }
+
+    [cursor release];
+
+    return [methods reversedArray];
+}
+
 - (NSArray *)processMethods:(uint32_t)methodsAddr;
 {
     const void *ptr;
@@ -502,6 +476,11 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
     }
 
     return [methods reversedArray];
+}
+
+- (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
+{
+    return nil;
 }
 
 - (CDOCCategory *)processCategoryDefinition:(uint32_t)defRef;
@@ -716,7 +695,7 @@ void swap_cd_objc_protocol_method(struct cd_objc_protocol_method *cd_objc_protoc
         }
     }
 
-    [protocolsByAddress removeAllObjects];
+    //[protocolsByAddress removeAllObjects];
 
     NSLog(@"protocolsByName: %@", protocolsByName);
 }

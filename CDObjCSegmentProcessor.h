@@ -14,8 +14,8 @@
 {
     CDMachOFile *machOFile;
     NSMutableArray *modules;
-    NSMutableDictionary *protocolsByName;
-    NSMutableDictionary *protocolsByAddress;
+    NSMutableDictionary *protocolsByName; // uniqued
+    NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
