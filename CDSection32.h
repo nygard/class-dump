@@ -8,7 +8,7 @@
 
 @class CDDataCursor, CDMachOFile, CDLCSegment32;
 
-@interface CDSection : NSObject
+@interface CDSection32 : NSObject
 {
     CDLCSegment32 *nonretainedSegment;
 

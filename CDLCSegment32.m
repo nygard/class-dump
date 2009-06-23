@@ -48,9 +48,9 @@
 
         sections = [[NSMutableArray alloc] init];
         for (index = 0; index < segmentCommand.nsects; index++) {
-            CDSection *section;
+            CDSection32 *section;
 
-            section = [[CDSection alloc] initWithDataCursor:cursor segment:self];
+            section = [[CDSection32 alloc] initWithDataCursor:cursor segment:self];
             [sections addObject:section];
             [section release];
         }
@@ -152,9 +152,9 @@
     return (vmaddr >= segmentCommand.vmaddr) && (vmaddr < segmentCommand.vmaddr + segmentCommand.vmsize);
 }
 
-- (CDSection *)sectionContainingAddress:(uint32_t)vmaddr;
+- (CDSection32 *)sectionContainingAddress:(uint32_t)vmaddr;
 {
-    for (CDSection *section in sections) {
+    for (CDSection32 *section in sections) {
         if ([section containsAddress:vmaddr])
             return section;
     }
@@ -162,9 +162,9 @@
     return nil;
 }
 
-- (CDSection *)sectionWithName:(NSString *)aName;
+- (CDSection32 *)sectionWithName:(NSString *)aName;
 {
-    for (CDSection *section in sections) {
+    for (CDSection32 *section in sections) {
         if ([[section sectionName] isEqual:aName])
             return section;
     }
@@ -175,7 +175,7 @@
 #if 0
 - (uint32_t)segmentOffsetForVMAddr:(uint32_t)vmaddr;
 {
-    CDSection *section;
+    CDSection32 *section;
 
     section = [self sectionContainingAddress:vmaddr];
     NSLog(@"section: %@", section);
@@ -211,7 +211,7 @@
 {
     unsigned int index = 0;
 
-    for (CDSection *section in sections) {
+    for (CDSection32 *section in sections) {
         [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, [section sectionName]] atomically:NO];
         index++;
     }

@@ -23,7 +23,7 @@
 - (void)processModules;
 {
     CDLCSegment32 *objcSegment;
-    CDSection *moduleSection;
+    CDSection32 *moduleSection;
     NSData *sectionData;
     CDDataCursor *cursor;
 
@@ -460,7 +460,7 @@
 - (void)processProtocolSection;
 {
     CDLCSegment32 *objcSegment;
-    CDSection *protocolSection;
+    CDSection32 *protocolSection;
     uint32_t addr;
     int count, index;
 

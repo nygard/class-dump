@@ -6,7 +6,7 @@
 #import "CDLoadCommand.h"
 #include <mach-o/loader.h>
 
-@class CDSection;
+@class CDSection32;
 
 @interface CDLCSegment32 : CDLoadCommand
 {
@@ -38,8 +38,8 @@
 //- (const void *)segmentDataBytes;
 
 - (BOOL)containsAddress:(uint32_t)vmaddr;
-- (CDSection *)sectionContainingAddress:(uint32_t)vmaddr;
-- (CDSection *)sectionWithName:(NSString *)aName;
+- (CDSection32 *)sectionContainingAddress:(uint32_t)vmaddr;
+- (CDSection32 *)sectionWithName:(NSString *)aName;
 //- (uint32_t)segmentOffsetForVMAddr:(uint32_t)vmaddr;
 - (uint32_t)fileOffsetForAddress:(uint32_t)address;
 

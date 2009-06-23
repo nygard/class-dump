@@ -10,7 +10,7 @@
 #import "CDMachOFile.h"
 #import "CDLCSegment32.h"
 
-@implementation CDSection
+@implementation CDSection32
 
 // Just to resolve multiple different definitions...
 - (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
