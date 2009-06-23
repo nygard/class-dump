@@ -9,7 +9,7 @@
 
 @implementation CDSection64
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegment64 *)aSegment;
+- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 {
     char buf[17];
 
@@ -54,7 +54,7 @@
     [super dealloc];
 }
 
-- (CDSegment64 *)segment;
+- (CDLCSegment64 *)segment;
 {
     return nonretainedSegment;
 }

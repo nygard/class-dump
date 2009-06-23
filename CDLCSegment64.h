@@ -5,7 +5,7 @@
 
 #import "CDLoadCommand.h"
 
-@interface CDSegment64 : CDLoadCommand
+@interface CDLCSegment64 : CDLoadCommand
 {
     struct segment_command_64 segmentCommand;
 

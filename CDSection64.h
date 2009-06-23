@@ -6,11 +6,11 @@
 #import <Foundation/Foundation.h>
 #include <mach-o/loader.h>
 
-@class CDDataCursor, CDMachOFile, CDSegment64;
+@class CDDataCursor, CDMachOFile, CDLCSegment64;
 
 @interface CDSection64 : NSObject
 {
-    CDSegment64 *nonretainedSegment;
+    CDLCSegment64 *nonretainedSegment;
 
     struct section_64 section;
 
@@ -18,10 +18,10 @@
     NSString *sectionName;
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDSegment64 *)aSegment;
+- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 - (void)dealloc;
 
-- (CDSegment64 *)segment;
+- (CDLCSegment64 *)segment;
 - (CDMachOFile *)machOFile;
 
 - (NSString *)segmentName;

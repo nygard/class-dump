@@ -8,7 +8,7 @@
 #import "CDSection64.h"
 #import "CDDataCursor.h"
 
-@implementation CDSegment64
+@implementation CDLCSegment64
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
