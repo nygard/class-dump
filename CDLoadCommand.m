@@ -43,7 +43,7 @@
       case LC_UUID: targetClass = [CDUUIDCommand class]; break;
       case LC_CODE_SIGNATURE:
       case LC_SEGMENT_SPLIT_INFO:
-          targetClass = [CDLinkeditData class];
+          targetClass = [CDLCLinkeditData class];
           break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);

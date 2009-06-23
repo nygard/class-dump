@@ -7,7 +7,7 @@
 
 #include <mach-o/loader.h>
 
-@interface CDLinkeditData : CDLoadCommand
+@interface CDLCLinkeditData : CDLoadCommand
 {
     struct linkedit_data_command linkeditDataCommand;
 }

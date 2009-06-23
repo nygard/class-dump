@@ -7,7 +7,7 @@
 
 #import "CDDataCursor.h"
 
-@implementation CDLinkeditData
+@implementation CDLCLinkeditData
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
