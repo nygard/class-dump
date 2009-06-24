@@ -25,6 +25,8 @@
 
 - (void)loadData;
 
+- (NSString *)description;
+
 - (BOOL)containsAddress:(NSUInteger)address;
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
 

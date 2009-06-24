@@ -60,16 +60,6 @@
     return [[self segment] machOFile];
 }
 
-- (NSString *)segmentName;
-{
-    return segmentName;
-}
-
-- (NSString *)sectionName;
-{
-    return sectionName;
-}
-
 - (NSUInteger)addr;
 {
     return section.addr;
@@ -86,6 +76,14 @@
         data = [[NSData alloc] initWithBytes:[[nonretainedSegment machOFile] machODataBytes] + section.offset length:section.size];
         _flags.hasLoadedData = YES;
     }
+}
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s', addr: %016lx, size: %016lx",
+                     NSStringFromClass([self class]), self,
+                     segmentName, [sectionName UTF8String],
+                     section.addr, section.size];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;

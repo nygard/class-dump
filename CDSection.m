@@ -105,9 +105,9 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%@'",
+    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s'",
                      NSStringFromClass([self class]), self,
-                     segmentName, sectionName];
+                     segmentName, [sectionName UTF8String]];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;
