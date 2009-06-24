@@ -50,24 +50,10 @@ struct cd_objc2_method {
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
-    if ([super init] == nil)
+    if ([super initWithMachOFile:aMachOFile] == nil)
         return nil;
 
-    machOFile = [aMachOFile retain];
-
     return self;
-}
-
-- (void)dealloc;
-{
-    [machOFile release];
-
-    [super dealloc];
-}
-
-- (CDMachOFile *)machOFile;
-{
-    return machOFile;
 }
 
 - (BOOL)hasObjectiveCData;

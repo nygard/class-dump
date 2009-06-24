@@ -1,27 +1,29 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2009 Steve Nygard.
+//  Copyright (C) 2009 Steve Nygard.  All rights reserved.
 
-#import "CDObjectiveCProcessor.h"
+#import <Foundation/Foundation.h>
 
-@interface CDObjCSegmentProcessor : CDObjectiveCProcessor
+#import "CDStructureRegistrationProtocol.h"
+
+@class CDClassDump, CDMachOFile;
+@class CDVisitor;
+
+@interface CDObjectiveCProcessor : NSObject
 {
-    NSMutableArray *modules;
-    NSMutableDictionary *protocolsByName; // uniqued
-    NSMutableDictionary *protocolsByAddress; // non-uniqued
+    CDMachOFile *machOFile;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (NSArray *)modules;
+- (CDMachOFile *)machOFile;
 
 - (BOOL)hasObjectiveCData;
 - (void)process;
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 @end

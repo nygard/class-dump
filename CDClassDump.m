@@ -264,7 +264,7 @@
 - (BOOL)containsObjectiveCSegments;
 {
     for (CDObjCSegmentProcessor *processor in objCSegmentProcessors) {
-        if ([processor hasModules])
+        if ([processor hasObjectiveCData])
             return YES;
     }
 

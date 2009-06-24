@@ -27,10 +27,9 @@
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
-    if ([super init] == nil)
+    if ([super initWithMachOFile:aMachOFile] == nil)
         return nil;
 
-    machOFile = [aMachOFile retain];
     modules = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
     protocolsByAddress = [[NSMutableDictionary alloc] init];
@@ -40,7 +39,6 @@
 
 - (void)dealloc;
 {
-    [machOFile release];
     [modules release];
     [protocolsByName release];
     [protocolsByAddress release];
@@ -48,17 +46,12 @@
     [super dealloc];
 }
 
-- (CDMachOFile *)machOFile;
-{
-    return machOFile;
-}
-
 - (NSArray *)modules;
 {
     return modules;
 }
 
-- (BOOL)hasModules;
+- (BOOL)hasObjectiveCData;
 {
     return [modules count] > 0;
 }
@@ -86,11 +79,6 @@
         aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
         [aProtocol registerStructuresWithObject:anObject phase:phase];
     }
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%@] machOFile: %@", NSStringFromClass([self class]), [machOFile filename]];
 }
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
