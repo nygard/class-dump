@@ -15,6 +15,7 @@
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDLCSegment.h"
+#import "CDObjectiveCProcessor.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -415,6 +416,12 @@ static BOOL debug = NO;
                      NSStringFromClass([self class]), self,
                      [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
                      filename, data, offset];
+}
+
+- (Class)processorClass;
+{
+    // Implement in subclasses
+    return [CDObjectiveCProcessor class];
 }
 
 @end

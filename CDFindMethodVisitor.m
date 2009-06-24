@@ -77,7 +77,7 @@
 {
     [classDump appendHeaderToString:resultString];
 
-    if ([classDump containsObjectiveCSegments]) {
+    if ([classDump containsObjectiveCData]) {
         //[classDump appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
     } else {

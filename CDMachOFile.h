@@ -73,4 +73,6 @@
 
 - (NSString *)description;
 
+- (Class)processorClass;
+
 @end

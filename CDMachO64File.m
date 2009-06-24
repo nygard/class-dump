@@ -6,6 +6,7 @@
 #import "CDMachO64File.h"
 
 #import "CDLoadCommand.h"
+#import "CDObjectiveC2Processor.h"
 
 @implementation CDMachO64File
 
@@ -89,6 +90,11 @@
 {
     return [NSString stringWithFormat:@"magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d",
                      header.magic, header.cputype, header.cpusubtype, header.filetype, [loadCommands count], 0, header.flags, _flags.uses64BitABI];
+}
+
+- (Class)processorClass;
+{
+    return [CDObjectiveC2Processor class];
 }
 
 @end

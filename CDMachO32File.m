@@ -5,6 +5,8 @@
 
 #import "CDMachO32File.h"
 
+#import "CDObjectiveC1Processor.h"
+
 @implementation CDMachO32File
 
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
@@ -85,6 +87,11 @@
 - (NSString *)bestMatchForLocalArch;
 {
     return CDNameForCPUType(header.cputype, header.cpusubtype);
+}
+
+- (Class)processorClass;
+{
+    return [CDObjectiveC1Processor class];
 }
 
 @end

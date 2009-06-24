@@ -111,7 +111,7 @@
     [classDump appendHeaderToString:resultString];
 
     // TODO (2007-06-14): Make sure this generates no output files in this case.
-    if ([classDump containsObjectiveCSegments] == NO)
+    if ([classDump containsObjectiveCData] == NO)
         NSLog(@"Warning: This file does not contain any Objective-C runtime information.");
 
     [self buildClassFrameworks];

@@ -58,6 +58,7 @@ struct cd_objc2_method {
 
 - (BOOL)hasObjectiveCData;
 {
+    NSLog(@"**********************************************************************");
     return [[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
 }
 
@@ -209,7 +210,7 @@ struct cd_objc2_method {
             [method release];
         }
 
-        exit(99);
+        //exit(99);
     }
 
     return methods;

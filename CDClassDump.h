@@ -45,7 +45,7 @@
 
     NSMutableArray *machOFiles;
     NSMutableDictionary *machOFilesByID;
-    NSMutableArray *objCSegmentProcessors;
+    NSMutableArray *objcProcessors;
 
     CDStructureTable *structureTable;
     CDStructureTable *unionTable;
@@ -91,12 +91,12 @@
 - (BOOL)regexMatchesString:(NSString *)aString;
 
 - (NSArray *)machOFiles;
-- (NSArray *)objCSegmentProcessors;
+- (NSArray *)objcProcessors;
 
 - (NSString *)targetArchName;
 - (void)setTargetArchName:(NSString *)newArchName;
 
-- (BOOL)containsObjectiveCSegments;
+- (BOOL)containsObjectiveCData;
 - (CDStructureTable *)structureTable;
 - (CDStructureTable *)unionTable;
 
@@ -106,7 +106,7 @@
 
 - (BOOL)_loadFilename:(NSString *)aFilename;
 - (BOOL)loadFile:(CDFile *)aFile;
-- (void)processObjectiveCSegments;
+- (void)processObjectiveCData;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 

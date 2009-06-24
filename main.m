@@ -249,7 +249,7 @@ int main(int argc, char *argv[])
                     [o2 process];
                     [o2 release];
                 }
-                [classDump processObjectiveCSegments];
+                [classDump processObjectiveCData];
                 [classDump registerStuff];
 
                 if (shouldFind) {

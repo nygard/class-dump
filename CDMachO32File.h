@@ -20,4 +20,6 @@
 
 - (NSString *)bestMatchForLocalArch;
 
+- (Class)processorClass;
+
 @end

@@ -33,7 +33,7 @@
 
     machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
-    objCSegmentProcessors = [[NSMutableArray alloc] init];
+    objcProcessors = [[NSMutableArray alloc] init];
 
     structureTable = [[CDStructureTable alloc] init];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
@@ -75,7 +75,7 @@
 
     [machOFiles release];
     [machOFilesByID release];
-    [objCSegmentProcessors release];
+    [objcProcessors release];
 
     [structureTable release];
     [unionTable release];
@@ -241,9 +241,9 @@
     return machOFiles;
 }
 
-- (NSArray *)objCSegmentProcessors;
+- (NSArray *)objcProcessors;
 {
-    return objCSegmentProcessors;
+    return objcProcessors;
 }
 
 - (NSString *)targetArchName;
@@ -261,9 +261,9 @@
     targetArchName = [newArchName retain];
 }
 
-- (BOOL)containsObjectiveCSegments;
+- (BOOL)containsObjectiveCData;
 {
-    for (CDObjectiveC1Processor *processor in objCSegmentProcessors) {
+    for (CDObjectiveC1Processor *processor in objcProcessors) {
         if ([processor hasObjectiveCData])
             return YES;
     }
@@ -348,15 +348,15 @@
     return YES;
 }
 
-- (void)processObjectiveCSegments;
+- (void)processObjectiveCData;
 {
     for (CDMachOFile *machOFile in machOFiles) {
         CDObjectiveC1Processor *aProcessor;
 
         NSLog(@"----------------------------------------------------------------------");
-        aProcessor = [[CDObjectiveC1Processor alloc] initWithMachOFile:machOFile];
+        aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
-        [objCSegmentProcessors addObject:aProcessor];
+        [objcProcessors addObject:aProcessor];
         [aProcessor release];
     }
 }
@@ -366,8 +366,8 @@
 {
     [aVisitor willBeginVisiting];
 
-    if ([self containsObjectiveCSegments]) {
-        for (CDObjectiveC1Processor *processor in objCSegmentProcessors)
+    if ([self containsObjectiveCData]) {
+        for (CDObjectiveC1Processor *processor in objcProcessors)
             [processor recursivelyVisit:aVisitor];
     }
 
@@ -469,7 +469,7 @@
 
     pool = [[NSAutoreleasePool alloc] init];
 
-    for (CDObjectiveC1Processor *processor in objCSegmentProcessors) {
+    for (CDObjectiveC1Processor *processor in objcProcessors) {
         [processor registerStructuresWithObject:self phase:phase];
     }
 
