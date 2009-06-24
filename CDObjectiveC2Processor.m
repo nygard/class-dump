@@ -9,6 +9,7 @@
 #import "CDDataCursor.h"
 #import "CDOCClass.h"
 #import "CDOCMethod.h"
+#import "CDVisitor.h"
 
 struct cd_objc2_class {
     uint64_t isa;
@@ -53,7 +54,16 @@ struct cd_objc2_method {
     if ([super initWithMachOFile:aMachOFile] == nil)
         return nil;
 
+    classes = [[NSMutableArray alloc] init];
+
     return self;
+}
+
+- (void)dealloc;
+{
+    [classes release];
+
+    [super dealloc];
 }
 
 - (BOOL)hasObjectiveCData;
@@ -64,6 +74,15 @@ struct cd_objc2_method {
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
     NSLog(@" > %s", _cmd);
+
+    [aVisitor willVisitObjectiveCProcessor:self];
+    [aVisitor visitObjectiveCProcessor:self];
+
+    for (CDOCClass *aClass in classes)
+        [aClass recursivelyVisit:aVisitor];
+
+    [aVisitor didVisitObjectiveCProcessor:self];
+
     NSLog(@"<  %s", _cmd);
 }
 
@@ -93,12 +112,14 @@ struct cd_objc2_method {
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
     while ([cursor isAtEnd] == NO) {
         uint64_t val;
+        CDOCClass *aClass;
 
         val = [cursor readLittleInt64];
         //NSLog(@"----------------------------------------");
         //NSLog(@"val: %16lx", val);
 
-        [self loadClassAtAddress:val];
+        aClass = [self loadClassAtAddress:val];
+        [classes addObject:aClass];
     }
     [cursor release];
 #if 0
@@ -115,7 +136,7 @@ struct cd_objc2_method {
     NSLog(@"<  %s", _cmd);
 }
 
-- (id)loadClassAtAddress:(uint64_t)address;
+- (CDOCClass *)loadClassAtAddress:(uint64_t)address;
 {
     struct cd_objc2_class objc2Class;
     struct cd_objc2_class_ro_t objc2ClassData;

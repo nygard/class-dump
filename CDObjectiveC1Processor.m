@@ -83,21 +83,19 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    int count, index;
     NSMutableArray *allClasses;
     NSArray *protocolNames;
 
     allClasses = [[NSMutableArray alloc] init];
 
-    count = [modules count];
-    for (index = 0; index < count; index++) {
+    for (CDOCModule *module in modules) {
         NSArray *moduleClasses, *moduleCategories;
 
-        moduleClasses = [[[modules objectAtIndex:index] symtab] classes];
+        moduleClasses = [[module symtab] classes];
         if (moduleClasses != nil)
             [allClasses addObjectsFromArray:moduleClasses];
 
-        moduleCategories = [[[modules objectAtIndex:index] symtab] categories];
+        moduleCategories = [[module symtab] categories];
         if (moduleCategories != nil)
             [allClasses addObjectsFromArray:moduleCategories];
     }
@@ -113,12 +111,8 @@
         [aVisitor visitObjectiveCProcessor:self];
     }
 
-    count = [protocolNames count];
-    for (index = 0; index < count; index++) {
-        CDOCProtocol *aProtocol;
-
-        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol recursivelyVisit:aVisitor];
+    for (NSString *protocolName in protocolNames) {
+        [[protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
     }
 
     if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
@@ -126,9 +120,8 @@
     } else if ([[aVisitor classDump] shouldSortClasses] == YES)
         [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
 
-    count = [allClasses count];
-    for (index = 0; index < count; index++)
-        [[allClasses objectAtIndex:index] recursivelyVisit:aVisitor];
+    for (CDOCClass *aClass in allClasses)
+        [aClass recursivelyVisit:aVisitor];
 
     [allClasses release];
 
