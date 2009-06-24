@@ -367,8 +367,11 @@
     [aVisitor willBeginVisiting];
 
     if ([self containsObjectiveCData]) {
-        for (CDObjectiveC1Processor *processor in objcProcessors)
+        NSLog(@"We have objective-C data.");
+        for (CDObjectiveCProcessor *processor in objcProcessors) {
+            NSLog(@"visiting %@", processor);
             [processor recursivelyVisit:aVisitor];
+        }
     }
 
     [aVisitor didEndVisiting];
