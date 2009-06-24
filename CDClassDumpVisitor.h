@@ -12,6 +12,6 @@
 - (void)willBeginVisiting;
 - (void)didEndVisiting;
 
-- (void)visitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 
 @end

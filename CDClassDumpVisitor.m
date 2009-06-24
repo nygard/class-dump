@@ -9,7 +9,7 @@
 
 #import "NSArray-Extensions.h"
 #import "CDClassDump.h"
-#import "CDObjectiveC1Processor.h"
+#import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
 #import "CDOCProtocol.h"
 #import "CDLCDylib.h"
@@ -40,7 +40,7 @@
     [self writeResultToStandardOutput];
 }
 
-- (void)visitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
     CDMachOFile *machOFile;
     const NXArchInfo *archInfo;

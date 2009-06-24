@@ -6,7 +6,7 @@
 #import "CDClassFrameworkVisitor.h"
 
 #import "CDOCClass.h"
-#import "CDObjectiveC1Processor.h"
+#import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
 
 // This builds up a dictionary mapping class names to a framework name.  It is used to generate individual imports when creating separate header files.
@@ -58,7 +58,7 @@
     frameworkName = [newFrameworkName retain];
 }
 
-- (void)willVisitObjectiveCProcessor:(CDObjectiveC1Processor *)anObjCSegment;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)anObjCSegment;
 {
     [self setFrameworkName:[[anObjCSegment machOFile] importBaseName]];
 }
