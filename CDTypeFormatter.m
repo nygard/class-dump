@@ -258,7 +258,8 @@
                         //if ([[aMethodType type] isIDType] == NO)
                         [parameter setValue:typeString forKey:@"type"];
                     }
-                    [parameter setValue:[NSString stringWithFormat:@"fp%@", [aMethodType offset]] forKey:@"name"];
+                    //[parameter setValue:[NSString stringWithFormat:@"fp%@", [aMethodType offset]] forKey:@"name"];
+                    [parameter setValue:[NSString stringWithFormat:@"arg%u", index-2] forKey:@"name"];
                     [parameterTypes addObject:parameter];
                     index++;
                 }
@@ -347,7 +348,8 @@
                         //if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     }
-                    [resultString appendFormat:@"fp%@", [aMethodType offset]];
+                    //[resultString appendFormat:@"fp%@", [aMethodType offset]];
+                    [resultString appendFormat:@"arg%u", index-2];
 
                     ch = [scanner peekCharacter];
                     // if next character is not ':' nor EOS then add space
