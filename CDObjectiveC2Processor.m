@@ -1,7 +1,7 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 2009 Steve Nygard.  All rights reserved.
 
-#import "CDObjC2.h"
+#import "CDObjectiveC2Processor.h"
 
 #import "CDMachOFile.h"
 #import "CDSection.h"

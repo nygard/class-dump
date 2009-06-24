@@ -6,7 +6,7 @@
 #import "CDVisitor.h"
 
 #import "CDClassDump.h"
-#import "CDObjCSegmentProcessor.h"
+#import "CDObjectiveC1Processor.h"
 
 @implementation CDVisitor
 

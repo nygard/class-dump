@@ -20,7 +20,7 @@
 #import "CDFile.h"
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
-#import "CDObjC2.h"
+#import "CDObjectiveC2Processor.h"
 
 void print_usage(void)
 {

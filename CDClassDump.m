@@ -12,7 +12,7 @@
 #import "CDFatFile.h"
 #import "CDLCDylib.h"
 #import "CDMachOFile.h"
-#import "CDObjCSegmentProcessor.h"
+#import "CDObjectiveC1Processor.h"
 #import "CDStructureTable.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
@@ -20,7 +20,7 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDLCSegment.h"
-#import "CDObjC2.h"
+#import "CDObjectiveC2Processor.h"
 
 @implementation CDClassDump
 

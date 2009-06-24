@@ -3,7 +3,7 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2009 Steve Nygard.
 
-#import "CDObjCSegmentProcessor.h"
+#import "CDObjectiveC1Processor.h"
 
 #include <mach-o/arch.h>
 
@@ -20,7 +20,7 @@
 #import "CDSection32.h"
 #import "CDLCSegment32.h"
 #import "NSArray-Extensions.h"
-#import "CDObjCSegmentProcessor-Private.h"
+#import "CDObjectiveC1Processor-Private.h"
 #import "CDVisitor.h"
 
 @implementation CDObjCSegmentProcessor
