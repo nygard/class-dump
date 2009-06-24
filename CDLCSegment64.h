@@ -19,4 +19,6 @@
 - (NSUInteger)filesize;
 - (uint32_t)flags;
 
+- (BOOL)containsAddress:(NSUInteger)address;
+
 @end

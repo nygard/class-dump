@@ -96,6 +96,12 @@
     return [setFlags componentsJoinedByString:@" "];
 }
 
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@:%p> name: %@",
+                     NSStringFromClass([self class]), self,
+                     name];
+}
 - (NSString *)extraDescription;
 {
 #if 0

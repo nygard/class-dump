@@ -52,12 +52,12 @@
 - (CDLCDylib *)dylibIdentifier;
 
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
-- (CDLCSegment *)segmentContainingAddress:(uint32_t)address;
-- (NSString *)stringAtAddress:(uint32_t)address;
+- (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
+- (NSString *)stringAtAddress:(NSUInteger)address;
 
 - (const void *)machODataBytes;
-- (NSUInteger)dataOffsetForAddress:(uint32_t)address;
-- (NSUInteger)dataOffsetForAddress:(uint32_t)address segmentName:(NSString *)aSegmentName;
+- (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
+- (NSUInteger)dataOffsetForAddress:(NSUInteger)address segmentName:(NSString *)aSegmentName;
 
 - (const void *)bytes;
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;

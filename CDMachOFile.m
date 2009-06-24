@@ -224,7 +224,7 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (CDLCSegment *)segmentContainingAddress:(uint32_t)address;
+- (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
 {
     for (id loadCommand in loadCommands) {
         if ([loadCommand isKindOfClass:[CDLCSegment class]] == YES && [loadCommand containsAddress:address] == YES) {
@@ -240,7 +240,7 @@ static BOOL debug = NO;
     NSLog(@"Warning: %@", aWarning);
 }
 
-- (NSString *)stringAtAddress:(uint32_t)address;
+- (NSString *)stringAtAddress:(NSUInteger)address;
 {
     CDLCSegment *segment;
 
@@ -284,12 +284,12 @@ static BOOL debug = NO;
     return [data bytes] + offset;
 }
 
-- (NSUInteger)dataOffsetForAddress:(uint32_t)address;
+- (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
 {
     return [self dataOffsetForAddress:address segmentName:nil];
 }
 
-- (NSUInteger)dataOffsetForAddress:(uint32_t)address segmentName:(NSString *)aSegmentName;
+- (NSUInteger)dataOffsetForAddress:(NSUInteger)address segmentName:(NSString *)aSegmentName;
 {
     CDLCSegment *segment;
 

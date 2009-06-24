@@ -82,4 +82,9 @@
     return segmentCommand.flags;
 }
 
+- (BOOL)containsAddress:(NSUInteger)address;
+{
+    return (address >= segmentCommand.vmaddr) && (address < segmentCommand.vmaddr + segmentCommand.vmsize);
+}
+
 @end

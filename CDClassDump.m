@@ -19,6 +19,8 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
+#import "CDLCSegment.h"
+#import "CDObjC2.h"
 
 @implementation CDClassDump
 
@@ -324,11 +326,47 @@
     NSLog(@"load commands: %@", [aMachOFile loadCommands]);
 
     {
-        CDLCSegment *segment;
+        CDLCSegment *segment, *s2;
+        NSUInteger dataOffset;
+        NSString *str;
+        CDSection *section;
+        NSData *sectionData;
+        CDDataCursor *cursor;
 
         segment = [aMachOFile segmentWithName:@"__DATA"];
+        NSLog(@"data segment offset: %lx", [segment fileoff]);
         NSLog(@"data segment: %@", segment);
         [segment writeSectionData];
+
+        section = [segment sectionWithName:@"__objc_classlist"];
+        NSLog(@"section: %@", section);
+
+        sectionData = [section data];
+        cursor = [[CDDataCursor alloc] initWithData:sectionData];
+        while ([cursor isAtEnd] == NO) {
+            uint64_t val;
+
+            val = [cursor readLittleInt64];
+            NSLog(@"val: %16lx", val);
+        }
+        [cursor release];
+
+        s2 = [aMachOFile segmentContainingAddress:0x2cab60];
+        NSLog(@"s2 contains 0x2cab60: %@", s2);
+
+        dataOffset = [aMachOFile dataOffsetForAddress:0x2cab60];
+        NSLog(@"dataOffset: %lx (%lu)", dataOffset, dataOffset);
+
+        str = [aMachOFile stringAtAddress:0x2cac00];
+        NSLog(@"str: %@", str);
+    }
+
+    {
+        CDObjC2 *o2;
+
+        o2 = [[CDObjC2 alloc] initWithMachOFile:aMachOFile];
+        [o2 process];
+        [o2 release];
     }
 
     if ([self shouldProcessRecursively]) {
