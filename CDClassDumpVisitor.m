@@ -40,12 +40,12 @@
     [self writeResultToStandardOutput];
 }
 
-- (void)visitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
+- (void)visitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
 {
     CDMachOFile *machOFile;
     const NXArchInfo *archInfo;
 
-    machOFile = [anObjCSegment machOFile];
+    machOFile = [aProcessor machOFile];
 
     [resultString appendString:@"/*\n"];
     [resultString appendFormat:@" * File: %@\n", [machOFile filename]];

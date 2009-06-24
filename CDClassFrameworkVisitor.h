@@ -21,7 +21,7 @@
 - (NSString *)frameworkName;
 - (void)setFrameworkName:(NSString *)newFrameworkName;
 
-- (void)willVisitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveC1Processor *)anObjCSegment;
 - (void)willVisitClass:(CDOCClass *)aClass;
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 

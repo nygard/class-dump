@@ -21,9 +21,9 @@
 - (void)willBeginVisiting;
 - (void)didEndVisiting;
 
-- (void)willVisitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
-- (void)visitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
-- (void)didVisitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)didVisitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
 
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 - (void)didVisitProtocol:(CDOCProtocol *)aProtocol;

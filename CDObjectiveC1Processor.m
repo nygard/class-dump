@@ -107,10 +107,10 @@
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
-    [aVisitor willVisitObjectiveCSegment:self];
+    [aVisitor willVisitObjectiveCProcessor:self];
 
     if ([protocolNames count] > 0 || [allClasses count] > 0 || [machOFile hasProtectedSegments]) {
-        [aVisitor visitObjectiveCSegment:self];
+        [aVisitor visitObjectiveCProcessor:self];
     }
 
     count = [protocolNames count];
@@ -132,7 +132,7 @@
 
     [allClasses release];
 
-    [aVisitor didVisitObjectiveCSegment:self];
+    [aVisitor didVisitObjectiveCProcessor:self];
 }
 
 @end
