@@ -5,7 +5,7 @@
 
 #import "CDObjectiveCProcessor.h"
 
-@interface CDObjCSegmentProcessor : CDObjectiveCProcessor
+@interface CDObjectiveC1Processor : CDObjectiveCProcessor
 {
     NSMutableArray *modules;
     NSMutableDictionary *protocolsByName; // uniqued

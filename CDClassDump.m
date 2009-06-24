@@ -263,7 +263,7 @@
 
 - (BOOL)containsObjectiveCSegments;
 {
-    for (CDObjCSegmentProcessor *processor in objCSegmentProcessors) {
+    for (CDObjectiveC1Processor *processor in objCSegmentProcessors) {
         if ([processor hasObjectiveCData])
             return YES;
     }
@@ -351,10 +351,10 @@
 - (void)processObjectiveCSegments;
 {
     for (CDMachOFile *machOFile in machOFiles) {
-        CDObjCSegmentProcessor *aProcessor;
+        CDObjectiveC1Processor *aProcessor;
 
         NSLog(@"----------------------------------------------------------------------");
-        aProcessor = [[CDObjCSegmentProcessor alloc] initWithMachOFile:machOFile];
+        aProcessor = [[CDObjectiveC1Processor alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objCSegmentProcessors addObject:aProcessor];
         [aProcessor release];
@@ -367,7 +367,7 @@
     [aVisitor willBeginVisiting];
 
     if ([self containsObjectiveCSegments]) {
-        for (CDObjCSegmentProcessor *processor in objCSegmentProcessors)
+        for (CDObjectiveC1Processor *processor in objCSegmentProcessors)
             [processor recursivelyVisit:aVisitor];
     }
 
@@ -469,7 +469,7 @@
 
     pool = [[NSAutoreleasePool alloc] init];
 
-    for (CDObjCSegmentProcessor *processor in objCSegmentProcessors) {
+    for (CDObjectiveC1Processor *processor in objCSegmentProcessors) {
         [processor registerStructuresWithObject:self phase:phase];
     }
 

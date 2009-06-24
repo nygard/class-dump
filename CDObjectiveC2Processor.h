@@ -5,7 +5,7 @@
 
 #import "CDObjectiveCProcessor.h"
 
-@interface CDObjC2 : CDObjectiveCProcessor
+@interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
 }
 

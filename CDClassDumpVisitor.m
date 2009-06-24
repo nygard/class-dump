@@ -40,7 +40,7 @@
     [self writeResultToStandardOutput];
 }
 
-- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
+- (void)visitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
 {
     CDMachOFile *machOFile;
     const NXArchInfo *archInfo;

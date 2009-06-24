@@ -18,7 +18,7 @@
 #import "CDLCSegment.h"
 #import "NSArray-Extensions.h"
 
-@implementation CDObjCSegmentProcessor (Private)
+@implementation CDObjectiveC1Processor (Private)
 
 - (void)processModules;
 {

@@ -12,6 +12,6 @@
 - (void)willBeginVisiting;
 - (void)didEndVisiting;
 
-- (void)visitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
+- (void)visitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
 
 @end

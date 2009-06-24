@@ -23,7 +23,7 @@
 #import "CDObjectiveC1Processor-Private.h"
 #import "CDVisitor.h"
 
-@implementation CDObjCSegmentProcessor
+@implementation CDObjectiveC1Processor
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {

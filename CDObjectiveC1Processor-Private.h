@@ -110,7 +110,7 @@ struct cd_objc_protocol_method
 
 @class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 
-@interface CDObjCSegmentProcessor (Private)
+@interface CDObjectiveC1Processor (Private)
 
 - (void)processModules;
 - (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;

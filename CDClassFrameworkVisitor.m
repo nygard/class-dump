@@ -58,7 +58,7 @@
     frameworkName = [newFrameworkName retain];
 }
 
-- (void)willVisitObjectiveCSegment:(CDObjCSegmentProcessor *)anObjCSegment;
+- (void)willVisitObjectiveCSegment:(CDObjectiveC1Processor *)anObjCSegment;
 {
     [self setFrameworkName:[[anObjCSegment machOFile] importBaseName]];
 }

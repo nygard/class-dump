@@ -46,7 +46,7 @@ struct cd_objc2_method {
     uint64_t imp;
 };
 
-@implementation CDObjC2
+@implementation CDObjectiveC2Processor
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
