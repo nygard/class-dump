@@ -11,7 +11,7 @@
 
 @implementation CDOCIvar
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(int)anOffset;
+- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 {
     if ([super init] == nil)
         return nil;
@@ -41,14 +41,14 @@
     return type;
 }
 
-- (int)offset;
+- (NSUInteger)offset;
 {
     return offset;
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, type: '%@', offset: %d",
+    return [NSString stringWithFormat:@"[%@] name: %@, type: '%@', offset: %lu",
                      NSStringFromClass([self class]), name, type, offset];
 }
 

@@ -11,15 +11,15 @@
 {
     NSString *name;
     NSString *type;
-    int offset;
+    NSUInteger offset;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(int)anOffset;
+- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 - (void)dealloc;
 
 - (NSString *)name;
 - (NSString *)type;
-- (int)offset;
+- (NSUInteger)offset;
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;

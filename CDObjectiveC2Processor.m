@@ -10,6 +10,7 @@
 #import "CDOCClass.h"
 #import "CDOCMethod.h"
 #import "CDVisitor.h"
+#import "CDOCIvar.h"
 
 struct cd_objc2_class {
     uint64_t isa;
@@ -45,6 +46,14 @@ struct cd_objc2_method {
     uint64_t name;
     uint64_t types;
     uint64_t imp;
+};
+
+struct cd_objc2_ivar {
+    uint64_t offset;
+    uint64_t name;
+    uint64_t type;
+    uint32_t alignment;
+    uint32_t size;
 };
 
 @implementation CDObjectiveC2Processor
@@ -191,6 +200,8 @@ struct cd_objc2_method {
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2ClassData.baseMethods])
         [aClass addInstanceMethod:method];
 
+    [aClass setIvars:[self loadIvarsAtAddress:objc2ClassData.ivars]];
+
     [cursor release];
 
     return aClass;
@@ -236,11 +247,57 @@ struct cd_objc2_method {
             [methods addObject:method];
             [method release];
         }
-
-        //exit(99);
     }
 
     return methods;
+}
+
+- (NSArray *)loadIvarsAtAddress:(uint64_t)address;
+{
+    NSMutableArray *ivars;
+
+    ivars = [NSMutableArray array];
+
+    if (address != 0) {
+        CDDataCursor *cursor;
+        struct cd_objc2_list_header listHeader;
+        uint32_t index;
+
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        NSParameterAssert([cursor offset] != 0);
+        //NSLog(@"ivar list data offset: %lu", [cursor offset]);
+
+        listHeader.entsize = [cursor readInt32];
+        listHeader.count = [cursor readInt32];
+        NSParameterAssert(listHeader.entsize == 32);
+
+        for (index = 0; index < listHeader.count; index++) {
+            struct cd_objc2_ivar objc2Ivar;
+            NSString *name, *type;
+            CDOCIvar *ivar;
+
+            objc2Ivar.offset = [cursor readInt64];
+            objc2Ivar.name = [cursor readInt64];
+            objc2Ivar.type = [cursor readInt64];
+            objc2Ivar.alignment = [cursor readInt32];
+            objc2Ivar.size = [cursor readInt32];
+
+            name = [machOFile stringAtAddress:objc2Ivar.name];
+            type = [machOFile stringAtAddress:objc2Ivar.type];
+
+            //NSLog(@"%3u: %016lx %016lx %016lx", index, objc2Method.name, objc2Method.types, objc2Method.imp);
+            //NSLog(@"name: %@", name);
+            //NSLog(@"types: %@", types);
+
+            ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset];
+            [ivars addObject:ivar];
+            [ivar release];
+        }
+    }
+
+    return ivars;
 }
 
 @end

@@ -21,5 +21,6 @@
 
 - (CDOCClass *)loadClassAtAddress:(uint64_t)address;
 - (NSArray *)loadMethodsAtAddress:(uint64_t)address;
+- (NSArray *)loadIvarsAtAddress:(uint64_t)address;
 
 @end
