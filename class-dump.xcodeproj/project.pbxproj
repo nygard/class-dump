@@ -277,14 +277,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DD76F960486AA7600D96B5E /* class-dump (32 bit) */;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E;
 			remoteInfo = "class-dump (32 bit)";
 		};
 		01A9A4CB0FF19BC700475772 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 01A9A4BC0FF19B2F00475772 /* class-dump (64 bit) */;
+			remoteGlobalIDString = 01A9A4BC0FF19B2F00475772;
 			remoteInfo = "class-dump (64 bit)";
 		};
 /* End PBXContainerItemProxy section */

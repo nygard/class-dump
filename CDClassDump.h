@@ -104,8 +104,8 @@
 - (CDTypeFormatter *)methodTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
-- (BOOL)_processFilename:(NSString *)aFilename;
-- (BOOL)processFile:(CDFile *)aFile;
+- (BOOL)_loadFilename:(NSString *)aFilename;
+- (BOOL)loadFile:(CDFile *)aFile;
 - (void)processObjectiveCSegments;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;

@@ -20,6 +20,7 @@
 #import "CDFile.h"
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
+#import "CDObjC2.h"
 
 void print_usage(void)
 {
@@ -232,12 +233,22 @@ int main(int argc, char *argv[])
             NSLog(@"About to process file from main().");
 
             // NO, we have the file already: file
-            if ([classDump processFile:file]) {
+            if ([classDump loadFile:file]) {
 #if 0
                 [classDump showHeader];
                 [classDump showLoadCommands];
                 exit(5);
 #endif
+
+                {
+                    CDMachOFile *machOFile;
+                    CDObjC2 *o2;
+
+                    machOFile = [[classDump machOFiles] lastObject];
+                    o2 = [[CDObjC2 alloc] initWithMachOFile:machOFile];
+                    [o2 process];
+                    [o2 release];
+                }
                 [classDump processObjectiveCSegments];
                 [classDump registerStuff];
 

@@ -297,7 +297,7 @@
 }
 
 // Return YES if successful, NO if there was an error.
-- (BOOL)_processFilename:(NSString *)aFilename;
+- (BOOL)_loadFilename:(NSString *)aFilename;
 {
     NSData *data;
     CDFile *aFile;
@@ -313,61 +313,15 @@
     if (aFile == nil)
         return NO;
 
-    return [self processFile:aFile];
+    return [self loadFile:aFile];
 }
 
-- (BOOL)processFile:(CDFile *)aFile;
+- (BOOL)loadFile:(CDFile *)aFile;
 {
     CDMachOFile *aMachOFile;
 
     // We need to find the macho file with the target arch name, set it to aMachOFile
     aMachOFile = [aFile machOFileWithArchName:targetArchName];
-    NSLog(@"aMachOFile: %@", aMachOFile);
-    NSLog(@"load commands: %@", [aMachOFile loadCommands]);
-
-    {
-        CDLCSegment *segment, *s2;
-        NSUInteger dataOffset;
-        NSString *str;
-        CDSection *section;
-        NSData *sectionData;
-        CDDataCursor *cursor;
-
-        segment = [aMachOFile segmentWithName:@"__DATA"];
-        NSLog(@"data segment offset: %lx", [segment fileoff]);
-        NSLog(@"data segment: %@", segment);
-        [segment writeSectionData];
-
-        section = [segment sectionWithName:@"__objc_classlist"];
-        NSLog(@"section: %@", section);
-
-        sectionData = [section data];
-        cursor = [[CDDataCursor alloc] initWithData:sectionData];
-        while ([cursor isAtEnd] == NO) {
-            uint64_t val;
-
-            val = [cursor readLittleInt64];
-            NSLog(@"val: %16lx", val);
-        }
-        [cursor release];
-
-        s2 = [aMachOFile segmentContainingAddress:0x2cab60];
-        NSLog(@"s2 contains 0x2cab60: %@", s2);
-
-        dataOffset = [aMachOFile dataOffsetForAddress:0x2cab60];
-        NSLog(@"dataOffset: %lx (%lu)", dataOffset, dataOffset);
-
-        str = [aMachOFile stringAtAddress:0x2cac00];
-        NSLog(@"str: %@", str);
-    }
-
-    {
-        CDObjC2 *o2;
-
-        o2 = [[CDObjC2 alloc] initWithMachOFile:aMachOFile];
-        [o2 process];
-        [o2 release];
-    }
 
     if ([self shouldProcessRecursively]) {
         @try {
@@ -377,7 +331,7 @@
 
                     aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB)
-                        [self machOFileWithID:[aDylibCommand name]]; // Processes as a side effect
+                        [self machOFileWithID:[aDylibCommand name]]; // Loads as a side effect
                 }
             }
         }
@@ -456,7 +410,7 @@
 
     aMachOFile = [machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
-        [self _processFilename:adjustedID];
+        [self _loadFilename:adjustedID];
         aMachOFile = [machOFilesByID objectForKey:adjustedID];
     }
 
