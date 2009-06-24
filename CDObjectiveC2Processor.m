@@ -57,6 +57,11 @@ struct cd_objc2_ivar {
     uint32_t size;
 };
 
+struct cd_objc2_iamge_info {
+    uint32_t version;
+    uint32_t flags;
+};
+
 @implementation CDObjectiveC2Processor
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
@@ -157,6 +162,8 @@ struct cd_objc2_ivar {
     if (address == 0)
         return nil;
 
+    //NSLog(@"%s, address=%016lx", _cmd, address);
+
     cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
     [cursor setByteOrder:[machOFile byteOrder]];
     [cursor setOffset:[machOFile dataOffsetForAddress:address]];
@@ -204,6 +211,38 @@ struct cd_objc2_ivar {
     [aClass setIvars:[self loadIvarsAtAddress:objc2ClassData.ivars]];
 
     [cursor release];
+
+    {
+#if 0
+        NSLog(@"isa: %016lx, data offset: %lu", objc2Class.isa, [machOFile dataOffsetForAddress:0x2ca960]);
+        NSLog(@"***");
+        [machOFile logInfoForAddress:address];
+        NSLog(@"***");
+
+        [machOFile logInfoForAddress:objc2Class.isa];
+        [machOFile logInfoForAddress:objc2Class.superclass];
+        [machOFile logInfoForAddress:objc2Class.cache];
+        [machOFile logInfoForAddress:objc2Class.vtable];
+        [machOFile logInfoForAddress:objc2Class.data];
+        [machOFile logInfoForAddress:objc2Class.reserved1];
+        [machOFile logInfoForAddress:objc2Class.reserved2];
+        [machOFile logInfoForAddress:objc2Class.reserved3];
+
+        [machOFile logInfoForAddress:0x2ca960];
+        [machOFile logInfoForAddress:0x2ca9a0];
+#endif
+
+        {
+            CDOCClass *sc;
+
+            //NSLog(@"superclass address: %016lx", objc2Class.superclass);
+            sc = [self loadClassAtAddress:objc2Class.superclass];
+            //NSLog(@"sc: %@", sc);
+            //NSLog(@"sc name: %@", [sc name]);
+            [aClass setSuperClassName:[sc name]];
+        }
+        //exit(99);
+    }
 
     return aClass;
 }
