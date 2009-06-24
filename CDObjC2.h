@@ -17,6 +17,11 @@
 
 - (CDMachOFile *)machOFile;
 
+- (BOOL)hasObjectiveCData;
+
 - (void)process;
+
+- (id)loadClassAtAddress:(uint64_t)address;
+- (NSArray *)loadMethodsAtAddress:(uint64_t)address;
 
 @end

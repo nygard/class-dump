@@ -17,7 +17,7 @@
     return nil;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(uint32_t)anImp;
+- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
 {
     if ([self initWithName:aName type:aType] == nil)
         return nil;
@@ -57,19 +57,19 @@
     return type;
 }
 
-- (uint32_t)imp;
+- (NSUInteger)imp;
 {
     return imp;
 }
 
-- (void)setImp:(uint32_t)newValue;
+- (void)setImp:(NSUInteger)newValue;
 {
     imp = newValue;
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%08x",
+    return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%016lx",
                      NSStringFromClass([self class]), name, type, imp];
 }
 
@@ -82,7 +82,7 @@
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
         if ([aClassDump shouldShowMethodAddresses] == YES && imp != 0)
-            [resultString appendFormat:@"\t// IMP=0x%08x", imp];
+            [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
 }

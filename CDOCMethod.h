@@ -11,18 +11,18 @@
 {
     NSString *name;
     NSString *type;
-    uint32_t imp;
+    NSUInteger imp;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(uint32_t)anImp;
+- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;
 - (void)dealloc;
 
 - (NSString *)name;
 - (NSString *)type;
 
-- (uint32_t)imp;
-- (void)setImp:(uint32_t)newValue;
+- (NSUInteger)imp;
+- (void)setImp:(NSUInteger)newValue;
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
