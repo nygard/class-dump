@@ -32,6 +32,9 @@
 - (void)loadData;
 - (void)unloadData;
 
+- (NSUInteger)addr;
+- (NSUInteger)size;
+
 - (CDMachOFile *)machOFile;
 
 - (NSString *)description;

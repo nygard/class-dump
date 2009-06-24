@@ -70,6 +70,16 @@
     return sectionName;
 }
 
+- (NSUInteger)addr;
+{
+    return section.addr;
+}
+
+- (NSUInteger)size;
+{
+    return section.size;
+}
+
 - (void)loadData;
 {
     if (_flags.hasLoadedData == NO) {

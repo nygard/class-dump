@@ -20,6 +20,9 @@
 - (CDLCSegment64 *)segment;
 - (CDMachOFile *)machOFile;
 
+- (NSUInteger)addr;
+- (NSUInteger)size;
+
 - (void)loadData;
 
 - (BOOL)containsAddress:(NSUInteger)address;

@@ -30,19 +30,21 @@
 
     {
         char buf[17];
+        NSString *str;
 
         memcpy(buf, segmentCommand.segname, 16);
         buf[16] = 0;
-        name = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-        if ([name length] >= 16) {
-            NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", name);
+        str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+        if ([str length] >= 16) {
+            NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", str);
         }
+        [self setName:str];
+        [str release];
     }
 
     {
         unsigned int index;
 
-        sections = [[NSMutableArray alloc] init];
         for (index = 0; index < segmentCommand.nsects; index++) {
             CDSection64 *section;
 
@@ -55,14 +57,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-    [sections release];
-
-    [super dealloc];
-}
-
 - (uint32_t)cmd;
 {
     return segmentCommand.cmd;
@@ -73,14 +67,19 @@
     return segmentCommand.cmdsize;
 }
 
-- (void)writeSectionData;
+- (NSUInteger)fileoff;
 {
-    unsigned int index = 0;
+    return segmentCommand.fileoff;
+}
 
-    for (CDSection64 *section in sections) {
-        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, [section sectionName]] atomically:NO];
-        index++;
-    }
+- (NSUInteger)filesize;
+{
+    return segmentCommand.filesize;
+}
+
+- (uint32_t)flags;
+{
+    return segmentCommand.flags;
 }
 
 @end

@@ -322,7 +322,13 @@
     aMachOFile = [aFile machOFileWithArchName:targetArchName];
     NSLog(@"aMachOFile: %@", aMachOFile);
     NSLog(@"load commands: %@", [aMachOFile loadCommands]);
+
     {
+        CDLCSegment *segment;
+
+        segment = [aMachOFile segmentWithName:@"__DATA"];
+        NSLog(@"data segment: %@", segment);
+        [segment writeSectionData];
     }
 
     if ([self shouldProcessRecursively]) {

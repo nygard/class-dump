@@ -14,16 +14,16 @@
 #import "CDOCModule.h"
 #import "CDOCProtocol.h"
 #import "CDOCSymtab.h"
-#import "CDSection32.h"
-#import "CDLCSegment32.h"
+#import "CDSection.h"
+#import "CDLCSegment.h"
 #import "NSArray-Extensions.h"
 
 @implementation CDObjCSegmentProcessor (Private)
 
 - (void)processModules;
 {
-    CDLCSegment32 *objcSegment;
-    CDSection32 *moduleSection;
+    CDLCSegment *objcSegment;
+    CDSection *moduleSection;
     NSData *sectionData;
     CDDataCursor *cursor;
 
@@ -459,8 +459,8 @@
 // Perhaps a bit more work than necessary, but at least I can see exactly what is happening.
 - (void)processProtocolSection;
 {
-    CDLCSegment32 *objcSegment;
-    CDSection32 *protocolSection;
+    CDLCSegment *objcSegment;
+    CDSection *protocolSection;
     uint32_t addr;
     int count, index;
 

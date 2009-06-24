@@ -80,6 +80,7 @@
 {
     const NXArchInfo *archInfo;
     cpu_type_t targetType;
+    BOOL didFind64BitArch = NO;
 
     archInfo = NXGetLocalArchInfo();
     if (archInfo == NULL) {
@@ -97,8 +98,13 @@
 
     // This architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
+#ifdef __LP64__
         if ([fatArch cpuType] == targetType && [fatArch uses64BitABI])
             return [fatArch archName];
+#else
+        if ([fatArch cpuType] == targetType && [fatArch uses64BitABI])
+            didFind64BitArch = YES;
+#endif
     }
 
     // Any architecture, 32 bit
@@ -109,13 +115,23 @@
 
     // Any architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
+#ifdef __LP64__
         if ([fatArch uses64BitABI])
             return [fatArch archName];
+#else
+        if ([fatArch uses64BitABI])
+            didFind64BitArch = YES;
+#endif
     }
 
+#ifdef __LP64__
     // Any architecture
     if ([arches count] > 0)
         return [arches objectAtIndex:0];
+#else
+    if (didFind64BitArch)
+        fprintf(stderr, "Error: Can't dump 64-bit files with 32-bit version of class-dump\n");
+#endif
 
     return nil;
 }

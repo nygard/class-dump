@@ -85,6 +85,18 @@
     }
 }
 
+- (NSUInteger)addr;
+{
+    // Implement in subclasses.
+    return 0;
+}
+
+- (NSUInteger)size;
+{
+    // Implement in subclasses.
+    return 0;
+}
+
 - (CDMachOFile *)machOFile;
 {
     // Implement in subclass (for now).

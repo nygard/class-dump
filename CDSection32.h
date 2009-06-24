@@ -20,8 +20,8 @@
 - (CDLCSegment32 *)segment;
 - (CDMachOFile *)machOFile;
 
-- (uint32_t)addr;
-- (uint32_t)size;
+- (NSUInteger)addr;
+- (NSUInteger)size;
 - (uint32_t)offset;
 
 - (void)loadData;

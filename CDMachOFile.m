@@ -14,7 +14,7 @@
 #import "CDLCDylib.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
-#import "CDLCSegment32.h"
+#import "CDLCSegment.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -213,10 +213,10 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (CDLCSegment32 *)segmentWithName:(NSString *)segmentName;
+- (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDLCSegment32 class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
+        if ([loadCommand isKindOfClass:[CDLCSegment class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
             return loadCommand;
         }
     }
@@ -224,10 +224,10 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (CDLCSegment32 *)segmentContainingAddress:(uint32_t)address;
+- (CDLCSegment *)segmentContainingAddress:(uint32_t)address;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDLCSegment32 class]] == YES && [loadCommand containsAddress:address] == YES) {
+        if ([loadCommand isKindOfClass:[CDLCSegment class]] == YES && [loadCommand containsAddress:address] == YES) {
             return loadCommand;
         }
     }
@@ -242,7 +242,7 @@ static BOOL debug = NO;
 
 - (NSString *)stringAtAddress:(uint32_t)address;
 {
-    CDLCSegment32 *segment;
+    CDLCSegment *segment;
 
     NSUInteger anOffset;
     const void *ptr;
@@ -262,7 +262,7 @@ static BOOL debug = NO;
         NSUInteger d2Offset;
 
         d2 = [segment decryptedData];
-        d2Offset = [segment fileOffsetForAddress:address] - [segment fileoff];
+        d2Offset = [segment segmentOffsetForAddress:address];
         if (d2Offset == 0)
             return nil;
 
@@ -291,7 +291,7 @@ static BOOL debug = NO;
 
 - (NSUInteger)dataOffsetForAddress:(uint32_t)address segmentName:(NSString *)aSegmentName;
 {
-    CDLCSegment32 *segment;
+    CDLCSegment *segment;
 
     if (address == 0)
         return 0;
@@ -357,7 +357,7 @@ static BOOL debug = NO;
 - (BOOL)hasProtectedSegments;
 {
     for (CDLoadCommand *loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDLCSegment32 class]] && [(CDLCSegment32 *)loadCommand isProtected])
+        if ([loadCommand isKindOfClass:[CDLCSegment class]] && [(CDLCSegment *)loadCommand isProtected])
             return YES;
     }
 

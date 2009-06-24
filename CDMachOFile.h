@@ -10,7 +10,7 @@
 
 #import "CDDataCursor.h" // For CDByteOrder
 
-@class CDLCSegment32;
+@class CDLCSegment;
 @class CDLCDylib, CDMachOFile;
 
 @protocol CDMachOFileDelegate
@@ -51,8 +51,8 @@
 
 - (CDLCDylib *)dylibIdentifier;
 
-- (CDLCSegment32 *)segmentWithName:(NSString *)segmentName;
-- (CDLCSegment32 *)segmentContainingAddress:(uint32_t)address;
+- (CDLCSegment *)segmentWithName:(NSString *)segmentName;
+- (CDLCSegment *)segmentContainingAddress:(uint32_t)address;
 - (NSString *)stringAtAddress:(uint32_t)address;
 
 - (const void *)machODataBytes;

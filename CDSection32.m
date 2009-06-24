@@ -62,12 +62,12 @@
     return [[self segment] machOFile];
 }
 
-- (uint32_t)addr;
+- (NSUInteger)addr;
 {
     return section.addr;
 }
 
-- (uint32_t)size;
+- (NSUInteger)size;
 {
     return section.size;
 }
