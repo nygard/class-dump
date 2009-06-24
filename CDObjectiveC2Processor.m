@@ -11,6 +11,7 @@
 #import "CDOCMethod.h"
 #import "CDVisitor.h"
 #import "CDOCIvar.h"
+#import "NSArray-Extensions.h"
 
 struct cd_objc2_class {
     uint64_t isa;
@@ -249,7 +250,7 @@ struct cd_objc2_ivar {
         }
     }
 
-    return methods;
+    return [methods reversedArray];
 }
 
 - (NSArray *)loadIvarsAtAddress:(uint64_t)address;
