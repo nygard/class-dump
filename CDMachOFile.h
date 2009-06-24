@@ -74,5 +74,6 @@
 - (NSString *)description;
 
 - (Class)processorClass;
+- (void)logInfoForAddress:(NSUInteger)address;
 
 @end

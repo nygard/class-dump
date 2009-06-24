@@ -16,6 +16,7 @@
 #import "CDLoadCommand.h"
 #import "CDLCSegment.h"
 #import "CDObjectiveCProcessor.h"
+#import "CDSection.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -422,6 +423,32 @@ static BOOL debug = NO;
 {
     // Implement in subclasses
     return [CDObjectiveCProcessor class];
+}
+
+- (void)logInfoForAddress:(NSUInteger)address;
+{
+    if (address != 0) {
+        CDLCSegment *segment;
+        NSString *str;
+
+        segment = [self segmentContainingAddress:address];
+        if (segment == nil) {
+            NSLog(@"No segment contains address: %016lx", address);
+        } else {
+            CDSection *section;
+
+            //NSLog(@"Found address %016lx in segment, sections= %@", address, [segment sections]);
+            section = [segment sectionContainingAddress:address];
+            if (section == nil) {
+                NSLog(@"Found address %016lx in segment %@, but not in a section", address, [segment name]);
+            } else {
+                NSLog(@"Found address %016lx in segment %@, section %@", address, [segment name], [section sectionName]);
+            }
+        }
+
+        str = [self stringAtAddress:address];
+        NSLog(@"      address %016lx as a string: '%@' (length %lu)", address, str, [str length]);
+    }
 }
 
 @end
