@@ -21,10 +21,6 @@
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
 
-#ifdef __LP64__
-#warning We are compiling for 64-bit.
-#endif
-
 void print_usage(void)
 {
     fprintf(stderr,
