@@ -16,6 +16,7 @@
 - (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 {
     char buf[17];
+    NSString *str;
 
     if ([super init] == nil)
         return nil;
@@ -38,27 +39,17 @@
 
     memcpy(buf, section.segname, 16);
     buf[16] = 0;
-    segmentName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+    str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+    [self setSegmentName:str];
+    [str release];
 
     memcpy(buf, section.sectname, 16);
     buf[16] = 0;
-    sectionName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-
-    //NSLog(@"segmentName: '%@', sectionName: '%@'", segmentName, sectionName);
-
-    data = nil;
-    _flags.hasLoadedData = NO;
+    str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+    [self setSectionName:str];
+    [str release];
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [segmentName release];
-    [sectionName release];
-    [data release];
-
-    [super dealloc];
 }
 
 - (CDLCSegment32 *)segment;
@@ -69,16 +60,6 @@
 - (CDMachOFile *)machOFile;
 {
     return [[self segment] machOFile];
-}
-
-- (NSString *)segmentName;
-{
-    return segmentName;
-}
-
-- (NSString *)sectionName;
-{
-    return sectionName;
 }
 
 - (uint32_t)addr;
@@ -96,43 +77,28 @@
     return section.offset;
 }
 
-- (NSData *)data;
+- (void)loadData;
 {
     if (_flags.hasLoadedData == NO) {
         data = [[NSData alloc] initWithBytes:[[nonretainedSegment machOFile] machODataBytes] + section.offset length:section.size];
         _flags.hasLoadedData = YES;
     }
-
-    return data;
 }
 
-- (void)unloadData;
-{
-    if (_flags.hasLoadedData) {
-        _flags.hasLoadedData = NO;
-        [data release];
-        data = nil;
-    }
-}
-
-- (const void *)dataPointer;
-{
-    return [[self machOFile] bytes] + section.offset;
-}
-
+#if 0
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
                      section.addr, section.offset, section.size, section.size, segmentName, sectionName];
 }
+#endif
 
-- (BOOL)containsAddress:(uint32_t)address;
+- (BOOL)containsAddress:(NSUInteger)address;
 {
-    // TODO (2003-12-06): And what happens when the filesize of the segment is less than the vmsize?
     return (address >= section.addr) && (address < section.addr + section.size);
 }
 
-- (uint32_t)fileOffsetForAddress:(uint32_t)address;
+- (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
 {
     NSParameterAssert([self containsAddress:address]);
     return section.offset + address - section.addr;

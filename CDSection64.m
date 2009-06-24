@@ -6,12 +6,14 @@
 #import "CDSection64.h"
 
 #import "CDDataCursor.h"
+#import "CDMachOFile.h"
 
 @implementation CDSection64
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 {
     char buf[17];
+    NSString *str;
 
     if ([super init] == nil)
         return nil;
@@ -35,23 +37,17 @@
 
     memcpy(buf, section.segname, 16);
     buf[16] = 0;
-    segmentName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+    str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+    [self setSegmentName:str];
+    [str release];
 
     memcpy(buf, section.sectname, 16);
     buf[16] = 0;
-    sectionName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-
-    //NSLog(@"segmentName: '%@', sectionName: '%@'", segmentName, sectionName);
+    str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+    [self setSectionName:str];
+    [str release];
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [segmentName release];
-    [sectionName release];
-
-    [super dealloc];
 }
 
 - (CDLCSegment64 *)segment;
@@ -72,6 +68,25 @@
 - (NSString *)sectionName;
 {
     return sectionName;
+}
+
+- (void)loadData;
+{
+    if (_flags.hasLoadedData == NO) {
+        data = [[NSData alloc] initWithBytes:[[nonretainedSegment machOFile] machODataBytes] + section.offset length:section.size];
+        _flags.hasLoadedData = YES;
+    }
+}
+
+- (BOOL)containsAddress:(NSUInteger)address;
+{
+    return (address >= section.addr) && (address < section.addr + section.size);
+}
+
+- (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
+{
+    NSParameterAssert([self containsAddress:address]);
+    return section.offset + address - section.addr;
 }
 
 @end

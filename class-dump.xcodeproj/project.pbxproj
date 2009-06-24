@@ -6,6 +6,21 @@
 	objectVersion = 44;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		01A9A4C40FF19BAE00475772 /* all */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 01A9A4D70FF19BE800475772 /* Build configuration list for PBXAggregateTarget "all" */;
+			buildPhases = (
+			);
+			dependencies = (
+				01A9A4CA0FF19BC400475772 /* PBXTargetDependency */,
+				01A9A4CC0FF19BC700475772 /* PBXTargetDependency */,
+			);
+			name = all;
+			productName = all;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0112616B0C21313200B9C4E0 /* CDClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261620C21312C00B9C4E0 /* CDClassDumpVisitor.m */; };
 		0112616D0C21313400B9C4E0 /* CDFindMethodVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261640C21312C00B9C4E0 /* CDFindMethodVisitor.m */; };
@@ -196,9 +211,79 @@
 		01A9A4380FF18F8300475772 /* CDLCUnknown.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A42F0FF18F8300475772 /* CDLCUnknown.m */; };
 		01A9A4390FF18F8300475772 /* CDLCUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4310FF18F8300475772 /* CDLCUUID.m */; };
 		01A9A4840FF1930E00475772 /* CDSection32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4830FF1930E00475772 /* CDSection32.m */; };
+		01A9A5560FF19C3B00475772 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
+		01A9A5570FF19C3C00475772 /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
+		01A9A5580FF19C3C00475772 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
+		01A9A5590FF19C3D00475772 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
+		01A9A55A0FF19C3D00475772 /* NSString-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AB108AE9C9D003E99F8 /* NSString-Extensions.m */; };
+		01A9A55B0FF19C3E00475772 /* CDLoadCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AC308AE9CDC003E99F8 /* CDLoadCommand.m */; };
+		01A9A55C0FF19C3E00475772 /* CDLCDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4230FF18F8300475772 /* CDLCDylib.m */; };
+		01A9A55D0FF19C3F00475772 /* CDLCDynamicSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4250FF18F8300475772 /* CDLCDynamicSymbolTable.m */; };
+		01A9A55E0FF19C4000475772 /* CDLCLinkeditData.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4270FF18F8300475772 /* CDLCLinkeditData.m */; };
+		01A9A55F0FF19C4000475772 /* CDLCSegment32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4290FF18F8300475772 /* CDLCSegment32.m */; };
+		01A9A5600FF19C4000475772 /* CDLCSegment64.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A42B0FF18F8300475772 /* CDLCSegment64.m */; };
+		01A9A5610FF19C4100475772 /* CDLCSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A42D0FF18F8300475772 /* CDLCSymbolTable.m */; };
+		01A9A5620FF19C4100475772 /* CDLCUnknown.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A42F0FF18F8300475772 /* CDLCUnknown.m */; };
+		01A9A5630FF19C4200475772 /* CDLCUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4310FF18F8300475772 /* CDLCUUID.m */; };
+		01A9A5640FF19C4200475772 /* CDFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 01FB21E30FE926D60081556C /* CDFile.m */; };
+		01A9A5650FF19C4300475772 /* CDFatFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AC108AE9CDC003E99F8 /* CDFatFile.m */; };
+		01A9A5680FF19C4E00475772 /* CDFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ABF08AE9CDC003E99F8 /* CDFatArch.m */; };
+		01A9A5690FF19C4E00475772 /* CDMachOFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AC508AE9CDC003E99F8 /* CDMachOFile.m */; };
+		01A9A56A0FF19C4F00475772 /* CDMachO32File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9650FED69A500145175 /* CDMachO32File.m */; };
+		01A9A56B0FF19C4F00475772 /* CDMachO64File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9520FED694800145175 /* CDMachO64File.m */; };
+		01A9A56C0FF19C5000475772 /* CDSection32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4830FF1930E00475772 /* CDSection32.m */; };
+		01A9A56D0FF19C5100475772 /* CDSection64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9950FED717500145175 /* CDSection64.m */; };
+		01A9A56E0FF19C5200475772 /* CDSymbol.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ACB08AE9CDC003E99F8 /* CDSymbol.m */; };
+		01A9A56F0FF19C5400475772 /* CDOCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE308AE9D04003E99F8 /* CDOCCategory.m */; };
+		01A9A5700FF19C5400475772 /* CDOCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE508AE9D04003E99F8 /* CDOCClass.m */; };
+		01A9A5710FF19C5500475772 /* CDOCIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE708AE9D04003E99F8 /* CDOCIvar.m */; };
+		01A9A5720FF19C5500475772 /* CDOCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE908AE9D04003E99F8 /* CDOCMethod.m */; };
+		01A9A5730FF19C5600475772 /* CDOCModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AEB08AE9D04003E99F8 /* CDOCModule.m */; };
+		01A9A5740FF19C5700475772 /* CDOCProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AED08AE9D04003E99F8 /* CDOCProtocol.m */; };
+		01A9A5750FF19C5700475772 /* CDOCSymtab.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AEF08AE9D04003E99F8 /* CDOCSymtab.m */; };
+		01A9A5760FF19C5900475772 /* CDMethodType.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AFF08AE9D3A003E99F8 /* CDMethodType.m */; };
+		01A9A5770FF19C5A00475772 /* CDType.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B0208AE9D3A003E99F8 /* CDType.m */; };
+		01A9A5780FF19C5C00475772 /* CDTypeFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B0408AE9D3A003E99F8 /* CDTypeFormatter.m */; };
+		01A9A5790FF19C5D00475772 /* CDTypeLexer.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B0608AE9D3A003E99F8 /* CDTypeLexer.m */; };
+		01A9A57A0FF19C5E00475772 /* CDTypeName.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B0808AE9D3A003E99F8 /* CDTypeName.m */; };
+		01A9A57B0FF19C5E00475772 /* CDTypeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B0A08AE9D3A003E99F8 /* CDTypeParser.m */; };
+		01A9A57C0FF19C5F00475772 /* CDClassDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B1908AE9D6D003E99F8 /* CDClassDump.m */; };
+		01A9A57D0FF19C6000475772 /* CDObjCSegmentProcessor-Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B1B08AE9D6D003E99F8 /* CDObjCSegmentProcessor-Private.m */; };
+		01A9A57E0FF19C6000475772 /* CDObjCSegmentProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B1D08AE9D6D003E99F8 /* CDObjCSegmentProcessor.m */; };
+		01A9A57F0FF19C6100475772 /* CDStructureTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B1F08AE9D6D003E99F8 /* CDStructureTable.m */; };
+		01A9A5800FF19C6200475772 /* CDSymbolReferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2108AE9D6D003E99F8 /* CDSymbolReferences.m */; };
+		01A9A5810FF19C6300475772 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2408AE9D6D003E99F8 /* CDTopoSortNode.m */; };
+		01A9A5820FF19C6400475772 /* CDClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261620C21312C00B9C4E0 /* CDClassDumpVisitor.m */; };
+		01A9A5830FF19C6500475772 /* CDFindMethodVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261640C21312C00B9C4E0 /* CDFindMethodVisitor.m */; };
+		01A9A5840FF19C6600475772 /* CDVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011261660C21312C00B9C4E0 /* CDVisitor.m */; };
+		01A9A5850FF19C6600475772 /* CDClassFrameworkVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262330C21844200B9C4E0 /* CDClassFrameworkVisitor.m */; };
+		01A9A5860FF19C6700475772 /* CDMultiFileVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262420C218CAD00B9C4E0 /* CDMultiFileVisitor.m */; };
+		01A9A5870FF19C6800475772 /* CDTextClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 011262590C21909400B9C4E0 /* CDTextClassDumpVisitor.m */; };
+		01A9A5880FF19C6800475772 /* CDDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F9C990DD0F66400EC8D0A /* CDDataCursor.m */; };
+		01A9A5890FF19C6A00475772 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B3208AE9D8F003E99F8 /* main.m */; };
+		01A9A58A0FF19C6E00475772 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
+		01A9A6960FF1A4CC00475772 /* CDSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A6950FF1A4CC00475772 /* CDSection.m */; };
+		01A9A6970FF1A4CC00475772 /* CDSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A6950FF1A4CC00475772 /* CDSection.m */; };
 		01FB21E40FE926D60081556C /* CDFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 01FB21E30FE926D60081556C /* CDFile.m */; };
 		8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB779EFE84155DC02AAC07 /* Foundation.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		01A9A4C90FF19BC400475772 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DD76F960486AA7600D96B5E /* class-dump (32 bit) */;
+			remoteInfo = "class-dump (32 bit)";
+		};
+		01A9A4CB0FF19BC700475772 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01A9A4BC0FF19B2F00475772 /* class-dump (64 bit) */;
+			remoteInfo = "class-dump (64 bit)";
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		011261610C21312C00B9C4E0 /* CDClassDumpVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDClassDumpVisitor.h; sourceTree = "<group>"; };
@@ -345,11 +430,14 @@
 		01A9A4310FF18F8300475772 /* CDLCUUID.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCUUID.m; sourceTree = "<group>"; };
 		01A9A4820FF1930E00475772 /* CDSection32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDSection32.h; sourceTree = "<group>"; };
 		01A9A4830FF1930E00475772 /* CDSection32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSection32.m; sourceTree = "<group>"; };
+		01A9A4BD0FF19B2F00475772 /* class-dump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "class-dump"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01A9A6940FF1A4CC00475772 /* CDSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDSection.h; sourceTree = "<group>"; };
+		01A9A6950FF1A4CC00475772 /* CDSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSection.m; sourceTree = "<group>"; };
 		01FB21E20FE926D60081556C /* CDFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDFile.h; sourceTree = "<group>"; };
 		01FB21E30FE926D60081556C /* CDFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDFile.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump_Prefix.pch"; sourceTree = "<group>"; };
-		8DD76FA10486AA7600D96B5E /* class-dump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "class-dump"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DD76FA10486AA7600D96B5E /* class-dump-32 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "class-dump-32"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -364,6 +452,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		01A9A4BB0FF19B2F00475772 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A9A58A0FF19C6E00475772 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -449,6 +545,8 @@
 				0182A9650FED69A500145175 /* CDMachO32File.m */,
 				0182A9510FED694800145175 /* CDMachO64File.h */,
 				0182A9520FED694800145175 /* CDMachO64File.m */,
+				01A9A6940FF1A4CC00475772 /* CDSection.h */,
+				01A9A6950FF1A4CC00475772 /* CDSection.m */,
 				01A9A4820FF1930E00475772 /* CDSection32.h */,
 				01A9A4830FF1930E00475772 /* CDSection32.m */,
 				0182A9940FED717500145175 /* CDSection64.h */,
@@ -616,9 +714,10 @@
 		1AB674ADFE9D54B511CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8DD76FA10486AA7600D96B5E /* class-dump */,
+				8DD76FA10486AA7600D96B5E /* class-dump-32 */,
 				012FF18A0CDB886C00F31E61 /* CDUnitTests.octest */,
 				013183060CDF6EE400EC5A2C /* CDUnitTests.octest */,
+				01A9A4BD0FF19B2F00475772 /* class-dump */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -668,9 +767,25 @@
 			productReference = 013183060CDF6EE400EC5A2C /* CDUnitTests.octest */;
 			productType = "com.apple.product-type.bundle";
 		};
-		8DD76F960486AA7600D96B5E /* class-dump */ = {
+		01A9A4BC0FF19B2F00475772 /* class-dump (64 bit) */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 012E2A9008AE9B4F003E99F8 /* Build configuration list for PBXNativeTarget "class-dump" */;
+			buildConfigurationList = 01A9A4C10FF19B8C00475772 /* Build configuration list for PBXNativeTarget "class-dump (64 bit)" */;
+			buildPhases = (
+				01A9A4BA0FF19B2F00475772 /* Sources */,
+				01A9A4BB0FF19B2F00475772 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "class-dump (64 bit)";
+			productName = "class-dump (64 bit)";
+			productReference = 01A9A4BD0FF19B2F00475772 /* class-dump */;
+			productType = "com.apple.product-type.tool";
+		};
+		8DD76F960486AA7600D96B5E /* class-dump (32 bit) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 012E2A9008AE9B4F003E99F8 /* Build configuration list for PBXNativeTarget "class-dump (32 bit)" */;
 			buildPhases = (
 				8DD76F990486AA7600D96B5E /* Sources */,
 				8DD76F9B0486AA7600D96B5E /* Frameworks */,
@@ -680,10 +795,10 @@
 			);
 			dependencies = (
 			);
-			name = "class-dump";
+			name = "class-dump (32 bit)";
 			productInstallPath = "$(HOME)/bin";
 			productName = "class-dump";
-			productReference = 8DD76FA10486AA7600D96B5E /* class-dump */;
+			productReference = 8DD76FA10486AA7600D96B5E /* class-dump-32 */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -698,7 +813,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8DD76F960486AA7600D96B5E /* class-dump */,
+				01A9A4C40FF19BAE00475772 /* all */,
+				8DD76F960486AA7600D96B5E /* class-dump (32 bit) */,
+				01A9A4BC0FF19B2F00475772 /* class-dump (64 bit) */,
 				012FF1890CDB886C00F31E61 /* CDUnitTests */,
 				013182B00CDF6EE400EC5A2C /* CDUnitTests (Build Only) */,
 			);
@@ -906,6 +1023,64 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		01A9A4BA0FF19B2F00475772 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01A9A5560FF19C3B00475772 /* NSArray-Extensions.m in Sources */,
+				01A9A5570FF19C3C00475772 /* NSError-CDExtensions.m in Sources */,
+				01A9A5580FF19C3C00475772 /* NSObject-CDExtensions.m in Sources */,
+				01A9A5590FF19C3D00475772 /* NSScanner-Extensions.m in Sources */,
+				01A9A55A0FF19C3D00475772 /* NSString-Extensions.m in Sources */,
+				01A9A55B0FF19C3E00475772 /* CDLoadCommand.m in Sources */,
+				01A9A55C0FF19C3E00475772 /* CDLCDylib.m in Sources */,
+				01A9A55D0FF19C3F00475772 /* CDLCDynamicSymbolTable.m in Sources */,
+				01A9A55E0FF19C4000475772 /* CDLCLinkeditData.m in Sources */,
+				01A9A55F0FF19C4000475772 /* CDLCSegment32.m in Sources */,
+				01A9A5600FF19C4000475772 /* CDLCSegment64.m in Sources */,
+				01A9A5610FF19C4100475772 /* CDLCSymbolTable.m in Sources */,
+				01A9A5620FF19C4100475772 /* CDLCUnknown.m in Sources */,
+				01A9A5630FF19C4200475772 /* CDLCUUID.m in Sources */,
+				01A9A5640FF19C4200475772 /* CDFile.m in Sources */,
+				01A9A5650FF19C4300475772 /* CDFatFile.m in Sources */,
+				01A9A5680FF19C4E00475772 /* CDFatArch.m in Sources */,
+				01A9A5690FF19C4E00475772 /* CDMachOFile.m in Sources */,
+				01A9A56A0FF19C4F00475772 /* CDMachO32File.m in Sources */,
+				01A9A56B0FF19C4F00475772 /* CDMachO64File.m in Sources */,
+				01A9A56C0FF19C5000475772 /* CDSection32.m in Sources */,
+				01A9A56D0FF19C5100475772 /* CDSection64.m in Sources */,
+				01A9A56E0FF19C5200475772 /* CDSymbol.m in Sources */,
+				01A9A56F0FF19C5400475772 /* CDOCCategory.m in Sources */,
+				01A9A5700FF19C5400475772 /* CDOCClass.m in Sources */,
+				01A9A5710FF19C5500475772 /* CDOCIvar.m in Sources */,
+				01A9A5720FF19C5500475772 /* CDOCMethod.m in Sources */,
+				01A9A5730FF19C5600475772 /* CDOCModule.m in Sources */,
+				01A9A5740FF19C5700475772 /* CDOCProtocol.m in Sources */,
+				01A9A5750FF19C5700475772 /* CDOCSymtab.m in Sources */,
+				01A9A5760FF19C5900475772 /* CDMethodType.m in Sources */,
+				01A9A5770FF19C5A00475772 /* CDType.m in Sources */,
+				01A9A5780FF19C5C00475772 /* CDTypeFormatter.m in Sources */,
+				01A9A5790FF19C5D00475772 /* CDTypeLexer.m in Sources */,
+				01A9A57A0FF19C5E00475772 /* CDTypeName.m in Sources */,
+				01A9A57B0FF19C5E00475772 /* CDTypeParser.m in Sources */,
+				01A9A57C0FF19C5F00475772 /* CDClassDump.m in Sources */,
+				01A9A57D0FF19C6000475772 /* CDObjCSegmentProcessor-Private.m in Sources */,
+				01A9A57E0FF19C6000475772 /* CDObjCSegmentProcessor.m in Sources */,
+				01A9A57F0FF19C6100475772 /* CDStructureTable.m in Sources */,
+				01A9A5800FF19C6200475772 /* CDSymbolReferences.m in Sources */,
+				01A9A5810FF19C6300475772 /* CDTopoSortNode.m in Sources */,
+				01A9A5820FF19C6400475772 /* CDClassDumpVisitor.m in Sources */,
+				01A9A5830FF19C6500475772 /* CDFindMethodVisitor.m in Sources */,
+				01A9A5840FF19C6600475772 /* CDVisitor.m in Sources */,
+				01A9A5850FF19C6600475772 /* CDClassFrameworkVisitor.m in Sources */,
+				01A9A5860FF19C6700475772 /* CDMultiFileVisitor.m in Sources */,
+				01A9A5870FF19C6800475772 /* CDTextClassDumpVisitor.m in Sources */,
+				01A9A5880FF19C6800475772 /* CDDataCursor.m in Sources */,
+				01A9A5890FF19C6A00475772 /* main.m in Sources */,
+				01A9A6970FF1A4CC00475772 /* CDSection.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8DD76F990486AA7600D96B5E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -960,15 +1135,30 @@
 				01A9A4380FF18F8300475772 /* CDLCUnknown.m in Sources */,
 				01A9A4390FF18F8300475772 /* CDLCUUID.m in Sources */,
 				01A9A4840FF1930E00475772 /* CDSection32.m in Sources */,
+				01A9A6960FF1A4CC00475772 /* CDSection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		01A9A4CA0FF19BC400475772 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8DD76F960486AA7600D96B5E /* class-dump (32 bit) */;
+			targetProxy = 01A9A4C90FF19BC400475772 /* PBXContainerItemProxy */;
+		};
+		01A9A4CC0FF19BC700475772 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01A9A4BC0FF19B2F00475772 /* class-dump (64 bit) */;
+			targetProxy = 01A9A4CB0FF19BC700475772 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
 		012E2A9108AE9B4F003E99F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(NATIVE_ARCH_32_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
@@ -983,7 +1173,7 @@
 				INSTALL_PATH = "$(HOME)/bin";
 				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
-				PRODUCT_NAME = "class-dump";
+				PRODUCT_NAME = "class-dump-32";
 				ZERO_LINK = YES;
 			};
 			name = Debug;
@@ -1006,7 +1196,7 @@
 				INSTALL_PATH = /;
 				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
-				PRODUCT_NAME = "class-dump";
+				PRODUCT_NAME = "class-dump-32";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -1134,10 +1324,68 @@
 			};
 			name = Release;
 		};
+		01A9A4BF0FF19B2F00475772 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(NATIVE_ARCH_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = "-lcrypto";
+				PREBINDING = NO;
+				PRODUCT_NAME = "class-dump";
+			};
+			name = Debug;
+		};
+		01A9A4C00FF19B2F00475772 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = "-lcrypto";
+				PREBINDING = NO;
+				PRODUCT_NAME = "class-dump";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		01A9A4C50FF19BAE00475772 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = all;
+			};
+			name = Debug;
+		};
+		01A9A4C60FF19BAE00475772 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = all;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		012E2A9008AE9B4F003E99F8 /* Build configuration list for PBXNativeTarget "class-dump" */ = {
+		012E2A9008AE9B4F003E99F8 /* Build configuration list for PBXNativeTarget "class-dump (32 bit)" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				012E2A9108AE9B4F003E99F8 /* Debug */,
@@ -1169,6 +1417,24 @@
 			buildConfigurations = (
 				013183030CDF6EE400EC5A2C /* Debug */,
 				013183040CDF6EE400EC5A2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		01A9A4C10FF19B8C00475772 /* Build configuration list for PBXNativeTarget "class-dump (64 bit)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01A9A4BF0FF19B2F00475772 /* Debug */,
+				01A9A4C00FF19B2F00475772 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		01A9A4D70FF19BE800475772 /* Build configuration list for PBXAggregateTarget "all" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				01A9A4C50FF19BAE00475772 /* Debug */,
+				01A9A4C60FF19BAE00475772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

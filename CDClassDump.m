@@ -320,6 +320,10 @@
 
     // We need to find the macho file with the target arch name, set it to aMachOFile
     aMachOFile = [aFile machOFileWithArchName:targetArchName];
+    NSLog(@"aMachOFile: %@", aMachOFile);
+    NSLog(@"load commands: %@", [aMachOFile loadCommands]);
+    {
+    }
 
     if ([self shouldProcessRecursively]) {
         @try {

@@ -73,4 +73,14 @@
     return segmentCommand.cmdsize;
 }
 
+- (void)writeSectionData;
+{
+    unsigned int index = 0;
+
+    for (CDSection64 *section in sections) {
+        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, [section sectionName]] atomically:NO];
+        index++;
+    }
+}
+
 @end

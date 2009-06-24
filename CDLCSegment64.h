@@ -19,4 +19,6 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
+- (void)writeSectionData;
+
 @end

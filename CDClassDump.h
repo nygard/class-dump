@@ -9,7 +9,12 @@
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
 
-#define CLASS_DUMP_BASE_VERSION "3.2"
+#ifdef __LP64__
+#define CLASS_DUMP_BASE_VERSION "3.2 (64 bit)"
+#else
+#define CLASS_DUMP_BASE_VERSION "3.2 (32 bit)"
+#endif
+
 #ifdef DEBUG
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION " (Debug version compiled " __DATE__ " " __TIME__ ")"
 #else
