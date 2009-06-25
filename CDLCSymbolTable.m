@@ -24,10 +24,12 @@
     symtabCommand.nsyms = [cursor readInt32];
     symtabCommand.stroff = [cursor readInt32];
     symtabCommand.strsize = [cursor readInt32];
+    NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
+          symtabCommand.cmd, symtabCommand.cmdsize,
+          symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
+    NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
 
     symbols = [[NSMutableArray alloc] init];
-
-    [self _process];
 
     //NSLog(@"self: %@", self);
 
@@ -51,8 +53,10 @@
     return symtabCommand.cmdsize;
 }
 
-- (void)_process;
+- (void)loadSymbols;
 {
+    NSLog(@" > %s", _cmd);
+    NSLog(@"<  %s", _cmd);
     // TODO (2005-07-28): This needs to be converted to handle different byte orderings.
 #if 0
     //const void *symtab;

@@ -12,6 +12,7 @@
 #import "CDVisitor.h"
 #import "CDOCIvar.h"
 #import "NSArray-Extensions.h"
+#import "CDLCSymbolTable.h"
 
 struct cd_objc2_class {
     uint64_t isa;
@@ -101,6 +102,15 @@ struct cd_objc2_iamge_info {
     NSLog(@"<  %s", _cmd);
 }
 
+- (void)loadSymbolTables;
+{
+    for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+        if ([loadCommand isKindOfClass:[CDLCSymbolTable class]]) {
+            [(CDLCSymbolTable *)loadCommand loadSymbols];
+        }
+    }
+}
+
 - (void)process;
 {
     CDLCSegment *segment, *s2;
@@ -111,6 +121,8 @@ struct cd_objc2_iamge_info {
     CDDataCursor *cursor;
 
     NSLog(@" > %s", _cmd);
+
+    [self loadSymbolTables];
 
     //NSLog(@"machOFile: %@", machOFile);
     //NSLog(@"load commands: %@", [machOFile loadCommands]);
@@ -234,10 +246,25 @@ struct cd_objc2_iamge_info {
 
         if (objc2Class.superclass == 0) {
             // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
-            [aClass setSuperClassName:@"NSObject"];
+            // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
+            // ... it's an undefined symbol, need to look it up.
+            // So... need to recursively load frameworks, even if we don't dump them.
+            //[aClass setSuperClassName:@"NSObject"];
+            NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
+            NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+            NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
+            [machOFile logInfoForAddress:address];
+            [machOFile logInfoForAddress:address + 8];
+            //[machOFile logInfoForAddress:0x11cb2];
+            //[machOFile logInfoForAddress:0x11fed];
+            //exit(99);
         } else {
             CDOCClass *sc;
 
+            NSLog(@"objc2Class.superclass of %@ is not 0", [aClass name]);
+            NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+            [machOFile logInfoForAddress:0x002cade8];
+            exit(99);
             //NSLog(@"superclass address: %016lx", objc2Class.superclass);
             sc = [self loadClassAtAddress:objc2Class.superclass];
             //NSLog(@"sc: %@", sc);

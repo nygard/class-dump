@@ -18,7 +18,7 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
-- (void)_process;
+- (void)loadSymbols;
 
 - (uint32_t)symoff;
 - (uint32_t)nsyms;
