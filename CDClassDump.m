@@ -305,7 +305,6 @@
     data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
 
     aFile = [CDFile fileWithData:data];
-    NSLog(@"aFile: %@", aFile);
     [aFile setFilename:aFilename];
 
     [data release];
@@ -353,7 +352,7 @@
     for (CDMachOFile *machOFile in machOFiles) {
         CDObjectiveC1Processor *aProcessor;
 
-        NSLog(@"----------------------------------------------------------------------");
+        //NSLog(@"----------------------------------------------------------------------");
         aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objcProcessors addObject:aProcessor];
@@ -367,9 +366,7 @@
     [aVisitor willBeginVisiting];
 
     if ([self containsObjectiveCData]) {
-        NSLog(@"We have objective-C data.");
         for (CDObjectiveCProcessor *processor in objcProcessors) {
-            NSLog(@"visiting %@", processor);
             [processor recursivelyVisit:aVisitor];
         }
     }

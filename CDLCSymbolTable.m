@@ -24,10 +24,12 @@
     symtabCommand.nsyms = [cursor readInt32];
     symtabCommand.stroff = [cursor readInt32];
     symtabCommand.strsize = [cursor readInt32];
+#if 0
     NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
           symtabCommand.cmd, symtabCommand.cmdsize,
           symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
     NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
+#endif
 
     symbols = [[NSMutableArray alloc] init];
 

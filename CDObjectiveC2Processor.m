@@ -104,15 +104,10 @@ struct cd_objc2_iamge_info {
     [aVisitor willVisitObjectiveCProcessor:self];
     [aVisitor visitObjectiveCProcessor:self];
 
-    NSLog(@"classDump = %p", [aVisitor classDump]);
     if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
-        NSLog(@"sort= TOPO");
         [allClasses sortTopologically];
     } else if ([[aVisitor classDump] shouldSortClasses] == YES) {
-        NSLog(@"sort= ALPHA");
         [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
-    } else {
-        NSLog(@"sort= none");
     }
 
     for (id aClassOrCategory in allClasses)
@@ -162,7 +157,7 @@ struct cd_objc2_iamge_info {
     segment = [machOFile segmentWithName:@"__DATA"];
     //NSLog(@"data segment offset: %lx", [segment fileoff]);
     //NSLog(@"data segment: %@", segment);
-    [segment writeSectionData];
+    //[segment writeSectionData];
 
     section = [segment sectionWithName:@"__objc_classlist"];
     //NSLog(@"section: %@", section);

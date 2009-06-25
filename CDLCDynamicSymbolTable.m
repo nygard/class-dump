@@ -39,7 +39,7 @@
     dysymtab.nextrel = [cursor readInt32];
     dysymtab.locreloff = [cursor readInt32];
     dysymtab.nlocrel = [cursor readInt32];
-#if 1
+#if 0
     NSLog(@"ilocalsym:      0x%08x  %d", dysymtab.ilocalsym, dysymtab.ilocalsym);
     NSLog(@"nlocalsym:      0x%08x  %d", dysymtab.nlocalsym, dysymtab.nlocalsym);
     NSLog(@"iextdefsym:     0x%08x  %d", dysymtab.iextdefsym, dysymtab.iextdefsym);

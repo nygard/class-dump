@@ -31,7 +31,7 @@
     [cursor setOffset:offset];
     header.magic = [cursor readBigInt32];
 
-    NSLog(@"(testing fat) magic: 0x%x", header.magic);
+    //NSLog(@"(testing fat) magic: 0x%x", header.magic);
     if (header.magic != FAT_MAGIC) {
         [cursor release];
         [self release];
@@ -39,7 +39,7 @@
     }
 
     header.nfat_arch = [cursor readBigInt32];
-    NSLog(@"nfat_arch: %u", header.nfat_arch);
+    //NSLog(@"nfat_arch: %u", header.nfat_arch);
     for (index = 0; index < header.nfat_arch; index++) {
         CDFatArch *arch;
 
@@ -51,7 +51,7 @@
 
     [cursor release];
 
-    NSLog(@"arches: %@", arches);
+    //NSLog(@"arches: %@", arches);
 
     return self;
 }

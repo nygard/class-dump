@@ -17,27 +17,27 @@
         return nil;
 
     cursor = [[CDDataCursor alloc] initWithData:someData];
-    NSLog(@"CDMachO32File - setting offset to %08x", offset);
+    //NSLog(@"CDMachO32File - setting offset to %08x", offset);
     [cursor setOffset:offset];
     header.magic = [cursor readLittleInt32];
 
-    NSLog(@"(testing macho 32) magic: 0x%x", header.magic);
+    //NSLog(@"(testing macho 32) magic: 0x%x", header.magic);
     if (header.magic == MH_MAGIC) {
         byteOrder = CDByteOrderLittleEndian;
     } else if (header.magic == MH_CIGAM) {
         byteOrder = CDByteOrderBigEndian;
     } else {
-        NSLog(@"Not a 32-bit MachO file.");
+        //NSLog(@"Not a 32-bit MachO file.");
         [cursor release];
         [self release];
         return nil;
     }
 
-    NSLog(@"byte order: %d", byteOrder);
+    //NSLog(@"byte order: %d", byteOrder);
     [cursor setByteOrder:byteOrder];
 
     header.cputype = [cursor readInt32];
-    NSLog(@"cputype: 0x%08x", header.cputype);
+    //NSLog(@"cputype: 0x%08x", header.cputype);
 
     header.cpusubtype = [cursor readInt32];
     header.filetype = [cursor readInt32];
@@ -45,11 +45,11 @@
     header.sizeofcmds = [cursor readInt32];
     header.flags = [cursor readInt32];
 
-    NSLog(@"cpusubtype: 0x%08x", header.cpusubtype);
-    NSLog(@"filetype: 0x%08x", header.filetype);
-    NSLog(@"ncmds: %u", header.ncmds);
-    NSLog(@"sizeofcmds: %u", header.sizeofcmds);
-    NSLog(@"flags: 0x%08x", header.flags);
+    //NSLog(@"cpusubtype: 0x%08x", header.cpusubtype);
+    //NSLog(@"filetype: 0x%08x", header.filetype);
+    //NSLog(@"ncmds: %u", header.ncmds);
+    //NSLog(@"sizeofcmds: %u", header.sizeofcmds);
+    //NSLog(@"flags: 0x%08x", header.flags);
 
     _flags.uses64BitABI = (header.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
     header.cputype &= ~CPU_ARCH_MASK;
