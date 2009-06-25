@@ -24,7 +24,7 @@
     symtabCommand.nsyms = [cursor readInt32];
     symtabCommand.stroff = [cursor readInt32];
     symtabCommand.strsize = [cursor readInt32];
-#if 0
+#if 1
     NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
           symtabCommand.cmd, symtabCommand.cmdsize,
           symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
@@ -57,7 +57,37 @@
 
 - (void)loadSymbols;
 {
+    CDDataCursor *cursor;
+    uint32_t index;
+    const char *strtab;
+
     NSLog(@" > %s", _cmd);
+
+    cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
+    [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
+    [cursor setOffset:symtabCommand.symoff]; // TODO: + file offset for fat files?
+    NSLog(@"offset= %lu", [cursor offset]);
+    NSLog(@"stroff=  %lu", symtabCommand.stroff);
+    NSLog(@"strsize= %lu", symtabCommand.strsize);
+
+    strtab = [[nonretainedMachOFile data] bytes] + symtabCommand.stroff;
+
+    NSLog(@"str table index  type  sect  desc  value");
+    NSLog(@"---------------  ----  ----  ----  ----------------");
+    for (index = 0; index < symtabCommand.nsyms; index++) {
+        struct nlist_64 nlist;
+
+        nlist.n_un.n_strx = [cursor readInt32];
+        nlist.n_type = [cursor readByte];
+        nlist.n_sect = [cursor readByte];
+        nlist.n_desc = [cursor readInt16];
+        nlist.n_value = [cursor readInt64];
+        NSLog(@"%08x           %02x    %02x  %04x  %016x - %s",
+              nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
+    }
+
+    [cursor release];
+
     NSLog(@"<  %s", _cmd);
     // TODO (2005-07-28): This needs to be converted to handle different byte orderings.
 #if 0

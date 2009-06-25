@@ -120,7 +120,8 @@ struct cd_objc2_iamge_info {
 
 - (void)process;
 {
-    //[self loadSymbolTables];
+    [self loadSymbolTables];
+    exit(99);
     // Load classes first, so we can get a dictionary of classes by address
     [self loadClasses];
 #if 0
