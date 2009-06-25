@@ -139,13 +139,15 @@
 - (CDMachOFile *)machOFileWithArchName:(NSString *)name;
 {
     const NXArchInfo *archInfo;
+    cpu_type_t maskedCPUType;
 
     archInfo = NXGetArchInfoFromName([name UTF8String]);
     if (archInfo == NULL)
         return nil;
 
+    maskedCPUType = archInfo->cputype & ~CPU_ARCH_MASK;
     for (CDFatArch *arch in arches) {
-        if ([arch cpuType] == archInfo->cputype)
+        if ([arch cpuType] == maskedCPUType)
             return [arch machOFile];
     }
 
