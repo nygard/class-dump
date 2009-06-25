@@ -72,8 +72,8 @@
 
     strtab = [[nonretainedMachOFile data] bytes] + symtabCommand.stroff;
 
-    NSLog(@"str table index  type  sect  desc  value");
-    NSLog(@"---------------  ----  ----  ----  ----------------");
+    NSLog(@"       str table index  type  sect  desc  value");
+    NSLog(@"       ---------------  ----  ----  ----  ----------------");
     for (index = 0; index < symtabCommand.nsyms; index++) {
         struct nlist_64 nlist;
 
@@ -82,8 +82,8 @@
         nlist.n_sect = [cursor readByte];
         nlist.n_desc = [cursor readInt16];
         nlist.n_value = [cursor readInt64];
-        NSLog(@"%08x           %02x    %02x  %04x  %016x - %s",
-              nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
+        NSLog(@"%5u: %08x           %02x    %02x  %04x  %016x - %s",
+              index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
     }
 
     [cursor release];

@@ -22,6 +22,7 @@
 - (void)process;
 
 - (void)loadSymbolTables;
+- (void)loadDynamicSymbolTables;
 - (void)loadClasses;
 - (void)loadCategories;
 

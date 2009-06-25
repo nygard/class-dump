@@ -7,9 +7,9 @@
 
 #include <mach-o/loader.h>
 #include <mach-o/swap.h>
-#import <Foundation/Foundation.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
+#import "CDDataCursor.h"
 
 @implementation CDLCDynamicSymbolTable
 
@@ -39,7 +39,7 @@
     dysymtab.nextrel = [cursor readInt32];
     dysymtab.locreloff = [cursor readInt32];
     dysymtab.nlocrel = [cursor readInt32];
-#if 0
+#if 1
     NSLog(@"ilocalsym:      0x%08x  %d", dysymtab.ilocalsym, dysymtab.ilocalsym);
     NSLog(@"nlocalsym:      0x%08x  %d", dysymtab.nlocalsym, dysymtab.nlocalsym);
     NSLog(@"iextdefsym:     0x%08x  %d", dysymtab.iextdefsym, dysymtab.iextdefsym);
@@ -73,6 +73,46 @@
 - (uint32_t)cmdsize;
 {
     return dysymtab.cmdsize;
+}
+
+- (void)loadSymbols;
+{
+    CDDataCursor *cursor;
+    uint32_t index;
+
+    NSLog(@" > %s", _cmd);
+
+    cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
+    [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
+    [cursor setOffset:dysymtab.indirectsymoff]; // TODO: + file offset for fat files?
+
+    NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
+    NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
+
+    for (index = 0; index < dysymtab.nindirectsyms; index++) {
+        uint32_t val;
+
+        // From loader.h: An indirect symbol table entry is simply a 32bit index into the symbol table to the symbol that the pointer or stub is referring to.
+        val = [cursor readInt32];
+        NSLog(@"%3u: %08x (%u)", index, val, val);
+    }
+
+    NSLog(@"extreloff: %lu", dysymtab.extreloff);
+    NSLog(@"nextrel:   %lu", dysymtab.nextrel);
+
+    // r_address is purported to be the offset from the vmaddr of the first segment, but...
+    // it appears to be the offset from the vmaddr of the 3rd segment in t1s.
+    // Actually, it really seems to be the offset from the vmaddr of the section indicated in the n_desc part of the nlist.
+    // So for t1s and NSObject... 0000000100001028...
+    // 0000000000000000 01 00 0500 0000000000000038 _OBJC_CLASS_$_NSObject
+    // The "05" seems to indicate the section ordinal (starting at zero)
+    // Also seem to have to worry about two level namespaces
+    // GET_LIBRARY_ORDINAL() from nlist.h -- no, not library for this.
+    // Maybe first "read/write" command (initprot)?... but MH_SPLIT_SEGS?
+
+    [cursor release];
+
+    NSLog(@"<  %s", _cmd);
 }
 
 @end

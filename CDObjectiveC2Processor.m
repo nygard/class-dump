@@ -12,6 +12,7 @@
 #import "CDVisitor.h"
 #import "CDOCIvar.h"
 #import "NSArray-Extensions.h"
+#import "CDLCDynamicSymbolTable.h"
 #import "CDLCSymbolTable.h"
 #import "CDOCCategory.h"
 #import "CDClassDump.h"
@@ -121,7 +122,8 @@ struct cd_objc2_iamge_info {
 - (void)process;
 {
     [self loadSymbolTables];
-    exit(99);
+    [self loadDynamicSymbolTables];
+    //exit(99);
     // Load classes first, so we can get a dictionary of classes by address
     [self loadClasses];
 #if 0
@@ -136,6 +138,15 @@ struct cd_objc2_iamge_info {
     for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
         if ([loadCommand isKindOfClass:[CDLCSymbolTable class]]) {
             [(CDLCSymbolTable *)loadCommand loadSymbols];
+        }
+    }
+}
+
+- (void)loadDynamicSymbolTables;
+{
+    for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+        if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]]) {
+            [(CDLCDynamicSymbolTable *)loadCommand loadSymbols];
         }
     }
 }
@@ -368,13 +379,13 @@ struct cd_objc2_iamge_info {
             // So... need to recursively load frameworks, even if we don't dump them.
             //[aClass setSuperClassName:@"NSObject"];
             //NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
-            //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+            NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
             //NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
             //[machOFile logInfoForAddress:address];
             //[machOFile logInfoForAddress:address + 8];
             //[machOFile logInfoForAddress:0x11cb2];
             //[machOFile logInfoForAddress:0x11fed];
-            //exit(99);
+            exit(99);
             [aClass setSuperClassName:@"__EXTERNAL_SYMBOL__"];
         } else {
             CDOCClass *sc;
