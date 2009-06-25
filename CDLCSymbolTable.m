@@ -6,8 +6,8 @@
 #import "CDLCSymbolTable.h"
 
 #include <mach-o/nlist.h>
-#import <Foundation/Foundation.h>
 #import "CDMachOFile.h"
+#import "CDMachO32File.h"
 #import "CDSymbol.h"
 
 @implementation CDLCSymbolTable
@@ -59,80 +59,81 @@
 {
     CDDataCursor *cursor;
     uint32_t index;
-    const char *strtab;
-
-    NSLog(@" > %s", _cmd);
+    const char *strtab, *ptr;
 
     cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
     [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
     [cursor setOffset:symtabCommand.symoff]; // TODO: + file offset for fat files?
-    NSLog(@"offset= %lu", [cursor offset]);
-    NSLog(@"stroff=  %lu", symtabCommand.stroff);
-    NSLog(@"strsize= %lu", symtabCommand.strsize);
+    //NSLog(@"offset= %lu", [cursor offset]);
+    //NSLog(@"stroff=  %lu", symtabCommand.stroff);
+    //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
     strtab = [[nonretainedMachOFile data] bytes] + symtabCommand.stroff;
 
-    NSLog(@"       str table index  type  sect  desc  value");
-    NSLog(@"       ---------------  ----  ----  ----  ----------------");
-    for (index = 0; index < symtabCommand.nsyms; index++) {
-        struct nlist_64 nlist;
+    if ([nonretainedMachOFile isKindOfClass:[CDMachO32File class]]) {
+        //NSLog(@"32 bit...");
+        //NSLog(@"       str table index  type  sect  desc  value");
+        //NSLog(@"       ---------------  ----  ----  ----  --------");
+        for (index = 0; index < symtabCommand.nsyms; index++) {
+            struct nlist nlist;
+            CDSymbol *symbol;
+            NSString *str;
 
-        nlist.n_un.n_strx = [cursor readInt32];
-        nlist.n_type = [cursor readByte];
-        nlist.n_sect = [cursor readByte];
-        nlist.n_desc = [cursor readInt16];
-        nlist.n_value = [cursor readInt64];
-        NSLog(@"%5u: %08x           %02x    %02x  %04x  %016x - %s",
-              index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
+            nlist.n_un.n_strx = [cursor readInt32];
+            nlist.n_type = [cursor readByte];
+            nlist.n_sect = [cursor readByte];
+            nlist.n_desc = [cursor readInt16];
+            nlist.n_value = [cursor readInt32];
+#if 0
+            NSLog(@"%5u: %08x           %02x    %02x  %04x  %08x - %s",
+                  index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
+#endif
+
+            ptr = strtab + nlist.n_un.n_strx;
+            str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+
+            symbol = [[CDSymbol alloc] initWithName:str nlist32:nlist];
+            [symbols addObject:symbol];
+            [symbol release];
+
+            [str release];
+        }
+
+        //NSLog(@"Loaded %lu 32-bit symbols", [symbols count]);
+    } else {
+        //NSLog(@"       str table index  type  sect  desc  value");
+        //NSLog(@"       ---------------  ----  ----  ----  ----------------");
+        for (index = 0; index < symtabCommand.nsyms; index++) {
+            struct nlist_64 nlist;
+            CDSymbol *symbol;
+            NSString *str;
+
+            nlist.n_un.n_strx = [cursor readInt32];
+            nlist.n_type = [cursor readByte];
+            nlist.n_sect = [cursor readByte];
+            nlist.n_desc = [cursor readInt16];
+            nlist.n_value = [cursor readInt64];
+#if 0
+            NSLog(@"%5u: %08x           %02x    %02x  %04x  %016x - %s",
+                  index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
+#endif
+
+            ptr = strtab + nlist.n_un.n_strx;
+            str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+
+            symbol = [[CDSymbol alloc] initWithName:str nlist64:nlist];
+            [symbols addObject:symbol];
+            [symbol release];
+
+            [str release];
+        }
+
+        //NSLog(@"Loaded %lu 64-bit symbols", [symbols count]);
     }
 
     [cursor release];
 
-    NSLog(@"<  %s", _cmd);
-    // TODO (2005-07-28): This needs to be converted to handle different byte orderings.
-#if 0
-    //const void *symtab;
-    const struct nlist *symtab;
-    const char *strtab;
-    int index;
-
-    NSLog(@" > %s", _cmd);
-    NSLog(@"symoff: 0x%08x, nsyms: 0x%08x, stroff: 0x%08x, strsize: 0x%08x",
-          symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
-    NSLog(@"symoff: %d, nsyms: %d, stroff: %d, strsize: %d",
-          symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
-
-    symtab = [[self machOFile] bytesAtOffset:symtabCommand.symoff];
-    NSLog(@"symtab: %p", symtab);
-
-    strtab = [[self machOFile] bytesAtOffset:symtabCommand.stroff];
-    NSLog(@"strtab: %p", strtab);
-
-    // This will produce the same output as 'nm -axp <machofile>'
-    for (index = 0; index < symtabCommand.nsyms; index++) {
-        CDSymbol *aSymbol;
-#if 0
-        NSLog(@"n_strx: 0x%08x, n_type: 0x%02x, n_sect: 0x%02x, n_desc: 0x%04x, n_value: 0x%08x",
-              symtab->n_un.n_strx, symtab->n_type, symtab->n_sect, symtab->n_desc, symtab->n_value);
-        NSLog(@"n_strx: %s", strtab + symtab->n_un.n_strx);
-#endif
-        NSLog(@"%08x %02x %02x %04x %08x %s",
-              symtab->n_value, symtab->n_type, symtab->n_sect, symtab->n_desc, symtab->n_un.n_strx, strtab + symtab->n_un.n_strx);
-
-        aSymbol = [[CDSymbol alloc] initWithPointer:symtab symtab:&symtabCommand machOFile:[self machOFile]];
-        [symbols addObject:aSymbol];
-        [aSymbol release];
-
-        symtab++;
-    }
-
-    NSLog(@"----------------------------------------");
-    NSLog(@"symbols: %@", symbols);
-
-    //NSLog(@"testing... %08x %08x %08x %08x", strtab[0], strtab[1], strtab[2], strtab[3]);
-
-    NSLog(@"<  %s", _cmd);
-#endif
+    //NSLog(@"symbols: %@", symbols);
 }
 
 - (uint32_t)symoff;
@@ -157,7 +158,7 @@
 
 - (NSString *)extraDescription;
 {
-    return [NSString stringWithFormat:@"symoff: 0x%08x (%d), nsyms: 0x%08x (%d), stroff: 0x%08x (%d), strsize: 0x%08x (%d)",
+    return [NSString stringWithFormat:@"symoff: 0x%08x (%u), nsyms: 0x%08x (%u), stroff: 0x%08x (%u), strsize: 0x%08x (%u)",
                      symtabCommand.symoff, symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.nsyms,
                      symtabCommand.stroff, symtabCommand.stroff, symtabCommand.strsize, symtabCommand.strsize];
 }

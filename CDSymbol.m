@@ -7,23 +7,36 @@
 
 #import <mach-o/nlist.h>
 #import <mach-o/loader.h>
-#import <Foundation/Foundation.h>
 #import "CDMachOFile.h"
 
 @implementation CDSymbol
 
-- (id)initWithPointer:(const void *)ptr symtab:(const struct symtab_command *)symtabCommand machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithName:(NSString *)aName nlist32:(struct nlist)nlist32;
 {
-    const char *str;
-
     if ([super init] == nil)
         return nil;
 
-    nlist = ptr;
-    str = [aMachOFile bytesAtOffset:symtabCommand->stroff + nlist->n_un.n_strx];
+    name = [aName retain];
+    nlist.n_un.n_strx = 0; // We don't use it.
+    nlist.n_type = nlist32.n_type;
+    nlist.n_sect = nlist32.n_sect;
+    nlist.n_desc = nlist32.n_desc;
+    nlist.n_value = nlist32.n_value;
 
-    // TODO (2004-07-08): Not sure of the encoding, UTF-8 might not work.
-    name = [[NSString alloc] initWithUTF8String:str];
+    return self;
+}
+
+- (id)initWithName:(NSString *)aName nlist64:(struct nlist_64)nlist64;
+{
+    if ([super init] == nil)
+        return nil;
+
+    name = [aName retain];
+    nlist.n_un.n_strx = 0; // We don't use it.
+    nlist.n_type = nlist64.n_type;
+    nlist.n_sect = nlist64.n_sect;
+    nlist.n_desc = nlist64.n_desc;
+    nlist.n_value = nlist64.n_value;
 
     return self;
 }
@@ -35,29 +48,24 @@
     [super dealloc];
 }
 
-- (long)strx;
+- (uint8_t)type;
 {
-    return nlist->n_type;
+    return nlist.n_type;
 }
 
-- (unsigned char)type;
+- (uint8_t)section;
 {
-    return nlist->n_type;
+    return nlist.n_sect;
 }
 
-- (unsigned char)section;
+- (uint16_t)desc;
 {
-    return nlist->n_sect;
+    return nlist.n_desc;
 }
 
-- (short)desc;
+- (uint64_t)value;
 {
-    return nlist->n_desc;
-}
-
-- (unsigned long)value;
-{
-    return nlist->n_value;
+    return nlist.n_value;
 }
 
 - (NSString *)name;
@@ -67,8 +75,8 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%08x %02x %02x %04x %08x %@",
-                     nlist->n_value, nlist->n_type, nlist->n_sect, nlist->n_desc, nlist->n_un.n_strx, name];
+    return [NSString stringWithFormat:@"%016x %02x %02x %04x - %@",
+                     nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
 }
 
 @end

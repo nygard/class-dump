@@ -7,22 +7,21 @@
 
 #include <mach-o/nlist.h>
 
-@class CDMachOFile;
-
 @interface CDSymbol : NSObject
 {
-    const struct nlist *nlist;
+    struct nlist_64 nlist;
     NSString *name;
 }
 
-- (id)initWithPointer:(const void *)ptr symtab:(const struct symtab_command *)symtabCommand machOFile:(CDMachOFile *)aMachOFile;
+
+- (id)initWithName:(NSString *)aName nlist32:(struct nlist)nlist32;
+- (id)initWithName:(NSString *)aName nlist64:(struct nlist_64)nlist64;
 - (void)dealloc;
 
-- (long)strx;
-- (unsigned char)type;
-- (unsigned char)section;
-- (short)desc;
-- (unsigned long)value;
+- (uint8_t)type;
+- (uint8_t)section;
+- (uint16_t)desc;
+- (uint64_t)value;
 
 - (NSString *)name;
 - (NSString *)description;
