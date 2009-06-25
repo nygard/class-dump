@@ -5,11 +5,13 @@
 
 #import "CDObjectiveCProcessor.h"
 
-@class CDOCClass;
+@class CDOCClass, CDOCCategory;
 
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
     NSMutableArray *classes;
+    NSMutableArray *categories;
+    NSMutableDictionary *classesByAddress;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
@@ -18,6 +20,12 @@
 - (BOOL)hasObjectiveCData;
 
 - (void)process;
+
+- (void)loadSymbolTables;
+- (void)loadClasses;
+- (void)loadCategories;
+
+- (CDOCCategory *)loadCategoryAtAddress:(uint64_t)address;
 
 - (CDOCClass *)loadClassAtAddress:(uint64_t)address;
 - (CDOCClass *)loadMetaClassAtAddress:(uint64_t)address;

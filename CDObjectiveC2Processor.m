@@ -13,6 +13,8 @@
 #import "CDOCIvar.h"
 #import "NSArray-Extensions.h"
 #import "CDLCSymbolTable.h"
+#import "CDOCCategory.h"
+#import "CDClassDump.h"
 
 struct cd_objc2_class {
     uint64_t isa;
@@ -71,6 +73,8 @@ struct cd_objc2_iamge_info {
         return nil;
 
     classes = [[NSMutableArray alloc] init];
+    categories = [[NSMutableArray alloc] init];
+    classesByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -78,6 +82,8 @@ struct cd_objc2_iamge_info {
 - (void)dealloc;
 {
     [classes release];
+    [categories release];
+    [classesByAddress release];
 
     [super dealloc];
 }
@@ -89,17 +95,44 @@ struct cd_objc2_iamge_info {
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    NSLog(@" > %s", _cmd);
+    NSMutableArray *allClasses;
+
+    allClasses = [[NSMutableArray alloc] init];
+    [allClasses addObjectsFromArray:classes];
+    [allClasses addObjectsFromArray:categories];
 
     [aVisitor willVisitObjectiveCProcessor:self];
     [aVisitor visitObjectiveCProcessor:self];
 
-    for (CDOCClass *aClass in classes)
-        [aClass recursivelyVisit:aVisitor];
+    NSLog(@"classDump = %p", [aVisitor classDump]);
+    if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
+        NSLog(@"sort= TOPO");
+        [allClasses sortTopologically];
+    } else if ([[aVisitor classDump] shouldSortClasses] == YES) {
+        NSLog(@"sort= ALPHA");
+        [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
+    } else {
+        NSLog(@"sort= none");
+    }
+
+    for (id aClassOrCategory in allClasses)
+        [aClassOrCategory recursivelyVisit:aVisitor];
 
     [aVisitor didVisitObjectiveCProcessor:self];
 
-    NSLog(@"<  %s", _cmd);
+    [allClasses release];
+}
+
+- (void)process;
+{
+    //[self loadSymbolTables];
+    // Load classes first, so we can get a dictionary of classes by address
+    [self loadClasses];
+#if 0
+    for (NSNumber *key in [[classesByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)])
+        NSLog(@"%016lx -> %@", [key unsignedIntegerValue], [[classesByAddress objectForKey:key] name]);
+#endif
+    [self loadCategories];
 }
 
 - (void)loadSymbolTables;
@@ -111,7 +144,7 @@ struct cd_objc2_iamge_info {
     }
 }
 
-- (void)process;
+- (void)loadClasses;
 {
     CDLCSegment *segment, *s2;
     NSUInteger dataOffset;
@@ -122,7 +155,6 @@ struct cd_objc2_iamge_info {
 
     NSLog(@" > %s", _cmd);
 
-    [self loadSymbolTables];
 
     //NSLog(@"machOFile: %@", machOFile);
     //NSLog(@"load commands: %@", [machOFile loadCommands]);
@@ -147,6 +179,7 @@ struct cd_objc2_iamge_info {
 
         aClass = [self loadClassAtAddress:val];
         [classes addObject:aClass];
+        [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedInteger:val]];
     }
     [cursor release];
 #if 0
@@ -161,6 +194,94 @@ struct cd_objc2_iamge_info {
 #endif
 
     NSLog(@"<  %s", _cmd);
+}
+
+- (void)loadCategories;
+{
+    CDLCSegment *segment;
+    CDSection *section;
+    NSUInteger dataOffset;
+    NSString *str;
+    NSData *sectionData;
+    CDDataCursor *cursor;
+
+    segment = [machOFile segmentWithName:@"__DATA"];
+    section = [segment sectionWithName:@"__objc_catlist"];
+    sectionData = [section data];
+    cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    while ([cursor isAtEnd] == NO) {
+        uint64_t val;
+        CDOCCategory *category;
+
+        val = [cursor readLittleInt64];
+        //NSLog(@"----------------------------------------");
+        //NSLog(@"val: %16lx", val);
+        //[machOFile logInfoForAddress:val];
+        category = [self loadCategoryAtAddress:val];
+        //NSLog(@"loaded category: %@", category);
+        if (category != nil)
+            [categories addObject:category];
+    }
+}
+
+- (CDOCCategory *)loadCategoryAtAddress:(uint64_t)address;
+{
+    CDDataCursor *cursor;
+    NSString *str;
+    CDOCCategory *category;
+
+    uint64_t v1, v2, v3, v4, v5, v6, v7, v8;
+
+    if (address == 0)
+        return nil;
+
+    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setByteOrder:[machOFile byteOrder]];
+    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    NSParameterAssert([cursor offset] != 0);
+
+    v1 = [cursor readInt64]; // Category name
+    v2 = [cursor readInt64]; // class
+    v3 = [cursor readInt64]; // method list
+    v4 = [cursor readInt64]; // TODO: One of these should be class methods...
+    v5 = [cursor readInt64];
+    v6 = [cursor readInt64];
+    v7 = [cursor readInt64];
+    v8 = [cursor readInt64];
+    //NSLog(@"----------------------------------------");
+    //[machOFile logInfoForAddress:v1];
+    //[machOFile logInfoForAddress:v2];
+    //[machOFile logInfoForAddress:v3];
+
+    category = [[[CDOCCategory alloc] init] autorelease];
+    str = [machOFile stringAtAddress:v1];
+    [category setName:str];
+    //NSLog(@"set name to %@", str);
+
+    if ([str isEqualToString:@"NSBasicTranslations"]) {
+        NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
+        NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
+    }
+
+    for (CDOCMethod *method in [self loadMethodsAtAddress:v3]) {
+        [category addInstanceMethod:method];
+    }
+
+    for (CDOCMethod *method in [self loadMethodsAtAddress:v4]) {
+        [category addClassMethod:method];
+    }
+
+    if (v2 == 0) {
+        [category setClassName:@"__EXTERNAL_SYMBOL__"];
+    } else {
+        CDOCClass *aClass;
+
+        aClass = [classesByAddress objectForKey:[NSNumber numberWithUnsignedInteger:v2]];
+        [category setClassName:[aClass name]];
+        //NSLog(@"set class name to %@", [aClass name]);
+    }
+
+    return category;
 }
 
 - (CDOCClass *)loadClassAtAddress:(uint64_t)address;
@@ -250,21 +371,22 @@ struct cd_objc2_iamge_info {
             // ... it's an undefined symbol, need to look it up.
             // So... need to recursively load frameworks, even if we don't dump them.
             //[aClass setSuperClassName:@"NSObject"];
-            NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
-            NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
-            NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
-            [machOFile logInfoForAddress:address];
-            [machOFile logInfoForAddress:address + 8];
+            //NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
+            //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+            //NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
+            //[machOFile logInfoForAddress:address];
+            //[machOFile logInfoForAddress:address + 8];
             //[machOFile logInfoForAddress:0x11cb2];
             //[machOFile logInfoForAddress:0x11fed];
             //exit(99);
+            [aClass setSuperClassName:@"__EXTERNAL_SYMBOL__"];
         } else {
             CDOCClass *sc;
 
-            NSLog(@"objc2Class.superclass of %@ is not 0", [aClass name]);
-            NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
-            [machOFile logInfoForAddress:0x002cade8];
-            exit(99);
+            //NSLog(@"objc2Class.superclass of %@ is not 0", [aClass name]);
+            //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+            //[machOFile logInfoForAddress:0x002cade8];
+            //exit(99);
             //NSLog(@"superclass address: %016lx", objc2Class.superclass);
             sc = [self loadClassAtAddress:objc2Class.superclass];
             //NSLog(@"sc: %@", sc);
