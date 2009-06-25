@@ -240,15 +240,6 @@ int main(int argc, char *argv[])
                 exit(5);
 #endif
 
-                {
-                    CDMachOFile *machOFile;
-                    CDObjectiveC2Processor *o2;
-
-                    machOFile = [[classDump machOFiles] lastObject];
-                    o2 = [[CDObjectiveC2Processor alloc] initWithMachOFile:machOFile];
-                    [o2 process];
-                    [o2 release];
-                }
                 [classDump processObjectiveCData];
                 [classDump registerStuff];
 
