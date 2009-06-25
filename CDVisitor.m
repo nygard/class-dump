@@ -50,17 +50,17 @@
 }
 
 // Called before visiting.
-- (void)willVisitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
 }
 
 // This gets called before visiting the children, but only if it has children it will visit.
-- (void)visitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
 }
 
 // Called after visiting.
-- (void)didVisitObjectiveCProcessor:(CDObjectiveC1Processor *)aProcessor;
+- (void)didVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
 }
 
