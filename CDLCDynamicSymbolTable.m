@@ -10,6 +10,7 @@
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDDataCursor.h"
+#import "CDRelocationInfo.h"
 
 @implementation CDLCDynamicSymbolTable
 
@@ -62,7 +63,17 @@
     NSLog(@"locreloff:      0x%08x  %d", dysymtab.locreloff, dysymtab.locreloff);
     NSLog(@"nlocrel:        0x%08x  %d", dysymtab.nlocrel, dysymtab.nlocrel);
 #endif
+
+    externalRelocationEntries = [[NSMutableArray alloc] init];
+
     return self;
+}
+
+- (void)dealloc;
+{
+    [externalRelocationEntries release];
+
+    [super dealloc];
 }
 
 - (uint32_t)cmd;
@@ -84,11 +95,11 @@
 
     cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
     [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
+
+    //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
+    //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
+#if 0
     [cursor setOffset:dysymtab.indirectsymoff]; // TODO: + file offset for fat files?
-
-    NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
-    NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
-
     for (index = 0; index < dysymtab.nindirectsyms; index++) {
         uint32_t val;
 
@@ -96,16 +107,18 @@
         val = [cursor readInt32];
         NSLog(@"%3u: %08x (%u)", index, val, val);
     }
+#endif
 
-    NSLog(@"extreloff: %lu", dysymtab.extreloff);
-    NSLog(@"nextrel:   %lu", dysymtab.nextrel);
+    //NSLog(@"extreloff: %lu", dysymtab.extreloff);
+    //NSLog(@"nextrel:   %lu", dysymtab.nextrel);
 
     [cursor setOffset:dysymtab.extreloff];
-    NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
-    NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
+    //NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
+    //NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
     for (index = 0; index < dysymtab.nextrel; index++) {
         struct relocation_info rinfo;
         uint32_t val;
+        CDRelocationInfo *ri;
 
         rinfo.r_address = [cursor readInt32];
         val = [cursor readInt32];
@@ -115,9 +128,17 @@
         rinfo.r_length = (val & 0x06000000) >> 25;
         rinfo.r_extern = (val & 0x08000000) >> 27;
         rinfo.r_type = (val & 0xf0000000) >> 28;
+#if 0
         NSLog(@"%3d: %08x  %08x   %08x      %01x    %01x    %01x     %01x", index, rinfo.r_address, val,
               rinfo.r_symbolnum, rinfo.r_pcrel, rinfo.r_length, rinfo.r_extern, rinfo.r_type);
+#endif
+
+        ri = [[CDRelocationInfo alloc] initWithInfo:rinfo];
+        [externalRelocationEntries addObject:ri];
+        [ri release];
     }
+
+    NSLog(@"externalRelocationEntries: %@", externalRelocationEntries);
 
     // r_address is purported to be the offset from the vmaddr of the first segment, but...
     // it appears to be the offset from the vmaddr of the 3rd segment in t1s.

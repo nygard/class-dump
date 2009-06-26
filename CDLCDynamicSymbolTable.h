@@ -8,9 +8,12 @@
 @interface CDLCDynamicSymbolTable : CDLoadCommand
 {
     struct dysymtab_command dysymtab;
+
+    NSMutableArray *externalRelocationEntries;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (void)dealloc;
 
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
