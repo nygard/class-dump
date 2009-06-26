@@ -110,7 +110,7 @@
     //NSLog(@"extreloff: %lu", dysymtab.extreloff);
     //NSLog(@"nextrel:   %lu", dysymtab.nextrel);
 
-    [cursor setOffset:dysymtab.extreloff];
+    [cursor setOffset:[nonretainedMachOFile offset] + dysymtab.extreloff];
     //NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
     //NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
     for (index = 0; index < dysymtab.nextrel; index++) {

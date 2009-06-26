@@ -84,12 +84,12 @@
 
     cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
     [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
-    [cursor setOffset:symtabCommand.symoff]; // TODO: + file offset for fat files?
+    [cursor setOffset:[nonretainedMachOFile offset] + symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    strtab = [[nonretainedMachOFile data] bytes] + symtabCommand.stroff;
+    strtab = [nonretainedMachOFile machODataBytes] + symtabCommand.stroff;
 
     if ([nonretainedMachOFile isKindOfClass:[CDMachO32File class]]) {
         //NSLog(@"32 bit...");
@@ -138,7 +138,6 @@
             NSLog(@"%5u: %08x           %02x    %02x  %04x  %016x - %s",
                   index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
 #endif
-
             ptr = strtab + nlist.n_un.n_strx;
             str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
