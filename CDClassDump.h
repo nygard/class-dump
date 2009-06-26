@@ -52,6 +52,7 @@
 
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
+    CDTypeFormatter *propertyTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 
     NSString *targetArchName;
@@ -102,6 +103,7 @@
 
 - (CDTypeFormatter *)ivarTypeFormatter;
 - (CDTypeFormatter *)methodTypeFormatter;
+- (CDTypeFormatter *)propertyTypeFormatter;
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
 
 - (BOOL)_loadFilename:(NSString *)aFilename;

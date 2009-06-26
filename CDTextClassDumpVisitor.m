@@ -18,6 +18,7 @@
 #import "CDSymbolReferences.h"
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
+#import "CDTypeFormatter.h"
 
 @implementation CDTextClassDumpVisitor
 
@@ -148,12 +149,14 @@
     [resultString appendString:@"\n"];
 }
 
+//[aMethod appendToString:resultString classDump:classDump symbolReferences:symbolReferences];
 - (void)visitProperty:(CDOCProperty *)aProperty;
 {
     NSArray *attrs;
     NSMutableArray *alist;
     NSString *type;
     NSString *backingVar = nil;
+    NSString *formattedString;
 
     alist = [[NSMutableArray alloc] init];
 
@@ -180,9 +183,16 @@
     }
 
     if ([alist count] > 0) {
-        [resultString appendFormat:@"@property(%@) %@;", [alist componentsJoinedByString:@", "], [aProperty name]];
+        [resultString appendFormat:@"@property(%@) ", [alist componentsJoinedByString:@", "]];
     } else {
-        [resultString appendFormat:@"@property %@;", [aProperty name]];
+        [resultString appendString:@"@property "];
+    }
+
+    formattedString = [[classDump propertyTypeFormatter] formatVariable:[aProperty name] type:type symbolReferences:symbolReferences];
+    if (formattedString != nil) {
+        [resultString appendFormat:@"%@;", formattedString];
+    } else {
+        [resultString appendFormat:@"%@ %@;", type, [aProperty name]];
     }
 
     if (backingVar != nil) {

@@ -55,6 +55,12 @@
     [methodTypeFormatter setBaseLevel:0];
     [methodTypeFormatter setDelegate:self];
 
+    propertyTypeFormatter = [[CDTypeFormatter alloc] init];
+    [propertyTypeFormatter setShouldExpand:NO];
+    [propertyTypeFormatter setShouldAutoExpand:NO];
+    [propertyTypeFormatter setBaseLevel:0];
+    [propertyTypeFormatter setDelegate:self];
+
     structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
     [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
     [structDeclarationTypeFormatter setShouldAutoExpand:YES];
@@ -82,6 +88,7 @@
 
     [ivarTypeFormatter release];
     [methodTypeFormatter release];
+    [propertyTypeFormatter release];
     [structDeclarationTypeFormatter release];
 
     if (flags.shouldMatchRegex == YES)
@@ -288,6 +295,11 @@
 - (CDTypeFormatter *)methodTypeFormatter;
 {
     return methodTypeFormatter;
+}
+
+- (CDTypeFormatter *)propertyTypeFormatter;
+{
+    return propertyTypeFormatter;
 }
 
 - (CDTypeFormatter *)structDeclarationTypeFormatter;
