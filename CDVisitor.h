@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDObjectiveCProcessor, CDOCProtocol, CDOCMethod, CDOCIvar, CDOCClass, CDOCCategory;
+@class CDClassDump, CDObjectiveCProcessor, CDOCProtocol, CDOCMethod, CDOCIvar, CDOCClass, CDOCCategory, CDOCProperty;
 
 @interface CDVisitor : NSObject
 {
@@ -37,11 +37,15 @@
 - (void)willVisitIvarsOfClass:(CDOCClass *)aClass;
 - (void)didVisitIvarsOfClass:(CDOCClass *)aClass;
 
+- (void)willVisitPropertiesOfClass:(CDOCClass *)aClass;
+- (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
+
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 - (void)didVisitCategory:(CDOCCategory *)aCategory;
 
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
 - (void)visitIvar:(CDOCIvar *)anIvar;
+- (void)visitProperty:(CDOCProperty *)aProperty;
 
 @end

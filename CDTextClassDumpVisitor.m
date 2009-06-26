@@ -147,4 +147,9 @@
     [resultString appendString:@"\n"];
 }
 
+- (void)visitProperty:(CDOCProperty *)aProperty;
+{
+    [resultString appendFormat:@"%@\n", aProperty];
+}
+
 @end

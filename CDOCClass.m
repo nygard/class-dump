@@ -104,6 +104,10 @@
     }
     [aVisitor didVisitIvarsOfClass:self];
 
+    [aVisitor willVisitPropertiesOfClass:self];
+    [self visitProperties:aVisitor];
+    [aVisitor didVisitPropertiesOfClass:self];
+
     [self recursivelyVisitMethods:aVisitor];
     [aVisitor didVisitClass:self];
 }

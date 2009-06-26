@@ -14,6 +14,7 @@
 #import "CDSymbolReferences.h"
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
+#import "CDOCProperty.h"
 
 @implementation CDOCProtocol
 
@@ -133,6 +134,16 @@
     [optionalInstanceMethods addObject:method];
 }
 
+- (NSArray *)properties;
+{
+    return properties;
+}
+
+- (void)addProperty:(CDOCProperty *)property;
+{
+    [properties addObject:property];
+}
+
 - (BOOL)hasMethods;
 {
     return [classMethods count] > 0 || [instanceMethods count] > 0 || [optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0;
@@ -250,6 +261,12 @@
 
         [aVisitor didVisitOptionalMethods];
     }
+}
+
+- (void)visitProperties:(CDVisitor *)aVisitor;
+{
+    for (CDOCProperty *property in properties)
+        [aVisitor visitProperty:property];
 }
 
 @end

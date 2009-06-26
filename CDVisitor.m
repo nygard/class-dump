@@ -7,6 +7,7 @@
 
 #import "CDClassDump.h"
 #import "CDObjectiveC1Processor.h"
+#import "CDOCProperty.h"
 
 @implementation CDVisitor
 
@@ -96,6 +97,14 @@
 {
 }
 
+- (void)willVisitPropertiesOfClass:(CDOCClass *)aClass;
+{
+}
+
+- (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
+{
+}
+
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 {
 }
@@ -113,6 +122,10 @@
 }
 
 - (void)visitIvar:(CDOCIvar *)anIvar;
+{
+}
+
+- (void)visitProperty:(CDOCProperty *)aProperty;
 {
 }
 

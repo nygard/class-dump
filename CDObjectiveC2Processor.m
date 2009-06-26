@@ -610,7 +610,7 @@ struct cd_objc2_property {
     //NSLog(@"class= %@", aClass);
     //NSParameterAssert(objc2ClassData.baseProperties == 0);
     for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties]) {
-        NSLog(@"property: %@", property);
+        [aClass addProperty:property];
     }
 
     return aClass;

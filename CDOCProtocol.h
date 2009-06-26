@@ -9,7 +9,7 @@
 
 @class CDClassDump, CDSymbolReferences;
 @class CDVisitor;
-@class CDOCMethod;
+@class CDOCMethod, CDOCProperty;
 
 @interface CDOCProtocol : NSObject
 {
@@ -47,6 +47,9 @@
 - (NSArray *)optionalInstanceMethods;
 - (void)addOptionalInstanceMethod:(CDOCMethod *)method;
 
+- (NSArray *)properties;
+- (void)addProperty:(CDOCProperty *)property;
+
 - (BOOL)hasMethods;
 
 - (NSString *)description;
@@ -61,5 +64,6 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 - (void)recursivelyVisitMethods:(CDVisitor *)aVisitor;
+- (void)visitProperties:(CDVisitor *)aVisitor;
 
 @end
