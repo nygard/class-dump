@@ -14,6 +14,9 @@
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 - (void)dealloc;
 
+- (NSString *)name;
+- (NSString *)attributes;
+
 - (NSString *)description;
 
 @end

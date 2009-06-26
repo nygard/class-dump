@@ -24,6 +24,16 @@
     [super dealloc];
 }
 
+- (NSString *)name;
+{
+    return name;
+}
+
+- (NSString *)attributes;
+{
+    return attributes;
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@:%p> name: %@, attributes: %@",

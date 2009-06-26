@@ -17,6 +17,7 @@
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
 #import "CDOCMethod.h"
+#import "CDOCProperty.h"
 
 @implementation CDTextClassDumpVisitor
 
@@ -149,7 +150,62 @@
 
 - (void)visitProperty:(CDOCProperty *)aProperty;
 {
-    [resultString appendFormat:@"%@\n", aProperty];
+    NSArray *attrs;
+    NSMutableArray *alist;
+    NSString *type;
+    NSString *backingVar = nil;
+
+    alist = [[NSMutableArray alloc] init];
+
+    attrs = [[aProperty attributes] componentsSeparatedByString:@","];
+    NSLog(@"attrs: %@", attrs);
+    for (NSString *attr in attrs) {
+        if ([attr hasPrefix:@"T"]) {
+            type = [attr substringFromIndex:1];
+        } else if ([attr hasPrefix:@"R"]) {
+            [alist addObject:@"readonly"];
+        } else if ([attr hasPrefix:@"C"]) {
+            [alist addObject:@"copy"];
+        } else if ([attr hasPrefix:@"&"]) {
+            [alist addObject:@"retain"];
+        } else if ([attr hasPrefix:@"G"]) {
+            [alist addObject:[NSString stringWithFormat:@"getter=%@", [attr substringFromIndex:1]]];
+        } else if ([attr hasPrefix:@"S"]) {
+            [alist addObject:[NSString stringWithFormat:@"setter=%@", [attr substringFromIndex:1]]];
+        } else if ([attr hasPrefix:@"V"]) {
+            backingVar = [attr substringFromIndex:1];
+        } else {
+            NSLog(@"Warning: Unknown property attribute %@", attr);
+        }
+    }
+
+    if ([alist count] > 0) {
+        [resultString appendFormat:@"@property(%@) %@;", [alist componentsJoinedByString:@", "], [aProperty name]];
+    } else {
+        [resultString appendFormat:@"@property %@;", [aProperty name]];
+    }
+
+    if (backingVar != nil) {
+        if ([backingVar isEqualToString:[aProperty name]]) {
+            [resultString appendFormat:@" // @synthesize %@;", [aProperty name]];
+        } else {
+            [resultString appendFormat:@" // @synthesize %@=%@;", [aProperty name], backingVar];
+        }
+
+        //[resultString appendFormat:@"   %@", aProperty];
+    } else {
+        //[resultString appendFormat:@" // %@", aProperty];
+    }
+
+    [resultString appendString:@"\n"];
+
+
+    [alist release];
+}
+
+- (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
+{
+    [resultString appendString:@"\n"];
 }
 
 @end
