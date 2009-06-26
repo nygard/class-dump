@@ -17,6 +17,7 @@
 
     machOFile = [aMachOFile retain];
     classes = [[NSMutableArray alloc] init];
+    classesByAddress = [[NSMutableDictionary alloc] init];
     categories = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
     protocolsByAddress = [[NSMutableDictionary alloc] init];
@@ -28,6 +29,7 @@
 {
     [machOFile release];
     [classes release];
+    [classesByAddress release];
     [categories release];
     [protocolsByName release];
     [protocolsByAddress release];

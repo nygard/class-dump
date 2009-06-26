@@ -83,16 +83,7 @@ struct cd_objc2_property {
     if ([super initWithMachOFile:aMachOFile] == nil)
         return nil;
 
-    classesByAddress = [[NSMutableDictionary alloc] init];
-
     return self;
-}
-
-- (void)dealloc;
-{
-    [classesByAddress release];
-
-    [super dealloc];
 }
 
 - (BOOL)hasObjectiveCData;

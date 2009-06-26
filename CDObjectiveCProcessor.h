@@ -15,6 +15,8 @@
     CDMachOFile *machOFile;
 
     NSMutableArray *classes;
+    NSMutableDictionary *classesByAddress;
+
     NSMutableArray *categories;
 
     NSMutableDictionary *protocolsByName; // uniqued

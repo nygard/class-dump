@@ -9,11 +9,9 @@
 
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
-    NSMutableDictionary *classesByAddress;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
-- (void)dealloc;
 
 - (BOOL)hasObjectiveCData;
 
