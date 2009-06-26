@@ -799,6 +799,7 @@
 			buildPhases = (
 				01A9A4BA0FF19B2F00475772 /* Sources */,
 				01A9A4BB0FF19B2F00475772 /* Frameworks */,
+				0154C1B90FF58D6400F87451 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -936,6 +937,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+		0154C1B90FF58D6400F87451 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/zsh;
+			shellScript = "#!/bin/zsh\n\necho \"pwd:\" `pwd`\nsvn export . $DSTROOT/src\n\nif [ -e $DSTROOT/src ]; then\n    pushd $DSTROOT/src\n    mv README ..\n    rm -rf hold notes TODO keys.txt BuildRelease.class-dump\n    popd\nfi\n\n";
 		};
 		01C5227A0CDFA45000948C19 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
