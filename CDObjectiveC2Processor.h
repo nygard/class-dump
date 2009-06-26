@@ -9,11 +9,8 @@
 
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
-    NSMutableArray *classes;
-    NSMutableArray *categories;
     NSMutableDictionary *classesByAddress;
 
-    NSMutableDictionary *protocolsByName; // uniqued
     NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 

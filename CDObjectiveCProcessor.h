@@ -13,6 +13,11 @@
 @interface CDObjectiveCProcessor : NSObject
 {
     CDMachOFile *machOFile;
+
+    NSMutableArray *classes;
+    NSMutableArray *categories;
+
+    NSMutableDictionary *protocolsByName; // uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;

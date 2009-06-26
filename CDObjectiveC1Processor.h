@@ -10,7 +10,6 @@
 @interface CDObjectiveC1Processor : CDObjectiveCProcessor
 {
     NSMutableArray *modules;
-    NSMutableDictionary *protocolsByName; // uniqued
     NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 
@@ -23,8 +22,6 @@
 - (void)process;
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 // Formerly private
 - (void)processModules;

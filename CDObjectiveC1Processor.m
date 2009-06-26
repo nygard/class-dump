@@ -137,7 +137,6 @@ struct cd_objc_protocol_method
         return nil;
 
     modules = [[NSMutableArray alloc] init];
-    protocolsByName = [[NSMutableDictionary alloc] init];
     protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
@@ -146,7 +145,6 @@ struct cd_objc_protocol_method
 - (void)dealloc;
 {
     [modules release];
-    [protocolsByName release];
     [protocolsByAddress release];
 
     [super dealloc];
@@ -186,53 +184,6 @@ struct cd_objc_protocol_method
     }
 }
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
-{
-    NSMutableArray *allClasses;
-    NSArray *protocolNames;
-
-    allClasses = [[NSMutableArray alloc] init];
-
-    for (CDOCModule *module in modules) {
-        NSArray *moduleClasses, *moduleCategories;
-
-        moduleClasses = [[module symtab] classes];
-        if (moduleClasses != nil)
-            [allClasses addObjectsFromArray:moduleClasses];
-
-        moduleCategories = [[module symtab] categories];
-        if (moduleCategories != nil)
-            [allClasses addObjectsFromArray:moduleCategories];
-    }
-
-    // TODO: Sort protocols by dependency
-    // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
-    // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
-    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-
-    [aVisitor willVisitObjectiveCProcessor:self];
-
-    if ([protocolNames count] > 0 || [allClasses count] > 0) {
-        [aVisitor visitObjectiveCProcessor:self];
-    }
-
-    for (NSString *protocolName in protocolNames) {
-        [[protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
-    }
-
-    if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
-        [allClasses sortTopologically];
-    } else if ([[aVisitor classDump] shouldSortClasses] == YES)
-        [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
-
-    for (CDOCClass *aClass in allClasses)
-        [aClass recursivelyVisit:aVisitor];
-
-    [allClasses release];
-
-    [aVisitor didVisitObjectiveCProcessor:self];
-}
-
 //
 // Formerly private
 //
@@ -254,6 +205,7 @@ struct cd_objc_protocol_method
         struct cd_objc_module objcModule;
         CDOCModule *module;
         NSString *name;
+        NSArray *array;
 
         objcModule.version = [cursor readInt32];
         objcModule.size = [cursor readInt32];
@@ -277,6 +229,14 @@ struct cd_objc_protocol_method
         [module setName:[machOFile stringAtAddress:objcModule.name]];
         [module setSymtab:[self processSymtabAtAddress:objcModule.symtab]];
         [modules addObject:module];
+
+        array = [[module symtab] classes];
+        if (array != nil)
+            [classes addObjectsFromArray:array];
+
+        array = [[module symtab] categories];
+        if (array != nil)
+            [categories addObjectsFromArray:array];
 
         [module release];
     }

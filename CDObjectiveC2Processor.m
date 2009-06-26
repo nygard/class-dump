@@ -83,10 +83,7 @@ struct cd_objc2_property {
     if ([super initWithMachOFile:aMachOFile] == nil)
         return nil;
 
-    classes = [[NSMutableArray alloc] init];
-    categories = [[NSMutableArray alloc] init];
     classesByAddress = [[NSMutableDictionary alloc] init];
-    protocolsByName = [[NSMutableDictionary alloc] init];
     protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
@@ -94,10 +91,7 @@ struct cd_objc2_property {
 
 - (void)dealloc;
 {
-    [classes release];
-    [categories release];
     [classesByAddress release];
-    [protocolsByName release];
     [protocolsByAddress release];
 
     [super dealloc];
@@ -106,41 +100,6 @@ struct cd_objc2_property {
 - (BOOL)hasObjectiveCData;
 {
     return [[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
-}
-
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
-{
-    NSMutableArray *allClasses;
-    NSArray *protocolNames;
-
-    allClasses = [[NSMutableArray alloc] init];
-    [allClasses addObjectsFromArray:classes];
-    [allClasses addObjectsFromArray:categories];
-
-    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-
-    [aVisitor willVisitObjectiveCProcessor:self];
-
-    if ([protocolNames count] > 0 || [allClasses count] > 0) {
-        [aVisitor visitObjectiveCProcessor:self];
-    }
-
-    for (NSString *protocolName in protocolNames) {
-        [[protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
-    }
-
-    if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
-        [allClasses sortTopologically];
-    } else if ([[aVisitor classDump] shouldSortClasses] == YES) {
-        [allClasses sortUsingSelector:@selector(ascendingCompareByName:)];
-    }
-
-    for (id aClassOrCategory in allClasses)
-        [aClassOrCategory recursivelyVisit:aVisitor];
-
-    [aVisitor didVisitObjectiveCProcessor:self];
-
-    [allClasses release];
 }
 
 - (NSString *)externalClassNameForAddress:(uint64_t)address;
