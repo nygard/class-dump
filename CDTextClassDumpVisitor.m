@@ -149,7 +149,6 @@
     [resultString appendString:@"\n"];
 }
 
-//[aMethod appendToString:resultString classDump:classDump symbolReferences:symbolReferences];
 - (void)visitProperty:(CDOCProperty *)aProperty;
 {
     NSArray *attrs;
@@ -210,6 +209,12 @@
     [resultString appendString:@"\n"];
 
     [alist release];
+}
+
+- (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
+{
+    if ([[aClass properties] count] > 0)
+        [resultString appendString:@"\n"];
 }
 
 @end

@@ -34,4 +34,7 @@
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
 - (void)visitIvar:(CDOCIvar *)anIvar;
 
+- (void)visitProperty:(CDOCProperty *)aProperty;
+- (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
+
 @end
