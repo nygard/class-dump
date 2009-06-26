@@ -66,10 +66,10 @@
 
 // Case 1: no arch specified
 //  - check main file for these, then lock down on that arch:
-//    - local arch, 32 bit
 //    - local arch, 64 bit
-//    - any arch, 32 bit
+//    - local arch, 32 bit
 //    - any arch, 64 bit
+//    - any arch, 32 bit
 //
 // Case 2: you specified a specific arch (i386, x86_64, ppc, ppc7400, ppc64, etc.)
 //  - only that arch
@@ -90,12 +90,6 @@
 
     targetType = archInfo->cputype & ~CPU_ARCH_MASK;
 
-    // This architecture, 32 bit
-    for (CDFatArch *fatArch in arches) {
-        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO)
-            return [fatArch archName];
-    }
-
     // This architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
 #ifdef __LP64__
@@ -107,9 +101,9 @@
 #endif
     }
 
-    // Any architecture, 32 bit
+    // This architecture, 32 bit
     for (CDFatArch *fatArch in arches) {
-        if ([fatArch uses64BitABI] == NO)
+        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO)
             return [fatArch archName];
     }
 
@@ -122,6 +116,12 @@
         if ([fatArch uses64BitABI])
             didFind64BitArch = YES;
 #endif
+
+    // Any architecture, 32 bit
+    for (CDFatArch *fatArch in arches) {
+        if ([fatArch uses64BitABI] == NO)
+            return [fatArch archName];
+    }
     }
 
 #ifdef __LP64__
