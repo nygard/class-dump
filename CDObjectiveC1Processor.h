@@ -16,8 +16,6 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (NSArray *)modules;
-
 - (BOOL)hasObjectiveCData;
 - (void)process;
 

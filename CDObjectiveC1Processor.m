@@ -150,11 +150,6 @@ struct cd_objc_protocol_method
     [super dealloc];
 }
 
-- (NSArray *)modules;
-{
-    return modules;
-}
-
 - (BOOL)hasObjectiveCData;
 {
     return [modules count] > 0;
