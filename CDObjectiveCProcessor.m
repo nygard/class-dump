@@ -9,6 +9,8 @@
 #import "NSArray-Extensions.h"
 #import "CDLCSegment.h"
 
+// Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
+
 @implementation CDObjectiveCProcessor
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
