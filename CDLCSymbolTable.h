@@ -10,6 +10,7 @@
     struct symtab_command symtabCommand;
 
     NSMutableArray *symbols;
+    NSUInteger baseAddress;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;

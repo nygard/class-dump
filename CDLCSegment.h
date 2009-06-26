@@ -24,8 +24,10 @@
 
 - (NSArray *)sections;
 
+- (NSUInteger)vmaddr;
 - (NSUInteger)fileoff;
 - (NSUInteger)filesize;
+- (vm_prot_t)initprot;
 - (uint32_t)flags;
 - (BOOL)isProtected;
 

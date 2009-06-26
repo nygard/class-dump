@@ -51,6 +51,12 @@
     return sections;
 }
 
+- (NSUInteger)vmaddr;
+{
+    // Implement in subclasses.
+    return 0;
+}
+
 - (NSUInteger)fileoff;
 {
     // Implement in subclasses.
@@ -60,6 +66,12 @@
 - (NSUInteger)filesize;
 {
     // Implement in subclasses.
+    return 0;
+}
+
+- (vm_prot_t)initprot;
+{
+    // Implement in subclsses.
     return 0;
 }
 

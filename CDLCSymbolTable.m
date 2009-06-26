@@ -9,6 +9,7 @@
 #import "CDMachOFile.h"
 #import "CDMachO32File.h"
 #import "CDSymbol.h"
+#import "CDLCSegment.h"
 
 @implementation CDLCSymbolTable
 
@@ -32,6 +33,7 @@
 #endif
 
     symbols = [[NSMutableArray alloc] init];
+    baseAddress = 0;
 
     //NSLog(@"self: %@", self);
 
@@ -55,11 +57,30 @@
     return symtabCommand.cmdsize;
 }
 
+#define CD_VM_PROT_RW (VM_PROT_READ|VM_PROT_WRITE)
+
 - (void)loadSymbols;
 {
     CDDataCursor *cursor;
     uint32_t index;
     const char *strtab, *ptr;
+    BOOL didFindBaseAddress = NO;
+
+    for (CDLoadCommand *loadCommand in [nonretainedMachOFile loadCommands]) {
+        if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
+            CDLCSegment *segment = (CDLCSegment *)loadCommand;
+
+            if (([segment initprot] & CD_VM_PROT_RW) == CD_VM_PROT_RW) {
+                NSLog(@"segment... initprot = %08x, addr= %016lx *** r/w", [segment initprot], [segment vmaddr]);
+                baseAddress = [segment vmaddr];
+                didFindBaseAddress = YES;
+                break;
+            }
+        }
+    }
+
+    if (didFindBaseAddress == NO)
+        NSLog(@"Warning: Couldn't find first read/write segment for base address of relocation entries.");
 
     cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
     [cursor setByteOrder:[nonretainedMachOFile byteOrder]];

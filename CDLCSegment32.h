@@ -18,9 +18,10 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
-- (uint32_t)vmaddr;
+- (NSUInteger)vmaddr;
 - (NSUInteger)fileoff;
 - (NSUInteger)filesize;
+- (vm_prot_t)initprot;
 - (uint32_t)flags;
 
 - (NSString *)extraDescription;

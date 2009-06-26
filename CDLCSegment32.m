@@ -67,7 +67,7 @@
     return segmentCommand.cmdsize;
 }
 
-- (uint32_t)vmaddr;
+- (NSUInteger)vmaddr;
 {
     return segmentCommand.vmaddr;
 }
@@ -80,6 +80,11 @@
 - (NSUInteger)filesize;
 {
     return segmentCommand.filesize;
+}
+
+- (vm_prot_t)initprot;
+{
+    return segmentCommand.initprot;
 }
 
 - (uint32_t)flags;
