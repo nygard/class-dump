@@ -792,7 +792,6 @@ struct cd_objc2_property {
 
         for (index = 0; index < listHeader.count; index++) {
             struct cd_objc2_ivar objc2Ivar;
-            NSString *name, *type;
             CDOCIvar *ivar;
 
             objc2Ivar.offset = [cursor readInt64];
@@ -801,16 +800,22 @@ struct cd_objc2_property {
             objc2Ivar.alignment = [cursor readInt32];
             objc2Ivar.size = [cursor readInt32];
 
-            name = [machOFile stringAtAddress:objc2Ivar.name];
-            type = [machOFile stringAtAddress:objc2Ivar.type];
+            if (objc2Ivar.name != 0) {
+                NSString *name, *type;
 
-            //NSLog(@"%3u: %016lx %016lx %016lx", index, objc2Method.name, objc2Method.types, objc2Method.imp);
-            //NSLog(@"name: %@", name);
-            //NSLog(@"types: %@", types);
+                name = [machOFile stringAtAddress:objc2Ivar.name];
+                type = [machOFile stringAtAddress:objc2Ivar.type];
 
-            ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset];
-            [ivars addObject:ivar];
-            [ivar release];
+                //NSLog(@"%3u: %016lx %016lx %016lx", index, objc2Method.name, objc2Method.types, objc2Method.imp);
+                //NSLog(@"name: %@", name);
+                //NSLog(@"types: %@", types);
+
+                ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset];
+                [ivars addObject:ivar];
+                [ivar release];
+            } else {
+                //NSLog(@"%016lx %016lx %016lx  %08x %08x", objc2Ivar.offset, objc2Ivar.name, objc2Ivar.type, objc2Ivar.alignment, objc2Ivar.size);
+            }
         }
     }
 
