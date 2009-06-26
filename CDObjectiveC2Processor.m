@@ -78,6 +78,8 @@ struct cd_objc2_iamge_info {
     classes = [[NSMutableArray alloc] init];
     categories = [[NSMutableArray alloc] init];
     classesByAddress = [[NSMutableDictionary alloc] init];
+    protocolsByName = [[NSMutableDictionary alloc] init];
+    protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -87,6 +89,8 @@ struct cd_objc2_iamge_info {
     [classes release];
     [categories release];
     [classesByAddress release];
+    [protocolsByName release];
+    [protocolsByAddress release];
 
     [super dealloc];
 }
@@ -131,9 +135,7 @@ struct cd_objc2_iamge_info {
     // ... it's an undefined symbol, need to look it up.
     rinfo = [[machOFile dynamicSymbolTable] relocationEntryWithOffset:address - [[machOFile symbolTable] baseAddress]];
     //NSLog(@"rinfo: %@", rinfo);
-    if (rinfo == nil) {
-        NSLog(@"Warning: Couldn't find relocation entry for superclass at address: %016lx", address);
-    } else {
+    if (rinfo != nil) {
         NSString *prefix = @"_OBJC_CLASS_$_";
         NSString *str;
 
@@ -154,13 +156,17 @@ struct cd_objc2_iamge_info {
         }
     }
 
-    return @"__EXTERNAL_SYMBOL__";
+    // This is fine, they might really be root objects.  NSObject, NSProxy
+    return nil;
 }
 
 - (void)process;
 {
     [[machOFile symbolTable] loadSymbols];
     [[machOFile dynamicSymbolTable] loadSymbols];
+
+    [self loadProtocols];
+
     //exit(99);
     // Load classes first, so we can get a dictionary of classes by address
     [self loadClasses];
@@ -171,6 +177,90 @@ struct cd_objc2_iamge_info {
     [self loadCategories];
 }
 
+- (void)loadProtocols;
+{
+    CDLCSegment *segment;
+    CDSection *section;
+    NSUInteger dataOffset;
+    NSString *str;
+    NSData *sectionData;
+    CDDataCursor *cursor;
+
+    NSLog(@" > %s", _cmd);
+
+    segment = [machOFile segmentWithName:@"__DATA"];
+    section = [segment sectionWithName:@"__objc_protolist"];
+    sectionData = [section data];
+
+    cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    while ([cursor isAtEnd] == NO) {
+        uint64_t val;
+        CDOCProtocol *protocol;
+
+        val = [cursor readLittleInt64];
+        //NSLog(@"----------------------------------------");
+        //NSLog(@"val: %16lx", val);
+        //[machOFile logInfoForAddress:val];
+        protocol = [self loadProtocolAtAddress:val];
+        if (protocol != nil) {
+        }
+    }
+
+    NSLog(@"<  %s", _cmd);
+}
+
+- (CDOCProtocol *)loadProtocolAtAddress:(uint64_t)address;
+{
+    CDDataCursor *cursor;
+    NSString *str;
+    CDOCProtocol *protocol;
+
+    uint64_t v1, v2, v3, v4, v5, v6, v7, v8;
+
+    if (address == 0)
+        return nil;
+
+    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+    [cursor setByteOrder:[machOFile byteOrder]];
+    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    NSParameterAssert([cursor offset] != 0);
+
+    NSLog(@"offset: %lu", [cursor offset]);
+
+    v1 = [cursor readInt64];
+    v2 = [cursor readInt64]; // protocol name
+    v3 = [cursor readInt64];
+    v4 = [cursor readInt64]; // instance methods?
+    v5 = [cursor readInt64];
+    v6 = [cursor readInt64];
+    v7 = [cursor readInt64];
+    v8 = [cursor readInt64];
+    NSLog(@"----------------------------------------");
+    NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
+    NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
+    [machOFile logInfoForAddress:v1];
+    //[machOFile logInfoForAddress:v2];
+    [machOFile logInfoForAddress:v3];
+    [machOFile logInfoForAddress:v4];
+    [machOFile logInfoForAddress:v5];
+    [machOFile logInfoForAddress:v6];
+    [machOFile logInfoForAddress:v7];
+    [machOFile logInfoForAddress:v8];
+
+    protocol = [[[CDOCProtocol alloc] init] autorelease];
+
+    str = [machOFile stringAtAddress:v2];
+    [protocol setName:str];
+
+    for (CDOCMethod *method in [self loadMethodsAtAddress:v4]) {
+        [protocol addInstanceMethod:method];
+    }
+
+    NSLog(@"protocol= %@", protocol);
+
+    return protocol;
+}
+
 - (void)loadClasses;
 {
     CDLCSegment *segment, *s2;
@@ -179,9 +269,6 @@ struct cd_objc2_iamge_info {
     CDSection *section;
     NSData *sectionData;
     CDDataCursor *cursor;
-
-    NSLog(@" > %s", _cmd);
-
 
     //NSLog(@"machOFile: %@", machOFile);
     //NSLog(@"load commands: %@", [machOFile loadCommands]);
@@ -219,8 +306,6 @@ struct cd_objc2_iamge_info {
     str = [machOFile stringAtAddress:0x2cac00];
     NSLog(@"str: %@", str);
 #endif
-
-    NSLog(@"<  %s", _cmd);
 }
 
 - (void)loadCategories;
@@ -235,6 +320,7 @@ struct cd_objc2_iamge_info {
     segment = [machOFile segmentWithName:@"__DATA"];
     section = [segment sectionWithName:@"__objc_catlist"];
     sectionData = [section data];
+
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
     while ([cursor isAtEnd] == NO) {
         uint64_t val;
@@ -276,19 +362,13 @@ struct cd_objc2_iamge_info {
     v7 = [cursor readInt64];
     v8 = [cursor readInt64];
     //NSLog(@"----------------------------------------");
-    //[machOFile logInfoForAddress:v1];
-    //[machOFile logInfoForAddress:v2];
-    //[machOFile logInfoForAddress:v3];
+    //NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
+    //NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
 
     category = [[[CDOCCategory alloc] init] autorelease];
     str = [machOFile stringAtAddress:v1];
     [category setName:str];
     //NSLog(@"set name to %@", str);
-
-    if ([str isEqualToString:@"NSBasicTranslations"]) {
-        NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
-        NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
-    }
 
     for (CDOCMethod *method in [self loadMethodsAtAddress:v3]) {
         [category addInstanceMethod:method];

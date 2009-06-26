@@ -5,13 +5,16 @@
 
 #import "CDObjectiveCProcessor.h"
 
-@class CDOCClass, CDOCCategory;
+@class CDOCClass, CDOCCategory, CDOCProtocol;
 
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
     NSMutableArray *classes;
     NSMutableArray *categories;
     NSMutableDictionary *classesByAddress;
+
+    NSMutableDictionary *protocolsByName; // uniqued
+    NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
@@ -22,6 +25,9 @@
 - (NSString *)externalClassNameForAddress:(uint64_t)address;
 
 - (void)process;
+
+- (void)loadProtocols;
+- (CDOCProtocol *)loadProtocolAtAddress:(uint64_t)address;
 
 - (void)loadClasses;
 - (void)loadCategories;
