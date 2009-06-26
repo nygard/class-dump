@@ -253,7 +253,6 @@
 
 - (void)setTargetArchName:(NSString *)newArchName;
 {
-    NSLog(@"new: %@, old: %@", newArchName, targetArchName);
     if (newArchName == targetArchName)
         return;
 

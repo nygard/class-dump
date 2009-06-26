@@ -229,9 +229,6 @@ int main(int argc, char *argv[])
             [classDump setTargetArchName:archName];
             [classDump setExecutablePath:[executablePath stringByDeletingLastPathComponent]];
 
-            NSLog(@"----------------------------------------------------------------------");
-            NSLog(@"About to process file from main().");
-
             // NO, we have the file already: file
             if ([classDump loadFile:file]) {
 #if 0
