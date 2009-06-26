@@ -818,25 +818,4 @@ struct cd_objc2_property {
     return protocols;
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-{
-    NSUInteger count, index;
-    NSArray *protocolNames;
-
-    for (CDOCClass *aClass in classes)
-        [aClass registerStructuresWithObject:anObject phase:phase];
-
-    for (CDOCCategory *category in categories)
-        [category registerStructuresWithObject:anObject phase:phase];
-
-    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    count = [protocolNames count];
-    for (index = 0; index < count; index++) {
-        CDOCProtocol *aProtocol;
-
-        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol registerStructuresWithObject:anObject phase:phase];
-    }
-}
-
 @end

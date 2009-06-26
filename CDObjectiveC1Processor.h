@@ -19,8 +19,6 @@
 - (BOOL)hasObjectiveCData;
 - (void)process;
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-
 // Formerly private
 - (void)processModules;
 - (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;

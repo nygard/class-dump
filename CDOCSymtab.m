@@ -56,13 +56,4 @@
     return [NSString stringWithFormat:@"[%@] classes: %@, categories: %@", NSStringFromClass([self class]), classes, categories];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-{
-    for (CDOCClass *aClass in classes)
-        [aClass registerStructuresWithObject:anObject phase:phase];
-
-    for (CDOCCategory *category in categories)
-        [category registerStructuresWithObject:anObject phase:phase];
-}
-
 @end

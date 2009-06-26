@@ -51,7 +51,14 @@
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
-    // Implement in subclasses.
+    for (CDOCClass *aClass in classes)
+        [aClass registerStructuresWithObject:anObject phase:phase];
+
+    for (CDOCCategory *category in categories)
+        [category registerStructuresWithObject:anObject phase:phase];
+
+    for (NSString *name in [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)])
+        [[protocolsByName objectForKey:name] registerStructuresWithObject:anObject phase:phase];
 }
 
 - (NSString *)description;

@@ -26,6 +26,4 @@
 
 - (NSString *)description;
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-
 @end

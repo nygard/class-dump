@@ -161,24 +161,6 @@ struct cd_objc_protocol_method
     [self processModules];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
-{
-    NSUInteger count, index;
-    NSArray *protocolNames;
-
-    for (CDOCModule *module in modules)
-        [[module symtab] registerStructuresWithObject:anObject phase:phase];
-
-    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    count = [protocolNames count];
-    for (index = 0; index < count; index++) {
-        CDOCProtocol *aProtocol;
-
-        aProtocol = [protocolsByName objectForKey:[protocolNames objectAtIndex:index]];
-        [aProtocol registerStructuresWithObject:anObject phase:phase];
-    }
-}
-
 //
 // Formerly private
 //
