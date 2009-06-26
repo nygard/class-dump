@@ -109,6 +109,7 @@
 
         rinfo.r_address = [cursor readInt32];
         val = [cursor readInt32];
+        // TODO (2009-06-25): Make sure this works on PPC.
         rinfo.r_symbolnum = val & 0x00ffffff;
         rinfo.r_pcrel = (val & 0x01000000) >> 24;
         rinfo.r_length = (val & 0x06000000) >> 25;
