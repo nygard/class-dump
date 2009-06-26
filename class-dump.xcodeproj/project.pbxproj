@@ -192,6 +192,8 @@
 		013182FD0CDF6EE400EC5A2C /* CDTypeFormatterUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7D08AE9E45003E99F8 /* CDTypeFormatterUnitTest.m */; };
 		013182FE0CDF6EE400EC5A2C /* CDStructHandlingUnitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B7B08AE9E45003E99F8 /* CDStructHandlingUnitTest.m */; };
 		013182FF0CDF6EE400EC5A2C /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
+		0154C1AD0FF58BFA00F87451 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
+		0154C1B10FF58C3600F87451 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
 		017F9C9A0DD0F66400EC8D0A /* CDDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F9C990DD0F66400EC8D0A /* CDDataCursor.m */; };
 		0182A9530FED694800145175 /* CDMachO64File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9520FED694800145175 /* CDMachO64File.m */; };
 		0182A9660FED69A500145175 /* CDMachO32File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9650FED69A500145175 /* CDMachO32File.m */; };
@@ -402,6 +404,7 @@
 		012FF18A0CDB886C00F31E61 /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		012FF18B0CDB886C00F31E61 /* CDUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CDUnitTests-Info.plist"; sourceTree = "<group>"; };
 		013183060CDF6EE400EC5A2C /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		017F9C980DD0F66400EC8D0A /* CDDataCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDataCursor.h; sourceTree = "<group>"; };
 		017F9C990DD0F66400EC8D0A /* CDDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDataCursor.m; sourceTree = "<group>"; };
 		0182A9510FED694800145175 /* CDMachO64File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachO64File.h; sourceTree = "<group>"; };
@@ -472,6 +475,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				01A9A58A0FF19C6E00475772 /* Foundation.framework in Frameworks */,
+				0154C1AD0FF58BFA00F87451 /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,6 +484,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DD76F9C0486AA7600D96B5E /* Foundation.framework in Frameworks */,
+				0154C1B10FF58C3600F87451 /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -710,6 +715,7 @@
 				08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */,
 				1AB674ADFE9D54B511CA2CBB /* Products */,
 				012E2B7508AE9E01003E99F8 /* OCUnit tests */,
+				0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */,
 			);
 			name = "class-dump";
 			sourceTree = "<group>";
@@ -1195,10 +1201,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "$(HOME)/bin";
-				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump-32";
-				ZERO_LINK = YES;
 			};
 			name = Debug;
 		};
@@ -1218,10 +1222,8 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /;
-				OTHER_LDFLAGS = "-lcrypto";
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump-32";
-				ZERO_LINK = NO;
 			};
 			name = Release;
 		};
@@ -1351,7 +1353,6 @@
 		01A9A4BF0FF19B2F00475772 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(NATIVE_ARCH_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1359,10 +1360,11 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				INSTALL_PATH = /usr/local/bin;
-				OTHER_LDFLAGS = "-lcrypto";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = "$(HOME)/bin";
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 			};
@@ -1371,15 +1373,13 @@
 		01A9A4C00FF19B2F00475772 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INSTALL_PATH = /usr/local/bin;
-				OTHER_LDFLAGS = "-lcrypto";
+				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
+				INSTALL_PATH = /;
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 				ZERO_LINK = NO;
