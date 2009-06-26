@@ -41,4 +41,9 @@
                      name, attributes];
 }
 
+- (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
+{
+    return [name compare:[otherProperty name]];
+}
+
 @end

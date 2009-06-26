@@ -19,4 +19,6 @@
 
 - (NSString *)description;
 
+- (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
+
 @end

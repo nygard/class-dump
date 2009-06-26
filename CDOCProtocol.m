@@ -248,13 +248,13 @@
         [aVisitor willVisitOptionalMethods];
 
         methods = optionalClassMethods;
-        if ([[aVisitor classDump] shouldSortMethods] == YES)
+        if ([[aVisitor classDump] shouldSortMethods])
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)
             [aVisitor visitClassMethod:method];
 
         methods = optionalInstanceMethods;
-        if ([[aVisitor classDump] shouldSortMethods] == YES)
+        if ([[aVisitor classDump] shouldSortMethods])
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)
             [aVisitor visitInstanceMethod:method];
@@ -265,7 +265,12 @@
 
 - (void)visitProperties:(CDVisitor *)aVisitor;
 {
-    for (CDOCProperty *property in properties)
+    NSArray *array;
+
+    array = properties;
+    if ([[aVisitor classDump] shouldSortMethods])
+        array = [array sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    for (CDOCProperty *property in array)
         [aVisitor visitProperty:property];
 }
 
