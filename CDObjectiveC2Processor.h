@@ -19,6 +19,8 @@
 
 - (BOOL)hasObjectiveCData;
 
+- (NSString *)externalClassNameForAddress:(uint64_t)address;
+
 - (void)process;
 
 - (void)loadClasses;

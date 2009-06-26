@@ -121,6 +121,42 @@ struct cd_objc2_iamge_info {
     [allClasses release];
 }
 
+- (NSString *)externalClassNameForAddress:(uint64_t)address;
+{
+    CDRelocationInfo *rinfo;
+    CDSymbol *symbol;
+
+    // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
+    // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
+    // ... it's an undefined symbol, need to look it up.
+    rinfo = [[machOFile dynamicSymbolTable] relocationEntryWithOffset:address - [[machOFile symbolTable] baseAddress]];
+    //NSLog(@"rinfo: %@", rinfo);
+    if (rinfo == nil) {
+        NSLog(@"Warning: Couldn't find relocation entry for superclass at address: %016lx", address);
+    } else {
+        NSString *prefix = @"_OBJC_CLASS_$_";
+        NSString *str;
+
+        symbol = [[[machOFile symbolTable] symbols] objectAtIndex:rinfo.symbolnum];
+        //NSLog(@"symbol: %@", symbol);
+
+        // Now we could use GET_LIBRARY_ORDINAL(), look up the the appropriate mach-o file (being sure to have loaded them even without -r),
+        // look up the symbol in that mach-o file, get the address, look up the class based on that address, and finally get the class name
+        // from that.
+
+        // Or, we could be lazy and take advantage of the fact that the class name we're after is in the symbol name:
+        str = [symbol name];
+        if ([str hasPrefix:prefix]) {
+            return [str substringFromIndex:[prefix length]];
+        } else {
+            NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
+            return str;
+        }
+    }
+
+    return @"__EXTERNAL_SYMBOL__";
+}
+
 - (void)process;
 {
     [[machOFile symbolTable] loadSymbols];
@@ -337,45 +373,7 @@ struct cd_objc2_iamge_info {
     [cursor release];
 
     if (objc2Class.superclass == 0) {
-        CDRelocationInfo *rinfo;
-        CDSymbol *symbol;
-
-        // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
-        // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
-        // ... it's an undefined symbol, need to look it up.
-        // So... need to recursively load frameworks, even if we don't dump them.
-        //[aClass setSuperClassName:@"NSObject"];
-        //NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
-        //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
-        //NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
-        //[machOFile logInfoForAddress:address];
-        //[machOFile logInfoForAddress:address + 8];
-        //[machOFile logInfoForAddress:0x11cb2];
-        //[machOFile logInfoForAddress:0x11fed];
-        rinfo = [[machOFile dynamicSymbolTable] relocationEntryWithOffset:address + 8 - [[machOFile symbolTable] baseAddress]];
-        //NSLog(@"rinfo: %@", rinfo);
-        if (rinfo == nil) {
-            NSLog(@"Warning: Couldn't find relocation entry for superclass at address: %016lx", address + 8);
-            [aClass setSuperClassName:@"__EXTERNAL_SYMBOL__"];
-        } else {
-            NSString *prefix = @"_OBJC_CLASS_$_";
-
-            symbol = [[[machOFile symbolTable] symbols] objectAtIndex:rinfo.symbolnum];
-            //NSLog(@"symbol: %@", symbol);
-
-            // Now we could use GET_LIBRARY_ORDINAL(), look up the the appropriate mach-o file (being sure to have loaded them even without -r),
-            // look up the symbol in that mach-o file, get the address, look up the class based on that address, and finally get the class name
-            // from that.
-
-            // Or, we could be lazy and take advantage of the fact that the class name we're after is in the symbol name:
-            str = [symbol name];
-            if ([str hasPrefix:prefix]) {
-                [aClass setSuperClassName:[str substringFromIndex:[prefix length]]];
-            } else {
-                NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
-                [aClass setSuperClassName:str];
-            }
-        }
+        [aClass setSuperClassName:[self externalClassNameForAddress:address + 8]];
     } else {
         CDOCClass *sc;
 
