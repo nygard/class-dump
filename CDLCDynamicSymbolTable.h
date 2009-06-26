@@ -5,6 +5,8 @@
 
 #import "CDLoadCommand.h"
 
+@class CDRelocationInfo;
+
 @interface CDLCDynamicSymbolTable : CDLoadCommand
 {
     struct dysymtab_command dysymtab;
@@ -19,5 +21,7 @@
 - (uint32_t)cmdsize;
 
 - (void)loadSymbols;
+
+- (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
 
 @end

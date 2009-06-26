@@ -40,7 +40,7 @@
     dysymtab.nextrel = [cursor readInt32];
     dysymtab.locreloff = [cursor readInt32];
     dysymtab.nlocrel = [cursor readInt32];
-#if 1
+#if 0
     NSLog(@"ilocalsym:      0x%08x  %d", dysymtab.ilocalsym, dysymtab.ilocalsym);
     NSLog(@"nlocalsym:      0x%08x  %d", dysymtab.nlocalsym, dysymtab.nlocalsym);
     NSLog(@"iextdefsym:     0x%08x  %d", dysymtab.iextdefsym, dysymtab.iextdefsym);
@@ -91,8 +91,6 @@
     CDDataCursor *cursor;
     uint32_t index;
 
-    NSLog(@" > %s", _cmd);
-
     cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
     [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
 
@@ -138,7 +136,7 @@
         [ri release];
     }
 
-    NSLog(@"externalRelocationEntries: %@", externalRelocationEntries);
+    //NSLog(@"externalRelocationEntries: %@", externalRelocationEntries);
 
     // r_address is purported to be the offset from the vmaddr of the first segment, but...
     // it appears to be the offset from the vmaddr of the 3rd segment in t1s.
@@ -151,8 +149,16 @@
     // Maybe first "read/write" command (initprot)?... but MH_SPLIT_SEGS?
 
     [cursor release];
+}
 
-    NSLog(@"<  %s", _cmd);
+- (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
+{
+    for (CDRelocationInfo *info in externalRelocationEntries) {
+        if ([info offset] == offset)
+            return info;
+    }
+
+    return nil;
 }
 
 @end

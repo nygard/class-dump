@@ -26,6 +26,9 @@
 - (uint32_t)stroff;
 - (uint32_t)strsize;
 
+- (NSUInteger)baseAddress;
+- (NSArray *)symbols;
+
 - (NSString *)extraDescription;
 
 @end

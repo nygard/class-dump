@@ -16,6 +16,8 @@
 #import "CDLCSymbolTable.h"
 #import "CDOCCategory.h"
 #import "CDClassDump.h"
+#import "CDRelocationInfo.h"
+#import "CDSymbol.h"
 
 struct cd_objc2_class {
     uint64_t isa;
@@ -334,65 +336,68 @@ struct cd_objc2_iamge_info {
 
     [cursor release];
 
-    {
-#if 0
-        NSLog(@"isa: %016lx, data offset: %lu", objc2Class.isa, [machOFile dataOffsetForAddress:0x2ca960]);
-        NSLog(@"***");
-        [machOFile logInfoForAddress:address];
-        NSLog(@"***");
+    if (objc2Class.superclass == 0) {
+        CDRelocationInfo *rinfo;
+        CDSymbol *symbol;
 
-        [machOFile logInfoForAddress:objc2Class.isa];
-        [machOFile logInfoForAddress:objc2Class.superclass];
-        [machOFile logInfoForAddress:objc2Class.cache];
-        [machOFile logInfoForAddress:objc2Class.vtable];
-        [machOFile logInfoForAddress:objc2Class.data];
-        [machOFile logInfoForAddress:objc2Class.reserved1];
-        [machOFile logInfoForAddress:objc2Class.reserved2];
-        [machOFile logInfoForAddress:objc2Class.reserved3];
-
-        [machOFile logInfoForAddress:0x2ca960];
-        [machOFile logInfoForAddress:0x2ca9a0];
-#endif
-
-        if (objc2Class.superclass == 0) {
-            // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
-            // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
-            // ... it's an undefined symbol, need to look it up.
-            // So... need to recursively load frameworks, even if we don't dump them.
-            //[aClass setSuperClassName:@"NSObject"];
-            //NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
-            NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
-            //NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
-            //[machOFile logInfoForAddress:address];
-            //[machOFile logInfoForAddress:address + 8];
-            //[machOFile logInfoForAddress:0x11cb2];
-            //[machOFile logInfoForAddress:0x11fed];
-            exit(99);
+        // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
+        // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
+        // ... it's an undefined symbol, need to look it up.
+        // So... need to recursively load frameworks, even if we don't dump them.
+        //[aClass setSuperClassName:@"NSObject"];
+        //NSLog(@"objc2Class.superclass of %@ is 0", [aClass name]);
+        //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+        //NSLog(@"data offset for address (%016lx): %016lx", address, [machOFile dataOffsetForAddress:address]);
+        //[machOFile logInfoForAddress:address];
+        //[machOFile logInfoForAddress:address + 8];
+        //[machOFile logInfoForAddress:0x11cb2];
+        //[machOFile logInfoForAddress:0x11fed];
+        rinfo = [[machOFile dynamicSymbolTable] relocationEntryWithOffset:address + 8 - [[machOFile symbolTable] baseAddress]];
+        //NSLog(@"rinfo: %@", rinfo);
+        if (rinfo == nil) {
+            NSLog(@"Warning: Couldn't find relocation entry for superclass at address: %016lx", address + 8);
             [aClass setSuperClassName:@"__EXTERNAL_SYMBOL__"];
         } else {
-            CDOCClass *sc;
+            NSString *prefix = @"_OBJC_CLASS_$_";
 
-            //NSLog(@"objc2Class.superclass of %@ is not 0", [aClass name]);
-            //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
-            //[machOFile logInfoForAddress:0x002cade8];
-            //exit(99);
-            //NSLog(@"superclass address: %016lx", objc2Class.superclass);
-            sc = [self loadClassAtAddress:objc2Class.superclass];
-            //NSLog(@"sc: %@", sc);
-            //NSLog(@"sc name: %@", [sc name]);
-            [aClass setSuperClassName:[sc name]];
+            symbol = [[[machOFile symbolTable] symbols] objectAtIndex:rinfo.symbolnum];
+            //NSLog(@"symbol: %@", symbol);
+
+            // Now we could use GET_LIBRARY_ORDINAL(), look up the the appropriate mach-o file (being sure to have loaded them even without -r),
+            // look up the symbol in that mach-o file, get the address, look up the class based on that address, and finally get the class name
+            // from that.
+
+            // Or, we could be lazy and take advantage of the fact that the class name we're after is in the symbol name:
+            str = [symbol name];
+            if ([str hasPrefix:prefix]) {
+                [aClass setSuperClassName:[str substringFromIndex:[prefix length]]];
+            } else {
+                NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
+                [aClass setSuperClassName:str];
+            }
         }
+    } else {
+        CDOCClass *sc;
 
-        {
-            CDOCClass *metaclass;
-
-            metaclass = [self loadMetaClassAtAddress:objc2Class.isa];
-            //NSLog(@"metaclass [%016lx]: %@", objc2Class.isa, metaclass);
-            //NSLog(@"metaclass name (%@) for class name (%@)", [metaclass name], [aClass name]);
-            for (CDOCMethod *method in [metaclass classMethods])
-                [aClass addClassMethod:method];
-        }
+        //NSLog(@"objc2Class.superclass of %@ is not 0", [aClass name]);
+        //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
+        //[machOFile logInfoForAddress:0x002cade8];
         //exit(99);
+        //NSLog(@"superclass address: %016lx", objc2Class.superclass);
+        sc = [self loadClassAtAddress:objc2Class.superclass];
+        //NSLog(@"sc: %@", sc);
+        //NSLog(@"sc name: %@", [sc name]);
+        [aClass setSuperClassName:[sc name]];
+    }
+
+    {
+        CDOCClass *metaclass;
+
+        metaclass = [self loadMetaClassAtAddress:objc2Class.isa];
+        //NSLog(@"metaclass [%016lx]: %@", objc2Class.isa, metaclass);
+        //NSLog(@"metaclass name (%@) for class name (%@)", [metaclass name], [aClass name]);
+        for (CDOCMethod *method in [metaclass classMethods])
+            [aClass addClassMethod:method];
     }
 
     return aClass;

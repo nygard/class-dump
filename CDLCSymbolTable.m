@@ -25,7 +25,7 @@
     symtabCommand.nsyms = [cursor readInt32];
     symtabCommand.stroff = [cursor readInt32];
     symtabCommand.strsize = [cursor readInt32];
-#if 1
+#if 0
     NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
           symtabCommand.cmd, symtabCommand.cmdsize,
           symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
@@ -71,7 +71,7 @@
             CDLCSegment *segment = (CDLCSegment *)loadCommand;
 
             if (([segment initprot] & CD_VM_PROT_RW) == CD_VM_PROT_RW) {
-                NSLog(@"segment... initprot = %08x, addr= %016lx *** r/w", [segment initprot], [segment vmaddr]);
+                //NSLog(@"segment... initprot = %08x, addr= %016lx *** r/w", [segment initprot], [segment vmaddr]);
                 baseAddress = [segment vmaddr];
                 didFindBaseAddress = YES;
                 break;
@@ -154,7 +154,7 @@
 
     [cursor release];
 
-    NSLog(@"symbols: %@", symbols);
+    //NSLog(@"symbols: %@", symbols);
 }
 
 - (uint32_t)symoff;
@@ -175,6 +175,16 @@
 - (uint32_t)strsize;
 {
     return symtabCommand.strsize;
+}
+
+- (NSUInteger)baseAddress;
+{
+    return baseAddress;
+}
+
+- (NSArray *)symbols;
+{
+    return symbols;
 }
 
 - (NSString *)extraDescription;
