@@ -5,6 +5,8 @@
 
 #import "CDObjectiveCProcessor.h"
 
+@class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
+
 @interface CDObjectiveC1Processor : CDObjectiveCProcessor
 {
     NSMutableArray *modules;
@@ -23,5 +25,18 @@
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
+
+// Formerly private
+- (void)processModules;
+- (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
+- (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
+- (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
+- (NSArray *)processMethodsAtAddress:(uint32_t)address;
+- (NSArray *)processMethodsAtAddress:(uint32_t)address isFromProtocolDefinition:(BOOL)isFromProtocolDefinition;
+- (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
+- (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
+
+- (void)processProtocolSection;
+- (void)checkUnreferencedProtocols;
 
 @end

@@ -260,10 +260,8 @@
 		01A9A6B20FF1ACA300475772 /* CDLCSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A6B00FF1ACA300475772 /* CDLCSegment.m */; };
 		01CA528E0FF28578000B857D /* CDObjectiveCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */; };
 		01CA528F0FF28578000B857D /* CDObjectiveCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */; };
-		01CA52B60FF2875B000B857D /* CDObjectiveC1Processor-Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B10FF2875B000B857D /* CDObjectiveC1Processor-Private.m */; };
 		01CA52B70FF2875B000B857D /* CDObjectiveC1Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */; };
 		01CA52B80FF2875B000B857D /* CDObjectiveC2Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B50FF2875B000B857D /* CDObjectiveC2Processor.m */; };
-		01CA52B90FF2875B000B857D /* CDObjectiveC1Processor-Private.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B10FF2875B000B857D /* CDObjectiveC1Processor-Private.m */; };
 		01CA52BA0FF2875B000B857D /* CDObjectiveC1Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */; };
 		01CA52BB0FF2875B000B857D /* CDObjectiveC2Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B50FF2875B000B857D /* CDObjectiveC2Processor.m */; };
 		01F77E170FF44D900055EECD /* CDRelocationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F77E160FF44D900055EECD /* CDRelocationInfo.m */; };
@@ -439,8 +437,6 @@
 		01A9A6B00FF1ACA300475772 /* CDLCSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCSegment.m; sourceTree = "<group>"; };
 		01CA528C0FF28578000B857D /* CDObjectiveCProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveCProcessor.h; sourceTree = "<group>"; };
 		01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveCProcessor.m; sourceTree = "<group>"; };
-		01CA52B00FF2875B000B857D /* CDObjectiveC1Processor-Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CDObjectiveC1Processor-Private.h"; sourceTree = "<group>"; };
-		01CA52B10FF2875B000B857D /* CDObjectiveC1Processor-Private.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CDObjectiveC1Processor-Private.m"; sourceTree = "<group>"; };
 		01CA52B20FF2875B000B857D /* CDObjectiveC1Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC1Processor.h; sourceTree = "<group>"; };
 		01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC1Processor.m; sourceTree = "<group>"; };
 		01CA52B40FF2875B000B857D /* CDObjectiveC2Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor.h; sourceTree = "<group>"; };
@@ -503,8 +499,6 @@
 				01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */,
 				01CA52B20FF2875B000B857D /* CDObjectiveC1Processor.h */,
 				01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */,
-				01CA52B00FF2875B000B857D /* CDObjectiveC1Processor-Private.h */,
-				01CA52B10FF2875B000B857D /* CDObjectiveC1Processor-Private.m */,
 				01CA52B40FF2875B000B857D /* CDObjectiveC2Processor.h */,
 				01CA52B50FF2875B000B857D /* CDObjectiveC2Processor.m */,
 				012E2B1E08AE9D6D003E99F8 /* CDStructureTable.h */,
@@ -1100,7 +1094,6 @@
 				01A9A6970FF1A4CC00475772 /* CDSection.m in Sources */,
 				01A9A6B20FF1ACA300475772 /* CDLCSegment.m in Sources */,
 				01CA528F0FF28578000B857D /* CDObjectiveCProcessor.m in Sources */,
-				01CA52B90FF2875B000B857D /* CDObjectiveC1Processor-Private.m in Sources */,
 				01CA52BA0FF2875B000B857D /* CDObjectiveC1Processor.m in Sources */,
 				01CA52BB0FF2875B000B857D /* CDObjectiveC2Processor.m in Sources */,
 				01F77E180FF44D900055EECD /* CDRelocationInfo.m in Sources */,
@@ -1163,7 +1156,6 @@
 				01A9A6960FF1A4CC00475772 /* CDSection.m in Sources */,
 				01A9A6B10FF1ACA300475772 /* CDLCSegment.m in Sources */,
 				01CA528E0FF28578000B857D /* CDObjectiveCProcessor.m in Sources */,
-				01CA52B60FF2875B000B857D /* CDObjectiveC1Processor-Private.m in Sources */,
 				01CA52B70FF2875B000B857D /* CDObjectiveC1Processor.m in Sources */,
 				01CA52B80FF2875B000B857D /* CDObjectiveC2Processor.m in Sources */,
 				01F77E170FF44D900055EECD /* CDRelocationInfo.m in Sources */,
