@@ -26,6 +26,8 @@
     protocols = [[NSMutableArray alloc] init];
     classMethods = [[NSMutableArray alloc] init];
     instanceMethods = [[NSMutableArray alloc] init];
+    optionalClassMethods = [[NSMutableArray alloc] init];
+    optionalInstanceMethods = [[NSMutableArray alloc] init];
     adoptedProtocolNames = [[NSMutableSet alloc] init];
 
     return self;
@@ -37,6 +39,9 @@
     [protocols release];
     [classMethods release];
     [instanceMethods release];
+    [optionalClassMethods release];
+    [optionalInstanceMethods release];
+
     [adoptedProtocolNames release];
 
     [super dealloc];
@@ -105,9 +110,29 @@
     [instanceMethods addObject:method];
 }
 
+- (NSArray *)optionalClassMethods;
+{
+    return optionalClassMethods;
+}
+
+- (void)addOptionalClassMethod:(CDOCMethod *)method;
+{
+    [optionalClassMethods addObject:method];
+}
+
+- (NSArray *)optionalInstanceMethods;
+{
+    return optionalInstanceMethods;
+}
+
+- (void)addOptionalInstanceMethod:(CDOCMethod *)method;
+{
+    [optionalInstanceMethods addObject:method];
+}
+
 - (BOOL)hasMethods;
 {
-    return [classMethods count] > 0 || [instanceMethods count] > 0;
+    return [classMethods count] > 0 || [instanceMethods count] > 0 || [optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0;
 }
 
 - (NSString *)description;
@@ -120,6 +145,9 @@
 {
     [self registerStructuresFromMethods:classMethods withObject:anObject phase:phase];
     [self registerStructuresFromMethods:instanceMethods withObject:anObject phase:phase];
+
+    [self registerStructuresFromMethods:optionalClassMethods withObject:anObject phase:phase];
+    [self registerStructuresFromMethods:optionalInstanceMethods withObject:anObject phase:phase];
 }
 
 - (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
@@ -185,29 +213,39 @@
 
 - (void)recursivelyVisitMethods:(CDVisitor *)aVisitor;
 {
-    int count, index;
     NSArray *methods;
 
+    methods = classMethods;
     if ([[aVisitor classDump] shouldSortMethods] == YES)
-        methods = [classMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    else
-        methods = classMethods;
+        methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    for (CDOCMethod *method in methods)
+        [aVisitor visitClassMethod:method];
 
-    count = [methods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++)
-            [aVisitor visitClassMethod:[methods objectAtIndex:index]];
-    }
-
+    methods = instanceMethods;
     if ([[aVisitor classDump] shouldSortMethods] == YES)
-        methods = [instanceMethods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-    else
-        methods = instanceMethods;
+        methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    for (CDOCMethod *method in methods)
+        [aVisitor visitInstanceMethod:method];
 
-    count = [methods count];
-    if (count > 0) {
-        for (index = 0; index < count; index++)
-            [aVisitor visitInstanceMethod:[methods objectAtIndex:index]];
+    //NSLog(@"optionalClassMethods: %@", optionalClassMethods);
+    //NSLog(@"optionalInstanceMethods: %@", optionalInstanceMethods);
+    //exit(99);
+    if ([optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0) {
+        [aVisitor willVisitOptionalMethods];
+
+        methods = optionalClassMethods;
+        if ([[aVisitor classDump] shouldSortMethods] == YES)
+            methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+        for (CDOCMethod *method in methods)
+            [aVisitor visitClassMethod:method];
+
+        methods = optionalInstanceMethods;
+        if ([[aVisitor classDump] shouldSortMethods] == YES)
+            methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+        for (CDOCMethod *method in methods)
+            [aVisitor visitInstanceMethod:method];
+
+        [aVisitor didVisitOptionalMethods];
     }
 }
 

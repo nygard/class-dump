@@ -254,6 +254,20 @@ struct cd_objc2_iamge_info {
         } else {
             NSParameterAssert([[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
         }
+
+        if ([[uniqueProtocol optionalClassMethods] count] == 0) {
+            for (CDOCMethod *method in [p1 optionalClassMethods])
+                [uniqueProtocol addOptionalClassMethod:method];
+        } else {
+            NSParameterAssert([[uniqueProtocol optionalClassMethods] count] == [[p1 optionalClassMethods] count]);
+        }
+
+        if ([[uniqueProtocol optionalInstanceMethods] count] == 0) {
+            for (CDOCMethod *method in [p1 optionalInstanceMethods])
+                [uniqueProtocol addOptionalInstanceMethod:method];
+        } else {
+            NSParameterAssert([[uniqueProtocol optionalInstanceMethods] count] == [[p1 optionalInstanceMethods] count]);
+        }
     }
 
     //NSLog(@"protocolsByName: %@", protocolsByName);
@@ -334,15 +348,29 @@ struct cd_objc2_iamge_info {
             [protocol addClassMethod:method];
         }
 
+        for (CDOCMethod *method in [self loadMethodsAtAddress:v6]) {
+            [protocol addOptionalInstanceMethod:method];
+        }
+
+        for (CDOCMethod *method in [self loadMethodsAtAddress:v7]) {
+            [protocol addOptionalClassMethod:method];
+        }
+
 #if 0
         //NSLog(@"protocol= %@", protocol);
         NSParameterAssert(v1 == 0);
         //[machOFile logInfoForAddress:v3];
         //NSParameterAssert(v3 == 0);
         //NSParameterAssert(v5 == 0);
+        NSParameterAssert(v8 == 0);
+#endif
+#if 0
+        NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
+        NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
+        [machOFile logInfoForAddress:v6];
+        [machOFile logInfoForAddress:v7];
         NSParameterAssert(v6 == 0);
         NSParameterAssert(v7 == 0);
-        NSParameterAssert(v8 == 0);
 #endif
 
         [cursor release];

@@ -17,6 +17,8 @@
     NSMutableArray *protocols;
     NSMutableArray *classMethods;
     NSMutableArray *instanceMethods;
+    NSMutableArray *optionalClassMethods;
+    NSMutableArray *optionalInstanceMethods;
 
     NSMutableSet *adoptedProtocolNames;
 }
@@ -37,6 +39,12 @@
 
 - (NSArray *)instanceMethods;
 - (void)addInstanceMethod:(CDOCMethod *)method;
+
+- (NSArray *)optionalClassMethods;
+- (void)addOptionalClassMethod:(CDOCMethod *)method;
+
+- (NSArray *)optionalInstanceMethods;
+- (void)addOptionalInstanceMethod:(CDOCMethod *)method;
 
 - (BOOL)hasMethods;
 

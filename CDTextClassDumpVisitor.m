@@ -117,6 +117,11 @@
     [resultString appendString:@"\n"];
 }
 
+- (void)willVisitOptionalMethods;
+{
+    [resultString appendString:@"\n@optional\n"];
+}
+
 - (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
 {
     [resultString appendString:@"@end\n\n"];

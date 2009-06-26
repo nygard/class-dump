@@ -59,6 +59,14 @@
 {
 }
 
+- (void)willVisitOptionalMethods;
+{
+}
+
+- (void)didVisitOptionalMethods;
+{
+}
+
 // Called after visiting.
 - (void)didVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
