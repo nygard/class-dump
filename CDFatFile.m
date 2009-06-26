@@ -141,7 +141,6 @@
     const NXArchInfo *archInfo;
     cpu_type_t maskedCPUType;
 
-    NSLog(@"%s, name=%@", _cmd, name);
     archInfo = NXGetArchInfoFromName([name UTF8String]);
     if (archInfo == NULL)
         return nil;
