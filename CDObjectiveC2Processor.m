@@ -137,8 +137,6 @@ struct cd_objc2_property {
 {
     CDLCSegment *segment;
     CDSection *section;
-    NSUInteger dataOffset;
-    NSString *str;
     NSData *sectionData;
     CDDataCursor *cursor;
 
@@ -326,9 +324,7 @@ struct cd_objc2_property {
 
 - (void)loadClasses;
 {
-    CDLCSegment *segment, *s2;
-    NSUInteger dataOffset;
-    NSString *str;
+    CDLCSegment *segment;
     CDSection *section;
     NSData *sectionData;
     CDDataCursor *cursor;
@@ -375,8 +371,6 @@ struct cd_objc2_property {
 {
     CDLCSegment *segment;
     CDSection *section;
-    NSUInteger dataOffset;
-    NSString *str;
     NSData *sectionData;
     CDDataCursor *cursor;
 
