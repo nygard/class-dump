@@ -19,6 +19,8 @@
 #import "CDRelocationInfo.h"
 #import "CDSymbol.h"
 
+// http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
+
 struct cd_objc2_class {
     uint64_t isa;
     uint64_t superclass;
