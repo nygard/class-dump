@@ -3,6 +3,8 @@
 TESTDIR=/tmp/cdt
 TESTDIR_OLD=$TESTDIR/old
 TESTDIR_NEW=$TESTDIR/new
+TESTDIR_NEW_32=$TESTDIR/new32
+TESTDIR_NEW_64=$TESTDIR/new64
 
 OLD_CD=~/Unix/bin/class-dump-3.1.2
 NEW_CD=/Local/nygard/Products/Debug/class-dump
@@ -14,7 +16,7 @@ echo "Starting tests at `date`"
 
 ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /Volumes/BigData/TestApplications/*.app | wc
 
-mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
+mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW $TESTDIR_NEW_32 $TESTDIR_NEW_64
 
 # arch = none check for FWAVCPrivate.framework, KAdminClient, Kernel, SyndicationUI
 
@@ -27,7 +29,7 @@ foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFramewo
             $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .framework`-framework.txt"
         else
             echo $arch
-            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt"
+            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .framework`-$arch-framework.txt" &
             $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .framework`-$arch-framework.txt"
         fi
     done
@@ -42,14 +44,23 @@ foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.a
             $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .app`-app.txt"
         else
             echo $arch
-            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt"
+            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .app`-$arch-app.txt" &
             $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .app`-$arch-app.txt"
         fi
     done
 done
 
-echo "Removing results for unsupported 64-bit architectures:"
-rm -f /tmp/cdt/*/*ppc64*
-rm -f /tmp/cdt/*/*x86_64*
+## Set up comparisons of new 32-bit vs. 64-bit output
+#foreach arch (ppc ppc7400 i386) do
+#    foreach i ($TESTDIR_NEW/*-$arch-*) do
+#        ln -s $i $TESTDIR_NEW_32
+#    done
+#done
+#
+#foreach arch (ppc64 x86_64) do
+#    foreach i ($TESTDIR_NEW/*-$arch-*) do
+#        ln -s $i $TESTDIR_NEW_64
+#    done
+#done
 
 echo "Ended tests at `date`"
