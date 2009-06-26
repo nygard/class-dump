@@ -42,4 +42,6 @@
 
 - (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
 
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+
 @end

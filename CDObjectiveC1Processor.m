@@ -64,12 +64,11 @@
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
-    int count, index;
+    NSUInteger count, index;
     NSArray *protocolNames;
 
-    count = [modules count];
-    for (index = 0; index < count; index++)
-        [[[modules objectAtIndex:index] symtab] registerStructuresWithObject:anObject phase:phase];
+    for (CDOCModule *module in modules)
+        [[module symtab] registerStructuresWithObject:anObject phase:phase];
 
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
     count = [protocolNames count];

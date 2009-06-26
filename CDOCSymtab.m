@@ -58,15 +58,11 @@
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
-    int count, index;
+    for (CDOCClass *aClass in classes)
+        [aClass registerStructuresWithObject:anObject phase:phase];
 
-    count = [classes count];
-    for (index = 0; index < count; index++)
-        [[classes objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
-
-    count = [categories count];
-    for (index = 0; index < count; index++)
-        [[categories objectAtIndex:index] registerStructuresWithObject:anObject phase:phase];
+    for (CDOCCategory *category in categories)
+        [category registerStructuresWithObject:anObject phase:phase];
 }
 
 @end
