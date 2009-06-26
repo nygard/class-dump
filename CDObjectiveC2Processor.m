@@ -338,7 +338,7 @@ struct cd_objc2_property {
                 uint64_t val;
                 CDOCProtocol *anotherProtocol;
 
-                val = [cursor readInt32];
+                val = [cursor readInt64];
                 anotherProtocol = [self protocolAtAddress:val];
                 if (anotherProtocol != nil) {
                     [protocol addProtocol:anotherProtocol];
