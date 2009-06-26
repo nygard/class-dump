@@ -121,8 +121,8 @@ struct cd_objc2_iamge_info {
 
 - (void)process;
 {
-    [self loadSymbolTables];
-    [self loadDynamicSymbolTables];
+    [[machOFile symbolTable] loadSymbols];
+    [[machOFile dynamicSymbolTable] loadSymbols];
     //exit(99);
     // Load classes first, so we can get a dictionary of classes by address
     [self loadClasses];
@@ -131,24 +131,6 @@ struct cd_objc2_iamge_info {
         NSLog(@"%016lx -> %@", [key unsignedIntegerValue], [[classesByAddress objectForKey:key] name]);
 #endif
     [self loadCategories];
-}
-
-- (void)loadSymbolTables;
-{
-    for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
-        if ([loadCommand isKindOfClass:[CDLCSymbolTable class]]) {
-            [(CDLCSymbolTable *)loadCommand loadSymbols];
-        }
-    }
-}
-
-- (void)loadDynamicSymbolTables;
-{
-    for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
-        if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]]) {
-            [(CDLCDynamicSymbolTable *)loadCommand loadSymbols];
-        }
-    }
 }
 
 - (void)loadClasses;

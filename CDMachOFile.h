@@ -11,7 +11,7 @@
 #import "CDDataCursor.h" // For CDByteOrder
 
 @class CDLCSegment;
-@class CDLCDylib, CDMachOFile;
+@class CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable;
 
 @protocol CDMachOFileDelegate
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDLCDylib *)aDylibCommand;
@@ -22,6 +22,8 @@
     CDByteOrder byteOrder;
 
     NSMutableArray *loadCommands;
+    CDLCSymbolTable *symbolTable;
+    CDLCDynamicSymbolTable *dynamicSymbolTable;
 
     struct {
         unsigned int uses64BitABI:1;
@@ -45,6 +47,12 @@
 - (uint32_t)flags;
 
 - (NSArray *)loadCommands;
+
+- (CDLCSymbolTable *)symbolTable;
+- (void)setSymbolTable:(CDLCSymbolTable *)newSymbolTable;
+
+- (CDLCDynamicSymbolTable *)dynamicSymbolTable;
+- (void)setDynamicSymbolTable:(CDLCDynamicSymbolTable *)newSymbolTable;
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;

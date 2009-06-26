@@ -100,6 +100,24 @@
     NSLog(@"extreloff: %lu", dysymtab.extreloff);
     NSLog(@"nextrel:   %lu", dysymtab.nextrel);
 
+    [cursor setOffset:dysymtab.extreloff];
+    NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
+    NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
+    for (index = 0; index < dysymtab.nextrel; index++) {
+        struct relocation_info rinfo;
+        uint32_t val;
+
+        rinfo.r_address = [cursor readInt32];
+        val = [cursor readInt32];
+        rinfo.r_symbolnum = val & 0x00ffffff;
+        rinfo.r_pcrel = (val & 0x01000000) >> 24;
+        rinfo.r_length = (val & 0x06000000) >> 25;
+        rinfo.r_extern = (val & 0x08000000) >> 27;
+        rinfo.r_type = (val & 0xf0000000) >> 28;
+        NSLog(@"%3d: %08x  %08x   %08x      %01x    %01x    %01x     %01x", index, rinfo.r_address, val,
+              rinfo.r_symbolnum, rinfo.r_pcrel, rinfo.r_length, rinfo.r_extern, rinfo.r_type);
+    }
+
     // r_address is purported to be the offset from the vmaddr of the first segment, but...
     // it appears to be the offset from the vmaddr of the 3rd segment in t1s.
     // Actually, it really seems to be the offset from the vmaddr of the section indicated in the n_desc part of the nlist.

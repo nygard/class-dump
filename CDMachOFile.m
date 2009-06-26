@@ -17,6 +17,8 @@
 #import "CDLCSegment.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDSection.h"
+#import "CDLCSymbolTable.h"
+#import "CDLCDynamicSymbolTable.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -41,6 +43,8 @@ static BOOL debug = NO;
 
     byteOrder = CDByteOrderLittleEndian;
     loadCommands = [[NSMutableArray alloc] init];
+    symbolTable = nil;
+    dynamicSymbolTable = nil;
     _flags.uses64BitABI = NO;
 
     return self;
@@ -54,8 +58,13 @@ static BOOL debug = NO;
         id loadCommand;
 
         loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
-        if (loadCommand != nil)
+        if (loadCommand != nil) {
             [loadCommands addObject:loadCommand];
+            if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])
+                [self setSymbolTable:(CDLCSymbolTable *)loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]])
+                [self setDynamicSymbolTable:(CDLCDynamicSymbolTable *)loadCommand];
+        }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
 }
@@ -63,6 +72,8 @@ static BOOL debug = NO;
 - (void)dealloc;
 {
     [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
+    [symbolTable release];
+    [dynamicSymbolTable release];
 
     [super dealloc];
 }
@@ -125,6 +136,34 @@ static BOOL debug = NO;
 - (NSArray *)loadCommands;
 {
     return loadCommands;
+}
+
+- (CDLCSymbolTable *)symbolTable;
+{
+    return symbolTable;
+}
+
+- (void)setSymbolTable:(CDLCSymbolTable *)newSymbolTable;
+{
+    if (newSymbolTable == symbolTable)
+        return;
+
+    [symbolTable release];
+    symbolTable = [newSymbolTable retain];
+}
+
+- (CDLCDynamicSymbolTable *)dynamicSymbolTable;
+{
+    return dynamicSymbolTable;
+}
+
+- (void)setDynamicSymbolTable:(CDLCDynamicSymbolTable *)newSymbolTable;
+{
+    if (newSymbolTable == dynamicSymbolTable)
+        return;
+
+    [dynamicSymbolTable release];
+    dynamicSymbolTable = [newSymbolTable retain];
 }
 
 - (NSString *)filetypeDescription;

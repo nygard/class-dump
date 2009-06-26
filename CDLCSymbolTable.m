@@ -154,7 +154,7 @@
 
     [cursor release];
 
-    //NSLog(@"symbols: %@", symbols);
+    NSLog(@"symbols: %@", symbols);
 }
 
 - (uint32_t)symoff;
