@@ -646,8 +646,8 @@ struct cd_objc2_property {
             name = [machOFile stringAtAddress:objc2Property.name];
             attributes = [machOFile stringAtAddress:objc2Property.attributes];
 
-            NSLog(@"name: %@", name);
-            NSLog(@"attributes: %@", attributes);
+            //NSLog(@"name: %@", name);
+            //NSLog(@"attributes: %@", attributes);
 
             property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
             [properties addObject:property];

@@ -161,7 +161,7 @@
     alist = [[NSMutableArray alloc] init];
 
     attrs = [[aProperty attributes] componentsSeparatedByString:@","];
-    NSLog(@"attrs: %@", attrs);
+    //NSLog(@"attrs: %@", attrs);
     for (NSString *attr in attrs) {
         if ([attr hasPrefix:@"T"]) {
             type = [attr substringFromIndex:1];
