@@ -209,13 +209,7 @@
 
     [resultString appendString:@"\n"];
 
-
     [alist release];
-}
-
-- (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
-{
-    [resultString appendString:@"\n"];
 }
 
 @end

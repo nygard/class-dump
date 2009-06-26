@@ -4,8 +4,8 @@ TESTDIR=/tmp/cdt
 TESTDIR_OLD=$TESTDIR/old
 TESTDIR_NEW=$TESTDIR/new
 
-OLD_CD=~/Unix/bin/class-dump-3.1.1
-NEW_CD=~/Unix/bin/class-dump-3.1.2
+OLD_CD=~/Unix/bin/class-dump-3.1.2
+NEW_CD=/Local/nygard/Products/Debug/class-dump
 
 # Must be a version that supports --list-arches
 ARCH_CD=~/Unix/bin/class-dump-3.1.2
