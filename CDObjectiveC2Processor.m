@@ -299,7 +299,7 @@ struct cd_objc2_iamge_info {
     }
 
     if (v2 == 0) {
-        [category setClassName:@"__EXTERNAL_SYMBOL__"];
+        [category setClassName:[self externalClassNameForAddress:address + 8]];
     } else {
         CDOCClass *aClass;
 
