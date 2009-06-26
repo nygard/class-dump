@@ -80,8 +80,9 @@
 {
     const NXArchInfo *archInfo;
     cpu_type_t targetType;
+#ifndef __LP64__
     BOOL didFind64BitArch = NO;
-
+#endif
     archInfo = NXGetLocalArchInfo();
     if (archInfo == NULL) {
         fprintf(stderr, "Error: Couldn't get local architecture\n");
