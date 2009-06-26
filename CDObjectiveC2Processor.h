@@ -10,8 +10,6 @@
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
     NSMutableDictionary *classesByAddress;
-
-    NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;

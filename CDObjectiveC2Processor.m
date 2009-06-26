@@ -84,7 +84,6 @@ struct cd_objc2_property {
         return nil;
 
     classesByAddress = [[NSMutableDictionary alloc] init];
-    protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -92,7 +91,6 @@ struct cd_objc2_property {
 - (void)dealloc;
 {
     [classesByAddress release];
-    [protocolsByAddress release];
 
     [super dealloc];
 }

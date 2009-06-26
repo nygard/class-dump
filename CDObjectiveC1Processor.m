@@ -137,7 +137,6 @@ struct cd_objc_protocol_method
         return nil;
 
     modules = [[NSMutableArray alloc] init];
-    protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -145,7 +144,6 @@ struct cd_objc_protocol_method
 - (void)dealloc;
 {
     [modules release];
-    [protocolsByAddress release];
 
     [super dealloc];
 }

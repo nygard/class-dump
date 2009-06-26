@@ -10,7 +10,6 @@
 @interface CDObjectiveC1Processor : CDObjectiveCProcessor
 {
     NSMutableArray *modules;
-    NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;

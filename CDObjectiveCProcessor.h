@@ -18,6 +18,7 @@
     NSMutableArray *categories;
 
     NSMutableDictionary *protocolsByName; // uniqued
+    NSMutableDictionary *protocolsByAddress; // non-uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;

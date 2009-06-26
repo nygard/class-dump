@@ -19,6 +19,7 @@
     classes = [[NSMutableArray alloc] init];
     categories = [[NSMutableArray alloc] init];
     protocolsByName = [[NSMutableDictionary alloc] init];
+    protocolsByAddress = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -29,6 +30,7 @@
     [classes release];
     [categories release];
     [protocolsByName release];
+    [protocolsByAddress release];
 
     [super dealloc];
 }
