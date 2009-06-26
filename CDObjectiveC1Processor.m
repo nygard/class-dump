@@ -672,10 +672,4 @@ struct cd_objc_protocol_method
     //NSLog(@"protocolsByName: %@", protocolsByName);
 }
 
-- (void)checkUnreferencedProtocols;
-{
-    NSLog(@" > %s", _cmd);
-    NSLog(@"<  %s", _cmd);
-}
-
 @end

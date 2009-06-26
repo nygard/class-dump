@@ -30,6 +30,5 @@
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
 
 - (void)processProtocolSection;
-- (void)checkUnreferencedProtocols;
 
 @end
