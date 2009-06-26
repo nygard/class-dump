@@ -15,7 +15,6 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 - (void)dealloc;
 
-- (BOOL)hasObjectiveCData;
 - (void)process;
 
 // Formerly private
@@ -28,6 +27,6 @@
 - (CDOCCategory *)processCategoryDefinitionAtAddress:(uint32_t)address;
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
 
-- (void)processProtocolSection;
+- (void)loadProtocols;
 
 @end

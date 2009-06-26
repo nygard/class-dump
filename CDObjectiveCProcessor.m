@@ -7,6 +7,7 @@
 #import "CDMachOFile.h"
 #import "CDVisitor.h"
 #import "NSArray-Extensions.h"
+#import "CDLCSegment.h"
 
 @implementation CDObjectiveCProcessor
 
@@ -44,8 +45,17 @@
 
 - (BOOL)hasObjectiveCData;
 {
-    // Implement in subclasses.
-    return NO;
+    return [self hasObjectiveC1Data] || [self hasObjectiveC2Data];
+}
+
+- (BOOL)hasObjectiveC1Data;
+{
+    return [machOFile segmentWithName:@"__OBJC"] != nil;
+}
+
+- (BOOL)hasObjectiveC2Data;
+{
+    return [[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
 }
 
 - (void)process;

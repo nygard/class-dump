@@ -13,8 +13,6 @@
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 
-- (BOOL)hasObjectiveCData;
-
 - (NSString *)externalClassNameForAddress:(uint64_t)address;
 
 - (void)process;

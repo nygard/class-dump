@@ -148,14 +148,9 @@ struct cd_objc_protocol_method
     [super dealloc];
 }
 
-- (BOOL)hasObjectiveCData;
-{
-    return [modules count] > 0;
-}
-
 - (void)process;
 {
-    [self processProtocolSection];
+    [self loadProtocols];
     [self processModules];
 }
 
@@ -609,7 +604,7 @@ struct cd_objc_protocol_method
 
 // Many of the protocol structures share the same name, but have differnt method lists.  Create them all, then merge/unique by name after.
 // Perhaps a bit more work than necessary, but at least I can see exactly what is happening.
-- (void)processProtocolSection;
+- (void)loadProtocols;
 {
     CDLCSegment *objcSegment;
     CDSection *protocolSection;

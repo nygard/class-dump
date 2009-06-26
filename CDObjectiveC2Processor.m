@@ -86,11 +86,6 @@ struct cd_objc2_property {
     return self;
 }
 
-- (BOOL)hasObjectiveCData;
-{
-    return [[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
-}
-
 - (NSString *)externalClassNameForAddress:(uint64_t)address;
 {
     CDRelocationInfo *rinfo;
@@ -132,15 +127,9 @@ struct cd_objc2_property {
     [[machOFile dynamicSymbolTable] loadSymbols];
 
     [self loadProtocols];
-    //NSLog(@"protocolsByAddress (%u): %@", [[protocolsByAddress allKeys] count], protocolsByAddress);
-    //NSLog(@"protocolsByName (%u): %@", [[protocolsByName allKeys] count], protocolsByName);
-    //exit(99);
-    // Load classes first, so we can get a dictionary of classes by address
+
+    // Load classes before categories, so we can get a dictionary of classes by address.
     [self loadClasses];
-#if 0
-    for (NSNumber *key in [[classesByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)])
-        NSLog(@"%016lx -> %@", [key unsignedIntegerValue], [[classesByAddress objectForKey:key] name]);
-#endif
     [self loadCategories];
 }
 

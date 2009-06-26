@@ -29,6 +29,9 @@
 - (CDMachOFile *)machOFile;
 
 - (BOOL)hasObjectiveCData;
+- (BOOL)hasObjectiveC1Data;
+- (BOOL)hasObjectiveC2Data;
+
 - (void)process;
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
