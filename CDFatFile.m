@@ -92,17 +92,17 @@
 
     // This architecture, 32 bit
     for (CDFatArch *fatArch in arches) {
-        if ([fatArch cpuType] == targetType && [fatArch uses64BitABI] == NO)
+        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO)
             return [fatArch archName];
     }
 
     // This architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
 #ifdef __LP64__
-        if ([fatArch cpuType] == targetType && [fatArch uses64BitABI])
+        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI])
             return [fatArch archName];
 #else
-        if ([fatArch cpuType] == targetType && [fatArch uses64BitABI])
+        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI])
             didFind64BitArch = YES;
 #endif
     }
@@ -141,11 +141,13 @@
     const NXArchInfo *archInfo;
     cpu_type_t maskedCPUType;
 
+    NSLog(@"%s, name=%@", _cmd, name);
     archInfo = NXGetArchInfoFromName([name UTF8String]);
     if (archInfo == NULL)
         return nil;
 
-    maskedCPUType = archInfo->cputype & ~CPU_ARCH_MASK;
+    //maskedCPUType = archInfo->cputype & ~CPU_ARCH_MASK;
+    maskedCPUType = archInfo->cputype;
     for (CDFatArch *arch in arches) {
         if ([arch cpuType] == maskedCPUType)
             return [arch machOFile];

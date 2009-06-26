@@ -27,7 +27,7 @@
     fatArch.align = [cursor readBigInt32];
 
     uses64BitABI = (fatArch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
-    fatArch.cputype &= ~CPU_ARCH_MASK;
+    //fatArch.cputype &= ~CPU_ARCH_MASK;
 #if 0
     NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
           uses64BitABI, fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
@@ -48,6 +48,11 @@
 - (cpu_type_t)cpuType;
 {
     return fatArch.cputype;
+}
+
+- (cpu_type_t)maskedCPUType;
+{
+    return fatArch.cputype & ~CPU_ARCH_MASK;
 }
 
 - (cpu_subtype_t)cpuSubtype;
@@ -95,9 +100,10 @@
 // Must not return nil.
 - (NSString *)archName;
 {
+#if 0
     if (uses64BitABI)
         return CDNameForCPUType(fatArch.cputype | CPU_ARCH_ABI64, fatArch.cpusubtype);
-
+#endif
     return CDNameForCPUType(fatArch.cputype, fatArch.cpusubtype);
 }
 

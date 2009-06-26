@@ -25,6 +25,7 @@
 - (void)dealloc;
 
 - (cpu_type_t)cpuType;
+- (cpu_type_t)maskedCPUType;
 - (cpu_subtype_t)cpuSubtype;
 - (uint32_t)offset;
 - (uint32_t)size;
