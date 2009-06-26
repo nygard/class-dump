@@ -28,6 +28,8 @@
     instanceMethods = [[NSMutableArray alloc] init];
     optionalClassMethods = [[NSMutableArray alloc] init];
     optionalInstanceMethods = [[NSMutableArray alloc] init];
+    properties = [[NSMutableArray alloc] init];
+
     adoptedProtocolNames = [[NSMutableSet alloc] init];
 
     return self;
@@ -41,6 +43,7 @@
     [instanceMethods release];
     [optionalClassMethods release];
     [optionalInstanceMethods release];
+    [properties release];
 
     [adoptedProtocolNames release];
 

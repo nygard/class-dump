@@ -18,6 +18,7 @@
 #import "CDClassDump.h"
 #import "CDRelocationInfo.h"
 #import "CDSymbol.h"
+#import "CDOCProperty.h"
 
 // http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
 
@@ -65,9 +66,14 @@ struct cd_objc2_ivar {
     uint32_t size;
 };
 
-struct cd_objc2_iamge_info {
+struct cd_objc2_image_info {
     uint32_t version;
     uint32_t flags;
+};
+
+struct cd_objc2_property {
+    uint64_t name;
+    uint64_t attributes;
 };
 
 @implementation CDObjectiveC2Processor
@@ -601,7 +607,57 @@ struct cd_objc2_iamge_info {
     // Process protocols
     [aClass addProtocolsFromArray:[self uniquedProtocolListAtAddress:objc2ClassData.baseProtocols]];
 
+    //NSLog(@"class= %@", aClass);
+    //NSParameterAssert(objc2ClassData.baseProperties == 0);
+    for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties]) {
+        NSLog(@"property: %@", property);
+    }
+
     return aClass;
+}
+
+- (NSArray *)loadPropertiesAtAddress:(uint64_t)address;
+{
+    NSMutableArray *properties;
+
+    properties = [NSMutableArray array];
+    if (address != 0) {
+        CDDataCursor *cursor;
+        struct cd_objc2_list_header listHeader;
+        uint32_t index;
+
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        NSParameterAssert([cursor offset] != 0);
+        //NSLog(@"property list data offset: %lu", [cursor offset]);
+
+        listHeader.entsize = [cursor readInt32];
+        listHeader.count = [cursor readInt32];
+        NSParameterAssert(listHeader.entsize == 16);
+
+        for (index = 0; index < listHeader.count; index++) {
+            struct cd_objc2_property objc2Property;
+            NSString *name, *attributes;
+            CDOCProperty *property;
+
+            objc2Property.name = [cursor readInt64];
+            objc2Property.attributes = [cursor readInt64];
+            name = [machOFile stringAtAddress:objc2Property.name];
+            attributes = [machOFile stringAtAddress:objc2Property.attributes];
+
+            NSLog(@"name: %@", name);
+            NSLog(@"attributes: %@", attributes);
+
+            property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
+            [properties addObject:property];
+            [property release];
+        }
+
+        [cursor release];
+    }
+
+    return properties;
 }
 
 // This just gets the name and methods.

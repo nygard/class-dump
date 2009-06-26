@@ -19,6 +19,7 @@
     NSMutableArray *instanceMethods;
     NSMutableArray *optionalClassMethods;
     NSMutableArray *optionalInstanceMethods;
+    NSMutableArray *properties;
 
     NSMutableSet *adoptedProtocolNames;
 }
