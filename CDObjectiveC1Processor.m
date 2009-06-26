@@ -107,7 +107,7 @@
 
     [aVisitor willVisitObjectiveCProcessor:self];
 
-    if ([protocolNames count] > 0 || [allClasses count] > 0 || [machOFile hasProtectedSegments]) {
+    if ([protocolNames count] > 0 || [allClasses count] > 0) {
         [aVisitor visitObjectiveCProcessor:self];
     }
 

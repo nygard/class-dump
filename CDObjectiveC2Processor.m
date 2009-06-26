@@ -103,13 +103,23 @@ struct cd_objc2_iamge_info {
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
     NSMutableArray *allClasses;
+    NSArray *protocolNames;
 
     allClasses = [[NSMutableArray alloc] init];
     [allClasses addObjectsFromArray:classes];
     [allClasses addObjectsFromArray:categories];
 
+    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+
     [aVisitor willVisitObjectiveCProcessor:self];
-    [aVisitor visitObjectiveCProcessor:self];
+
+    if ([protocolNames count] > 0 || [allClasses count] > 0) {
+        [aVisitor visitObjectiveCProcessor:self];
+    }
+
+    for (NSString *protocolName in protocolNames) {
+        [[protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
+    }
 
     if ([[aVisitor classDump] shouldSortClassesByInheritance] == YES) {
         [allClasses sortTopologically];
@@ -166,7 +176,8 @@ struct cd_objc2_iamge_info {
     [[machOFile dynamicSymbolTable] loadSymbols];
 
     [self loadProtocols];
-
+    //NSLog(@"protocolsByAddress (%u): %@", [[protocolsByAddress allKeys] count], protocolsByAddress);
+    //NSLog(@"protocolsByName (%u): %@", [[protocolsByName allKeys] count], protocolsByName);
     //exit(99);
     // Load classes first, so we can get a dictionary of classes by address
     [self loadClasses];
@@ -186,8 +197,6 @@ struct cd_objc2_iamge_info {
     NSData *sectionData;
     CDDataCursor *cursor;
 
-    NSLog(@" > %s", _cmd);
-
     segment = [machOFile segmentWithName:@"__DATA"];
     section = [segment sectionWithName:@"__objc_protolist"];
     sectionData = [section data];
@@ -195,68 +204,149 @@ struct cd_objc2_iamge_info {
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
     while ([cursor isAtEnd] == NO) {
         uint64_t val;
-        CDOCProtocol *protocol;
 
         val = [cursor readLittleInt64];
         //NSLog(@"----------------------------------------");
         //NSLog(@"val: %16lx", val);
         //[machOFile logInfoForAddress:val];
-        protocol = [self loadProtocolAtAddress:val];
-        if (protocol != nil) {
+        [self protocolAtAddress:val];
+    }
+
+    // Now unique the protocols by name and store in protocolsByName
+    for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDOCProtocol *p1, *p2;
+
+        p1 = [protocolsByAddress objectForKey:key];
+        p2 = [protocolsByName objectForKey:[p1 name]];
+        if (p2 == nil) {
+            p2 = [[CDOCProtocol alloc] init];
+            [p2 setName:[p1 name]];
+            [protocolsByName setObject:p2 forKey:[p2 name]];
+            // adopted protocols still not set, will want uniqued instances
+            [p2 release];
+        } else {
         }
     }
 
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"protocolsByName: %@", protocolsByName);
+
+    //NSLog(@"uniqued protocol names: %@", [[[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@", "]);
+
+    // And finally fill in adopted protocols, instance and class methods
+    for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDOCProtocol *p1, *uniqueProtocol;
+
+        p1 = [protocolsByAddress objectForKey:key];
+        uniqueProtocol = [protocolsByName objectForKey:[p1 name]];
+        for (CDOCProtocol *p2 in [p1 protocols])
+            [uniqueProtocol addProtocol:[protocolsByName objectForKey:[p2 name]]];
+
+        if ([[uniqueProtocol classMethods] count] == 0) {
+            for (CDOCMethod *method in [p1 classMethods])
+                [uniqueProtocol addClassMethod:method];
+        } else {
+            NSParameterAssert([[uniqueProtocol classMethods] count] == [[p1 classMethods] count]);
+        }
+
+        if ([[uniqueProtocol instanceMethods] count] == 0) {
+            for (CDOCMethod *method in [p1 instanceMethods])
+                [uniqueProtocol addInstanceMethod:method];
+        } else {
+            NSParameterAssert([[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
+        }
+    }
+
+    //NSLog(@"protocolsByName: %@", protocolsByName);
 }
 
-- (CDOCProtocol *)loadProtocolAtAddress:(uint64_t)address;
+- (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
 {
-    CDDataCursor *cursor;
-    NSString *str;
+    NSNumber *key;
     CDOCProtocol *protocol;
-
-    uint64_t v1, v2, v3, v4, v5, v6, v7, v8;
 
     if (address == 0)
         return nil;
 
-    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-    [cursor setByteOrder:[machOFile byteOrder]];
-    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
-    NSParameterAssert([cursor offset] != 0);
+    key = [NSNumber numberWithUnsignedInteger:address];
+    protocol = [protocolsByAddress objectForKey:key];
+    if (protocol == nil) {
+        CDDataCursor *cursor;
+        NSString *str;
 
-    NSLog(@"offset: %lu", [cursor offset]);
+        uint64_t v1, v2, v3, v4, v5, v6, v7, v8;
 
-    v1 = [cursor readInt64];
-    v2 = [cursor readInt64]; // protocol name
-    v3 = [cursor readInt64];
-    v4 = [cursor readInt64]; // instance methods?
-    v5 = [cursor readInt64];
-    v6 = [cursor readInt64];
-    v7 = [cursor readInt64];
-    v8 = [cursor readInt64];
-    NSLog(@"----------------------------------------");
-    NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
-    NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
-    [machOFile logInfoForAddress:v1];
-    //[machOFile logInfoForAddress:v2];
-    [machOFile logInfoForAddress:v3];
-    [machOFile logInfoForAddress:v4];
-    [machOFile logInfoForAddress:v5];
-    [machOFile logInfoForAddress:v6];
-    [machOFile logInfoForAddress:v7];
-    [machOFile logInfoForAddress:v8];
+        protocol = [[[CDOCProtocol alloc] init] autorelease];
+        [protocolsByAddress setObject:protocol forKey:key];
 
-    protocol = [[[CDOCProtocol alloc] init] autorelease];
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        NSParameterAssert([cursor offset] != 0);
 
-    str = [machOFile stringAtAddress:v2];
-    [protocol setName:str];
+        //NSLog(@"offset: %lu", [cursor offset]);
 
-    for (CDOCMethod *method in [self loadMethodsAtAddress:v4]) {
-        [protocol addInstanceMethod:method];
+        v1 = [cursor readInt64];
+        v2 = [cursor readInt64]; // protocol name
+        v3 = [cursor readInt64]; // adopted protocol list? NSURLProtocolClient
+        v4 = [cursor readInt64]; // instance methods
+        v5 = [cursor readInt64]; // class methods
+        v6 = [cursor readInt64]; // optionalInstanceMethods
+        v7 = [cursor readInt64]; // optionalClassMethods
+        v8 = [cursor readInt64]; // instanceProperties
+        //NSLog(@"----------------------------------------");
+        //NSLog(@"%016lx %016lx %016lx %016lx", v1, v2, v3, v4);
+        //NSLog(@"%016lx %016lx %016lx %016lx", v5, v6, v7, v8);
+        //[machOFile logInfoForAddress:v1];
+        //[machOFile logInfoForAddress:v2];
+        //[machOFile logInfoForAddress:v4];
+        //[machOFile logInfoForAddress:v5];
+        //[machOFile logInfoForAddress:v6];
+        //[machOFile logInfoForAddress:v7];
+        //[machOFile logInfoForAddress:v8];
+
+        str = [machOFile stringAtAddress:v2];
+        [protocol setName:str];
+
+        if (v3 != 0) {
+            uint64_t count, index;
+
+            [cursor setOffset:[machOFile dataOffsetForAddress:v3]];
+            count = [cursor readInt64];
+            for (index = 0; index < count; index++) {
+                uint64_t val;
+                CDOCProtocol *anotherProtocol;
+
+                val = [cursor readInt32];
+                anotherProtocol = [self protocolAtAddress:val];
+                if (anotherProtocol != nil) {
+                    [protocol addProtocol:anotherProtocol];
+                } else {
+                    NSLog(@"Note: another protocol was nil.");
+                }
+            }
+        }
+
+        for (CDOCMethod *method in [self loadMethodsAtAddress:v4]) {
+            [protocol addInstanceMethod:method];
+        }
+
+        for (CDOCMethod *method in [self loadMethodsAtAddress:v5]) {
+            [protocol addClassMethod:method];
+        }
+
+#if 0
+        //NSLog(@"protocol= %@", protocol);
+        NSParameterAssert(v1 == 0);
+        //[machOFile logInfoForAddress:v3];
+        //NSParameterAssert(v3 == 0);
+        //NSParameterAssert(v5 == 0);
+        NSParameterAssert(v6 == 0);
+        NSParameterAssert(v7 == 0);
+        NSParameterAssert(v8 == 0);
+#endif
+
+        [cursor release];
     }
-
-    NSLog(@"protocol= %@", protocol);
 
     return protocol;
 }
@@ -478,6 +568,9 @@ struct cd_objc2_iamge_info {
             [aClass addClassMethod:method];
     }
 
+    // Process protocols
+    [aClass addProtocolsFromArray:[self uniquedProtocolListAtAddress:objc2ClassData.baseProtocols]];
+
     return aClass;
 }
 
@@ -636,6 +729,43 @@ struct cd_objc2_iamge_info {
     }
 
     return ivars;
+}
+
+// Returns list of uniqued protocols.
+- (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
+{
+    NSMutableArray *protocols;
+
+    protocols = [[[NSMutableArray alloc] init] autorelease];;
+
+    if (address != 0) {
+        CDDataCursor *cursor;
+        uint64_t count, index;
+
+        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
+        [cursor setByteOrder:[machOFile byteOrder]];
+        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        //NSLog(@"offset: %lu", [cursor offset]);
+        count = [cursor readInt64];
+
+        for (index = 0; index < count; index++) {
+            uint64_t val;
+            CDOCProtocol *protocol, *uniqueProtocol;
+
+            val = [cursor readInt64];
+            protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInteger:val]];
+            //NSLog(@"%3d protocol @ %08x: %@", index, val, [protocol name]);
+            if (protocol != nil) {
+                uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
+                if (uniqueProtocol != nil)
+                    [protocols addObject:uniqueProtocol];
+            }
+        }
+
+        [cursor release];
+    }
+
+    return protocols;
 }
 
 @end

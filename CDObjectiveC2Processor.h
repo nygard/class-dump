@@ -27,7 +27,7 @@
 - (void)process;
 
 - (void)loadProtocols;
-- (CDOCProtocol *)loadProtocolAtAddress:(uint64_t)address;
+- (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
 
 - (void)loadClasses;
 - (void)loadCategories;
@@ -39,5 +39,7 @@
 
 - (NSArray *)loadMethodsAtAddress:(uint64_t)address;
 - (NSArray *)loadIvarsAtAddress:(uint64_t)address;
+
+- (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
 
 @end
