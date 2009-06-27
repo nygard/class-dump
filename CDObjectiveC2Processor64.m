@@ -202,9 +202,10 @@
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Category.classMethods])
         [category addClassMethod:method];
 
-    if (objc2Category.class == 0) {
+    if ([machOFile hasRelocationEntryForAddress:address + sizeof(objc2Category.name)]) {
         [category setClassName:[machOFile externalClassNameForAddress:address + sizeof(objc2Category.name)]];
-    } else {
+        //NSLog(@"got external class name (%@) for category.", [category className]);
+    } else if (objc2Category.class != 0) {
         CDOCClass *aClass;
 
         aClass = [classesByAddress objectForKey:[NSNumber numberWithUnsignedInteger:objc2Category.class]];
@@ -277,9 +278,10 @@
 
     [cursor release];
 
-    if (objc2Class.superclass == 0) {
+    if ([machOFile hasRelocationEntryForAddress:address + sizeof(objc2Class.isa)]) {
         [aClass setSuperClassName:[machOFile externalClassNameForAddress:address + sizeof(objc2Class.isa)]];
-    } else {
+        //NSLog(@"got external class name: %@", [aClass superClassName]);
+    } else if (objc2Class.superclass != 0) {
         CDOCClass *sc;
 
         sc = [self loadClassAtAddress:objc2Class.superclass];
