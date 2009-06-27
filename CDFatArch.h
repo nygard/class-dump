@@ -6,6 +6,7 @@
 #import <Foundation/Foundation.h>
 
 #include <mach-o/fat.h>
+#import "CDFile.h" // For CDArch
 
 @class CDDataCursor;
 @class CDFatFile, CDMachOFile;
@@ -38,6 +39,7 @@
 
 - (NSString *)description;
 
+- (CDArch)arch;
 - (NSString *)archName;
 
 - (CDMachOFile *)machOFile;

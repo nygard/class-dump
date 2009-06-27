@@ -68,7 +68,8 @@
     [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
 
     // These can be ppc, ppc7400, ppc64, i386, x86_64
-    targetArchName = nil;
+    targetArch.cputype = CPU_TYPE_ANY;
+    targetArch.cpusubtype = 0;
 
     flags.shouldShowHeader = YES;
 
@@ -93,8 +94,6 @@
 
     if (flags.shouldMatchRegex == YES)
         regfree(&compiledRegex);
-
-    [targetArchName release];
 
     [super dealloc];
 }
@@ -253,18 +252,14 @@
     return objcProcessors;
 }
 
-- (NSString *)targetArchName;
+- (CDArch)targetArch;
 {
-    return targetArchName;
+    return targetArch;
 }
 
-- (void)setTargetArchName:(NSString *)newArchName;
+- (void)setTargetArch:(CDArch)newArch;
 {
-    if (newArchName == targetArchName)
-        return;
-
-    [targetArchName release];
-    targetArchName = [newArchName retain];
+    targetArch = newArch;
 }
 
 - (BOOL)containsObjectiveCData;
@@ -331,7 +326,9 @@
     CDMachOFile *aMachOFile;
 
     // We need to find the macho file with the target arch name, set it to aMachOFile
-    aMachOFile = [aFile machOFileWithArchName:targetArchName];
+    //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
+    aMachOFile = [aFile machOFileWithArch:targetArch];
+    //NSLog(@"aMachOFile: %@", aMachOFile);
 
     if ([self shouldProcessRecursively]) {
         @try {

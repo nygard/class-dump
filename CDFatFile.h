@@ -15,8 +15,8 @@
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 - (void)dealloc;
 
-- (NSString *)bestMatchForLocalArch;
-- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+- (CDArch)bestMatchForLocalArch;
+- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
 - (NSString *)description;
 

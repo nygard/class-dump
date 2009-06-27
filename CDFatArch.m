@@ -97,6 +97,16 @@
                      fatArch.align, 1 << fatArch.align, [self archName]];
 }
 
+- (CDArch)arch;
+{
+    CDArch arch;
+
+    arch.cputype = fatArch.cputype;
+    arch.cpusubtype = fatArch.cpusubtype;
+
+    return arch;
+}
+
 // Must not return nil.
 - (NSString *)archName;
 {
@@ -112,6 +122,7 @@
     if (machOFile == nil) {
         //NSLog(@"nonretainedFatFile: %p", nonretainedFatFile);
         //NSLog(@"nrff data: %p", [nonretainedFatFile data]);
+        //NSLog(@"nrff filename: %@", [nonretainedFatFile filename]);
         machOFile = [[CDFile fileWithData:[nonretainedFatFile data] offset:fatArch.offset] retain];
         [machOFile setFilename:[nonretainedFatFile filename]];
     }

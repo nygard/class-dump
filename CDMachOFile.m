@@ -85,17 +85,11 @@ static BOOL debug = NO;
     return byteOrder;
 }
 
-- (NSString *)bestMatchForLocalArch;
-{
-    // Implement in subclasses
-    return nil;
-}
-
-- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
     const NXArchInfo *archInfo;
 
-    archInfo = NXGetArchInfoFromName([name UTF8String]);
+    archInfo = NXGetArchInfoFromCpuType(arch.cputype, arch.cpusubtype);
     if (archInfo == NULL)
         return nil;
 

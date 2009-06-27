@@ -81,9 +81,14 @@
     return header.flags;
 }
 
-- (NSString *)bestMatchForLocalArch;
+- (CDArch)bestMatchForLocalArch;
 {
-    return CDNameForCPUType(header.cputype, header.cpusubtype);
+    CDArch arch;
+
+    arch.cputype = header.cputype;
+    arch.cpusubtype = header.cpusubtype;
+
+    return arch;
 }
 
 - (Class)processorClass;

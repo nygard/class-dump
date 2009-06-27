@@ -76,17 +76,21 @@
 //
 // In either case, we can ignore the cpu subtype
 
-- (NSString *)bestMatchForLocalArch;
+- (CDArch)bestMatchForLocalArch;
 {
     const NXArchInfo *archInfo;
     cpu_type_t targetType;
+    CDArch arch;
 #ifndef __LP64__
     BOOL didFind64BitArch = NO;
 #endif
+    arch.cputype = CPU_TYPE_ANY;
+    arch.cpusubtype = 0;
+
     archInfo = NXGetLocalArchInfo();
     if (archInfo == NULL) {
         fprintf(stderr, "Error: Couldn't get local architecture\n");
-        return nil;
+        return arch;
     }
 
     targetType = archInfo->cputype & ~CPU_ARCH_MASK;
@@ -95,7 +99,7 @@
     for (CDFatArch *fatArch in arches) {
 #ifdef __LP64__
         if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI])
-            return [fatArch archName];
+            return [fatArch arch];
 #else
         if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI])
             didFind64BitArch = YES;
@@ -105,51 +109,42 @@
     // This architecture, 32 bit
     for (CDFatArch *fatArch in arches) {
         if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO)
-            return [fatArch archName];
+            return [fatArch arch];
     }
 
     // Any architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
 #ifdef __LP64__
         if ([fatArch uses64BitABI])
-            return [fatArch archName];
+            return [fatArch arch];
 #else
         if ([fatArch uses64BitABI])
             didFind64BitArch = YES;
 #endif
+    }
 
     // Any architecture, 32 bit
     for (CDFatArch *fatArch in arches) {
         if ([fatArch uses64BitABI] == NO)
-            return [fatArch archName];
-    }
+            return [fatArch arch];
     }
 
 #ifdef __LP64__
     // Any architecture
     if ([arches count] > 0)
-        return [arches objectAtIndex:0];
+        return [[arches objectAtIndex:0] arch];
 #else
     if (didFind64BitArch)
         fprintf(stderr, "Error: Can't dump 64-bit files with 32-bit version of class-dump\n");
 #endif
 
-    return nil;
+    return arch;
 }
 
-- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+- (CDMachOFile *)machOFileWithArch:(CDArch)cdarch;
 {
-    const NXArchInfo *archInfo;
-    cpu_type_t maskedCPUType;
-
-    archInfo = NXGetArchInfoFromName([name UTF8String]);
-    if (archInfo == NULL)
-        return nil;
-
-    //maskedCPUType = archInfo->cputype & ~CPU_ARCH_MASK;
-    maskedCPUType = archInfo->cputype;
     for (CDFatArch *arch in arches) {
-        if ([arch cpuType] == maskedCPUType)
+        if ([arch cpuType] == cdarch.cputype)
             return [arch machOFile];
     }
 

@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <regex.h>
 #import "CDStructureRegistrationProtocol.h"
+#import "CDFile.h" // For CDArch
 
 #ifdef __LP64__
 #define CLASS_DUMP_BASE_VERSION "3.2 (64 bit)"
@@ -55,7 +56,7 @@
     CDTypeFormatter *propertyTypeFormatter;
     CDTypeFormatter *structDeclarationTypeFormatter;
 
-    NSString *targetArchName;
+    CDArch targetArch;
 }
 
 - (id)init;
@@ -94,8 +95,8 @@
 - (NSArray *)machOFiles;
 - (NSArray *)objcProcessors;
 
-- (NSString *)targetArchName;
-- (void)setTargetArchName:(NSString *)newArchName;
+- (CDArch)targetArch;
+- (void)setTargetArch:(CDArch)newArch;
 
 - (BOOL)containsObjectiveCData;
 - (CDStructureTable *)structureTable;

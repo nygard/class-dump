@@ -101,12 +101,17 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     offset = newOffset;
 }
 
-- (NSString *)bestMatchForLocalArch;
+- (CDArch)bestMatchForLocalArch;
 {
-    return nil;
+    CDArch arch;
+
+    arch.cputype = CPU_TYPE_ANY;
+    arch.cpusubtype = 0;
+
+    return arch;
 }
 
-- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
     return nil;
 }

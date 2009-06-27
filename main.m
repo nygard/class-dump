@@ -59,7 +59,8 @@ int main(int argc, char *argv[])
     NSString *searchString = nil;
     BOOL shouldGenerateSeparateHeaders = NO;
     BOOL shouldListArches = NO;
-    NSString *archName = nil;
+    CDArch targetArch;
+    BOOL hasSpecifiedArch = NO;
 
     int ch;
     BOOL errorFlag = NO;
@@ -100,7 +101,9 @@ int main(int argc, char *argv[])
                   fprintf(stderr, "Error: Unknown arch %s\n\n", optarg);
                   errorFlag = YES;
               } else {
-                  archName = [NSString stringWithUTF8String:optarg];
+                  targetArch.cputype = archInfo->cputype;
+                  targetArch.cpusubtype = archInfo->cpusubtype;
+                  hasSpecifiedArch = YES;
               }
               break;
           }
@@ -219,14 +222,14 @@ int main(int argc, char *argv[])
                 exit(1);
             }
 
-            if (archName == nil) {
-                archName = [file bestMatchForLocalArch];
-                //NSLog(@"No arch specified, best match for local arch is: %@", archName);
+            if (hasSpecifiedArch == NO) {
+                targetArch = [file bestMatchForLocalArch];
+                NSLog(@"No arch specified, best match for local arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
             } else {
-                //NSLog(@"chosen arch: %@", archName);
+                NSLog(@"chosen arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
             }
 
-            [classDump setTargetArchName:archName];
+            [classDump setTargetArch:targetArch];
             [classDump setExecutablePath:[executablePath stringByDeletingLastPathComponent]];
 
             // NO, we have the file already: file

@@ -9,6 +9,12 @@
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 #include <mach-o/swap.h>
+#include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
+
+typedef struct {
+    cpu_type_t cputype;
+    cpu_subtype_t cpusubtype;
+} CDArch;
 
 @class CDMachOFile;
 
@@ -36,7 +42,7 @@ extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 - (NSUInteger)offset;
 - (void)setOffset:(NSUInteger)newOffset;
 
-- (NSString *)bestMatchForLocalArch;
-- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+- (CDArch)bestMatchForLocalArch;
+- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
 @end

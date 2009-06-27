@@ -37,8 +37,7 @@
 
 - (CDByteOrder)byteOrder;
 
-- (NSString *)bestMatchForLocalArch;
-- (CDMachOFile *)machOFileWithArchName:(NSString *)name;
+- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
 - (uint32_t)magic;
 - (cpu_type_t)cputype;

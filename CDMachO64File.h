@@ -18,7 +18,7 @@
 - (uint32_t)filetype;
 - (uint32_t)flags;
 
-- (NSString *)bestMatchForLocalArch;
+- (CDArch)bestMatchForLocalArch;
 
 - (Class)processorClass;
 
