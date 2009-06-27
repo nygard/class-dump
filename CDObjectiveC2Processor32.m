@@ -405,7 +405,8 @@
 
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
-        NSParameterAssert(listHeader.entsize == 24);
+        NSLog(@"entsize: %u", listHeader.entsize);
+        NSParameterAssert(listHeader.entsize == 12);
 
         for (index = 0; index < listHeader.count; index++) {
             struct cd_objc2_method_32 objc2Method;

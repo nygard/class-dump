@@ -20,6 +20,7 @@
 
 - (NSString *)description;
 
+- (NSArray *)arches;
 - (NSArray *)archNames;
 
 @end

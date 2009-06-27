@@ -156,6 +156,11 @@
     return [NSString stringWithFormat:@"[%p] CDFatFile with %u arches", self, [arches count]];
 }
 
+- (NSArray *)arches;
+{
+    return arches;
+}
+
 - (NSArray *)archNames;
 {
     NSMutableArray *archNames;

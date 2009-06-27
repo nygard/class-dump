@@ -130,4 +130,9 @@
     return machOFile;
 }
 
+- (NSData *)machOData;
+{
+    return [[[NSData alloc] initWithBytes:[[nonretainedFatFile data] bytes] + fatArch.offset length:fatArch.size] autorelease];
+}
+
 @end

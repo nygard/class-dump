@@ -21,6 +21,7 @@
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
 #import "CDObjectiveC2Processor64.h"
+#import "CDFatArch.h"
 
 void print_usage(void)
 {
@@ -221,7 +222,20 @@ int main(int argc, char *argv[])
                 fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                 exit(1);
             }
+#if 0
+            {
+                CDFatFile *fat = file;
+                NSArray *a1;
+                unsigned int count, index;
 
+                a1 = [fat arches];
+                count = [a1 count];
+                for (index = 0; index < count; index++)
+                    [[[a1 objectAtIndex:index] machOData] writeToFile:[NSString stringWithFormat:@"/tmp/arch-%u", index] atomically:NO];
+
+                exit(99);
+            }
+#endif
             if (hasSpecifiedArch == NO) {
                 targetArch = [file bestMatchForLocalArch];
                 NSLog(@"No arch specified, best match for local arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);

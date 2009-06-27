@@ -44,4 +44,6 @@
 
 - (CDMachOFile *)machOFile;
 
+- (NSData *)machOData;
+
 @end
