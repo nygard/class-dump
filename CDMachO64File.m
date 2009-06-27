@@ -6,7 +6,7 @@
 #import "CDMachO64File.h"
 
 #import "CDLoadCommand.h"
-#import "CDObjectiveC2Processor.h"
+#import "CDObjectiveC2Processor64.h"
 
 @implementation CDMachO64File
 

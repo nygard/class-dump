@@ -20,7 +20,7 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDLCSegment.h"
-#import "CDObjectiveC2Processor.h"
+#import "CDObjectiveC2Processor64.h"
 
 @implementation CDClassDump
 

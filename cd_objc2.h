@@ -8,6 +8,80 @@ struct cd_objc2_image_info {
     uint32_t flags;
 };
 
+//
+// 32-bit
+//
+
+struct cd_objc2_class_32 {
+    uint32_t isa;
+    uint32_t superclass;
+    uint32_t cache;
+    uint32_t vtable;
+    uint32_t data; // points to class_ro_t
+    uint32_t reserved1;
+    uint32_t reserved2;
+    uint32_t reserved3;
+};
+
+struct cd_objc2_class_ro_t_32 {
+    uint32_t flags;
+    uint32_t instanceStart;
+    uint32_t instanceSize;
+    uint32_t reserved;
+    uint32_t ivarLayout;
+    uint32_t name;
+    uint32_t baseMethods;
+    uint32_t baseProtocols;
+    uint32_t ivars;
+    uint32_t weakIvarLayout;
+    uint32_t baseProperties;
+};
+
+struct cd_objc2_method_32 {
+    uint32_t name;
+    uint32_t types;
+    uint32_t imp;
+};
+
+struct cd_objc2_ivar_32 {
+    uint32_t offset;
+    uint32_t name;
+    uint32_t type;
+    uint32_t alignment;
+    uint32_t size;
+};
+
+struct cd_objc2_property_32 {
+    uint32_t name;
+    uint32_t attributes;
+};
+
+struct cd_objc2_protocol_32 {
+    uint32_t isa;
+    uint32_t name;
+    uint32_t protocols;
+    uint32_t instanceMethods;
+    uint32_t classMethods;
+    uint32_t optionalInstanceMethods;
+    uint32_t optionalClassMethods;
+    uint32_t instanceProperties; // So far, always 0
+};
+
+struct cd_objc2_category_32 {
+    uint32_t name;
+    uint32_t class;
+    uint32_t instanceMethods;
+    uint32_t classMethods;
+    uint32_t v5;
+    uint32_t v6;
+    uint32_t v7;
+    uint32_t v8;
+};
+
+//
+// 64-bit
+//
+
 struct cd_objc2_class_64 {
     uint64_t isa;
     uint64_t superclass;
