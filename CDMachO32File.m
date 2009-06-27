@@ -6,6 +6,7 @@
 #import "CDMachO32File.h"
 
 #import "CDObjectiveC1Processor.h"
+#import "CDObjectiveC2Processor32.h"
 
 @implementation CDMachO32File
 
@@ -91,6 +92,9 @@
 
 - (Class)processorClass;
 {
+    if ([self hasObjectiveC2Data])
+        return [CDObjectiveC2Processor32 class];
+
     return [CDObjectiveC1Processor class];
 }
 
