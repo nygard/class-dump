@@ -13,10 +13,6 @@
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 
-- (NSString *)externalClassNameForAddress:(uint64_t)address;
-
-- (void)process;
-
 - (void)loadProtocols;
 - (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
 

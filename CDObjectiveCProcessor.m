@@ -8,6 +8,9 @@
 #import "CDVisitor.h"
 #import "NSArray-Extensions.h"
 #import "CDLCSegment.h"
+#import "CDLCDynamicSymbolTable.h"
+#import "CDLCSymbolTable.h"
+#import "CDOCProtocol.h"
 
 // Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
 
@@ -62,8 +65,31 @@
 
 - (void)process;
 {
+    [[machOFile symbolTable] loadSymbols];
+    [[machOFile dynamicSymbolTable] loadSymbols];
+
+    [self loadProtocols];
+
+    // Load classes before categories, so we can get a dictionary of classes by address.
+    [self loadClasses];
+    [self loadCategories];
+}
+
+- (void)loadProtocols;
+{
     // Implement in subclasses.
 }
+
+- (void)loadClasses;
+{
+    // Implement in subclasses.
+}
+
+- (void)loadCategories;
+{
+    // Implement in subclasses.
+}
+
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {

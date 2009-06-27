@@ -150,7 +150,8 @@ struct cd_objc_protocol_method
 
 - (void)process;
 {
-    [self loadProtocols];
+    [super process];
+
     [self processModules];
 }
 

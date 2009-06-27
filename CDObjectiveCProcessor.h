@@ -33,6 +33,9 @@
 - (BOOL)hasObjectiveC2Data;
 
 - (void)process;
+- (void)loadProtocols;
+- (void)loadClasses;
+- (void)loadCategories;
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;

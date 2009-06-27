@@ -84,4 +84,6 @@
 - (Class)processorClass;
 - (void)logInfoForAddress:(NSUInteger)address;
 
+- (NSString *)externalClassNameForAddress:(NSUInteger)address;
+
 @end

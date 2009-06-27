@@ -20,8 +20,6 @@
 #import "CDSymbol.h"
 #import "CDOCProperty.h"
 
-// http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
-
 struct cd_objc2_class {
     uint64_t isa;
     uint64_t superclass;
@@ -84,53 +82,6 @@ struct cd_objc2_property {
         return nil;
 
     return self;
-}
-
-- (NSString *)externalClassNameForAddress:(uint64_t)address;
-{
-    CDRelocationInfo *rinfo;
-    CDSymbol *symbol;
-
-    // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
-    // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
-    // ... it's an undefined symbol, need to look it up.
-    rinfo = [[machOFile dynamicSymbolTable] relocationEntryWithOffset:address - [[machOFile symbolTable] baseAddress]];
-    //NSLog(@"rinfo: %@", rinfo);
-    if (rinfo != nil) {
-        NSString *prefix = @"_OBJC_CLASS_$_";
-        NSString *str;
-
-        symbol = [[[machOFile symbolTable] symbols] objectAtIndex:rinfo.symbolnum];
-        //NSLog(@"symbol: %@", symbol);
-
-        // Now we could use GET_LIBRARY_ORDINAL(), look up the the appropriate mach-o file (being sure to have loaded them even without -r),
-        // look up the symbol in that mach-o file, get the address, look up the class based on that address, and finally get the class name
-        // from that.
-
-        // Or, we could be lazy and take advantage of the fact that the class name we're after is in the symbol name:
-        str = [symbol name];
-        if ([str hasPrefix:prefix]) {
-            return [str substringFromIndex:[prefix length]];
-        } else {
-            NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
-            return str;
-        }
-    }
-
-    // This is fine, they might really be root objects.  NSObject, NSProxy
-    return nil;
-}
-
-- (void)process;
-{
-    [[machOFile symbolTable] loadSymbols];
-    [[machOFile dynamicSymbolTable] loadSymbols];
-
-    [self loadProtocols];
-
-    // Load classes before categories, so we can get a dictionary of classes by address.
-    [self loadClasses];
-    [self loadCategories];
 }
 
 - (void)loadProtocols;
@@ -270,16 +221,8 @@ struct cd_objc2_property {
     NSData *sectionData;
     CDDataCursor *cursor;
 
-    //NSLog(@"machOFile: %@", machOFile);
-    //NSLog(@"load commands: %@", [machOFile loadCommands]);
-
     segment = [machOFile segmentWithName:@"__DATA"];
-    //NSLog(@"data segment offset: %lx", [segment fileoff]);
-    //NSLog(@"data segment: %@", segment);
-    //[segment writeSectionData];
-
     section = [segment sectionWithName:@"__objc_classlist"];
-    //NSLog(@"section: %@", section);
 
     sectionData = [section data];
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
@@ -288,24 +231,13 @@ struct cd_objc2_property {
         CDOCClass *aClass;
 
         val = [cursor readLittleInt64];
-        //NSLog(@"----------------------------------------");
-        //NSLog(@"val: %16lx", val);
 
         aClass = [self loadClassAtAddress:val];
         [classes addObject:aClass];
         [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedInteger:val]];
     }
+
     [cursor release];
-#if 0
-    s2 = [machOFile segmentContainingAddress:0x2cab60];
-    NSLog(@"s2 contains 0x2cab60: %@", s2);
-
-    dataOffset = [machOFile dataOffsetForAddress:0x2cab60];
-    NSLog(@"dataOffset: %lx (%lu)", dataOffset, dataOffset);
-
-    str = [machOFile stringAtAddress:0x2cac00];
-    NSLog(@"str: %@", str);
-#endif
 }
 
 - (void)loadCategories;
@@ -377,7 +309,7 @@ struct cd_objc2_property {
     }
 
     if (v2 == 0) {
-        [category setClassName:[self externalClassNameForAddress:address + 8]];
+        [category setClassName:[machOFile externalClassNameForAddress:address + 8]];
     } else {
         CDOCClass *aClass;
 
@@ -451,7 +383,7 @@ struct cd_objc2_property {
     [cursor release];
 
     if (objc2Class.superclass == 0) {
-        [aClass setSuperClassName:[self externalClassNameForAddress:address + 8]];
+        [aClass setSuperClassName:[machOFile externalClassNameForAddress:address + 8]];
     } else {
         CDOCClass *sc;
 

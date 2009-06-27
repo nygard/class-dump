@@ -3,6 +3,8 @@
 
 #import "CDOCProperty.h"
 
+// http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
+
 @implementation CDOCProperty
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;

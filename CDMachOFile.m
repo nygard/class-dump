@@ -19,6 +19,8 @@
 #import "CDSection.h"
 #import "CDLCSymbolTable.h"
 #import "CDLCDynamicSymbolTable.h"
+#import "CDSymbol.h"
+#import "CDRelocationInfo.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -489,6 +491,41 @@ static BOOL debug = NO;
         NSLog(@"      address %016lx as a string: '%@' (length %lu)", address, str, [str length]);
         NSLog(@"      address %016lx data offset: %lu", [self dataOffsetForAddress:address]);
     }
+}
+
+- (NSString *)externalClassNameForAddress:(NSUInteger)address;
+{
+    CDRelocationInfo *rinfo;
+
+    // Not for NSCFArray (NSMutableArray), NSSimpleAttributeDictionaryEnumerator (NSEnumerator), NSSimpleAttributeDictionary (NSDictionary), etc.
+    // It turns out NSMutableArray is in /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation, so...
+    // ... it's an undefined symbol, need to look it up.
+    rinfo = [dynamicSymbolTable relocationEntryWithOffset:address - [symbolTable baseAddress]];
+    //NSLog(@"rinfo: %@", rinfo);
+    if (rinfo != nil) {
+        CDSymbol *symbol;
+        NSString *prefix = @"_OBJC_CLASS_$_";
+        NSString *str;
+
+        symbol = [[symbolTable symbols] objectAtIndex:rinfo.symbolnum];
+        //NSLog(@"symbol: %@", symbol);
+
+        // Now we could use GET_LIBRARY_ORDINAL(), look up the the appropriate mach-o file (being sure to have loaded them even without -r),
+        // look up the symbol in that mach-o file, get the address, look up the class based on that address, and finally get the class name
+        // from that.
+
+        // Or, we could be lazy and take advantage of the fact that the class name we're after is in the symbol name:
+        str = [symbol name];
+        if ([str hasPrefix:prefix]) {
+            return [str substringFromIndex:[prefix length]];
+        } else {
+            NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
+            return str;
+        }
+    }
+
+    // This is fine, they might really be root objects.  NSObject, NSProxy.
+    return nil;
 }
 
 @end
