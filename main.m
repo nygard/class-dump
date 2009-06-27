@@ -238,9 +238,9 @@ int main(int argc, char *argv[])
 #endif
             if (hasSpecifiedArch == NO) {
                 targetArch = [file bestMatchForLocalArch];
-                NSLog(@"No arch specified, best match for local arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
+                //NSLog(@"No arch specified, best match for local arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
             } else {
-                NSLog(@"chosen arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
+                //NSLog(@"chosen arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
             }
 
             [classDump setTargetArch:targetArch];
