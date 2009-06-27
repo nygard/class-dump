@@ -84,6 +84,7 @@
 - (void)logInfoForAddress:(NSUInteger)address;
 
 - (NSString *)externalClassNameForAddress:(NSUInteger)address;
+- (BOOL)hasRelocationEntryForAddress:(NSUInteger)address;
 
 - (BOOL)hasObjectiveC1Data;
 - (BOOL)hasObjectiveC2Data;

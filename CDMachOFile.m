@@ -516,6 +516,15 @@ static BOOL debug = NO;
     return nil;
 }
 
+- (BOOL)hasRelocationEntryForAddress:(NSUInteger)address;
+{
+    CDRelocationInfo *rinfo;
+
+    rinfo = [dynamicSymbolTable relocationEntryWithOffset:address - [symbolTable baseAddress]];
+    //NSLog(@"%s, rinfo= %@", _cmd, rinfo);
+    return rinfo != nil;
+}
+
 - (BOOL)hasObjectiveC1Data;
 {
     return [self segmentWithName:@"__OBJC"] != nil;
