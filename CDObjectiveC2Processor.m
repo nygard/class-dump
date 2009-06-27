@@ -353,7 +353,7 @@ struct cd_objc2_category_64 {
     [cursor release];
 
     if (objc2Class.superclass == 0) {
-        [aClass setSuperClassName:[machOFile externalClassNameForAddress:address + 8]];
+        [aClass setSuperClassName:[machOFile externalClassNameForAddress:address + sizeof(objc2Class.isa)]];
     } else {
         CDOCClass *sc;
 
