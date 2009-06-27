@@ -37,4 +37,6 @@
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
+- (void)createUniquedProtocols;
+
 @end
