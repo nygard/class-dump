@@ -33,7 +33,6 @@
 - (NSArray *)protocols;
 - (void)addProtocol:(CDOCProtocol *)aProtocol;
 - (void)removeProtocol:(CDOCProtocol *)aProtocol;
-- (void)addProtocolsFromArray:(NSArray *)newProtocols;
 
 - (NSArray *)classMethods;
 - (void)addClassMethod:(CDOCMethod *)method;

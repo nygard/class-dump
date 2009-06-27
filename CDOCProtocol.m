@@ -85,15 +85,6 @@
     [protocols removeObject:aProtocol];
 }
 
-- (void)addProtocolsFromArray:(NSArray *)newProtocols;
-{
-    int count, index;
-
-    count = [newProtocols count];
-    for (index = 0; index < count; index++)
-        [self addProtocol:[newProtocols objectAtIndex:index]];
-}
-
 - (NSArray *)classMethods;
 {
     return classMethods;

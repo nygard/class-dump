@@ -365,7 +365,8 @@ struct cd_objc2_category_64 {
         [aClass addClassMethod:method];
 
     // Process protocols
-    [aClass addProtocolsFromArray:[self uniquedProtocolListAtAddress:objc2ClassData.baseProtocols]];
+    for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objc2ClassData.baseProtocols])
+        [aClass addProtocol:protocol];
 
     for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties])
         [aClass addProperty:property];

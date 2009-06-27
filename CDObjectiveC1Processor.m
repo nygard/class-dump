@@ -376,7 +376,8 @@ struct cd_objc_protocol_method
     }
 
     // Process protocols
-    [aClass addProtocolsFromArray:[self uniquedProtocolListAtAddress:objcClass.protocols]];
+    for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objcClass.protocols])
+        [aClass addProtocol:protocol];
 
     [cursor release];
 
@@ -517,7 +518,8 @@ struct cd_objc_protocol_method
         for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.class_methods])
             [aCategory addClassMethod:method];
 
-        [aCategory addProtocolsFromArray:[self uniquedProtocolListAtAddress:objcCategory.protocols]];
+        for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objcCategory.protocols])
+            [aCategory addProtocol:protocol];
 
         [cursor release];
     }
