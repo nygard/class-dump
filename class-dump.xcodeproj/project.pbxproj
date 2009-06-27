@@ -197,6 +197,8 @@
 		0154C1B10FF58C3600F87451 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
 		0154C25E0FF5EA1200F87451 /* CDObjectiveC2Processor64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */; };
 		0154C25F0FF5EA1200F87451 /* CDObjectiveC2Processor64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */; };
+		0154C26F0FF5EBE000F87451 /* CDObjectiveC2Processor32.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */; };
+		0154C2700FF5EBE000F87451 /* CDObjectiveC2Processor32.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */; };
 		017F9C9A0DD0F66400EC8D0A /* CDDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F9C990DD0F66400EC8D0A /* CDDataCursor.m */; };
 		0182A9530FED694800145175 /* CDMachO64File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9520FED694800145175 /* CDMachO64File.m */; };
 		0182A9660FED69A500145175 /* CDMachO32File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9650FED69A500145175 /* CDMachO32File.m */; };
@@ -409,6 +411,8 @@
 		0154C2560FF5E93800F87451 /* cd_objc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cd_objc2.h; sourceTree = "<group>"; };
 		0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor64.h; sourceTree = "<group>"; };
 		0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor64.m; sourceTree = "<group>"; };
+		0154C26D0FF5EBE000F87451 /* CDObjectiveC2Processor32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor32.h; sourceTree = "<group>"; };
+		0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor32.m; sourceTree = "<group>"; };
 		017F9C980DD0F66400EC8D0A /* CDDataCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDataCursor.h; sourceTree = "<group>"; };
 		017F9C990DD0F66400EC8D0A /* CDDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDataCursor.m; sourceTree = "<group>"; };
 		0182A9510FED694800145175 /* CDMachO64File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachO64File.h; sourceTree = "<group>"; };
@@ -509,6 +513,8 @@
 				01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */,
 				0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor64.h */,
 				0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */,
+				0154C26D0FF5EBE000F87451 /* CDObjectiveC2Processor32.h */,
+				0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */,
 				012E2B1E08AE9D6D003E99F8 /* CDStructureTable.h */,
 				012E2B1F08AE9D6D003E99F8 /* CDStructureTable.m */,
 				012E2B2008AE9D6D003E99F8 /* CDSymbolReferences.h */,
@@ -1106,6 +1112,7 @@
 				01F77E180FF44D900055EECD /* CDRelocationInfo.m in Sources */,
 				01F77F190FF47E580055EECD /* CDOCProperty.m in Sources */,
 				0154C25F0FF5EA1200F87451 /* CDObjectiveC2Processor64.m in Sources */,
+				0154C2700FF5EBE000F87451 /* CDObjectiveC2Processor32.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1168,6 +1175,7 @@
 				01F77E170FF44D900055EECD /* CDRelocationInfo.m in Sources */,
 				01F77F180FF47E580055EECD /* CDOCProperty.m in Sources */,
 				0154C25E0FF5EA1200F87451 /* CDObjectiveC2Processor64.m in Sources */,
+				0154C26F0FF5EBE000F87451 /* CDObjectiveC2Processor32.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
