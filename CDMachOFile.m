@@ -87,13 +87,7 @@ static BOOL debug = NO;
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
-    const NXArchInfo *archInfo;
-
-    archInfo = NXGetArchInfoFromCpuType(arch.cputype, arch.cpusubtype);
-    if (archInfo == NULL)
-        return nil;
-
-    if (archInfo->cputype == [self cputype])
+    if ([self cputype] == arch.cputype)
         return self;
 
     return nil;
