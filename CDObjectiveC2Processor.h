@@ -11,19 +11,16 @@
 {
 }
 
-- (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
-
 - (void)loadProtocols;
-- (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
-
 - (void)loadClasses;
 - (void)loadCategories;
 
+- (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
 - (CDOCCategory *)loadCategoryAtAddress:(uint64_t)address;
-
 - (CDOCClass *)loadClassAtAddress:(uint64_t)address;
+
 - (NSArray *)loadPropertiesAtAddress:(uint64_t)address;
-- (CDOCClass *)loadMetaClassAtAddress:(uint64_t)address;
+- (NSArray *)loadMethodsOfMetaClassAtAddress:(uint64_t)address;
 
 - (NSArray *)loadMethodsAtAddress:(uint64_t)address;
 - (NSArray *)loadIvarsAtAddress:(uint64_t)address;

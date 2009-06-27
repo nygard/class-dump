@@ -76,14 +76,6 @@ struct cd_objc2_property {
 
 @implementation CDObjectiveC2Processor
 
-- (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
-{
-    if ([super initWithMachOFile:aMachOFile] == nil)
-        return nil;
-
-    return self;
-}
-
 - (void)loadProtocols;
 {
     CDLCSegment *segment;
@@ -96,16 +88,58 @@ struct cd_objc2_property {
     sectionData = [section data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    while ([cursor isAtEnd] == NO) {
-        uint64_t val;
-
-        val = [cursor readLittleInt64];
-        [self protocolAtAddress:val];
-    }
-
+    while ([cursor isAtEnd] == NO)
+        [self protocolAtAddress:[cursor readLittleInt64]];
     [cursor release];
 
     [self createUniquedProtocols];
+}
+
+- (void)loadClasses;
+{
+    CDLCSegment *segment;
+    CDSection *section;
+    NSData *sectionData;
+    CDDataCursor *cursor;
+
+    segment = [machOFile segmentWithName:@"__DATA"];
+    section = [segment sectionWithName:@"__objc_classlist"];
+    sectionData = [section data];
+
+    cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    while ([cursor isAtEnd] == NO) {
+        uint64_t val;
+        CDOCClass *aClass;
+
+        val = [cursor readLittleInt64];
+        aClass = [self loadClassAtAddress:val];
+        if (aClass != nil) {
+            [classes addObject:aClass];
+            [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedInteger:val]];
+        }
+    }
+    [cursor release];
+}
+
+- (void)loadCategories;
+{
+    CDLCSegment *segment;
+    CDSection *section;
+    NSData *sectionData;
+    CDDataCursor *cursor;
+
+    segment = [machOFile segmentWithName:@"__DATA"];
+    section = [segment sectionWithName:@"__objc_catlist"];
+    sectionData = [section data];
+
+    cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    while ([cursor isAtEnd] == NO) {
+        CDOCCategory *category;
+
+        category = [self loadCategoryAtAddress:[cursor readLittleInt64]];
+        if (category != nil)
+            [categories addObject:category];
+    }
 }
 
 - (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
@@ -212,59 +246,6 @@ struct cd_objc2_property {
     }
 
     return protocol;
-}
-
-- (void)loadClasses;
-{
-    CDLCSegment *segment;
-    CDSection *section;
-    NSData *sectionData;
-    CDDataCursor *cursor;
-
-    segment = [machOFile segmentWithName:@"__DATA"];
-    section = [segment sectionWithName:@"__objc_classlist"];
-
-    sectionData = [section data];
-    cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    while ([cursor isAtEnd] == NO) {
-        uint64_t val;
-        CDOCClass *aClass;
-
-        val = [cursor readLittleInt64];
-
-        aClass = [self loadClassAtAddress:val];
-        [classes addObject:aClass];
-        [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedInteger:val]];
-    }
-
-    [cursor release];
-}
-
-- (void)loadCategories;
-{
-    CDLCSegment *segment;
-    CDSection *section;
-    NSData *sectionData;
-    CDDataCursor *cursor;
-
-    segment = [machOFile segmentWithName:@"__DATA"];
-    section = [segment sectionWithName:@"__objc_catlist"];
-    sectionData = [section data];
-
-    cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    while ([cursor isAtEnd] == NO) {
-        uint64_t val;
-        CDOCCategory *category;
-
-        val = [cursor readLittleInt64];
-        //NSLog(@"----------------------------------------");
-        //NSLog(@"val: %16lx", val);
-        //[machOFile logInfoForAddress:val];
-        category = [self loadCategoryAtAddress:val];
-        //NSLog(@"loaded category: %@", category);
-        if (category != nil)
-            [categories addObject:category];
-    }
 }
 
 - (CDOCCategory *)loadCategoryAtAddress:(uint64_t)address;
@@ -387,35 +368,18 @@ struct cd_objc2_property {
     } else {
         CDOCClass *sc;
 
-        //NSLog(@"objc2Class.superclass of %@ is not 0", [aClass name]);
-        //NSLog(@"Address of objc2Class.superclass should be... %016lx (%u)", address + 8, address + 8);
-        //[machOFile logInfoForAddress:0x002cade8];
-        //exit(99);
-        //NSLog(@"superclass address: %016lx", objc2Class.superclass);
         sc = [self loadClassAtAddress:objc2Class.superclass];
-        //NSLog(@"sc: %@", sc);
-        //NSLog(@"sc name: %@", [sc name]);
         [aClass setSuperClassName:[sc name]];
     }
 
-    {
-        CDOCClass *metaclass;
-
-        metaclass = [self loadMetaClassAtAddress:objc2Class.isa];
-        //NSLog(@"metaclass [%016lx]: %@", objc2Class.isa, metaclass);
-        //NSLog(@"metaclass name (%@) for class name (%@)", [metaclass name], [aClass name]);
-        for (CDOCMethod *method in [metaclass classMethods])
-            [aClass addClassMethod:method];
-    }
+    for (CDOCMethod *method in [self loadMethodsOfMetaClassAtAddress:objc2Class.isa])
+        [aClass addClassMethod:method];
 
     // Process protocols
     [aClass addProtocolsFromArray:[self uniquedProtocolListAtAddress:objc2ClassData.baseProtocols]];
 
-    //NSLog(@"class= %@", aClass);
-    //NSParameterAssert(objc2ClassData.baseProperties == 0);
-    for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties]) {
+    for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties])
         [aClass addProperty:property];
-    }
 
     return aClass;
 }
@@ -450,9 +414,6 @@ struct cd_objc2_property {
             name = [machOFile stringAtAddress:objc2Property.name];
             attributes = [machOFile stringAtAddress:objc2Property.attributes];
 
-            //NSLog(@"name: %@", name);
-            //NSLog(@"attributes: %@", attributes);
-
             property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
             [properties addObject:property];
             [property release];
@@ -464,14 +425,12 @@ struct cd_objc2_property {
     return properties;
 }
 
-// This just gets the name and methods.
-- (CDOCClass *)loadMetaClassAtAddress:(uint64_t)address;
+// This just gets the methods.
+- (NSArray *)loadMethodsOfMetaClassAtAddress:(uint64_t)address;
 {
     struct cd_objc2_class objc2Class;
     struct cd_objc2_class_ro_t objc2ClassData;
     CDDataCursor *cursor;
-    NSString *str;
-    CDOCClass *aClass;
 
     if (address == 0)
         return nil;
@@ -507,25 +466,9 @@ struct cd_objc2_property {
     objc2ClassData.weakIvarLayout = [cursor readInt64];
     objc2ClassData.baseProperties = [cursor readInt64];
 
-    //NSLog(@"%08x %08x %08x %08x", objc2ClassData.flags, objc2ClassData.instanceStart, objc2ClassData.instanceSize, objc2ClassData.reserved);
-
-    //NSLog(@"%016lx %016lx %016lx %016lx", objc2ClassData.ivarLayout, objc2ClassData.name, objc2ClassData.baseMethods, objc2ClassData.baseProtocols);
-    //NSLog(@"%016lx %016lx %016lx %016lx", objc2ClassData.ivars, objc2ClassData.weakIvarLayout, objc2ClassData.baseProperties);
-    str = [machOFile stringAtAddress:objc2ClassData.name];
-    //NSLog(@"name = %@", str);
-
-    aClass = [[[CDOCClass alloc] init] autorelease];
-    [aClass setName:str];
-
-    for (CDOCMethod *method in [self loadMethodsAtAddress:objc2ClassData.baseMethods])
-        [aClass addClassMethod:method];
-
-    NSParameterAssert(objc2ClassData.ivars == 0);
-    //[aClass setIvars:[self loadIvarsAtAddress:objc2ClassData.ivars]];
-
     [cursor release];
 
-    return aClass;
+    return [self loadMethodsAtAddress:objc2ClassData.baseMethods];
 }
 
 - (NSArray *)loadMethodsAtAddress:(uint64_t)address;
@@ -640,20 +583,22 @@ struct cd_objc2_property {
         cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
         [cursor setByteOrder:[machOFile byteOrder]];
         [cursor setOffset:[machOFile dataOffsetForAddress:address]];
-        //NSLog(@"offset: %lu", [cursor offset]);
-        count = [cursor readInt64];
 
+        count = [cursor readInt64];
         for (index = 0; index < count; index++) {
             uint64_t val;
             CDOCProtocol *protocol, *uniqueProtocol;
 
             val = [cursor readInt64];
-            protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInteger:val]];
-            //NSLog(@"%3d protocol @ %08x: %@", index, val, [protocol name]);
-            if (protocol != nil) {
-                uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
-                if (uniqueProtocol != nil)
-                    [protocols addObject:uniqueProtocol];
+            if (val == 0) {
+                NSLog(@"Warning: protocol address in protocol list was 0.");
+            } else {
+                protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInteger:val]];
+                if (protocol != nil) {
+                    uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
+                    if (uniqueProtocol != nil)
+                        [protocols addObject:uniqueProtocol];
+                }
             }
         }
 
