@@ -21,7 +21,7 @@
 #import "CDOCProperty.h"
 #import "cd_objc2.h"
 
-@implementation CDObjectiveC2Processor
+@implementation CDObjectiveC2Processor64
 
 - (void)loadProtocols;
 {

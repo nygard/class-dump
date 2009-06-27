@@ -88,7 +88,7 @@
 
 - (Class)processorClass;
 {
-    return [CDObjectiveC2Processor class];
+    return [CDObjectiveC2Processor64 class];
 }
 
 @end
