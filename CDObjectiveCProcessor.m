@@ -50,17 +50,7 @@
 
 - (BOOL)hasObjectiveCData;
 {
-    return [self hasObjectiveC1Data] || [self hasObjectiveC2Data];
-}
-
-- (BOOL)hasObjectiveC1Data;
-{
-    return [machOFile segmentWithName:@"__OBJC"] != nil;
-}
-
-- (BOOL)hasObjectiveC2Data;
-{
-    return [[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
+    return [machOFile hasObjectiveC1Data] || [machOFile hasObjectiveC2Data];
 }
 
 - (void)process;

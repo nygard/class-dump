@@ -528,4 +528,14 @@ static BOOL debug = NO;
     return nil;
 }
 
+- (BOOL)hasObjectiveC1Data;
+{
+    return [self segmentWithName:@"__OBJC"] != nil;
+}
+
+- (BOOL)hasObjectiveC2Data;
+{
+    return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
+}
+
 @end

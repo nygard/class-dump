@@ -86,4 +86,7 @@
 
 - (NSString *)externalClassNameForAddress:(NSUInteger)address;
 
+- (BOOL)hasObjectiveC1Data;
+- (BOOL)hasObjectiveC2Data;
+
 @end
