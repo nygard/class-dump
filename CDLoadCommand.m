@@ -16,6 +16,7 @@
 #import "CDLCUUID.h"
 #import "CDLCUnknown.h"
 #import "CDMachOFile.h"
+#import "CDLCUnixThread.h"
 
 @implementation CDLoadCommand
 
@@ -45,6 +46,7 @@
       case LC_SEGMENT_SPLIT_INFO:
           targetClass = [CDLCLinkeditData class];
           break;
+      case LC_UNIXTHREAD: targetClass = [CDLCUnixThread class]; break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };
