@@ -9,22 +9,15 @@
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    NSUInteger commandOffset;
     NSUInteger length;
 
     if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    commandOffset = [cursor offset];
     dylinkerCommand.cmd = [cursor readInt32];
     dylinkerCommand.cmdsize = [cursor readInt32];
 
     dylinkerCommand.name.offset = [cursor readInt32];
-
-    //NSLog(@"commandOffset: 0x%08x", commandOffset);
-    //NSLog(@"dylinkerCommand.dylib.name.offset: 0x%08x", dylinkerCommand.dylib.name.offset);
-    //NSLog(@"offset after fixed dylib struct: %08x", [cursor offset]);
-    //NSLog(@"off1 + off2: 0x%08x", commandOffset + dylinkerCommand.dylib.name.offset);
 
     length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
     //NSLog(@"expected length: %u", length);

@@ -20,13 +20,11 @@ static NSString *CDDylibVersionString(unsigned long version)
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
 {
-    NSUInteger commandOffset;
     NSUInteger length;
 
     if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    commandOffset = [cursor offset];
     dylibCommand.cmd = [cursor readInt32];
     dylibCommand.cmdsize = [cursor readInt32];
 
@@ -34,11 +32,6 @@ static NSString *CDDylibVersionString(unsigned long version)
     dylibCommand.dylib.timestamp = [cursor readInt32];
     dylibCommand.dylib.current_version = [cursor readInt32];
     dylibCommand.dylib.compatibility_version = [cursor readInt32];
-
-    //NSLog(@"commandOffset: 0x%08x", commandOffset);
-    //NSLog(@"dylibCommand.dylib.name.offset: 0x%08x", dylibCommand.dylib.name.offset);
-    //NSLog(@"offset after fixed dylib struct: %08x", [cursor offset]);
-    //NSLog(@"off1 + off2: 0x%08x", commandOffset + dylibCommand.dylib.name.offset);
 
     length = dylibCommand.cmdsize - sizeof(dylibCommand);
     //NSLog(@"expected length: %u", length);
