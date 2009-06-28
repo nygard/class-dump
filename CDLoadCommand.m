@@ -8,6 +8,7 @@
 #include <mach-o/swap.h>
 
 #import "CDLCDylib.h"
+#import "CDLCDylinker.h"
 #import "CDLCDynamicSymbolTable.h"
 #import "CDLCLinkeditData.h"
 #import "CDLCSegment32.h"
@@ -47,6 +48,10 @@
           targetClass = [CDLCLinkeditData class];
           break;
       case LC_UNIXTHREAD: targetClass = [CDLCUnixThread class]; break;
+      case LC_LOAD_DYLINKER:
+      case LC_ID_DYLINKER:
+          targetClass = [CDLCDylinker class];
+          break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };
