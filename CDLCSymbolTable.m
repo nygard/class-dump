@@ -25,6 +25,9 @@
     symtabCommand.nsyms = [cursor readInt32];
     symtabCommand.stroff = [cursor readInt32];
     symtabCommand.strsize = [cursor readInt32];
+
+    // symoff is at the start of the first section (__pointers) of the __IMPORT segment
+    // stroff falls within the __LINKEDIT segment
 #if 0
     NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
           symtabCommand.cmd, symtabCommand.cmdsize,
