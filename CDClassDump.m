@@ -208,7 +208,7 @@
 
         if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0) {
             if (errorMessagePointer != NULL) {
-                *errorMessagePointer = [NSString stringWithCString:regex_error_buffer];
+                *errorMessagePointer = [NSString stringWithUTF8String:regex_error_buffer];
             }
         } else {
             if (errorMessagePointer != NULL)
@@ -233,7 +233,7 @@
             char regex_error_buffer[256];
 
             if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0)
-                NSLog(@"Error with regex matching string, %@", [NSString stringWithCString:regex_error_buffer]);
+                NSLog(@"Error with regex matching string, %@", [NSString stringWithUTF8String:regex_error_buffer]);
         }
 
         return NO;

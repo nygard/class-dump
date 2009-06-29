@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
               break;
 
           case 'o':
-              [multiFileVisitor setOutputPath:[NSString stringWithCString:optarg]];
+              [multiFileVisitor setOutputPath:[NSString stringWithUTF8String:optarg]];
               break;
 
           case 'r':
