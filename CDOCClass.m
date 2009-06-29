@@ -55,17 +55,15 @@
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
 {
-    int count, index;
     CDTypeParser *parser;
 
     [super registerStructuresWithObject:anObject phase:phase];
 
-    count = [ivars count];
-    for (index = 0; index < count; index++) {
+    for (CDOCIvar *ivar in ivars) {
         CDType *aType;
         NSError *error;
 
-        parser = [[CDTypeParser alloc] initWithType:[(CDOCIvar *)[ivars objectAtIndex:index] type]];
+        parser = [[CDTypeParser alloc] initWithType:[ivar type]];
         aType = [parser parseType:&error];
         [aType phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
         [parser release];
@@ -88,20 +86,14 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    unsigned int count, index;
-
     if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
     [aVisitor willVisitClass:self];
 
     [aVisitor willVisitIvarsOfClass:self];
-    count = [ivars count];
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            [aVisitor visitIvar:[ivars objectAtIndex:index]];
-        }
-    }
+    for (CDOCIvar *ivar in ivars)
+        [aVisitor visitIvar:ivar];
     [aVisitor didVisitIvarsOfClass:self];
 
     [aVisitor willVisitPropertiesOfClass:self];
