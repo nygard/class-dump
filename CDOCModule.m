@@ -31,12 +31,12 @@
     [super dealloc];
 }
 
-- (unsigned long)version;
+- (uint32_t)version;
 {
     return version;
 }
 
-- (void)setVersion:(unsigned long)aVersion;
+- (void)setVersion:(uint32_t)aVersion;
 {
     version = aVersion;
 }
@@ -71,7 +71,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, version: %d, symtab: %@", NSStringFromClass([self class]), name, version, symtab];
+    return [NSString stringWithFormat:@"[%@] name: %@, version: %u, symtab: %@", NSStringFromClass([self class]), name, version, symtab];
 }
 
 - (NSString *)formattedString;

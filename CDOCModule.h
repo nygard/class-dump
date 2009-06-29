@@ -9,7 +9,7 @@
 
 @interface CDOCModule : NSObject
 {
-    unsigned long version;
+    uint32_t version;
     NSString *name;
     CDOCSymtab *symtab;
 }
@@ -17,8 +17,8 @@
 - (id)init;
 - (void)dealloc;
 
-- (unsigned long)version;
-- (void)setVersion:(unsigned long)aVersion;
+- (uint32_t)version;
+- (void)setVersion:(uint32_t)aVersion;
 
 - (NSString *)name;
 - (void)setName:(NSString *)newName;
