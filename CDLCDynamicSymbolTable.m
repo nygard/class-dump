@@ -149,11 +149,13 @@
     [cursor release];
 }
 
+// Just search for externals.
 - (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
 {
     for (CDRelocationInfo *info in externalRelocationEntries) {
-        if ([info offset] == offset)
+        if ([info isExtern] && [info offset] == offset) {
             return info;
+        }
     }
 
     return nil;
