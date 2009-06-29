@@ -38,8 +38,6 @@
     symbols = [[NSMutableArray alloc] init];
     baseAddress = 0;
 
-    //NSLog(@"self: %@", self);
-
     return self;
 }
 
