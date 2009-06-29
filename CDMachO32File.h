@@ -7,7 +7,7 @@
 
 @interface CDMachO32File : CDMachOFile
 {
-    struct mach_header header; // header.magic is read in and stored in little endian order.(?)
+    struct mach_header header; // header.magic is read in and stored in little endian order.
 }
 
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;

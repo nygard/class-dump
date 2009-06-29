@@ -27,7 +27,6 @@
     } else if (header.magic == MH_CIGAM_64) {
         byteOrder = CDByteOrderBigEndian;
     } else {
-        //NSLog(@"Not a 64-bit MachO file.");
         [cursor release];
         [self release];
         return nil;
