@@ -123,16 +123,12 @@
 - (void)finishPhase1;
 {
     NSArray *keys;
-    unsigned int count, index;
 
     //NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
     keys = [keyTypeStringsByBareTypeStrings allKeys];
-    count = [keys count];
-    for (index = 0; index < count; index++) {
-        NSString *key;
+    for (NSString *key in keys) {
         NSMutableSet *value;
 
-        key = [keys objectAtIndex:index];
         value = [keyTypeStringsByBareTypeStrings objectForKey:key];
         [value removeObject:key]; // Remove the bare string.  This should leave only ones with member names.
         // If there's more than one, it means they have different member names.
@@ -178,13 +174,9 @@
 {
     int nameIndex = 1;
     NSArray *keys;
-    int count, index;
-    NSString *key;
 
     keys = [anonymousStructuresByType allKeys];
-    count = [keys count];
-    for (index = 0; index < count; index++) {
-        key = [keys objectAtIndex:index];
+    for (NSString *key in keys) {
         if ([[anonymousStructureCountsByType objectForKey:key] intValue] > 1
             || [forcedTypedefs containsObject:key]) {
             [anonymousStructureNamesByType setObject:[NSString stringWithFormat:@"%@%d", anonymousBaseName, nameIndex++] forKey:key];
@@ -199,16 +191,12 @@
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSArray *keys;
-    NSString *key;
-    int count, index;
     NSString *formattedString;
     CDType *type;
 
     keys = [[structuresByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    count = [keys count];
 
-    for (index = 0; index < count; index++) {
-        key = [keys objectAtIndex:index];
+    for (NSString *key in keys) {
         type = [structuresByName objectForKey:key];
 
         if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:[[type typeName] description]] == NO)
@@ -225,15 +213,12 @@
 - (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSArray *keys;
-    int count, index;
-    NSString *key, *typeString, *formattedString, *aName;
+    NSString *typeString, *formattedString, *aName;
 
     //keys = [[anonymousStructureNamesByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
     keys = [anonymousStructureNamesByType allKeys];
-    count = [keys count];
 
-    for (index = 0; index < count; index++) {
-        key = [keys objectAtIndex:index];
+    for (NSString *key in keys) {
         aName = [anonymousStructureNamesByType objectForKey:key];
 
         if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:aName] == NO)
