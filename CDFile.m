@@ -57,6 +57,12 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     if ([super init] == nil)
         return nil;
 
+    // Otherwise reading the magic number fails.
+    if ([someData length] < 4) {
+        [self release];
+        return nil;
+    }
+
     filename = nil;
     data = [someData retain];
     offset = anOffset;
