@@ -247,7 +247,7 @@ static BOOL debug = NO;
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDLCSegment class]] == YES && [[loadCommand name] isEqual:segmentName] == YES) {
+        if ([loadCommand isKindOfClass:[CDLCSegment class]] && [[loadCommand name] isEqual:segmentName]) {
             return loadCommand;
         }
     }
@@ -258,7 +258,7 @@ static BOOL debug = NO;
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
 {
     for (id loadCommand in loadCommands) {
-        if ([loadCommand isKindOfClass:[CDLCSegment class]] == YES && [loadCommand containsAddress:address] == YES) {
+        if ([loadCommand isKindOfClass:[CDLCSegment class]] && [loadCommand containsAddress:address]) {
             return loadCommand;
         }
     }
@@ -376,7 +376,7 @@ static BOOL debug = NO;
         NSString *str;
 
         str = [filename lastPathComponent];
-        if ([str hasPrefix:@"lib"] == YES)
+        if ([str hasPrefix:@"lib"])
             str = [[[str substringFromIndex:3] componentsSeparatedByString:@"."] objectAtIndex:0];
 
         return str;

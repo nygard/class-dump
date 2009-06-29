@@ -81,7 +81,7 @@
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([aClassDump shouldShowMethodAddresses] == YES && imp != 0)
+        if ([aClassDump shouldShowMethodAddresses] && imp != 0)
             [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];

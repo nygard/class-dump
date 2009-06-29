@@ -92,7 +92,7 @@
     [propertyTypeFormatter release];
     [structDeclarationTypeFormatter release];
 
-    if (flags.shouldMatchRegex == YES)
+    if (flags.shouldMatchRegex)
         regfree(&compiledRegex);
 
     [super dealloc];
@@ -179,7 +179,7 @@
 
 - (void)setShouldMatchRegex:(BOOL)newFlag;
 {
-    if (flags.shouldMatchRegex == YES && newFlag == NO)
+    if (flags.shouldMatchRegex && newFlag == NO)
         regfree(&compiledRegex);
 
     flags.shouldMatchRegex = newFlag;
@@ -199,7 +199,7 @@
 {
     int result;
 
-    if (flags.shouldMatchRegex == YES)
+    if (flags.shouldMatchRegex)
         regfree(&compiledRegex);
 
     result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
@@ -408,7 +408,7 @@
     CDMachOFile *aMachOFile;
     NSString *replacementString = @"@executable_path";
 
-    if ([anID hasPrefix:replacementString] == YES) {
+    if ([anID hasPrefix:replacementString]) {
         adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
     } else {
         adjustedID = anID;

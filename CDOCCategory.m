@@ -54,7 +54,7 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    if ([[aVisitor classDump] shouldMatchRegex] == YES && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+    if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
     [aVisitor willVisitCategory:self];

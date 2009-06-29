@@ -72,7 +72,7 @@
 {
     //[self skipCharacters];
 
-    if ([self isAtEnd] == YES)
+    if ([self isAtEnd])
         return nil;
 
     return [[self string] substringWithRange:NSMakeRange([self scanLocation], 1)];
@@ -89,7 +89,7 @@
 
     //[self skipCharacters];
 
-    if ([self isAtEnd] == YES)
+    if ([self isAtEnd])
         return NO;
 
     ch = [[self string] characterAtIndex:[self scanLocation]];
@@ -107,11 +107,11 @@
 
     //[self skipCharacters];
 
-    if ([self isAtEnd] == YES)
+    if ([self isAtEnd])
         return NO;
 
     ch = [[self string] characterAtIndex:[self scanLocation]];
-    if ([set characterIsMember:ch] == YES) {
+    if ([set characterIsMember:ch]) {
         if (value != NULL) {
             *value = [NSString stringWithUnichar:ch];
         }
@@ -179,14 +179,14 @@
 {
     NSString *start, *remainder;
 
-    if ([self scanString:@"?" intoString:stringPointer] == YES) {
+    if ([self scanString:@"?" intoString:stringPointer]) {
         return YES;
     }
 
-    if ([self scanCharacterFromSet:[NSScanner cdIdentifierStartCharacterSet] intoString:&start] == YES) {
+    if ([self scanCharacterFromSet:[NSScanner cdIdentifierStartCharacterSet] intoString:&start]) {
         NSString *str;
 
-        if ([self my_scanCharactersFromSet:[NSScanner cdIdentifierCharacterSet] intoString:&remainder] == YES) {
+        if ([self my_scanCharactersFromSet:[NSScanner cdIdentifierCharacterSet] intoString:&remainder]) {
             str = [start stringByAppendingString:remainder];
         } else {
             str = start;

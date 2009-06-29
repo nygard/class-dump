@@ -186,7 +186,7 @@
     for (index = 0; index < count; index++) {
         key = [keys objectAtIndex:index];
         if ([[anonymousStructureCountsByType objectForKey:key] intValue] > 1
-            || [forcedTypedefs containsObject:key] == YES) {
+            || [forcedTypedefs containsObject:key]) {
             [anonymousStructureNamesByType setObject:[NSString stringWithFormat:@"%@%d", anonymousBaseName, nameIndex++] forKey:key];
         }
     }
@@ -211,7 +211,7 @@
         key = [keys objectAtIndex:index];
         type = [structuresByName objectForKey:key];
 
-        if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:[[type typeName] description]] == NO)
+        if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:[[type typeName] description]] == NO)
             continue;
 
         formattedString = [aTypeFormatter formatVariable:nil type:[type typeString] symbolReferences:symbolReferences];
@@ -236,7 +236,7 @@
         key = [keys objectAtIndex:index];
         aName = [anonymousStructureNamesByType objectForKey:key];
 
-        if ([aClassDump shouldMatchRegex] == YES && [aClassDump regexMatchesString:aName] == NO)
+        if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:aName] == NO)
             continue;
 
         typeString = [[anonymousStructuresByType objectForKey:key] typeString];
@@ -265,7 +265,7 @@
     NSString *result;
 
     result = [anonymousStructureNamesByType objectForKey:[aType keyTypeString]];
-    if (flags.shouldDebug == YES) {
+    if (flags.shouldDebug) {
         NSLog(@"[%p] %s, %@ -> %@", self, _cmd, [aType keyTypeString], result);
     }
 
@@ -281,7 +281,7 @@
     //NSLog(@"keySignature: %@", [aStructure keyTypeString]);
 
     aName = [[aStructure typeName] description];
-    if (aName == nil || [aName isEqual:@"?"] == YES) {
+    if (aName == nil || [aName isEqual:@"?"]) {
         NSString *bareStr, *keyStr;
         NSMutableSet *values;
 
@@ -313,11 +313,11 @@
     aName = [[aStructure typeName] description];
     keySignature = [aStructure keyTypeString];
 
-    if (isUsedInMethod == YES)
+    if (isUsedInMethod)
         [self forceTypedefForStructure:keySignature];
 
     // Handle anonymous structs
-    if (aName == nil || [aName isEqual:@"?"] == YES) {
+    if (aName == nil || [aName isEqual:@"?"]) {
         CDType *previousType;
         NSString *remappedSignature;
         NSString *old;
@@ -349,7 +349,7 @@
             }
 
             // Not sure what we should do with this if we couldn't merge the types...
-            if (shouldCountReferences == YES) {
+            if (shouldCountReferences) {
                 NSNumber *oldCount;
 
                 // Just count anonymous structs
@@ -380,7 +380,7 @@
             before = [existingType keyTypeString];
             if ([existingType canMergeWithType:aStructure]) {
                 [existingType mergeWithType:aStructure];
-                if ([self shouldDebug] == YES) {
+                if ([self shouldDebug]) {
                     if ([before isEqual:[existingType keyTypeString]] == NO) {
                         NSLog(@"Merging %@ with %@", before, [aStructure keyTypeString]);
                         NSLog(@"Merged result: %@", [existingType keyTypeString]);

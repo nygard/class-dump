@@ -182,7 +182,7 @@ NSString *CDTokenDescription(int token)
         aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
         [methodTypes addObject:aMethodType];
         [aMethodType release];
-    } while ([self isTokenInTypeStartSet:lookahead] == YES);
+    } while ([self isTokenInTypeStartSet:lookahead]);
 
     return methodTypes;
 }
@@ -224,7 +224,7 @@ NSString *CDTokenDescription(int token)
         modifier = lookahead;
         [self match:modifier];
 
-        if ([self isTokenInTypeStartSet:lookahead] == YES)
+        if ([self isTokenInTypeStartSet:lookahead])
             unmodifiedType = [self _parseTypeInStruct:isInStruct];
         else
             unmodifiedType = nil;
@@ -251,12 +251,12 @@ NSString *CDTokenDescription(int token)
                 NSLog(@"next character: %d (%c), isInTypeStartSet: %d", [lexer peekChar], [lexer peekChar], [self isTokenInTypeStartSet:[lexer peekChar]]);
         }
 #endif
-        if (lookahead == TK_QUOTED_STRING && (isInStruct == NO || [[lexer lexText] isFirstLetterUppercase] == YES || [self isTokenInTypeStartSet:[lexer peekChar]] == NO)) {
+        if (lookahead == TK_QUOTED_STRING && (isInStruct == NO || [[lexer lexText] isFirstLetterUppercase] || [self isTokenInTypeStartSet:[lexer peekChar]] == NO)) {
             NSString *str;
             CDTypeName *typeName;
 
             str = [lexer lexText];
-            if ([str hasPrefix:@"<"] == YES && [str hasSuffix:@">"] == YES) {
+            if ([str hasPrefix:@"<"] && [str hasSuffix:@">"]) {
                 str = [str substringWithRange:NSMakeRange(1, [str length] - 2)];
                 result = [[CDType alloc] initIDTypeWithProtocols:[str componentsSeparatedByString:@","]];
             } else {
@@ -314,7 +314,7 @@ NSString *CDTokenDescription(int token)
         [self match:']'];
 
         result = [[CDType alloc] initArrayType:type count:number];
-    } else if ([self isTokenInSimpleTypeSet:lookahead] == YES) { // simple type
+    } else if ([self isTokenInSimpleTypeSet:lookahead]) { // simple type
         int simpleType;
 
         simpleType = lookahead;
@@ -335,7 +335,7 @@ NSString *CDTokenDescription(int token)
 
     members = [NSMutableArray array];
 
-    while ([self isTokenInTypeSet:lookahead] == YES) {
+    while ([self isTokenInTypeSet:lookahead]) {
         CDType *aType;
 
         aType = [self _parseType];
@@ -365,7 +365,7 @@ NSString *CDTokenDescription(int token)
 
     result = [NSMutableArray array];
 
-    while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead] == YES)
+    while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead])
         [result addObject:[self parseMember]];
 
     return result;
@@ -497,8 +497,8 @@ NSString *CDTokenDescription(int token)
 
 - (BOOL)isTokenInTypeSet:(int)aToken;
 {
-    if ([self isTokenInModifierSet:aToken] == YES
-        || [self isTokenInSimpleTypeSet:aToken] == YES
+    if ([self isTokenInModifierSet:aToken]
+        || [self isTokenInSimpleTypeSet:aToken]
         || aToken == '^'
         || aToken == 'b'
         || aToken == '@'
@@ -525,7 +525,7 @@ NSString *CDTokenDescription(int token)
         || aToken == '{'
         || aToken == '('
         || aToken == '['
-        || [self isTokenInSimpleTypeSet:aToken] == YES)
+        || [self isTokenInSimpleTypeSet:aToken])
         return YES;
 
     return NO;

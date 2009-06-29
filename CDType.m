@@ -221,7 +221,7 @@
 
 - (int)typeIgnoringModifiers;
 {
-    if ([self isModifierType] == YES && subtype != nil)
+    if ([self isModifierType] && subtype != nil)
         return [subtype typeIgnoringModifiers];
 
     return type;
@@ -287,7 +287,7 @@
 
       case '(':
           baseType = nil;
-          if (typeName == nil || [@"?" isEqual:[typeName description]] == YES) {
+          if (typeName == nil || [@"?" isEqual:[typeName description]]) {
               NSString *typedefName;
 
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
@@ -297,13 +297,13 @@
           }
 
           if (baseType == nil) {
-              if (typeName == nil || [@"?" isEqual:[typeName description]] == YES)
+              if (typeName == nil || [@"?" isEqual:[typeName description]])
                   baseType = @"union";
               else
                   baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:[typeName description]] == YES)
-                  || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
+              if (([typeFormatter shouldAutoExpand] && [@"?" isEqual:[typeName description]])
+                  || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
                                            [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
@@ -313,7 +313,7 @@
               baseType = [baseType stringByAppendingString:memberString];
           }
 
-          if (currentName == nil || [currentName hasPrefix:@"?"] == YES) // Not sure about this
+          if (currentName == nil || [currentName hasPrefix:@"?"]) // Not sure about this
               result = baseType;
           else
               result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
@@ -321,7 +321,7 @@
 
       case '{':
           baseType = nil;
-          if (typeName == nil || [@"?" isEqual:[typeName description]] == YES) {
+          if (typeName == nil || [@"?" isEqual:[typeName description]]) {
               NSString *typedefName;
 
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
@@ -330,13 +330,13 @@
               }
           }
           if (baseType == nil) {
-              if (typeName == nil || [@"?" isEqual:[typeName description]] == YES)
+              if (typeName == nil || [@"?" isEqual:[typeName description]])
                   baseType = @"struct";
               else
                   baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] == YES && [@"?" isEqual:[typeName description]] == YES)
-                  || (level == 0 && [typeFormatter shouldExpand] == YES && [members count] > 0))
+              if (([typeFormatter shouldAutoExpand] && [@"?" isEqual:[typeName description]])
+                  || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
                                            [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
@@ -346,7 +346,7 @@
               baseType = [baseType stringByAppendingString:memberString];
           }
 
-          if (currentName == nil || [currentName hasPrefix:@"?"] == YES) // Not sure about this
+          if (currentName == nil || [currentName hasPrefix:@"?"]) // Not sure about this
               result = baseType;
           else
               result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
@@ -781,7 +781,7 @@
             if ([aMember variableName] == nil && [aMember type] != 'b') {
                 do {
                     name = [NSString stringWithFormat:@"_field%d", number++];
-                } while ([usedNames containsObject:name] == YES);
+                } while ([usedNames containsObject:name]);
                 [aMember setVariableName:name];
             }
         }

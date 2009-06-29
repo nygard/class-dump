@@ -24,7 +24,7 @@
         NSString *typeSuffix = [formattedTypeDict objectForKey:@"type-suffix"];
         if (typeSuffix != nil)
             [ivarElement addChild:[NSXMLElement elementWithName:@"type-suffix" stringValue:typeSuffix]];
-        if ([aClassDump shouldShowIvarOffsets] == YES)
+        if ([aClassDump shouldShowIvarOffsets])
             [ivarElement addChild:[NSXMLElement elementWithName:@"offset" stringValue:[NSString stringWithFormat:@"0x%x", offset]]];
     } else
         [ivarElement addChild:[NSXMLNode commentWithStringValue:[NSString stringWithFormat:@"error parsing type: %@, name: %@", type, name]]];

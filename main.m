@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (errorFlag == YES) {
+    if (errorFlag) {
         print_usage();
         exit(2);
     }

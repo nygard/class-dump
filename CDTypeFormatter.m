@@ -71,13 +71,13 @@
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 {
-    if ([type isEqual:@"c"] == YES) {
+    if ([type isEqual:@"c"]) {
         if (name == nil)
             return @"BOOL";
         else
             return [NSString stringWithFormat:@"BOOL %@", name];
 #if 0
-    } else if ([type isEqual:@"b1"] == YES) {
+    } else if ([type isEqual:@"b1"]) {
         if (name == nil)
             return @"BOOL :1";
         else
@@ -234,14 +234,14 @@
             NSString *str;
 
             // We can have unnamed paramenters, :::
-            if ([scanner scanUpToString:@":" intoString:&str] == YES) {
+            if ([scanner scanUpToString:@":" intoString:&str]) {
                 //NSLog(@"str += '%@'", str);
 //				int unnamedCount, unnamedIndex;
 //				unnamedCount = [str length];
 //				for (unnamedIndex = 0; unnamedIndex < unnamedCount; unnamedIndex++)
 //					[parameterTypes addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"type", @"", @"name", nil]];
             }
-            if ([scanner scanString:@":" intoString:NULL] == YES) {
+            if ([scanner scanString:@":" intoString:NULL]) {
                 NSString *typeString;
 
                 if (index >= count) {
@@ -266,7 +266,7 @@
             }
         }
 
-        if (noMoreTypes == YES) {
+        if (noMoreTypes) {
             NSLog(@" /* Error: Ran out of types for this method. */");
         }
     }
@@ -326,11 +326,11 @@
             NSString *str;
 
             // We can have unnamed paramenters, :::
-            if ([scanner scanUpToString:@":" intoString:&str] == YES) {
+            if ([scanner scanUpToString:@":" intoString:&str]) {
                 //NSLog(@"str += '%@'", str);
                 [resultString appendString:str];
             }
-            if ([scanner scanString:@":" intoString:NULL] == YES) {
+            if ([scanner scanString:@":" intoString:NULL]) {
                 NSString *typeString;
 
                 [resultString appendString:@":"];
@@ -360,7 +360,7 @@
             }
         }
 
-        if (noMoreTypes == YES) {
+        if (noMoreTypes) {
             [resultString appendString:@" /* Error: Ran out of types for this method. */"];
         }
     }
@@ -371,7 +371,7 @@
 - (CDType *)replacementForType:(CDType *)aType;
 {
     //NSLog(@"[%p] %s, aType: %@", self, _cmd, [aType typeString]);
-    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)] == YES) {
+    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)]) {
         return [nonretainedDelegate typeFormatter:self replacementForType:aType];
     }
 
@@ -380,7 +380,7 @@
 
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(int)level;
 {
-    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:level:)] == YES)
+    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:level:)])
         return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structType level:level];
 
     return nil;

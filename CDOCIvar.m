@@ -60,7 +60,7 @@
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([aClassDump shouldShowIvarOffsets] == YES) {
+        if ([aClassDump shouldShowIvarOffsets]) {
             [resultString appendFormat:@"\t// %d = 0x%x", offset, offset];
         }
     } else

@@ -208,7 +208,7 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    if ([[aVisitor classDump] shouldMatchRegex] == YES && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+    if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
     [aVisitor willVisitProtocol:self];
@@ -221,13 +221,13 @@
     NSArray *methods;
 
     methods = classMethods;
-    if ([[aVisitor classDump] shouldSortMethods] == YES)
+    if ([[aVisitor classDump] shouldSortMethods])
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
         [aVisitor visitClassMethod:method];
 
     methods = instanceMethods;
-    if ([[aVisitor classDump] shouldSortMethods] == YES)
+    if ([[aVisitor classDump] shouldSortMethods])
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
         [aVisitor visitInstanceMethod:method];
