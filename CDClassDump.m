@@ -325,7 +325,6 @@
 {
     CDMachOFile *aMachOFile;
 
-    // We need to find the macho file with the target arch name, set it to aMachOFile
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
     aMachOFile = [aFile machOFileWithArch:targetArch];
     //NSLog(@"aMachOFile: %@", aMachOFile);
@@ -360,7 +359,6 @@
     for (CDMachOFile *machOFile in machOFiles) {
         CDObjectiveC1Processor *aProcessor;
 
-        //NSLog(@"----------------------------------------------------------------------");
         aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objcProcessors addObject:aProcessor];

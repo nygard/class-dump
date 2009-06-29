@@ -116,12 +116,4 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
     return nil;
 }
 
-// ** CDMachO32File
-// CDMachO32BitFile
-// CD32BitMachOFile
-
-// ** CDMachO64File)
-// CDMachO64BitFile
-// CD64BitMachOFile
-
 @end
