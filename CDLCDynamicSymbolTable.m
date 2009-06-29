@@ -97,7 +97,7 @@
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
     //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
 #if 0
-    [cursor setOffset:dysymtab.indirectsymoff]; // TODO: + file offset for fat files?
+    [cursor setOffset:[nonretainedMachOFile offset] + dysymtab.indirectsymoff];
     for (index = 0; index < dysymtab.nindirectsyms; index++) {
         uint32_t val;
 
@@ -139,14 +139,12 @@
     //NSLog(@"externalRelocationEntries: %@", externalRelocationEntries);
 
     // r_address is purported to be the offset from the vmaddr of the first segment, but...
+    // It seems to be from the first segment with r/w initprot.
+
     // it appears to be the offset from the vmaddr of the 3rd segment in t1s.
     // Actually, it really seems to be the offset from the vmaddr of the section indicated in the n_desc part of the nlist.
-    // So for t1s and NSObject... 0000000100001028...
     // 0000000000000000 01 00 0500 0000000000000038 _OBJC_CLASS_$_NSObject
-    // The "05" seems to indicate the section ordinal (starting at zero)
-    // Also seem to have to worry about two level namespaces
-    // GET_LIBRARY_ORDINAL() from nlist.h -- no, not library for this.
-    // Maybe first "read/write" command (initprot)?... but MH_SPLIT_SEGS?
+    // GET_LIBRARY_ORDINAL() from nlist.h for library.
 
     [cursor release];
 }
