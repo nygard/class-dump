@@ -10,7 +10,6 @@
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 
-// Does this work with different endianness?
 static NSString *CDDylibVersionString(unsigned long version)
 {
     return [NSString stringWithFormat:@"%d.%d.%d", version >> 16, (version >> 8) & 0xff, version & 0xff];
