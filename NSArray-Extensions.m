@@ -18,13 +18,10 @@
 - (NSArray *)arrayByMappingSelector:(SEL)aSelector;
 {
     NSMutableArray *newArray;
-    int count, index;
-    id value;
 
     newArray = [NSMutableArray array];
-    count = [self count];
-    for (index = 0; index < count; index++) {
-        value = [[self objectAtIndex:index] performSelector:aSelector];
+    for (id object in self) {
+        id value = [object performSelector:aSelector];
         if (value != nil)
             [newArray addObject:value];
         // TODO (2004-01-28): Or we could add NSNull.
@@ -40,20 +37,14 @@
 - (NSArray *)topologicallySortedArray;
 {
     NSMutableDictionary *nodesByName;
-    int count, index;
-    id <CDTopologicalSort> anObject;
-
     NSMutableArray *sortedArray;
     NSArray *allNodes;
 
     nodesByName = [[NSMutableDictionary alloc] init];
 
-    count = [self count];
-    for (index = 0; index < count; index++) {
+    for (id <CDTopologicalSort> anObject in self) {
         NSString *identifier;
         CDTopoSortNode *aNode;
-
-        anObject = [self objectAtIndex:index];
 
         aNode = [[CDTopoSortNode alloc] initWithObject:anObject];
         [aNode addDependanciesFromArray:[anObject dependancies]];
@@ -68,11 +59,7 @@
     sortedArray = [NSMutableArray array];
 
     allNodes = [[nodesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByIdentifier:)];
-    count = [allNodes count];
-    for (index = 0; index < count; index++) {
-        CDTopoSortNode *aNode;
-
-        aNode = [allNodes objectAtIndex:index];
+    for (CDTopoSortNode *aNode in allNodes) {
         if ([aNode color] == CDWhiteNodeColor)
             [aNode topologicallySortNodes:nodesByName intoArray:sortedArray];
     }

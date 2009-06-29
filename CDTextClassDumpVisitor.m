@@ -163,6 +163,7 @@
     //NSLog(@"attrs: %@", attrs);
     for (NSString *attr in attrs) {
         if ([attr hasPrefix:@"T"]) {
+            // TODO (2009-06-29): I suspect we could find commas in the type string with some of the odd C++ mixes.
             type = [attr substringFromIndex:1];
         } else if ([attr hasPrefix:@"R"]) {
             [alist addObject:@"readonly"];

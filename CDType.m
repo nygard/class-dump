@@ -395,7 +395,6 @@
 - (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSMutableString *str;
-    int count, index;
     CDType *replacementType;
     NSArray *targetMembers;
 
@@ -409,14 +408,12 @@
     else
         targetMembers = members;
 
-    count = [targetMembers count];
-    for (index = 0; index < count; index++) {
-
+    for (CDType *member in targetMembers) {
         [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
-        [str appendString:[[targetMembers objectAtIndex:index] formattedString:nil
-                                                               formatter:typeFormatter
-                                                               level:level
-                                                               symbolReferences:symbolReferences]];
+        [str appendString:[member formattedString:nil
+                                  formatter:typeFormatter
+                                  level:level
+                                  symbolReferences:symbolReferences]];
         [str appendString:@";\n"];
     }
 
@@ -547,15 +544,11 @@
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(int)level;
 {
     NSMutableString *str;
-    int count, index;
 
     assert(type == '{' || type == '(');
     str = [NSMutableString string];
 
-    count = [members count];
-    for (index = 0; index < count; index++) {
-        CDType *aMember;
-        aMember = [members objectAtIndex:index];
+    for (CDType *aMember in members) {
         if ([aMember variableName] != nil && level > 0)
             [str appendFormat:@"\"%@\"", [aMember variableName]];
         [str appendString:[aMember _typeStringWithVariableNamesToLevel:level - 1]];
@@ -574,17 +567,13 @@
 
 - (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
 {
-    int count, index;
-
     if (subtype != nil)
         [subtype phase1RegisterStructuresWithObject:anObject];
 
-    count = [members count];
-    if ((type == '{' || type == '(') && count > 0) {
+    if ((type == '{' || type == '(') && [members count] > 0) {
         [anObject phase1RegisterStructure:self];
-        for (index = 0; index < count; index++) {
-            [[members objectAtIndex:index] phase1RegisterStructuresWithObject:anObject];
-        }
+        for (CDType *member in members)
+            [member phase1RegisterStructuresWithObject:anObject];
     }
 }
 
@@ -596,17 +585,14 @@
         [subtype phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
     if (type == '{' || type == '(') {
-        int count, index;
         BOOL newFlag;
 
         newFlag = [anObject phase2RegisterStructure:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
         if (shouldCountReferences == NO)
             newFlag = NO;
 
-        count = [members count];
-        for (index = 0; index < count; index++) {
-            [[members objectAtIndex:index] phase2RegisterStructuresWithObject:anObject usedInMethod:NO countReferences:newFlag];
-        }
+        for (CDType *member in members)
+            [member phase2RegisterStructuresWithObject:anObject usedInMethod:NO countReferences:newFlag];
     }
 }
 
@@ -763,18 +749,14 @@
 - (void)generateMemberNames;
 {
     if (type == '{' || type == '(') {
-        int count, index;
         NSSet *usedNames;
         int number;
-        CDType *aMember;
         NSString *name;
 
         usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
 
-        count = [members count];
         number = 1;
-        for (index = 0; index < count; index++) {
-            aMember = [members objectAtIndex:index];
+        for (CDType *aMember in members) {
             [aMember generateMemberNames];
 
             // Bitfields don't need a name.

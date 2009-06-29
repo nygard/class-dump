@@ -104,18 +104,16 @@
 - (void)_appendToString:(NSMutableString *)resultString;
 {
     NSArray *names;
-    int count, index;
 
     names = [self protocols];
-    count = [names count];
-    for (index = 0; index < count; index++) {
+    for (NSString *name in names) {
         NSString *str;
 
-        str = [self importStringForProtocolName:[names objectAtIndex:index]];
+        str = [self importStringForProtocolName:name];
         if (str != nil)
             [resultString appendString:str];
     }
-    if (count > 0)
+    if ([names count] > 0)
         [resultString appendString:@"\n"];
 
     names = [self classes];

@@ -11,12 +11,8 @@
 
 - (void)performSelector:(SEL)aSelector withObjectsFromArray:(NSArray *)anArray;
 {
-    int count, index;
-
-    count = [anArray count];
-    for (index = 0; index < count; index++) {
-        [self performSelector:aSelector withObject:[anArray objectAtIndex:index]];
-    }
+    for (id object in anArray)
+        [self performSelector:aSelector withObject:object];
 }
 
 @end

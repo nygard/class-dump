@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-// A rather clunky way to avoid warnings in CDTopoSortNode.m regarind -retain not implemented by protocols
+// A rather clunky way to avoid warnings in CDTopoSortNode.m regarding -retain not implemented by protocols
 @protocol CDTopologicalSort <NSObject>
 - (NSString *)identifier;
 - (NSArray *)dependancies;

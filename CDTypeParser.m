@@ -16,7 +16,7 @@
 NSString *CDSyntaxError = @"Syntax Error";
 NSString *CDTypeParserErrorDomain = @"CDTypeParserErrorDomain";
 
-NSString *CDTokenDescription(int token)
+static NSString *CDTokenDescription(int token)
 {
     if (token < 128)
         return [NSString stringWithFormat:@"%d(%c)", token, token];

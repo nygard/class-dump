@@ -86,14 +86,10 @@
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
 {
     NSArray *dependantIdentifiers;
-    int count, index;
-    NSString *anIdentifier;
     CDTopoSortNode *aNode;
 
     dependantIdentifiers = [self dependancies];
-    count = [dependantIdentifiers count];
-    for (index = 0; index < count; index++) {
-        anIdentifier = [dependantIdentifiers objectAtIndex:index];
+    for (NSString *anIdentifier in dependantIdentifiers) {
         aNode = [nodesByIdentifier objectForKey:anIdentifier];
         if ([aNode color] == CDWhiteNodeColor) {
             [aNode setColor:CDGrayNodeColor];
