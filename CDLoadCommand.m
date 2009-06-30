@@ -13,6 +13,7 @@
 #import "CDLCLinkeditData.h"
 #import "CDLCRoutines32.h"
 #import "CDLCRoutines64.h"
+#import "CDLCRunPath.h"
 #import "CDLCSegment32.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
@@ -30,7 +31,6 @@
     unsigned int val;
 
     val = [cursor peekInt32];
-    val &= ~LC_REQ_DYLD;
 
     switch (val) {
       case LC_SEGMENT: targetClass = [CDLCSegment32 class]; break;
@@ -57,6 +57,7 @@
           break;
       case LC_ROUTINES: targetClass = [CDLCRoutines32 class]; break;
       case LC_ROUTINES_64: targetClass = [CDLCRoutines64 class]; break;
+      case LC_RPATH: targetClass = [CDLCRunPath class]; break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };

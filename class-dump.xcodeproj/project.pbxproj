@@ -203,6 +203,8 @@
 		0182A9530FED694800145175 /* CDMachO64File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9520FED694800145175 /* CDMachO64File.m */; };
 		0182A9660FED69A500145175 /* CDMachO32File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9650FED69A500145175 /* CDMachO32File.m */; };
 		0182A9980FED717500145175 /* CDSection64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9950FED717500145175 /* CDSection64.m */; };
+		0185BF330FF9B251006AE888 /* CDLCRunPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 0185BF320FF9B251006AE888 /* CDLCRunPath.m */; };
+		0185BF340FF9B251006AE888 /* CDLCRunPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 0185BF320FF9B251006AE888 /* CDLCRunPath.m */; };
 		01A9A4320FF18F8300475772 /* CDLCDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4230FF18F8300475772 /* CDLCDylib.m */; };
 		01A9A4330FF18F8300475772 /* CDLCDynamicSymbolTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4250FF18F8300475772 /* CDLCDynamicSymbolTable.m */; };
 		01A9A4340FF18F8300475772 /* CDLCLinkeditData.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4270FF18F8300475772 /* CDLCLinkeditData.m */; };
@@ -429,6 +431,8 @@
 		0182A9650FED69A500145175 /* CDMachO32File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDMachO32File.m; sourceTree = "<group>"; };
 		0182A9940FED717500145175 /* CDSection64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDSection64.h; sourceTree = "<group>"; };
 		0182A9950FED717500145175 /* CDSection64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSection64.m; sourceTree = "<group>"; };
+		0185BF310FF9B251006AE888 /* CDLCRunPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCRunPath.h; sourceTree = "<group>"; };
+		0185BF320FF9B251006AE888 /* CDLCRunPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRunPath.m; sourceTree = "<group>"; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
 		01A9A4220FF18F8300475772 /* CDLCDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDylib.h; sourceTree = "<group>"; };
@@ -721,6 +725,8 @@
 				01AD08650FF7F6EA008E6A49 /* CDLCRoutines32.m */,
 				01AD086B0FF7F741008E6A49 /* CDLCRoutines64.h */,
 				01AD086C0FF7F741008E6A49 /* CDLCRoutines64.m */,
+				0185BF310FF9B251006AE888 /* CDLCRunPath.h */,
+				0185BF320FF9B251006AE888 /* CDLCRunPath.m */,
 				01A9A6AF0FF1ACA300475772 /* CDLCSegment.h */,
 				01A9A6B00FF1ACA300475772 /* CDLCSegment.m */,
 				01A9A4280FF18F8300475772 /* CDLCSegment32.h */,
@@ -1141,6 +1147,7 @@
 				01AD08510FF7F494008E6A49 /* CDLCDylinker.m in Sources */,
 				01AD08670FF7F6EA008E6A49 /* CDLCRoutines32.m in Sources */,
 				01AD086E0FF7F741008E6A49 /* CDLCRoutines64.m in Sources */,
+				0185BF340FF9B251006AE888 /* CDLCRunPath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1208,6 +1215,7 @@
 				01AD08500FF7F494008E6A49 /* CDLCDylinker.m in Sources */,
 				01AD08660FF7F6EA008E6A49 /* CDLCRoutines32.m in Sources */,
 				01AD086D0FF7F741008E6A49 /* CDLCRoutines64.m in Sources */,
+				0185BF330FF9B251006AE888 /* CDLCRunPath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

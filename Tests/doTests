@@ -35,7 +35,7 @@ foreach i (/System/Library/Frameworks/*.framework /System/Library/PrivateFramewo
     done
 done
 
-foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /Volumes/BigData/TestApplications/*.app) do
+foreach i (/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app) do #/Volumes/BigData/TestApplications/*.app
     echo $i `basename $i .app`
     arches=(`$ARCH_CD --list-arches $i`)
     foreach arch ($arches) do
