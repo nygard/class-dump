@@ -16,7 +16,7 @@ echo "Starting tests at `date`"
 
 ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /Volumes/BigData/TestApplications/*.app | wc
 
-mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW $TESTDIR_NEW_32 $TESTDIR_NEW_64
+mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
 # arch = none check for FWAVCPrivate.framework, KAdminClient, Kernel, SyndicationUI
 

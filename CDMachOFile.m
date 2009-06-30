@@ -329,7 +329,7 @@ static BOOL debug = NO;
 
     segment = [self segmentContainingAddress:address];
     if (segment == nil) {
-        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", address);
+        NSLog(@"Error: Cannot find offset for address 0x%08lx in dataOffsetForAddress:", address);
         exit(5);
         return 0;
     }
@@ -337,7 +337,7 @@ static BOOL debug = NO;
     if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
         // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
         // i.e. section offset is 0.
-        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08x, %@)", address, aSegmentName);
+        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08lx, %@)", address, aSegmentName);
         //NSLog(@"\tsegment was: %@", segment);
         //exit(5);
         return 0;

@@ -37,6 +37,7 @@
     sectionData = [section data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO)
         [self protocolAtAddress:[cursor readInt64]];
     [cursor release];
@@ -56,6 +57,7 @@
     sectionData = [section data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO) {
         uint64_t val;
         CDOCClass *aClass;
@@ -67,6 +69,7 @@
             [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedInteger:val]];
         }
     }
+
     [cursor release];
 }
 
@@ -82,6 +85,7 @@
     sectionData = [section data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO) {
         CDOCCategory *category;
 
@@ -89,6 +93,8 @@
         if (category != nil)
             [categories addObject:category];
     }
+
+    [cursor release];
 }
 
 - (CDOCProtocol *)protocolAtAddress:(uint64_t)address;

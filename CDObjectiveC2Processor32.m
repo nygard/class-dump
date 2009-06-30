@@ -37,6 +37,7 @@
     sectionData = [section data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO)
         [self protocolAtAddress:[cursor readInt32]];
     [cursor release];
@@ -54,22 +55,21 @@
     segment = [machOFile segmentWithName:@"__DATA"];
     section = [segment sectionWithName:@"__objc_classlist"];
     sectionData = [section data];
-    [sectionData writeToFile:@"/tmp/classes.dat" atomically:NO];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO) {
         uint32_t val;
         CDOCClass *aClass;
 
-        //NSLog(@"----------------------------------------------------------------------");
         val = [cursor readInt32];
-        //NSLog(@"class @ %08x", val);
         aClass = [self loadClassAtAddress:val];
         if (aClass != nil) {
             [classes addObject:aClass];
             [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedInteger:val]];
         }
     }
+
     [cursor release];
 }
 
@@ -85,6 +85,7 @@
     sectionData = [section data];
 
     cursor = [[CDDataCursor alloc] initWithData:sectionData];
+    [cursor setByteOrder:[machOFile byteOrder]];
     while ([cursor isAtEnd] == NO) {
         CDOCCategory *category;
 
@@ -92,6 +93,8 @@
         if (category != nil)
             [categories addObject:category];
     }
+
+    [cursor release];
 }
 
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
@@ -248,7 +251,6 @@
     objc2Class.reserved1 = [cursor readInt32];
     objc2Class.reserved2 = [cursor readInt32];
     objc2Class.reserved3 = [cursor readInt32];
-    //NSLog(@"objc2Class 32");
     //NSLog(@"%08lx %08lx %08lx %08lx", objc2Class.isa, objc2Class.superclass, objc2Class.cache, objc2Class.vtable);
     //NSLog(@"%08lx %08lx %08lx %08lx", objc2Class.data, objc2Class.reserved1, objc2Class.reserved2, objc2Class.reserved3);
 
@@ -268,7 +270,6 @@
     objc2ClassData.weakIvarLayout = [cursor readInt32];
     objc2ClassData.baseProperties = [cursor readInt32];
 
-    //NSLog(@"objc2ClassData 32");
     //NSLog(@"%08x %08x %08x %08x", objc2ClassData.flags, objc2ClassData.instanceStart, objc2ClassData.instanceSize, objc2ClassData.reserved);
 
     //NSLog(@"%08lx %08lx %08lx %08lx", objc2ClassData.ivarLayout, objc2ClassData.name, objc2ClassData.baseMethods, objc2ClassData.baseProtocols);
@@ -416,7 +417,6 @@
 
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
-        //NSLog(@"entsize: %u", listHeader.entsize);
         NSParameterAssert(listHeader.entsize == 12);
 
         for (index = 0; index < listHeader.count; index++) {
