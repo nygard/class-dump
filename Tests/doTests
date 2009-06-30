@@ -12,9 +12,15 @@ NEW_CD=/Local/nygard/Products/Debug/class-dump
 # Must be a version that supports --list-arches
 ARCH_CD=~/Unix/bin/class-dump-3.1.2
 
+FRAMEWORKS=(/System//Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Developer/Library/Frameworks/*.framework /Developer/Library/PrivateFrameworks/*.framework)
+APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app)
+#/Volumes/BigData/TestApplications/*.app
+
 echo "Starting tests at `date`"
 
-ls -ld /System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /Volumes/BigData/TestApplications/*.app | wc
+echo "  Framework count: " `ls -ld $FRAMEWORKS | wc -l`
+echo "Application count: " `ls -ld $APPS | wc -l`
+echo "            Total: " `ls -ld $FRAMEWORKS $APPS | wc -l`
 
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
