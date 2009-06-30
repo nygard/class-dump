@@ -15,9 +15,45 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
     archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
     if (archInfo == NULL)
-        return @"unknown";
+        return [NSString stringWithFormat:@"0x%x:0x%x", cputype, cpusubtype];
 
     return [NSString stringWithUTF8String:archInfo->name];
+}
+
+CDArch CDArchFromName(NSString *name)
+{
+    const NXArchInfo *archInfo;
+    CDArch arch;
+
+    arch.cputype = CPU_TYPE_ANY;
+    arch.cpusubtype = 0;
+
+    if (name == nil)
+        return arch;
+
+    archInfo = NXGetArchInfoFromName([name UTF8String]);
+    if (archInfo == NULL) {
+        NSScanner *scanner;
+        NSString *ignore;
+
+        scanner = [[NSScanner alloc] initWithString:name];
+        if ([scanner scanHexInt:(uint32_t *)&arch.cputype]
+            && [scanner scanString:@":" intoString:&ignore]
+            && [scanner scanHexInt:(uint32_t *)&arch.cpusubtype]) {
+            // Great!
+            //NSLog(@"scanned 0x%08x : 0x%08x from '%@'", arch.cputype, arch.cpusubtype, name);
+        } else {
+            arch.cputype = CPU_TYPE_ANY;
+            arch.cpusubtype = 0;
+        }
+
+        [scanner release];
+    } else {
+        arch.cputype = archInfo->cputype;
+        arch.cpusubtype = archInfo->cpusubtype;
+    }
+
+    return arch;
 }
 
 @implementation CDFile

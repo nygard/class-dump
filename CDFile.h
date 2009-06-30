@@ -19,6 +19,7 @@ typedef struct {
 @class CDMachOFile;
 
 extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
+extern CDArch CDArchFromName(NSString *name);
 
 @interface CDFile : NSObject
 {

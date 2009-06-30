@@ -328,6 +328,10 @@
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
     aMachOFile = [aFile machOFileWithArch:targetArch];
     //NSLog(@"aMachOFile: %@", aMachOFile);
+    if (aMachOFile == nil) {
+        fprintf(stderr, "Error: file doesn't contain the specified arch.\n\n");
+        return NO;
+    }
 
     if ([self shouldProcessRecursively]) {
         @try {

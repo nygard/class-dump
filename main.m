@@ -95,16 +95,15 @@ int main(int argc, char *argv[])
     while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
         switch (ch) {
           case CD_OPT_ARCH: {
-              const NXArchInfo *archInfo;
+              NSString *name;
 
-              archInfo = NXGetArchInfoFromName(optarg);
-              if (archInfo == NULL) {
+              name = [NSString stringWithUTF8String:optarg];
+              targetArch = CDArchFromName(name);
+              if (targetArch.cputype != CPU_TYPE_ANY)
+                  hasSpecifiedArch = YES;
+              else {
                   fprintf(stderr, "Error: Unknown arch %s\n\n", optarg);
                   errorFlag = YES;
-              } else {
-                  targetArch.cputype = archInfo->cputype;
-                  targetArch.cpusubtype = archInfo->cpusubtype;
-                  hasSpecifiedArch = YES;
               }
               break;
           }
