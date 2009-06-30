@@ -20,6 +20,8 @@
 #import "CDOCProperty.h"
 #import "CDTypeFormatter.h"
 
+static BOOL debug = NO;
+
 @implementation CDTextClassDumpVisitor
 
 - (id)init;
@@ -152,12 +154,13 @@
 - (void)visitProperty:(CDOCProperty *)aProperty;
 {
     NSArray *attrs;
-    NSMutableArray *alist;
+    NSMutableArray *alist, *unknownAttrs;
     NSString *type;
     NSString *backingVar = nil;
     NSString *formattedString;
 
     alist = [[NSMutableArray alloc] init];
+    unknownAttrs = [[NSMutableArray alloc] init];
 
     attrs = [[aProperty attributes] componentsSeparatedByString:@","];
     //NSLog(@"attrs: %@", attrs);
@@ -178,7 +181,8 @@
         } else if ([attr hasPrefix:@"V"]) {
             backingVar = [attr substringFromIndex:1];
         } else {
-            NSLog(@"Warning: Unknown property attribute %@", attr);
+            if (debug) NSLog(@"Warning: Unknown property attribute %@", attr);
+            [unknownAttrs addObject:attr];
         }
     }
 
@@ -208,8 +212,13 @@
     }
 
     [resultString appendString:@"\n"];
+    if ([unknownAttrs count] > 0) {
+        [resultString appendFormat:@"// Preceeding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
+        [resultString appendFormat:@"// Original attribute string: %@\n\n", [aProperty attributes]];
+    }
 
     [alist release];
+    [unknownAttrs release];
 }
 
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
