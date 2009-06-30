@@ -13,6 +13,7 @@
 #import "CDMachOFile.h"
 #import "CDOCProtocol.h"
 #import "CDLCDylib.h"
+#import "CDLCRunPath.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
@@ -61,6 +62,14 @@
         if (identifier != nil)
             [resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
                           [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
+    }
+
+    for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+        if ([loadCommand isKindOfClass:[CDLCRunPath class]]) {
+            CDLCRunPath *runPath = (CDLCRunPath *)loadCommand;
+
+            [resultString appendFormat:@" * Run path: %@\n", [runPath path]];
+        }
     }
 
     if ([machOFile hasProtectedSegments]) {
