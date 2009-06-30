@@ -25,7 +25,7 @@
     //NSLog(@"expected length: %u", length);
 
     path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    NSLog(@"path: %@", path);
+    //NSLog(@"path: %@", path);
 
     return self;
 }
