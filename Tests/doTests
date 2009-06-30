@@ -56,6 +56,15 @@ foreach i ($APPS) do
     done
 done
 
+# We can remove files that don't contain Objective-C runtime information.
+# Need to jump through some hoops because of the cursed spaces in filenames, grr.
+foreach i (/tmp/cdt/{old,new}/*.txt)
+    grep -q "This file does not contain" $i
+    if [ $? -eq 0 ]; then
+        rm $i
+    fi
+end
+
 ## Set up comparisons of new 32-bit vs. 64-bit output
 #foreach arch (ppc ppc7400 i386) do
 #    foreach i ($TESTDIR_NEW/*-$arch-*) do
