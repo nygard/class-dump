@@ -271,9 +271,28 @@
     if (offset + length <= [data length]) {
         NSString *str;
 
-        str = [[[NSString alloc] initWithBytes:[data bytes] + offset length:length encoding:encoding] autorelease];;
-        offset += length;
-        return str;
+        if (encoding == NSASCIIStringEncoding) {
+            char *buf;
+
+            // Jump through some hoops if the length is padded with zero bytes, as in the case of 10.5's Property List Editor and iSync Plug-in Maker.
+            buf = malloc(length + 1);
+            if (buf == NULL) {
+                NSLog(@"Error: malloc() failed.");
+                return nil;
+            }
+
+            strncpy(buf, [data bytes] + offset, length);
+            buf[length] = 0;
+
+            str = [[[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:encoding] autorelease];
+            offset += length;
+            free(buf);
+            return str;
+        } else {
+            str = [[[NSString alloc] initWithBytes:[data bytes] + offset length:length encoding:encoding] autorelease];;
+            offset += length;
+            return str;
+        }
     } else {
         [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
     }
