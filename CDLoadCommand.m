@@ -30,6 +30,7 @@
     unsigned int val;
 
     val = [cursor peekInt32];
+    val &= ~LC_REQ_DYLD;
 
     switch (val) {
       case LC_SEGMENT: targetClass = [CDLCSegment32 class]; break;
