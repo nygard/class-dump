@@ -65,6 +65,8 @@
     // Load classes before categories, so we can get a dictionary of classes by address.
     [self loadClasses];
     [self loadCategories];
+
+    [self logGCStatus];
 }
 
 - (void)loadProtocols;
@@ -199,6 +201,40 @@
     }
 
     //NSLog(@"protocolsByName: %@", protocolsByName);
+}
+
+- (NSData *)objcImageInfoData;
+{
+    // Good for objc2.  Use __OBJC segment for objc1.
+    return [[[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] data];
+}
+
+- (void)logGCStatus;
+{
+    NSData *sectionData;
+
+    //NSLog(@" > %s", _cmd);
+
+    sectionData = [self objcImageInfoData];
+    if ([sectionData length] >= 8) {
+        CDDataCursor *cursor;
+        uint32_t v1, v2;
+
+        cursor = [[CDDataCursor alloc] initWithData:sectionData];
+        [cursor setByteOrder:[machOFile byteOrder]];
+
+        v1 = [cursor readInt32];
+        v2 = [cursor readInt32];
+        NSLog(@"%s: %08x %08x", _cmd, v1, v2);
+        // v2 == 0 -> Objective-C Garbage Collection: Unsupported
+        // v2 == 2 -> Supported
+        // v2 == 6 -> Required
+        NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
+
+        [cursor release];
+    }
+
+    //NSLog(@"<  %s", _cmd);
 }
 
 @end

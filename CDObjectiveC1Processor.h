@@ -29,4 +29,6 @@
 
 - (void)loadProtocols;
 
+- (NSData *)objcImageInfoData;
+
 @end

@@ -40,4 +40,7 @@
 
 - (void)createUniquedProtocols;
 
+- (NSData *)objcImageInfoData;
+- (void)logGCStatus;
+
 @end

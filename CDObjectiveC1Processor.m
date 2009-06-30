@@ -625,4 +625,9 @@ struct cd_objc_protocol_method
     [self createUniquedProtocols];
 }
 
+- (NSData *)objcImageInfoData;
+{
+    return [[[machOFile segmentWithName:@"__OBJC"] sectionWithName:@"__image_info"] data];
+}
+
 @end
