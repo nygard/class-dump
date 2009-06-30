@@ -41,6 +41,6 @@
 - (void)createUniquedProtocols;
 
 - (NSData *)objcImageInfoData;
-- (void)logGCStatus;
+- (NSString *)garbageCollectionStatus;
 
 @end

@@ -64,11 +64,14 @@
                           [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
     }
 
+    [resultString appendFormat:@" *\n"];
+    [resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", [aProcessor garbageCollectionStatus]];
+
     for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
         if ([loadCommand isKindOfClass:[CDLCRunPath class]]) {
             CDLCRunPath *runPath = (CDLCRunPath *)loadCommand;
 
-            [resultString appendFormat:@" * Run path: %@\n", [runPath path]];
+            [resultString appendFormat:@" *       Run path: %@\n", [runPath path]];
         }
     }
 
