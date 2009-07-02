@@ -52,7 +52,9 @@
     [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
 
     archInfo = NXGetArchInfoFromCpuType([machOFile cputype], [machOFile cpusubtype]);
-    if (archInfo != NULL)
+    if (archInfo == NULL)
+        [resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", [machOFile cputype], [machOFile cpusubtype]];
+    else
         [resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
 
     if ([machOFile filetype] == MH_DYLIB) {

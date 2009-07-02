@@ -17,8 +17,9 @@ APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /D
 #/Volumes/BigData/TestApplications/*.app
 
 # Uncomment these to just do iPhone frameowoks
-#FRAMEWORKS=(/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk/System/Library/Frameworks/*.framework /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk/System/Library/PrivateFrameworks/*.framework)
-#APPS=()
+IPHONE_SDK=iPhoneOS3.0
+FRAMEWORKS=(/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/Frameworks/*.framework /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/PrivateFrameworks/*.framework)
+APPS=()
 
 echo "Starting tests at `date`"
 
