@@ -7,7 +7,7 @@
 
 #import "CDDataCursor.h"
 
-static BOOL debug = YES;
+static BOOL debug = NO;
 
 @implementation CDLCUnknown
 

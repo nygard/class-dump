@@ -18,6 +18,7 @@
 #import "CDLCSegment32.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
+#import "CDLCTwoLevelHints.h"
 #import "CDLCUUID.h"
 #import "CDLCUnknown.h"
 #import "CDMachOFile.h"
@@ -60,6 +61,7 @@
       case LC_ROUTINES_64: targetClass = [CDLCRoutines64 class]; break;
       case LC_RPATH: targetClass = [CDLCRunPath class]; break;
       case LC_PREBOUND_DYLIB: targetClass = [CDLCPreboundDylib class]; break;
+      case LC_TWOLEVEL_HINTS: targetClass = [CDLCTwoLevelHints class]; break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };
