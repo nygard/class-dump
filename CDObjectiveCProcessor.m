@@ -173,28 +173,28 @@
             for (CDOCMethod *method in [p1 classMethods])
                 [uniqueProtocol addClassMethod:method];
         } else {
-            NSParameterAssert([[uniqueProtocol classMethods] count] == [[p1 classMethods] count]);
+            NSParameterAssert([[p1 classMethods] count] == 0 || [[uniqueProtocol classMethods] count] == [[p1 classMethods] count]);
         }
 
         if ([[uniqueProtocol instanceMethods] count] == 0) {
             for (CDOCMethod *method in [p1 instanceMethods])
                 [uniqueProtocol addInstanceMethod:method];
         } else {
-            NSParameterAssert([[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
+            NSParameterAssert([[p1 instanceMethods] count] == 0 || [[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
         }
 
         if ([[uniqueProtocol optionalClassMethods] count] == 0) {
             for (CDOCMethod *method in [p1 optionalClassMethods])
                 [uniqueProtocol addOptionalClassMethod:method];
         } else {
-            NSParameterAssert([[uniqueProtocol optionalClassMethods] count] == [[p1 optionalClassMethods] count]);
+            NSParameterAssert([[p1 optionalClassMethods] count] == 0 || [[uniqueProtocol optionalClassMethods] count] == [[p1 optionalClassMethods] count]);
         }
 
         if ([[uniqueProtocol optionalInstanceMethods] count] == 0) {
             for (CDOCMethod *method in [p1 optionalInstanceMethods])
                 [uniqueProtocol addOptionalInstanceMethod:method];
         } else {
-            NSParameterAssert([[uniqueProtocol optionalInstanceMethods] count] == [[p1 optionalInstanceMethods] count]);
+            NSParameterAssert([[p1 optionalInstanceMethods] count] == 0 || [[uniqueProtocol optionalInstanceMethods] count] == [[p1 optionalInstanceMethods] count]);
         }
     }
 
