@@ -17,6 +17,10 @@ APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /D
 #/Volumes/BigData/TestApplications/*.app
 
 # Uncomment these to just do iPhone frameowoks
+#IPHONE_SDK=iPhoneOS2.0
+#IPHONE_SDK=iPhoneOS2.1
+#IPHONE_SDK=iPhoneOS2.2.1
+#IPHONE_SDK=iPhoneOS2.2
 IPHONE_SDK=iPhoneOS3.0
 FRAMEWORKS=(/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/Frameworks/*.framework /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/PrivateFrameworks/*.framework)
 APPS=()
