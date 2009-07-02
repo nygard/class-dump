@@ -59,6 +59,7 @@ typedef NSUInteger CDByteOrder;
 
 - (uint32_t)peekInt32;
 
+- (NSString *)readCString;
 - (NSString *)readStringOfLength:(NSUInteger)length encoding:(NSStringEncoding)encoding;
 
 @end

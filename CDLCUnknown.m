@@ -7,6 +7,8 @@
 
 #import "CDDataCursor.h"
 
+static BOOL debug = YES;
+
 @implementation CDLCUnknown
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
@@ -14,8 +16,10 @@
     if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
+    if (debug) NSLog(@"offset: %u", [cursor offset]);
     loadCommand.cmd = [cursor readInt32];
     loadCommand.cmdsize = [cursor readInt32];
+    if (debug) NSLog(@"cmdsize: %u", loadCommand.cmdsize);
 
     if (loadCommand.cmdsize > 8) {
         commandData = [[NSMutableData alloc] init];

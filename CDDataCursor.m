@@ -266,6 +266,11 @@
     return val;
 }
 
+- (NSString *)readCString;
+{
+    return [self readStringOfLength:strlen([data bytes] + offset) encoding:NSASCIIStringEncoding];
+}
+
 - (NSString *)readStringOfLength:(NSUInteger)length encoding:(NSStringEncoding)encoding;
 {
     if (offset + length <= [data length]) {

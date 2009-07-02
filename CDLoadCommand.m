@@ -11,6 +11,7 @@
 #import "CDLCDylinker.h"
 #import "CDLCDynamicSymbolTable.h"
 #import "CDLCLinkeditData.h"
+#import "CDLCPreboundDylib.h"
 #import "CDLCRoutines32.h"
 #import "CDLCRoutines64.h"
 #import "CDLCRunPath.h"
@@ -58,6 +59,7 @@
       case LC_ROUTINES: targetClass = [CDLCRoutines32 class]; break;
       case LC_ROUTINES_64: targetClass = [CDLCRoutines64 class]; break;
       case LC_RPATH: targetClass = [CDLCRunPath class]; break;
+      case LC_PREBOUND_DYLIB: targetClass = [CDLCPreboundDylib class]; break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };

@@ -129,6 +129,8 @@ struct cd_objc_protocol_method
     uint32_t types;
 };
 
+static BOOL debug = NO;
+
 @implementation CDObjectiveC1Processor
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
@@ -188,7 +190,7 @@ struct cd_objc_protocol_method
         assert(objcModule.size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
 
         name = [machOFile stringAtAddress:objcModule.name];
-        if (name != nil && [name length] > 0)
+        if (name != nil && [name length] > 0 && debug)
             NSLog(@"Note: a module name is set: %@", name);
 
         //NSLog(@"%08x %08x %08x %08x - '%@'", objcModule.version, objcModule.size, objcModule.name, objcModule.symtab, name);
