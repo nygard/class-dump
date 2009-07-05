@@ -88,57 +88,6 @@
     return nil;
 }
 
-- (NSDictionary *)formattedTypeComponentsForType:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
-{
-    CDTypeParser *aParser;
-    CDType *resultType;
-    NSString *resultString;
-    NSString *specialCase;
-    NSError *error;
-    NSArray *typeComponents;
-    NSDictionary *resultDict;
-
-    //NSLog(@"%s, shouldExpandStructures: %d", _cmd, shouldExpandStructures);
-    //NSLog(@" > %s", _cmd);
-    //NSLog(@"name: '%@', type: '%@', level: %d", name, type, level);
-
-    // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
-    specialCase = [self _specialCaseVariable:nil type:type];
-    if (specialCase != nil) {
-        // TODO: this works, because _specialCaseVariable:type: always returns just BOOL at the moment
-        return [NSDictionary dictionaryWithObject:specialCase forKey:@"type"];
-    }
-
-    aParser = [[CDTypeParser alloc] initWithType:type];
-    [[aParser lexer] setShouldShowLexing:shouldShowLexing];
-    resultType = [aParser parseType:&error];
-    //NSLog(@"resultType: %p", resultType);
-
-    if (resultType == nil) {
-        [aParser release];
-        //NSLog(@"<  %s", _cmd);
-        return nil;
-    }
-
-    // special marker '|' used as name, as that character surely is invalid as a declarator
-    // we split on that to find out if there is a "type suffix" like bitfield length in the type string
-    resultString = [resultType formattedString:@"|" formatter:self level:0 symbolReferences:symbolReferences];
-    typeComponents = [resultString componentsSeparatedByString:@"|"];
-    // there should never be more than two parts!
-    assert([typeComponents count] == 2);
-    if ([typeComponents count] == 2) {
-        NSString *suffix = [typeComponents objectAtIndex:1];
-        resultDict = [NSMutableDictionary dictionaryWithObject:[(NSString *)[typeComponents objectAtIndex:0] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]
-                                          forKey:@"type"];
-        if ([suffix length] != 0)
-            [resultDict setValue:suffix forKey:@"type-suffix"];
-    }
-    [aParser release];
-
-    //NSLog(@"<  %s", _cmd);
-    return resultDict;
-}
-
 // TODO (2004-01-28): See if we can pass in the actual CDType.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
@@ -266,6 +215,8 @@
             }
         }
 
+        [scanner release];
+
         if (noMoreTypes) {
             NSLog(@" /* Error: Ran out of types for this method. */");
         }
@@ -359,6 +310,8 @@
                 }
             }
         }
+
+        [scanner release];
 
         if (noMoreTypes) {
             [resultString appendString:@" /* Error: Ran out of types for this method. */"];

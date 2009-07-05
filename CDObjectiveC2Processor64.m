@@ -436,6 +436,8 @@
             [methods addObject:method];
             [method release];
         }
+
+        [cursor release];
     }
 
     return [methods reversedArray];
@@ -485,6 +487,8 @@
                 //NSLog(@"%016lx %016lx %016lx  %08x %08x", objc2Ivar.offset, objc2Ivar.name, objc2Ivar.type, objc2Ivar.alignment, objc2Ivar.size);
             }
         }
+
+        [cursor release];
     }
 
     return ivars;

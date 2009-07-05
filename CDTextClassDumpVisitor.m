@@ -155,7 +155,7 @@ static BOOL debug = NO;
 {
     NSArray *attrs;
     NSMutableArray *alist, *unknownAttrs;
-    NSString *type;
+    NSString *type = @"";
     NSString *backingVar = nil;
     NSString *formattedString;
 
