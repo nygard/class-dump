@@ -197,7 +197,6 @@
         return nil;
 
     if (decryptedData == nil) {
-        NSData *srcData;
         const void *src;
         void *dest;
         unsigned int index, count;
@@ -215,7 +214,6 @@
         NSParameterAssert(([self filesize] % PAGE_SIZE) == 0);
         decryptedData = [[NSMutableData alloc] initWithLength:[self filesize]];
 
-        srcData = [nonretainedMachOFile data];
         src = [nonretainedMachOFile machODataBytes] + [self filesize];
         dest = [decryptedData mutableBytes];
 
