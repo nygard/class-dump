@@ -305,13 +305,11 @@
     if (aName == nil || [aName isEqual:@"?"]) {
         CDType *previousType;
         NSString *remappedSignature;
-        NSString *old;
 
         // ((Remapped - just add reference to original (but it may not exist yet) ))
         // Exists already - add reference
         // new - add reference, recursively count references
 
-        old = keySignature;
         remappedSignature = [replacementSignatures objectForKey:keySignature];
         if (remappedSignature != nil) {
             // There may not be an object for the replaced type yet.
