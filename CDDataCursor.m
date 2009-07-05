@@ -186,7 +186,7 @@
     v2 = [self readLittleInt32];
     ptr = (uint32_t *)&dval;
     *ptr++ = v1;
-    *ptr++ = v2;
+    *ptr = v2;
 
     return dval;
 }
