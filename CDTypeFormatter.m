@@ -17,7 +17,19 @@
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
 
+static BOOL debug = NO;
+
 @implementation CDTypeFormatter
+
+- (id)init;
+{
+    if ([super init] == nil)
+        return nil;
+
+    shouldShowLexing = debug;
+
+    return self;
+}
 
 - (BOOL)shouldExpand;
 {

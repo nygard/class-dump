@@ -235,8 +235,17 @@ static NSString *CDTokenDescription(int token)
         CDType *type;
 
         [self match:'^'];
-        type = [self _parseTypeInStruct:isInStruct];
-        result = [[CDType alloc] initPointerType:type];
+        if (lookahead == TK_QUOTED_STRING) {
+            NSLog(@"Safari special case.");
+            type = [[CDType alloc] initSimpleType:'v'];
+            // Safari on 10.5 has: "m_function"{?="__pfn"^"__delta"i}
+            // Possibly a poitner to a function?
+            result = [[CDType alloc] initPointerType:type];
+            [type release];
+        } else {
+            type = [self _parseTypeInStruct:isInStruct];
+            result = [[CDType alloc] initPointerType:type];
+        }
     } else if (lookahead == 'b') { // bitfield
         NSString *number;
 
@@ -365,10 +374,14 @@ static NSString *CDTokenDescription(int token)
 {
     NSMutableArray *result;
 
+    //NSLog(@" > %s", _cmd);
+
     result = [NSMutableArray array];
 
     while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead])
         [result addObject:[self parseMember]];
+
+    //NSLog(@"<  %s", _cmd);
 
     return result;
 }
@@ -392,8 +405,10 @@ static NSString *CDTokenDescription(int token)
             [self match:TK_QUOTED_STRING];
         }
 
+        //NSLog(@"got identifier: %@", identifier);
         result = [self _parseTypeInStruct:YES];
         [result setVariableName:identifier];
+        //NSLog(@"And parsed struct type.");
     } else {
         result = [self _parseTypeInStruct:YES];
     }
