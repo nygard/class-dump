@@ -19,6 +19,8 @@
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
 #import "CDTypeFormatter.h"
+#import "CDTypeParser.h"
+#import "CDTypeLexer.h"
 
 static BOOL debug = NO;
 
@@ -159,10 +161,45 @@ static BOOL debug = NO;
     NSString *backingVar = nil;
     NSString *formattedString;
 
+    NSScanner *scanner;
+    CDTypeParser *parser;
+
     alist = [[NSMutableArray alloc] init];
     unknownAttrs = [[NSMutableArray alloc] init];
 
     attrs = [[aProperty attributes] componentsSeparatedByString:@","];
+
+    // On 10.nevermind, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
+    scanner = [[NSScanner alloc] initWithString:[aProperty attributes]];
+
+    if ([scanner scanString:@"T" intoString:NULL]) {
+        BOOL log;
+
+        log = [@"task" isEqualToString:[aProperty name]];
+
+        /*if (log)*/ {
+            CDType *parsedType;
+            NSError *error;
+            NSRange typeRange;
+
+            NSLog(@"property name: %@", [aProperty name]);
+
+            typeRange.location = [scanner scanLocation];
+            parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
+            NSLog(@"parser: %@", parser);
+            parsedType = [parser parseType:&error];
+            NSLog(@"parsedType: %p", parsedType);
+            typeRange.length = [[[parser lexer] scanner] scanLocation];
+            NSLog(@"start: %u, end: %u", typeRange.location, typeRange.length);
+            [parser release];
+
+            type = [[aProperty attributes] substringWithRange:typeRange];
+            attrs = [[[aProperty attributes] substringFromIndex:NSMaxRange(typeRange)] componentsSeparatedByString:@","];
+        }
+    }
+
+    [scanner release];
+
     //NSLog(@"attrs: %@", attrs);
     for (NSString *attr in attrs) {
         if ([attr hasPrefix:@"T"]) {
