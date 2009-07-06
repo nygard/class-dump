@@ -16,7 +16,7 @@
 NSString *CDSyntaxError = @"Syntax Error";
 NSString *CDTypeParserErrorDomain = @"CDTypeParserErrorDomain";
 
-static BOOL debug = YES;
+static BOOL debug = NO;
 
 static NSString *CDTokenDescription(int token)
 {
@@ -424,7 +424,7 @@ static NSString *CDTokenDescription(int token)
 
     if ([lexer state] == CDTypeLexerStateTemplateTypes) {
         if (lookahead == '*') {
-            NSLog(@"Ignoring * before ',' while in CDTypeLexerStateTemplateTypes");
+            if (debug) NSLog(@"Ignoring * before ',' while in CDTypeLexerStateTemplateTypes");
             [self match:'*'];
         }
     }

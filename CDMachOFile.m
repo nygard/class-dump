@@ -15,6 +15,7 @@
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDLCSegment.h"
+#import "CDLCSegment64.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDSection.h"
 #import "CDLCSymbolTable.h"
@@ -442,7 +443,7 @@ static BOOL debug = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %d, cpusubtype: %d, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, offset: %p",
+    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, offset: %p",
                      NSStringFromClass([self class]), self,
                      [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
                      filename, data, offset];
@@ -533,6 +534,56 @@ static BOOL debug = NO;
 - (BOOL)hasObjectiveC2Data;
 {
     return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
+}
+
+- (void)saveDeprotectedFileToPath:(NSString *)path;
+{
+    NSMutableData *mdata;
+
+    // Not going to handle fat files -- thin it first
+    NSParameterAssert(offset == 0);
+
+    mdata = [[NSMutableData alloc] initWithData:data];
+    for (CDLoadCommand *command in loadCommands) {
+        if ([command isKindOfClass:[CDLCSegment class]]) {
+            CDLCSegment *segment = (CDLCSegment *)command;
+
+            if ([segment isProtected]) {
+                NSData *decryptedData;
+                NSRange range;
+                uint32_t flags;
+                NSUInteger flagOffset;
+
+                NSLog(@"segment is protected: %@", segment);
+                range.location = [segment fileoff];
+                range.length = [segment filesize];
+
+                decryptedData = [segment decryptedData];
+                NSParameterAssert([decryptedData length] == range.length);
+
+                [mdata replaceBytesInRange:range withBytes:[decryptedData bytes]];
+                if ([segment isKindOfClass:[CDLCSegment64 class]]) {
+                    flagOffset = [segment commandOffset] + 68; // to flags
+                } else {
+                    flagOffset = [segment commandOffset] + 52; // to flags
+                }
+
+                // TODO: Needs to be endian-neutral
+                flags = OSReadLittleInt32([mdata mutableBytes], flagOffset);
+                NSLog(@"old flags: %08x", flags);
+                NSLog(@"segment flags: %08x", [segment flags]);
+                flags &= ~SG_PROTECTED_VERSION_1;
+                NSLog(@"new flags: %08x", flags);
+
+                OSWriteLittleInt32([mdata mutableBytes], flagOffset, flags);
+            }
+        }
+    }
+
+    [mdata writeToFile:path atomically:NO];
+
+    [mdata release];
+
 }
 
 @end

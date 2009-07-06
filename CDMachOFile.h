@@ -89,4 +89,6 @@
 - (BOOL)hasObjectiveC1Data;
 - (BOOL)hasObjectiveC2Data;
 
+- (void)saveDeprotectedFileToPath:(NSString *)path;
+
 @end

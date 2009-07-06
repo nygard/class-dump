@@ -20,8 +20,8 @@
 void print_usage(void)
 {
     fprintf(stderr,
-            "format-type %s\n"
-            "Usage: format [options] <input file>\n"
+            "formatType %s\n"
+            "Usage: formatType [options] <input file>\n"
             "\n"
             "  where options are:\n"
             "        -m        format method (default is to format ivars)\n"

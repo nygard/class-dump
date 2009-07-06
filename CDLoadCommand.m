@@ -77,6 +77,7 @@
         return nil;
 
     nonretainedMachOFile = aMachOFile;
+    commandOffset = [cursor offset];
 
     return self;
 }
@@ -84,6 +85,11 @@
 - (CDMachOFile *)machOFile;
 {
     return nonretainedMachOFile;
+}
+
+- (NSUInteger)commandOffset;
+{
+    return commandOffset;
 }
 
 - (uint32_t)cmd;
