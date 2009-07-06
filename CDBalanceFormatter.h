@@ -18,6 +18,6 @@
 
 - (void)parse:(NSString *)open index:(NSUInteger)openIndex level:(NSUInteger)level;
 
-- (void)format;
+- (NSString *)format;
 
 @end

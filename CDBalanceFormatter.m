@@ -7,7 +7,7 @@
 
 #import "NSString-Extensions.h"
 
-static BOOL debug = NO;
+static BOOL debug = YES;
 
 @implementation CDBalanceFormatter
 
@@ -75,7 +75,7 @@ static BOOL debug = NO;
     }
 }
 
-- (void)format;
+- (NSString *)format;
 {
     NSString *pre;
     NSUInteger level = 0;
@@ -102,6 +102,8 @@ static BOOL debug = NO;
     }
 
     if (debug) NSLog(@"result:\n%@", result);
+
+    return [NSString stringWithString:result];
 }
 
 @end

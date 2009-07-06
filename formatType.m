@@ -30,10 +30,16 @@ void print_usage(void)
        );
 }
 
+enum {
+    CDFormatIvar = 0,
+    CDFormatMethod = 1,
+    CDFormatBalance = 2,
+};
+
 int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    BOOL shouldFormatAsMethod = NO;
+    NSUInteger formatType = CDFormatIvar;
 
     int ch;
     BOOL errorFlag = NO;
@@ -54,6 +60,7 @@ int main(int argc, char *argv[])
     //[methodTypeFormatter setDelegate:self];
 
     struct option longopts[] = {
+        { "balance", no_argument, NULL, 'b' },
         { "method", no_argument, NULL, 'm' },
         { NULL, 0, NULL, 0 },
     };
@@ -63,10 +70,14 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    while ( (ch = getopt_long(argc, argv, "m", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "bm", longopts, NULL)) != -1) {
         switch (ch) {
+          case 'b':
+              formatType = CDFormatBalance;
+              break;
+
           case 'm':
-              shouldFormatAsMethod = YES;
+              formatType = CDFormatMethod;
               break;
 
           case '?':
@@ -98,15 +109,15 @@ int main(int argc, char *argv[])
         NSLog(@"%u lines", count);
         NSLog(@"%u pairs", count / 2);
 
-        if (shouldFormatAsMethod)
-            NSLog(@"Format as methods");
-        else
-            NSLog(@"Format as ivars");
+        switch (formatType) {
+          case CDFormatIvar: NSLog(@"Format as ivars"); break;
+          case CDFormatMethod: NSLog(@"Format as methods"); break;
+          case CDFormatBalance: NSLog(@"Format as balance"); break;
+        }
 
         for (index = 0; index < count / 2; index++) {
             NSString *name, *type;
             NSString *str;
-            CDBalanceFormatter *balance;
 
             name = [lines objectAtIndex:index * 2];
             type = [lines objectAtIndex:index * 2 + 1];
@@ -114,18 +125,25 @@ int main(int argc, char *argv[])
             NSLog(@"name: %@", name);
             NSLog(@"type: %@", type);
 
-#if 0
-            if (shouldFormatAsMethod) {
-                str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
-            } else {
+            switch (formatType) {
+              case CDFormatIvar:
                 str = [ivarTypeFormatter formatVariable:name type:type symbolReferences:nil];
+                break;
+
+              case CDFormatMethod:
+                str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
+                break;
+
+              case CDFormatBalance: {
+                  CDBalanceFormatter *balance;
+
+                  NSLog(@"----------------------------------------------------------------------");
+                  balance = [[CDBalanceFormatter alloc] initWithString:type];
+                  str = [balance format];
+                  [balance release];
+              }
             }
             NSLog(@"str: %@", str);
-#endif
-            NSLog(@"----------------------------------------------------------------------");
-            balance = [[CDBalanceFormatter alloc] initWithString:type];
-            [balance format];
-            [balance release];
         }
 
         [input release];

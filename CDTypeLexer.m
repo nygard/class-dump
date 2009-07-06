@@ -109,6 +109,12 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
             return ',';
         }
 
+        if ([scanner scanString:@"*" intoString:NULL]) {
+            if (shouldShowLexing)
+                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, '*', '*');
+            return '*';
+        }
+
         if ([scanner my_scanCharactersFromSet:[NSScanner cdTemplateTypeCharacterSet] intoString:&str]) {
             [self _setLexText:str];
             if (shouldShowLexing)

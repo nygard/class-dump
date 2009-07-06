@@ -423,9 +423,9 @@ static NSString *CDTokenDescription(int token)
     }
 
     if ([lexer state] == CDTypeLexerStateTemplateTypes) {
-        if (lookahead == TK_IDENTIFIER) {
-            NSLog(@"Ignoring identifier (%@) before ',' while in CDTypeLexerStateTemplateTypes", [lexer lexText]);
-            [self match:TK_IDENTIFIER];
+        if (lookahead == '*') {
+            NSLog(@"Ignoring * before ',' while in CDTypeLexerStateTemplateTypes");
+            [self match:'*'];
         }
     }
 #if 0
