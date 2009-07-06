@@ -214,7 +214,7 @@
         NSParameterAssert(([self filesize] % PAGE_SIZE) == 0);
         decryptedData = [[NSMutableData alloc] initWithLength:[self filesize]];
 
-        src = [nonretainedMachOFile machODataBytes] + [self filesize];
+        src = [nonretainedMachOFile machODataBytes] + [self fileoff];
         dest = [decryptedData mutableBytes];
 
         count = [self filesize] / PAGE_SIZE;
