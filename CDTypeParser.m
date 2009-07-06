@@ -419,8 +419,14 @@ static NSString *CDTokenDescription(int token)
             [self match:','];
             [typeName addTemplateType:[self parseTypeName]];
         }
-
         [self match:'>' enterState:savedState];
+    }
+
+    if ([lexer state] == CDTypeLexerStateTemplateTypes) {
+        if (lookahead == TK_IDENTIFIER) {
+            NSLog(@"Ignoring identifier (%@) before ',' while in CDTypeLexerStateTemplateTypes", [lexer lexText]);
+            [self match:TK_IDENTIFIER];
+        }
     }
 #if 0
     // This breaks a bunch of the unit tests... need to figure out what's up with that first.

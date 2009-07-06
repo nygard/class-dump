@@ -10,6 +10,17 @@
 
 static BOOL debug = YES;
 
+static NSString *CDTypeLexerStateName(CDTypeLexerState state)
+{
+    switch (state) {
+      case CDTypeLexerStateNormal: return @"Normal";
+      case CDTypeLexerStateIdentifier: return @"Identifier";
+      case CDTypeLexerStateTemplateTypes: return @"Template";
+    }
+
+    return @"Unknown";
+}
+
 @implementation CDTypeLexer
 
 - (id)initWithString:(NSString *)aString;
@@ -20,7 +31,7 @@ static BOOL debug = YES;
     scanner = [[NSScanner alloc] initWithString:aString];
     [scanner setCharactersToBeSkipped:nil];
     state = CDTypeLexerStateNormal;
-    shouldShowLexing = NO;
+    shouldShowLexing = debug;
 
     return self;
 }
@@ -45,7 +56,7 @@ static BOOL debug = YES;
 
 - (void)setState:(CDTypeLexerState)newState;
 {
-    if (debug) NSLog(@"CDTypeLexer - changing state from %u to %u", state, newState);
+    if (debug) NSLog(@"CDTypeLexer - changing state from %u (%@) to %u (%@)", state, CDTypeLexerStateName(state), newState, CDTypeLexerStateName(newState));
     state = newState;
 }
 

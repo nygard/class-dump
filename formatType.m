@@ -15,6 +15,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDSymbolReferences.h"
+#import "CDBalanceFormatter.h"
 
 void print_usage(void)
 {
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
     CDTypeFormatter *methodTypeFormatter;
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
-    [ivarTypeFormatter setShouldExpand:NO];
+    [ivarTypeFormatter setShouldExpand:YES];
     [ivarTypeFormatter setShouldAutoExpand:YES];
     [ivarTypeFormatter setBaseLevel:1];
     //[ivarTypeFormatter setDelegate:self];
@@ -105,19 +106,26 @@ int main(int argc, char *argv[])
         for (index = 0; index < count / 2; index++) {
             NSString *name, *type;
             NSString *str;
+            CDBalanceFormatter *balance;
 
             name = [lines objectAtIndex:index * 2];
             type = [lines objectAtIndex:index * 2 + 1];
+            NSLog(@"----------------------------------------------------------------------");
             NSLog(@"name: %@", name);
             NSLog(@"type: %@", type);
 
+#if 0
             if (shouldFormatAsMethod) {
                 str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
             } else {
                 str = [ivarTypeFormatter formatVariable:name type:type symbolReferences:nil];
             }
-
             NSLog(@"str: %@", str);
+#endif
+            NSLog(@"----------------------------------------------------------------------");
+            balance = [[CDBalanceFormatter alloc] initWithString:type];
+            [balance format];
+            [balance release];
         }
 
         [input release];

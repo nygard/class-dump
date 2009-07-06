@@ -235,6 +235,8 @@
 		01F524371001D1F10006B272 /* CDTypeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B0A08AE9D3A003E99F8 /* CDTypeParser.m */; };
 		01F5247C1001D3310006B272 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2408AE9D6D003E99F8 /* CDTopoSortNode.m */; };
 		01F524841001D3640006B272 /* formatType.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F524831001D3640006B272 /* formatType.m */; };
+		01F524D31001E8F60006B272 /* CDBalanceFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F524D21001E8F60006B272 /* CDBalanceFormatter.m */; };
+		01F524D41001E8F60006B272 /* CDBalanceFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F524D21001E8F60006B272 /* CDBalanceFormatter.m */; };
 		01F77E180FF44D900055EECD /* CDRelocationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F77E160FF44D900055EECD /* CDRelocationInfo.m */; };
 		01F77F190FF47E580055EECD /* CDOCProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F77F170FF47E580055EECD /* CDOCProperty.m */; };
 /* End PBXBuildFile section */
@@ -429,6 +431,8 @@
 		01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC1Processor.m; sourceTree = "<group>"; };
 		01F5238F1001D19A0006B272 /* formatType */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = formatType; sourceTree = BUILT_PRODUCTS_DIR; };
 		01F524831001D3640006B272 /* formatType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = formatType.m; sourceTree = "<group>"; };
+		01F524D11001E8F60006B272 /* CDBalanceFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDBalanceFormatter.h; sourceTree = "<group>"; };
+		01F524D21001E8F60006B272 /* CDBalanceFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDBalanceFormatter.m; sourceTree = "<group>"; };
 		01F77E150FF44D900055EECD /* CDRelocationInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDRelocationInfo.h; sourceTree = "<group>"; };
 		01F77E160FF44D900055EECD /* CDRelocationInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDRelocationInfo.m; sourceTree = "<group>"; };
 		01F77F160FF47E580055EECD /* CDOCProperty.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDOCProperty.h; sourceTree = "<group>"; };
@@ -602,6 +606,8 @@
 				012E2B0808AE9D3A003E99F8 /* CDTypeName.m */,
 				012E2B0908AE9D3A003E99F8 /* CDTypeParser.h */,
 				012E2B0A08AE9D3A003E99F8 /* CDTypeParser.m */,
+				01F524D11001E8F60006B272 /* CDBalanceFormatter.h */,
+				01F524D21001E8F60006B272 /* CDBalanceFormatter.m */,
 			);
 			name = "Type Parsing/Lexing";
 			sourceTree = "<group>";
@@ -1111,6 +1117,7 @@
 				0185BF340FF9B251006AE888 /* CDLCRunPath.m in Sources */,
 				017DDCBE0FFC3E7700F2DEE9 /* CDLCPreboundDylib.m in Sources */,
 				017DDCE30FFC444200F2DEE9 /* CDLCTwoLevelHints.m in Sources */,
+				01F524D41001E8F60006B272 /* CDBalanceFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1131,6 +1138,7 @@
 				01F524371001D1F10006B272 /* CDTypeParser.m in Sources */,
 				01F5247C1001D3310006B272 /* CDTopoSortNode.m in Sources */,
 				01F524841001D3640006B272 /* formatType.m in Sources */,
+				01F524D31001E8F60006B272 /* CDBalanceFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
