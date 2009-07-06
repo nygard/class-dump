@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
+static BOOL debug = YES;
+
 @implementation CDTypeLexer
 
 - (id)initWithString:(NSString *)aString;
@@ -43,6 +45,7 @@
 
 - (void)setState:(CDTypeLexerState)newState;
 {
+    if (debug) NSLog(@"CDTypeLexer - changing state from %u to %u", state, newState);
     state = newState;
 }
 

@@ -16,6 +16,8 @@
 NSString *CDSyntaxError = @"Syntax Error";
 NSString *CDTypeParserErrorDomain = @"CDTypeParserErrorDomain";
 
+static BOOL debug = YES;
+
 static NSString *CDTokenDescription(int token)
 {
     if (token < 128)
@@ -147,7 +149,7 @@ static NSString *CDTokenDescription(int token)
 - (void)match:(int)token enterState:(int)newState;
 {
     if (lookahead == token) {
-        //NSLog(@"matched %@", CDTokenDescription(token));
+        if (debug) NSLog(@"matched %@", CDTokenDescription(token));
         [lexer setState:newState];
         lookahead = [lexer scanNextToken];
     } else {
