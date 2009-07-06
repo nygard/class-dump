@@ -236,6 +236,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		010C4CF01001999100B27A2B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		011261610C21312C00B9C4E0 /* CDClassDumpVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDClassDumpVisitor.h; sourceTree = "<group>"; };
 		011261620C21312C00B9C4E0 /* CDClassDumpVisitor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDClassDumpVisitor.m; sourceTree = "<group>"; };
 		011261630C21312C00B9C4E0 /* CDFindMethodVisitor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDFindMethodVisitor.h; sourceTree = "<group>"; };
@@ -691,6 +692,7 @@
 		08FB7795FE84155DC02AAC07 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				010C4CF01001999100B27A2B /* Info.plist */,
 				32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */,
 				012E2B3208AE9D8F003E99F8 /* main.m */,
 			);
@@ -1318,6 +1320,12 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
 				INSTALL_PATH = /;
+				OTHER_LDFLAGS = (
+					"-sectcreate",
+					__TEXT,
+					__info_plist,
+					Info.plist,
+				);
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 				ZERO_LINK = NO;
