@@ -16,6 +16,7 @@
 
     name = nil;
     templateTypes = [[NSMutableArray alloc] init];
+    suffix = nil;
 
     return self;
 }
@@ -23,6 +24,8 @@
 - (void)dealloc;
 {
     [name release];
+    [templateTypes release];
+    [suffix release];
 
     [super dealloc];
 }
@@ -51,10 +54,27 @@
     [templateTypes addObject:aTemplateType];
 }
 
+- (NSString *)suffix;
+{
+    return suffix;
+}
+
+- (void)setSuffix:(NSString *)newSuffix;
+{
+    if (newSuffix == suffix)
+        return;
+
+    [suffix release];
+    suffix = [newSuffix retain];
+}
+
 - (NSString *)description;
 {
     if ([templateTypes count] == 0)
         return name;
+
+    if (suffix != nil)
+        return [NSString stringWithFormat:@"%@<%@>%@", name, [templateTypes componentsJoinedByString:@", "], suffix];
 
     return [NSString stringWithFormat:@"%@<%@>", name, [templateTypes componentsJoinedByString:@", "]];
 }

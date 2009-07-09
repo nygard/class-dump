@@ -9,6 +9,7 @@
 {
     NSString *name;
     NSMutableArray *templateTypes;
+    NSString *suffix;
 }
 
 - (id)init;
@@ -19,6 +20,9 @@
 
 - (NSArray *)templateTypes;
 - (void)addTemplateType:(CDTypeName *)aTemplateType;
+
+- (NSString *)suffix;
+- (void)setSuffix:(NSString *)newSuffix;
 
 - (NSString *)description;
 

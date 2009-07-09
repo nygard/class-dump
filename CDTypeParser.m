@@ -433,14 +433,17 @@ static NSString *CDTokenDescription(int token)
             [typeName addTemplateType:[self parseTypeName]];
         }
         [self match:'>' enterState:savedState];
-    }
 
-    if ([lexer state] == CDTypeLexerStateTemplateTypes) {
-        if (lookahead == '*') {
-            if (debug) NSLog(@"Ignoring * before ',' while in CDTypeLexerStateTemplateTypes");
-            [self match:'*'];
+        if ([lexer state] == CDTypeLexerStateTemplateTypes) {
+            if (lookahead == TK_IDENTIFIER) {
+                NSString *suffix = [lexer lexText];
+
+                [self match:TK_IDENTIFIER];
+                [typeName setSuffix:suffix];
+            }
         }
     }
+
 #if 0
     // This breaks a bunch of the unit tests... need to figure out what's up with that first.
     // We'll treat "?" as no name, returning nil here instead of testing the type name for this later.
