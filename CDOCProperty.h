@@ -15,6 +15,7 @@
     BOOL hasParsedAttributes;
     CDType *type;
     NSMutableArray *attributes;
+    NSString *attributeStringAfterType;
 }
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
@@ -24,6 +25,9 @@
 - (NSString *)attributeString;
 - (CDType *)type;
 - (NSArray *)attributes;
+
+- (void)_setAttributeStringAfterType:(NSString *)newValue;
+- (NSString *)attributeStringAfterType;
 
 - (NSString *)description;
 

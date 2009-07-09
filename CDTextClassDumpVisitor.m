@@ -204,9 +204,12 @@ static BOOL debug = NO;
 
     [resultString appendString:@"\n"];
     if ([unknownAttrs count] > 0) {
-        // TODO (2009-07-09): Move the parsing into CDOCProperty, and then skip the type part for obnoxiously long types
         [resultString appendFormat:@"// Preceeding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
-        [resultString appendFormat:@"// Original attribute string: %@\n\n", [aProperty attributeString]];
+        if ([[aProperty attributeString] length] > 80) {
+            [resultString appendFormat:@"// Original attribute string (following type): %@\n\n", [aProperty attributeStringAfterType]];
+        } else {
+            [resultString appendFormat:@"// Original attribute string: %@\n\n", [aProperty attributeString]];
+        }
     }
 
     [alist release];

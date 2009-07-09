@@ -25,6 +25,7 @@ static BOOL debug = NO;
     hasParsedAttributes = NO;
     type = nil;
     attributes = [[NSMutableArray alloc] init];
+    attributeStringAfterType = nil;
 
     return self;
 }
@@ -35,6 +36,7 @@ static BOOL debug = NO;
     [attributeString release];
     [type release];
     [attributes release];
+    [attributeStringAfterType release];
 
     [super dealloc];
 }
@@ -59,6 +61,21 @@ static BOOL debug = NO;
 {
     [self parseAttributes];
     return attributes;
+}
+
+- (void)_setAttributeStringAfterType:(NSString *)newValue;
+{
+    if (newValue == attributeStringAfterType)
+        return;
+
+    [attributeStringAfterType release];
+    attributeStringAfterType = [newValue retain];
+}
+
+- (NSString *)attributeStringAfterType;
+{
+    [self parseAttributes];
+    return attributeStringAfterType;
 }
 
 - (NSString *)description;
@@ -96,8 +113,9 @@ static BOOL debug = NO;
         if (type != nil) {
             typeRange.length = [[[parser lexer] scanner] scanLocation];
 
-            if (NSMaxRange(typeRange) < [[scanner string] length]) {
-                [attributes addObjectsFromArray:[[attributeString substringFromIndex:NSMaxRange(typeRange)] componentsSeparatedByString:@","]];
+            [self _setAttributeStringAfterType:[attributeString substringFromIndex:NSMaxRange(typeRange)]];
+            if ([attributeStringAfterType length] > 0) {
+                [attributes addObjectsFromArray:[attributeStringAfterType componentsSeparatedByString:@","]];
             } else {
                 // For a simple case like "Ti", we'd get the empty string.
                 // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
