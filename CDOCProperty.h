@@ -5,20 +5,30 @@
 
 #import <Foundation/Foundation.h>
 
+@class CDType;
+
 @interface CDOCProperty : NSObject
 {
     NSString *name;
-    NSString *attributes;
+    NSString *attributeString;
+
+    BOOL hasParsedAttributes;
+    CDType *type;
+    NSMutableArray *attributes;
 }
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 - (void)dealloc;
 
 - (NSString *)name;
-- (NSString *)attributes;
+- (NSString *)attributeString;
+- (CDType *)type;
+- (NSArray *)attributes;
 
 - (NSString *)description;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
+
+- (void)parseAttributes;
 
 @end

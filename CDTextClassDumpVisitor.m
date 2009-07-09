@@ -19,8 +19,6 @@
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
 #import "CDTypeFormatter.h"
-#import "CDTypeParser.h"
-#import "CDTypeLexer.h"
 
 static BOOL debug = NO;
 
@@ -189,7 +187,6 @@ static BOOL debug = NO;
         [resultString appendString:@"@property "];
     }
 
-    //formattedString = [[classDump propertyTypeFormatter] formatVariable:[aProperty name] type:type symbolReferences:symbolReferences];
     formattedString = [[classDump propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
     [resultString appendFormat:@"%@;", formattedString];
 
@@ -209,7 +206,7 @@ static BOOL debug = NO;
     if ([unknownAttrs count] > 0) {
         // TODO (2009-07-09): Move the parsing into CDOCProperty, and then skip the type part for obnoxiously long types
         [resultString appendFormat:@"// Preceeding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
-        [resultString appendFormat:@"// Original attribute string: %@\n\n", [aProperty attributes]];
+        [resultString appendFormat:@"// Original attribute string: %@\n\n", [aProperty attributeString]];
     }
 
     [alist release];
@@ -218,47 +215,20 @@ static BOOL debug = NO;
 
 - (void)visitProperty:(CDOCProperty *)aProperty;
 {
-    NSScanner *scanner;
+    CDType *parsedType;
 
-    // On 10.nevermind, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
-    scanner = [[NSScanner alloc] initWithString:[aProperty attributes]];
-
-    if ([scanner scanString:@"T" intoString:NULL]) {
-        NSError *error;
-        NSRange typeRange;
-        CDTypeParser *parser;
-        CDType *parsedType = nil;
-
-        typeRange.location = [scanner scanLocation];
-        parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
-        parsedType = [parser parseType:&error];
-        if (parsedType == nil) {
+    parsedType = [aProperty type];
+    if (parsedType == nil) {
+        if ([[aProperty attributeString] hasPrefix:@"T"]) {
             [resultString appendFormat:@"// Error parsing type for property %@:\n", [aProperty name]];
-            [resultString appendFormat:@"// Property attributes: %@\n\n", [aProperty attributes]];
+            [resultString appendFormat:@"// Property attributes: %@\n\n", [aProperty attributeString]];
         } else {
-            NSArray *attrs;
-
-            typeRange.length = [[[parser lexer] scanner] scanLocation];
-
-            if (NSMaxRange(typeRange) < [[scanner string] length]) {
-                attrs = [[[aProperty attributes] substringFromIndex:NSMaxRange(typeRange)] componentsSeparatedByString:@","];
-            } else {
-                // For a simple case like "Ti", we'd get the empty string.
-                // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
-                attrs = [NSArray array];
-            }
-
-            // Do most of the work here.
-            [self _visitProperty:aProperty parsedType:parsedType attributes:attrs];
+            [resultString appendFormat:@"// Error: Property attributes should begin with the type ('T') attribute, property name: %@\n", [aProperty name]];
+            [resultString appendFormat:@"// Property attributes: %@\n\n", [aProperty attributeString]];
         }
-
-        [parser release];
     } else {
-        [resultString appendFormat:@"// Error: Property attributes should begin with the type ('T') attribute, property name: %@\n", [aProperty name]];
-        [resultString appendFormat:@"// Property attributes: %@\n\n", [aProperty attributes]];
+        [self _visitProperty:aProperty parsedType:parsedType attributes:[aProperty attributes]];
     }
-
-    [scanner release];
 }
 
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;

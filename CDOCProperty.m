@@ -5,7 +5,12 @@
 
 #import "CDOCProperty.h"
 
+#import "CDTypeParser.h"
+#import "CDTypeLexer.h"
+
 // http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
+
+static BOOL debug = NO;
 
 @implementation CDOCProperty
 
@@ -15,7 +20,11 @@
         return nil;
 
     name = [aName retain];
-    attributes = [someAttributes retain];
+    attributeString = [someAttributes retain];
+
+    hasParsedAttributes = NO;
+    type = nil;
+    attributes = [[NSMutableArray alloc] init];
 
     return self;
 }
@@ -23,6 +32,8 @@
 - (void)dealloc;
 {
     [name release];
+    [attributeString release];
+    [type release];
     [attributes release];
 
     [super dealloc];
@@ -33,21 +44,75 @@
     return name;
 }
 
-- (NSString *)attributes;
+- (NSString *)attributeString;
 {
+    return attributeString;
+}
+
+- (CDType *)type;
+{
+    [self parseAttributes];
+    return type;
+}
+
+- (NSArray *)attributes;
+{
+    [self parseAttributes];
     return attributes;
 }
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> name: %@, attributes: %@",
+    return [NSString stringWithFormat:@"<%@:%p> name: %@, attributeString: %@",
                      NSStringFromClass([self class]), self,
-                     name, attributes];
+                     name, attributeString];
 }
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
 {
     return [name compare:[otherProperty name]];
+}
+
+// TODO (2009-07-09): Really, I don't need to require the "T" at the start.
+- (void)parseAttributes;
+{
+    NSScanner *scanner;
+
+    if (hasParsedAttributes) {
+        return;
+    }
+
+    // On 10.nevermind, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
+    scanner = [[NSScanner alloc] initWithString:attributeString];
+
+    if ([scanner scanString:@"T" intoString:NULL]) {
+        NSError *error;
+        NSRange typeRange;
+        CDTypeParser *parser;
+
+        typeRange.location = [scanner scanLocation];
+        parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
+        type = [[parser parseType:&error] retain];
+        if (type != nil) {
+            typeRange.length = [[[parser lexer] scanner] scanLocation];
+
+            if (NSMaxRange(typeRange) < [[scanner string] length]) {
+                [attributes addObjectsFromArray:[[attributeString substringFromIndex:NSMaxRange(typeRange)] componentsSeparatedByString:@","]];
+            } else {
+                // For a simple case like "Ti", we'd get the empty string.
+                // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
+            }
+        }
+
+        [parser release];
+    } else {
+        if (debug) NSLog(@"Error: Property attributes should begin with the type ('T') attribute, property name: %@", name);
+    }
+
+    [scanner release];
+
+    hasParsedAttributes = YES;
+    // And then if parsedType is nil, we know we couldn't parse the type.
 }
 
 @end
