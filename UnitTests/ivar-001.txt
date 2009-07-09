@@ -14,3 +14,14 @@ var2
 var3
 {?="__delta"i"__pfn"^}
 
+// Same as the three tests above, but for unions.
+
+var4
+(?="__pfn"^"__delta"i)
+
+var5
+(?="__pfn"^)
+
+var6
+(?="__delta"i"__pfn"^)
+

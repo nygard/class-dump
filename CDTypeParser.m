@@ -235,7 +235,7 @@ static NSString *CDTokenDescription(int token)
         CDType *type;
 
         [self match:'^'];
-        if (lookahead == TK_QUOTED_STRING) {
+        if (lookahead == TK_QUOTED_STRING || lookahead == '}' || lookahead == ')') {
             type = [[CDType alloc] initSimpleType:'v'];
             // Safari on 10.5 has: "m_function"{?="__pfn"^"__delta"i}
             result = [[CDType alloc] initPointerType:type];
