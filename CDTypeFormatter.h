@@ -34,7 +34,11 @@
 - (void)setDelegate:(id)newDelegate;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
+- (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
+
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+
 - (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 

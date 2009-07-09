@@ -100,18 +100,32 @@ static BOOL debug = NO;
     return nil;
 }
 
+- (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
+{
+    if ([type type] == 'c') {
+        if (name == nil)
+            return @"BOOL";
+        else
+            return [NSString stringWithFormat:@"BOOL %@", name];
+    }
+
+    return nil;
+}
+
 // TODO (2004-01-28): See if we can pass in the actual CDType.
+// TODO (2009-07-09): Now that we have the other method, see if we can use it instead.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
+    NSString *specialCase;
     CDTypeParser *aParser;
     CDType *resultType;
-    NSMutableString *resultString;
-    NSString *specialCase;
     NSError *error;
 
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
     specialCase = [self _specialCaseVariable:name type:type];
     if (specialCase != nil) {
+        NSMutableString *resultString;
+
         resultString = [NSMutableString string];
         [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
         [resultString appendString:specialCase];
@@ -131,12 +145,26 @@ static BOOL debug = NO;
         return nil;
     }
 
-    resultString = [NSMutableString string];
-    [resultType setVariableName:name];
-    [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
-    [resultString appendString:[resultType formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
-
     [aParser release];
+
+    return [self formatVariable:name parsedType:resultType symbolReferences:symbolReferences];
+}
+
+- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+{
+    NSString *specialCase;
+    NSMutableString *resultString;
+
+    resultString = [NSMutableString string];
+
+    specialCase = [self _specialCaseVariable:name parsedType:type];
+    [resultString appendSpacesIndentedToLevel:baseLevel spacesPerLevel:4];
+    if (specialCase != nil) {
+        [resultString appendString:specialCase];
+    } else {
+        [type setVariableName:name];
+        [resultString appendString:[type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
+    }
 
     return resultString;
 }

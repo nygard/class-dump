@@ -5,7 +5,7 @@
 
 #import "CDVisitor.h"
 
-@class CDSymbolReferences;
+@class CDSymbolReferences, CDType;
 
 @interface CDTextClassDumpVisitor : CDVisitor
 {
@@ -34,6 +34,7 @@
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
 - (void)visitIvar:(CDOCIvar *)anIvar;
 
+- (void)_visitProperty:(CDOCProperty *)aProperty parsedType:(CDType *)parsedType attributes:(NSArray *)attrs;
 - (void)visitProperty:(CDOCProperty *)aProperty;
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
 
