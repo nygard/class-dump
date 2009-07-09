@@ -23,6 +23,7 @@
 #import "CDLCUnknown.h"
 #import "CDMachOFile.h"
 #import "CDLCUnixThread.h"
+#import "CDLCEncryptionInfo.h"
 
 @implementation CDLoadCommand
 
@@ -62,6 +63,7 @@
       case LC_RPATH: targetClass = [CDLCRunPath class]; break;
       case LC_PREBOUND_DYLIB: targetClass = [CDLCPreboundDylib class]; break;
       case LC_TWOLEVEL_HINTS: targetClass = [CDLCTwoLevelHints class]; break;
+      case LC_ENCRYPTION_INFO: targetClass = [CDLCEncryptionInfo class]; break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };
