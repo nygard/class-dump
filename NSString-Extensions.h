@@ -8,8 +8,8 @@
 @interface NSString (CDExtensions)
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)str;
-+ (NSString *)spacesIndentedToLevel:(int)level;
-+ (NSString *)spacesIndentedToLevel:(int)level spacesPerLevel:(int)spacesPerLevel;
++ (NSString *)spacesIndentedToLevel:(NSUInteger)level;
++ (NSString *)spacesIndentedToLevel:(NSUInteger)level spacesPerLevel:(NSUInteger)spacesPerLevel;
 + (NSString *)stringWithUnichar:(unichar)character;
 
 - (BOOL)isFirstLetterUppercase;
@@ -17,5 +17,12 @@
 - (void)print;
 
 - (NSString *)executablePathForFilename;
+
+@end
+
+@interface NSMutableString (CDExtensions)
+
+- (void)appendSpacesIndentedToLevel:(NSUInteger)level;
+- (void)appendSpacesIndentedToLevel:(NSUInteger)level spacesPerLevel:(NSUInteger)spacesPerLevel;
 
 @end

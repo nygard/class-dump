@@ -13,19 +13,19 @@
     return [[NSFileManager defaultManager] stringWithFileSystemRepresentation:str length:strlen(str)];
 }
 
-+ (NSString *)spacesIndentedToLevel:(int)level;
++ (NSString *)spacesIndentedToLevel:(NSUInteger)level;
 {
     return [self spacesIndentedToLevel:level spacesPerLevel:4];
 }
 
-+ (NSString *)spacesIndentedToLevel:(int)level spacesPerLevel:(int)spacesPerLevel;
++ (NSString *)spacesIndentedToLevel:(NSUInteger)level spacesPerLevel:(NSUInteger)spacesPerLevel;
 {
     NSString *spaces = @"                                        ";
     NSString *levelSpaces;
     NSMutableString *str;
-    int l;
+    NSUInteger l;
 
-    assert(spacesPerLevel <= [spaces length]);
+    NSParameterAssert(spacesPerLevel <= [spaces length]);
     levelSpaces = [spaces substringToIndex:spacesPerLevel];
 
     str = [NSMutableString string];
@@ -76,6 +76,28 @@
     }
 
     return path;
+}
+
+@end
+
+@implementation NSMutableString (CDExtensions)
+
+- (void)appendSpacesIndentedToLevel:(NSUInteger)level;
+{
+    [self appendSpacesIndentedToLevel:level spacesPerLevel:4];
+}
+
+- (void)appendSpacesIndentedToLevel:(NSUInteger)level spacesPerLevel:(NSUInteger)spacesPerLevel;
+{
+    NSString *spaces = @"                                        ";
+    NSString *levelSpaces;
+    NSUInteger l;
+
+    NSParameterAssert(spacesPerLevel <= [spaces length]);
+    levelSpaces = [spaces substringToIndex:spacesPerLevel];
+
+    for (l = 0; l < level; l++)
+        [self appendString:levelSpaces];
 }
 
 @end
