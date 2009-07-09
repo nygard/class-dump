@@ -1,0 +1,16 @@
+// Test a pointer to no type in a structure.
+// This is an excerpt from the _topSitesViewController ivar of BrowserWebView in Safari 4.0 on Mac OS X 10.5.
+
+var1
+{?="__pfn"^"__delta"i}
+
+// Similar to the case above, but what happens if it occurs as the last member of the structure?
+
+var2
+{?="__pfn"^}
+
+// Combination of the first two cases.  Order reversed from first case.
+
+var3
+{?="__delta"i"__pfn"^}
+

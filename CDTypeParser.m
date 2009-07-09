@@ -236,10 +236,8 @@ static NSString *CDTokenDescription(int token)
 
         [self match:'^'];
         if (lookahead == TK_QUOTED_STRING) {
-            NSLog(@"Safari special case.");
             type = [[CDType alloc] initSimpleType:'v'];
             // Safari on 10.5 has: "m_function"{?="__pfn"^"__delta"i}
-            // Possibly a poitner to a function?
             result = [[CDType alloc] initPointerType:type];
             [type release];
         } else {

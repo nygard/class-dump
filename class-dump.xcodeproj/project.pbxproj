@@ -321,14 +321,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 01F5238E1001D19A0006B272 /* format-type */;
+			remoteGlobalIDString = 01F5238E1001D19A0006B272;
 			remoteInfo = "format-type";
 		};
 		01F525051001F3EC0006B272 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 01F524FF1001F3E60006B272 /* deprotect */;
+			remoteGlobalIDString = 01F524FF1001F3E60006B272;
 			remoteInfo = deprotect;
 		};
 /* End PBXContainerItemProxy section */
@@ -1340,14 +1340,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		010C4CD91001930200B27A2B /* Debug-32 */ = {
+		010C4CD91001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
-		010C4CDA1001930200B27A2B /* Debug-32 */ = {
+		010C4CDA1001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1355,9 +1355,9 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				PRODUCT_NAME = all;
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
-		010C4CDB1001930200B27A2B /* Debug-32 */ = {
+		010C4CDB1001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1374,9 +1374,9 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = "class-dump";
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
-		010C4CDC1001930200B27A2B /* Debug-32 */ = {
+		010C4CDC1001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1401,9 +1401,9 @@
 				PRODUCT_NAME = CDUnitTests;
 				WRAPPER_EXTENSION = octest;
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
-		010C4CDD1001930200B27A2B /* Debug-32 */ = {
+		010C4CDD1001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
@@ -1428,7 +1428,7 @@
 				PRODUCT_NAME = CDUnitTests;
 				WRAPPER_EXTENSION = octest;
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
 		012E2A9508AE9B4F003E99F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1640,7 +1640,7 @@
 			};
 			name = Debug;
 		};
-		01F523921001D19C0006B272 /* Debug-32 */ = {
+		01F523921001D19C0006B272 /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1658,7 +1658,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = formatType;
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
 		01F523931001D19C0006B272 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1706,7 +1706,7 @@
 			};
 			name = Debug;
 		};
-		01F525031001F3E80006B272 /* Debug-32 */ = {
+		01F525031001F3E80006B272 /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1724,7 +1724,7 @@
 				PREBINDING = NO;
 				PRODUCT_NAME = deprotect;
 			};
-			name = "Debug-32";
+			name = "32-Debug";
 		};
 		01F525041001F3E80006B272 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1756,7 +1756,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				012E2A9508AE9B4F003E99F8 /* Debug */,
-				010C4CD91001930200B27A2B /* Debug-32 */,
+				010C4CD91001930200B27A2B /* 32-Debug */,
 				012E2A9608AE9B4F003E99F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1766,7 +1766,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				012FF18C0CDB886D00F31E61 /* Debug */,
-				010C4CDC1001930200B27A2B /* Debug-32 */,
+				010C4CDC1001930200B27A2B /* 32-Debug */,
 				012FF18D0CDB886D00F31E61 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1776,7 +1776,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				013183030CDF6EE400EC5A2C /* Debug */,
-				010C4CDD1001930200B27A2B /* Debug-32 */,
+				010C4CDD1001930200B27A2B /* 32-Debug */,
 				013183040CDF6EE400EC5A2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1786,7 +1786,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01A9A4BF0FF19B2F00475772 /* Debug */,
-				010C4CDB1001930200B27A2B /* Debug-32 */,
+				010C4CDB1001930200B27A2B /* 32-Debug */,
 				01A9A4C00FF19B2F00475772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1796,7 +1796,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01A9A4C50FF19BAE00475772 /* Debug */,
-				010C4CDA1001930200B27A2B /* Debug-32 */,
+				010C4CDA1001930200B27A2B /* 32-Debug */,
 				01A9A4C60FF19BAE00475772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1806,7 +1806,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F523911001D19C0006B272 /* Debug */,
-				01F523921001D19C0006B272 /* Debug-32 */,
+				01F523921001D19C0006B272 /* 32-Debug */,
 				01F523931001D19C0006B272 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1816,7 +1816,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F525021001F3E80006B272 /* Debug */,
-				01F525031001F3E80006B272 /* Debug-32 */,
+				01F525031001F3E80006B272 /* 32-Debug */,
 				01F525041001F3E80006B272 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;

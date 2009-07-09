@@ -46,11 +46,12 @@ int main(int argc, char *argv[])
 
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
+    NSUInteger index;
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
     [ivarTypeFormatter setShouldExpand:YES];
     [ivarTypeFormatter setShouldAutoExpand:YES];
-    [ivarTypeFormatter setBaseLevel:1];
+    [ivarTypeFormatter setBaseLevel:0];
     //[ivarTypeFormatter setDelegate:self];
 
     methodTypeFormatter = [[CDTypeFormatter alloc] init];
@@ -92,58 +93,67 @@ int main(int argc, char *argv[])
         exit(2);
     }
 
-    if (optind < argc) {
+    switch (formatType) {
+      case CDFormatIvar: printf("Format as ivars\n"); break;
+      case CDFormatMethod: printf("Format as methods\n"); break;
+      case CDFormatBalance: printf("Format as balance\n"); break;
+    }
+
+    for (index = optind; index < argc; index++) {
         NSString *arg;
         NSString *input;
         NSError *error;
         NSArray *lines;
-        NSUInteger count, index;
         CDTypeFormatter *formatter;
+        NSString *name, *type;
 
-        arg = [NSString stringWithFileSystemRepresentation:argv[optind]];
+        arg = [NSString stringWithFileSystemRepresentation:argv[index]];
+        printf("======================================================================\n");
+        printf("File: %s\n", argv[index]);
 
         input = [[NSString alloc] initWithContentsOfFile:arg encoding:NSUTF8StringEncoding error:&error];
         lines = [input componentsSeparatedByString:@"\n"];
 
-        count = [lines count];
-        NSLog(@"%u lines", count);
-        NSLog(@"%u pairs", count / 2);
-
-        switch (formatType) {
-          case CDFormatIvar: NSLog(@"Format as ivars"); break;
-          case CDFormatMethod: NSLog(@"Format as methods"); break;
-          case CDFormatBalance: NSLog(@"Format as balance"); break;
-        }
-
-        for (index = 0; index < count / 2; index++) {
-            NSString *name, *type;
-            NSString *str;
-
-            name = [lines objectAtIndex:index * 2];
-            type = [lines objectAtIndex:index * 2 + 1];
-            NSLog(@"----------------------------------------------------------------------");
-            NSLog(@"name: %@", name);
-            NSLog(@"type: %@", type);
-
-            switch (formatType) {
-              case CDFormatIvar:
-                str = [ivarTypeFormatter formatVariable:name type:type symbolReferences:nil];
-                break;
-
-              case CDFormatMethod:
-                str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
-                break;
-
-              case CDFormatBalance: {
-                  CDBalanceFormatter *balance;
-
-                  NSLog(@"----------------------------------------------------------------------");
-                  balance = [[CDBalanceFormatter alloc] initWithString:type];
-                  str = [balance format];
-                  [balance release];
-              }
+        name = type = nil;
+        for (NSString *line in lines) {
+            if ([line hasPrefix:@"//"] || [line length] == 0) {
+                printf("%s\n", [line UTF8String]);
+                continue;
             }
-            NSLog(@"str: %@", str);
+
+            if (name == nil)
+                name = line;
+            else if (type == nil) {
+                NSString *str;
+
+                type = line;
+
+                switch (formatType) {
+                  case CDFormatIvar:
+                      str = [ivarTypeFormatter formatVariable:name type:type symbolReferences:nil];
+                      break;
+
+                  case CDFormatMethod:
+                      str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
+                      break;
+
+                  case CDFormatBalance: {
+                      CDBalanceFormatter *balance;
+
+                      balance = [[CDBalanceFormatter alloc] initWithString:type];
+                      str = [balance format];
+                      [balance release];
+                  }
+                }
+                if (str == nil)
+                    printf("Error formatting type.\n");
+                else
+                    printf("%s\n", [str UTF8String]);
+                printf("----------------------------------------------------------------------\n");
+
+                name = type = nil;
+            }
+
         }
 
         [input release];
