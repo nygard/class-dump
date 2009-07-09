@@ -167,35 +167,30 @@ static BOOL debug = NO;
     alist = [[NSMutableArray alloc] init];
     unknownAttrs = [[NSMutableArray alloc] init];
 
-    attrs = [[aProperty attributes] componentsSeparatedByString:@","];
-
     // On 10.nevermind, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
     scanner = [[NSScanner alloc] initWithString:[aProperty attributes]];
 
     if ([scanner scanString:@"T" intoString:NULL]) {
-        BOOL log;
+        CDType *parsedType;
+        NSError *error;
+        NSRange typeRange;
 
-        log = [@"task" isEqualToString:[aProperty name]];
+        typeRange.location = [scanner scanLocation];
+        parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
+        parsedType = [parser parseType:&error];
+        typeRange.length = [[[parser lexer] scanner] scanLocation];
+        [parser release];
 
-        /*if (log)*/ {
-            CDType *parsedType;
-            NSError *error;
-            NSRange typeRange;
-
-            NSLog(@"property name: %@", [aProperty name]);
-
-            typeRange.location = [scanner scanLocation];
-            parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
-            NSLog(@"parser: %@", parser);
-            parsedType = [parser parseType:&error];
-            NSLog(@"parsedType: %p", parsedType);
-            typeRange.length = [[[parser lexer] scanner] scanLocation];
-            NSLog(@"start: %u, end: %u", typeRange.location, typeRange.length);
-            [parser release];
-
-            type = [[aProperty attributes] substringWithRange:typeRange];
+        type = [[aProperty attributes] substringWithRange:typeRange];
+        if (NSMaxRange(typeRange) < [[scanner string] length]) {
             attrs = [[[aProperty attributes] substringFromIndex:NSMaxRange(typeRange)] componentsSeparatedByString:@","];
+        } else {
+            // For a simple case like "Ti", we'd get the empty string.
+            // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
+            attrs = [NSArray array];
         }
+    } else {
+        attrs = [[aProperty attributes] componentsSeparatedByString:@","];
     }
 
     [scanner release];
@@ -203,8 +198,7 @@ static BOOL debug = NO;
     //NSLog(@"attrs: %@", attrs);
     for (NSString *attr in attrs) {
         if ([attr hasPrefix:@"T"]) {
-            // TODO (2009-06-29): I suspect we could find commas in the type string with some of the odd C++ mixes.
-            type = [attr substringFromIndex:1];
+            if (debug) NSLog(@"Warning: Property attribute 'T' should occur only occur at the beginning");
         } else if ([attr hasPrefix:@"R"]) {
             [alist addObject:@"readonly"];
         } else if ([attr hasPrefix:@"C"]) {
