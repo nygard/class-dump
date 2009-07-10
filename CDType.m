@@ -166,19 +166,7 @@
     [super dealloc];
 }
 
-- (NSString *)variableName;
-{
-    return variableName;
-}
-
-- (void)setVariableName:(NSString *)newVariableName;
-{
-    if (newVariableName == variableName)
-        return;
-
-    [variableName release];
-    variableName = [newVariableName retain];
-}
+@synthesize variableName;
 
 - (int)type;
 {

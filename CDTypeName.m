@@ -30,19 +30,7 @@
     [super dealloc];
 }
 
-- (NSString *)name;
-{
-    return name;
-}
-
-- (void)setName:(NSString *)newName;
-{
-    if (newName == name)
-        return;
-
-    [name release];
-    name = [newName retain];
-}
+@synthesize name;
 
 - (NSArray *)templateTypes;
 {
@@ -54,19 +42,7 @@
     [templateTypes addObject:aTemplateType];
 }
 
-- (NSString *)suffix;
-{
-    return suffix;
-}
-
-- (void)setSuffix:(NSString *)newSuffix;
-{
-    if (newSuffix == suffix)
-        return;
-
-    [suffix release];
-    suffix = [newSuffix retain];
-}
+@synthesize suffix;
 
 - (NSString *)description;
 {

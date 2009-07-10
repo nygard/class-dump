@@ -34,8 +34,7 @@
 - (id)initModifier:(int)aModifier type:(CDType *)aType;
 - (void)dealloc;
 
-- (NSString *)variableName;
-- (void)setVariableName:(NSString *)newVariableName;
+@property(retain) NSString *variableName;
 
 - (int)type;
 - (BOOL)isIDType;

@@ -15,14 +15,12 @@
 - (id)init;
 - (void)dealloc;
 
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
+@property(retain) NSString *name;
 
 - (NSArray *)templateTypes;
 - (void)addTemplateType:(CDTypeName *)aTemplateType;
 
-- (NSString *)suffix;
-- (void)setSuffix:(NSString *)newSuffix;
+@property(retain) NSString *suffix;
 
 - (NSString *)description;
 
