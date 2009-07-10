@@ -26,49 +26,43 @@ static BOOL debug = NO;
     if ([super init] == nil)
         return nil;
 
-    shouldShowLexing = debug;
+    flags.shouldExpand = NO;
+    flags.shouldAutoExpand = NO;
+    flags.shouldShowLexing = debug;
 
     return self;
 }
 
+@synthesize baseLevel;
+
 - (BOOL)shouldExpand;
 {
-    return shouldExpand;
+    return flags.shouldExpand;
 }
 
 - (void)setShouldExpand:(BOOL)newFlag;
 {
-    shouldExpand = newFlag;
+    flags.shouldExpand = newFlag;
 }
 
 - (BOOL)shouldAutoExpand;
 {
-    return shouldAutoExpand;
+    return flags.shouldAutoExpand;
 }
 
 - (void)setShouldAutoExpand:(BOOL)newFlag;
 {
-    shouldAutoExpand = newFlag;
+    flags.shouldAutoExpand = newFlag;
 }
 
 - (BOOL)shouldShowLexing;
 {
-    return shouldShowLexing;
+    return flags.shouldShowLexing;
 }
 
 - (void)setShouldShowLexing:(BOOL)newFlag;
 {
-    shouldShowLexing = newFlag;
-}
-
-- (NSUInteger)baseLevel;
-{
-    return baseLevel;
-}
-
-- (void)setBaseLevel:(NSUInteger)newBaseLevel;
-{
-    baseLevel = newBaseLevel;
+    flags.shouldShowLexing = newFlag;
 }
 
 - (id)delegate;
@@ -134,7 +128,7 @@ static BOOL debug = NO;
     }
 
     aParser = [[CDTypeParser alloc] initWithType:type];
-    [[aParser lexer] setShouldShowLexing:shouldShowLexing];
+    [[aParser lexer] setShouldShowLexing:flags.shouldShowLexing];
     resultType = [aParser parseType:&error];
     //NSLog(@"resultType: %p", resultType);
 
@@ -189,7 +183,7 @@ static BOOL debug = NO;
 
     typeDict = [NSMutableDictionary dictionary];
     {
-        int count, index;
+        NSUInteger count, index;
         BOOL noMoreTypes;
         CDMethodType *aMethodType;
         NSScanner *scanner;
@@ -200,17 +194,15 @@ static BOOL debug = NO;
         noMoreTypes = NO;
 
         aMethodType = [methodTypes objectAtIndex:index];
-        /*if ([[aMethodType type] isIDType] == NO)*/ {
+        specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+        if (specialCase != nil) {
+            [typeDict setValue:specialCase forKey:@"return-type"];
+        } else {
             NSString *str;
 
-            specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
-            if (specialCase != nil) {
-                [typeDict setValue:specialCase forKey:@"return-type"];
-            } else {
-                str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
-                if (str != nil)
-                    [typeDict setValue:str forKey:@"return-type"];
-            }
+            str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            if (str != nil)
+                [typeDict setValue:str forKey:@"return-type"];
         }
 
         index += 3;
@@ -222,7 +214,7 @@ static BOOL debug = NO;
         while ([scanner isAtEnd] == NO) {
             NSString *str;
 
-            // We can have unnamed paramenters, :::
+            // We can have unnamed parameters, :::
             if ([scanner scanUpToString:@":" intoString:&str]) {
                 //NSLog(@"str += '%@'", str);
 //				int unnamedCount, unnamedIndex;
@@ -244,7 +236,6 @@ static BOOL debug = NO;
                         [parameter setValue:specialCase forKey:@"type"];
                     } else {
                         typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
-                        //if ([[aMethodType type] isIDType] == NO)
                         [parameter setValue:typeString forKey:@"type"];
                     }
                     //[parameter setValue:[NSString stringWithFormat:@"fp%@", [aMethodType offset]] forKey:@"name"];
@@ -284,7 +275,7 @@ static BOOL debug = NO;
 
     resultString = [NSMutableString string];
     {
-        int count, index;
+        NSUInteger count, index;
         BOOL noMoreTypes;
         CDMethodType *aMethodType;
         NSScanner *scanner;
@@ -295,20 +286,18 @@ static BOOL debug = NO;
         noMoreTypes = NO;
 
         aMethodType = [methodTypes objectAtIndex:index];
-        /*if ([[aMethodType type] isIDType] == NO)*/ {
+        [resultString appendString:@"("];
+        specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+        if (specialCase != nil) {
+            [resultString appendString:specialCase];
+        } else {
             NSString *str;
 
-            [resultString appendString:@"("];
-            specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
-            if (specialCase != nil) {
-                [resultString appendString:specialCase];
-            } else {
-                str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
-                if (str != nil)
-                    [resultString appendFormat:@"%@", str];
-            }
-            [resultString appendString:@")"];
+            str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            if (str != nil)
+                [resultString appendFormat:@"%@", str];
         }
+        [resultString appendString:@")"];
 
         index += 3;
 

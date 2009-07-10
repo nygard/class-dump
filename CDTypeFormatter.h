@@ -9,26 +9,22 @@
 
 @interface CDTypeFormatter : NSObject
 {
-    BOOL shouldExpand; // But just top level struct, level == 0
-    BOOL shouldAutoExpand;
-    BOOL shouldShowLexing;
     NSUInteger baseLevel;
+
+    struct {
+        unsigned int shouldExpand:1; // But just top level struct, level == 0
+        unsigned int shouldAutoExpand:1;
+        unsigned int shouldShowLexing:1;
+    } flags;
 
     // Not ideal
     id nonretainedDelegate;
 }
 
-- (BOOL)shouldExpand;
-- (void)setShouldExpand:(BOOL)newFlag;
-
-- (BOOL)shouldAutoExpand;
-- (void)setShouldAutoExpand:(BOOL)newFlag;
-
-- (BOOL)shouldShowLexing;
-- (void)setShouldShowLexing:(BOOL)newFlag;
-
-- (NSUInteger)baseLevel;
-- (void)setBaseLevel:(NSUInteger)newBaseLevel;
+@property NSUInteger baseLevel;
+@property BOOL shouldExpand;
+@property BOOL shouldAutoExpand;
+@property BOOL shouldShowLexing;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
