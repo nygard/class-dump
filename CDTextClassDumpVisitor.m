@@ -156,9 +156,13 @@ static BOOL debug = NO;
     NSMutableArray *alist, *unknownAttrs;
     NSString *backingVar = nil;
     NSString *formattedString;
+    BOOL isWeak = NO;
+    BOOL isDynamic = NO;
 
     alist = [[NSMutableArray alloc] init];
     unknownAttrs = [[NSMutableArray alloc] init];
+
+    // objc_v2_encode_prop_attr() in gcc/objc/objc-act.c
 
     for (NSString *attr in attrs) {
         if ([attr hasPrefix:@"T"]) {
@@ -175,6 +179,21 @@ static BOOL debug = NO;
             [alist addObject:[NSString stringWithFormat:@"setter=%@", [attr substringFromIndex:1]]];
         } else if ([attr hasPrefix:@"V"]) {
             backingVar = [attr substringFromIndex:1];
+        } else if ([attr hasPrefix:@"N"]) {
+            [alist addObject:@"nonatomic"];
+        } else if ([attr hasPrefix:@"W"]) {
+            // @property(assign) __weak NSObject *prop;
+            // Only appears with GC.
+            isWeak = YES;
+        } else if ([attr hasPrefix:@"P"]) {
+            // @property(assign) __weak NSObject *prop;
+            // Only appears with GC.
+            // This is the default.
+            isWeak = NO;
+        } else if ([attr hasPrefix:@"D"]) {
+            // Dynamic property.  Implementation supplied at runtime.
+            // @property int prop; // @dynamic prop;
+            isDynamic = YES;
         } else {
             if (debug) NSLog(@"Warning: Unknown property attribute %@", attr);
             [unknownAttrs addObject:attr];
@@ -187,19 +206,20 @@ static BOOL debug = NO;
         [resultString appendString:@"@property "];
     }
 
+    if (isWeak)
+        [resultString appendString:@"__weak "];
+
     formattedString = [[classDump propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
     [resultString appendFormat:@"%@;", formattedString];
 
-    if (backingVar != nil) {
+    if (isDynamic) {
+        [resultString appendFormat:@" // @dynamic %@;", [aProperty name]];
+    } else if (backingVar != nil) {
         if ([backingVar isEqualToString:[aProperty name]]) {
             [resultString appendFormat:@" // @synthesize %@;", [aProperty name]];
         } else {
             [resultString appendFormat:@" // @synthesize %@=%@;", [aProperty name], backingVar];
         }
-
-        //[resultString appendFormat:@"   %@", aProperty];
-    } else {
-        //[resultString appendFormat:@" // %@", aProperty];
     }
 
     [resultString appendString:@"\n"];
