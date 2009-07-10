@@ -568,7 +568,7 @@ static BOOL debug = NO;
                     flagOffset = [segment commandOffset] + 52; // to flags
                 }
 
-                // TODO: Needs to be endian-neutral
+                // TODO (2009-07-10): Needs to be endian-neutral
                 flags = OSReadLittleInt32([mdata mutableBytes], flagOffset);
                 NSLog(@"old flags: %08x", flags);
                 NSLog(@"segment flags: %08x", [segment flags]);
