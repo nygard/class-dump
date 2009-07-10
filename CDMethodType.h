@@ -23,6 +23,6 @@
 
 - (NSString *)description;
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 
 @end

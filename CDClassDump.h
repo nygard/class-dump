@@ -78,8 +78,7 @@
 - (NSArray *)machOFiles;
 - (NSArray *)objcProcessors;
 
-- (CDArch)targetArch;
-- (void)setTargetArch:(CDArch)newArch;
+@property CDArch targetArch;
 
 - (BOOL)containsObjectiveCData;
 - (CDStructureTable *)structureTable;
@@ -106,10 +105,10 @@
 - (void)appendHeaderToString:(NSMutableString *)resultString;
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
-- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
+- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
-- (void)registerPhase:(int)phase;
-- (void)endPhase:(int)phase;
+- (void)registerPhase:(NSUInteger)phase;
+- (void)endPhase:(NSUInteger)phase;
 
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;

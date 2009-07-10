@@ -146,7 +146,7 @@
                      NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
     [self registerStructuresFromMethods:classMethods withObject:anObject phase:phase];
     [self registerStructuresFromMethods:instanceMethods withObject:anObject phase:phase];
@@ -155,7 +155,7 @@
     [self registerStructuresFromMethods:optionalInstanceMethods withObject:anObject phase:phase];
 }
 
-- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
     CDTypeParser *parser;
     NSArray *methodTypes;
@@ -173,7 +173,7 @@
     }
 }
 
-- (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
     for (CDMethodType *methodType in methodTypes)
         [methodType registerStructuresWithObject:anObject phase:phase];

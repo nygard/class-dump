@@ -20,7 +20,7 @@
 - (NSArray *)ivars;
 - (void)setIvars:(NSArray *)newIvars;
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;

@@ -61,12 +61,12 @@ static BOOL debug = NO;
     shouldShowLexing = newFlag;
 }
 
-- (int)baseLevel;
+- (NSUInteger)baseLevel;
 {
     return baseLevel;
 }
 
-- (void)setBaseLevel:(int)newBaseLevel;
+- (void)setBaseLevel:(NSUInteger)newBaseLevel;
 {
     baseLevel = newBaseLevel;
 }
@@ -371,7 +371,7 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (NSString *)typedefNameForStruct:(CDType *)structType level:(int)level;
+- (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
     if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:level:)])
         return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structType level:level];

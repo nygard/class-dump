@@ -53,7 +53,7 @@
     ivars = [newIvars retain];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
     CDTypeParser *parser;
 

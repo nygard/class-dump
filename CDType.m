@@ -233,7 +233,7 @@
                      NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
 }
 
-- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *result, *currentName;
     NSString *baseType, *memberString;
@@ -392,7 +392,7 @@
     return result;
 }
 
-- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSMutableString *str;
     CDType *replacementType;
@@ -474,7 +474,7 @@
     return [self _typeStringWithVariableNamesToLevel:1];
 }
 
-- (NSString *)_typeStringWithVariableNamesToLevel:(int)level;
+- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level;
 {
     NSString *result;
 
@@ -541,7 +541,7 @@
     return result;
 }
 
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(int)level;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSUInteger)level;
 {
     NSMutableString *str;
 
@@ -557,7 +557,7 @@
     return str;
 }
 
-- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
     if (phase == 1)
         [self phase1RegisterStructuresWithObject:anObject];
@@ -613,8 +613,8 @@
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
 {
-    int count, index;
-    int otherCount;
+    NSUInteger count, index;
+    NSUInteger otherCount;
     NSArray *otherMembers;
 
     if ([self type] != [otherType type])
@@ -670,8 +670,8 @@
 // Merge struct/union member names.  Should check using -canMergeWithType: first.
 - (void)mergeWithType:(CDType *)otherType;
 {
-    int count, index;
-    int otherCount;
+    NSUInteger count, index;
+    NSUInteger otherCount;
     NSArray *otherMembers;
 #if 0
     {

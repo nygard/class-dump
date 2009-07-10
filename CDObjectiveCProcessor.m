@@ -83,7 +83,7 @@
 }
 
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
     for (CDOCClass *aClass in classes)
         [aClass registerStructuresWithObject:anObject phase:phase];

@@ -50,17 +50,17 @@
 
 - (NSString *)description;
 
-- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(int)level symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (NSString *)formattedStringForMembersAtLevel:(int)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (NSString *)formattedStringForSimpleType;
 
 - (NSString *)typeString;
 - (NSString *)bareTypeString;
 - (NSString *)keyTypeString;
-- (NSString *)_typeStringWithVariableNamesToLevel:(int)level;
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(int)level;
+- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSUInteger)level;
 
-- (void)phase:(int)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 - (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
 - (void)phase2RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject
                               usedInMethod:(BOOL)isUsedInMethod

@@ -240,15 +240,7 @@
     return objcProcessors;
 }
 
-- (CDArch)targetArch;
-{
-    return targetArch;
-}
-
-- (void)setTargetArch:(CDArch)newArch;
-{
-    targetArch = newArch;
-}
+@synthesize targetArch;
 
 - (BOOL)containsObjectiveCData;
 {
@@ -439,7 +431,7 @@
     return nil;
 }
 
-- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(int)level;
+- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
     CDType *searchType;
     CDStructureTable *targetTable;
@@ -461,7 +453,7 @@
     return [targetTable typedefNameForStructureType:searchType];
 }
 
-- (void)registerPhase:(int)phase;
+- (void)registerPhase:(NSUInteger)phase;
 {
     NSAutoreleasePool *pool;
 
@@ -475,7 +467,7 @@
     [pool release];
 }
 
-- (void)endPhase:(int)phase;
+- (void)endPhase:(NSUInteger)phase;
 {
     if (phase == 1) {
         [structureTable finishPhase1];

@@ -35,7 +35,7 @@
 - (void)loadClasses;
 - (void)loadCategories;
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(int)phase;
+- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 - (void)createUniquedProtocols;

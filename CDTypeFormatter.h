@@ -12,7 +12,7 @@
     BOOL shouldExpand; // But just top level struct, level == 0
     BOOL shouldAutoExpand;
     BOOL shouldShowLexing;
-    int baseLevel;
+    NSUInteger baseLevel;
 
     // Not ideal
     id nonretainedDelegate;
@@ -27,8 +27,8 @@
 - (BOOL)shouldShowLexing;
 - (void)setShouldShowLexing:(BOOL)newFlag;
 
-- (int)baseLevel;
-- (void)setBaseLevel:(int)newBaseLevel;
+- (NSUInteger)baseLevel;
+- (void)setBaseLevel:(NSUInteger)newBaseLevel;
 
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
@@ -43,6 +43,6 @@
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (CDType *)replacementForType:(CDType *)aType;
-- (NSString *)typedefNameForStruct:(CDType *)structType level:(int)level;
+- (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
 @end
