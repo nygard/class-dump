@@ -6,14 +6,14 @@ TESTDIR_NEW=$TESTDIR/new
 TESTDIR_NEW_32=$TESTDIR/new32
 TESTDIR_NEW_64=$TESTDIR/new64
 
-OLD_CD=~/Unix/bin/class-dump-3.1.2
+OLD_CD=~/Unix/bin/class-dump
 NEW_CD=/Local/nygard/Products/Release/class-dump
 
 # Must be a version that supports --list-arches
 ARCH_CD=/Local/nygard/Products/Release/class-dump
 
 FRAMEWORKS=(/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Developer/Library/Frameworks/*.framework /Developer/Library/PrivateFrameworks/*.framework)
-APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app)
+APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /System/Library/CoreServices/*.app)
 #/Volumes/BigData/TestApplications/*.app
 
 # Uncomment these to just do iPhone frameowoks
@@ -21,9 +21,9 @@ APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /D
 #IPHONE_SDK=iPhoneOS2.1
 #IPHONE_SDK=iPhoneOS2.2.1
 #IPHONE_SDK=iPhoneOS2.2
-IPHONE_SDK=iPhoneOS3.0
-FRAMEWORKS=(/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/Frameworks/*.framework /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/PrivateFrameworks/*.framework)
-APPS=()
+#IPHONE_SDK=iPhoneOS3.0
+#FRAMEWORKS=(/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/Frameworks/*.framework /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/$IPHONE_SDK.sdk/System/Library/PrivateFrameworks/*.framework)
+#APPS=()
 
 echo "Starting tests at `date`"
 
