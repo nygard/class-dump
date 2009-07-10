@@ -98,19 +98,7 @@
     [super dealloc];
 }
 
-- (NSString *)executablePath;
-{
-    return executablePath;
-}
-
-- (void)setExecutablePath:(NSString *)newPath;
-{
-    if (newPath == executablePath)
-        return;
-
-    [executablePath release];
-    executablePath = [newPath retain];
-}
+@synthesize executablePath;
 
 - (BOOL)shouldProcessRecursively;
 {

@@ -62,32 +62,15 @@
 - (id)init;
 - (void)dealloc;
 
-- (NSString *)executablePath;
-- (void)setExecutablePath:(NSString *)newPath;
-
-- (BOOL)shouldProcessRecursively;
-- (void)setShouldProcessRecursively:(BOOL)newFlag;
-
-- (BOOL)shouldSortClasses;
-- (void)setShouldSortClasses:(BOOL)newFlag;
-
-- (BOOL)shouldSortClassesByInheritance;
-- (void)setShouldSortClassesByInheritance:(BOOL)newFlag;
-
-- (BOOL)shouldSortMethods;
-- (void)setShouldSortMethods:(BOOL)newFlag;
-
-- (BOOL)shouldShowIvarOffsets;
-- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
-
-- (BOOL)shouldShowMethodAddresses;
-- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
-
-- (BOOL)shouldMatchRegex;
-- (void)setShouldMatchRegex:(BOOL)newFlag;
-
-- (BOOL)shouldShowHeader;
-- (void)setShouldShowHeader:(BOOL)newFlag;
+@property(retain) NSString *executablePath;
+@property BOOL shouldProcessRecursively;
+@property BOOL shouldSortClasses;
+@property BOOL shouldSortClassesByInheritance;
+@property BOOL shouldSortMethods;
+@property BOOL shouldShowIvarOffsets;
+@property BOOL shouldShowMethodAddresses;
+@property BOOL shouldMatchRegex;
+@property BOOL shouldShowHeader;
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;
