@@ -9,6 +9,8 @@
 
 static BOOL debug = NO;
 
+// TODO: Add union (, array [
+
 @implementation CDBalanceFormatter
 
 - (id)initWithString:(NSString *)str;
@@ -17,7 +19,7 @@ static BOOL debug = NO;
         return nil;
 
     scanner = [[NSScanner alloc] initWithString:str];
-    openCloseSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}<>"] retain];
+    openCloseSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}<>()"] retain];
 
     result = [[NSMutableString alloc] init];
 
@@ -36,7 +38,14 @@ static BOOL debug = NO;
 
 - (void)parse:(NSString *)open index:(NSUInteger)openIndex level:(NSUInteger)level;
 {
+    NSArray *pairs;
     NSString *pre;
+    NSString *opens[] = { @"{", @"<", @"(", nil};
+    NSString *closes[] = { @"}", @">", @")", nil};
+    NSUInteger index;
+    BOOL foundSomething;
+
+    pairs = [[NSArray alloc] initWithObjects:@"{}", @"<>", @"()", nil];
 
     while ([scanner isAtEnd] == NO) {
         if ([scanner scanUpToCharactersFromSet:openCloseSet intoString:&pre]) {
@@ -44,35 +53,41 @@ static BOOL debug = NO;
             [result appendFormat:@"%@%@\n", [NSString spacesIndentedToLevel:level], pre];
         }
 
-        if ([scanner scanString:@"{" intoString:NULL]) {
-            if (debug) NSLog(@"Start {");
-            [result appendFormat:@"%@{\n", [NSString spacesIndentedToLevel:level]];
-            [self parse:@"{" index:[scanner scanLocation] - 1 level:level + 1];
-            [result appendFormat:@"%@}\n", [NSString spacesIndentedToLevel:level]];
-        } else if ([scanner scanString:@"}" intoString:NULL]) {
-            if ([open isEqualToString:@"{"]) {
-                if (debug) NSLog(@"End }");
+        foundSomething = NO;
+        for (index = 0; index < 3; index++) {
+            if ([scanner scanString:opens[index] intoString:NULL]) {
+                if (debug) NSLog(@"Start %@", opens[index]);
+                [result appendSpacesIndentedToLevel:level];
+                [result appendString:opens[index]];
+                [result appendString:@"\n"];
+
+                [self parse:opens[index] index:[scanner scanLocation] - 1 level:level + 1];
+
+                [result appendSpacesIndentedToLevel:level];
+                [result appendString:closes[index]];
+                [result appendString:@"\n"];
+                foundSomething = YES;
                 break;
-            } else {
-                NSLog(@"ERROR: Unmatched end }");
             }
-        } else if ([scanner scanString:@"<" intoString:NULL]) {
-            if (debug) NSLog(@"Start <");
-            [result appendFormat:@"%@<\n", [NSString spacesIndentedToLevel:level]];
-            [self parse:@"<" index:[scanner scanLocation] - 1 level:level + 1];
-            [result appendFormat:@"%@>\n", [NSString spacesIndentedToLevel:level]];
-        } else if ([scanner scanString:@">" intoString:NULL]) {
-            if ([open isEqualToString:@"<"]) {
-                if (debug) NSLog(@"End >");
+
+            if ([scanner scanString:closes[index] intoString:NULL]) {
+                if ([open isEqualToString:opens[index]]) {
+                    if (debug) NSLog(@"End %@", closes[index]);
+                } else {
+                    NSLog(@"ERROR: Unmatched end %@", closes[index]);
+                }
+                foundSomething = YES;
                 break;
-            } else {
-                NSLog(@"ERROR: Unmatched end >");
             }
-        } else {
+        }
+
+        if (foundSomething == NO) {
             if (debug) NSLog(@"Unknown @ %u: %@", [scanner scanLocation], [[scanner string] substringFromIndex:[scanner scanLocation]]);
             break;
         }
     }
+
+    [pairs release];
 }
 
 - (NSString *)format;
@@ -99,6 +114,13 @@ static BOOL debug = NO;
         [result appendFormat:@">\n"];
     } else if ([scanner scanString:@">" intoString:NULL]) {
         NSLog(@"ERROR: Unmatched end >");
+    } else if ([scanner scanString:@"(" intoString:NULL]) {
+        if (debug) NSLog(@"Start (");
+        [result appendFormat:@"(\n"];
+        [self parse:@"(" index:[scanner scanLocation] - 1 level:level + 1];
+        [result appendFormat:@")\n"];
+    } else if ([scanner scanString:@")" intoString:NULL]) {
+        NSLog(@"ERROR: Unmatched end )");
     }
 
     if (debug) NSLog(@"result:\n%@", result);
