@@ -37,17 +37,18 @@
     if ([super init] == nil)
         return nil;
 
-    structuresByName = [[NSMutableDictionary alloc] init];
+    identifier = nil;
+    anonymousBaseName = nil;
 
+    structuresByName = [[NSMutableDictionary alloc] init];
     anonymousStructureCountsByType = [[NSMutableDictionary alloc] init];
     anonymousStructuresByType = [[NSMutableDictionary alloc] init];
     anonymousStructureNamesByType = [[NSMutableDictionary alloc] init];
 
     forcedTypedefs = [[NSMutableSet alloc] init];
 
-    anonymousBaseName = nil;
-    replacementSignatures = [[NSMutableDictionary alloc] init];
     keyTypeStringsByBareTypeStrings = [[NSMutableDictionary alloc] init];
+    replacementSignatures = [[NSMutableDictionary alloc] init];
 
     flags.shouldDebug = NO;
 
@@ -56,32 +57,34 @@
 
 - (void)dealloc;
 {
-    [structuresByName release];
+    [identifier release];
+    [anonymousBaseName release];
 
+    [structuresByName release];
     [anonymousStructureCountsByType release];
     [anonymousStructuresByType release];
     [anonymousStructureNamesByType release];
 
     [forcedTypedefs release];
-    [anonymousBaseName release];
+
     [replacementSignatures release];
     [keyTypeStringsByBareTypeStrings release];
 
     [super dealloc];
 }
 
-- (NSString *)name;
+- (NSString *)identifier;
 {
-    return name;
+    return identifier;
 }
 
-- (void)setName:(NSString *)newName;
+- (void)setIdentifier:(NSString *)newIdentifier;
 {
-    if (newName == name)
+    if (newIdentifier == identifier)
         return;
 
-    [name release];
-    name = [newName retain];
+    [identifier release];
+    identifier = [newIdentifier retain];
 }
 
 - (NSString *)anonymousBaseName;
@@ -110,7 +113,7 @@
 
 - (void)logPhase1Data;
 {
-    NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
+    NSLog(@"[%p](%@)  > %s ----------------------------------------", self, identifier, _cmd);
     NSLog(@"keyTypeStringsByBareTypeStrings:\n%@", keyTypeStringsByBareTypeStrings);
 }
 
@@ -124,7 +127,7 @@
 {
     NSArray *keys;
 
-    //NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
+    //NSLog(@"[%p](%@)  > %s ----------------------------------------", self, identifier, _cmd);
     keys = [keyTypeStringsByBareTypeStrings allKeys];
     for (NSString *key in keys) {
         NSMutableSet *value;
@@ -147,7 +150,7 @@
     NSArray *keys;
     NSString *key;
 
-    NSLog(@"[%p](%@)  > %s ----------------------------------------", self, name, _cmd);
+    NSLog(@"[%p](%@)  > %s ----------------------------------------", self, identifier, _cmd);
     keys = [structuresByName allKeys];
     count = [keys count];
     NSLog(@"%d named:", count);
@@ -164,7 +167,7 @@
         NSLog(@"%d: %@ -> %@", index, key, [anonymousStructureCountsByType objectForKey:key]);
     }
 
-    NSLog(@"[%p](%@) <  %s ----------------------------------------", self, name, _cmd);
+    NSLog(@"[%p](%@) <  %s ----------------------------------------", self, identifier, _cmd);
 }
 
 // Need to name anonymous structs if:
@@ -190,13 +193,10 @@
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSArray *keys;
-    NSString *formattedString;
-    CDType *type;
+    for (NSString *key in [[structuresByName allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDType *type;
+        NSString *formattedString;
 
-    keys = [[structuresByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-
-    for (NSString *key in keys) {
         type = [structuresByName objectForKey:key];
 
         if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:[[type typeName] description]] == NO)
@@ -212,25 +212,20 @@
 
 - (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSArray *keys;
-    NSString *typeString, *formattedString, *aName;
+    // TODO (2009-07-27): Why aren't these sorted?
+    for (NSString *key in [anonymousStructureNamesByType allKeys]) {
+        NSString *typeString, *formattedString, *name;
 
-    //keys = [[anonymousStructureNamesByType allKeys] sortedArrayUsingSelector:@selector(compare:)];
-    keys = [anonymousStructureNamesByType allKeys];
+        name = [anonymousStructureNamesByType objectForKey:key];
 
-    for (NSString *key in keys) {
-        aName = [anonymousStructureNamesByType objectForKey:key];
-
-        if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:aName] == NO)
+        if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:name] == NO)
             continue;
 
         typeString = [[anonymousStructuresByType objectForKey:key] typeString];
 
         formattedString = [aTypeFormatter formatVariable:nil type:typeString symbolReferences:symbolReferences];
         if (formattedString != nil) {
-            [resultString appendString:@"typedef "];
-            [resultString appendString:formattedString];
-            [resultString appendFormat:@" %@;\n\n", aName];
+            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, name];
         }
     }
 }
@@ -377,7 +372,7 @@
 
     // We always register recursively (so that we can merge member names if necessary) but we don't always add references?
 
-    //NSLog(@"[%p](%@) <  %s", self, name, _cmd);
+    //NSLog(@"[%p](%@) <  %s", self, identifier, _cmd);
     return shouldCountMembers;
 }
 

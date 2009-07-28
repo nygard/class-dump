@@ -11,7 +11,7 @@
 
 @interface CDStructureTable : NSObject
 {
-    NSString *name;
+    NSString *identifier;
     NSString *anonymousBaseName;
 
     NSMutableDictionary *structuresByName;
@@ -32,8 +32,8 @@
 - (id)init;
 - (void)dealloc;
 
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
+- (NSString *)identifier;
+- (void)setIdentifier:(NSString *)newIdentifier;
 
 - (NSString *)anonymousBaseName;
 - (void)setAnonymousBaseName:(NSString *)newName;

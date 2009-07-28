@@ -37,11 +37,11 @@
 
     structureTable = [[CDStructureTable alloc] init];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
-    [structureTable setName:@"Structs"];
+    [structureTable setIdentifier:@"Structs"];
 
     unionTable = [[CDStructureTable alloc] init];
     [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
-    [unionTable setName:@"Unions"];
+    [unionTable setIdentifier:@"Unions"];
 
     ivarTypeFormatter = [[CDTypeFormatter alloc] init];
     [ivarTypeFormatter setShouldExpand:NO];
