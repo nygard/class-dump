@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
+#import "CDTypeParser.h"
 
 @implementation CDOCIvar
 
@@ -20,6 +21,9 @@
     type = [aType retain];
     offset = anOffset;
 
+    hasParsedType = NO;
+    parsedType = nil;
+
     return self;
 }
 
@@ -27,6 +31,8 @@
 {
     [name release];
     [type release];
+
+    [parsedType release];
 
     [super dealloc];
 }
@@ -44,6 +50,22 @@
 - (NSUInteger)offset;
 {
     return offset;
+}
+
+- (CDType *)parsedType;
+{
+    if (hasParsedType == NO) {
+        CDTypeParser *parser;
+        NSError *error;
+
+        parser = [[CDTypeParser alloc] initWithType:type];
+        parsedType = [[parser parseType:&error] retain];
+        [parser release];
+
+        hasParsedType = YES;
+    }
+
+    return parsedType;
 }
 
 - (NSString *)description;

@@ -5,13 +5,16 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDSymbolReferences;
+@class CDClassDump, CDSymbolReferences, CDType;
 
 @interface CDOCIvar : NSObject
 {
     NSString *name;
     NSString *type;
     NSUInteger offset;
+
+    BOOL hasParsedType;
+    CDType *parsedType;
 }
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
@@ -20,6 +23,8 @@
 - (NSString *)name;
 - (NSString *)type;
 - (NSUInteger)offset;
+
+- (CDType *)parsedType;
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
