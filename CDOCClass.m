@@ -55,18 +55,10 @@
 
 - (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
-    CDTypeParser *parser;
-
     [super registerStructuresWithObject:anObject phase:phase];
 
     for (CDOCIvar *ivar in ivars) {
-        CDType *aType;
-        NSError *error;
-
-        parser = [[CDTypeParser alloc] initWithType:[ivar type]];
-        aType = [parser parseType:&error];
-        [aType phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
-        [parser release];
+        [[ivar parsedType] phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
     }
 }
 
