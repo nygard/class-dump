@@ -157,26 +157,11 @@
 
 - (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 {
-    CDTypeParser *parser;
-    NSArray *methodTypes;
-
     for (CDOCMethod *method in methods) {
-        NSError *error;
-
-        parser = [[CDTypeParser alloc] initWithType:[method type]];
-        methodTypes = [parser parseMethodType:&error];
-        if (methodTypes == nil)
-            NSLog(@"Warning: Parsing method types failed, %@, %@", [method name], [error myExplanation]);
-        else
-            [self registerStructuresFromMethodTypes:methodTypes withObject:anObject phase:phase];
-        [parser release];
+        for (CDMethodType *methodType in [method parsedMethodTypes]) {
+            [methodType registerStructuresWithObject:anObject phase:phase];
+        }
     }
-}
-
-- (void)registerStructuresFromMethodTypes:(NSArray *)methodTypes withObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
-{
-    for (CDMethodType *methodType in methodTypes)
-        [methodType registerStructuresWithObject:anObject phase:phase];
 }
 
 - (NSString *)sortableName;
