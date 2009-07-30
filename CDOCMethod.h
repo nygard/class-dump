@@ -12,6 +12,9 @@
     NSString *name;
     NSString *type;
     NSUInteger imp;
+
+    BOOL hasParsedType;
+    NSArray *parsedMethodTypes;
 }
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
@@ -23,6 +26,8 @@
 
 - (NSUInteger)imp;
 - (void)setImp:(NSUInteger)newValue;
+
+- (NSArray *)parsedMethodTypes;
 
 - (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;

@@ -8,6 +8,8 @@
 #import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
+#import "CDTypeParser.h"
+#import "NSError-CDExtensions.h"
 
 @implementation CDOCMethod
 
@@ -36,6 +38,9 @@
     type = [aType retain];
     imp = 0;
 
+    hasParsedType = NO;
+    parsedMethodTypes = nil;
+
     return self;
 }
 
@@ -43,6 +48,8 @@
 {
     [name release];
     [type release];
+
+    [parsedMethodTypes release];
 
     [super dealloc];
 }
@@ -65,6 +72,23 @@
 - (void)setImp:(NSUInteger)newValue;
 {
     imp = newValue;
+}
+
+- (NSArray *)parsedMethodTypes;
+{
+    if (hasParsedType == NO) {
+        CDTypeParser *parser;
+        NSError *error;
+
+        parser = [[CDTypeParser alloc] initWithType:type];
+        parsedMethodTypes = [[parser parseMethodType:&error] retain];
+        if (parsedMethodTypes == nil)
+            NSLog(@"Warning: Parsing method types failed, %@, %@", name, [error myExplanation]);
+        [parser release];
+        hasParsedType = YES;
+    }
+
+    return parsedMethodTypes;
 }
 
 - (NSString *)description;
