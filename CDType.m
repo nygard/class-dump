@@ -529,7 +529,7 @@
     return result;
 }
 
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSUInteger)level;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level;
 {
     NSMutableString *str;
 

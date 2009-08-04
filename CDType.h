@@ -57,7 +57,7 @@
 - (NSString *)bareTypeString;
 - (NSString *)keyTypeString;
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level;
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSUInteger)level;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level;
 
 - (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 - (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
