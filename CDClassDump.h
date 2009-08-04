@@ -113,8 +113,6 @@
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 
-- (void)generateMemberNames;
-
 - (void)showHeader;
 - (void)showLoadCommands;
 
