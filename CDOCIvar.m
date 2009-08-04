@@ -5,7 +5,7 @@
 
 #import "CDOCIvar.h"
 
-#import <Foundation/Foundation.h>
+#import "NSError-CDExtensions.h"
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
