@@ -12,7 +12,7 @@
 #import "CDFatFile.h"
 #import "CDLCDylib.h"
 #import "CDMachOFile.h"
-#import "CDObjectiveC1Processor.h"
+#import "CDObjectiveCProcessor.h"
 #import "CDStructureTable.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
@@ -20,7 +20,6 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDLCSegment.h"
-#import "CDObjectiveC2Processor64.h"
 
 @implementation CDClassDump
 
@@ -244,7 +243,7 @@
 
 - (BOOL)containsObjectiveCData;
 {
-    for (CDObjectiveC1Processor *processor in objcProcessors) {
+    for (CDObjectiveCProcessor *processor in objcProcessors) {
         if ([processor hasObjectiveCData])
             return YES;
     }
@@ -341,7 +340,7 @@
 - (void)processObjectiveCData;
 {
     for (CDMachOFile *machOFile in machOFiles) {
-        CDObjectiveC1Processor *aProcessor;
+        CDObjectiveCProcessor *aProcessor;
 
         aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
@@ -368,7 +367,9 @@
 {
     [self registerPhase:1];
     [self registerPhase:2];
-    [self generateMemberNames];
+
+    [structureTable generateMemberNames];
+    [unionTable generateMemberNames];
 }
 
 - (void)logInfo;
@@ -459,7 +460,7 @@
 
     pool = [[NSAutoreleasePool alloc] init];
 
-    for (CDObjectiveC1Processor *processor in objcProcessors) {
+    for (CDObjectiveCProcessor *processor in objcProcessors) {
         [processor registerStructuresWithObject:self phase:phase];
     }
 
@@ -500,12 +501,6 @@
     }
 
     return NO;
-}
-
-- (void)generateMemberNames;
-{
-    [structureTable generateMemberNames];
-    [unionTable generateMemberNames];
 }
 
 - (void)showHeader;
