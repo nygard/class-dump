@@ -1,0 +1,28 @@
+var 1
+{RetainPtr<const __CFString*>=^{__CFString}}
+
+var
+{My::List<int>}
+
+var
+{My::List<int*>}
+
+var
+{My::List<int*,int*>}
+
+var
+{My::List<My::List<int>*,int>}
+
+// If it's still in the template mode, it adds any identifier after the > to the suffix;
+
+var
+{My::List<My::List<int>*bob,int>}
+
+// And this should fail:
+var
+{My::List<int>*}
+
+// Should this work or not?
+var
+{^My::List<int>}
+

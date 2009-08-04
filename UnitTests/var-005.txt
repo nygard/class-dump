@@ -1,0 +1,4 @@
+// From Safari 4.0.2 on Mac OS X 10.5:
+
+var
+{pair<Safari::SString,WTF::Vector<WTF::RefPtr<Safari::Bookmark>, 0ul>*>}
