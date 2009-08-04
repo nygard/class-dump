@@ -391,9 +391,9 @@
 
     // The replacement type will have member names, while ours don't.
     replacementType = [typeFormatter replacementForType:self];
-    if  (replacementType != nil)
+    if (replacementType != nil) {
         targetMembers = [replacementType members];
-    else
+    } else
         targetMembers = members;
 
     for (CDType *member in targetMembers) {
@@ -738,7 +738,7 @@
 {
     if (type == '{' || type == '(') {
         NSSet *usedNames;
-        int number;
+        unsigned int number;
         NSString *name;
 
         usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
@@ -750,7 +750,7 @@
             // Bitfields don't need a name.
             if ([aMember variableName] == nil && [aMember type] != 'b') {
                 do {
-                    name = [NSString stringWithFormat:@"_field%d", number++];
+                    name = [NSString stringWithFormat:@"_field%u", number++];
                 } while ([usedNames containsObject:name]);
                 [aMember setVariableName:name];
             }
