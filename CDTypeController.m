@@ -126,7 +126,10 @@
 
 - (void)endPhase:(NSUInteger)phase;
 {
-    if (phase == 1) {
+    if (phase == 0) {
+        [structureTable finishPhase0];
+        [unionTable finishPhase0];
+    } else if (phase == 1) {
         [structureTable finishPhase1];
         [unionTable finishPhase1];
     } else if (phase == 2) {

@@ -14,6 +14,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
+#import "NSError-CDExtensions.h"
 
 // Phase 1, registration: Only looks at anonymous (no name, or name is "?") structures
 // Phase 1, finish: - sets up replacementSignatures
@@ -57,7 +58,7 @@
 
     flags.shouldDebug = NO;
 
-    originalTypeStrings = [[NSMutableSet alloc] init];
+    namedStructureTypeStrings = [[NSMutableSet alloc] init];
 
     return self;
 }
@@ -77,7 +78,7 @@
     [replacementSignatures release];
     [keyTypeStringsByBareTypeStrings release];
 
-    [originalTypeStrings release];
+    [namedStructureTypeStrings release];
 
     [super dealloc];
 }
@@ -267,7 +268,9 @@
     return result;
 }
 
-// I just want a list of the top level structures (methods, ivars) from this
+// (old) I just want a list of the top level structures (methods, ivars) from this
+
+// Now I just want a list of the named structures
 - (void)phase0RegisterStructure:(CDType *)aStructure;
 {
     NSString *typeString, *bareTypeString, *keyTypeString;
@@ -282,8 +285,54 @@
     NSLog(@"bareTypeString: %@", bareTypeString);
     NSLog(@"keyTypeString: %@", keyTypeString);
 #endif
-    NSLog(@"%u %@ %@", [aStructure structureDepth], bareTypeString, typeString);
+    //NSLog(@"%u %@ %@", [aStructure structureDepth], bareTypeString, typeString);
+    if ([@"?" isEqualToString:[[aStructure typeName] description]] == NO) {
+        //NSLog(@"%u %@ %@ %@", [aStructure structureDepth], [aStructure typeName], bareTypeString, typeString);
+        [namedStructureTypeStrings addObject:keyTypeString];
+    }
 }
+
+// The top level structure of each name should have merged names.  Substructure members are unnamed.
+- (void)finishPhase0;
+{
+    NSMutableDictionary *dict;
+    NSArray *strs;
+
+    NSLog(@"======================================================================");
+
+    dict = [NSMutableDictionary dictionary];
+
+    strs = [[namedStructureTypeStrings allObjects] sortedArrayUsingSelector:@selector(compare:)];
+    //NSLog(@"named structs: %@", strs);
+
+    for (NSString *str in strs) {
+        CDTypeParser *parser;
+        NSError *error;
+        CDType *type, *previousType;
+        NSString *key;
+
+        parser = [[CDTypeParser alloc] initWithType:str];
+        type = [parser parseType:&error];
+        if (type == nil)
+            NSLog(@"Warning: Parsing type in -finishPhase0 failed, %@, %@", str, [error myExplanation]);
+        [parser release];
+
+        key = [[type typeName] description];
+        previousType = [dict objectForKey:key];
+        if (previousType == nil) {
+            [dict setObject:type forKey:key];
+        } else {
+            if ([previousType canMergeTopLevelWithType:type]) {
+                // Well, merge them!  member names AND ID/Object types
+            } else {
+                NSLog(@"Error: Can't merge types for name: %@", key);
+                NSLog(@"old: %@", [previousType typeString]);
+                NSLog(@"new: %@", [type typeString]);
+            }
+        }
+    }
+}
+
 
 // Out of phase one we want any mappings we need, and maybe to know which anonymous structs map ambiguously.
 - (void)phase1RegisterStructure:(CDType *)aStructure;

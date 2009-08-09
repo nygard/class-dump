@@ -37,6 +37,7 @@
 
 - (int)type;
 - (BOOL)isIDType;
+- (BOOL)isPointerToNamedObject;
 
 - (CDType *)subtype;
 - (CDTypeName *)typeName;
@@ -54,9 +55,10 @@
 
 - (NSString *)typeString;
 - (NSString *)bareTypeString;
+- (NSString *)reallyBareTypeString;
 - (NSString *)keyTypeString;
-- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level;
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level;
+- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 
 - (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 - (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
@@ -74,5 +76,7 @@
 
 - (void)generateMemberNames;
 - (NSUInteger)structureDepth;
+
+- (BOOL)canMergeTopLevelWithType:(CDType *)otherType;
 
 @end

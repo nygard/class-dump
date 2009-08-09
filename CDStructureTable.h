@@ -26,7 +26,7 @@
         unsigned int shouldDebug:1;
     } flags;
 
-    NSMutableSet *originalTypeStrings;
+    NSMutableSet *namedStructureTypeStrings; // Key types, so only names at the top level
 }
 
 - (id)init;
@@ -60,6 +60,8 @@
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
 - (void)phase0RegisterStructure:(CDType *)aStructure;
+- (void)finishPhase0;
+
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod
                 countReferences:(BOOL)shouldCountReferences;

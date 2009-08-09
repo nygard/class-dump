@@ -179,6 +179,11 @@
     return type == '@' && typeName == nil;
 }
 
+- (BOOL)isPointerToNamedObject;
+{
+    return type == '^' && [subtype type] == T_NAMED_OBJECT;
+}
+
 - (CDType *)subtype;
 {
     return subtype;
@@ -449,28 +454,36 @@
 
 - (NSString *)typeString;
 {
-    return [self _typeStringWithVariableNamesToLevel:1e6];
+    return [self _typeStringWithVariableNamesToLevel:1e6 showObjectTypes:YES];
 }
 
 - (NSString *)bareTypeString;
 {
-    return [self _typeStringWithVariableNamesToLevel:0];
+    return [self _typeStringWithVariableNamesToLevel:0 showObjectTypes:YES];
+}
+
+- (NSString *)reallyBareTypeString;
+{
+    return [self _typeStringWithVariableNamesToLevel:0 showObjectTypes:NO];
 }
 
 - (NSString *)keyTypeString;
 {
     // use variable names at top level
-    return [self _typeStringWithVariableNamesToLevel:1];
+    return [self _typeStringWithVariableNamesToLevel:1 showObjectTypes:YES];
 }
 
-- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level;
+- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 {
     NSString *result;
 
     switch (type) {
       case T_NAMED_OBJECT:
           assert(typeName != nil);
-          result = [NSString stringWithFormat:@"@\"%@\"", typeName];
+          if (shouldShowObjectTypes)
+              result = [NSString stringWithFormat:@"@\"%@\"", typeName];
+          else
+              result = @"@";
           break;
 
       case '@':
@@ -482,34 +495,34 @@
           break;
 
       case '[':
-          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level]];
+          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           break;
 
       case '(':
           if (typeName == nil) {
-              return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNamesToLevel:level]];
+              return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           } else if ([members count] == 0) {
               return [NSString stringWithFormat:@"(%@)", typeName];
           } else {
-              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level]];
+              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           }
           break;
 
       case '{':
           if (typeName == nil) {
-              return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNamesToLevel:level]];
+              return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           } else if ([members count] == 0) {
               return [NSString stringWithFormat:@"{%@}", typeName];
           } else {
-              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level]];
+              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           }
           break;
 
       case '^':
           if ([subtype type] == T_NAMED_OBJECT)
-              result = [subtype _typeStringWithVariableNamesToLevel:level];
+              result = [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes];
           else
-              result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level]];
+              result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           break;
 
       case 'r':
@@ -519,7 +532,7 @@
       case 'O':
       case 'R':
       case 'V':
-          result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNamesToLevel:level]];
+          result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           break;
 
       default:
@@ -530,7 +543,7 @@
     return result;
 }
 
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 {
     NSMutableString *str;
 
@@ -540,7 +553,7 @@
     for (CDType *aMember in members) {
         if ([aMember variableName] != nil && level > 0)
             [str appendFormat:@"\"%@\"", [aMember variableName]];
-        [str appendString:[aMember _typeStringWithVariableNamesToLevel:level - 1]];
+        [str appendString:[aMember _typeStringWithVariableNamesToLevel:level - 1 showObjectTypes:shouldShowObjectTypes]];
     }
 
     return str;
@@ -548,23 +561,33 @@
 
 - (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 {
-    if (phase == 0)
+    if (phase == 0) {
         [self phase0RegisterStructuresWithObject:typeController];
-    else if (phase == 1)
+    } else if (phase == 1)
         [self phase1RegisterStructuresWithObject:typeController];
     else if (phase == 2)
         [self phase2RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod countReferences:YES];
 }
 
+// Recursively go through type, registering structs/unions.  Looking for list of named structs to begin with.
 - (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
 {
+#if 0
+    if ([self structureDepth] > 0)
+        NSLog(@"%u %@", [self structureDepth], [self typeString]);
+#endif
+
+#if 1
     // ^{ComponentInstanceRecord=}
     if (subtype != nil)
         [subtype phase0RegisterStructuresWithObject:typeController];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
         [typeController phase0RegisterStructure:self];
+        for (CDType *member in members)
+            [member phase0RegisterStructuresWithObject:typeController];
     }
+#endif
 }
 
 - (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
@@ -794,6 +817,76 @@
     }
 
     return 0;
+}
+
+- (BOOL)canMergeTopLevelWithType:(CDType *)otherType;
+{
+    NSUInteger index;
+    NSUInteger thisCount, otherCount;
+    NSArray *otherMembers;
+
+    if ([self type] != [otherType type])
+        return NO;
+
+    if ([self type] != '{' && [self type] != '(')
+        return NO;
+
+    NSParameterAssert(subtype == nil);
+    NSParameterAssert([otherType subtype] == nil);
+
+    otherMembers = [otherType members];
+    thisCount = [members count];
+    otherCount = [otherMembers count];
+
+    //NSLog(@"members: %p", members);
+    //NSLog(@"otherMembers: %p", otherMembers);
+    //NSLog(@"%s, thisCount: %u, otherCount: %u", _cmd, thisCount, otherCount);
+
+    // count == 0 is ok: we just have a name in that case.
+    if (thisCount == 0 || otherCount == 0)
+        return YES;
+
+    if (thisCount != otherCount)
+        return NO;
+
+    for (index = 0; index < thisCount; index++) {
+        CDType *thisMember, *otherMember;
+        CDTypeName *thisTypeName, *otherTypeName;
+        NSString *thisVariableName, *otherVariableName;
+
+        thisMember = [members objectAtIndex:index];
+        otherMember = [otherMembers objectAtIndex:index];
+
+        //NSLog(@"types, this vs other: %u %u", [thisMember type], [otherMember type]);
+
+        if ([thisMember isIDType] && [otherMember isPointerToNamedObject]) {
+            NSLog(@"Treating %@ and %@ as close enough", [thisMember typeString], [otherMember typeString]);
+            continue;
+        }
+
+        if ([thisMember isPointerToNamedObject] && [otherMember isIDType]) {
+            NSLog(@"Treating %@ and %@ as close enough", [thisMember typeString], [otherMember typeString]);
+            continue;
+        }
+
+        thisTypeName = [thisMember typeName];
+        otherTypeName = [otherMember typeName];
+        thisVariableName = [thisMember variableName];
+        otherVariableName = [otherMember variableName];
+
+        // It seems to be okay if one of them didn't have a name
+        //NSLog(@"%2u: first: %@", index, [thisMember typeString]);
+        //NSLog(@"%2u: second: %@", index, [otherMember typeString]);
+        //NSLog(@"%2u: comparing type name %p to %p", index, thisTypeName, otherTypeName);
+        //NSLog(@"%2u: comparing type name %@ to %@", index, thisTypeName, otherTypeName);
+        if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
+            return NO;
+
+        if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO)
+            return NO;
+    }
+
+    return YES;
 }
 
 @end
