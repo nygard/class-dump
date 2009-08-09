@@ -394,7 +394,6 @@
 		012E2AEF08AE9D04003E99F8 /* CDOCSymtab.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDOCSymtab.m; sourceTree = "<group>"; };
 		012E2AFE08AE9D3A003E99F8 /* CDMethodType.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDMethodType.h; sourceTree = "<group>"; };
 		012E2AFF08AE9D3A003E99F8 /* CDMethodType.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDMethodType.m; sourceTree = "<group>"; };
-		012E2B0008AE9D3A003E99F8 /* CDStructureRegistrationProtocol.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDStructureRegistrationProtocol.h; sourceTree = "<group>"; };
 		012E2B0108AE9D3A003E99F8 /* CDType.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDType.h; sourceTree = "<group>"; };
 		012E2B0208AE9D3A003E99F8 /* CDType.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = CDType.m; sourceTree = "<group>"; };
 		012E2B0308AE9D3A003E99F8 /* CDTypeFormatter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = CDTypeFormatter.h; sourceTree = "<group>"; };
@@ -691,7 +690,6 @@
 			children = (
 				012E2AFE08AE9D3A003E99F8 /* CDMethodType.h */,
 				012E2AFF08AE9D3A003E99F8 /* CDMethodType.m */,
-				012E2B0008AE9D3A003E99F8 /* CDStructureRegistrationProtocol.h */,
 				012E2B0108AE9D3A003E99F8 /* CDType.h */,
 				012E2B0208AE9D3A003E99F8 /* CDType.m */,
 				012E2B0308AE9D3A003E99F8 /* CDTypeFormatter.h */,

@@ -5,9 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CDStructureRegistrationProtocol.h"
-
-@class CDClassDump, CDType, CDSymbolReferences, CDTypeFormatter;
+@class CDClassDump, CDType, CDSymbolReferences, CDTypeController, CDTypeFormatter;
 
 @interface CDStructureTable : NSObject
 {
@@ -58,7 +56,7 @@
 
 - (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
+- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod
                 countReferences:(BOOL)shouldCountReferences;
 
 - (void)generateMemberNames;

@@ -5,11 +5,9 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CDStructureRegistrationProtocol.h"
-
 @class CDClassDump, CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
 
-@interface CDTypeController : NSObject <CDStructureRegistration>
+@interface CDTypeController : NSObject
 {
     CDClassDump *classDump; // passed during formatting, to get at options.
 
@@ -42,7 +40,6 @@
 
 - (void)generateMemberNames;
 
-// CDStructureRegistration Protocol
 - (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;

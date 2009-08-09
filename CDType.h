@@ -4,9 +4,8 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2009 Steve Nygard.
 
 #import <Foundation/Foundation.h>
-#import "CDStructureRegistrationProtocol.h"
 
-@class CDSymbolReferences, CDTypeFormatter, CDTypeName;
+@class CDSymbolReferences, CDTypeController, CDTypeFormatter, CDTypeName;
 
 @interface CDType : NSObject
 {
@@ -59,10 +58,10 @@
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level;
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level;
 
-- (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
-- (void)phase0RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
-- (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
-- (void)phase2RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
+- (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
+- (void)phase2RegisterStructuresWithObject:(CDTypeController *)typeController
                               usedInMethod:(BOOL)isUsedInMethod
                            countReferences:(BOOL)shouldCountReferences;
 

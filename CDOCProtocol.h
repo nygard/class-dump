@@ -5,9 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CDStructureRegistrationProtocol.h"
-
-@class CDClassDump, CDSymbolReferences;
+@class CDClassDump, CDSymbolReferences, CDTypeController;
 @class CDVisitor;
 @class CDOCMethod, CDOCProperty;
 
@@ -52,8 +50,8 @@
 - (BOOL)hasMethods;
 
 - (NSString *)description;
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
-- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
+- (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
+- (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 
 - (NSString *)sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;

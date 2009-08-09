@@ -5,9 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CDStructureRegistrationProtocol.h"
-
-@class CDClassDump, CDMachOFile;
+@class CDClassDump, CDMachOFile, CDTypeController;
 @class CDVisitor;
 
 @interface CDObjectiveCProcessor : NSObject
@@ -35,7 +33,7 @@
 - (void)loadClasses;
 - (void)loadCategories;
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
+- (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 - (void)createUniquedProtocols;

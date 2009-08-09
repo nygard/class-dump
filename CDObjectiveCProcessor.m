@@ -13,6 +13,7 @@
 #import "CDLCDynamicSymbolTable.h"
 #import "CDLCSymbolTable.h"
 #import "CDOCProtocol.h"
+#import "CDTypeController.h"
 
 // Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
 
@@ -83,16 +84,16 @@
 }
 
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
+- (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
     for (CDOCClass *aClass in classes)
-        [aClass registerStructuresWithObject:anObject phase:phase];
+        [aClass registerTypesWithObject:typeController phase:phase];
 
     for (CDOCCategory *category in categories)
-        [category registerStructuresWithObject:anObject phase:phase];
+        [category registerTypesWithObject:typeController phase:phase];
 
     for (NSString *name in [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)])
-        [[protocolsByName objectForKey:name] registerStructuresWithObject:anObject phase:phase];
+        [[protocolsByName objectForKey:name] registerTypesWithObject:typeController phase:phase];
 }
 
 - (NSString *)description;

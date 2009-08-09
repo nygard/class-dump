@@ -17,6 +17,7 @@
 #import "CDOCProperty.h"
 #import "CDMethodType.h"
 #import "CDType.h"
+#import "CDTypeController.h"
 
 @implementation CDOCProtocol
 
@@ -148,20 +149,20 @@
                      NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
+- (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
-    [self registerStructuresFromMethods:classMethods withObject:anObject phase:phase];
-    [self registerStructuresFromMethods:instanceMethods withObject:anObject phase:phase];
+    [self registerTypesFromMethods:classMethods withObject:typeController phase:phase];
+    [self registerTypesFromMethods:instanceMethods withObject:typeController phase:phase];
 
-    [self registerStructuresFromMethods:optionalClassMethods withObject:anObject phase:phase];
-    [self registerStructuresFromMethods:optionalInstanceMethods withObject:anObject phase:phase];
+    [self registerTypesFromMethods:optionalClassMethods withObject:typeController phase:phase];
+    [self registerTypesFromMethods:optionalInstanceMethods withObject:typeController phase:phase];
 }
 
-- (void)registerStructuresFromMethods:(NSArray *)methods withObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
+- (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
     for (CDOCMethod *method in methods) {
         for (CDMethodType *methodType in [method parsedMethodTypes]) {
-            [[methodType type] phase:phase registerStructuresWithObject:anObject usedInMethod:YES];
+            [[methodType type] phase:phase registerTypesWithObject:typeController usedInMethod:YES];
         }
     }
 }

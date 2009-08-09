@@ -9,6 +9,7 @@
 #import "NSArray-Extensions.h"
 #import "NSString-Extensions.h"
 #import "CDSymbolReferences.h"
+#import "CDTypeController.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
@@ -545,55 +546,55 @@
     return str;
 }
 
-- (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 {
     if (phase == 0)
-        [self phase0RegisterStructuresWithObject:anObject];
+        [self phase0RegisterStructuresWithObject:typeController];
     else if (phase == 1)
-        [self phase1RegisterStructuresWithObject:anObject];
+        [self phase1RegisterStructuresWithObject:typeController];
     else if (phase == 2)
-        [self phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:YES];
+        [self phase2RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod countReferences:YES];
 }
 
-- (void)phase0RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
 {
     // ^{ComponentInstanceRecord=}
     if (subtype != nil)
-        [subtype phase0RegisterStructuresWithObject:anObject];
+        [subtype phase0RegisterStructuresWithObject:typeController];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        [anObject phase0RegisterStructure:self];
+        [typeController phase0RegisterStructure:self];
     }
 }
 
-- (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
+- (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
 {
     if (subtype != nil)
-        [subtype phase1RegisterStructuresWithObject:anObject];
+        [subtype phase1RegisterStructuresWithObject:typeController];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        [anObject phase1RegisterStructure:self];
+        [typeController phase1RegisterStructure:self];
         for (CDType *member in members)
-            [member phase1RegisterStructuresWithObject:anObject];
+            [member phase1RegisterStructuresWithObject:typeController];
     }
 }
 
-- (void)phase2RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject
+- (void)phase2RegisterStructuresWithObject:(CDTypeController *)typeController
                               usedInMethod:(BOOL)isUsedInMethod
                            countReferences:(BOOL)shouldCountReferences;
 {
     if (subtype != nil)
-        [subtype phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        [subtype phase2RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
 
     if (type == '{' || type == '(') {
         BOOL newFlag;
 
-        newFlag = [anObject phase2RegisterStructure:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
+        newFlag = [typeController phase2RegisterStructure:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
         if (shouldCountReferences == NO)
             newFlag = NO;
 
         for (CDType *member in members)
-            [member phase2RegisterStructuresWithObject:anObject usedInMethod:NO countReferences:newFlag];
+            [member phase2RegisterStructuresWithObject:typeController usedInMethod:NO countReferences:newFlag];
     }
 }
 

@@ -341,13 +341,13 @@
 {
     NSUInteger phase;
 
-    for (phase = 1; phase < 3; phase++) {
+    for (phase = 0; phase < 3; phase++) {
         NSAutoreleasePool *pool;
 
         pool = [[NSAutoreleasePool alloc] init];
 
         for (CDObjectiveCProcessor *processor in objcProcessors) {
-            [processor registerStructuresWithObject:typeController phase:phase];
+            [processor registerTypesWithObject:typeController phase:phase];
         }
 
         [typeController endPhase:phase];

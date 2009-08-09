@@ -12,6 +12,7 @@
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
+#import "CDTypeController.h"
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 
@@ -53,12 +54,12 @@
     ivars = [newIvars retain];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
+- (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
-    [super registerStructuresWithObject:anObject phase:phase];
+    [super registerTypesWithObject:typeController phase:phase];
 
     for (CDOCIvar *ivar in ivars) {
-        [[ivar parsedType] phase:phase registerStructuresWithObject:anObject usedInMethod:NO];
+        [[ivar parsedType] phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
 
