@@ -4,7 +4,6 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2009 Steve Nygard.
 
 #import <Foundation/Foundation.h>
-#import "CDStructureRegistrationProtocol.h"
 
 @class CDClassDump;
 @class CDOCCategory, CDOCClass;
