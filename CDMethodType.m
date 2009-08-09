@@ -44,9 +44,4 @@
     return [NSString stringWithFormat:@"[%@] type: %@, offset: %@", NSStringFromClass([self class]), type, offset];
 }
 
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
-{
-    [type phase:phase registerStructuresWithObject:anObject usedInMethod:YES];
-}
-
 @end

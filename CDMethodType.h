@@ -5,8 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CDStructureRegistrationProtocol.h"
-
 @class CDType;
 
 @interface CDMethodType : NSObject
@@ -22,7 +20,5 @@
 - (NSString *)offset;
 
 - (NSString *)description;
-
-- (void)registerStructuresWithObject:(id <CDStructureRegistration>)anObject phase:(NSUInteger)phase;
 
 @end

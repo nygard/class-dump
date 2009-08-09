@@ -15,6 +15,8 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDOCProperty.h"
+#import "CDMethodType.h"
+#import "CDType.h"
 
 @implementation CDOCProtocol
 
@@ -159,7 +161,7 @@
 {
     for (CDOCMethod *method in methods) {
         for (CDMethodType *methodType in [method parsedMethodTypes]) {
-            [methodType registerStructuresWithObject:anObject phase:phase];
+            [[methodType type] phase:phase registerStructuresWithObject:anObject usedInMethod:YES];
         }
     }
 }
