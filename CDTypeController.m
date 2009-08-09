@@ -21,25 +21,25 @@
     [ivarTypeFormatter setShouldExpand:NO];
     [ivarTypeFormatter setShouldAutoExpand:YES];
     [ivarTypeFormatter setBaseLevel:1];
-    [ivarTypeFormatter setDelegate:self];
+    [ivarTypeFormatter setTypeController:self];
 
     methodTypeFormatter = [[CDTypeFormatter alloc] init];
     [methodTypeFormatter setShouldExpand:NO];
     [methodTypeFormatter setShouldAutoExpand:NO];
     [methodTypeFormatter setBaseLevel:0];
-    [methodTypeFormatter setDelegate:self];
+    [methodTypeFormatter setTypeController:self];
 
     propertyTypeFormatter = [[CDTypeFormatter alloc] init];
     [propertyTypeFormatter setShouldExpand:NO];
     [propertyTypeFormatter setShouldAutoExpand:NO];
     [propertyTypeFormatter setBaseLevel:0];
-    [propertyTypeFormatter setDelegate:self];
+    [propertyTypeFormatter setTypeController:self];
 
     structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
     [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
     [structDeclarationTypeFormatter setShouldAutoExpand:YES];
     [structDeclarationTypeFormatter setBaseLevel:0];
-    [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
+    [structDeclarationTypeFormatter setTypeController:self]; // But need to ignore some things?
 
     structureTable = [[CDStructureTable alloc] init];
     [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];

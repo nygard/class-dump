@@ -16,7 +16,7 @@
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
-#import "CDTypeController.h" // change delegate to type controller
+#import "CDTypeController.h"
 
 static BOOL debug = NO;
 
@@ -27,11 +27,23 @@ static BOOL debug = NO;
     if ([super init] == nil)
         return nil;
 
+    nonretainedTypeController = nil;
+
     flags.shouldExpand = NO;
     flags.shouldAutoExpand = NO;
     flags.shouldShowLexing = debug;
 
     return self;
+}
+
+- (CDTypeController *)typeController;
+{
+    return nonretainedTypeController;
+}
+
+- (void)setTypeController:(CDTypeController *)newTypeController;
+{
+    nonretainedTypeController = newTypeController;
 }
 
 @synthesize baseLevel;
@@ -64,16 +76,6 @@ static BOOL debug = NO;
 - (void)setShouldShowLexing:(BOOL)newFlag;
 {
     flags.shouldShowLexing = newFlag;
-}
-
-- (id)delegate;
-{
-    return nonretainedDelegate;
-}
-
-- (void)setDelegate:(id)newDelegate;
-{
-    nonretainedDelegate = newDelegate;
 }
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
@@ -351,22 +353,16 @@ static BOOL debug = NO;
     return resultString;
 }
 
+// Called from CDType, which gets a formatter but not a type controller.
 - (CDType *)replacementForType:(CDType *)aType;
 {
-    //NSLog(@"[%p] %s, aType: %@", self, _cmd, [aType typeString]);
-    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:replacementForType:)]) {
-        return [nonretainedDelegate typeFormatter:self replacementForType:aType];
-    }
-
-    return nil;
+    return [nonretainedTypeController typeFormatter:self replacementForType:aType];
 }
 
+// Called from CDType, which gets a formatter but not a type controller.
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
-    if ([nonretainedDelegate respondsToSelector:@selector(typeFormatter:typedefNameForStruct:level:)])
-        return [nonretainedDelegate typeFormatter:self typedefNameForStruct:structType level:level];
-
-    return nil;
+    return [nonretainedTypeController typeFormatter:self typedefNameForStruct:structType level:level];
 }
 
 @end

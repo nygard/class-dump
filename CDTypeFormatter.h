@@ -5,10 +5,12 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDSymbolReferences, CDType;
+@class CDSymbolReferences, CDType, CDTypeController;
 
 @interface CDTypeFormatter : NSObject
 {
+    id nonretainedTypeController;
+
     NSUInteger baseLevel;
 
     struct {
@@ -16,9 +18,6 @@
         unsigned int shouldAutoExpand:1;
         unsigned int shouldShowLexing:1;
     } flags;
-
-    // Not ideal
-    id nonretainedDelegate;
 }
 
 @property NSUInteger baseLevel;
@@ -26,8 +25,8 @@
 @property BOOL shouldAutoExpand;
 @property BOOL shouldShowLexing;
 
-- (id)delegate;
-- (void)setDelegate:(id)newDelegate;
+- (CDTypeController *)typeController;
+- (void)setTypeController:(CDTypeController *)newTypeController;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 - (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
