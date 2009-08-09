@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDSymbolReferences;
+@class CDSymbolReferences, CDTypeController;
 
 @interface CDOCMethod : NSObject <NSCopying>
 {
@@ -30,7 +30,7 @@
 - (NSArray *)parsedMethodTypes;
 
 - (NSString *)description;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 

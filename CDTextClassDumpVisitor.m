@@ -19,6 +19,7 @@
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
 #import "CDTypeFormatter.h"
+#import "CDTypeController.h"
 
 static BOOL debug = NO;
 
@@ -134,20 +135,20 @@ static BOOL debug = NO;
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 {
     [resultString appendString:@"+ "];
-    [aMethod appendToString:resultString classDump:classDump symbolReferences:symbolReferences];
+    [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
     [resultString appendString:@"\n"];
 }
 
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
 {
     [resultString appendString:@"- "];
-    [aMethod appendToString:resultString classDump:classDump symbolReferences:symbolReferences];
+    [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
     [resultString appendString:@"\n"];
 }
 
 - (void)visitIvar:(CDOCIvar *)anIvar;
 {
-    [anIvar appendToString:resultString classDump:classDump symbolReferences:symbolReferences];
+    [anIvar appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
     [resultString appendString:@"\n"];
 }
 
@@ -209,7 +210,7 @@ static BOOL debug = NO;
     if (isWeak)
         [resultString appendString:@"__weak "];
 
-    formattedString = [[classDump propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
+    formattedString = [[[classDump typeController] propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
     [resultString appendFormat:@"%@;", formattedString];
 
     if (isDynamic) {

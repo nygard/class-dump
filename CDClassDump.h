@@ -7,7 +7,6 @@
 
 #include <sys/types.h>
 #include <regex.h>
-#import "CDStructureRegistrationProtocol.h"
 #import "CDFile.h" // For CDArch
 
 #ifdef __LP64__
@@ -23,10 +22,10 @@
 #endif
 
 @class CDLCDylib, CDFile, CDMachOFile;
-@class CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
+@class CDSymbolReferences, CDType, CDTypeController, CDTypeFormatter;
 @class CDVisitor;
 
-@interface CDClassDump : NSObject <CDStructureRegistration>
+@interface CDClassDump : NSObject
 {
     NSString *executablePath;
 
@@ -48,13 +47,7 @@
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objcProcessors;
 
-    CDStructureTable *structureTable;
-    CDStructureTable *unionTable;
-
-    CDTypeFormatter *ivarTypeFormatter;
-    CDTypeFormatter *methodTypeFormatter;
-    CDTypeFormatter *propertyTypeFormatter;
-    CDTypeFormatter *structDeclarationTypeFormatter;
+    CDTypeController *typeController;
 
     CDArch targetArch;
 }
@@ -81,13 +74,8 @@
 @property CDArch targetArch;
 
 - (BOOL)containsObjectiveCData;
-- (CDStructureTable *)structureTable;
-- (CDStructureTable *)unionTable;
 
-- (CDTypeFormatter *)ivarTypeFormatter;
-- (CDTypeFormatter *)methodTypeFormatter;
-- (CDTypeFormatter *)propertyTypeFormatter;
-- (CDTypeFormatter *)structDeclarationTypeFormatter;
+- (CDTypeController *)typeController;
 
 - (BOOL)_loadFilename:(NSString *)aFilename;
 - (BOOL)loadFile:(CDFile *)aFile;
@@ -95,24 +83,11 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
-- (void)registerStuff;
-
-- (void)logInfo;
-- (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
-
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
 
-- (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
-- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
-
-- (void)registerPhase:(NSUInteger)phase;
-- (void)endPhase:(NSUInteger)phase;
-
-- (void)phase0RegisterStructure:(CDType *)aStructure;
-- (void)phase1RegisterStructure:(CDType *)aStructure;
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+- (void)registerTypes;
 
 - (void)showHeader;
 - (void)showLoadCommands;

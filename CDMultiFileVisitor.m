@@ -12,6 +12,7 @@
 #import "CDOCClass.h"
 #import "CDOCProtocol.h"
 #import "CDOCIvar.h"
+#import "CDTypeController.h"
 
 @implementation CDMultiFileVisitor
 
@@ -91,7 +92,7 @@
     [symbolReferences removeAllReferences];
     referenceIndex = [resultString length];
 
-    [classDump appendStructuresToString:resultString symbolReferences:symbolReferences];
+    [[classDump typeController] appendStructuresToString:resultString symbolReferences:symbolReferences];
 
     referenceString = [symbolReferences referenceString];
     if (referenceString != nil)

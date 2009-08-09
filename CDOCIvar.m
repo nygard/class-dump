@@ -9,6 +9,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
+#import "CDTypeController.h"
 
 @implementation CDOCIvar
 
@@ -76,15 +77,15 @@
                      NSStringFromClass([self class]), name, type, offset];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *formattedString;
 
-    formattedString = [[aClassDump ivarTypeFormatter] formatVariable:name type:type symbolReferences:symbolReferences];
+    formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type symbolReferences:symbolReferences];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([aClassDump shouldShowIvarOffsets]) {
+        if ([[typeController classDump] shouldShowIvarOffsets]) {
             [resultString appendFormat:@"\t// %d = 0x%x", offset, offset];
         }
     } else

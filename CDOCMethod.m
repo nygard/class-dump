@@ -10,6 +10,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 #import "NSError-CDExtensions.h"
+#import "CDTypeController.h"
 
 @implementation CDOCMethod
 
@@ -97,15 +98,15 @@
                      NSStringFromClass([self class]), name, type, imp];
 }
 
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *formattedString;
 
-    formattedString = [[aClassDump methodTypeFormatter] formatMethodName:name type:type symbolReferences:symbolReferences];
+    formattedString = [[typeController methodTypeFormatter] formatMethodName:name type:type symbolReferences:symbolReferences];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([aClassDump shouldShowMethodAddresses] && imp != 0)
+        if ([[typeController classDump] shouldShowMethodAddresses] && imp != 0)
             [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];

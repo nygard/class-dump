@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
 #endif
 
                 [classDump processObjectiveCData];
-                [classDump registerStuff];
+                [classDump registerTypes];
 
                 if (shouldFind) {
                     CDFindMethodVisitor *visitor;

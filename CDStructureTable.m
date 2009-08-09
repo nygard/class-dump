@@ -245,7 +245,7 @@
 
 - (CDType *)replacementForType:(CDType *)aType;
 {
-    return nil;
+    //return nil;
     return [anonymousStructuresByType objectForKey:[replacementSignatures objectForKey:[aType keyTypeString]]];
 }
 
@@ -258,7 +258,7 @@
         NSLog(@"[%p] %s, %@ -> %@", self, _cmd, [aType keyTypeString], result);
     }
 
-    return nil;
+    //return nil;
     return result;
 }
 

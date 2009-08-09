@@ -17,6 +17,7 @@
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
+#import "CDTypeController.h"
 
 @implementation CDClassDumpVisitor
 
@@ -27,7 +28,7 @@
     [classDump appendHeaderToString:resultString];
 
     if ([classDump containsObjectiveCData]) {
-        [classDump appendStructuresToString:resultString symbolReferences:nil];
+        [[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
     } else {
         [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];

@@ -16,6 +16,7 @@
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
+#import "CDTypeController.h" // change delegate to type controller
 
 static BOOL debug = NO;
 

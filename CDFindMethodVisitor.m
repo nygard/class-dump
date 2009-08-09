@@ -14,6 +14,7 @@
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDOCMethod.h"
+#import "CDTypeController.h"
 
 @implementation CDFindMethodVisitor
 
@@ -78,7 +79,7 @@
     [classDump appendHeaderToString:resultString];
 
     if ([classDump containsObjectiveCData]) {
-        //[classDump appendStructuresToString:resultString symbolReferences:nil];
+        //[[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
     } else {
         [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];
@@ -148,7 +149,7 @@
         [self showContextIfNecessary];
 
         [resultString appendString:@"+ "];
-        [aMethod appendToString:resultString classDump:classDump symbolReferences:nil];
+        [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }
@@ -162,7 +163,7 @@
         [self showContextIfNecessary];
 
         [resultString appendString:@"- "];
-        [aMethod appendToString:resultString classDump:classDump symbolReferences:nil];
+        [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }

@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDSymbolReferences, CDType;
+@class CDSymbolReferences, CDType, CDTypeController;
 
 @interface CDOCIvar : NSObject
 {
@@ -27,6 +27,6 @@
 - (CDType *)parsedType;
 
 - (NSString *)description;
-- (void)appendToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 @end

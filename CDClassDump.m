@@ -20,6 +20,7 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDLCSegment.h"
+#import "CDTypeController.h"
 
 @implementation CDClassDump
 
@@ -34,37 +35,7 @@
     machOFilesByID = [[NSMutableDictionary alloc] init];
     objcProcessors = [[NSMutableArray alloc] init];
 
-    structureTable = [[CDStructureTable alloc] init];
-    [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
-    [structureTable setIdentifier:@"Structs"];
-
-    unionTable = [[CDStructureTable alloc] init];
-    [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
-    [unionTable setIdentifier:@"Unions"];
-
-    ivarTypeFormatter = [[CDTypeFormatter alloc] init];
-    [ivarTypeFormatter setShouldExpand:NO];
-    [ivarTypeFormatter setShouldAutoExpand:YES];
-    [ivarTypeFormatter setBaseLevel:1];
-    [ivarTypeFormatter setDelegate:self];
-
-    methodTypeFormatter = [[CDTypeFormatter alloc] init];
-    [methodTypeFormatter setShouldExpand:NO];
-    [methodTypeFormatter setShouldAutoExpand:NO];
-    [methodTypeFormatter setBaseLevel:0];
-    [methodTypeFormatter setDelegate:self];
-
-    propertyTypeFormatter = [[CDTypeFormatter alloc] init];
-    [propertyTypeFormatter setShouldExpand:NO];
-    [propertyTypeFormatter setShouldAutoExpand:NO];
-    [propertyTypeFormatter setBaseLevel:0];
-    [propertyTypeFormatter setDelegate:self];
-
-    structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
-    [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
-    [structDeclarationTypeFormatter setShouldAutoExpand:YES];
-    [structDeclarationTypeFormatter setBaseLevel:0];
-    [structDeclarationTypeFormatter setDelegate:self]; // But need to ignore some things?
+    typeController = [[CDTypeController alloc] init];
 
     // These can be ppc, ppc7400, ppc64, i386, x86_64
     targetArch.cputype = CPU_TYPE_ANY;
@@ -83,13 +54,7 @@
     [machOFilesByID release];
     [objcProcessors release];
 
-    [structureTable release];
-    [unionTable release];
-
-    [ivarTypeFormatter release];
-    [methodTypeFormatter release];
-    [propertyTypeFormatter release];
-    [structDeclarationTypeFormatter release];
+    [typeController release];
 
     if (flags.shouldMatchRegex)
         regfree(&compiledRegex);
@@ -251,34 +216,9 @@
     return NO;
 }
 
-- (CDStructureTable *)structureTable;
+- (CDTypeController *)typeController;
 {
-    return structureTable;
-}
-
-- (CDStructureTable *)unionTable;
-{
-    return unionTable;
-}
-
-- (CDTypeFormatter *)ivarTypeFormatter;
-{
-    return ivarTypeFormatter;
-}
-
-- (CDTypeFormatter *)methodTypeFormatter;
-{
-    return methodTypeFormatter;
-}
-
-- (CDTypeFormatter *)propertyTypeFormatter;
-{
-    return propertyTypeFormatter;
-}
-
-- (CDTypeFormatter *)structDeclarationTypeFormatter;
-{
-    return structDeclarationTypeFormatter;
+    return typeController;
 }
 
 // Return YES if successful, NO if there was an error.
@@ -363,31 +303,6 @@
     [aVisitor didEndVisiting];
 }
 
-- (void)registerStuff;
-{
-    [self registerPhase:0];
-    [self registerPhase:1];
-    [self registerPhase:2];
-
-    [structureTable generateMemberNames];
-    [unionTable generateMemberNames];
-}
-
-- (void)logInfo;
-{
-    [structureTable logInfo];
-    [unionTable logInfo];
-}
-
-- (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
-{
-    [structureTable appendNamedStructuresToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [structureTable appendTypedefsToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-
-    [unionTable appendNamedStructuresToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [unionTable appendTypedefsToString:resultString classDump:self formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-}
-
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 {
     NSString *adjustedID;
@@ -422,97 +337,24 @@
     [resultString appendString:@" */\n\n"];
 }
 
-- (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
+- (void)registerTypes;
 {
-    if ([aType type] == '{')
-        return [structureTable replacementForType:aType];
+    NSUInteger phase;
 
-    if ([aType type] == '(')
-        return [unionTable replacementForType:aType];
+    for (phase = 1; phase < 3; phase++) {
+        NSAutoreleasePool *pool;
 
-    return nil;
-}
+        pool = [[NSAutoreleasePool alloc] init];
 
-- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
-{
-    CDType *searchType;
-    CDStructureTable *targetTable;
+        for (CDObjectiveCProcessor *processor in objcProcessors) {
+            [processor registerStructuresWithObject:typeController phase:phase];
+        }
 
-    if (level == 0 && aFormatter == structDeclarationTypeFormatter)
-        return nil;
-
-    if ([structType type] == '{') {
-        targetTable = structureTable;
-    } else {
-        targetTable = unionTable;
+        [typeController endPhase:phase];
+        [pool release];
     }
 
-    // We need to catch top level replacements, not just replacements for struct members.
-    searchType = [targetTable replacementForType:structType];
-    if (searchType == nil)
-        searchType = structType;
-
-    return [targetTable typedefNameForStructureType:searchType];
-}
-
-- (void)registerPhase:(NSUInteger)phase;
-{
-    NSAutoreleasePool *pool;
-
-    pool = [[NSAutoreleasePool alloc] init];
-
-    for (CDObjectiveCProcessor *processor in objcProcessors) {
-        [processor registerStructuresWithObject:self phase:phase];
-    }
-
-    [self endPhase:phase];
-    [pool release];
-}
-
-- (void)endPhase:(NSUInteger)phase;
-{
-    if (phase == 1) {
-        [structureTable finishPhase1];
-        [unionTable finishPhase1];
-    } else if (phase == 2) {
-        [structureTable generateNamesForAnonymousStructures];
-        [unionTable generateNamesForAnonymousStructures];
-    }
-}
-
-- (void)phase0RegisterStructure:(CDType *)aStructure;
-{
-    if ([aStructure type] == '{') {
-        [structureTable phase0RegisterStructure:aStructure];
-    } else if ([aStructure type] == '(') {
-        [unionTable phase0RegisterStructure:aStructure];
-    } else {
-        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
-    }
-}
-
-- (void)phase1RegisterStructure:(CDType *)aStructure;
-{
-    if ([aStructure type] == '{') {
-        [structureTable phase1RegisterStructure:aStructure];
-    } else if ([aStructure type] == '(') {
-        [unionTable phase1RegisterStructure:aStructure];
-    } else {
-        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
-    }
-}
-
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
-{
-    if ([aStructure type] == '{') {
-        return [structureTable phase2RegisterStructure:aStructure withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else if ([aStructure type] == '(') {
-        return [unionTable phase2RegisterStructure:aStructure withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else {
-        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
-    }
-
-    return NO;
+    [typeController generateMemberNames];
 }
 
 - (void)showHeader;
