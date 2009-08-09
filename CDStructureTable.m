@@ -10,6 +10,7 @@
 #import "CDClassDump.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
+#import "CDTypeController.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
@@ -199,41 +200,45 @@
 // TODO (2003-12-23): sort by name or by dependency
 // TODO (2003-12-23): declare in modules where they were first used
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString
+                            formatter:(CDTypeFormatter *)aTypeFormatter
+                     symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     for (NSString *key in [[structuresByName allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDType *type;
-        NSString *formattedString;
 
         type = [structuresByName objectForKey:key];
 
-        if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:[[type typeName] description]] == NO)
-            continue;
+        if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
+            NSString *formattedString;
 
-        formattedString = [aTypeFormatter formatVariable:nil type:[type typeString] symbolReferences:symbolReferences];
-        if (formattedString != nil) {
-            [resultString appendString:formattedString];
-            [resultString appendString:@";\n\n"];
+            formattedString = [aTypeFormatter formatVariable:nil type:[type typeString] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                [resultString appendString:formattedString];
+                [resultString appendString:@";\n\n"];
+            }
         }
     }
 }
 
-- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendTypedefsToString:(NSMutableString *)resultString
+                     formatter:(CDTypeFormatter *)aTypeFormatter
+              symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     // TODO (2009-07-27): Why aren't these sorted?
     for (NSString *key in [anonymousStructureNamesByType allKeys]) {
-        NSString *typeString, *formattedString, *name;
+        NSString *name;
 
         name = [anonymousStructureNamesByType objectForKey:key];
 
-        if ([aClassDump shouldMatchRegex] && [aClassDump regexMatchesString:name] == NO)
-            continue;
+        if ([[aTypeFormatter typeController] shouldShowName:name]) {
+            NSString *typeString, *formattedString;
 
-        typeString = [[anonymousStructuresByType objectForKey:key] typeString];
-
-        formattedString = [aTypeFormatter formatVariable:nil type:typeString symbolReferences:symbolReferences];
-        if (formattedString != nil) {
-            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, name];
+            typeString = [[anonymousStructuresByType objectForKey:key] typeString];
+            formattedString = [aTypeFormatter formatVariable:nil type:typeString symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, name];
+            }
         }
     }
 }

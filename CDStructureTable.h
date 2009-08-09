@@ -47,8 +47,13 @@
 
 - (void)generateNamesForAnonymousStructures;
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (void)appendTypedefsToString:(NSMutableString *)resultString classDump:(CDClassDump *)aClassDump formatter:(CDTypeFormatter *)aTypeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString
+                            formatter:(CDTypeFormatter *)aTypeFormatter
+                     symbolReferences:(CDSymbolReferences *)symbolReferences;
+
+- (void)appendTypedefsToString:(NSMutableString *)resultString
+                     formatter:(CDTypeFormatter *)aTypeFormatter
+              symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (void)forceTypedefForStructure:(NSString *)typeString;
 - (CDType *)replacementForType:(CDType *)aType;

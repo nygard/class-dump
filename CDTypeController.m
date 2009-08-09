@@ -143,11 +143,11 @@
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    [structureTable appendNamedStructuresToString:resultString classDump:classDump formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [structureTable appendTypedefsToString:resultString classDump:classDump formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 
-    [unionTable appendNamedStructuresToString:resultString classDump:classDump formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [unionTable appendTypedefsToString:resultString classDump:classDump formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 }
 
 - (void)generateMemberNames;
@@ -193,6 +193,11 @@
     }
 
     return NO;
+}
+
+- (BOOL)shouldShowName:(NSString *)name;
+{
+    return ([classDump shouldMatchRegex] == NO) || [classDump regexMatchesString:name];
 }
 
 @end
