@@ -60,6 +60,7 @@
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level;
 
 - (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase0RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
 - (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
 - (void)phase2RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject
                               usedInMethod:(BOOL)isUsedInMethod
@@ -73,5 +74,6 @@
 - (void)mergeWithType:(CDType *)otherType;
 
 - (void)generateMemberNames;
+- (NSUInteger)structureDepth;
 
 @end

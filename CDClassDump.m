@@ -365,6 +365,7 @@
 
 - (void)registerStuff;
 {
+    [self registerPhase:0];
     [self registerPhase:1];
     [self registerPhase:2];
 
@@ -476,6 +477,17 @@
     } else if (phase == 2) {
         [structureTable generateNamesForAnonymousStructures];
         [unionTable generateNamesForAnonymousStructures];
+    }
+}
+
+- (void)phase0RegisterStructure:(CDType *)aStructure;
+{
+    if ([aStructure type] == '{') {
+        [structureTable phase0RegisterStructure:aStructure];
+    } else if ([aStructure type] == '(') {
+        [unionTable phase0RegisterStructure:aStructure];
+    } else {
+        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
     }
 }
 

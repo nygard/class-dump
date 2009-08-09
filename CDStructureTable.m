@@ -28,6 +28,10 @@
 
 // In a marvel of efficiency, it looks like we parse every type _three_ times!
 
+// Phase 0: Try sorting by structure nesting level
+
+// - need to find structure member names.
+// - Types used in methods need to be declared at the top level.
 
 
 @implementation CDStructureTable
@@ -52,6 +56,8 @@
 
     flags.shouldDebug = NO;
 
+    originalTypeStrings = [[NSMutableSet alloc] init];
+
     return self;
 }
 
@@ -69,6 +75,8 @@
 
     [replacementSignatures release];
     [keyTypeStringsByBareTypeStrings release];
+
+    [originalTypeStrings release];
 
     [super dealloc];
 }
@@ -237,6 +245,7 @@
 
 - (CDType *)replacementForType:(CDType *)aType;
 {
+    return nil;
     return [anonymousStructuresByType objectForKey:[replacementSignatures objectForKey:[aType keyTypeString]]];
 }
 
@@ -249,7 +258,26 @@
         NSLog(@"[%p] %s, %@ -> %@", self, _cmd, [aType keyTypeString], result);
     }
 
+    return nil;
     return result;
+}
+
+// I just want a list of the top level structures (methods, ivars) from this
+- (void)phase0RegisterStructure:(CDType *)aStructure;
+{
+    NSString *typeString, *bareTypeString, *keyTypeString;
+
+    //NSLog(@"%s", _cmd);
+    typeString = [aStructure typeString];
+    bareTypeString = [aStructure bareTypeString];
+    keyTypeString = [aStructure keyTypeString];
+#if 0
+    NSLog(@"--------------------");
+    NSLog(@"typeString: %@", typeString);
+    NSLog(@"bareTypeString: %@", bareTypeString);
+    NSLog(@"keyTypeString: %@", keyTypeString);
+#endif
+    NSLog(@"%u %@ %@", [aStructure structureDepth], bareTypeString, typeString);
 }
 
 // Out of phase one we want any mappings we need, and maybe to know which anonymous structs map ambiguously.

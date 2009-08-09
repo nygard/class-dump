@@ -110,6 +110,7 @@
 - (void)registerPhase:(NSUInteger)phase;
 - (void)endPhase:(NSUInteger)phase;
 
+- (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 

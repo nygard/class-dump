@@ -547,10 +547,23 @@
 
 - (void)phase:(NSUInteger)phase registerStructuresWithObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod;
 {
-    if (phase == 1)
+    if (phase == 0)
+        [self phase0RegisterStructuresWithObject:anObject];
+    else if (phase == 1)
         [self phase1RegisterStructuresWithObject:anObject];
     else if (phase == 2)
         [self phase2RegisterStructuresWithObject:anObject usedInMethod:isUsedInMethod countReferences:YES];
+}
+
+- (void)phase0RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
+{
+    // ^{ComponentInstanceRecord=}
+    if (subtype != nil)
+        [subtype phase0RegisterStructuresWithObject:anObject];
+
+    if ((type == '{' || type == '(') && [members count] > 0) {
+        [anObject phase0RegisterStructure:self];
+    }
 }
 
 - (void)phase1RegisterStructuresWithObject:(id <CDStructureRegistration>)anObject;
@@ -761,6 +774,25 @@
     }
 
     [subtype generateMemberNames];
+}
+
+- (NSUInteger)structureDepth;
+{
+    if (subtype != nil)
+        return [subtype structureDepth];
+
+    if (type == '{' || type == '(') {
+        NSUInteger maxDepth = 0;
+
+        for (CDType *member in members) {
+            if (maxDepth < [member structureDepth])
+                maxDepth = [member structureDepth];
+        }
+
+        return maxDepth + 1;
+    }
+
+    return 0;
 }
 
 @end

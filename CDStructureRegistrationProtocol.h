@@ -6,6 +6,7 @@
 @class CDType;
 
 @protocol CDStructureRegistration
+- (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
 @end

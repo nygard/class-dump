@@ -27,6 +27,8 @@
     struct {
         unsigned int shouldDebug:1;
     } flags;
+
+    NSMutableSet *originalTypeStrings;
 }
 
 - (id)init;
@@ -54,6 +56,7 @@
 - (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
+- (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(id <CDStructureRegistration>)anObject usedInMethod:(BOOL)isUsedInMethod
                 countReferences:(BOOL)shouldCountReferences;
