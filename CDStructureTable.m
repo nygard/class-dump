@@ -59,6 +59,8 @@
     flags.shouldDebug = NO;
 
     namedStructureTypeStrings = [[NSMutableSet alloc] init];
+    unnamedStructureTypeStrings = [[NSMutableSet alloc] init];
+    foo = [[NSMutableArray alloc] init];
 
     return self;
 }
@@ -79,6 +81,8 @@
     [keyTypeStringsByBareTypeStrings release];
 
     [namedStructureTypeStrings release];
+    [unnamedStructureTypeStrings release];
+    [foo release];
 
     [super dealloc];
 }
@@ -205,10 +209,13 @@
                             formatter:(CDTypeFormatter *)aTypeFormatter
                      symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
+#if 0
     for (NSString *key in [[structuresByName allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDType *type;
 
         type = [structuresByName objectForKey:key];
+#endif
+        for (CDType *type in foo) {
 
         if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
             NSString *formattedString;
@@ -286,7 +293,9 @@
     NSLog(@"keyTypeString: %@", keyTypeString);
 #endif
     //NSLog(@"%u %@ %@", [aStructure structureDepth], bareTypeString, typeString);
-    if ([@"?" isEqualToString:[[aStructure typeName] description]] == NO) {
+    if ([@"?" isEqualToString:[[aStructure typeName] description]]) {
+        [unnamedStructureTypeStrings addObject:keyTypeString];
+    } else {
         //NSLog(@"%u %@ %@ %@", [aStructure structureDepth], [aStructure typeName], bareTypeString, typeString);
         [namedStructureTypeStrings addObject:keyTypeString];
     }
@@ -295,12 +304,84 @@
 // The top level structure of each name should have merged names.  Substructure members are unnamed.
 - (void)finishPhase0;
 {
-    NSMutableDictionary *dict;
+    NSMutableDictionary *dict1, *dict2;
+    NSMutableSet *exceptionNames, *anonExceptionNames;
+    NSMutableArray *exceptionTypes, *anonExceptionTypes;
     NSArray *strs;
 
     NSLog(@"======================================================================");
 
-    dict = [NSMutableDictionary dictionary];
+    dict1 = [NSMutableDictionary dictionary];
+    anonExceptionNames = [NSMutableSet set];
+    anonExceptionTypes = [NSMutableArray array];
+
+    strs = [[unnamedStructureTypeStrings allObjects] sortedArrayUsingSelector:@selector(compare:)];
+    for (NSString *str in strs) {
+        CDTypeParser *parser;
+        NSError *error;
+        CDType *type;
+
+        NSLog(@"unnamed struct type = %@", str);
+
+        parser = [[CDTypeParser alloc] initWithType:str];
+        type = [parser parseType:&error];
+        if (type == nil) {
+            NSLog(@"Warning: Parsing type in -finishPhase0 failed, %@, %@", str, [error myExplanation]);
+        } else {
+            NSString *key;
+
+            key = [type bareTypeString];
+            if ([anonExceptionNames containsObject:key]) {
+                [anonExceptionTypes addObject:type];
+            } else {
+                CDType *previousType;
+
+                previousType = [dict1 objectForKey:key];
+                if (previousType == nil) {
+                    [dict1 setObject:type forKey:key];
+                } else {
+                    NSLog(@"dupe anon types.");
+                    if ([previousType canMergeTopLevelWithType:type]) {
+                        // Well, merge them!  member names AND ID/Object types
+                        [previousType mergeTopLevelWithType:type];
+                    } else {
+                        NSLog(@"Error: Can't merge types for name: %@", key);
+                        NSLog(@"old: %@", [previousType typeString]);
+                        NSLog(@"new: %@", [type typeString]);
+
+                        [anonExceptionNames addObject:key];
+                        [anonExceptionTypes addObject:previousType];
+                        [anonExceptionTypes addObject:type];
+                        [dict1 removeObjectForKey:key];
+                    }
+                }
+            }
+        }
+
+        [parser release];
+    }
+
+    NSLog(@"****************************************");
+    NSLog(@"****************************************");
+    NSLog(@"%u anon exception names, with %u types", [anonExceptionNames count], [anonExceptionTypes count]);
+    NSLog(@"****************************************");
+    for (CDType *type in anonExceptionTypes) {
+        NSLog(@"anon type: %u %@ %@", [type structureDepth], [type bareTypeString], [type typeString]);
+    }
+    NSLog(@"****************************************");
+
+    for (NSString *key in [[dict1 allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDType *type = [dict1 objectForKey:key];
+
+        NSLog(@"anon type: %u %@ %@", [type structureDepth], [type keyTypeString], [type typeString]);
+    }
+    NSLog(@"****************************************");
+    NSLog(@"****************************************");
+
+
+    dict2 = [NSMutableDictionary dictionary];
+    exceptionNames = [NSMutableSet set];
+    exceptionTypes = [NSMutableArray array];
 
     strs = [[namedStructureTypeStrings allObjects] sortedArrayUsingSelector:@selector(compare:)];
     //NSLog(@"named structs: %@", strs);
@@ -308,29 +389,53 @@
     for (NSString *str in strs) {
         CDTypeParser *parser;
         NSError *error;
-        CDType *type, *previousType;
-        NSString *key;
+        CDType *type;
 
         parser = [[CDTypeParser alloc] initWithType:str];
         type = [parser parseType:&error];
-        if (type == nil)
+        if (type == nil) {
             NSLog(@"Warning: Parsing type in -finishPhase0 failed, %@, %@", str, [error myExplanation]);
-        [parser release];
-
-        key = [[type typeName] description];
-        previousType = [dict objectForKey:key];
-        if (previousType == nil) {
-            [dict setObject:type forKey:key];
         } else {
-            if ([previousType canMergeTopLevelWithType:type]) {
-                // Well, merge them!  member names AND ID/Object types
+            NSString *key;
+
+            //[foo addObject:type];
+
+            key = [[type typeName] description];
+            if ([exceptionNames containsObject:key]) {
+                [exceptionTypes addObject:type];
             } else {
-                NSLog(@"Error: Can't merge types for name: %@", key);
-                NSLog(@"old: %@", [previousType typeString]);
-                NSLog(@"new: %@", [type typeString]);
+                CDType *previousType;
+
+                previousType = [dict2 objectForKey:key];
+                if (previousType == nil) {
+                    [dict2 setObject:type forKey:key];
+                } else {
+                    if ([previousType canMergeTopLevelWithType:type]) {
+                        // Well, merge them!  member names AND ID/Object types
+                        [previousType mergeTopLevelWithType:type];
+                    } else {
+                        NSLog(@"Error: Can't merge types for name: %@", key);
+                        NSLog(@"old: %@", [previousType typeString]);
+                        NSLog(@"new: %@", [type typeString]);
+                        // TODO: Build list of exceptions
+                        [exceptionNames addObject:key];
+                        [exceptionTypes addObject:previousType];
+                        [exceptionTypes addObject:type];
+                        [dict2 removeObjectForKey:key];
+                    }
+                }
             }
         }
+        [parser release];
     }
+
+#if 1
+    for (NSString *key in [[dict2 allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        [foo addObject:[dict2 objectForKey:key]];
+    }
+#endif
+
+    NSLog(@"%u exception names, with %u types", [exceptionNames count], [exceptionTypes count]);
 }
 
 

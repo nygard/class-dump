@@ -13,6 +13,8 @@
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
+#import "CDTypeParser.h"
+#import "NSError-CDExtensions.h"
 
 @implementation CDType
 
@@ -92,7 +94,7 @@
 
     type = '{';
     typeName = [aName retain];
-    members = [someMembers retain];
+    members = [[NSMutableArray alloc] initWithArray:someMembers];
 
     return self;
 }
@@ -104,7 +106,7 @@
 
     type = '(';
     typeName = [aName retain];
-    members = [someMembers retain];
+    members = [[NSMutableArray alloc] initWithArray:someMembers];
 
     return self;
 }
@@ -199,6 +201,7 @@
     return members;
 }
 
+#if 0
 - (void)setMembers:(NSArray *)newMembers;
 {
     if (newMembers == members)
@@ -207,6 +210,7 @@
     [members release];
     members = [newMembers retain];
 }
+#endif
 
 - (BOOL)isModifierType;
 {
@@ -730,7 +734,10 @@
     if (otherCount == 0) {
         return;
     } else if (count == 0 && otherCount != 0) {
-        [self setMembers:otherMembers];
+        NSParameterAssert(members != nil);
+        [members removeAllObjects];
+        [members addObjectsFromArray:otherMembers];
+        //[self setMembers:otherMembers];
     } else if (count != otherCount) {
         // Not so bad after all.  Even kind of common.  Consider _flags.
         NSLog(@"Warning: Types have different number of members.  This is bad. (%d vs %d)", count, otherCount);
@@ -887,6 +894,98 @@
     }
 
     return YES;
+}
+
+- (void)mergeTopLevelWithType:(CDType *)otherType;
+{
+    NSUInteger index;
+    NSUInteger thisCount, otherCount;
+    NSArray *otherMembers;
+
+    NSParameterAssert([self canMergeTopLevelWithType:otherType]);
+
+    if ([self type] != [otherType type])
+        return;
+
+    if ([self type] != '{' && [self type] != '(')
+        return;
+
+    otherMembers = [otherType members];
+    thisCount = [members count];
+    otherCount = [otherMembers count];
+
+    if (thisCount != 0 && otherCount != 0 && thisCount != otherCount)
+        return;
+
+    NSLog(@"%s,       before: %@", _cmd, [self typeString]);
+    NSLog(@"%s, merging with: %@", _cmd, [otherType typeString]);
+
+    for (index = 0; index < thisCount; index++) {
+        CDType *thisMember, *otherMember;
+        CDTypeName *thisTypeName, *otherTypeName;
+        NSString *thisVariableName, *otherVariableName;
+
+        thisMember = [members objectAtIndex:index];
+        otherMember = [otherMembers objectAtIndex:index];
+
+        //NSLog(@"types, this vs other: %u %u", [thisMember type], [otherMember type]);
+
+        if ([thisMember isIDType] && [otherMember isPointerToNamedObject]) {
+            CDType *copiedType;
+
+            NSLog(@"Treating %@ and %@ as close enough", [thisMember typeString], [otherMember typeString]);
+            copiedType = [otherMember copy];
+            [copiedType setVariableName:[thisMember variableName]]; // Worry about variable names _after_.
+            [members replaceObjectAtIndex:index withObject:copiedType];
+            thisMember = copiedType;
+            [copiedType release];
+        }
+
+        thisTypeName = [thisMember typeName];
+        otherTypeName = [otherMember typeName];
+        thisVariableName = [thisMember variableName];
+        otherVariableName = [otherMember variableName];
+
+        // It seems to be okay if one of them didn't have a name
+        //NSLog(@"%2u: first: %@", index, [thisMember typeString]);
+        //NSLog(@"%2u: second: %@", index, [otherMember typeString]);
+        //NSLog(@"%2u: comparing type name %p to %p", index, thisTypeName, otherTypeName);
+        //NSLog(@"%2u: comparing type name %@ to %@", index, thisTypeName, otherTypeName);
+#if 0
+        if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
+            return;// NO;
+
+        if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO)
+            return;// NO;
+#endif
+    }
+
+    NSLog(@"%s,        after: %@", _cmd, [self typeString]);
+    NSLog(@"----------------------------------------------------------------------");
+}
+
+// An easy deep copy.
+- (id)copyWithZone:(NSZone *)zone;
+{
+    CDTypeParser *parser;
+    NSError *error;
+    NSString *str;
+    CDType *copiedType;
+
+    str = [self typeString];
+    NSParameterAssert(str != nil);
+
+    parser = [[CDTypeParser alloc] initWithType:str];
+    copiedType = [parser parseType:&error];
+    if (copiedType == nil)
+        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@, %@", str, [error myExplanation]);
+    [parser release];
+
+    NSParameterAssert([str isEqualToString:[copiedType typeString]]);
+
+    [copiedType setVariableName:variableName];
+
+    return copiedType;
 }
 
 @end

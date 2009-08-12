@@ -129,6 +129,14 @@
     if (phase == 0) {
         [structureTable finishPhase0];
         [unionTable finishPhase0];
+        {
+            NSMutableString *str = [NSMutableString string];
+
+            [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+
+            NSLog(@"str:\n%@", str);
+            exit(99);
+        }
     } else if (phase == 1) {
         [structureTable finishPhase1];
         [unionTable finishPhase1];

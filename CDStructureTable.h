@@ -26,7 +26,9 @@
         unsigned int shouldDebug:1;
     } flags;
 
-    NSMutableSet *namedStructureTypeStrings; // Key types, so only names at the top level
+    NSMutableSet *namedStructureTypeStrings;
+    NSMutableSet *unnamedStructureTypeStrings;
+    NSMutableArray *foo;
 }
 
 - (id)init;

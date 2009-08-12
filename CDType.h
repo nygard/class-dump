@@ -7,13 +7,13 @@
 
 @class CDSymbolReferences, CDTypeController, CDTypeFormatter, CDTypeName;
 
-@interface CDType : NSObject
+@interface CDType : NSObject <NSCopying>
 {
     int type;
     NSArray *protocols;
     CDType *subtype;
     CDTypeName *typeName;
-    NSArray *members;
+    NSMutableArray *members;
     NSString *bitfieldSize;
     NSString *arraySize;
 
@@ -43,7 +43,7 @@
 - (CDTypeName *)typeName;
 
 - (NSArray *)members;
-- (void)setMembers:(NSArray *)newMembers;
+//- (void)setMembers:(NSArray *)newMembers;
 
 - (int)typeIgnoringModifiers;
 
@@ -78,5 +78,8 @@
 - (NSUInteger)structureDepth;
 
 - (BOOL)canMergeTopLevelWithType:(CDType *)otherType;
+- (void)mergeTopLevelWithType:(CDType *)otherType;
+
+- (id)copyWithZone:(NSZone *)zone;
 
 @end
