@@ -12,23 +12,23 @@
     NSString *identifier;
     NSString *anonymousBaseName;
 
-    NSMutableDictionary *structuresByName;
-    NSMutableDictionary *anonymousStructureCountsByType;
-    NSMutableDictionary *anonymousStructuresByType;
-    NSMutableDictionary *anonymousStructureNamesByType;
+    // Phase 0
+    NSMutableDictionary *topLevelStructureInfo; // key: NSString (typeString), value: CDStructureInfo -- Top level structures only.
 
-    NSMutableSet *forcedTypedefs;
+    // Phase 1
+    NSMutableDictionary *phase1NamedStructureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSMutableDictionary *phase1AnonStructureInfo; // key: NSString (typeString), value: CDStructureInfo
 
-    NSMutableDictionary *keyTypeStringsByBareTypeStrings; // Phase 1.  Keyed on -bareTypeString.  Values are mutable sets of the keyTypeStrings.
-    NSMutableDictionary *replacementSignatures; // generated at end of phase 1.  Maps bareTypeStrings to keyTypeStrings.
+    // Phase 2
+    // Same name, different types.
+    NSMutableDictionary *phase2NamedStructureInfo; // key: NSString (name), value: CDStructureInfo
+    NSMutableDictionary *phase2AnonStructureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSMutableDictionary *phase2NameExceptions; // key: NSString (name), value: NSMutableArray of CDStructureInfo
+    NSMutableDictionary *phase2AnonExceptions; // key: NSString (), value: NSMutableArray of CDStructureInfo
 
     struct {
         unsigned int shouldDebug:1;
     } flags;
-
-    NSMutableSet *namedStructureTypeStrings;
-    NSMutableSet *unnamedStructureTypeStrings;
-    NSMutableArray *foo;
 }
 
 - (id)init;
@@ -43,10 +43,6 @@
 - (BOOL)shouldDebug;
 - (void)setShouldDebug:(BOOL)newFlag;
 
-- (void)logPhase1Data;
-- (void)finishPhase1;
-- (void)logInfo;
-
 - (void)generateNamesForAnonymousStructures;
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
@@ -57,17 +53,20 @@
                      formatter:(CDTypeFormatter *)aTypeFormatter
               symbolReferences:(CDSymbolReferences *)symbolReferences;
 
-- (void)forceTypedefForStructure:(NSString *)typeString;
 - (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
+
 
 - (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)finishPhase0;
 
-- (void)phase1RegisterStructure:(CDType *)aStructure;
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure withObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod
-                countReferences:(BOOL)shouldCountReferences;
-
 - (void)generateMemberNames;
+
+- (void)phase1WithTypeController:(CDTypeController *)typeController;
+- (void)phase1RegisterStructure:(CDType *)aStructure;
+- (void)finishPhase1;
+
+- (void)mergePhase1StructuresAtDepth:(NSUInteger)depth;
+- (void)logPhase2Info;
 
 @end

@@ -129,27 +129,19 @@
     if (phase == 0) {
         [structureTable finishPhase0];
         [unionTable finishPhase0];
+
+        // At the end of phase 0, we have a dictionary of CDStructureInfos (keyed by the typeString).
+        // These record the number of times top level structures were references, their type string, and their type.
+#if 0
         {
             NSMutableString *str = [NSMutableString string];
 
             [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
 
             NSLog(@"str:\n%@", str);
-            exit(99);
         }
-    } else if (phase == 1) {
-        [structureTable finishPhase1];
-        [unionTable finishPhase1];
-    } else if (phase == 2) {
-        [structureTable generateNamesForAnonymousStructures];
-        [unionTable generateNamesForAnonymousStructures];
+#endif
     }
-}
-
-- (void)logInfo;
-{
-    [structureTable logInfo];
-    [unionTable logInfo];
 }
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
@@ -193,17 +185,37 @@
     }
 }
 
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+// Phase one builds a list of all of the named and unnamed structures.
+// It does this by going through all the top level structures we found in phase 0.
+- (void)startPhase1;
 {
-    if ([aStructure type] == '{') {
-        return [structureTable phase2RegisterStructure:aStructure withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else if ([aStructure type] == '(') {
-        return [unionTable phase2RegisterStructure:aStructure withObject:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-    } else {
-        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
-    }
+    NSLog(@" > %s", _cmd);
+    // Structures and unions can be nested.
+    [structureTable phase1WithTypeController:self];
+    [unionTable phase1WithTypeController:self];
 
-    return NO;
+    [structureTable finishPhase1];
+    [unionTable finishPhase1];
+
+    [structureTable mergePhase1StructuresAtDepth:1];
+    [unionTable mergePhase1StructuresAtDepth:1];
+
+    [structureTable logPhase2Info];
+    [unionTable logPhase2Info];
+
+    NSLog(@"======================================================================");
+    NSLog(@"======================================================================");
+    NSLog(@"======================================================================");
+    NSLog(@"======================================================================");
+    NSLog(@"======================================================================");
+
+    [structureTable mergePhase1StructuresAtDepth:2];
+    [unionTable mergePhase1StructuresAtDepth:2];
+
+    [structureTable logPhase2Info];
+    [unionTable logPhase2Info];
+
+    NSLog(@"<  %s", _cmd);
 }
 
 - (BOOL)shouldShowName:(NSString *)name;

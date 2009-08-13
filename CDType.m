@@ -563,39 +563,29 @@
     return str;
 }
 
-- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController;
 {
     if (phase == 0) {
         [self phase0RegisterStructuresWithObject:typeController];
-    } else if (phase == 1)
-        [self phase1RegisterStructuresWithObject:typeController];
-    else if (phase == 2)
-        [self phase2RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod countReferences:YES];
+    }
 }
 
-// Recursively go through type, registering structs/unions.  Looking for list of named structs to begin with.
+// Just top level structures
 - (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
 {
-#if 0
-    if ([self structureDepth] > 0)
-        NSLog(@"%u %@", [self structureDepth], [self typeString]);
-#endif
-
-#if 1
     // ^{ComponentInstanceRecord=}
     if (subtype != nil)
         [subtype phase0RegisterStructuresWithObject:typeController];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
         [typeController phase0RegisterStructure:self];
-        for (CDType *member in members)
-            [member phase0RegisterStructuresWithObject:typeController];
     }
-#endif
 }
 
+// Recursively go through type, registering structs/unions.
 - (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
 {
+    // ^{ComponentInstanceRecord=}
     if (subtype != nil)
         [subtype phase1RegisterStructuresWithObject:typeController];
 
@@ -603,25 +593,6 @@
         [typeController phase1RegisterStructure:self];
         for (CDType *member in members)
             [member phase1RegisterStructuresWithObject:typeController];
-    }
-}
-
-- (void)phase2RegisterStructuresWithObject:(CDTypeController *)typeController
-                              usedInMethod:(BOOL)isUsedInMethod
-                           countReferences:(BOOL)shouldCountReferences;
-{
-    if (subtype != nil)
-        [subtype phase2RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-
-    if (type == '{' || type == '(') {
-        BOOL newFlag;
-
-        newFlag = [typeController phase2RegisterStructure:self usedInMethod:isUsedInMethod countReferences:shouldCountReferences];
-        if (shouldCountReferences == NO)
-            newFlag = NO;
-
-        for (CDType *member in members)
-            [member phase2RegisterStructuresWithObject:typeController usedInMethod:NO countReferences:newFlag];
     }
 }
 

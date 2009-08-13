@@ -225,6 +225,9 @@
 		01B68D221006011100288194 /* CDLCEncryptionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B68D201006011100288194 /* CDLCEncryptionInfo.m */; };
 		01CA528F0FF28578000B857D /* CDObjectiveCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */; };
 		01CA52BA0FF2875B000B857D /* CDObjectiveC1Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */; };
+		01DAB2EA103350FE00F7A7A3 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */; };
+		01DAB2EB103350FE00F7A7A3 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */; };
+		01DAB2EC103350FE00F7A7A3 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */; };
 		01F12C4E102F393700A8C12C /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F12C4D102F393700A8C12C /* CDTypeController.m */; };
 		01F12C4F102F393700A8C12C /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F12C4D102F393700A8C12C /* CDTypeController.m */; };
 		01F12C50102F393700A8C12C /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F12C4D102F393700A8C12C /* CDTypeController.m */; };
@@ -510,6 +513,8 @@
 		01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveCProcessor.m; sourceTree = "<group>"; };
 		01CA52B20FF2875B000B857D /* CDObjectiveC1Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC1Processor.h; sourceTree = "<group>"; };
 		01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC1Processor.m; sourceTree = "<group>"; };
+		01DAB2E8103350FE00F7A7A3 /* CDStructureInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDStructureInfo.h; sourceTree = "<group>"; };
+		01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDStructureInfo.m; sourceTree = "<group>"; };
 		01F12C4C102F393700A8C12C /* CDTypeController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDTypeController.h; sourceTree = "<group>"; };
 		01F12C4D102F393700A8C12C /* CDTypeController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDTypeController.m; sourceTree = "<group>"; };
 		01F5238F1001D19A0006B272 /* formatType */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = formatType; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -592,6 +597,8 @@
 				012E2B1F08AE9D6D003E99F8 /* CDStructureTable.m */,
 				01F12C4C102F393700A8C12C /* CDTypeController.h */,
 				01F12C4D102F393700A8C12C /* CDTypeController.m */,
+				01DAB2E8103350FE00F7A7A3 /* CDStructureInfo.h */,
+				01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */,
 				012E2B2008AE9D6D003E99F8 /* CDSymbolReferences.h */,
 				012E2B2108AE9D6D003E99F8 /* CDSymbolReferences.m */,
 				012E2B2208AE9D6D003E99F8 /* CDTopologicalSortProtocol.h */,
@@ -1235,6 +1242,7 @@
 				01F524D41001E8F60006B272 /* CDBalanceFormatter.m in Sources */,
 				01B68D221006011100288194 /* CDLCEncryptionInfo.m in Sources */,
 				01F12C4F102F393700A8C12C /* CDTypeController.m in Sources */,
+				01DAB2EB103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1259,6 +1267,7 @@
 				01F525411001F44F0006B272 /* CDSymbolReferences.m in Sources */,
 				01F525421001F4530006B272 /* CDStructureTable.m in Sources */,
 				01F12C50102F393700A8C12C /* CDTypeController.m in Sources */,
+				01DAB2EC103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1332,6 +1341,7 @@
 				01F5264D1001F5C70006B272 /* deprotect.m in Sources */,
 				01B68D211006011100288194 /* CDLCEncryptionInfo.m in Sources */,
 				01F12C4E102F393700A8C12C /* CDTypeController.m in Sources */,
+				01DAB2EA103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

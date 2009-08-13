@@ -339,20 +339,13 @@
 
 - (void)registerTypes;
 {
-    NSUInteger phase;
-
-    for (phase = 0; phase < 3; phase++) {
-        NSAutoreleasePool *pool;
-
-        pool = [[NSAutoreleasePool alloc] init];
-
-        for (CDObjectiveCProcessor *processor in objcProcessors) {
-            [processor registerTypesWithObject:typeController phase:phase];
-        }
-
-        [typeController endPhase:phase];
-        [pool release];
+    for (CDObjectiveCProcessor *processor in objcProcessors) {
+        [processor registerTypesWithObject:typeController phase:0];
     }
+    [typeController endPhase:0];
+
+    [typeController startPhase1];
+    exit(98);
 
     [typeController generateMemberNames];
 }

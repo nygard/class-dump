@@ -60,12 +60,9 @@
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 
-- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController;
 - (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
 - (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
-- (void)phase2RegisterStructuresWithObject:(CDTypeController *)typeController
-                              usedInMethod:(BOOL)isUsedInMethod
-                           countReferences:(BOOL)shouldCountReferences;
 
 - (BOOL)isEqual:(CDType *)otherType;
 - (BOOL)isBasicallyEqual:(CDType *)otherType;

@@ -34,7 +34,6 @@
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
 - (void)endPhase:(NSUInteger)phase;
-- (void)logInfo;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 
@@ -42,7 +41,8 @@
 
 - (void)phase0RegisterStructure:(CDType *)aStructure;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
-- (BOOL)phase2RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod countReferences:(BOOL)shouldCountReferences;
+
+- (void)startPhase1;
 
 - (BOOL)shouldShowName:(NSString *)name;
 
