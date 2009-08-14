@@ -12,8 +12,9 @@
     NSString *identifier;
     NSString *anonymousBaseName;
 
-    // Phase 0
-    NSMutableDictionary *topLevelStructureInfo; // key: NSString (typeString), value: CDStructureInfo -- Top level structures only.
+    // Phase 0 - top level
+    NSMutableDictionary *topLevelIvarStructureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSMutableDictionary *topLevelMethodStructureInfo; // key: NSString (typeString), value: CDStructureInfo
 
     // Phase 1
     NSMutableDictionary *phase1NamedStructureInfo; // key: NSString (typeString), value: CDStructureInfo
@@ -57,7 +58,7 @@
 - (NSString *)typedefNameForStructureType:(CDType *)aType;
 
 
-- (void)phase0RegisterStructure:(CDType *)aStructure;
+- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 - (void)finishPhase0;
 
 - (void)generateMemberNames;

@@ -563,22 +563,22 @@
     return str;
 }
 
-- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController;
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController ivar:(BOOL)isIvar;
 {
     if (phase == 0) {
-        [self phase0RegisterStructuresWithObject:typeController];
+        [self phase0RegisterStructuresWithObject:typeController ivar:isIvar];
     }
 }
 
 // Just top level structures
-- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController;
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController ivar:(BOOL)isIvar;
 {
     // ^{ComponentInstanceRecord=}
     if (subtype != nil)
-        [subtype phase0RegisterStructuresWithObject:typeController];
+        [subtype phase0RegisterStructuresWithObject:typeController ivar:isIvar];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        [typeController phase0RegisterStructure:self];
+        [typeController phase0RegisterStructure:self ivar:isIvar];
     }
 }
 

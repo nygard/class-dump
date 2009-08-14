@@ -163,12 +163,12 @@
 // CDStructureRegistration Protocol
 //
 
-- (void)phase0RegisterStructure:(CDType *)aStructure;
+- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 {
     if ([aStructure type] == '{') {
-        [structureTable phase0RegisterStructure:aStructure];
+        [structureTable phase0RegisterStructure:aStructure ivar:isIvar];
     } else if ([aStructure type] == '(') {
-        [unionTable phase0RegisterStructure:aStructure];
+        [unionTable phase0RegisterStructure:aStructure ivar:isIvar];
     } else {
         NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
     }

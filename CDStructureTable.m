@@ -47,7 +47,8 @@ static BOOL debug = YES;
     identifier = nil;
     anonymousBaseName = nil;
 
-    topLevelStructureInfo = [[NSMutableDictionary alloc] init];
+    topLevelIvarStructureInfo = [[NSMutableDictionary alloc] init];
+    topLevelMethodStructureInfo = [[NSMutableDictionary alloc] init];
 
     phase1NamedStructureInfo = [[NSMutableDictionary alloc] init];
     phase1AnonStructureInfo = [[NSMutableDictionary alloc] init];
@@ -67,7 +68,8 @@ static BOOL debug = YES;
     [identifier release];
     [anonymousBaseName release];
 
-    [topLevelStructureInfo release];
+    [topLevelIvarStructureInfo release];
+    [topLevelMethodStructureInfo release];
 
     [phase1NamedStructureInfo release];
     [phase1AnonStructureInfo release];
@@ -190,32 +192,44 @@ static BOOL debug = YES;
 }
 
 // Now I just want a list of the named structures
-- (void)phase0RegisterStructure:(CDType *)aStructure;
+- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 {
+    NSMutableDictionary *dict;
     CDStructureInfo *info;
     NSString *key;
 
-    key = [aStructure typeString];
-    info = [topLevelStructureInfo objectForKey:key];
+    if (isIvar)
+        dict = topLevelIvarStructureInfo;
+    else
+        dict = topLevelMethodStructureInfo;
+
+    key = [aStructure reallyBareTypeString];
+    info = [dict objectForKey:key];
     if (info == nil) {
         info = [[CDStructureInfo alloc] initWithTypeString:key];
-        [topLevelStructureInfo setObject:info forKey:key];
+        [dict setObject:info forKey:key];
         [info release];
     } else {
         [info addReferenceCount:1];
     }
 }
 
-// The top level structure of each name should have merged names.  Substructure members are unnamed.
 - (void)finishPhase0;
 {
-#if 0
+#if 1
     NSLog(@" > %s", _cmd);
-    //NSLog(@"topLevelStructureInfo: %@", topLevelStructureInfo);
-    for (CDStructureInfo *info in [[topLevelStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+    //NSLog(@"topLevelIvarStructureInfo: %@", topLevelIvarStructureInfo);
+    NSLog(@"ivar:");
+    for (CDStructureInfo *info in [[topLevelIvarStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        NSLog(@"%@", [info shortDescription]);
+    }
+    NSLog(@"----------------------------------------");
+    NSLog(@"method:");
+    for (CDStructureInfo *info in [[topLevelMethodStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         NSLog(@"%@", [info shortDescription]);
     }
     NSLog(@"<  %s", _cmd);
+    exit(99);
 #endif
 }
 #if 0
@@ -361,7 +375,7 @@ static BOOL debug = YES;
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 {
-    for (CDStructureInfo *info in [topLevelStructureInfo allValues]) {
+    for (CDStructureInfo *info in [topLevelIvarStructureInfo allValues]) {
         [[info type] phase1RegisterStructuresWithObject:typeController];
     }
 }

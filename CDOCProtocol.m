@@ -162,7 +162,7 @@
 {
     for (CDOCMethod *method in methods) {
         for (CDMethodType *methodType in [method parsedMethodTypes]) {
-            [[methodType type] phase:phase registerTypesWithObject:typeController];
+            [[methodType type] phase:phase registerTypesWithObject:typeController ivar:NO];
         }
     }
 }
