@@ -13,19 +13,8 @@
     NSString *anonymousBaseName;
 
     // Phase 0 - top level
-    NSMutableDictionary *topLevelIvarStructureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *topLevelMethodStructureInfo; // key: NSString (typeString), value: CDStructureInfo
-
-    // Phase 1
-    NSMutableDictionary *phase1NamedStructureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *phase1AnonStructureInfo; // key: NSString (typeString), value: CDStructureInfo
-
-    // Phase 2
-    // Same name, different types.
-    NSMutableDictionary *phase2NamedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase2AnonStructureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *phase2NameExceptions; // key: NSString (name), value: NSMutableArray of CDStructureInfo
-    NSMutableDictionary *phase2AnonExceptions; // key: NSString (), value: NSMutableArray of CDStructureInfo
+    NSMutableDictionary *phase0_ivar_structureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSMutableDictionary *phase0_method_structureInfo; // key: NSString (typeString), value: CDStructureInfo
 
     struct {
         unsigned int shouldDebug:1;

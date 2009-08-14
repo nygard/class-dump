@@ -93,4 +93,14 @@
     return [typeString compare:[otherInfo typeString]];
 }
 
+- (id)copyWithZone:(NSZone *)zone;
+{
+    CDStructureInfo *copy;
+
+    copy = [[CDStructureInfo alloc] initWithTypeString:typeString];
+    [copy setReferenceCount:referenceCount];
+
+    return copy;
+}
+
 @end

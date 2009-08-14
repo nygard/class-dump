@@ -7,13 +7,14 @@
 
 @class CDType;
 
-@interface CDStructureInfo : NSObject
+@interface CDStructureInfo : NSObject <NSCopying>
 {
     NSString *typeString;
     NSUInteger referenceCount;
     CDType *type;
 }
 
+// TODO: Or just pass in type?
 - (id)initWithTypeString:(NSString *)str;
 - (void)dealloc;
 
@@ -28,5 +29,7 @@
 - (NSString *)shortDescription;
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
+
+- (id)copyWithZone:(NSZone *)zone;
 
 @end

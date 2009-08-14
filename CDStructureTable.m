@@ -35,7 +35,10 @@
 // - need to find structure member names.
 // - Types used in methods need to be declared at the top level.
 
-static BOOL debug = YES;
+
+// Step 1: Just gather top level counts by unmodified type string.
+
+//static BOOL debug = YES;
 
 @implementation CDStructureTable
 
@@ -47,16 +50,8 @@ static BOOL debug = YES;
     identifier = nil;
     anonymousBaseName = nil;
 
-    topLevelIvarStructureInfo = [[NSMutableDictionary alloc] init];
-    topLevelMethodStructureInfo = [[NSMutableDictionary alloc] init];
-
-    phase1NamedStructureInfo = [[NSMutableDictionary alloc] init];
-    phase1AnonStructureInfo = [[NSMutableDictionary alloc] init];
-
-    phase2NamedStructureInfo = [[NSMutableDictionary alloc] init];
-    phase2AnonStructureInfo = [[NSMutableDictionary alloc] init];
-    phase2NameExceptions = [[NSMutableDictionary alloc] init];
-    phase2AnonExceptions = [[NSMutableDictionary alloc] init];
+    phase0_ivar_structureInfo = [[NSMutableDictionary alloc] init];
+    phase0_method_structureInfo = [[NSMutableDictionary alloc] init];
 
     flags.shouldDebug = NO;
 
@@ -68,15 +63,8 @@ static BOOL debug = YES;
     [identifier release];
     [anonymousBaseName release];
 
-    [topLevelIvarStructureInfo release];
-    [topLevelMethodStructureInfo release];
-
-    [phase1NamedStructureInfo release];
-    [phase1AnonStructureInfo release];
-    [phase2NamedStructureInfo release];
-    [phase2AnonStructureInfo release];
-    [phase2NameExceptions release];
-    [phase2AnonExceptions release];
+    [phase0_ivar_structureInfo release];
+    [phase0_method_structureInfo release];
 
     [super dealloc];
 }
@@ -195,18 +183,20 @@ static BOOL debug = YES;
 - (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 {
     NSMutableDictionary *dict;
-    CDStructureInfo *info;
     NSString *key;
+    CDStructureInfo *info;
+
+    // Find exceptions first, then merge non-exceptions.
 
     if (isIvar)
-        dict = topLevelIvarStructureInfo;
+        dict = phase0_ivar_structureInfo;
     else
-        dict = topLevelMethodStructureInfo;
+        dict = phase0_method_structureInfo;
 
-    key = [aStructure reallyBareTypeString];
+    key = [aStructure typeString];
     info = [dict objectForKey:key];
     if (info == nil) {
-        info = [[CDStructureInfo alloc] initWithTypeString:key];
+        info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
         [dict setObject:info forKey:key];
         [info release];
     } else {
@@ -216,158 +206,111 @@ static BOOL debug = YES;
 
 - (void)finishPhase0;
 {
-#if 1
+    NSMutableArray *all;
+    NSMutableDictionary *nameDict, *nameDict2;
+    NSMutableDictionary *anonDict;
+
+    nameDict = [NSMutableDictionary dictionary];
+    anonDict = [NSMutableDictionary dictionary];
+    all = [NSMutableArray array];
+    [all addObjectsFromArray:[phase0_ivar_structureInfo allValues]];
+    [all addObjectsFromArray:[phase0_method_structureInfo allValues]];
+
+    for (CDStructureInfo *info in all) {
+        NSString *name;
+        NSMutableArray *group;
+
+        name = [[[info type] typeName] description];
+
+        if ([@"?" isEqualToString:name]) {
+            NSString *key;
+
+            key = [[info type] reallyBareTypeString];
+            group = [anonDict objectForKey:key];
+            if (group == nil) {
+                group = [[NSMutableArray alloc] init];
+                [group addObject:info];
+                [anonDict setObject:group forKey:key];
+                [group release];
+            } else {
+                [group addObject:info];
+            }
+        } else {
+            group = [nameDict objectForKey:name];
+            if (group == nil) {
+                group = [[NSMutableArray alloc] init];
+                [group addObject:info];
+                [nameDict setObject:group forKey:name];
+                [group release];
+            } else {
+                [group addObject:info];
+            }
+        }
+    }
+
+    nameDict2 = [NSMutableDictionary dictionary];
+
+    // Now... for each group, make sure we can combine them all together.
+    // If not, this means that either the types or the member names conflicted, and we save the entire group as an exception.
+    for (NSString *key in [nameDict allKeys]) {
+        NSMutableArray *group;
+        CDStructureInfo *combined = nil;
+        BOOL canBeCombined = YES;
+
+        //NSLog(@"key... %@", key);
+        group = [nameDict objectForKey:key];
+        for (CDStructureInfo *info in group) {
+            if (combined == nil) {
+                combined = [info copy];
+            } else {
+                if ([[combined type] canMergeWithType:[info type]]) {
+                    [[combined type] mergeWithType:[info type]];
+                    [combined addReferenceCount:[info referenceCount]];
+                } else {
+                    canBeCombined = NO;
+                    break;
+                }
+            }
+        }
+
+        if (canBeCombined) {
+            [nameDict2 setObject:combined forKey:key];
+        } else {
+            NSLog(@"Can't be combined: %@", key);
+            NSLog(@"group: %@", group);
+        }
+
+        [combined release];
+    }
+
+    for (NSString *key in nameDict2) {
+        NSLog(@"%@ = %@", key, [nameDict2 objectForKey:key]);
+    }
+
+    // Reset all counts to be 2.  These are all top level structures, and must be shown at the top.
+    // Next: For each of these types, recursively add one reference to each substructure.
+    // Then: Any type with >1 reference needs to be shown at the top.  Any with 1 ref don't.
+
+    for (NSString *key in [[anonDict allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        NSMutableArray *group = [anonDict objectForKey:key];
+        if ([group count] > 1)
+            NSLog(@"group: %@, %@", key, group);
+    }
+#if 0
     NSLog(@" > %s", _cmd);
-    //NSLog(@"topLevelIvarStructureInfo: %@", topLevelIvarStructureInfo);
     NSLog(@"ivar:");
-    for (CDStructureInfo *info in [[topLevelIvarStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+    for (CDStructureInfo *info in [[phase0_ivar_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         NSLog(@"%@", [info shortDescription]);
     }
     NSLog(@"----------------------------------------");
     NSLog(@"method:");
-    for (CDStructureInfo *info in [[topLevelMethodStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+    for (CDStructureInfo *info in [[phase0_method_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         NSLog(@"%@", [info shortDescription]);
     }
     NSLog(@"<  %s", _cmd);
+#endif
     exit(99);
-#endif
 }
-#if 0
-{
-    NSMutableDictionary *dict1, *dict2;
-    NSMutableSet *exceptionNames, *anonExceptionNames;
-    NSMutableArray *exceptionTypes, *anonExceptionTypes;
-    NSArray *strs;
-
-    NSLog(@"======================================================================");
-
-    dict1 = [NSMutableDictionary dictionary];
-    anonExceptionNames = [NSMutableSet set];
-    anonExceptionTypes = [NSMutableArray array];
-
-    strs = [[unnamedStructureTypeStrings allObjects] sortedArrayUsingSelector:@selector(compare:)];
-    for (NSString *str in strs) {
-        CDTypeParser *parser;
-        NSError *error;
-        CDType *type;
-
-        NSLog(@"unnamed struct type = %@", str);
-
-        parser = [[CDTypeParser alloc] initWithType:str];
-        type = [parser parseType:&error];
-        if (type == nil) {
-            NSLog(@"Warning: Parsing type in -finishPhase0 failed, %@, %@", str, [error myExplanation]);
-        } else {
-            NSString *key;
-
-            key = [type bareTypeString];
-            if ([anonExceptionNames containsObject:key]) {
-                [anonExceptionTypes addObject:type];
-            } else {
-                CDType *previousType;
-
-                previousType = [dict1 objectForKey:key];
-                if (previousType == nil) {
-                    [dict1 setObject:type forKey:key];
-                } else {
-                    NSLog(@"dupe anon types.");
-                    if ([previousType canMergeTopLevelWithType:type]) {
-                        // Well, merge them!  member names AND ID/Object types
-                        [previousType mergeTopLevelWithType:type];
-                    } else {
-                        NSLog(@"Error: Can't merge types for name: %@", key);
-                        NSLog(@"old: %@", [previousType typeString]);
-                        NSLog(@"new: %@", [type typeString]);
-
-                        [anonExceptionNames addObject:key];
-                        [anonExceptionTypes addObject:previousType];
-                        [anonExceptionTypes addObject:type];
-                        [dict1 removeObjectForKey:key];
-                    }
-                }
-            }
-        }
-
-        [parser release];
-    }
-
-    NSLog(@"****************************************");
-    NSLog(@"****************************************");
-    NSLog(@"%u anon exception names, with %u types", [anonExceptionNames count], [anonExceptionTypes count]);
-    NSLog(@"****************************************");
-    for (CDType *type in anonExceptionTypes) {
-        NSLog(@"anon type: %u %@ %@", [type structureDepth], [type bareTypeString], [type typeString]);
-    }
-    NSLog(@"****************************************");
-
-    for (NSString *key in [[dict1 allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDType *type = [dict1 objectForKey:key];
-
-        NSLog(@"anon type: %u %@ %@", [type structureDepth], [type keyTypeString], [type typeString]);
-    }
-    NSLog(@"****************************************");
-    NSLog(@"****************************************");
-
-
-    dict2 = [NSMutableDictionary dictionary];
-    exceptionNames = [NSMutableSet set];
-    exceptionTypes = [NSMutableArray array];
-
-    strs = [[namedStructureTypeStrings allObjects] sortedArrayUsingSelector:@selector(compare:)];
-    //NSLog(@"named structs: %@", strs);
-
-    for (NSString *str in strs) {
-        CDTypeParser *parser;
-        NSError *error;
-        CDType *type;
-
-        parser = [[CDTypeParser alloc] initWithType:str];
-        type = [parser parseType:&error];
-        if (type == nil) {
-            NSLog(@"Warning: Parsing type in -finishPhase0 failed, %@, %@", str, [error myExplanation]);
-        } else {
-            NSString *key;
-
-            //[foo addObject:type];
-
-            key = [[type typeName] description];
-            if ([exceptionNames containsObject:key]) {
-                [exceptionTypes addObject:type];
-            } else {
-                CDType *previousType;
-
-                previousType = [dict2 objectForKey:key];
-                if (previousType == nil) {
-                    [dict2 setObject:type forKey:key];
-                } else {
-                    if ([previousType canMergeTopLevelWithType:type]) {
-                        // Well, merge them!  member names AND ID/Object types
-                        [previousType mergeTopLevelWithType:type];
-                    } else {
-                        NSLog(@"Error: Can't merge types for name: %@", key);
-                        NSLog(@"old: %@", [previousType typeString]);
-                        NSLog(@"new: %@", [type typeString]);
-                        // TODO: Build list of exceptions
-                        [exceptionNames addObject:key];
-                        [exceptionTypes addObject:previousType];
-                        [exceptionTypes addObject:type];
-                        [dict2 removeObjectForKey:key];
-                    }
-                }
-            }
-        }
-        [parser release];
-    }
-
-#if 1
-    for (NSString *key in [[dict2 allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        [foo addObject:[dict2 objectForKey:key]];
-    }
-#endif
-
-    NSLog(@"%u exception names, with %u types", [exceptionNames count], [exceptionTypes count]);
-}
-#endif
 
 - (void)generateMemberNames;
 {
@@ -375,184 +318,22 @@ static BOOL debug = YES;
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 {
-    for (CDStructureInfo *info in [topLevelIvarStructureInfo allValues]) {
-        [[info type] phase1RegisterStructuresWithObject:typeController];
-    }
 }
 
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 {
-    CDStructureInfo *info;
-    NSString *key;
-
-    if ([@"?" isEqualToString:[[aStructure typeName] description]]) {
-        //key = [aStructure keyTypeString];
-        key = [aStructure typeString];
-
-        info = [phase1AnonStructureInfo objectForKey:key];
-        if (info == nil) {
-            info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
-            [phase1AnonStructureInfo setObject:info forKey:key];
-            [info release];
-        } else {
-            [info addReferenceCount:1];
-        }
-    } else {
-        key = [[aStructure typeName] description];
-
-        info = [phase1NamedStructureInfo objectForKey:key];
-        if (info == nil) {
-            info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
-            [phase1NamedStructureInfo setObject:info forKey:key];
-            [info release];
-        } else {
-            [info addReferenceCount:1];
-        }
-    }
-
-    //NSLog(@"%s, name=%@, key=%@", _cmd, [[aStructure typeName] description], key);
 }
 
 - (void)finishPhase1;
 {
-    NSLog(@"%s [%@] named count: %u, anon count: %u", _cmd, identifier, [phase1NamedStructureInfo count], [phase1AnonStructureInfo count]);
-#if 0
-    for (CDStructureInfo *info in [[phase1NamedStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-
-    NSLog(@"----------------------------------------");
-#endif
-#if 1
-    for (CDStructureInfo *info in [[phase1AnonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-
-    NSLog(@"----------------------------------------");
-
-    // Go through depth 1 named and anon structures...
-#endif
 }
 
 - (void)mergePhase1StructuresAtDepth:(NSUInteger)depth;
 {
-    if (debug) NSLog(@"[%@] Merging named phase1 structures at depth %u", identifier, depth);
-    for (CDStructureInfo *info in [[phase1NamedStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        if ([[info type] structureDepth] == depth) {
-            CDStructureInfo *previousInfo;
-            NSMutableArray *dupes;
-            NSString *key;
-
-            NSLog(@"Processing %@", [info typeString]);
-            // Merge any sub structures/unions first
-
-            key = [[[info type] typeName] description];
-            dupes = [phase2NameExceptions objectForKey:key];
-            if (dupes == nil) {
-                previousInfo = [phase2NamedStructureInfo objectForKey:key];
-                if (previousInfo == nil) {
-                    if (debug) NSLog(@"[%@] Adding: %@", identifier, key);
-                    [phase2NamedStructureInfo setObject:info forKey:key];
-                } else {
-                    if ([[previousInfo type] canMergeTopLevelWithType:[info type]]) {
-                        if (debug) NSLog(@"[%@] Merging: %@", identifier, key);
-                        if (debug) NSLog(@"[%@] Map %@ to %@", [previousInfo typeString], [info typeString]);
-                        [[previousInfo type] mergeTopLevelWithType:[info type]];
-                    } else {
-                        if (debug) NSLog(@"[%@] Conflict: %@", identifier, key);
-                        if (debug) NSLog(@"old: %@", [[previousInfo type] typeString]);
-                        if (debug) NSLog(@"new: %@", [[info type] typeString]);
-                        // TODO: Unmap...
-
-                        dupes = [[NSMutableArray alloc] init];
-                        [dupes addObject:previousInfo];
-                        [dupes addObject:info];
-                        [phase2NamedStructureInfo removeObjectForKey:key];
-                        [phase2NameExceptions setObject:dupes forKey:key];
-                        [dupes release];
-                    }
-                }
-            } else {
-                if (debug) NSLog(@"[%@] Adding to exceptions: %@", identifier, key);
-                [dupes addObject:info];
-            }
-        }
-    }
-
-    if (debug) NSLog(@"[%@] There are now %u name exceptions", identifier, [phase2NameExceptions count]);
-
-
-    if (debug) NSLog(@"[%@] Merging anonymous phase1 structures at depth %u", identifier, depth);
-    // This is going over the same dictionary, so...
-    for (CDStructureInfo *info in [[phase1AnonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        if ([[info type] structureDepth] == depth) {
-            CDStructureInfo *previousInfo;
-            NSMutableArray *dupes;
-            NSString *key;
-
-            NSLog(@"Processing %@", [info typeString]);
-            key = [info typeString];
-            dupes = [phase2AnonExceptions objectForKey:key];
-            if (dupes == nil) {
-                previousInfo = [phase2AnonStructureInfo objectForKey:key];
-                if (previousInfo == nil) {
-                    if (debug) NSLog(@"[%@] Adding: %@", identifier, key);
-                    [phase2AnonStructureInfo setObject:info forKey:key];
-                } else {
-                    if ([[previousInfo type] canMergeTopLevelWithType:[info type]]) {
-                        if (debug) NSLog(@"[%@] Merging: %@", identifier, key);
-                        if (debug) NSLog(@"[%@] Map %@ to %@", [previousInfo typeString], [info typeString]);
-                        [[previousInfo type] mergeTopLevelWithType:[info type]];
-                    } else {
-                        if (debug) NSLog(@"[%@] Conflict: %@", identifier, key);
-                        if (debug) NSLog(@"old: %@", [[previousInfo type] typeString]);
-                        if (debug) NSLog(@"new: %@", [[info type] typeString]);
-                        // TODO: Unmap...
-
-                        dupes = [[NSMutableArray alloc] init];
-                        [dupes addObject:previousInfo];
-                        [dupes addObject:info];
-                        [phase2AnonStructureInfo removeObjectForKey:key];
-                        [phase2AnonExceptions setObject:dupes forKey:key];
-                        [dupes release];
-                    }
-                }
-            } else {
-                if (debug) NSLog(@"[%@] Adding to exceptions: %@", identifier, key);
-                [dupes addObject:info];
-            }
-        }
-    }
-
-    if (debug) NSLog(@"[%@] There are now %u anonymous exceptions", identifier, [phase2AnonExceptions count]);
 }
 
 - (void)logPhase2Info;
 {
-    NSLog(@" > %s", _cmd);
-    NSLog(@"Named: (%u)", [phase2NamedStructureInfo count]);
-    for (NSString *key in [[phase2NamedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        NSLog(@"key: %@, info: %@", key, [phase2NamedStructureInfo objectForKey:key]);
-    }
-    NSLog(@"--------------------");
-    NSLog(@"Named exceptions: (%u)", [phase2NameExceptions count]);
-    for (NSString *key in [[phase2NameExceptions allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        NSLog(@"key: %@, infos: %@", key, [phase2NameExceptions objectForKey:key]);
-    }
-    NSLog(@"--------------------");
-
-    NSLog(@"Anon: (%u)", [phase2AnonStructureInfo count]);
-    for (NSString *key in [[phase2AnonStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        NSLog(@"key: %@, info: %@", key, [phase2AnonStructureInfo objectForKey:key]);
-    }
-    NSLog(@"--------------------");
-    NSLog(@"Anon exceptions: (%u)", [phase2AnonExceptions count]);
-    for (NSString *key in [[phase2AnonExceptions allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        NSLog(@"key: %@, infos: %@", key, [phase2AnonExceptions objectForKey:key]);
-    }
-    NSLog(@"--------------------");
-
-    NSLog(@"<  %s", _cmd);
 }
 
 @end
