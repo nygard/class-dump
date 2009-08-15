@@ -12,6 +12,7 @@
     NSString *typeString;
     NSUInteger referenceCount;
     CDType *type;
+    BOOL isUsedInMethod;
 }
 
 // TODO: Or just pass in type?
@@ -24,6 +25,9 @@
 - (NSUInteger)referenceCount;
 - (void)setReferenceCount:(NSUInteger)newCount;
 - (void)addReferenceCount:(NSUInteger)count;
+
+- (BOOL)isUsedInMethod;
+- (void)setIsUsedInMethod:(BOOL)newFlag;
 
 - (NSString *)description;
 - (NSString *)shortDescription;

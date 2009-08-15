@@ -9,6 +9,8 @@
 #import "CDType.h"
 #import "CDTypeParser.h"
 
+// If it's used in a method, then it should be declared at the top. (name or typedef)
+
 @implementation CDStructureInfo
 
 - (id)initWithTypeString:(NSString *)str;
@@ -29,6 +31,8 @@
             NSLog(@"Warning: (CDStructInfo) Parsing struct type failed, %@", [error myExplanation]);
         [parser release];
     }
+
+    isUsedInMethod = NO;
 
     return self;
 }
@@ -66,16 +70,26 @@
     referenceCount += count;
 }
 
+- (BOOL)isUsedInMethod;
+{
+    return isUsedInMethod;
+}
+
+- (void)setIsUsedInMethod:(BOOL)newFlag;
+{
+    isUsedInMethod = newFlag;
+}
+
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, typeString: %@, type: %p",
+    return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, typeString: %@, type: %p",
                      NSStringFromClass([self class]), self,
-                     [type structureDepth], referenceCount, typeString, type];
+                     [type structureDepth], referenceCount, isUsedInMethod, typeString, type];
 }
 
 - (NSString *)shortDescription;
 {
-    return [NSString stringWithFormat:@"%u %u %@ %@", [type structureDepth], referenceCount, [type bareTypeString], typeString];
+    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", [type structureDepth], referenceCount, isUsedInMethod, [type bareTypeString], typeString];
 }
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
@@ -99,6 +113,7 @@
 
     copy = [[CDStructureInfo alloc] initWithTypeString:typeString];
     [copy setReferenceCount:referenceCount];
+    [copy setIsUsedInMethod:isUsedInMethod];
 
     return copy;
 }

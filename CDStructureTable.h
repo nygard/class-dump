@@ -15,6 +15,19 @@
     // Phase 0 - top level
     NSMutableDictionary *phase0_ivar_structureInfo; // key: NSString (typeString), value: CDStructureInfo
     NSMutableDictionary *phase0_method_structureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSUInteger phase0_maxDepth;
+
+    NSMutableDictionary *phase0_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
+    NSMutableDictionary *phase0_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
+    NSMutableArray *phase0_nameExceptions; // Of CDStructureInfo
+    NSMutableArray *phase0_anonExceptions; // Of CDStructureInfo
+
+    // Phase 1 - all substructures
+    NSMutableDictionary *phase1_structureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSMutableDictionary *phase1_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
+    NSMutableDictionary *phase1_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
+    NSMutableArray *phase1_nameExceptions; // Of CDStructureInfo
+    NSMutableArray *phase1_anonExceptions; // Of CDStructureInfo
 
     struct {
         unsigned int shouldDebug:1;

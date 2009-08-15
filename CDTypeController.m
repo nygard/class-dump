@@ -197,6 +197,17 @@
     [structureTable finishPhase1];
     [unionTable finishPhase1];
 
+
+    {
+        NSMutableString *str;
+
+        str = [NSMutableString string];
+        [self appendStructuresToString:str symbolReferences:nil];
+        NSLog(@"str =\n%@", str);
+    }
+
+    exit(99);
+#if 0
     [structureTable mergePhase1StructuresAtDepth:1];
     [unionTable mergePhase1StructuresAtDepth:1];
 
@@ -214,7 +225,7 @@
 
     [structureTable logPhase2Info];
     [unionTable logPhase2Info];
-
+#endif
     NSLog(@"<  %s", _cmd);
 }
 
