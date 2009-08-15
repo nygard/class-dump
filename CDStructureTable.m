@@ -208,7 +208,7 @@
 {
     NSMutableArray *all;
     NSMutableDictionary *nameDict, *nameDict2;
-    NSMutableDictionary *anonDict;
+    NSMutableDictionary *anonDict, *anonDict2;
 
     nameDict = [NSMutableDictionary dictionary];
     anonDict = [NSMutableDictionary dictionary];
@@ -248,10 +248,10 @@
         }
     }
 
-    nameDict2 = [NSMutableDictionary dictionary];
 
     // Now... for each group, make sure we can combine them all together.
     // If not, this means that either the types or the member names conflicted, and we save the entire group as an exception.
+    nameDict2 = [NSMutableDictionary dictionary];
     for (NSString *key in [nameDict allKeys]) {
         NSMutableArray *group;
         CDStructureInfo *combined = nil;
@@ -275,6 +275,41 @@
 
         if (canBeCombined) {
             [nameDict2 setObject:combined forKey:key];
+        } else {
+            NSLog(@"Can't be combined: %@", key);
+            NSLog(@"group: %@", group);
+        }
+
+        [combined release];
+    }
+
+    NSLog(@"======================================================================");
+    anonDict2 = [NSMutableDictionary dictionary];
+    for (NSString *key in [anonDict allKeys]) {
+        NSMutableArray *group;
+        CDStructureInfo *combined = nil;
+        BOOL canBeCombined = YES;
+
+        NSLog(@"key... %@", key);
+        group = [anonDict objectForKey:key];
+        for (CDStructureInfo *info in group) {
+            if (combined == nil) {
+                combined = [info copy];
+            } else {
+                if ([[combined type] canMergeWithType:[info type]]) {
+                    [[combined type] mergeWithType:[info type]];
+                    [combined addReferenceCount:[info referenceCount]];
+                } else {
+                    NSLog(@"previous: %@", [[combined type] typeString]);
+                    NSLog(@"    This: %@", [[info type] typeString]);
+                    canBeCombined = NO;
+                    break;
+                }
+            }
+        }
+
+        if (canBeCombined) {
+            [anonDict2 setObject:combined forKey:key];
         } else {
             NSLog(@"Can't be combined: %@", key);
             NSLog(@"group: %@", group);
