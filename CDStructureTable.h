@@ -15,19 +15,17 @@
     // Phase 0 - top level
     NSMutableDictionary *phase0_ivar_structureInfo; // key: NSString (typeString), value: CDStructureInfo
     NSMutableDictionary *phase0_method_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSUInteger phase0_maxDepth;
-
-    NSMutableDictionary *phase0_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase0_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
-    NSMutableArray *phase0_nameExceptions; // Of CDStructureInfo
-    NSMutableArray *phase0_anonExceptions; // Of CDStructureInfo
 
     // Phase 1 - all substructures
     NSMutableDictionary *phase1_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *phase1_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase1_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
-    NSMutableArray *phase1_nameExceptions; // Of CDStructureInfo
-    NSMutableArray *phase1_anonExceptions; // Of CDStructureInfo
+    NSUInteger phase1_maxDepth;
+    NSMutableDictionary *phase1_groupedByDepth; // key: NSNumber (structureDepth), value: NSMutableArray of CDStructureInfo
+
+    // Phase 2 - merging all structure bottom up
+    NSMutableDictionary *phase2_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
+    NSMutableDictionary *phase2_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
+    NSMutableArray *phase2_nameExceptions; // Of CDStructureInfo
+    NSMutableArray *phase2_anonExceptions; // Of CDStructureInfo
 
     struct {
         unsigned int shouldDebug:1;
@@ -68,6 +66,10 @@
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (void)finishPhase1;
+- (NSUInteger)phase1_maxDepth;
+
+- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
+- (CDType *)phase2ReplacementForType:(CDType *)type;
 
 - (void)mergePhase1StructuresAtDepth:(NSUInteger)depth;
 - (void)logPhase2Info;

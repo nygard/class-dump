@@ -43,7 +43,9 @@
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 
 - (void)startPhase1;
+- (void)startPhase2;
 
 - (BOOL)shouldShowName:(NSString *)name;
+- (CDType *)phase2ReplacementForType:(CDType *)type;
 
 @end

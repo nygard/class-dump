@@ -136,7 +136,7 @@
         {
             NSMutableString *str = [NSMutableString string];
 
-            [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+            //[structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
 
             NSLog(@"str:\n%@", str);
         }
@@ -196,42 +196,64 @@
 
     [structureTable finishPhase1];
     [unionTable finishPhase1];
+    NSLog(@"<  %s", _cmd);
+}
 
+- (void)startPhase2;
+{
+    NSUInteger maxDepth, depth;
 
+    NSLog(@" > %s", _cmd);
+
+    maxDepth = [structureTable phase1_maxDepth];
+    if (maxDepth < [unionTable phase1_maxDepth])
+        maxDepth = [unionTable phase1_maxDepth];
+
+    for (depth = 1; depth <= maxDepth; depth++) {
+        [structureTable phase2AtDepth:depth typeController:self];
+        [unionTable phase2AtDepth:depth typeController:self];
+    }
+
+    [structureTable logPhase2Info];
+
+    // do phase2 merge on all the types from phase 0
+    // Combine all of these as much as possible.
+    // Then.. add one reference for each substructure
+    // Any info referenced by a method, or with >1 reference, gets typedef'd.
+    // - Generate name hash based on full type string at this point
+    // - Then fill in unnamed fields
+    // Print method/>1 ref names and typedefs
+    // Then... what do we do when printing ivars/method types?
+
+#if 1
     {
         NSMutableString *str;
 
         str = [NSMutableString string];
-        [self appendStructuresToString:str symbolReferences:nil];
+        //[self appendStructuresToString:str symbolReferences:nil];
+        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
         NSLog(@"str =\n%@", str);
     }
-
-    exit(99);
-#if 0
-    [structureTable mergePhase1StructuresAtDepth:1];
-    [unionTable mergePhase1StructuresAtDepth:1];
-
-    [structureTable logPhase2Info];
-    [unionTable logPhase2Info];
-
-    NSLog(@"======================================================================");
-    NSLog(@"======================================================================");
-    NSLog(@"======================================================================");
-    NSLog(@"======================================================================");
-    NSLog(@"======================================================================");
-
-    [structureTable mergePhase1StructuresAtDepth:2];
-    [unionTable mergePhase1StructuresAtDepth:2];
-
-    [structureTable logPhase2Info];
-    [unionTable logPhase2Info];
 #endif
+    exit(99);
+
     NSLog(@"<  %s", _cmd);
 }
 
 - (BOOL)shouldShowName:(NSString *)name;
 {
     return ([classDump shouldMatchRegex] == NO) || [classDump regexMatchesString:name];
+}
+
+- (CDType *)phase2ReplacementForType:(CDType *)type;
+{
+    if ([type type] == '{')
+        return [structureTable phase2ReplacementForType:type];
+
+    if ([type type] == '(')
+        return [unionTable phase2ReplacementForType:type];
+
+    return nil;
 }
 
 @end

@@ -107,6 +107,21 @@
     return [typeString compare:[otherInfo typeString]];
 }
 
+- (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
+{
+    NSUInteger thisDepth, otherDepth;
+
+    thisDepth = [type structureDepth];
+    otherDepth = [[otherInfo type] structureDepth];
+
+    if (thisDepth < otherDepth)
+        return NSOrderedDescending;
+    else if (thisDepth > otherDepth)
+        return NSOrderedAscending;
+
+    return [typeString compare:[otherInfo typeString]];
+}
+
 - (id)copyWithZone:(NSZone *)zone;
 {
     CDStructureInfo *copy;

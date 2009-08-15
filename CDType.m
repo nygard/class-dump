@@ -959,4 +959,26 @@
     return copiedType;
 }
 
+// Bottom-up
+- (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
+{
+    [subtype phase2MergeWithTypeController:typeController];
+
+    for (CDType *member in members)
+        [member phase2MergeWithTypeController:typeController];
+
+    if (type == '{' || type == '(') {
+        CDType *phase2Type;
+
+        phase2Type = [typeController phase2ReplacementForType:self];
+        if (phase2Type != nil) {
+            if ([self canMergeWithType:phase2Type]) {
+                [self mergeWithType:phase2Type];
+            } else {
+                NSLog(@"Found phase2 type, but can't merge with it.");
+            }
+        }
+    }
+}
+
 @end

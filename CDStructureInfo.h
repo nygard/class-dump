@@ -33,6 +33,7 @@
 - (NSString *)shortDescription;
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
+- (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 
 - (id)copyWithZone:(NSZone *)zone;
 

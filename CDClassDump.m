@@ -345,6 +345,7 @@
     [typeController endPhase:0];
 
     [typeController startPhase1];
+    [typeController startPhase2];
     exit(98);
 
     [typeController generateMemberNames];

@@ -79,4 +79,6 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 
+- (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
+
 @end

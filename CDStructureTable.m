@@ -52,18 +52,15 @@
 
     phase0_ivar_structureInfo = [[NSMutableDictionary alloc] init];
     phase0_method_structureInfo = [[NSMutableDictionary alloc] init];
-    phase0_maxDepth = 0;
-
-    phase0_namedStructureInfo = [[NSMutableDictionary alloc] init];
-    phase0_anonStructureInfo = [[NSMutableDictionary alloc] init];
-    phase0_nameExceptions = [[NSMutableArray alloc] init];
-    phase0_anonExceptions = [[NSMutableArray alloc] init];
 
     phase1_structureInfo = [[NSMutableDictionary alloc] init];
-    phase1_namedStructureInfo = [[NSMutableDictionary alloc] init];
-    phase1_anonStructureInfo = [[NSMutableDictionary alloc] init];
-    phase1_nameExceptions = [[NSMutableArray alloc] init];
-    phase1_anonExceptions = [[NSMutableArray alloc] init];
+    phase1_maxDepth = 0;
+    phase1_groupedByDepth = [[NSMutableDictionary alloc] init];
+
+    phase2_namedStructureInfo = [[NSMutableDictionary alloc] init];
+    phase2_anonStructureInfo = [[NSMutableDictionary alloc] init];
+    phase2_nameExceptions = [[NSMutableArray alloc] init];
+    phase2_anonExceptions = [[NSMutableArray alloc] init];
 
     flags.shouldDebug = NO;
 
@@ -78,16 +75,13 @@
     [phase0_ivar_structureInfo release];
     [phase0_method_structureInfo release];
 
-    [phase0_namedStructureInfo release];
-    [phase0_anonStructureInfo release];
-    [phase0_nameExceptions release];
-    [phase0_anonExceptions release];
-
     [phase1_structureInfo release];
-    [phase1_namedStructureInfo release];
-    [phase1_anonStructureInfo release];
-    [phase1_nameExceptions release];
-    [phase1_anonExceptions release];
+    [phase1_groupedByDepth release];
+
+    [phase2_namedStructureInfo release];
+    [phase2_anonStructureInfo release];
+    [phase2_nameExceptions release];
+    [phase2_anonExceptions release];
 
     [super dealloc];
 }
@@ -145,10 +139,11 @@
                             formatter:(CDTypeFormatter *)aTypeFormatter
                      symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    for (NSString *key in [[phase0_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+#if 1
+    for (NSString *key in [[phase2_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDType *type;
 
-        type = [(CDStructureInfo *)[phase0_namedStructureInfo objectForKey:key] type];
+        type = [(CDStructureInfo *)[phase2_namedStructureInfo objectForKey:key] type];
         if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
             NSString *formattedString;
 
@@ -159,27 +154,21 @@
             }
         }
     }
+#endif
 }
 
 - (void)appendTypedefsToString:(NSMutableString *)resultString
                      formatter:(CDTypeFormatter *)aTypeFormatter
               symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-#if 0
-    // TODO (2009-07-27): Why aren't these sorted?
-    for (NSString *key in [anonymousStructureNamesByType allKeys]) {
-        NSString *name;
+#if 1
+    for (CDStructureInfo *info in [[phase2_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        NSString *typeString, *formattedString;
+        NSString *name = @"CDAnonStruct_";
 
-        name = [anonymousStructureNamesByType objectForKey:key];
-
-        if ([[aTypeFormatter typeController] shouldShowName:name]) {
-            NSString *typeString, *formattedString;
-
-            typeString = [[anonymousStructuresByType objectForKey:key] typeString];
-            formattedString = [aTypeFormatter formatVariable:nil type:typeString symbolReferences:symbolReferences];
-            if (formattedString != nil) {
-                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, name];
-            }
+        formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+        if (formattedString != nil) {
+            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, name];
         }
     }
 #endif
@@ -225,165 +214,6 @@
 
 - (void)finishPhase0;
 {
-    NSMutableArray *all;
-    NSMutableDictionary *nameDict;
-    NSMutableDictionary *anonDict;
-
-    nameDict = [NSMutableDictionary dictionary];
-    anonDict = [NSMutableDictionary dictionary];
-    all = [NSMutableArray array];
-    [all addObjectsFromArray:[phase0_ivar_structureInfo allValues]];
-    [all addObjectsFromArray:[phase0_method_structureInfo allValues]];
-
-    for (CDStructureInfo *info in all) {
-        NSString *name;
-        NSMutableArray *group;
-        NSUInteger depth;
-
-        depth = [[info type] structureDepth];
-        if (phase0_maxDepth < depth)
-            phase0_maxDepth = depth;
-        name = [[[info type] typeName] description];
-
-        if ([@"?" isEqualToString:name]) {
-            NSString *key;
-
-            key = [[info type] reallyBareTypeString];
-            group = [anonDict objectForKey:key];
-            if (group == nil) {
-                group = [[NSMutableArray alloc] init];
-                [group addObject:info];
-                [anonDict setObject:group forKey:key];
-                [group release];
-            } else {
-                [group addObject:info];
-            }
-        } else {
-            group = [nameDict objectForKey:name];
-            if (group == nil) {
-                group = [[NSMutableArray alloc] init];
-                [group addObject:info];
-                [nameDict setObject:group forKey:name];
-                [group release];
-            } else {
-                [group addObject:info];
-            }
-        }
-    }
-
-    NSLog(@"[%@] %s, maxDepth: %u", identifier, _cmd, phase0_maxDepth);
-    for (CDStructureInfo *info in [all sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-    NSLog(@"----------------------------------------");
-
-    // Now... for each group, make sure we can combine them all together.
-    // If not, this means that either the types or the member names conflicted, and we save the entire group as an exception.
-    for (NSString *key in [nameDict allKeys]) {
-        NSMutableArray *group;
-        CDStructureInfo *combined = nil;
-        BOOL canBeCombined = YES;
-
-        //NSLog(@"key... %@", key);
-        group = [nameDict objectForKey:key];
-        for (CDStructureInfo *info in group) {
-            if (combined == nil) {
-                combined = [info copy];
-            } else {
-                if ([[combined type] canMergeWithType:[info type]]) {
-                    [[combined type] mergeWithType:[info type]];
-                    [combined addReferenceCount:[info referenceCount]];
-                } else {
-                    canBeCombined = NO;
-                    break;
-                }
-            }
-        }
-
-        if (canBeCombined) {
-            [phase0_namedStructureInfo setObject:combined forKey:key];
-        } else {
-            NSLog(@"Can't be combined: %@", key);
-            NSLog(@"group: %@", group);
-            [phase0_nameExceptions addObjectsFromArray:group];
-        }
-
-        [combined release];
-    }
-
-    NSLog(@"======================================================================");
-    for (NSString *key in [anonDict allKeys]) {
-        NSMutableArray *group;
-        CDStructureInfo *combined = nil;
-        BOOL canBeCombined = YES;
-
-        NSLog(@"key... %@", key);
-        group = [anonDict objectForKey:key];
-        for (CDStructureInfo *info in group) {
-            if (combined == nil) {
-                combined = [info copy];
-            } else {
-                if ([[combined type] canMergeWithType:[info type]]) {
-                    [[combined type] mergeWithType:[info type]];
-                    [combined addReferenceCount:[info referenceCount]];
-                } else {
-                    NSLog(@"previous: %@", [[combined type] typeString]);
-                    NSLog(@"    This: %@", [[info type] typeString]);
-                    canBeCombined = NO;
-                    break;
-                }
-            }
-        }
-
-        if (canBeCombined) {
-            [phase0_anonStructureInfo setObject:combined forKey:key];
-        } else {
-            NSLog(@"Can't be combined: %@", key);
-            NSLog(@"group: %@", group);
-            [phase0_anonExceptions addObjectsFromArray:group];
-        }
-
-        [combined release];
-    }
-
-    NSLog(@"Name exceptions:");
-    for (CDStructureInfo *info in phase0_nameExceptions) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-
-    NSLog(@"Anon exceptions:");
-    for (CDStructureInfo *info in phase0_anonExceptions) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-
-    NSLog(@"AEDesc info: %@", [phase0_namedStructureInfo objectForKey:@"AEDesc"]);
-
-#if 0
-    // Reset all counts to be 2.  These are all top level structures, and must be shown at the top.
-    // Next: For each of these types, recursively add one reference to each substructure.
-    // Then: Any type with >1 reference needs to be shown at the top.  Any with 1 ref don't.
-
-    for (NSString *key in [[anonDict allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        NSMutableArray *group = [anonDict objectForKey:key];
-        if ([group count] > 1)
-            NSLog(@"group: %@, %@", key, group);
-    }
-#endif
-#if 0
-    NSLog(@" > %s", _cmd);
-    NSLog(@"ivar:");
-    for (CDStructureInfo *info in [[phase0_ivar_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-    NSLog(@"----------------------------------------");
-    NSLog(@"method:");
-    for (CDStructureInfo *info in [[phase0_method_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-    NSLog(@"<  %s", _cmd);
-#endif
-
-    //exit(99);
 }
 
 - (void)generateMemberNames;
@@ -392,10 +222,13 @@
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 {
-    for (CDStructureInfo *info in [phase0_ivar_structureInfo allValues]) {
-        [[info type] phase1RegisterStructuresWithObject:typeController];
-    }
-    for (CDStructureInfo *info in [phase0_method_structureInfo allValues]) {
+    NSMutableArray *all;
+
+    all = [NSMutableArray array];
+    [all addObjectsFromArray:[phase0_ivar_structureInfo allValues]];
+    [all addObjectsFromArray:[phase0_method_structureInfo allValues]];
+
+    for (CDStructureInfo *info in all) {
         [[info type] phase1RegisterStructuresWithObject:typeController];
     }
 }
@@ -421,68 +254,82 @@
 
 - (void)finishPhase1;
 {
-    NSUInteger maxDepth = 0;
-    NSMutableDictionary *nameDict;
-    NSMutableDictionary *anonDict;
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
+    NSLog(@"%s ======================================================================", _cmd);
 
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    nameDict = [NSMutableDictionary dictionary];
-    anonDict = [NSMutableDictionary dictionary];
+    // The deepest union may not be at the top level (buried in a structure instead), so need to get the depth here.
+    // But we'll take the max of structure and union depths in the CDTypeController anyway.
 
     for (CDStructureInfo *info in [phase1_structureInfo allValues]) {
         NSUInteger depth;
 
         depth = [[info type] structureDepth];
-        if (maxDepth < depth)
-            maxDepth = depth;
+        if (phase1_maxDepth < depth)
+            phase1_maxDepth = depth;
     }
-    NSLog(@"[%@] Maximum structure depth is: %u", identifier, maxDepth);
-    for (CDStructureInfo *info in [[phase1_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-    NSLog(@"----------------------------------------");
+    NSLog(@"[%@] Maximum structure depth is: %u", identifier, phase1_maxDepth);
 
     {
-        NSMutableDictionary *groupedByDepth;
-
-        groupedByDepth = [NSMutableDictionary dictionary];
         for (CDStructureInfo *info in [phase1_structureInfo allValues]) {
             NSNumber *key;
             NSMutableArray *group;
 
             key = [NSNumber numberWithUnsignedInteger:[[info type] structureDepth]];
-            group = [groupedByDepth objectForKey:key];
+            group = [phase1_groupedByDepth objectForKey:key];
             if (group == nil) {
                 group = [[NSMutableArray alloc] init];
                 [group addObject:info];
-                [groupedByDepth setObject:group forKey:key];
+                [phase1_groupedByDepth setObject:group forKey:key];
                 [group release];
             } else {
                 [group addObject:info];
             }
         }
 
-        NSLog(@"depth groups: %@", [groupedByDepth allKeys]);
+        NSLog(@"depth groups: %@", [[phase1_groupedByDepth allKeys] sortedArrayUsingSelector:@selector(compare:)]);
+    }
+}
 
-        // From lowest to highest depths:
-        // - Go through all infos at that level
-        //   - recursively (bottom up) try to merge substructures into that type, to get names/full types
-        // - merge all mergeable infos at that level
-        // 
+- (NSUInteger)phase1_maxDepth;
+{
+    return phase1_maxDepth;
+}
+
+// From lowest to highest depths:
+// - Go through all infos at that level
+//   - recursively (bottom up) try to merge substructures into that type, to get names/full types
+// - merge all mergeable infos at that level
+
+- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
+{
+    NSNumber *depthKey;
+    NSArray *infos;
+    NSMutableDictionary *nameDict, *anonDict;
+
+    NSLog(@"[%@] %s, depth: %u", identifier, _cmd, depth);
+    depthKey = [NSNumber numberWithUnsignedInt:depth];
+    infos = [phase1_groupedByDepth objectForKey:depthKey];
+
+    for (CDStructureInfo *info in infos) {
+        // recursively (bottom up) try to merge substructures into that type, to get names/full types
+        [[info type] phase2MergeWithTypeController:typeController];
     }
 
-    for (CDStructureInfo *info in [phase1_structureInfo allValues]) {
+    // merge all mergeable infos at that level
+    nameDict = [NSMutableDictionary dictionary];
+    anonDict = [NSMutableDictionary dictionary];
+
+    for (CDStructureInfo *info in infos) {
         NSString *name;
         NSMutableArray *group;
 
@@ -538,11 +385,11 @@
         }
 
         if (canBeCombined) {
-            [phase1_namedStructureInfo setObject:combined forKey:key];
+            [phase2_namedStructureInfo setObject:combined forKey:key];
         } else {
             NSLog(@"Can't be combined: %@", key);
             NSLog(@"group: %@", group);
-            [phase1_nameExceptions addObjectsFromArray:group];
+            [phase2_nameExceptions addObjectsFromArray:group];
         }
 
         [combined release];
@@ -573,27 +420,29 @@
         }
 
         if (canBeCombined) {
-            [phase1_anonStructureInfo setObject:combined forKey:key];
+            [phase2_anonStructureInfo setObject:combined forKey:key];
         } else {
             NSLog(@"Can't be combined: %@", key);
             NSLog(@"group: %@", group);
-            [phase1_anonExceptions addObjectsFromArray:group];
+            [phase2_anonExceptions addObjectsFromArray:group];
         }
 
         [combined release];
     }
+}
 
-    NSLog(@"Name exceptions:");
-    for (CDStructureInfo *info in phase1_nameExceptions) {
-        NSLog(@"%@", [info shortDescription]);
+- (CDType *)phase2ReplacementForType:(CDType *)type;
+{
+    NSString *name;
+
+    name = [[type typeName] description];
+    if ([@"?" isEqualToString:name]) {
+        return [(CDStructureInfo *)[phase2_anonStructureInfo objectForKey:[type reallyBareTypeString]] type];
+    } else {
+        return [(CDStructureInfo *)[phase2_namedStructureInfo objectForKey:name] type];
     }
 
-    NSLog(@"Anon exceptions:");
-    for (CDStructureInfo *info in phase1_anonExceptions) {
-        NSLog(@"%@", [info shortDescription]);
-    }
-
-    NSLog(@"AEDesc info: %@", [phase1_namedStructureInfo objectForKey:@"AEDesc"]);
+    return nil;
 }
 
 - (void)mergePhase1StructuresAtDepth:(NSUInteger)depth;
@@ -602,6 +451,18 @@
 
 - (void)logPhase2Info;
 {
+    NSLog(@" > %s", _cmd);
+    NSLog(@"****************************************");
+    NSLog(@"[%@] named:", identifier);
+    for (CDStructureInfo *info in [[phase2_namedStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        NSLog(@"%@", [info shortDescription]);
+    }
+    NSLog(@"****************************************");
+    NSLog(@"[%@] anon:", identifier);
+    for (CDStructureInfo *info in [[phase2_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        NSLog(@"%@", [info shortDescription]);
+    }
+    NSLog(@"<  %s", _cmd);
 }
 
 @end
