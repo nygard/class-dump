@@ -50,8 +50,7 @@
     identifier = nil;
     anonymousBaseName = nil;
 
-    phase0_ivar_structureInfo = [[NSMutableDictionary alloc] init];
-    phase0_method_structureInfo = [[NSMutableDictionary alloc] init];
+    phase0_structureInfo = [[NSMutableDictionary alloc] init];
 
     phase1_structureInfo = [[NSMutableDictionary alloc] init];
     phase1_maxDepth = 0;
@@ -72,8 +71,7 @@
     [identifier release];
     [anonymousBaseName release];
 
-    [phase0_ivar_structureInfo release];
-    [phase0_method_structureInfo release];
+    [phase0_structureInfo release];
 
     [phase1_structureInfo release];
     [phase1_groupedByDepth release];
@@ -163,7 +161,7 @@
 {
 #if 1
     for (CDStructureInfo *info in [[phase2_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSString *typeString, *formattedString;
+        NSString *formattedString;
         NSString *name = @"CDAnonStruct_";
 
         formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
@@ -188,24 +186,18 @@
 // Now I just want a list of the named structures
 - (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 {
-    NSMutableDictionary *dict;
     NSString *key;
     CDStructureInfo *info;
 
     // Find exceptions first, then merge non-exceptions.
 
-    if (isIvar)
-        dict = phase0_ivar_structureInfo;
-    else
-        dict = phase0_method_structureInfo;
-
     key = [aStructure typeString];
-    info = [dict objectForKey:key];
+    info = [phase0_structureInfo objectForKey:key];
     if (info == nil) {
         info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
         if (isIvar == NO)
             [info setIsUsedInMethod:YES];
-        [dict setObject:info forKey:key];
+        [phase0_structureInfo setObject:info forKey:key];
         [info release];
     } else {
         [info addReferenceCount:1];
@@ -222,13 +214,7 @@
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 {
-    NSMutableArray *all;
-
-    all = [NSMutableArray array];
-    [all addObjectsFromArray:[phase0_ivar_structureInfo allValues]];
-    [all addObjectsFromArray:[phase0_method_structureInfo allValues]];
-
-    for (CDStructureInfo *info in all) {
+    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
         [[info type] phase1RegisterStructuresWithObject:typeController];
     }
 }

@@ -13,8 +13,7 @@
     NSString *anonymousBaseName;
 
     // Phase 0 - top level
-    NSMutableDictionary *phase0_ivar_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *phase0_method_structureInfo; // key: NSString (typeString), value: CDStructureInfo
+    NSMutableDictionary *phase0_structureInfo; // key: NSString (typeString), value: CDStructureInfo
 
     // Phase 1 - all substructures
     NSMutableDictionary *phase1_structureInfo; // key: NSString (typeString), value: CDStructureInfo
