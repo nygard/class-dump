@@ -201,6 +201,8 @@
         [info release];
     } else {
         [info addReferenceCount:1];
+        if (isIvar == NO)
+            [info setIsUsedInMethod:YES];
     }
 }
 
