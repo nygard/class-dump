@@ -5,6 +5,8 @@
 
 #import "NSString-Extensions.h"
 
+#import "NSData-CDExtensions.h"
+
 @implementation NSString (CDExtensions)
 
 + (NSString *)stringWithFileSystemRepresentation:(const char *)str;
@@ -76,6 +78,11 @@
     }
 
     return path;
+}
+
+- (NSString *)SHA1DigestString;
+{
+    return [[[self decomposedStringWithCanonicalMapping] dataUsingEncoding:NSUTF8StringEncoding] SHA1DigestString];
 }
 
 @end

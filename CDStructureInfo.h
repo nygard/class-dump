@@ -9,10 +9,11 @@
 
 @interface CDStructureInfo : NSObject <NSCopying>
 {
-    NSString *typeString;
+    NSString *typeString; // Before any merging
     NSUInteger referenceCount;
     CDType *type;
     BOOL isUsedInMethod;
+    NSString *typedefName;
 }
 
 // TODO: Or just pass in type?
@@ -28,6 +29,11 @@
 
 - (BOOL)isUsedInMethod;
 - (void)setIsUsedInMethod:(BOOL)newFlag;
+
+- (NSString *)typedefName;
+- (void)setTypedefName:(NSString *)newName;
+
+- (void)generateTypedefName:(NSString *)baseName;
 
 - (NSString *)description;
 - (NSString *)shortDescription;

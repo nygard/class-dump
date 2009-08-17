@@ -42,11 +42,11 @@
     [structDeclarationTypeFormatter setTypeController:self]; // But need to ignore some things?
 
     structureTable = [[CDStructureTable alloc] init];
-    [structureTable setAnonymousBaseName:@"CDAnonymousStruct"];
+    [structureTable setAnonymousBaseName:@"CDStruct_"];
     [structureTable setIdentifier:@"Structs"];
 
     unionTable = [[CDStructureTable alloc] init];
-    [unionTable setAnonymousBaseName:@"CDAnonymousUnion"];
+    [unionTable setAnonymousBaseName:@"CDUnion_"];
     [unionTable setIdentifier:@"Unions"];
 
     classDump = nil;
@@ -222,6 +222,14 @@
 
     // Combine all of these as much as possible.
     // Then.. add one reference for each substructure
+
+    [structureTable generateTypedefNames];
+    [structureTable generateMemberNames];
+
+    [unionTable generateTypedefNames];
+    [unionTable generateMemberNames];
+
+
     // Any info referenced by a method, or with >1 reference, gets typedef'd.
     // - Generate name hash based on full type string at this point
     // - Then fill in unnamed fields
@@ -233,9 +241,15 @@
         NSMutableString *str;
 
         str = [NSMutableString string];
-        [self appendStructuresToString:str symbolReferences:nil];
-        //[structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
-        NSLog(@"str =\n%@", str);
+        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+        [unionTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+        [str writeToFile:@"/tmp/out.struct" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+
+        str = [NSMutableString string];
+        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+        [unionTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+        [str writeToFile:@"/tmp/out.typedef" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+        //NSLog(@"str =\n%@", str);
     }
 #endif
     exit(99);

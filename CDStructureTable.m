@@ -162,11 +162,10 @@ static BOOL debug = YES;
 #if 1
     for (CDStructureInfo *info in [[phase2_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         NSString *formattedString;
-        NSString *name = @"CDAnonStruct_";
 
         formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
         if (formattedString != nil) {
-            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, name];
+            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
         }
     }
 #endif
@@ -210,8 +209,22 @@ static BOOL debug = YES;
 {
 }
 
+- (void)generateTypedefNames;
+{
+    for (CDStructureInfo *info in [phase2_anonStructureInfo allValues]) {
+        [info generateTypedefName:anonymousBaseName];
+    }
+}
+
 - (void)generateMemberNames;
 {
+    for (CDStructureInfo *info in [phase2_namedStructureInfo allValues]) {
+        [[info type] generateMemberNames];
+    }
+
+    for (CDStructureInfo *info in [phase2_anonStructureInfo allValues]) {
+        [[info type] generateMemberNames];
+    }
 }
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;

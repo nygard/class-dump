@@ -7,6 +7,12 @@
 
 @class CDClassDump, CDType, CDSymbolReferences, CDTypeController, CDTypeFormatter;
 
+enum {
+    CDTableTypeStructure = 0,
+    CDTableTypeUnion = 1,
+};
+typedef NSUInteger CDTableType;
+
 @interface CDStructureTable : NSObject
 {
     NSString *identifier;
@@ -60,6 +66,7 @@
 - (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 - (void)finishPhase0;
 
+- (void)generateTypedefNames;
 - (void)generateMemberNames;
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;

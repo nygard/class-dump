@@ -18,6 +18,8 @@
 
 - (NSString *)executablePathForFilename;
 
+- (NSString *)SHA1DigestString;
+
 @end
 
 @interface NSMutableString (CDExtensions)

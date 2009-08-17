@@ -221,6 +221,9 @@
 		01AD08510FF7F494008E6A49 /* CDLCDylinker.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AD084F0FF7F494008E6A49 /* CDLCDylinker.m */; };
 		01AD08670FF7F6EA008E6A49 /* CDLCRoutines32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AD08650FF7F6EA008E6A49 /* CDLCRoutines32.m */; };
 		01AD086E0FF7F741008E6A49 /* CDLCRoutines64.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AD086C0FF7F741008E6A49 /* CDLCRoutines64.m */; };
+		01B456A6103923F80062EF62 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
+		01B456A7103923F80062EF62 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
+		01B456A8103923F80062EF62 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
 		01B68D211006011100288194 /* CDLCEncryptionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B68D201006011100288194 /* CDLCEncryptionInfo.m */; };
 		01B68D221006011100288194 /* CDLCEncryptionInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B68D201006011100288194 /* CDLCEncryptionInfo.m */; };
 		01CA528F0FF28578000B857D /* CDObjectiveCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */; };
@@ -507,6 +510,8 @@
 		01AD08650FF7F6EA008E6A49 /* CDLCRoutines32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRoutines32.m; sourceTree = "<group>"; };
 		01AD086B0FF7F741008E6A49 /* CDLCRoutines64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCRoutines64.h; sourceTree = "<group>"; };
 		01AD086C0FF7F741008E6A49 /* CDLCRoutines64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRoutines64.m; sourceTree = "<group>"; };
+		01B456A4103923F80062EF62 /* NSData-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData-CDExtensions.h"; sourceTree = "<group>"; };
+		01B456A5103923F80062EF62 /* NSData-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData-CDExtensions.m"; sourceTree = "<group>"; };
 		01B68D1F1006011100288194 /* CDLCEncryptionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCEncryptionInfo.h; sourceTree = "<group>"; };
 		01B68D201006011100288194 /* CDLCEncryptionInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCEncryptionInfo.m; sourceTree = "<group>"; };
 		01CA528C0FF28578000B857D /* CDObjectiveCProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveCProcessor.h; sourceTree = "<group>"; };
@@ -631,6 +636,8 @@
 			children = (
 				012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */,
 				012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */,
+				01B456A4103923F80062EF62 /* NSData-CDExtensions.h */,
+				01B456A5103923F80062EF62 /* NSData-CDExtensions.m */,
 				0114EE6B0CDCC4880061F80F /* NSError-CDExtensions.h */,
 				0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */,
 				012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */,
@@ -1243,6 +1250,7 @@
 				01B68D221006011100288194 /* CDLCEncryptionInfo.m in Sources */,
 				01F12C4F102F393700A8C12C /* CDTypeController.m in Sources */,
 				01DAB2EB103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
+				01B456A7103923F80062EF62 /* NSData-CDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1268,6 +1276,7 @@
 				01F525421001F4530006B272 /* CDStructureTable.m in Sources */,
 				01F12C50102F393700A8C12C /* CDTypeController.m in Sources */,
 				01DAB2EC103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
+				01B456A8103923F80062EF62 /* NSData-CDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1342,6 +1351,7 @@
 				01B68D211006011100288194 /* CDLCEncryptionInfo.m in Sources */,
 				01F12C4E102F393700A8C12C /* CDTypeController.m in Sources */,
 				01DAB2EA103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
+				01B456A6103923F80062EF62 /* NSData-CDExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

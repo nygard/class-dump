@@ -6,6 +6,7 @@
 #import "CDStructureInfo.h"
 
 #import "NSError-CDExtensions.h"
+#import "NSString-Extensions.h"
 #import "CDType.h"
 #import "CDTypeParser.h"
 
@@ -78,6 +79,35 @@
 - (void)setIsUsedInMethod:(BOOL)newFlag;
 {
     isUsedInMethod = newFlag;
+}
+
+- (NSString *)typedefName;
+{
+    return typedefName;
+}
+
+- (void)setTypedefName:(NSString *)newName;
+{
+    if (newName == typedefName)
+        return;
+
+    [typedefName release];
+    typedefName = [newName retain];
+}
+
+// Do this before generating member names.
+- (void)generateTypedefName:(NSString *)baseName;
+{
+    NSString *digest;
+    NSUInteger length;
+
+    digest = [[type typeString] SHA1DigestString];
+    length = [digest length];
+    if (length > 8)
+        digest = [digest substringFromIndex:length - 8];
+
+    [self setTypedefName:[NSString stringWithFormat:@"%@%@", baseName, digest]];
+    NSLog(@"typedefName: %@", typedefName);
 }
 
 - (NSString *)description;
