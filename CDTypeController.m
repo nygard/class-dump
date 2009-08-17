@@ -233,8 +233,22 @@
     // Any info referenced by a method, or with >1 reference, gets typedef'd.
     // - Generate name hash based on full type string at this point
     // - Then fill in unnamed fields
+
     // Print method/>1 ref names and typedefs
+    // Go through all updated phase0_structureInfo types
+    // - start merging these into a new table
+    //   - If this is the first time a structure has been added:
+    //     - add one reference for each subtype
+    //   - otherwise just merge them.
+    // - end result should be CDStructureInfos with counts and method reference flags
+    // - All named structures (minus exceptions like struct _flags) get declared at the top level
+    // - All anonymous structures (minus exceptions) referenced by a method
+    //                                            OR references >1 time gets typedef'd at the top and referenced by typedef subsequently
+    // Celebrate!
+
     // Then... what do we do when printing ivars/method types?
+    // CDTypeController - (BOOL)shouldExpandType:(CDType *)type;
+    // CDTypeController - (NSString *)typedefNameForType:(CDType *)type;
 
 #if 1
     {
