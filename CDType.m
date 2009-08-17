@@ -16,6 +16,8 @@
 #import "CDTypeParser.h"
 #import "NSError-CDExtensions.h"
 
+static BOOL debugMerge = NO;
+
 @implementation CDType
 
 - (id)init;
@@ -617,14 +619,27 @@
     NSUInteger otherCount;
     NSArray *otherMembers;
 
-    if ([self type] != [otherType type])
-        return NO;
+    if ([self isIDType] && [otherType isPointerToNamedObject])
+        return YES;
 
-    if (subtype != nil && [subtype canMergeWithType:[otherType subtype]] == NO)
-        return NO;
+    if ([self isPointerToNamedObject] && [otherType isIDType]) {
+        return YES;
+    }
 
-    if (subtype == nil && [otherType subtype] != nil)
+    if ([self type] != [otherType type]) {
+        if (debugMerge) NSLog(@"%s, Can't merge because of type... %@ vs %@", _cmd, [self typeString], [otherType typeString]);
         return NO;
+    }
+
+    if (subtype != nil && [subtype canMergeWithType:[otherType subtype]] == NO) {
+        if (debugMerge) NSLog(@"%s, Can't merge subtype", _cmd);
+        return NO;
+    }
+
+    if (subtype == nil && [otherType subtype] != nil) {
+        if (debugMerge) NSLog(@"%s, This subtype is nil, other isn't.", _cmd);
+        return NO;
+    }
 
     otherMembers = [otherType members];
     count = [members count];
@@ -634,11 +649,15 @@
     //NSLog(@"otherMembers: %p", otherMembers);
     //NSLog(@"%s, count: %u, otherCount: %u", _cmd, count, otherCount);
 
-    if (otherCount == 0)
+    if (count != 0 && otherCount == 0) {
+        if (debugMerge) NSLog(@"%s, count != 0 && otherCount is 0", _cmd);
         return NO;
+    }
 
-    if (count != 0 && count != otherCount)
+    if (count != 0 && count != otherCount) {
+        if (debugMerge) NSLog(@"%s, count != 0 && count != otherCount", _cmd);
         return NO;
+    }
 
     // count == 0 is ok: we just have a name in that case.
     if (count == otherCount) {
@@ -656,11 +675,20 @@
             otherVariableName = [otherMember variableName];
 
             // It seems to be okay if one of them didn't have a name
-            if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
+            if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO) {
+                if (debugMerge) NSLog(@"%s, typeName mismatch on member %u", _cmd, index);
                 return NO;
+            }
 
-            if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO)
+            if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO) {
+                if (debugMerge) NSLog(@"%s, variableName mismatch on member %u", _cmd, index);
                 return NO;
+            }
+
+            if ([thisMember canMergeWithType:otherMember] == NO) {
+                if (debugMerge) NSLog(@"%s, Can't merge member %u", _cmd, index);
+                return NO;
+            }
         }
     }
 
@@ -668,26 +696,22 @@
 }
 
 // Merge struct/union member names.  Should check using -canMergeWithType: first.
+// Recursively merges, not just the top level.
 - (void)mergeWithType:(CDType *)otherType;
 {
     NSUInteger count, index;
     NSUInteger otherCount;
     NSArray *otherMembers;
-#if 0
-    {
-        CDTypeFormatter *typeFormatter;
-        NSString *str;
 
-        NSLog(@"**********************************************************************");
-        NSLog(@"Merging types");
-        typeFormatter = [[CDTypeFormatter alloc] init];
-        str = [self formattedString:nil formatter:typeFormatter level:0 symbolReferences:nil];
-        NSLog(@"first:  %@", str);
-        str = [otherType formattedString:nil formatter:typeFormatter level:0 symbolReferences:nil];
-        NSLog(@"second: %@", str);
-        [typeFormatter release];
+    if ([self isIDType] && [otherType isPointerToNamedObject]) {
+        type = '^';
+        subtype = [[otherType subtype] copy];
+        return;
     }
-#endif
+
+    if ([self isPointerToNamedObject] && [otherType isIDType]) {
+        return;
+    }
 
     if ([self type] != [otherType type]) {
         NSLog(@"Warning: Trying to merge different types in %s", _cmd);
@@ -746,6 +770,8 @@
             else if ([thisVariableName isEqual:otherVariableName] == NO)
                 NSLog(@"Warning: Different variable names for same member...");
         }
+
+        [thisMember mergeWithType:otherMember];
     }
 }
 
@@ -967,12 +993,13 @@
     for (CDType *member in members)
         [member phase2MergeWithTypeController:typeController];
 
-    if (type == '{' || type == '(') {
+    if ((type == '{' || type == '(') && [members count] > 0) {
         CDType *phase2Type;
 
         phase2Type = [typeController phase2ReplacementForType:self];
         if (phase2Type != nil) {
-            if ([self canMergeWithType:phase2Type]) {
+            // >0 members so we don't try replacing things like... {_xmlNode=^{_xmlNode}}
+            if ([members count] > 0 && [self canMergeWithType:phase2Type]) {
                 [self mergeWithType:phase2Type];
             } else {
                 NSLog(@"Found phase2 type, but can't merge with it.");

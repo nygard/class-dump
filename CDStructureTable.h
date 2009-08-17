@@ -73,4 +73,6 @@
 - (void)mergePhase1StructuresAtDepth:(NSUInteger)depth;
 - (void)logPhase2Info;
 
+- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+
 @end

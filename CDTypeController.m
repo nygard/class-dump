@@ -214,9 +214,12 @@
         [unionTable phase2AtDepth:depth typeController:self];
     }
 
-    [structureTable logPhase2Info];
+    //[structureTable logPhase2Info];
 
     // do phase2 merge on all the types from phase 0
+    [structureTable phase2ReplacementOnPhase0WithTypeController:self];
+    //[unionTable phase2ReplacementOnPhase0WithTypeController:self];
+
     // Combine all of these as much as possible.
     // Then.. add one reference for each substructure
     // Any info referenced by a method, or with >1 reference, gets typedef'd.

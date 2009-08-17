@@ -243,17 +243,6 @@
 - (void)finishPhase1;
 {
     NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
-    NSLog(@"%s ======================================================================", _cmd);
 
     // The deepest union may not be at the top level (buried in a structure instead), so need to get the depth here.
     // But we'll take the max of structure and union depths in the CDTypeController anyway.
@@ -362,6 +351,8 @@
             if (combined == nil) {
                 combined = [info copy];
             } else {
+                //NSLog(@"old: %@", [[combined type] typeString]);
+                //NSLog(@"new: %@", [[info type] typeString]);
                 if ([[combined type] canMergeWithType:[info type]]) {
                     [[combined type] mergeWithType:[info type]];
                     [combined addReferenceCount:[info referenceCount]];
@@ -389,7 +380,7 @@
         CDStructureInfo *combined = nil;
         BOOL canBeCombined = YES;
 
-        NSLog(@"key... %@", key);
+        //NSLog(@"key... %@", key);
         group = [anonDict objectForKey:key];
         for (CDStructureInfo *info in group) {
             if (combined == nil) {
@@ -451,6 +442,33 @@
         NSLog(@"%@", [info shortDescription]);
     }
     NSLog(@"<  %s", _cmd);
+}
+
+- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+{
+    NSLog(@"[%@]  > %s", identifier, _cmd);
+
+    {
+        CDStructureInfo *info = [phase2_namedStructureInfo objectForKey:@"_NSTypesetterGlyphInfo"];
+
+        NSLog(@"info = %@", [info shortDescription]);
+        NSLog(@"typeString: %@", [[info type] typeString]);
+    }
+
+    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
+        NSString *before, *after;
+
+        before = [[info type] typeString];
+        [[info type] phase2MergeWithTypeController:typeController];
+        after = [[info type] typeString];
+        if ([before isEqualToString:after] == NO) {
+            NSLog(@"%s, before != after", _cmd);
+            NSLog(@"before: %@", before);
+            NSLog(@" after: %@", after);
+        }
+    }
+
+    NSLog(@"[%@] <  %s", identifier, _cmd);
 }
 
 @end
