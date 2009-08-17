@@ -24,7 +24,6 @@
 - (id)initSimpleType:(int)aTypeCode;
 - (id)initIDType:(CDTypeName *)aName;
 - (id)initIDTypeWithProtocols:(NSArray *)someProtocols;
-- (id)initNamedType:(CDTypeName *)aName;
 - (id)initStructType:(CDTypeName *)aName members:(NSArray *)someMembers;
 - (id)initUnionType:(CDTypeName *)aName members:(NSArray *)someMembers;
 - (id)initBitfieldType:(NSString *)aBitfieldSize;
@@ -37,7 +36,7 @@
 
 - (int)type;
 - (BOOL)isIDType;
-- (BOOL)isPointerToNamedObject;
+- (BOOL)isNamedObject;
 
 - (CDType *)subtype;
 - (CDTypeName *)typeName;
@@ -70,12 +69,10 @@
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
+- (void)_recursivelyMergeWithType:(CDType *)otherType;
 
 - (void)generateMemberNames;
 - (NSUInteger)structureDepth;
-
-- (BOOL)canMergeTopLevelWithType:(CDType *)otherType;
-- (void)mergeTopLevelWithType:(CDType *)otherType;
 
 - (id)copyWithZone:(NSZone *)zone;
 

@@ -38,7 +38,7 @@
 
 // Step 1: Just gather top level counts by unmodified type string.
 
-//static BOOL debug = YES;
+static BOOL debug = YES;
 
 @implementation CDStructureTable
 
@@ -299,6 +299,8 @@
 
     for (CDStructureInfo *info in infos) {
         // recursively (bottom up) try to merge substructures into that type, to get names/full types
+        NSLog(@"----------------------------------------");
+        NSLog(@"Trying phase2Merge with on %@", [[info type] typeString]);
         [[info type] phase2MergeWithTypeController:typeController];
     }
 
@@ -448,12 +450,14 @@
 {
     NSLog(@"[%@]  > %s", identifier, _cmd);
 
+#if 0
     {
         CDStructureInfo *info = [phase2_namedStructureInfo objectForKey:@"_NSTypesetterGlyphInfo"];
 
         NSLog(@"info = %@", [info shortDescription]);
         NSLog(@"typeString: %@", [[info type] typeString]);
     }
+#endif
 
     for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
         NSString *before, *after;
@@ -461,7 +465,8 @@
         before = [[info type] typeString];
         [[info type] phase2MergeWithTypeController:typeController];
         after = [[info type] typeString];
-        if ([before isEqualToString:after] == NO) {
+        if (debug && [before isEqualToString:after] == NO) {
+            NSLog(@"----------------------------------------");
             NSLog(@"%s, before != after", _cmd);
             NSLog(@"before: %@", before);
             NSLog(@" after: %@", after);

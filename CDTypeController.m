@@ -218,7 +218,7 @@
 
     // do phase2 merge on all the types from phase 0
     [structureTable phase2ReplacementOnPhase0WithTypeController:self];
-    //[unionTable phase2ReplacementOnPhase0WithTypeController:self];
+    [unionTable phase2ReplacementOnPhase0WithTypeController:self];
 
     // Combine all of these as much as possible.
     // Then.. add one reference for each substructure
@@ -233,8 +233,8 @@
         NSMutableString *str;
 
         str = [NSMutableString string];
-        //[self appendStructuresToString:str symbolReferences:nil];
-        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
+        [self appendStructuresToString:str symbolReferences:nil];
+        //[structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
         NSLog(@"str =\n%@", str);
     }
 #endif

@@ -68,4 +68,23 @@
     return [[self description] isEqual:[otherObject description]];
 }
 
+- (id)copyWithZone:(NSZone *)zone;
+{
+    CDTypeName *copy;
+
+    copy = [[CDTypeName alloc] init];
+    [copy setName:name];
+    [copy setSuffix:suffix];
+
+    for (CDTypeName *subtype in templateTypes) {
+        CDTypeName *subcopy;
+
+        subcopy = [subtype copy];
+        [copy addTemplateType:subcopy];
+        [subcopy release];
+    }
+
+    return copy;
+}
+
 @end

@@ -58,8 +58,8 @@ static BOOL debugMerge = NO;
         return nil;
 
     if (aName != nil) {
-        type = '^';
-        subtype = [[CDType alloc] initNamedType:aName];
+        type = T_NAMED_OBJECT;
+        typeName = [aName retain];
     } else {
         type = '@';
     }
@@ -74,17 +74,6 @@ static BOOL debugMerge = NO;
 
     type = '@';
     protocols = [someProtocols retain];
-
-    return self;
-}
-
-- (id)initNamedType:(CDTypeName *)aName;
-{
-    if ([self init] == nil)
-        return nil;
-
-    type = T_NAMED_OBJECT;
-    typeName = [aName retain];
 
     return self;
 }
@@ -183,9 +172,9 @@ static BOOL debugMerge = NO;
     return type == '@' && typeName == nil;
 }
 
-- (BOOL)isPointerToNamedObject;
+- (BOOL)isNamedObject;
 {
-    return type == '^' && [subtype type] == T_NAMED_OBJECT;
+    return type == T_NAMED_OBJECT;
 }
 
 - (CDType *)subtype;
@@ -619,14 +608,23 @@ static BOOL debugMerge = NO;
     NSUInteger otherCount;
     NSArray *otherMembers;
 
-    if ([self isIDType] && [otherType isPointerToNamedObject])
+    if ([self isIDType] && [otherType isNamedObject])
         return YES;
 
-    if ([self isPointerToNamedObject] && [otherType isIDType]) {
+    if ([self isNamedObject] && [otherType isIDType]) {
         return YES;
     }
 
     if ([self type] != [otherType type]) {
+        if (debugMerge) {
+            NSLog(@"--------------------");
+            NSLog(@"this: %@", [self typeString]);
+            NSLog(@"other: %@", [otherType typeString]);
+            NSLog(@"self isIDType? %u", [self isIDType]);
+            NSLog(@"self isNamedObject? %u", [self isNamedObject]);
+            NSLog(@"other isIDType? %u", [otherType isIDType]);
+            NSLog(@"other isNamedObject? %u", [otherType isNamedObject]);
+        }
         if (debugMerge) NSLog(@"%s, Can't merge because of type... %@ vs %@", _cmd, [self typeString], [otherType typeString]);
         return NO;
     }
@@ -699,17 +697,35 @@ static BOOL debugMerge = NO;
 // Recursively merges, not just the top level.
 - (void)mergeWithType:(CDType *)otherType;
 {
+    NSString *before, *after;
+
+    before = [self typeString];
+    [self _recursivelyMergeWithType:otherType];
+    after = [self typeString];
+    if (debugMerge) {
+        NSLog(@"----------------------------------------");
+        NSLog(@"%s", _cmd);
+        NSLog(@"before: %@", before);
+        NSLog(@" after: %@", after);
+        NSLog(@"----------------------------------------");
+    }
+}
+
+- (void)_recursivelyMergeWithType:(CDType *)otherType;
+{
     NSUInteger count, index;
     NSUInteger otherCount;
     NSArray *otherMembers;
 
-    if ([self isIDType] && [otherType isPointerToNamedObject]) {
-        type = '^';
-        subtype = [[otherType subtype] copy];
+    if ([self isIDType] && [otherType isNamedObject]) {
+        //NSLog(@"thisType: %@", [self typeString]);
+        //NSLog(@"otherType: %@", [otherType typeString]);
+        type = T_NAMED_OBJECT;
+        typeName = [[otherType typeName] copy];
         return;
     }
 
-    if ([self isPointerToNamedObject] && [otherType isIDType]) {
+    if ([self isNamedObject] && [otherType isIDType]) {
         return;
     }
 
@@ -718,7 +734,7 @@ static BOOL debugMerge = NO;
         return;
     }
 
-    [subtype mergeWithType:[otherType subtype]];
+    [subtype _recursivelyMergeWithType:[otherType subtype]];
 
     otherMembers = [otherType members];
     count = [members count];
@@ -771,7 +787,7 @@ static BOOL debugMerge = NO;
                 NSLog(@"Warning: Different variable names for same member...");
         }
 
-        [thisMember mergeWithType:otherMember];
+        [thisMember _recursivelyMergeWithType:otherMember];
     }
 }
 
@@ -823,144 +839,6 @@ static BOOL debugMerge = NO;
     return 0;
 }
 
-- (BOOL)canMergeTopLevelWithType:(CDType *)otherType;
-{
-    NSUInteger index;
-    NSUInteger thisCount, otherCount;
-    NSArray *otherMembers;
-
-    if ([self type] != [otherType type])
-        return NO;
-
-    if ([self type] != '{' && [self type] != '(')
-        return NO;
-
-    NSParameterAssert(subtype == nil);
-    NSParameterAssert([otherType subtype] == nil);
-
-    otherMembers = [otherType members];
-    thisCount = [members count];
-    otherCount = [otherMembers count];
-
-    //NSLog(@"members: %p", members);
-    //NSLog(@"otherMembers: %p", otherMembers);
-    //NSLog(@"%s, thisCount: %u, otherCount: %u", _cmd, thisCount, otherCount);
-
-    // count == 0 is ok: we just have a name in that case.
-    if (thisCount == 0 || otherCount == 0)
-        return YES;
-
-    if (thisCount != otherCount)
-        return NO;
-
-    for (index = 0; index < thisCount; index++) {
-        CDType *thisMember, *otherMember;
-        CDTypeName *thisTypeName, *otherTypeName;
-        NSString *thisVariableName, *otherVariableName;
-
-        thisMember = [members objectAtIndex:index];
-        otherMember = [otherMembers objectAtIndex:index];
-
-        //NSLog(@"types, this vs other: %u %u", [thisMember type], [otherMember type]);
-
-        if ([thisMember isIDType] && [otherMember isPointerToNamedObject]) {
-            NSLog(@"Treating %@ and %@ as close enough", [thisMember typeString], [otherMember typeString]);
-            continue;
-        }
-
-        if ([thisMember isPointerToNamedObject] && [otherMember isIDType]) {
-            NSLog(@"Treating %@ and %@ as close enough", [thisMember typeString], [otherMember typeString]);
-            continue;
-        }
-
-        thisTypeName = [thisMember typeName];
-        otherTypeName = [otherMember typeName];
-        thisVariableName = [thisMember variableName];
-        otherVariableName = [otherMember variableName];
-
-        // It seems to be okay if one of them didn't have a name
-        //NSLog(@"%2u: first: %@", index, [thisMember typeString]);
-        //NSLog(@"%2u: second: %@", index, [otherMember typeString]);
-        //NSLog(@"%2u: comparing type name %p to %p", index, thisTypeName, otherTypeName);
-        //NSLog(@"%2u: comparing type name %@ to %@", index, thisTypeName, otherTypeName);
-        if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
-            return NO;
-
-        if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO)
-            return NO;
-    }
-
-    return YES;
-}
-
-- (void)mergeTopLevelWithType:(CDType *)otherType;
-{
-    NSUInteger index;
-    NSUInteger thisCount, otherCount;
-    NSArray *otherMembers;
-
-    NSParameterAssert([self canMergeTopLevelWithType:otherType]);
-
-    if ([self type] != [otherType type])
-        return;
-
-    if ([self type] != '{' && [self type] != '(')
-        return;
-
-    otherMembers = [otherType members];
-    thisCount = [members count];
-    otherCount = [otherMembers count];
-
-    if (thisCount != 0 && otherCount != 0 && thisCount != otherCount)
-        return;
-
-    NSLog(@"%s,       before: %@", _cmd, [self typeString]);
-    NSLog(@"%s, merging with: %@", _cmd, [otherType typeString]);
-
-    for (index = 0; index < thisCount; index++) {
-        CDType *thisMember, *otherMember;
-        CDTypeName *thisTypeName, *otherTypeName;
-        NSString *thisVariableName, *otherVariableName;
-
-        thisMember = [members objectAtIndex:index];
-        otherMember = [otherMembers objectAtIndex:index];
-
-        //NSLog(@"types, this vs other: %u %u", [thisMember type], [otherMember type]);
-
-        if ([thisMember isIDType] && [otherMember isPointerToNamedObject]) {
-            CDType *copiedType;
-
-            NSLog(@"Treating %@ and %@ as close enough", [thisMember typeString], [otherMember typeString]);
-            copiedType = [otherMember copy];
-            [copiedType setVariableName:[thisMember variableName]]; // Worry about variable names _after_.
-            [members replaceObjectAtIndex:index withObject:copiedType];
-            thisMember = copiedType;
-            [copiedType release];
-        }
-
-        thisTypeName = [thisMember typeName];
-        otherTypeName = [otherMember typeName];
-        thisVariableName = [thisMember variableName];
-        otherVariableName = [otherMember variableName];
-
-        // It seems to be okay if one of them didn't have a name
-        //NSLog(@"%2u: first: %@", index, [thisMember typeString]);
-        //NSLog(@"%2u: second: %@", index, [otherMember typeString]);
-        //NSLog(@"%2u: comparing type name %p to %p", index, thisTypeName, otherTypeName);
-        //NSLog(@"%2u: comparing type name %@ to %@", index, thisTypeName, otherTypeName);
-#if 0
-        if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO)
-            return;// NO;
-
-        if (thisVariableName != nil && otherVariableName != nil && [thisVariableName isEqual:otherVariableName] == NO)
-            return;// NO;
-#endif
-    }
-
-    NSLog(@"%s,        after: %@", _cmd, [self typeString]);
-    NSLog(@"----------------------------------------------------------------------");
-}
-
 // An easy deep copy.
 - (id)copyWithZone:(NSZone *)zone;
 {
@@ -1003,6 +881,8 @@ static BOOL debugMerge = NO;
                 [self mergeWithType:phase2Type];
             } else {
                 NSLog(@"Found phase2 type, but can't merge with it.");
+                NSLog(@"this: %@", [self typeString]);
+                NSLog(@"that: %@", [phase2Type typeString]);
             }
         }
     }

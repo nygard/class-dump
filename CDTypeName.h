@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface CDTypeName : NSObject
+@interface CDTypeName : NSObject <NSCopying>
 {
     NSString *name;
     NSMutableArray *templateTypes;
@@ -27,5 +27,7 @@
 - (BOOL)isTemplateType;
 
 - (BOOL)isEqual:(id)otherObject;
+
+- (id)copyWithZone:(NSZone *)zone;
 
 @end
