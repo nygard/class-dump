@@ -159,6 +159,7 @@
     copy = [[CDStructureInfo alloc] initWithTypeString:typeString];
     [copy setReferenceCount:referenceCount];
     [copy setIsUsedInMethod:isUsedInMethod];
+    [copy setTypedefName:typedefName];
 
     return copy;
 }
