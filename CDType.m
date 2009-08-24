@@ -291,7 +291,7 @@ static BOOL debugMerge = NO;
               else
                   baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] && [@"?" isEqual:[typeName description]])
+              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self])
                   || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
@@ -324,7 +324,7 @@ static BOOL debugMerge = NO;
               else
                   baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] && [@"?" isEqual:[typeName description]])
+              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self])
                   || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
@@ -885,6 +885,15 @@ static BOOL debugMerge = NO;
                 NSLog(@"that: %@", [phase2Type typeString]);
             }
         }
+    }
+}
+
+- (void)phase3WithTypeController:(CDTypeController *)typeController;
+{
+    [subtype phase3WithTypeController:typeController];
+
+    for (CDType *member in members) {
+        [typeController phase3RegisterStructure:member /*count:1 usedInMethod:NO*/];
     }
 }
 

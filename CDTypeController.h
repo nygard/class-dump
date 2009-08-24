@@ -48,4 +48,9 @@
 - (BOOL)shouldShowName:(NSString *)name;
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 
+- (void)phase3RegisterStructure:(CDType *)aStructure;
+
+- (BOOL)shouldExpandType:(CDType *)type;
+- (NSString *)typedefNameForType:(CDType *)type;
+
 @end

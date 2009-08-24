@@ -78,4 +78,6 @@
 
 - (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
 
+- (void)phase3WithTypeController:(CDTypeController *)typeController;
+
 @end

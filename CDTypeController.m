@@ -104,12 +104,17 @@
 
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
-    CDType *searchType;
-    CDStructureTable *targetTable;
+    //CDType *searchType;
+    //CDStructureTable *targetTable;
 
     if (level == 0 && aFormatter == structDeclarationTypeFormatter)
         return nil;
 
+    if ([self shouldExpandType:structType] == NO)
+        return [self typedefNameForType:structType];
+
+    return nil;
+#if 0
     if ([structType type] == '{') {
         targetTable = structureTable;
     } else {
@@ -122,6 +127,7 @@
         searchType = structType;
 
     return [targetTable typedefNameForStructureType:searchType];
+#endif
 }
 
 - (void)endPhase:(NSUInteger)phase;
@@ -129,6 +135,8 @@
     if (phase == 0) {
         [structureTable finishPhase0];
         [unionTable finishPhase0];
+
+        //[structureTable logPhase0Info];
 
         // At the end of phase 0, we have a dictionary of CDStructureInfos (keyed by the typeString).
         // These record the number of times top level structures were references, their type string, and their type.
@@ -220,16 +228,6 @@
     [structureTable phase2ReplacementOnPhase0WithTypeController:self];
     [unionTable phase2ReplacementOnPhase0WithTypeController:self];
 
-    // Combine all of these as much as possible.
-    // Then.. add one reference for each substructure
-
-    [structureTable generateTypedefNames];
-    [structureTable generateMemberNames];
-
-    [unionTable generateTypedefNames];
-    [unionTable generateMemberNames];
-
-
     // Any info referenced by a method, or with >1 reference, gets typedef'd.
     // - Generate name hash based on full type string at this point
     // - Then fill in unnamed fields
@@ -241,6 +239,21 @@
     //     - add one reference for each subtype
     //   - otherwise just merge them.
     // - end result should be CDStructureInfos with counts and method reference flags
+    [structureTable buildPhase3Exceptions];
+    [unionTable buildPhase3Exceptions];
+
+    [structureTable phase3WithTypeController:self];
+    [structureTable logPhase3Info];
+
+    [unionTable phase3WithTypeController:self];
+
+
+    [structureTable generateTypedefNames];
+    [structureTable generateMemberNames];
+
+    [unionTable generateTypedefNames];
+    [unionTable generateMemberNames];
+
     // - All named structures (minus exceptions like struct _flags) get declared at the top level
     // - All anonymous structures (minus exceptions) referenced by a method
     //                                            OR references >1 time gets typedef'd at the top and referenced by typedef subsequently
@@ -283,6 +296,37 @@
 
     if ([type type] == '(')
         return [unionTable phase2ReplacementForType:type];
+
+    return nil;
+}
+
+- (void)phase3RegisterStructure:(CDType *)aStructure;
+{
+    if ([aStructure type] == '{')
+        [structureTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
+
+    if ([aStructure type] == '(')
+        [unionTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
+}
+
+- (BOOL)shouldExpandType:(CDType *)type;
+{
+    if ([type type] == '{')
+        return [structureTable shouldExpandType:type];
+
+    if ([type type] == '(')
+        return [unionTable shouldExpandType:type];
+
+    return NO;
+}
+
+- (NSString *)typedefNameForType:(CDType *)type;
+{
+    if ([type type] == '{')
+        return [structureTable typedefNameForType:type];
+
+    if ([type type] == '(')
+        return [unionTable typedefNameForType:type];
 
     return nil;
 }
