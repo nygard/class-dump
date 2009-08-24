@@ -238,9 +238,9 @@ static BOOL debugMerge = NO;
           assert(typeName != nil);
           [symbolReferences addClassName:[typeName name]];
           if (currentName == nil)
-              result = [typeName description];
+              result = [NSString stringWithFormat:@"%@ *", typeName];
           else
-              result = [NSString stringWithFormat:@"%@ %@", typeName, currentName];
+              result = [NSString stringWithFormat:@"%@ *%@", typeName, currentName];
           break;
 
       case '@':
@@ -291,7 +291,7 @@ static BOOL debugMerge = NO;
               else
                   baseType = [NSString stringWithFormat:@"union %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self])
+              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
                   || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
@@ -324,7 +324,7 @@ static BOOL debugMerge = NO;
               else
                   baseType = [NSString stringWithFormat:@"struct %@", typeName];
 
-              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self])
+              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
                   || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
                   memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                            [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
