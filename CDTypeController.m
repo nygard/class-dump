@@ -51,7 +51,7 @@
 
     classDump = nil;
 
-    [structureTable debugName:@"_NSRect"];
+    //[structureTable debugName:@"_xmlSAXHandler"];
 
     return self;
 }

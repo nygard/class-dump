@@ -39,7 +39,7 @@
 // Step 1: Just gather top level counts by unmodified type string.
 
 static BOOL debug = NO;
-static BOOL debugNamedStructures = YES;
+static BOOL debugNamedStructures = NO;
 static BOOL debugAnonStructures = NO;
 
 @implementation CDStructureTable
@@ -624,6 +624,7 @@ static BOOL debugAnonStructures = NO;
             info = [phase3_anonStructureInfo objectForKey:key];
             if (info == nil) {
                 info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+                [info setReferenceCount:referenceCount];
                 if (isUsedInMethod)
                     [info setIsUsedInMethod:isUsedInMethod];
                 [phase3_anonStructureInfo setObject:info forKey:key];
@@ -648,6 +649,7 @@ static BOOL debugAnonStructures = NO;
             if (info == nil) {
                 if ([debugNames containsObject:name]) NSLog(@"[%@] %s, info was nil for %@", identifier, _cmd, name);
                 info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+                [info setReferenceCount:referenceCount];
                 if (isUsedInMethod)
                     [info setIsUsedInMethod:isUsedInMethod];
                 [phase3_namedStructureInfo setObject:info forKey:name];
