@@ -150,18 +150,21 @@ static BOOL debug = NO;
 #if 1
     for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDStructureInfo *info;
-        CDType *type;
 
         info = [phase3_namedStructureInfo objectForKey:key];
-        type = [info type];
-        if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
-            NSString *formattedString;
+        if ([info isUsedInMethod] || [info referenceCount] > 1) {
+            CDType *type;
 
-            [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-            formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
-            if (formattedString != nil) {
-                [resultString appendString:formattedString];
-                [resultString appendString:@";\n\n"];
+            type = [info type];
+            if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
+                NSString *formattedString;
+
+                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
+                if (formattedString != nil) {
+                    [resultString appendString:formattedString];
+                    [resultString appendString:@";\n\n"];
+                }
             }
         }
     }
@@ -179,12 +182,14 @@ static BOOL debug = NO;
 {
 #if 1
     for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSString *formattedString;
+        if ([info isUsedInMethod] || [info referenceCount] > 1) {
+            NSString *formattedString;
 
-        formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
-        if (formattedString != nil) {
-            [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            }
         }
     }
 

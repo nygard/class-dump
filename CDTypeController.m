@@ -243,10 +243,8 @@
     [unionTable buildPhase3Exceptions];
 
     [structureTable phase3WithTypeController:self];
-    [structureTable logPhase3Info];
-
     [unionTable phase3WithTypeController:self];
-
+    //[structureTable logPhase3Info];
 
     [structureTable generateTypedefNames];
     [structureTable generateMemberNames];
@@ -279,7 +277,7 @@
         //NSLog(@"str =\n%@", str);
     }
 #endif
-    exit(99);
+    //exit(99);
 
     NSLog(@"<  %s", _cmd);
 }
