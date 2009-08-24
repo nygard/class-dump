@@ -39,6 +39,8 @@
 // Step 1: Just gather top level counts by unmodified type string.
 
 static BOOL debug = NO;
+static BOOL debugNamedStructures = YES;
+static BOOL debugAnonStructures = NO;
 
 @implementation CDStructureTable
 
@@ -147,19 +149,23 @@ static BOOL debug = NO;
                             formatter:(CDTypeFormatter *)aTypeFormatter
                      symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-#if 1
     for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDStructureInfo *info;
+        BOOL shouldShow;
 
         info = [phase3_namedStructureInfo objectForKey:key];
-        if ([info isUsedInMethod] || [info referenceCount] > 1) {
+        shouldShow = [info isUsedInMethod] || [info referenceCount] > 1;
+        if (shouldShow || debugNamedStructures) {
             CDType *type;
 
             type = [info type];
             if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
                 NSString *formattedString;
 
-                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                if (debugNamedStructures) {
+                    [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
+                    [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                }
                 formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
                 if (formattedString != nil) {
                     [resultString appendString:formattedString];
@@ -169,36 +175,43 @@ static BOOL debug = NO;
         }
     }
 
-    [resultString appendFormat:@"\n// Name exceptions:\n"];
-    for (NSString *str in [[phase3_nameExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
-        [resultString appendFormat:@"// %@\n", str];
-    [resultString appendString:@"\n"];
-#endif
+    if (debugNamedStructures) {
+        [resultString appendString:@"\n// Name exceptions:\n"];
+        for (NSString *str in [[phase3_nameExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
+            [resultString appendFormat:@"// %@\n", str];
+        [resultString appendString:@"\n"];
+    }
 }
 
 - (void)appendTypedefsToString:(NSMutableString *)resultString
                      formatter:(CDTypeFormatter *)aTypeFormatter
               symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-#if 1
     for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        if ([info isUsedInMethod] || [info referenceCount] > 1) {
+        BOOL shouldShow;
+
+        shouldShow = [info isUsedInMethod] || [info referenceCount] > 1;
+        if (shouldShow || debugAnonStructures) {
             NSString *formattedString;
 
-            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
-            if (formattedString != nil) {
+            if (debugAnonStructures) {
+                [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
                 [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
                 [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+            }
+            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
             }
         }
     }
 
-    [resultString appendFormat:@"\n// Anon exceptions:\n"];
-    for (NSString *str in [[phase3_anonExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
-        [resultString appendFormat:@"// %@\n", str];
-    [resultString appendString:@"\n"];
-#endif
+    if (debugAnonStructures) {
+        [resultString appendString:@"\n// Anon exceptions:\n"];
+        for (NSString *str in [[phase3_anonExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
+            [resultString appendFormat:@"// %@\n", str];
+        [resultString appendString:@"\n"];
+    }
 }
 
 // Now I just want a list of the named structures
