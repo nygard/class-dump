@@ -384,20 +384,11 @@ static BOOL debugMerge = NO;
 - (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSMutableString *str;
-    CDType *replacementType;
-    NSArray *targetMembers;
 
     assert(type == '{' || type == '(');
     str = [NSMutableString string];
 
-    // The replacement type will have member names, while ours don't.
-    replacementType = [typeFormatter replacementForType:self];
-    if (replacementType != nil) {
-        targetMembers = [replacementType members];
-    } else
-        targetMembers = members;
-
-    for (CDType *member in targetMembers) {
+    for (CDType *member in members) {
         [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
         [str appendString:[member formattedString:nil
                                   formatter:typeFormatter
@@ -888,12 +879,37 @@ static BOOL debugMerge = NO;
     }
 }
 
-- (void)phase3WithTypeController:(CDTypeController *)typeController;
+- (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
 {
-    [subtype phase3WithTypeController:typeController];
+    [subtype phase3RegisterWithTypeController:typeController];
 
     for (CDType *member in members) {
         [typeController phase3RegisterStructure:member /*count:1 usedInMethod:NO*/];
+    }
+}
+
+// Bottom-up
+- (void)phase3MergeWithTypeController:(CDTypeController *)typeController;
+{
+    [subtype phase3MergeWithTypeController:typeController];
+
+    for (CDType *member in members)
+        [member phase3MergeWithTypeController:typeController];
+
+    if ((type == '{' || type == '(') && [members count] > 0) {
+        CDType *phase3Type;
+
+        phase3Type = [typeController phase3ReplacementForType:self];
+        if (phase3Type != nil) {
+            // >0 members so we don't try replacing things like... {_xmlNode=^{_xmlNode}}
+            if ([members count] > 0 && [self canMergeWithType:phase3Type]) {
+                [self mergeWithType:phase3Type];
+            } else {
+                NSLog(@"Found phase3 type, but can't merge with it.");
+                NSLog(@"this: %@", [self typeString]);
+                NSLog(@"that: %@", [phase3Type typeString]);
+            }
+        }
     }
 }
 

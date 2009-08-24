@@ -348,7 +348,8 @@
     [typeController startPhase2];
     //exit(98);
 
-    //[typeController generateMemberNames];
+    [typeController generateTypedefNames];
+    [typeController generateMemberNames];
 }
 
 - (void)showHeader;

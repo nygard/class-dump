@@ -37,6 +37,7 @@
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 
+- (void)generateTypedefNames;
 - (void)generateMemberNames;
 
 - (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
@@ -49,6 +50,7 @@
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 
 - (void)phase3RegisterStructure:(CDType *)aStructure;
+- (CDType *)phase3ReplacementForType:(CDType *)type;
 
 - (BOOL)shouldExpandType:(CDType *)type;
 - (NSString *)typedefNameForType:(CDType *)type;

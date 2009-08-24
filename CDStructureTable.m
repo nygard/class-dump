@@ -187,6 +187,7 @@ static BOOL debug = NO;
 
             formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
             if (formattedString != nil) {
+                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
                 [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
             }
@@ -198,17 +199,6 @@ static BOOL debug = NO;
         [resultString appendFormat:@"// %@\n", str];
     [resultString appendString:@"\n"];
 #endif
-}
-
-- (CDType *)replacementForType:(CDType *)aType;
-{
-    return nil;
-    //return [anonymousStructuresByType objectForKey:[replacementSignatures objectForKey:[aType keyTypeString]]];
-}
-
-- (NSString *)typedefNameForStructureType:(CDType *)aType;
-{
-    return nil;
 }
 
 // Now I just want a list of the named structures
@@ -410,6 +400,10 @@ static BOOL debug = NO;
                 if ([[combined type] canMergeWithType:[info type]]) {
                     [[combined type] mergeWithType:[info type]];
                     [combined addReferenceCount:[info referenceCount]];
+#if 0
+                    if ([info isUsedInMethod])
+                        [combined setIsUsedInMethod:YES];
+#endif
                 } else {
                     canBeCombined = NO;
                     break;
@@ -440,10 +434,18 @@ static BOOL debug = NO;
         for (CDStructureInfo *info in group) {
             if (combined == nil) {
                 combined = [info copy];
+                //NSLog(@"info: %@", [info shortDescription]);
+                //NSLog(@"combined: %@", [combined shortDescription]);
             } else {
+                //NSLog(@"old: %@", [combined shortDescription]);
+                //NSLog(@"new: %@", [info shortDescription]);
                 if ([[combined type] canMergeWithType:[info type]]) {
                     [[combined type] mergeWithType:[info type]];
                     [combined addReferenceCount:[info referenceCount]];
+#if 0
+                    if ([info isUsedInMethod])
+                        [combined setIsUsedInMethod:YES];
+#endif
                 } else {
                     NSLog(@"previous: %@", [[combined type] typeString]);
                     NSLog(@"    This: %@", [[info type] typeString]);
@@ -572,17 +574,20 @@ static BOOL debug = NO;
         CDStructureInfo *info;
 
         key = [aStructure reallyBareTypeString];
+        //NSLog(@"key: %@, isUsedInMethod: %u", key, isUsedInMethod);
         if ([phase3_anonExceptions containsObject:key]) {
             NSLog(@"%s, anon key %@ has exception from phase 2", _cmd, key);
         } else {
             info = [phase3_anonStructureInfo objectForKey:key];
             if (info == nil) {
                 info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+                if (isUsedInMethod)
+                    [info setIsUsedInMethod:isUsedInMethod];
                 [phase3_anonStructureInfo setObject:info forKey:key];
                 [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [aStructure phase3WithTypeController:typeController];
+                [aStructure phase3RegisterWithTypeController:typeController];
             } else {
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
@@ -602,7 +607,7 @@ static BOOL debug = NO;
                 [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [aStructure phase3WithTypeController:typeController];
+                [aStructure phase3RegisterWithTypeController:typeController];
             } else {
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
@@ -634,6 +639,20 @@ static BOOL debug = NO;
     }
 
     NSLog(@"[%@] <  %s", identifier, _cmd);
+}
+
+- (CDType *)phase3ReplacementForType:(CDType *)type;
+{
+    NSString *name;
+
+    name = [[type typeName] description];
+    if ([@"?" isEqualToString:name]) {
+        return [(CDStructureInfo *)[phase3_anonStructureInfo objectForKey:[type reallyBareTypeString]] type];
+    } else {
+        return [(CDStructureInfo *)[phase3_namedStructureInfo objectForKey:name] type];
+    }
+
+    return nil;
 }
 
 // For automatic expansion?

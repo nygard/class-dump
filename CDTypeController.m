@@ -93,12 +93,13 @@
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 {
+#if 0
     if ([aType type] == '{')
         return [structureTable replacementForType:aType];
 
     if ([aType type] == '(')
         return [unionTable replacementForType:aType];
-
+#endif
     return nil;
 }
 
@@ -114,20 +115,6 @@
         return [self typedefNameForType:structType];
 
     return nil;
-#if 0
-    if ([structType type] == '{') {
-        targetTable = structureTable;
-    } else {
-        targetTable = unionTable;
-    }
-
-    // We need to catch top level replacements, not just replacements for struct members.
-    searchType = [targetTable replacementForType:structType];
-    if (searchType == nil)
-        searchType = structType;
-
-    return [targetTable typedefNameForStructureType:searchType];
-#endif
 }
 
 - (void)endPhase:(NSUInteger)phase;
@@ -159,6 +146,13 @@
 
     [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
     [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+}
+
+// Call this before calling generateMemberNames.
+- (void)generateTypedefNames;
+{
+    [structureTable generateTypedefNames];
+    [unionTable generateTypedefNames];
 }
 
 - (void)generateMemberNames;
@@ -246,11 +240,11 @@
     [unionTable phase3WithTypeController:self];
     //[structureTable logPhase3Info];
 
-    [structureTable generateTypedefNames];
-    [structureTable generateMemberNames];
+    //[structureTable generateTypedefNames];
+    //[structureTable generateMemberNames];
 
-    [unionTable generateTypedefNames];
-    [unionTable generateMemberNames];
+    //[unionTable generateTypedefNames];
+    //[unionTable generateMemberNames];
 
     // - All named structures (minus exceptions like struct _flags) get declared at the top level
     // - All anonymous structures (minus exceptions) referenced by a method
@@ -261,7 +255,7 @@
     // CDTypeController - (BOOL)shouldExpandType:(CDType *)type;
     // CDTypeController - (NSString *)typedefNameForType:(CDType *)type;
 
-#if 1
+#if 0
     {
         NSMutableString *str;
 
@@ -277,7 +271,6 @@
         //NSLog(@"str =\n%@", str);
     }
 #endif
-    //exit(99);
 
     NSLog(@"<  %s", _cmd);
 }
@@ -305,6 +298,17 @@
 
     if ([aStructure type] == '(')
         [unionTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
+}
+
+- (CDType *)phase3ReplacementForType:(CDType *)type;
+{
+    if ([type type] == '{')
+        return [structureTable phase3ReplacementForType:type];
+
+    if ([type type] == '(')
+        return [unionTable phase3ReplacementForType:type];
+
+    return nil;
 }
 
 - (BOOL)shouldExpandType:(CDType *)type;

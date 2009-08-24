@@ -160,6 +160,7 @@ static BOOL debug = NO;
         [resultString appendString:specialCase];
     } else {
         [type setVariableName:name];
+        [type phase3MergeWithTypeController:[self typeController]];
         [resultString appendString:[type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
     }
 
