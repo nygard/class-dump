@@ -365,4 +365,11 @@ static BOOL debug = NO;
     return [nonretainedTypeController typeFormatter:self typedefNameForStruct:structType level:level];
 }
 
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %u, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
+                     NSStringFromClass([self class]), self,
+                     baseLevel, flags.shouldExpand, flags.shouldAutoExpand, flags.shouldShowLexing, nonretainedTypeController];
+}
+
 @end
