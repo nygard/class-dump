@@ -221,6 +221,7 @@
 		01AD08510FF7F494008E6A49 /* CDLCDylinker.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AD084F0FF7F494008E6A49 /* CDLCDylinker.m */; };
 		01AD08670FF7F6EA008E6A49 /* CDLCRoutines32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AD08650FF7F6EA008E6A49 /* CDLCRoutines32.m */; };
 		01AD086E0FF7F741008E6A49 /* CDLCRoutines64.m in Sources */ = {isa = PBXBuildFile; fileRef = 01AD086C0FF7F741008E6A49 /* CDLCRoutines64.m */; };
+		01B0428510422561009643BE /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
 		01B456A6103923F80062EF62 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
 		01B456A7103923F80062EF62 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
 		01B456A8103923F80062EF62 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
@@ -566,6 +567,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01B0428510422561009643BE /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
