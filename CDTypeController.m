@@ -51,6 +51,8 @@
 
     classDump = nil;
 
+    [structureTable debugName:@"_NSRect"];
+
     return self;
 }
 
@@ -217,6 +219,8 @@
     }
 
     //[structureTable logPhase2Info];
+    [structureTable finishPhase2];
+    [unionTable finishPhase2];
 
     // do phase2 merge on all the types from phase 0
     [structureTable phase2ReplacementOnPhase0WithTypeController:self];
@@ -238,6 +242,9 @@
 
     [structureTable phase3WithTypeController:self];
     [unionTable phase3WithTypeController:self];
+
+    [structureTable finishPhase3];
+    [unionTable finishPhase3];
     //[structureTable logPhase3Info];
 
     //[structureTable generateTypedefNames];
