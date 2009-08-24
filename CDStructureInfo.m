@@ -107,7 +107,7 @@
         digest = [digest substringFromIndex:length - 8];
 
     [self setTypedefName:[NSString stringWithFormat:@"%@%@", baseName, digest]];
-    NSLog(@"typedefName: %@", typedefName);
+    //NSLog(@"typedefName: %@", typedefName);
 }
 
 - (NSString *)description;

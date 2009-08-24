@@ -38,7 +38,7 @@
 
 // Step 1: Just gather top level counts by unmodified type string.
 
-static BOOL debug = YES;
+static BOOL debug = NO;
 
 @implementation CDStructureTable
 
@@ -289,7 +289,7 @@ static BOOL debug = YES;
 
 - (void)finishPhase1;
 {
-    NSLog(@"%s ======================================================================", _cmd);
+    //NSLog(@"%s ======================================================================", _cmd);
 
     // The deepest union may not be at the top level (buried in a structure instead), so need to get the depth here.
     // But we'll take the max of structure and union depths in the CDTypeController anyway.
@@ -301,7 +301,7 @@ static BOOL debug = YES;
         if (phase1_maxDepth < depth)
             phase1_maxDepth = depth;
     }
-    NSLog(@"[%@] Maximum structure depth is: %u", identifier, phase1_maxDepth);
+    //NSLog(@"[%@] Maximum structure depth is: %u", identifier, phase1_maxDepth);
 
     {
         for (CDStructureInfo *info in [phase1_structureInfo allValues]) {
@@ -320,7 +320,7 @@ static BOOL debug = YES;
             }
         }
 
-        NSLog(@"depth groups: %@", [[phase1_groupedByDepth allKeys] sortedArrayUsingSelector:@selector(compare:)]);
+        //NSLog(@"depth groups: %@", [[phase1_groupedByDepth allKeys] sortedArrayUsingSelector:@selector(compare:)]);
     }
 }
 
@@ -340,14 +340,14 @@ static BOOL debug = YES;
     NSArray *infos;
     NSMutableDictionary *nameDict, *anonDict;
 
-    NSLog(@"[%@] %s, depth: %u", identifier, _cmd, depth);
+    //NSLog(@"[%@] %s, depth: %u", identifier, _cmd, depth);
     depthKey = [NSNumber numberWithUnsignedInt:depth];
     infos = [phase1_groupedByDepth objectForKey:depthKey];
 
     for (CDStructureInfo *info in infos) {
         // recursively (bottom up) try to merge substructures into that type, to get names/full types
-        NSLog(@"----------------------------------------");
-        NSLog(@"Trying phase2Merge with on %@", [[info type] typeString]);
+        //NSLog(@"----------------------------------------");
+        //NSLog(@"Trying phase2Merge with on %@", [[info type] typeString]);
         [[info type] phase2MergeWithTypeController:typeController];
     }
 
@@ -415,6 +415,7 @@ static BOOL debug = YES;
         if (canBeCombined) {
             [phase2_namedStructureInfo setObject:combined forKey:key];
         } else {
+            NSLog(@"----------------------------------------");
             NSLog(@"Can't be combined: %@", key);
             NSLog(@"group: %@", group);
             [phase2_nameExceptions addObjectsFromArray:group];
@@ -423,7 +424,7 @@ static BOOL debug = YES;
         [combined release];
     }
 
-    NSLog(@"======================================================================");
+    //NSLog(@"======================================================================");
     for (NSString *key in [anonDict allKeys]) {
         NSMutableArray *group;
         CDStructureInfo *combined = nil;
@@ -450,6 +451,7 @@ static BOOL debug = YES;
         if (canBeCombined) {
             [phase2_anonStructureInfo setObject:combined forKey:key];
         } else {
+            NSLog(@"----------------------------------------");
             NSLog(@"Can't be combined: %@", key);
             NSLog(@"group: %@", group);
             [phase2_anonExceptions addObjectsFromArray:group];
@@ -541,13 +543,13 @@ static BOOL debug = YES;
 
 - (void)phase3WithTypeController:(CDTypeController *)typeController;
 {
-    NSLog(@"[%@]  > %s", identifier, _cmd);
+    //NSLog(@"[%@]  > %s", identifier, _cmd);
 
     for (CDStructureInfo *info in [[phase0_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         [self phase3RegisterStructure:[info type] count:[info referenceCount] usedInMethod:[info isUsedInMethod] typeController:typeController];
     }
 
-    NSLog(@"[%@] <  %s", identifier, _cmd);
+    //NSLog(@"[%@] <  %s", identifier, _cmd);
 }
 
 - (void)phase3RegisterStructure:(CDType *)aStructure
@@ -557,7 +559,7 @@ static BOOL debug = YES;
 {
     NSString *name;
 
-    NSLog(@"[%@]  > %s", identifier, _cmd);
+    //NSLog(@"[%@]  > %s", identifier, _cmd);
 
     name = [[aStructure typeName] description];
     if ([@"?" isEqualToString:name]) {
@@ -604,7 +606,7 @@ static BOOL debug = YES;
         }
     }
 
-    NSLog(@"[%@] <  %s", identifier, _cmd);
+    //NSLog(@"[%@] <  %s", identifier, _cmd);
 }
 
 - (void)logPhase3Info;
