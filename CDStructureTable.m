@@ -17,28 +17,6 @@
 #import "CDTypeParser.h"
 #import "CDStructureInfo.h"
 
-// Phase 1, registration: Only looks at anonymous (no name, or name is "?") structures
-// Phase 1, finish: - sets up replacementSignatures
-// Phase 1, results: - replacementSignatures used in phase 2, remapping of some sort
-//                   - replacementSignatures used in -replacementForType:
-//
-// The goal of phase 1 is to build a mapping of annonymous structures that don't have member names, to unambiguous keyTypeStrings that do have member names.
-// For example, if we have a union (?="thin"[128c]"fat"[128S]), this generates this mapping:
-//     (?=[128c][128S]) = (?="thin"[128c]"fat"[128S])
-// So if we find unions like this (?=[128c][128S]), we can replace it with one that has member names.
-// On the other hand, if we have two unions that have different member names but have the same structure, we can't unambigously map from the bareTypeString to one with member names.
-// For example, (?="thin"[128c]"fat"[128S]) and (?="foo"[128c]"bar"[128S]) both have (?=[128c][128S]) as the bareTypeString.
-
-// In a marvel of efficiency, it looks like we parse every type _three_ times!
-
-// Phase 0: Try sorting by structure nesting level
-
-// - need to find structure member names.
-// - Types used in methods need to be declared at the top level.
-
-
-// Step 1: Just gather top level counts by unmodified type string.
-
 static BOOL debug = NO;
 static BOOL debugNamedStructures = NO;
 static BOOL debugAnonStructures = NO;
