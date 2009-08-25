@@ -927,4 +927,18 @@ static BOOL debugMerge = NO;
     }
 }
 
+- (void)phase0RecursivelyFixStructureNames;
+{
+    [subtype phase0RecursivelyFixStructureNames];
+
+    if ([[typeName name] hasPrefix:@"$"]) {
+        NSLog(@"%s, changing type name %@ to ?", _cmd, [typeName name]);
+        [typeName setName:@"?"];
+    }
+
+    for (CDType *member in members)
+        [member phase0RecursivelyFixStructureNames];
+}
+
+
 @end

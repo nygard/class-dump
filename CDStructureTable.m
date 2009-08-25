@@ -300,6 +300,10 @@ static BOOL debugAnonStructures = NO;
 
 - (void)finishPhase0;
 {
+    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
+        [[info type] phase0RecursivelyFixStructureNames];
+    }
+
     if ([debugNames count] > 0) {
         NSLog(@"======================================================================");
         NSLog(@"[%@] %s", identifier, _cmd);
