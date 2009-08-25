@@ -206,7 +206,7 @@ static BOOL debugAnonStructures = NO;
 
             if (hasShownExceptions == NO) {
                 [resultString appendString:@"#if 0\n"];
-                [resultString appendString:@"// Names used in methods that have conflicting types:\n"];
+                [resultString appendString:@"// Names with conflicting types, that are used in methods:\n"];
                 hasShownExceptions = YES;
             }
 
