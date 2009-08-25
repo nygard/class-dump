@@ -85,6 +85,14 @@
     return [[[self decomposedStringWithCanonicalMapping] dataUsingEncoding:NSUTF8StringEncoding] SHA1DigestString];
 }
 
+- (BOOL)hasUnderscoreCapitalPrefix;
+{
+    if ([self length] < 2)
+        return NO;
+
+    return [self hasPrefix:@"_"] && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:1]];
+}
+
 @end
 
 @implementation NSMutableString (CDExtensions)

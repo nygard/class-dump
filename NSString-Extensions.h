@@ -20,6 +20,8 @@
 
 - (NSString *)SHA1DigestString;
 
+- (BOOL)hasUnderscoreCapitalPrefix;
+
 @end
 
 @interface NSMutableString (CDExtensions)

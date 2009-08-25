@@ -6,6 +6,8 @@
 #import "CDStructureTable.h"
 
 #import "NSArray-Extensions.h"
+#import "NSError-CDExtensions.h"
+#import "NSString-Extensions.h"
 #import "CDClassDump.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
@@ -13,7 +15,6 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeName.h"
 #import "CDTypeParser.h"
-#import "NSError-CDExtensions.h"
 #import "CDStructureInfo.h"
 
 // Phase 1, registration: Only looks at anonymous (no name, or name is "?") structures
@@ -798,7 +799,11 @@ static BOOL debugAnonStructures = NO;
 
 - (BOOL)shouldExpandStructureInfo:(CDStructureInfo *)info;
 {
-    return (info == nil) || ([info isUsedInMethod] == NO && [info referenceCount] < 2 && ([[info name] hasPrefix:@"_"] || [@"?" isEqualToString:[info name]]));
+    return (info == nil)
+        || ([info isUsedInMethod] == NO
+            && [info referenceCount] < 2
+            && (([[info name] hasPrefix:@"_"] && [[info name] hasUnderscoreCapitalPrefix] == NO)
+                || [@"?" isEqualToString:[info name]]));
 }
 
 // For automatic expansion?
