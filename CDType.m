@@ -871,9 +871,11 @@ static BOOL debugMerge = NO;
             if ([members count] > 0 && [self canMergeWithType:phase2Type]) {
                 [self mergeWithType:phase2Type];
             } else {
-                NSLog(@"Found phase2 type, but can't merge with it.");
-                NSLog(@"this: %@", [self typeString]);
-                NSLog(@"that: %@", [phase2Type typeString]);
+                if (0) {
+                    NSLog(@"Found phase2 type, but can't merge with it.");
+                    NSLog(@"this: %@", [self typeString]);
+                    NSLog(@"that: %@", [phase2Type typeString]);
+                }
             }
         }
     }
