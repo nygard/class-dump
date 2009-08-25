@@ -195,7 +195,7 @@ static BOOL debugAnonStructures = NO;
         }
     }
 
-    for (CDStructureInfo *info in phase2_nameExceptions) {
+    for (CDStructureInfo *info in [phase2_nameExceptions sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         if ([phase3_inMethodNameExceptions containsObject:[info name]]) {
             CDType *type;
 
