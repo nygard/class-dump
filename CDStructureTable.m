@@ -68,6 +68,8 @@ static BOOL debugAnonStructures = NO;
     phase3_nameExceptions = [[NSMutableSet alloc] init];
     phase3_anonExceptions = [[NSMutableSet alloc] init];
 
+    phase3_inMethodNameExceptions = [[NSMutableSet alloc] init];
+
     flags.shouldDebug = NO;
 
     debugNames = [[NSMutableSet alloc] init];
@@ -95,6 +97,8 @@ static BOOL debugAnonStructures = NO;
     [phase3_anonStructureInfo release];
     [phase3_nameExceptions release];
     [phase3_anonExceptions release];
+
+    [phase3_inMethodNameExceptions release];
 
     [debugNames release];
     [debugAnon release];
@@ -157,6 +161,7 @@ static BOOL debugAnonStructures = NO;
                              markName:(NSString *)markName;
 {
     BOOL hasAddedMark = NO;
+    BOOL hasShownExceptions = NO;
 
     for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDStructureInfo *info;
@@ -188,6 +193,39 @@ static BOOL debugAnonStructures = NO;
             }
         }
     }
+
+    for (CDStructureInfo *info in phase2_nameExceptions) {
+        if ([phase3_inMethodNameExceptions containsObject:[info name]]) {
+            CDType *type;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
+
+            if (hasShownExceptions == NO) {
+                [resultString appendString:@"#if 0\n"];
+                [resultString appendString:@"// Names used in methods that have conflicting types:\n"];
+                hasShownExceptions = YES;
+            }
+
+            type = [info type];
+            if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
+                NSString *formattedString;
+
+                if (debugNamedStructures) {
+                    [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                }
+                formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
+                if (formattedString != nil) {
+                    [resultString appendString:formattedString];
+                    [resultString appendString:@";\n\n"];
+                }
+            }
+        }
+    }
+    if (hasShownExceptions)
+        [resultString appendString:@"#endif\n\n"];
 
     if (debugNamedStructures) {
         [resultString appendString:@"\n// Name exceptions:\n"];
@@ -667,6 +705,8 @@ static BOOL debugAnonStructures = NO;
         //NSLog(@"[%@] %s, name: %@", identifier, _cmd, name);
         if ([phase3_nameExceptions containsObject:name]) {
             if (debugNamedStructures) NSLog(@"%s, name %@ has exception from phase 2", _cmd, name);
+            if (isUsedInMethod)
+                [phase3_inMethodNameExceptions addObject:name];
         } else {
             info = [phase3_namedStructureInfo objectForKey:name];
             if (info == nil) {

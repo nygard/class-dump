@@ -57,6 +57,7 @@
     //[structureTable debugName:@"ppd_group_s"];
     //[structureTable debugName:@"stat"];
     //[structureTable debugName:@"timespec"];
+    //[structureTable debugName:@"AudioUnitEvent"];
 
     return self;
 }

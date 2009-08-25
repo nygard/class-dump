@@ -38,6 +38,8 @@ typedef NSUInteger CDTableType;
     NSMutableSet *phase3_nameExceptions; // Of NSString
     NSMutableSet *phase3_anonExceptions; // Of NSString
 
+    NSMutableSet *phase3_inMethodNameExceptions; // Of NSString
+
     struct {
         unsigned int shouldDebug:1;
     } flags;
