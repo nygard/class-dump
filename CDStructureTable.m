@@ -160,7 +160,7 @@ static BOOL debugAnonStructures = NO;
         BOOL shouldShow;
 
         info = [phase3_namedStructureInfo objectForKey:key];
-        shouldShow = [info isUsedInMethod] || [info referenceCount] > 1;
+        shouldShow = ![self shouldExpandStructureInfo:info];
         if (shouldShow || debugNamedStructures) {
             CDType *type;
 
@@ -196,7 +196,7 @@ static BOOL debugAnonStructures = NO;
     for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         BOOL shouldShow;
 
-        shouldShow = [info isUsedInMethod] || [info referenceCount] > 1;
+        shouldShow = ![self shouldExpandStructureInfo:info];
         if (shouldShow || debugAnonStructures) {
             NSString *formattedString;
 
@@ -723,6 +723,11 @@ static BOOL debugAnonStructures = NO;
     return nil;
 }
 
+- (BOOL)shouldExpandStructureInfo:(CDStructureInfo *)info;
+{
+    return (info == nil) || ([info isUsedInMethod] == NO && [info referenceCount] < 2 && ([[info name] hasPrefix:@"_"] || [@"?" isEqualToString:[info name]]));
+}
+
 // For automatic expansion?
 - (BOOL)shouldExpandType:(CDType *)type;
 {
@@ -739,7 +744,7 @@ static BOOL debugAnonStructures = NO;
         info = [phase3_namedStructureInfo objectForKey:name];
     }
 
-    return (info == nil) || ([info isUsedInMethod] == NO && [info referenceCount] < 2);
+    return [self shouldExpandStructureInfo:info];
 }
 
 - (NSString *)typedefNameForType:(CDType *)type;

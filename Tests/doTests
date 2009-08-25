@@ -10,7 +10,7 @@ OLD_CD=~/Unix/bin/class-dump
 NEW_CD=/Local/nygard/Products/Debug/class-dump
 
 # Must be a version that supports --list-arches
-ARCH_CD=/Local/nygard/Products/DEBUG/class-dump
+ARCH_CD=/Local/nygard/Products/Debug/class-dump
 
 FRAMEWORKS=(/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Developer/Library/Frameworks/*.framework /Developer/Library/PrivateFrameworks/*.framework)
 APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /System/Library/CoreServices/*.app)

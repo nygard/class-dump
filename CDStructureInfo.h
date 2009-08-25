@@ -35,6 +35,8 @@
 
 - (void)generateTypedefName:(NSString *)baseName;
 
+- (NSString *)name;
+
 - (NSString *)description;
 - (NSString *)shortDescription;
 

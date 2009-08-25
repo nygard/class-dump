@@ -110,6 +110,11 @@
     //NSLog(@"typedefName: %@", typedefName);
 }
 
+- (NSString *)name;
+{
+    return [[type typeName] description];
+}
+
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, typeString: %@, type: %p",

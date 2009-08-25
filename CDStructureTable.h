@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDType, CDSymbolReferences, CDTypeController, CDTypeFormatter;
+@class CDClassDump, CDType, CDStructureInfo, CDSymbolReferences, CDTypeController, CDTypeFormatter;
 
 enum {
     CDTableTypeStructure = 0,
@@ -98,6 +98,7 @@ typedef NSUInteger CDTableType;
 - (void)logPhase3Info;
 - (CDType *)phase3ReplacementForType:(CDType *)type;
 
+- (BOOL)shouldExpandStructureInfo:(CDStructureInfo *)info;
 - (BOOL)shouldExpandType:(CDType *)type;
 - (NSString *)typedefNameForType:(CDType *)type;
 
