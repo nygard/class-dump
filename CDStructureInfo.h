@@ -9,7 +9,6 @@
 
 @interface CDStructureInfo : NSObject <NSCopying>
 {
-    NSString *typeString; // Before any merging
     NSUInteger referenceCount;
     CDType *type;
     BOOL isUsedInMethod;
@@ -20,7 +19,6 @@
 - (id)initWithTypeString:(NSString *)str;
 - (void)dealloc;
 
-- (NSString *)typeString;
 - (CDType *)type;
 
 - (NSUInteger)referenceCount;

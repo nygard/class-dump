@@ -19,14 +19,13 @@
     if ([super init] == nil)
         return nil;
 
-    typeString = [str retain];
     referenceCount = 1;
 
     {
         CDTypeParser *parser;
         NSError *error;
 
-        parser = [[CDTypeParser alloc] initWithType:typeString];
+        parser = [[CDTypeParser alloc] initWithType:str];
         type = [[parser parseType:&error] retain];
         if (type == nil)
             NSLog(@"Warning: (CDStructInfo) Parsing struct type failed, %@", [error myExplanation]);
@@ -40,15 +39,9 @@
 
 - (void)dealloc;
 {
-    [typeString release];
     [type release];
 
     [super dealloc];
-}
-
-- (NSString *)typeString;
-{
-    return typeString;
 }
 
 - (CDType *)type;
@@ -117,14 +110,14 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, typeString: %@, type: %p",
+    return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, type: %p",
                      NSStringFromClass([self class]), self,
-                     [type structureDepth], referenceCount, isUsedInMethod, typeString, type];
+                     [type structureDepth], referenceCount, isUsedInMethod, type];
 }
 
 - (NSString *)shortDescription;
 {
-    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", [type structureDepth], referenceCount, isUsedInMethod, [type bareTypeString], typeString];
+    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", [type structureDepth], referenceCount, isUsedInMethod, [type bareTypeString], [type typeString]];
 }
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
@@ -139,7 +132,7 @@
     else if (thisDepth > otherDepth)
         return NSOrderedDescending;
 
-    return [typeString compare:[otherInfo typeString]];
+    return [[type typeString] compare:[[otherInfo type] typeString]];
 }
 
 - (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
@@ -154,14 +147,14 @@
     else if (thisDepth > otherDepth)
         return NSOrderedAscending;
 
-    return [typeString compare:[otherInfo typeString]];
+    return [[type typeString] compare:[[otherInfo type] typeString]];
 }
 
 - (id)copyWithZone:(NSZone *)zone;
 {
     CDStructureInfo *copy;
 
-    copy = [[CDStructureInfo alloc] initWithTypeString:typeString];
+    copy = [[CDStructureInfo alloc] initWithTypeString:[type typeString]];
     [copy setReferenceCount:referenceCount];
     [copy setIsUsedInMethod:isUsedInMethod];
     [copy setTypedefName:typedefName];
