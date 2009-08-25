@@ -52,6 +52,8 @@
     classDump = nil;
 
     //[structureTable debugName:@"_xmlSAXHandler"];
+    //[structureTable debugName:@"UCKeyboardTypeHeader"];
+    //[structureTable debugName:@"UCKeyboardLayout"];
 
     return self;
 }
@@ -197,21 +199,21 @@
 // It does this by going through all the top level structures we found in phase 0.
 - (void)startPhase1;
 {
-    NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", _cmd);
     // Structures and unions can be nested.
     [structureTable phase1WithTypeController:self];
     [unionTable phase1WithTypeController:self];
 
     [structureTable finishPhase1];
     [unionTable finishPhase1];
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 }
 
 - (void)startPhase2;
 {
     NSUInteger maxDepth, depth;
 
-    NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", _cmd);
 
     maxDepth = [structureTable phase1_maxDepth];
     if (maxDepth < [unionTable phase1_maxDepth])
@@ -283,7 +285,7 @@
     }
 #endif
 
-    NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", _cmd);
 }
 
 - (BOOL)shouldShowName:(NSString *)name;
@@ -304,6 +306,7 @@
 
 - (void)phase3RegisterStructure:(CDType *)aStructure;
 {
+    //NSLog(@"%s, type= %@", _cmd, [aStructure typeString]);
     if ([aStructure type] == '{')
         [structureTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
 

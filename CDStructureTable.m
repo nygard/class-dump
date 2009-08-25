@@ -543,7 +543,7 @@ static BOOL debugAnonStructures = NO;
 
 - (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
 {
-    NSLog(@"[%@]  > %s", identifier, _cmd);
+    //NSLog(@"[%@]  > %s", identifier, _cmd);
 
 #if 0
     {
@@ -568,7 +568,7 @@ static BOOL debugAnonStructures = NO;
         }
     }
 
-    NSLog(@"[%@] <  %s", identifier, _cmd);
+    //NSLog(@"[%@] <  %s", identifier, _cmd);
 }
 
 // Go through all updated phase0_structureInfo types
@@ -631,7 +631,7 @@ static BOOL debugAnonStructures = NO;
                 [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [aStructure phase3RegisterWithTypeController:typeController];
+                [aStructure phase3RegisterMembersWithTypeController:typeController];
             } else {
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
@@ -656,7 +656,7 @@ static BOOL debugAnonStructures = NO;
                 [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [aStructure phase3RegisterWithTypeController:typeController];
+                [aStructure phase3RegisterMembersWithTypeController:typeController];
             } else {
                 if ([debugNames containsObject:name]) NSLog(@"[%@] %s, info before: %@", identifier, _cmd, [info shortDescription]);
                 [info addReferenceCount:referenceCount];
@@ -683,6 +683,9 @@ static BOOL debugAnonStructures = NO;
             if ([debugNames containsObject:[[[info type] typeName] description]])
                 NSLog(@"%@", [info shortDescription]);
         }
+        for (NSString *str in debugNames)
+            if ([phase3_nameExceptions containsObject:str])
+                NSLog(@"%@ is in the name exceptions", str);
         NSLog(@"======================================================================");
     }
 }

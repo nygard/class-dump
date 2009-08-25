@@ -883,9 +883,18 @@ static BOOL debugMerge = NO;
 {
     [subtype phase3RegisterWithTypeController:typeController];
 
-    for (CDType *member in members) {
-        [typeController phase3RegisterStructure:member /*count:1 usedInMethod:NO*/];
+    if (type == '{' || type == '(') {
+        [typeController phase3RegisterStructure:self /*count:1 usedInMethod:NO*/];
     }
+}
+
+- (void)phase3RegisterMembersWithTypeController:(CDTypeController *)typeController;
+{
+    //NSLog(@" > %s %@", _cmd, [self typeString]);
+    for (CDType *member in members) {
+        [member phase3RegisterWithTypeController:typeController];
+    }
+    //NSLog(@"<  %s", _cmd);
 }
 
 // Bottom-up

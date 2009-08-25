@@ -88,3 +88,4 @@ end
 #done
 
 echo "Ended tests at `date`"
+opendiff /tmp/cdt/old /tmp/cdt/new
