@@ -55,6 +55,8 @@
     //[structureTable debugName:@"UCKeyboardTypeHeader"];
     //[structureTable debugName:@"UCKeyboardLayout"];
     //[structureTable debugName:@"ppd_group_s"];
+    //[structureTable debugName:@"stat"];
+    //[structureTable debugName:@"timespec"];
 
     return self;
 }

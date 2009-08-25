@@ -683,8 +683,12 @@ static BOOL debugAnonStructures = NO;
             } else {
                 if ([debugNames containsObject:name]) NSLog(@"[%@] %s, info before: %@", identifier, _cmd, [info shortDescription]);
                 // Handle the case where {foo} occurs before {foo=iii}
-                if ([[[info type] members] count] == 0)
+                if ([[[info type] members] count] == 0) {
                     [[info type] mergeWithType:aStructure];
+
+                    // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
+                    [aStructure phase3RegisterMembersWithTypeController:typeController];
+                }
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
                     [info setIsUsedInMethod:isUsedInMethod];
