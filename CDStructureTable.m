@@ -459,9 +459,11 @@ static BOOL debugAnonStructures = NO;
         if (canBeCombined) {
             [phase2_namedStructureInfo setObject:combined forKey:key];
         } else {
-            NSLog(@"----------------------------------------");
-            NSLog(@"Can't be combined: %@", key);
-            NSLog(@"group: %@", group);
+            if (debugAnonStructures) {
+                NSLog(@"----------------------------------------");
+                NSLog(@"Can't be combined: %@", key);
+                NSLog(@"group: %@", group);
+            }
             [phase2_nameExceptions addObjectsFromArray:group];
         }
 
@@ -492,8 +494,10 @@ static BOOL debugAnonStructures = NO;
                         [combined setIsUsedInMethod:YES];
 #endif
                 } else {
-                    NSLog(@"previous: %@", [[combined type] typeString]);
-                    NSLog(@"    This: %@", [[info type] typeString]);
+                    if (debugAnonStructures) {
+                        NSLog(@"previous: %@", [[combined type] typeString]);
+                        NSLog(@"    This: %@", [[info type] typeString]);
+                    }
                     canBeCombined = NO;
                     break;
                 }
@@ -503,9 +507,11 @@ static BOOL debugAnonStructures = NO;
         if (canBeCombined) {
             [phase2_anonStructureInfo setObject:combined forKey:key];
         } else {
-            NSLog(@"----------------------------------------");
-            NSLog(@"Can't be combined: %@", key);
-            NSLog(@"group: %@", group);
+            if (debugAnonStructures) {
+                NSLog(@"----------------------------------------");
+                NSLog(@"Can't be combined: %@", key);
+                NSLog(@"group: %@", group);
+            }
             [phase2_anonExceptions addObjectsFromArray:group];
         }
 
@@ -635,7 +641,7 @@ static BOOL debugAnonStructures = NO;
         key = [aStructure reallyBareTypeString];
         //NSLog(@"key: %@, isUsedInMethod: %u", key, isUsedInMethod);
         if ([phase3_anonExceptions containsObject:key]) {
-            NSLog(@"%s, anon key %@ has exception from phase 2", _cmd, key);
+            if (debugAnonStructures) NSLog(@"%s, anon key %@ has exception from phase 2", _cmd, key);
         } else {
             info = [phase3_anonStructureInfo objectForKey:key];
             if (info == nil) {
@@ -659,7 +665,7 @@ static BOOL debugAnonStructures = NO;
 
         //NSLog(@"[%@] %s, name: %@", identifier, _cmd, name);
         if ([phase3_nameExceptions containsObject:name]) {
-            NSLog(@"%s, name %@ has exception from phase 2", _cmd, name);
+            if (debugNamedStructures) NSLog(@"%s, name %@ has exception from phase 2", _cmd, name);
         } else {
             info = [phase3_namedStructureInfo objectForKey:name];
             if (info == nil) {
