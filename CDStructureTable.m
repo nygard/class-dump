@@ -153,8 +153,11 @@ static BOOL debugAnonStructures = NO;
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
                             formatter:(CDTypeFormatter *)aTypeFormatter
-                     symbolReferences:(CDSymbolReferences *)symbolReferences;
+                     symbolReferences:(CDSymbolReferences *)symbolReferences
+                             markName:(NSString *)markName;
 {
+    BOOL hasAddedMark = NO;
+
     for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDStructureInfo *info;
         BOOL shouldShow;
@@ -163,6 +166,11 @@ static BOOL debugAnonStructures = NO;
         shouldShow = ![self shouldExpandStructureInfo:info];
         if (shouldShow || debugNamedStructures) {
             CDType *type;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
 
             type = [info type];
             if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
@@ -191,14 +199,22 @@ static BOOL debugAnonStructures = NO;
 
 - (void)appendTypedefsToString:(NSMutableString *)resultString
                      formatter:(CDTypeFormatter *)aTypeFormatter
-              symbolReferences:(CDSymbolReferences *)symbolReferences;
+              symbolReferences:(CDSymbolReferences *)symbolReferences
+                      markName:(NSString *)markName;
 {
+    BOOL hasAddedMark = NO;
+
     for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         BOOL shouldShow;
 
         shouldShow = ![self shouldExpandStructureInfo:info];
         if (shouldShow || debugAnonStructures) {
             NSString *formattedString;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
 
             if (debugAnonStructures) {
                 [resultString appendFormat:@"// would normally show? %u\n", shouldShow];

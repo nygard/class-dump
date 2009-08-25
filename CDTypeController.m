@@ -145,15 +145,11 @@
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    [resultString appendString:@"#pragma mark Named Structures\n\n"];
-    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [resultString appendString:@"#pragma mark Typedef'd Structures\n\n"];
-    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Structures"];
+    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Structures"];
 
-    [resultString appendString:@"#pragma mark Named Unions\n\n"];
-    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
-    [resultString appendString:@"#pragma mark Typedef'd Unions\n\n"];
-    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Unions"];
+    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Unions"];
 }
 
 // Call this before calling generateMemberNames.

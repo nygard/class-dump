@@ -62,11 +62,13 @@ typedef NSUInteger CDTableType;
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
                             formatter:(CDTypeFormatter *)aTypeFormatter
-                     symbolReferences:(CDSymbolReferences *)symbolReferences;
+                     symbolReferences:(CDSymbolReferences *)symbolReferences
+                             markName:(NSString *)markName;
 
 - (void)appendTypedefsToString:(NSMutableString *)resultString
                      formatter:(CDTypeFormatter *)aTypeFormatter
-              symbolReferences:(CDSymbolReferences *)symbolReferences;
+              symbolReferences:(CDSymbolReferences *)symbolReferences
+                      markName:(NSString *)markName;
 
 - (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
 - (void)finishPhase0;
