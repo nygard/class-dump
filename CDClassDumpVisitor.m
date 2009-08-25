@@ -49,6 +49,7 @@
 
     machOFile = [aProcessor machOFile];
 
+    [resultString appendString:@"#pragma mark -\n\n"];
     [resultString appendString:@"/*\n"];
     [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
 

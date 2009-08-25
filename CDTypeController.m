@@ -143,10 +143,14 @@
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
+    [resultString appendString:@"#pragma mark Named Structures\n\n"];
     [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [resultString appendString:@"#pragma mark Typedef'd Structures\n\n"];
     [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 
+    [resultString appendString:@"#pragma mark Named Unions\n\n"];
     [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
+    [resultString appendString:@"#pragma mark Typedef'd Unions\n\n"];
     [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences];
 }
 
