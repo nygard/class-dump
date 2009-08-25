@@ -663,6 +663,7 @@ static BOOL debugAnonStructures = NO;
     } else {
         CDStructureInfo *info;
 
+        if ([debugNames containsObject:name]) NSLog(@"[%@] %s, type= %@", identifier, _cmd, [aStructure typeString]);
         //NSLog(@"[%@] %s, name: %@", identifier, _cmd, name);
         if ([phase3_nameExceptions containsObject:name]) {
             if (debugNamedStructures) NSLog(@"%s, name %@ has exception from phase 2", _cmd, name);
@@ -681,6 +682,9 @@ static BOOL debugAnonStructures = NO;
                 [aStructure phase3RegisterMembersWithTypeController:typeController];
             } else {
                 if ([debugNames containsObject:name]) NSLog(@"[%@] %s, info before: %@", identifier, _cmd, [info shortDescription]);
+                // Handle the case where {foo} occurs before {foo=iii}
+                if ([[[info type] members] count] == 0)
+                    [[info type] mergeWithType:aStructure];
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
                     [info setIsUsedInMethod:isUsedInMethod];

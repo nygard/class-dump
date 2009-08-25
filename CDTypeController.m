@@ -54,6 +54,7 @@
     //[structureTable debugName:@"_xmlSAXHandler"];
     //[structureTable debugName:@"UCKeyboardTypeHeader"];
     //[structureTable debugName:@"UCKeyboardLayout"];
+    //[structureTable debugName:@"ppd_group_s"];
 
     return self;
 }
