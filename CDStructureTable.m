@@ -45,7 +45,7 @@ static BOOL debugAnonStructures = NO;
     phase3_namedStructureInfo = [[NSMutableDictionary alloc] init];
     phase3_anonStructureInfo = [[NSMutableDictionary alloc] init];
     phase3_nameExceptions = [[NSMutableSet alloc] init];
-    phase3_anonExceptions = [[NSMutableSet alloc] init];
+    phase3_anonExceptions = [[NSMutableDictionary alloc] init];
 
     phase3_inMethodNameExceptions = [[NSMutableSet alloc] init];
 
@@ -121,13 +121,6 @@ static BOOL debugAnonStructures = NO;
 - (void)setShouldDebug:(BOOL)newFlag;
 {
     flags.shouldDebug = newFlag;
-}
-
-// Need to name anonymous structs if:
-//   - used more than once
-//   - OR used in a method
-- (void)generateNamesForAnonymousStructures;
-{
 }
 
 // TODO (2003-12-23): Add option to show/hide this section
@@ -220,6 +213,7 @@ static BOOL debugAnonStructures = NO;
                       markName:(NSString *)markName;
 {
     BOOL hasAddedMark = NO;
+    BOOL hasShownExceptions = NO;
 
     for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         BOOL shouldShow;
@@ -245,9 +239,33 @@ static BOOL debugAnonStructures = NO;
         }
     }
 
+    for (CDStructureInfo *info in [[phase3_anonExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        NSString *formattedString;
+
+        if (hasAddedMark == NO) {
+            [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+            hasAddedMark = YES;
+        }
+
+        if (hasShownExceptions == NO) {
+            [resultString appendString:@"// Ambiguous\n"];
+            hasShownExceptions = YES;
+        }
+
+        if (debugAnonStructures) {
+            [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
+            [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+        }
+        formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+        if (formattedString != nil) {
+            //[resultString appendFormat:@"%@;\n\n", formattedString];
+            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+        }
+    }
+
     if (debugAnonStructures) {
         [resultString appendString:@"\n// Anon exceptions:\n"];
-        for (NSString *str in [[phase3_anonExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
+        for (NSString *str in [[phase3_anonExceptions allKeys] sortedArrayUsingSelector:@selector(compare:)])
             [resultString appendFormat:@"// %@\n", str];
         [resultString appendString:@"\n"];
     }
@@ -285,9 +303,20 @@ static BOOL debugAnonStructures = NO;
     if ([debugNames count] > 0) {
         NSLog(@"======================================================================");
         NSLog(@"[%@] %s", identifier, _cmd);
-        NSLog(@"names: %@", [[debugNames allObjects] componentsJoinedByString:@", "]);
+        NSLog(@"debug names: %@", [[debugNames allObjects] componentsJoinedByString:@", "]);
         for (CDStructureInfo *info in [[phase0_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
             if ([debugNames containsObject:[[[info type] typeName] description]])
+                NSLog(@"%@", [info shortDescription]);
+        }
+        NSLog(@"======================================================================");
+    }
+
+    if ([debugAnon count] > 0) {
+        NSLog(@"======================================================================");
+        NSLog(@"[%@] %s", identifier, _cmd);
+        NSLog(@"debug anon: %@", [[debugAnon allObjects] componentsJoinedByString:@", "]);
+        for (CDStructureInfo *info in [[phase0_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+            if ([debugAnon containsObject:[[info type] reallyBareTypeString]])
                 NSLog(@"%@", [info shortDescription]);
         }
         NSLog(@"======================================================================");
@@ -309,6 +338,11 @@ static BOOL debugAnonStructures = NO;
     for (CDStructureInfo *info in [phase3_anonStructureInfo allValues]) {
         [info generateTypedefName:anonymousBaseName];
     }
+
+    // And do the same for each of the anon exceptions
+    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
+        [info generateTypedefName:anonymousBaseName];
+    }
 }
 
 - (void)generateMemberNames;
@@ -318,6 +352,11 @@ static BOOL debugAnonStructures = NO;
     }
 
     for (CDStructureInfo *info in [phase3_anonStructureInfo allValues]) {
+        [[info type] generateMemberNames];
+    }
+
+    // And do the same for each of the anon exceptions
+    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
         [[info type] generateMemberNames];
     }
 }
@@ -566,6 +605,17 @@ static BOOL debugAnonStructures = NO;
         }
         NSLog(@"======================================================================");
     }
+
+    if ([debugAnon count] > 0) {
+        NSLog(@"======================================================================");
+        NSLog(@"[%@] %s", identifier, _cmd);
+        NSLog(@"debug anon: %@", [[debugAnon allObjects] componentsJoinedByString:@", "]);
+        for (CDStructureInfo *info in [[phase2_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+            if ([debugAnon containsObject:[[info type] reallyBareTypeString]])
+                NSLog(@"%@", [info shortDescription]);
+        }
+        NSLog(@"======================================================================");
+    }
 }
 
 - (void)logPhase2Info;
@@ -626,11 +676,16 @@ static BOOL debugAnonStructures = NO;
     for (CDStructureInfo *info in phase2_nameExceptions)
         [phase3_nameExceptions addObject:[[[info type] typeName] description]];
 
-    for (CDStructureInfo *info in phase2_anonExceptions)
-        [phase3_anonExceptions addObject:[[info type] reallyBareTypeString]];
+    for (CDStructureInfo *info in phase2_anonExceptions) {
+        CDStructureInfo *newInfo;
+
+        newInfo = [info copy];
+        [phase3_anonExceptions setObject:newInfo forKey:[[newInfo type] typeString]];
+        [newInfo release];
+    }
 
     //NSLog(@"phase3 name exceptions: %@", [[phase3_nameExceptions allObjects] componentsJoinedByString:@", "]);
-    //NSLog(@"phase3 anon exceptions: %@", [[phase3_anonExceptions allObjects] componentsJoinedByString:@"\n"]);
+    //NSLog(@"phase3 anon exceptions: %@", [[phase3_anonExceptions allKeys] componentsJoinedByString:@"\n"]);
     //exit(99);
 }
 
@@ -661,8 +716,8 @@ static BOOL debugAnonStructures = NO;
 
         key = [aStructure reallyBareTypeString];
         //NSLog(@"key: %@, isUsedInMethod: %u", key, isUsedInMethod);
-        if ([phase3_anonExceptions containsObject:key]) {
-            if (debugAnonStructures) NSLog(@"%s, anon key %@ has exception from phase 2", _cmd, key);
+        if ([phase3_anonExceptions objectForKey:[aStructure typeString]] != nil) {
+            if (debugAnonStructures) NSLog(@"%s, anon key %@ has exception from phase 2", _cmd, [aStructure typeString]);
         } else {
             info = [phase3_anonStructureInfo objectForKey:key];
             if (info == nil) {
@@ -741,6 +796,20 @@ static BOOL debugAnonStructures = NO;
                 NSLog(@"%@ is in the name exceptions", str);
         NSLog(@"======================================================================");
     }
+
+    if ([debugAnon count] > 0) {
+        NSLog(@"======================================================================");
+        NSLog(@"[%@] %s", identifier, _cmd);
+        NSLog(@"debug anon: %@", [[debugAnon allObjects] componentsJoinedByString:@", "]);
+        for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+            if ([debugAnon containsObject:[[info type] reallyBareTypeString]])
+                NSLog(@"%@", [info shortDescription]);
+        }
+        for (NSString *str in debugAnon)
+            if ([phase3_anonExceptions objectForKey:str] != nil)
+                NSLog(@"%@ is in the anon exceptions", str);
+        NSLog(@"======================================================================");
+    }
 }
 
 - (void)logPhase3Info;
@@ -800,6 +869,12 @@ static BOOL debugAnonStructures = NO;
 
         key = [type reallyBareTypeString];
         info = [phase3_anonStructureInfo objectForKey:key];
+        if (info == nil) {
+            if ([phase3_anonExceptions objectForKey:[type typeString]] != nil) {
+                //NSLog(@"Never expand anon exception: %@", [type typeString]);
+                return NO;
+            }
+        }
     } else {
         info = [phase3_namedStructureInfo objectForKey:name];
     }
@@ -812,6 +887,10 @@ static BOOL debugAnonStructures = NO;
     CDStructureInfo *info;
 
     info = [phase3_anonStructureInfo objectForKey:[type reallyBareTypeString]];
+    if (info == nil) {
+        info = [phase3_anonExceptions objectForKey:[type typeString]];
+        //NSLog(@"fallback typedef info? %@ -- %@", [info shortDescription], [info typedefName]);
+    }
 
     return [info typedefName];
 }

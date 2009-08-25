@@ -58,6 +58,7 @@
     //[structureTable debugName:@"stat"];
     //[structureTable debugName:@"timespec"];
     //[structureTable debugName:@"AudioUnitEvent"];
+    //[structureTable debugAnon:@"{?=II}"];
 
     return self;
 }
