@@ -218,6 +218,7 @@ int main(int argc, char *argv[])
             [file setFilename:executablePath];
             if (file == nil) {
                 fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
+                [data release];
                 exit(1);
             }
 #if 0
