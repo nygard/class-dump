@@ -842,7 +842,7 @@ static BOOL debugMerge = NO;
     NSParameterAssert(str != nil);
 
     parser = [[CDTypeParser alloc] initWithType:str];
-    copiedType = [parser parseType:&error];
+    copiedType = [[parser parseType:&error] retain];
     if (copiedType == nil)
         NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@, %@", str, [error myExplanation]);
     [parser release];
@@ -927,17 +927,17 @@ static BOOL debugMerge = NO;
     }
 }
 
-- (void)phase0RecursivelyFixStructureNames;
+- (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
 {
-    [subtype phase0RecursivelyFixStructureNames];
+    [subtype phase0RecursivelyFixStructureNames:flag];
 
     if ([[typeName name] hasPrefix:@"$"]) {
-        NSLog(@"%s, changing type name %@ to ?", _cmd, [typeName name]);
+        if (flag) NSLog(@"%s, changing type name %@ to ?", _cmd, [typeName name]);
         [typeName setName:@"?"];
     }
 
     for (CDType *member in members)
-        [member phase0RecursivelyFixStructureNames];
+        [member phase0RecursivelyFixStructureNames:flag];
 }
 
 

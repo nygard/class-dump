@@ -346,7 +346,6 @@
 
     [typeController startPhase1];
     [typeController startPhase2];
-    //exit(98);
 
     [typeController generateTypedefNames];
     [typeController generateMemberNames];

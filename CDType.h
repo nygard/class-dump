@@ -82,6 +82,6 @@
 - (void)phase3RegisterMembersWithTypeController:(CDTypeController *)typeController;
 - (void)phase3MergeWithTypeController:(CDTypeController *)typeController;
 
-- (void)phase0RecursivelyFixStructureNames;
+- (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
 
 @end

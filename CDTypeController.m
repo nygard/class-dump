@@ -131,20 +131,6 @@
     if (phase == 0) {
         [structureTable finishPhase0];
         [unionTable finishPhase0];
-
-        //[structureTable logPhase0Info];
-
-        // At the end of phase 0, we have a dictionary of CDStructureInfos (keyed by the typeString).
-        // These record the number of times top level structures were references, their type string, and their type.
-#if 0
-        {
-            NSMutableString *str = [NSMutableString string];
-
-            //[structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
-
-            NSLog(@"str:\n%@", str);
-        }
-#endif
     }
 }
 

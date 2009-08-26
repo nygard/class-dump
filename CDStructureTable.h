@@ -62,6 +62,10 @@ typedef NSUInteger CDTableType;
 - (BOOL)shouldDebug;
 - (void)setShouldDebug:(BOOL)newFlag;
 
+- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
+- (void)finishPhase0;
+- (void)logPhase0Info;
+
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
                             formatter:(CDTypeFormatter *)aTypeFormatter
                      symbolReferences:(CDSymbolReferences *)symbolReferences
@@ -71,10 +75,6 @@ typedef NSUInteger CDTableType;
                      formatter:(CDTypeFormatter *)aTypeFormatter
               symbolReferences:(CDSymbolReferences *)symbolReferences
                       markName:(NSString *)markName;
-
-- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
-- (void)finishPhase0;
-- (void)logPhase0Info;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
