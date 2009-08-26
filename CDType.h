@@ -77,7 +77,8 @@
 - (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
 
 // Phase 2
-- (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
+- (void)phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
+- (void)_phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
 
 // Phase 3
 - (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;

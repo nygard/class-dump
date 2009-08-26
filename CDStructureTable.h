@@ -73,6 +73,13 @@ typedef NSUInteger CDTableType;
 - (void)finishPhase1;
 - (NSUInteger)phase1_maxDepth;
 
+// Phase 2
+- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
+- (CDType *)phase2ReplacementForType:(CDType *)type;
+
+- (void)finishPhase2;
+- (void)logPhase2Info;
+
 // Other
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
@@ -87,12 +94,6 @@ typedef NSUInteger CDTableType;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
-
-- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
-- (CDType *)phase2ReplacementForType:(CDType *)type;
-
-- (void)finishPhase2;
-- (void)logPhase2Info;
 
 - (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
 

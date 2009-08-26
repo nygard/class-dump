@@ -859,13 +859,29 @@ static BOOL debugMerge = NO;
 // Phase 2
 //
 
-// Bottom-up
-- (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
+// This wraps the recursive method, optionally logging if anything changed.
+- (void)phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
 {
-    [subtype phase2MergeWithTypeController:typeController];
+    NSString *before, *after;
+
+    before = [self typeString];
+    [self _phase2MergeWithTypeController:typeController debug:phase2Debug];
+    after = [self typeString];
+    if (phase2Debug && [before isEqualToString:after] == NO) {
+        NSLog(@"----------------------------------------");
+        NSLog(@"%s, merge changed type", _cmd);
+        NSLog(@"before: %@", before);
+        NSLog(@" after: %@", after);
+    }
+}
+
+// Recursive, bottom-up
+- (void)_phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
+{
+    [subtype _phase2MergeWithTypeController:typeController debug:phase2Debug];
 
     for (CDType *member in members)
-        [member phase2MergeWithTypeController:typeController];
+        [member _phase2MergeWithTypeController:typeController debug:phase2Debug];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
         CDType *phase2Type;
@@ -876,7 +892,7 @@ static BOOL debugMerge = NO;
             if ([members count] > 0 && [self canMergeWithType:phase2Type]) {
                 [self mergeWithType:phase2Type];
             } else {
-                if (0) {
+                if (phase2Debug) {
                     NSLog(@"Found phase2 type, but can't merge with it.");
                     NSLog(@"this: %@", [self typeString]);
                     NSLog(@"that: %@", [phase2Type typeString]);

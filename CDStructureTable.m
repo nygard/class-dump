@@ -31,9 +31,14 @@
 //           - On the other hand, since we're only interested in the max combined depth of structures and unions, the end result would be the same.
 //         - The result of phase 1 is phase1_groupedByDepth: a dictionary keyed by the structure depth, containing arrays of CDStructureInfo.
 
-// Phase 2 -
+// Phase 2 - This is driven by CDTypeController.
+//         - It goes through all of the phase1 groups, shallowest to deepest.
+//           - First it merges the results of all previous groups with the types at this depth.
+//           -
+//         - For each level group,
+//         - The goal of phase 2 is to gather member names and types (@"NSObject" vs just @).
 
-static BOOL debug = NO;
+static BOOL debug = YES;
 static BOOL debugNamedStructures = NO;
 static BOOL debugAnonStructures = NO;
 
@@ -276,184 +281,9 @@ static BOOL debugAnonStructures = NO;
     return phase1_maxDepth;
 }
 
-// TODO (2003-12-23): Add option to show/hide this section
-// TODO (2003-12-23): sort by name or by dependency
-// TODO (2003-12-23): declare in modules where they were first used
-
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString
-                            formatter:(CDTypeFormatter *)aTypeFormatter
-                     symbolReferences:(CDSymbolReferences *)symbolReferences
-                             markName:(NSString *)markName;
-{
-    BOOL hasAddedMark = NO;
-    BOOL hasShownExceptions = NO;
-
-    for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDStructureInfo *info;
-        BOOL shouldShow;
-
-        info = [phase3_namedStructureInfo objectForKey:key];
-        shouldShow = ![self shouldExpandStructureInfo:info];
-        if (shouldShow || debugNamedStructures) {
-            CDType *type;
-
-            if (hasAddedMark == NO) {
-                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
-                hasAddedMark = YES;
-            }
-
-            type = [info type];
-            if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
-                NSString *formattedString;
-
-                if (debugNamedStructures) {
-                    [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
-                    [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-                }
-                formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
-                if (formattedString != nil) {
-                    [resultString appendString:formattedString];
-                    [resultString appendString:@";\n\n"];
-                }
-            }
-        }
-    }
-
-    for (CDStructureInfo *info in [phase2_nameExceptions sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        if ([phase3_inMethodNameExceptions containsObject:[info name]]) {
-            CDType *type;
-
-            if (hasAddedMark == NO) {
-                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
-                hasAddedMark = YES;
-            }
-
-            if (hasShownExceptions == NO) {
-                [resultString appendString:@"#if 0\n"];
-                [resultString appendString:@"// Names with conflicting types, that are used in methods:\n"];
-                hasShownExceptions = YES;
-            }
-
-            type = [info type];
-            if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
-                NSString *formattedString;
-
-                if (debugNamedStructures) {
-                    [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-                }
-                formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
-                if (formattedString != nil) {
-                    [resultString appendString:formattedString];
-                    [resultString appendString:@";\n\n"];
-                }
-            }
-        }
-    }
-    if (hasShownExceptions)
-        [resultString appendString:@"#endif\n\n"];
-
-    if (debugNamedStructures) {
-        [resultString appendString:@"\n// Name exceptions:\n"];
-        for (NSString *str in [[phase3_nameExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
-            [resultString appendFormat:@"// %@\n", str];
-        [resultString appendString:@"\n"];
-    }
-}
-
-- (void)appendTypedefsToString:(NSMutableString *)resultString
-                     formatter:(CDTypeFormatter *)aTypeFormatter
-              symbolReferences:(CDSymbolReferences *)symbolReferences
-                      markName:(NSString *)markName;
-{
-    BOOL hasAddedMark = NO;
-    BOOL hasShownExceptions = NO;
-
-    for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        BOOL shouldShow;
-
-        shouldShow = ![self shouldExpandStructureInfo:info];
-        if (shouldShow || debugAnonStructures) {
-            NSString *formattedString;
-
-            if (hasAddedMark == NO) {
-                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
-                hasAddedMark = YES;
-            }
-
-            if (debugAnonStructures) {
-                [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
-                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
-                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-            }
-            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
-            if (formattedString != nil) {
-                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
-            }
-        }
-    }
-
-    // TODO (2009-08-25): Need same ref count rules for anon exceptions.
-    for (CDStructureInfo *info in [[phase3_anonExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        if ([phase3_bareAnonExceptions containsObject:[[info type] reallyBareTypeString]]) {
-            NSString *formattedString;
-
-            if (hasAddedMark == NO) {
-                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
-                hasAddedMark = YES;
-            }
-
-            if (hasShownExceptions == NO) {
-                [resultString appendString:@"// Ambiguous\n"];
-                hasShownExceptions = YES;
-            }
-
-            if (debugAnonStructures) {
-                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
-                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-            }
-            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
-            if (formattedString != nil) {
-                //[resultString appendFormat:@"%@;\n\n", formattedString];
-                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
-            }
-        }
-    }
-
-    if (debugAnonStructures) {
-        [resultString appendString:@"\n// Anon exceptions:\n"];
-        for (NSString *str in [[phase3_anonExceptions allKeys] sortedArrayUsingSelector:@selector(compare:)])
-            [resultString appendFormat:@"// %@\n", str];
-        [resultString appendString:@"\n"];
-    }
-}
-
-- (void)generateTypedefNames;
-{
-    for (CDStructureInfo *info in [phase3_anonStructureInfo allValues]) {
-        [info generateTypedefName:anonymousBaseName];
-    }
-
-    // And do the same for each of the anon exceptions
-    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
-        [info generateTypedefName:anonymousBaseName];
-    }
-}
-
-- (void)generateMemberNames;
-{
-    for (CDStructureInfo *info in [phase3_namedStructureInfo allValues]) {
-        [[info type] generateMemberNames];
-    }
-
-    for (CDStructureInfo *info in [phase3_anonStructureInfo allValues]) {
-        [[info type] generateMemberNames];
-    }
-
-    // And do the same for each of the anon exceptions
-    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
-        [[info type] generateMemberNames];
-    }
-}
+//
+// Phase 2
+//
 
 // From lowest to highest depths:
 // - Go through all infos at that level
@@ -474,7 +304,7 @@ static BOOL debugAnonStructures = NO;
         // recursively (bottom up) try to merge substructures into that type, to get names/full types
         //NSLog(@"----------------------------------------");
         //NSLog(@"Trying phase2Merge with on %@", [[info type] typeString]);
-        [[info type] phase2MergeWithTypeController:typeController];
+        [[info type] phase2MergeWithTypeController:typeController debug:debug];
     }
 
     // merge all mergeable infos at that level
@@ -660,34 +490,197 @@ static BOOL debugAnonStructures = NO;
     NSLog(@"<  %s", _cmd);
 }
 
-- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+// TODO (2003-12-23): Add option to show/hide this section
+// TODO (2003-12-23): sort by name or by dependency
+// TODO (2003-12-23): declare in modules where they were first used
+
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString
+                            formatter:(CDTypeFormatter *)aTypeFormatter
+                     symbolReferences:(CDSymbolReferences *)symbolReferences
+                             markName:(NSString *)markName;
 {
-    //NSLog(@"[%@]  > %s", identifier, _cmd);
+    BOOL hasAddedMark = NO;
+    BOOL hasShownExceptions = NO;
 
-#if 0
-    {
-        CDStructureInfo *info = [phase2_namedStructureInfo objectForKey:@"_NSTypesetterGlyphInfo"];
+    for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDStructureInfo *info;
+        BOOL shouldShow;
 
-        NSLog(@"info = %@", [info shortDescription]);
-        NSLog(@"typeString: %@", [[info type] typeString]);
-    }
-#endif
+        info = [phase3_namedStructureInfo objectForKey:key];
+        shouldShow = ![self shouldExpandStructureInfo:info];
+        if (shouldShow || debugNamedStructures) {
+            CDType *type;
 
-    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
-        NSString *before, *after;
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
 
-        before = [[info type] typeString];
-        [[info type] phase2MergeWithTypeController:typeController];
-        after = [[info type] typeString];
-        if (debug && [before isEqualToString:after] == NO) {
-            NSLog(@"----------------------------------------");
-            NSLog(@"%s, before != after", _cmd);
-            NSLog(@"before: %@", before);
-            NSLog(@" after: %@", after);
+            type = [info type];
+            if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
+                NSString *formattedString;
+
+                if (debugNamedStructures) {
+                    [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
+                    [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                }
+                formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
+                if (formattedString != nil) {
+                    [resultString appendString:formattedString];
+                    [resultString appendString:@";\n\n"];
+                }
+            }
         }
     }
 
-    //NSLog(@"[%@] <  %s", identifier, _cmd);
+    for (CDStructureInfo *info in [phase2_nameExceptions sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        if ([phase3_inMethodNameExceptions containsObject:[info name]]) {
+            CDType *type;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
+
+            if (hasShownExceptions == NO) {
+                [resultString appendString:@"#if 0\n"];
+                [resultString appendString:@"// Names with conflicting types, that are used in methods:\n"];
+                hasShownExceptions = YES;
+            }
+
+            type = [info type];
+            if ([[aTypeFormatter typeController] shouldShowName:[[type typeName] description]]) {
+                NSString *formattedString;
+
+                if (debugNamedStructures) {
+                    [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+                }
+                formattedString = [aTypeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
+                if (formattedString != nil) {
+                    [resultString appendString:formattedString];
+                    [resultString appendString:@";\n\n"];
+                }
+            }
+        }
+    }
+    if (hasShownExceptions)
+        [resultString appendString:@"#endif\n\n"];
+
+    if (debugNamedStructures) {
+        [resultString appendString:@"\n// Name exceptions:\n"];
+        for (NSString *str in [[phase3_nameExceptions allObjects] sortedArrayUsingSelector:@selector(compare:)])
+            [resultString appendFormat:@"// %@\n", str];
+        [resultString appendString:@"\n"];
+    }
+}
+
+- (void)appendTypedefsToString:(NSMutableString *)resultString
+                     formatter:(CDTypeFormatter *)aTypeFormatter
+              symbolReferences:(CDSymbolReferences *)symbolReferences
+                      markName:(NSString *)markName;
+{
+    BOOL hasAddedMark = NO;
+    BOOL hasShownExceptions = NO;
+
+    for (CDStructureInfo *info in [[phase3_anonStructureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        BOOL shouldShow;
+
+        shouldShow = ![self shouldExpandStructureInfo:info];
+        if (shouldShow || debugAnonStructures) {
+            NSString *formattedString;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
+
+            if (debugAnonStructures) {
+                [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
+                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
+                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+            }
+            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            }
+        }
+    }
+
+    // TODO (2009-08-25): Need same ref count rules for anon exceptions.
+    for (CDStructureInfo *info in [[phase3_anonExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
+        if ([phase3_bareAnonExceptions containsObject:[[info type] reallyBareTypeString]]) {
+            NSString *formattedString;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
+
+            if (hasShownExceptions == NO) {
+                [resultString appendString:@"// Ambiguous\n"];
+                hasShownExceptions = YES;
+            }
+
+            if (debugAnonStructures) {
+                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
+                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+            }
+            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                //[resultString appendFormat:@"%@;\n\n", formattedString];
+                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            }
+        }
+    }
+
+    if (debugAnonStructures) {
+        [resultString appendString:@"\n// Anon exceptions:\n"];
+        for (NSString *str in [[phase3_anonExceptions allKeys] sortedArrayUsingSelector:@selector(compare:)])
+            [resultString appendFormat:@"// %@\n", str];
+        [resultString appendString:@"\n"];
+    }
+}
+
+- (void)generateTypedefNames;
+{
+    for (CDStructureInfo *info in [phase3_anonStructureInfo allValues]) {
+        [info generateTypedefName:anonymousBaseName];
+    }
+
+    // And do the same for each of the anon exceptions
+    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
+        [info generateTypedefName:anonymousBaseName];
+    }
+}
+
+- (void)generateMemberNames;
+{
+    for (CDStructureInfo *info in [phase3_namedStructureInfo allValues]) {
+        [[info type] generateMemberNames];
+    }
+
+    for (CDStructureInfo *info in [phase3_anonStructureInfo allValues]) {
+        [[info type] generateMemberNames];
+    }
+
+    // And do the same for each of the anon exceptions
+    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
+        [[info type] generateMemberNames];
+    }
+}
+
+- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+{
+    if (debug) {
+        NSLog(@"======================================================================");
+        NSLog(@"[%@]  > %s", identifier, _cmd);
+    }
+
+    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
+        [[info type] phase2MergeWithTypeController:typeController debug:debug];
+    }
+
+    if (debug) NSLog(@"[%@] <  %s", identifier, _cmd);
 }
 
 // Go through all updated phase0_structureInfo types
