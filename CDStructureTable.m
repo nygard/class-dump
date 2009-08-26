@@ -32,11 +32,13 @@
 //         - The result of phase 1 is phase1_groupedByDepth: a dictionary keyed by the structure depth, containing arrays of CDStructureInfo.
 
 // Phase 2 - This is driven by CDTypeController.
-//         - It goes through all of the phase1 groups, shallowest to deepest.
-//           - First it merges the results of all previous groups with the types at this depth.
-//           -
-//         - For each level group,
 //         - The goal of phase 2 is to gather member names and types (@"NSObject" vs just @).
+//         - It goes through all of the phase1 groups, shallowest to deepest.
+//         - For each level group:
+//           - First it merges the results of all previous groups with the types at this depth.
+//           - Then we group the CDStructureInfos, named structures by name, anon structures by reallyBareTypeString
+//             - If they could be combined, the combined CDStructureInfo is to phase2_namedStructureInfo or phase2_anonStructureInfo.
+//             - If they couldn't be combined, the uncombined CDStructureInfos are added to phase2_nameExceptions or phase2_anonExceptions.
 
 static BOOL debug = YES;
 static BOOL debugNamedStructures = NO;
@@ -311,6 +313,8 @@ static BOOL debugAnonStructures = NO;
     nameDict = [NSMutableDictionary dictionary];
     anonDict = [NSMutableDictionary dictionary];
 
+    // Group named structures by name.
+    // Group anon structures by reallyBareTypeString.
     for (CDStructureInfo *info in infos) {
         NSString *name;
         NSMutableArray *group;
@@ -373,9 +377,14 @@ static BOOL debugAnonStructures = NO;
         }
 
         if (canBeCombined) {
+            if ([phase2_namedStructureInfo objectForKey:key] != nil) {
+                NSLog(@"[%@] %s, WARNING: depth %u name %@ has conflict(?) at lower level", identifier, _cmd, depth, key);
+                NSLog(@"previous: %@", [[phase2_namedStructureInfo objectForKey:key] shortDescription]);
+                NSLog(@" current: %@", [combined shortDescription]);
+            }
             [phase2_namedStructureInfo setObject:combined forKey:key];
         } else {
-            if (debugAnonStructures) {
+            if (debugNamedStructures) {
                 NSLog(@"----------------------------------------");
                 NSLog(@"Can't be combined: %@", key);
                 NSLog(@"group: %@", group);
@@ -421,6 +430,12 @@ static BOOL debugAnonStructures = NO;
         }
 
         if (canBeCombined) {
+            if ([phase2_anonStructureInfo objectForKey:key] != nil) {
+                // This shouldn't happen, but the named case might.
+                NSLog(@"[%@] %s, WARNING: depth %u type %@ has conflict(?) at lower level", identifier, _cmd, depth, key);
+                NSLog(@"previous: %@", [[phase2_anonStructureInfo objectForKey:key] shortDescription]);
+                NSLog(@" current: %@", [combined shortDescription]);
+            }
             [phase2_anonStructureInfo setObject:combined forKey:key];
         } else {
             if (debugAnonStructures) {
