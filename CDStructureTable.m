@@ -48,6 +48,7 @@ static BOOL debugAnonStructures = NO;
     phase3_anonExceptions = [[NSMutableDictionary alloc] init];
 
     phase3_inMethodNameExceptions = [[NSMutableSet alloc] init];
+    phase3_bareAnonExceptions = [[NSMutableSet alloc] init];
 
     flags.shouldDebug = NO;
 
@@ -78,6 +79,7 @@ static BOOL debugAnonStructures = NO;
     [phase3_anonExceptions release];
 
     [phase3_inMethodNameExceptions release];
+    [phase3_bareAnonExceptions release];
 
     [debugNames release];
     [debugAnon release];
@@ -239,27 +241,30 @@ static BOOL debugAnonStructures = NO;
         }
     }
 
+    // TODO (2009-08-25): Need same ref count rules for anon exceptions.
     for (CDStructureInfo *info in [[phase3_anonExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        NSString *formattedString;
+        if ([phase3_bareAnonExceptions containsObject:[[info type] reallyBareTypeString]]) {
+            NSString *formattedString;
 
-        if (hasAddedMark == NO) {
-            [resultString appendFormat:@"#pragma mark %@\n\n", markName];
-            hasAddedMark = YES;
-        }
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
 
-        if (hasShownExceptions == NO) {
-            [resultString appendString:@"// Ambiguous\n"];
-            hasShownExceptions = YES;
-        }
+            if (hasShownExceptions == NO) {
+                [resultString appendString:@"// Ambiguous\n"];
+                hasShownExceptions = YES;
+            }
 
-        if (debugAnonStructures) {
-            [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
-            [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
-        }
-        formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
-        if (formattedString != nil) {
-            //[resultString appendFormat:@"%@;\n\n", formattedString];
-            [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            if (debugAnonStructures) {
+                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
+                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+            }
+            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                //[resultString appendFormat:@"%@;\n\n", formattedString];
+                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            }
         }
     }
 
@@ -783,6 +788,13 @@ static BOOL debugAnonStructures = NO;
 
 - (void)finishPhase3;
 {
+    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
+        if ([[[info type] reallyBareTypeString] isEqualToString:[[info type] typeString]]) {
+            [phase3_bareAnonExceptions addObject:[[info type] typeString]];
+        }
+    }
+    NSLog(@"phase3_bareAnonExceptions: %@", phase3_bareAnonExceptions);
+
     if ([debugNames count] > 0) {
         NSLog(@"======================================================================");
         NSLog(@"[%@] %s", identifier, _cmd);
