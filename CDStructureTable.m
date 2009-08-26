@@ -40,6 +40,16 @@
 //             - If they could be combined, the combined CDStructureInfo is to phase2_namedStructureInfo or phase2_anonStructureInfo.
 //             - If they couldn't be combined, the uncombined CDStructureInfos are added to phase2_nameExceptions or phase2_anonExceptions.
 
+// Phase 3 - Using all of the information available from the merged types from phase 2, we merge these types with the types from phase 0
+//           to fill in missing member names, and the occasional object type.
+
+// After all the phases are done, typedef names are generated for all anonymous structures, and then field names are added for missing fields.
+//  - bitfields don't need to have a name, so they can be blank.
+//  - the typedef name is calculated from a hash of the typeString.
+//    - Doing it before adding missing fields means we could change the field names without changing the typedef name.
+//    - Makes the name independant of the order they were encountered (like the previous indexes were).  You can get meaningful diffs between
+//      framework changes now.
+
 static BOOL debug = YES;
 static BOOL debugNamedStructures = NO;
 static BOOL debugAnonStructures = NO;
@@ -505,6 +515,24 @@ static BOOL debugAnonStructures = NO;
     NSLog(@"<  %s", _cmd);
 }
 
+//
+// Phase 3
+//
+
+- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+{
+    if (debug) {
+        NSLog(@"======================================================================");
+        NSLog(@"[%@]  > %s", identifier, _cmd);
+    }
+
+    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
+        [[info type] phase2MergeWithTypeController:typeController debug:debug];
+    }
+
+    if (debug) NSLog(@"[%@] <  %s", identifier, _cmd);
+}
+
 // TODO (2003-12-23): Add option to show/hide this section
 // TODO (2003-12-23): sort by name or by dependency
 // TODO (2003-12-23): declare in modules where they were first used
@@ -682,20 +710,6 @@ static BOOL debugAnonStructures = NO;
     for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
         [[info type] generateMemberNames];
     }
-}
-
-- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
-{
-    if (debug) {
-        NSLog(@"======================================================================");
-        NSLog(@"[%@]  > %s", identifier, _cmd);
-    }
-
-    for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
-        [[info type] phase2MergeWithTypeController:typeController debug:debug];
-    }
-
-    if (debug) NSLog(@"[%@] <  %s", identifier, _cmd);
 }
 
 // Go through all updated phase0_structureInfo types

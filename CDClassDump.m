@@ -344,11 +344,7 @@
     }
     [typeController endPhase:0];
 
-    [typeController startPhase1];
-    [typeController startPhase2];
-
-    [typeController generateTypedefNames];
-    [typeController generateMemberNames];
+    [typeController workSomeMagic];
 }
 
 - (void)showHeader;

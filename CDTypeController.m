@@ -10,7 +10,7 @@
 #import "CDTypeFormatter.h"
 #import "CDType.h"
 
-static BOOL debug = NO;
+static BOOL debug = YES;
 
 @implementation CDTypeController
 
@@ -130,11 +130,15 @@ static BOOL debug = NO;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Structures"];
-    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Structures"];
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
+                    markName:@"Named Structures"];
+    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
+                    markName:@"Typedef'd Structures"];
 
-    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Unions"];
-    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Unions"];
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
+                markName:@"Named Unions"];
+    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
+                markName:@"Typedef'd Unions"];
 }
 
 // Call this before calling generateMemberNames.
@@ -148,6 +152,39 @@ static BOOL debug = NO;
 {
     [structureTable generateMemberNames];
     [unionTable generateMemberNames];
+}
+
+//
+// Run phase 1+
+//
+
+- (void)workSomeMagic;
+{
+    [self startPhase1];
+    [self startPhase2];
+    [self startPhase3];
+
+    [self generateTypedefNames];
+    [self generateMemberNames];
+
+    if (debug) {
+        NSMutableString *str;
+
+        str = [NSMutableString string];
+        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
+                        markName:@"Named Structures"];
+        [unionTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
+                    markName:@"Named Unions"];
+        [str writeToFile:@"/tmp/out.struct" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+
+        str = [NSMutableString string];
+        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
+                        markName:@"Typedef'd Structures"];
+        [unionTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
+                    markName:@"Typedef'd Unions"];
+        [str writeToFile:@"/tmp/out.typedef" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
+        //NSLog(@"str =\n%@", str);
+    }
 }
 
 //
@@ -226,7 +263,10 @@ static BOOL debug = NO;
     //[structureTable logPhase2Info];
     [structureTable finishPhase2];
     [unionTable finishPhase2];
+}
 
+- (void)startPhase3;
+{
     // do phase2 merge on all the types from phase 0
     [structureTable phase2ReplacementOnPhase0WithTypeController:self];
     [unionTable phase2ReplacementOnPhase0WithTypeController:self];
@@ -252,12 +292,6 @@ static BOOL debug = NO;
     [unionTable finishPhase3];
     //[structureTable logPhase3Info];
 
-    //[structureTable generateTypedefNames];
-    //[structureTable generateMemberNames];
-
-    //[unionTable generateTypedefNames];
-    //[unionTable generateMemberNames];
-
     // - All named structures (minus exceptions like struct _flags) get declared at the top level
     // - All anonymous structures (minus exceptions) referenced by a method
     //                                            OR references >1 time gets typedef'd at the top and referenced by typedef subsequently
@@ -266,23 +300,6 @@ static BOOL debug = NO;
     // Then... what do we do when printing ivars/method types?
     // CDTypeController - (BOOL)shouldExpandType:(CDType *)type;
     // CDTypeController - (NSString *)typedefNameForType:(CDType *)type;
-
-#if 0
-    {
-        NSMutableString *str;
-
-        str = [NSMutableString string];
-        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
-        [unionTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
-        [str writeToFile:@"/tmp/out.struct" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
-
-        str = [NSMutableString string];
-        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
-        [unionTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil];
-        [str writeToFile:@"/tmp/out.typedef" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
-        //NSLog(@"str =\n%@", str);
-    }
-#endif
 
     //NSLog(@"<  %s", _cmd);
 }

@@ -80,6 +80,9 @@ typedef NSUInteger CDTableType;
 - (void)finishPhase2;
 - (void)logPhase2Info;
 
+// Phase 3
+- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+
 // Other
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
@@ -94,8 +97,6 @@ typedef NSUInteger CDTableType;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
-
-- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
 
 - (void)buildPhase3Exceptions;
 - (void)phase3WithTypeController:(CDTypeController *)typeController;

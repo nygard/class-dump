@@ -38,6 +38,9 @@
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
 
+// Run phase 1+
+- (void)workSomeMagic;
+
 // Phase 0
 - (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 - (void)endPhase:(NSUInteger)phase;
@@ -48,6 +51,9 @@
 
 // Phase 2
 - (void)startPhase2;
+
+// Phase 3
+- (void)startPhase3;
 
 - (BOOL)shouldShowName:(NSString *)name;
 - (CDType *)phase2ReplacementForType:(CDType *)type;
