@@ -10,6 +10,8 @@
 #import "CDTypeFormatter.h"
 #import "CDType.h"
 
+static BOOL debug = NO;
+
 @implementation CDTypeController
 
 - (id)init;
@@ -213,6 +215,8 @@
     maxDepth = [structureTable phase1_maxDepth];
     if (maxDepth < [unionTable phase1_maxDepth])
         maxDepth = [unionTable phase1_maxDepth];
+
+    if (debug) NSLog(@"max structure/union depth is: %u", maxDepth);
 
     for (depth = 1; depth <= maxDepth; depth++) {
         [structureTable phase2AtDepth:depth typeController:self];
