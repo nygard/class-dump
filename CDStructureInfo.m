@@ -109,9 +109,12 @@
     return [NSString stringWithFormat:@"%u %u m?%u %@ %@", [type structureDepth], referenceCount, isUsedInMethod, [type bareTypeString], [type typeString]];
 }
 
+// Structure depth, reallyBareTypeString, typeString
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 {
     NSUInteger thisDepth, otherDepth;
+    NSString *str1, *str2;
+    NSComparisonResult result;
 
     thisDepth = [type structureDepth];
     otherDepth = [[otherInfo type] structureDepth];
@@ -121,12 +124,23 @@
     else if (thisDepth > otherDepth)
         return NSOrderedDescending;
 
-    return [[type typeString] compare:[[otherInfo type] typeString]];
+    str1 = [type reallyBareTypeString];
+    str2 = [[otherInfo type] reallyBareTypeString];
+    result = [str1 compare:str2];
+    if (result == NSOrderedSame) {
+        str1 = [type typeString];
+        str2 = [[otherInfo type] typeString];
+        result = [str1 compare:str2];
+    }
+
+    return result;
 }
 
 - (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 {
     NSUInteger thisDepth, otherDepth;
+    NSString *str1, *str2;
+    NSComparisonResult result;
 
     thisDepth = [type structureDepth];
     otherDepth = [[otherInfo type] structureDepth];
@@ -136,7 +150,16 @@
     else if (thisDepth > otherDepth)
         return NSOrderedAscending;
 
-    return [[type typeString] compare:[[otherInfo type] typeString]];
+    str1 = [type reallyBareTypeString];
+    str2 = [[otherInfo type] reallyBareTypeString];
+    result = -[str1 compare:str2];
+    if (result == NSOrderedSame) {
+        str1 = [type typeString];
+        str2 = [[otherInfo type] typeString];
+        result = -[str1 compare:str2];
+    }
+
+    return result;
 }
 
 - (id)copyWithZone:(NSZone *)zone;
