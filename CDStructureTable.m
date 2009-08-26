@@ -52,7 +52,7 @@
 
 static BOOL debug = NO;
 static BOOL debugNamedStructures = NO;
-static BOOL debugAnonStructures = YES;
+static BOOL debugAnonStructures = NO;
 
 @implementation CDStructureTable
 
@@ -81,7 +81,6 @@ static BOOL debugAnonStructures = YES;
     phase3_anonExceptions = [[NSMutableDictionary alloc] init];
 
     phase3_inMethodNameExceptions = [[NSMutableSet alloc] init];
-    phase3_bareAnonExceptions = [[NSMutableSet alloc] init];
 
     flags.shouldDebug = NO;
 
@@ -112,7 +111,6 @@ static BOOL debugAnonStructures = YES;
     [phase3_anonExceptions release];
 
     [phase3_inMethodNameExceptions release];
-    [phase3_bareAnonExceptions release];
 
     [debugNames release];
     [debugAnon release];
@@ -498,7 +496,7 @@ static BOOL debugAnonStructures = YES;
         NSLog(@"======================================================================");
     }
 
-    [self logPhase2Info];
+    //[self logPhase2Info];
 }
 
 - (void)logPhase2Info;
@@ -678,13 +676,6 @@ static BOOL debugAnonStructures = YES;
 
 - (void)finishPhase3;
 {
-    for (CDStructureInfo *info in [phase3_anonExceptions allValues]) {
-        if ([[[info type] reallyBareTypeString] isEqualToString:[[info type] typeString]]) {
-            [phase3_bareAnonExceptions addObject:[[info type] typeString]];
-        }
-    }
-    NSLog(@"phase3_bareAnonExceptions: %@", phase3_bareAnonExceptions);
-
     if ([debugNames count] > 0) {
         NSLog(@"======================================================================");
         NSLog(@"[%@] %s", identifier, _cmd);
@@ -713,7 +704,7 @@ static BOOL debugAnonStructures = YES;
         NSLog(@"======================================================================");
     }
 
-    [self logPhase3Info];
+    //[self logPhase3Info];
 }
 
 - (void)logPhase3Info;
@@ -880,7 +871,10 @@ static BOOL debugAnonStructures = YES;
 
     // TODO (2009-08-25): Need same ref count rules for anon exceptions.
     for (CDStructureInfo *info in [[phase3_anonExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        if ([phase3_bareAnonExceptions containsObject:[[info type] reallyBareTypeString]]) {
+        BOOL shouldShow;
+
+        shouldShow = ![self shouldExpandStructureInfo:info];
+        if (shouldShow || debugAnonStructures) {
             NSString *formattedString;
 
             if (hasAddedMark == NO) {
@@ -889,7 +883,7 @@ static BOOL debugAnonStructures = YES;
             }
 
             if (hasShownExceptions == NO) {
-                [resultString appendString:@"// Ambiguous\n"];
+                [resultString appendString:@"// Ambiguous groups\n"];
                 hasShownExceptions = YES;
             }
 
@@ -903,13 +897,6 @@ static BOOL debugAnonStructures = YES;
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
             }
         }
-    }
-
-    if (debugAnonStructures) {
-        [resultString appendString:@"\n// Anon exceptions:\n"];
-        for (NSString *str in [[phase3_anonExceptions allKeys] sortedArrayUsingSelector:@selector(compare:)])
-            [resultString appendFormat:@"// %@\n", str];
-        [resultString appendString:@"\n"];
     }
 }
 
@@ -946,7 +933,7 @@ static BOOL debugAnonStructures = YES;
     return (info == nil)
         || ([info isUsedInMethod] == NO
             && [info referenceCount] < 2
-            && (([[info name] hasPrefix:@"_"] && [[info name] hasUnderscoreCapitalPrefix] == NO)
+            && (([[info name] hasPrefix:@"_"] && [[info name] hasUnderscoreCapitalPrefix] == NO) // TODO: Don't need the first hasPrefix check now.
                 || [@"?" isEqualToString:[info name]]));
 }
 
@@ -963,10 +950,8 @@ static BOOL debugAnonStructures = YES;
         key = [type reallyBareTypeString];
         info = [phase3_anonStructureInfo objectForKey:key];
         if (info == nil) {
-            if ([phase3_anonExceptions objectForKey:[type typeString]] != nil) {
-                //NSLog(@"Never expand anon exception: %@", [type typeString]);
-                return NO;
-            }
+            // Look for an exception
+            info = [phase3_anonExceptions objectForKey:[type typeString]];
         }
     } else {
         info = [phase3_namedStructureInfo objectForKey:name];

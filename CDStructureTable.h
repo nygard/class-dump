@@ -41,7 +41,6 @@ typedef NSUInteger CDTableType;
     NSMutableDictionary *phase3_anonExceptions; // key: NSString (typeString), value: CDStructureInfo
 
     NSMutableSet *phase3_inMethodNameExceptions; // Of NSString
-    NSMutableSet *phase3_bareAnonExceptions; // key: NSString (reallyBareTypeString)
 
     struct {
         unsigned int shouldDebug:1;
