@@ -14,7 +14,6 @@
 #import "CDTypeController.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeName.h"
-#import "CDTypeParser.h"
 #import "CDStructureInfo.h"
 
 static BOOL debug = NO;
@@ -284,7 +283,7 @@ static BOOL debugAnonStructures = NO;
     key = [aStructure typeString];
     info = [phase0_structureInfo objectForKey:key];
     if (info == nil) {
-        info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+        info = [[CDStructureInfo alloc] initWithType:aStructure];
         if (isUsedInMethod)
             [info setIsUsedInMethod:YES];
         [phase0_structureInfo setObject:info forKey:key];
@@ -379,7 +378,7 @@ static BOOL debugAnonStructures = NO;
     key = [aStructure typeString];
     info = [phase1_structureInfo objectForKey:key];
     if (info == nil) {
-        info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+        info = [[CDStructureInfo alloc] initWithType:aStructure];
         [phase1_structureInfo setObject:info forKey:key];
         [info release];
     } else {
@@ -723,7 +722,7 @@ static BOOL debugAnonStructures = NO;
         } else {
             info = [phase3_anonStructureInfo objectForKey:key];
             if (info == nil) {
-                info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+                info = [[CDStructureInfo alloc] initWithType:aStructure];
                 [info setReferenceCount:referenceCount];
                 if (isUsedInMethod)
                     [info setIsUsedInMethod:isUsedInMethod];
@@ -751,7 +750,7 @@ static BOOL debugAnonStructures = NO;
             info = [phase3_namedStructureInfo objectForKey:name];
             if (info == nil) {
                 if ([debugNames containsObject:name]) NSLog(@"[%@] %s, info was nil for %@", identifier, _cmd, name);
-                info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
+                info = [[CDStructureInfo alloc] initWithType:aStructure];
                 [info setReferenceCount:referenceCount];
                 if (isUsedInMethod)
                     [info setIsUsedInMethod:isUsedInMethod];

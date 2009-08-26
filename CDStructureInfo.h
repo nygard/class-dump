@@ -9,14 +9,14 @@
 
 @interface CDStructureInfo : NSObject <NSCopying>
 {
-    NSUInteger referenceCount;
     CDType *type;
+    NSUInteger referenceCount;
     BOOL isUsedInMethod;
     NSString *typedefName;
 }
 
 // TODO: Or just pass in type?
-- (id)initWithTypeString:(NSString *)str;
+- (id)initWithType:(CDType *)aType;
 - (void)dealloc;
 
 - (CDType *)type;

@@ -8,31 +8,20 @@
 #import "NSError-CDExtensions.h"
 #import "NSString-Extensions.h"
 #import "CDType.h"
-#import "CDTypeParser.h"
 
 // If it's used in a method, then it should be declared at the top. (name or typedef)
 
 @implementation CDStructureInfo
 
-- (id)initWithTypeString:(NSString *)str;
+- (id)initWithType:(CDType *)aType;
 {
     if ([super init] == nil)
         return nil;
 
+    type = [aType copy];
     referenceCount = 1;
-
-    {
-        CDTypeParser *parser;
-        NSError *error;
-
-        parser = [[CDTypeParser alloc] initWithType:str];
-        type = [[parser parseType:&error] retain];
-        if (type == nil)
-            NSLog(@"Warning: (CDStructInfo) Parsing struct type failed, %@", [error myExplanation]);
-        [parser release];
-    }
-
     isUsedInMethod = NO;
+    typedefName = nil;
 
     return self;
 }
@@ -154,7 +143,7 @@
 {
     CDStructureInfo *copy;
 
-    copy = [[CDStructureInfo alloc] initWithTypeString:[type typeString]];
+    copy = [[CDStructureInfo alloc] initWithType:type]; // type gets copied
     [copy setReferenceCount:referenceCount];
     [copy setIsUsedInMethod:isUsedInMethod];
     [copy setTypedefName:typedefName];
