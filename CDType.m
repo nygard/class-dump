@@ -192,17 +192,6 @@ static BOOL debugMerge = NO;
     return members;
 }
 
-#if 0
-- (void)setMembers:(NSArray *)newMembers;
-{
-    if (newMembers == members)
-        return;
-
-    [members release];
-    members = [newMembers retain];
-}
-#endif
-
 - (BOOL)isModifierType;
 {
     return type == 'r' || type == 'n' || type == 'N' || type == 'o' || type == 'O' || type == 'R' || type == 'V';
@@ -214,6 +203,25 @@ static BOOL debugMerge = NO;
         return [subtype typeIgnoringModifiers];
 
     return type;
+}
+
+- (NSUInteger)structureDepth;
+{
+    if (subtype != nil)
+        return [subtype structureDepth];
+
+    if (type == '{' || type == '(') {
+        NSUInteger maxDepth = 0;
+
+        for (CDType *member in members) {
+            if (maxDepth < [member structureDepth])
+                maxDepth = [member structureDepth];
+        }
+
+        return maxDepth + 1;
+    }
+
+    return 0;
 }
 
 - (NSString *)description;
@@ -545,52 +553,34 @@ static BOOL debugMerge = NO;
     return str;
 }
 
-- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
-{
-    if (phase == 0) {
-        [self phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
-    }
-}
-
-// Just top level structures
-- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
-{
-    // ^{ComponentInstanceRecord=}
-    if (subtype != nil)
-        [subtype phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
-
-    if ((type == '{' || type == '(') && [members count] > 0) {
-        [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
-    }
-}
-
-// Recursively go through type, registering structs/unions.
-- (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
-{
-    // ^{ComponentInstanceRecord=}
-    if (subtype != nil)
-        [subtype phase1RegisterStructuresWithObject:typeController];
-
-    if ((type == '{' || type == '(') && [members count] > 0) {
-        [typeController phase1RegisterStructure:self];
-        for (CDType *member in members)
-            [member phase1RegisterStructuresWithObject:typeController];
-    }
-}
-
+// TODO (2009-08-26): Looks like this doesn't compare the variable name.
 - (BOOL)isEqual:(CDType *)otherType;
 {
     return [[self typeString] isEqual:[otherType typeString]];
 }
 
-- (BOOL)isBasicallyEqual:(CDType *)otherType;
+// An easy deep copy.
+- (id)copyWithZone:(NSZone *)zone;
 {
-    return [[self keyTypeString] isEqual:[otherType keyTypeString]];
-}
+    CDTypeParser *parser;
+    NSError *error;
+    NSString *str;
+    CDType *copiedType;
 
-- (BOOL)isStructureEqual:(CDType *)otherType;
-{
-    return [[self bareTypeString] isEqual:[otherType bareTypeString]];
+    str = [self typeString];
+    NSParameterAssert(str != nil);
+
+    parser = [[CDTypeParser alloc] initWithType:str];
+    copiedType = [[parser parseType:&error] retain];
+    if (copiedType == nil)
+        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@, %@", str, [error myExplanation]);
+    [parser release];
+
+    NSParameterAssert([str isEqualToString:[copiedType typeString]]);
+
+    [copiedType setVariableName:variableName];
+
+    return copiedType;
 }
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
@@ -811,48 +801,63 @@ static BOOL debugMerge = NO;
     [subtype generateMemberNames];
 }
 
-- (NSUInteger)structureDepth;
+//
+// Phase 0
+//
+
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 {
+    if (phase == 0) {
+        [self phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
+    }
+}
+
+// Just top level structures
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+{
+    // ^{ComponentInstanceRecord=}
     if (subtype != nil)
-        return [subtype structureDepth];
+        [subtype phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
 
-    if (type == '{' || type == '(') {
-        NSUInteger maxDepth = 0;
+    if ((type == '{' || type == '(') && [members count] > 0) {
+        [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
+    }
+}
 
-        for (CDType *member in members) {
-            if (maxDepth < [member structureDepth])
-                maxDepth = [member structureDepth];
-        }
+- (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
+{
+    [subtype phase0RecursivelyFixStructureNames:flag];
 
-        return maxDepth + 1;
+    if ([[typeName name] hasPrefix:@"$"]) {
+        if (flag) NSLog(@"%s, changing type name %@ to ?", _cmd, [typeName name]);
+        [typeName setName:@"?"];
     }
 
-    return 0;
+    for (CDType *member in members)
+        [member phase0RecursivelyFixStructureNames:flag];
 }
 
-// An easy deep copy.
-- (id)copyWithZone:(NSZone *)zone;
+//
+// Phase 1
+//
+
+// Recursively go through type, registering structs/unions.
+- (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
 {
-    CDTypeParser *parser;
-    NSError *error;
-    NSString *str;
-    CDType *copiedType;
+    // ^{ComponentInstanceRecord=}
+    if (subtype != nil)
+        [subtype phase1RegisterStructuresWithObject:typeController];
 
-    str = [self typeString];
-    NSParameterAssert(str != nil);
-
-    parser = [[CDTypeParser alloc] initWithType:str];
-    copiedType = [[parser parseType:&error] retain];
-    if (copiedType == nil)
-        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@, %@", str, [error myExplanation]);
-    [parser release];
-
-    NSParameterAssert([str isEqualToString:[copiedType typeString]]);
-
-    [copiedType setVariableName:variableName];
-
-    return copiedType;
+    if ((type == '{' || type == '(') && [members count] > 0) {
+        [typeController phase1RegisterStructure:self];
+        for (CDType *member in members)
+            [member phase1RegisterStructuresWithObject:typeController];
+    }
 }
+
+//
+// Phase 2
+//
 
 // Bottom-up
 - (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
@@ -880,6 +885,10 @@ static BOOL debugMerge = NO;
         }
     }
 }
+
+//
+// Phase 3
+//
 
 - (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
 {
@@ -926,19 +935,5 @@ static BOOL debugMerge = NO;
         }
     }
 }
-
-- (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
-{
-    [subtype phase0RecursivelyFixStructureNames:flag];
-
-    if ([[typeName name] hasPrefix:@"$"]) {
-        if (flag) NSLog(@"%s, changing type name %@ to ?", _cmd, [typeName name]);
-        [typeName setName:@"?"];
-    }
-
-    for (CDType *member in members)
-        [member phase0RecursivelyFixStructureNames:flag];
-}
-
 
 @end

@@ -62,9 +62,18 @@ typedef NSUInteger CDTableType;
 - (BOOL)shouldDebug;
 - (void)setShouldDebug:(BOOL)newFlag;
 
+// Phase 0
 - (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 - (void)finishPhase0;
 - (void)logPhase0Info;
+
+// Phase 1
+- (void)phase1WithTypeController:(CDTypeController *)typeController;
+- (void)phase1RegisterStructure:(CDType *)aStructure;
+- (void)finishPhase1;
+- (NSUInteger)phase1_maxDepth;
+
+// Other
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
                             formatter:(CDTypeFormatter *)aTypeFormatter
@@ -78,11 +87,6 @@ typedef NSUInteger CDTableType;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
-
-- (void)phase1WithTypeController:(CDTypeController *)typeController;
-- (void)phase1RegisterStructure:(CDType *)aStructure;
-- (void)finishPhase1;
-- (NSUInteger)phase1_maxDepth;
 
 - (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
 - (CDType *)phase2ReplacementForType:(CDType *)type;

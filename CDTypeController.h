@@ -33,17 +33,20 @@
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
-- (void)endPhase:(NSUInteger)phase;
-
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
 
+// Phase 0
 - (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
+- (void)endPhase:(NSUInteger)phase;
+
+// Phase 1
+- (void)startPhase1;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 
-- (void)startPhase1;
+// Phase 2
 - (void)startPhase2;
 
 - (BOOL)shouldShowName:(NSString *)name;

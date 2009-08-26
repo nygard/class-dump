@@ -126,14 +126,6 @@
     return nil;
 }
 
-- (void)endPhase:(NSUInteger)phase;
-{
-    if (phase == 0) {
-        [structureTable finishPhase0];
-        [unionTable finishPhase0];
-    }
-}
-
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Structures"];
@@ -156,6 +148,10 @@
     [unionTable generateMemberNames];
 }
 
+//
+// Phase 0
+//
+
 - (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 {
     if ([aStructure type] == '{') {
@@ -165,6 +161,32 @@
     } else {
         NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
     }
+}
+
+- (void)endPhase:(NSUInteger)phase;
+{
+    if (phase == 0) {
+        [structureTable finishPhase0];
+        [unionTable finishPhase0];
+    }
+}
+
+//
+// Phase 1
+//
+
+// Phase one builds a list of all of the named and unnamed structures.
+// It does this by going through all the top level structures we found in phase 0.
+- (void)startPhase1;
+{
+    //NSLog(@" > %s", _cmd);
+    // Structures and unions can be nested, so do phase 1 on each table before finishing the phase.
+    [structureTable phase1WithTypeController:self];
+    [unionTable phase1WithTypeController:self];
+
+    [structureTable finishPhase1];
+    [unionTable finishPhase1];
+    //NSLog(@"<  %s", _cmd);
 }
 
 - (void)phase1RegisterStructure:(CDType *)aStructure;
@@ -178,19 +200,9 @@
     }
 }
 
-// Phase one builds a list of all of the named and unnamed structures.
-// It does this by going through all the top level structures we found in phase 0.
-- (void)startPhase1;
-{
-    //NSLog(@" > %s", _cmd);
-    // Structures and unions can be nested.
-    [structureTable phase1WithTypeController:self];
-    [unionTable phase1WithTypeController:self];
-
-    [structureTable finishPhase1];
-    [unionTable finishPhase1];
-    //NSLog(@"<  %s", _cmd);
-}
+//
+// Phase 2
+//
 
 - (void)startPhase2;
 {

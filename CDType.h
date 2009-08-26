@@ -42,9 +42,9 @@
 - (CDTypeName *)typeName;
 
 - (NSArray *)members;
-//- (void)setMembers:(NSArray *)newMembers;
 
 - (int)typeIgnoringModifiers;
+- (NSUInteger)structureDepth;
 
 - (NSString *)description;
 
@@ -59,29 +59,29 @@
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 
-- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
-- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
-- (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
-
 - (BOOL)isEqual:(CDType *)otherType;
-- (BOOL)isBasicallyEqual:(CDType *)otherType;
-- (BOOL)isStructureEqual:(CDType *)otherType;
+- (id)copyWithZone:(NSZone *)zone;
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
 - (void)_recursivelyMergeWithType:(CDType *)otherType;
 
 - (void)generateMemberNames;
-- (NSUInteger)structureDepth;
 
-- (id)copyWithZone:(NSZone *)zone;
+// Phase 0
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
 
+// Phase 1
+- (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
+
+// Phase 2
 - (void)phase2MergeWithTypeController:(CDTypeController *)typeController;
 
+// Phase 3
 - (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
 - (void)phase3RegisterMembersWithTypeController:(CDTypeController *)typeController;
 - (void)phase3MergeWithTypeController:(CDTypeController *)typeController;
-
-- (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
 
 @end
