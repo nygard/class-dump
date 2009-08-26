@@ -10,7 +10,7 @@
 #import "CDTypeFormatter.h"
 #import "CDType.h"
 
-static BOOL debug = YES;
+static BOOL debug = NO;
 
 @implementation CDTypeController
 

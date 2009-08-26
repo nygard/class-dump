@@ -35,6 +35,7 @@ typedef NSUInteger CDTableType;
     // Phase 3 - merged reference counts from updated phase0 types
     NSMutableDictionary *phase3_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
     NSMutableDictionary *phase3_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
+
     NSMutableSet *phase3_nameExceptions; // Of NSString
     //NSMutableSet *phase3_anonExceptions; // Of NSString - was of reallyBareTypeString
     NSMutableDictionary *phase3_anonExceptions; // key: NSString (typeString), value: CDStructureInfo
@@ -83,6 +84,16 @@ typedef NSUInteger CDTableType;
 // Phase 3
 - (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
 
+- (void)buildPhase3Exceptions;
+- (void)phase3WithTypeController:(CDTypeController *)typeController;
+- (void)phase3RegisterStructure:(CDType *)aStructure
+                          count:(NSUInteger)referenceCount
+                   usedInMethod:(BOOL)isUsedInMethod
+                 typeController:(CDTypeController *)typeController;
+- (void)finishPhase3;
+- (void)logPhase3Info;
+- (CDType *)phase3ReplacementForType:(CDType *)type;
+
 // Other
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
@@ -97,16 +108,6 @@ typedef NSUInteger CDTableType;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
-
-- (void)buildPhase3Exceptions;
-- (void)phase3WithTypeController:(CDTypeController *)typeController;
-- (void)phase3RegisterStructure:(CDType *)aStructure
-                          count:(NSUInteger)referenceCount
-                   usedInMethod:(BOOL)isUsedInMethod
-                 typeController:(CDTypeController *)typeController;
-- (void)finishPhase3;
-- (void)logPhase3Info;
-- (CDType *)phase3ReplacementForType:(CDType *)type;
 
 - (BOOL)shouldExpandStructureInfo:(CDStructureInfo *)info;
 - (BOOL)shouldExpandType:(CDType *)type;
