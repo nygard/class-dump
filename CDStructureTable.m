@@ -276,25 +276,22 @@ static BOOL debugAnonStructures = NO;
     }
 }
 
-// Now I just want a list of the named structures
-- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
+- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 {
     NSString *key;
     CDStructureInfo *info;
-
-    // Find exceptions first, then merge non-exceptions.
 
     key = [aStructure typeString];
     info = [phase0_structureInfo objectForKey:key];
     if (info == nil) {
         info = [[CDStructureInfo alloc] initWithTypeString:[aStructure typeString]];
-        if (isIvar == NO)
+        if (isUsedInMethod)
             [info setIsUsedInMethod:YES];
         [phase0_structureInfo setObject:info forKey:key];
         [info release];
     } else {
         [info addReferenceCount:1];
-        if (isIvar == NO)
+        if (isUsedInMethod)
             [info setIsUsedInMethod:YES];
     }
 }

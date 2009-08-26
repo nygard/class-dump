@@ -72,7 +72,7 @@ typedef NSUInteger CDTableType;
               symbolReferences:(CDSymbolReferences *)symbolReferences
                       markName:(NSString *)markName;
 
-- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
+- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 - (void)finishPhase0;
 - (void)logPhase0Info;
 

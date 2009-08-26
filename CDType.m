@@ -545,22 +545,22 @@ static BOOL debugMerge = NO;
     return str;
 }
 
-- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController ivar:(BOOL)isIvar;
+- (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 {
     if (phase == 0) {
-        [self phase0RegisterStructuresWithObject:typeController ivar:isIvar];
+        [self phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
     }
 }
 
 // Just top level structures
-- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController ivar:(BOOL)isIvar;
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 {
     // ^{ComponentInstanceRecord=}
     if (subtype != nil)
-        [subtype phase0RegisterStructuresWithObject:typeController ivar:isIvar];
+        [subtype phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        [typeController phase0RegisterStructure:self ivar:isIvar];
+        [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
     }
 }
 

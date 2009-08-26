@@ -59,7 +59,7 @@
     [super registerTypesWithObject:typeController phase:phase];
 
     for (CDOCIvar *ivar in ivars) {
-        [[ivar parsedType] phase:phase registerTypesWithObject:typeController ivar:YES];
+        [[ivar parsedType] phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
 

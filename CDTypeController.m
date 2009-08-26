@@ -170,16 +170,12 @@
     [unionTable generateMemberNames];
 }
 
-//
-// CDStructureRegistration Protocol
-//
-
-- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
+- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 {
     if ([aStructure type] == '{') {
-        [structureTable phase0RegisterStructure:aStructure ivar:isIvar];
+        [structureTable phase0RegisterStructure:aStructure usedInMethod:isUsedInMethod];
     } else if ([aStructure type] == '(') {
-        [unionTable phase0RegisterStructure:aStructure ivar:isIvar];
+        [unionTable phase0RegisterStructure:aStructure usedInMethod:isUsedInMethod];
     } else {
         NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
     }

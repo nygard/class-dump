@@ -40,7 +40,7 @@
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
 
-- (void)phase0RegisterStructure:(CDType *)aStructure ivar:(BOOL)isIvar;
+- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 
 - (void)startPhase1;
