@@ -821,7 +821,10 @@ static BOOL debugAnonStructures = NO;
     }
 
     for (CDStructureInfo *info in [[phase3_nameExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        /*if ([phase3_inMethodNameExceptions containsObject:[info name]])*/ {
+        BOOL shouldShow;
+
+        shouldShow = ![self shouldExpandStructureInfo:info];
+        if (shouldShow || debugNamedStructures) {
             CDType *type;
 
             if (hasAddedMark == NO) {
@@ -992,7 +995,7 @@ static BOOL debugAnonStructures = NO;
             info = [phase3_nameExceptions objectForKey:[type typeString]];
             if (info != nil) {
                 //NSLog(@"[%@] %s, found phase3 name exception... %@", identifier, _cmd, [info shortDescription]);
-                return NO;
+                //return NO;
             }
         }
     }
