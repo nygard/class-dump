@@ -513,10 +513,7 @@ static BOOL debugMerge = NO;
           break;
 
       case '^':
-          if ([subtype type] == T_NAMED_OBJECT)
-              result = [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes];
-          else
-              result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+          result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
           break;
 
       case 'r':
