@@ -284,7 +284,7 @@ static BOOL debugMerge = NO;
 
       case '(':
           baseType = nil;
-          if (typeName == nil || [@"?" isEqual:[typeName description]]) {
+          /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
               NSString *typedefName;
 
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
@@ -310,7 +310,7 @@ static BOOL debugMerge = NO;
               baseType = [baseType stringByAppendingString:memberString];
           }
 
-          if (currentName == nil || [currentName hasPrefix:@"?"]) // Not sure about this
+          if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
               result = baseType;
           else
               result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
@@ -318,7 +318,7 @@ static BOOL debugMerge = NO;
 
       case '{':
           baseType = nil;
-          if (typeName == nil || [@"?" isEqual:[typeName description]]) {
+          /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
               NSString *typedefName;
 
               typedefName = [typeFormatter typedefNameForStruct:self level:level];
@@ -343,7 +343,7 @@ static BOOL debugMerge = NO;
               baseType = [baseType stringByAppendingString:memberString];
           }
 
-          if (currentName == nil || [currentName hasPrefix:@"?"]) // Not sure about this
+          if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
               result = baseType;
           else
               result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];

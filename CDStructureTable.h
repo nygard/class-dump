@@ -36,10 +36,10 @@ typedef NSUInteger CDTableType;
     NSMutableDictionary *phase3_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
     NSMutableDictionary *phase3_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
 
-    NSMutableSet *phase3_nameExceptions; // Of NSString
-    //NSMutableSet *phase3_anonExceptions; // Of NSString - was of reallyBareTypeString
+    NSMutableDictionary *phase3_nameExceptions; // key: NSString (typeString), value: CDStructureInfo
     NSMutableDictionary *phase3_anonExceptions; // key: NSString (typeString), value: CDStructureInfo
 
+    NSMutableSet *phase3_exceptionalNames; // Of NSString
     NSMutableSet *phase3_inMethodNameExceptions; // Of NSString
 
     struct {

@@ -61,6 +61,8 @@ static BOOL debug = NO;
     //[structureTable debugName:@"timespec"];
     //[structureTable debugName:@"AudioUnitEvent"];
     //[structureTable debugAnon:@"{?=II}"];
+    //[structureTable debugName:@"_CommandStackEntry"];
+    //[structureTable debugName:@"_flags"];
 
     return self;
 }
