@@ -159,7 +159,9 @@ static BOOL debug = NO;
     if (specialCase != nil) {
         [resultString appendString:specialCase];
     } else {
+        // TODO (2009-08-26): Ideally, just formatting a type shouldn't change it.  These changes should be done before, but this is handy.
         [type setVariableName:name];
+        [type phase0RecursivelyFixStructureNames:NO]; // Nuke the $_ names
         [type phase3MergeWithTypeController:[self typeController]];
         [resultString appendString:[type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
     }
