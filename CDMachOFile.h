@@ -71,6 +71,7 @@
 
 - (NSString *)importBaseName;
 
+- (BOOL)isEncrypted;
 - (BOOL)hasProtectedSegments;
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;

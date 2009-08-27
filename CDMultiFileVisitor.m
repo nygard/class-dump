@@ -111,13 +111,14 @@
 
     [classDump appendHeaderToString:resultString];
 
-    // TODO (2007-06-14): Make sure this generates no output files in this case.
-    if ([classDump containsObjectiveCData] == NO)
+    if ([classDump containsObjectiveCData] || [classDump hasEncryptedFiles]) {
+        [self buildClassFrameworks];
+        [self createOutputPathIfNecessary];
+        [self generateStructureHeader];
+    } else {
+        // TODO (2007-06-14): Make sure this generates no output files in this case.
         NSLog(@"Warning: This file does not contain any Objective-C runtime information.");
-
-    [self buildClassFrameworks];
-    [self createOutputPathIfNecessary];
-    [self generateStructureHeader];
+    }
 }
 
 - (void)willVisitClass:(CDOCClass *)aClass;

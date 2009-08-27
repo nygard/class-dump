@@ -15,4 +15,10 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
+- (uint32_t)cryptoff;
+- (uint32_t)cryptsize;
+- (uint32_t)cryptid;
+
+- (BOOL)isEncrypted;
+
 @end

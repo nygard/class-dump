@@ -7,6 +7,8 @@
 
 #import "CDDataCursor.h"
 
+// This is used in iPhone apps.
+
 @implementation CDLCEncryptionInfo
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
@@ -34,6 +36,26 @@
 - (uint32_t)cmdsize;
 {
     return encryptionInfoCommand.cmdsize;
+}
+
+- (uint32_t)cryptoff;
+{
+    return encryptionInfoCommand.cryptoff;
+}
+
+- (uint32_t)cryptsize;
+{
+    return encryptionInfoCommand.cryptsize;
+}
+
+- (uint32_t)cryptid;
+{
+    return encryptionInfoCommand.cryptid;
+}
+
+- (BOOL)isEncrypted;
+{
+    return encryptionInfoCommand.cryptid != 0;
 }
 
 @end

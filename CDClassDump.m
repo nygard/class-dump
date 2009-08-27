@@ -216,6 +216,17 @@
     return NO;
 }
 
+- (BOOL)hasEncryptedFiles;
+{
+    for (CDMachOFile *machOFile in machOFiles) {
+        if ([machOFile isEncrypted]) {
+            return YES;
+        }
+    }
+
+    return NO;
+}
+
 - (CDTypeController *)typeController;
 {
     return typeController;
@@ -294,7 +305,7 @@
 {
     [aVisitor willBeginVisiting];
 
-    if ([self containsObjectiveCData]) {
+    if ([self containsObjectiveCData] || [self hasEncryptedFiles]) {
         for (CDObjectiveCProcessor *processor in objcProcessors) {
             [processor recursivelyVisit:aVisitor];
         }

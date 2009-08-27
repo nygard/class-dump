@@ -74,6 +74,7 @@
 @property CDArch targetArch;
 
 - (BOOL)containsObjectiveCData;
+- (BOOL)hasEncryptedFiles;
 
 - (CDTypeController *)typeController;
 

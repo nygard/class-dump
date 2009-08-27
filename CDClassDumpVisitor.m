@@ -13,6 +13,7 @@
 #import "CDMachOFile.h"
 #import "CDOCProtocol.h"
 #import "CDLCDylib.h"
+#import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
@@ -27,7 +28,7 @@
 
     [classDump appendHeaderToString:resultString];
 
-    if ([classDump containsObjectiveCData]) {
+    if ([classDump containsObjectiveCData] || [classDump hasEncryptedFiles]) {
         [[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
     } else {
@@ -79,7 +80,17 @@
         }
     }
 
-    if ([machOFile hasProtectedSegments]) {
+    if ([machOFile isEncrypted]) {
+        [resultString appendString:@" *       This file is encrypted:\n"];
+        for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+            if ([loadCommand isKindOfClass:[CDLCEncryptionInfo class]]) {
+                CDLCEncryptionInfo *encryptionInfo = (CDLCEncryptionInfo *)loadCommand;
+
+                [resultString appendFormat:@" *           cryptid: 0x%08x, cryptoff: 0x%08x, cryptsize: 0x%08x\n",
+                              [encryptionInfo cryptid], [encryptionInfo cryptoff], [encryptionInfo cryptsize]];
+            }
+        }
+    } else if ([machOFile hasProtectedSegments]) {
         [resultString appendString:@" *       (This file has protected segments, decrypting.)\n"];
     }
     [resultString appendString:@" */\n\n"];

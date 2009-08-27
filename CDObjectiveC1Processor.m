@@ -152,9 +152,11 @@ static BOOL debug = NO;
 
 - (void)process;
 {
-    [super process];
+    if ([machOFile isEncrypted] == NO) {
+        [super process];
 
-    [self processModules];
+        [self processModules];
+    }
 }
 
 //

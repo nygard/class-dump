@@ -58,14 +58,16 @@
 
 - (void)process;
 {
-    [[machOFile symbolTable] loadSymbols];
-    [[machOFile dynamicSymbolTable] loadSymbols];
+    if ([machOFile isEncrypted] == NO) {
+        [[machOFile symbolTable] loadSymbols];
+        [[machOFile dynamicSymbolTable] loadSymbols];
 
-    [self loadProtocols];
+        [self loadProtocols];
 
-    // Load classes before categories, so we can get a dictionary of classes by address.
-    [self loadClasses];
-    [self loadCategories];
+        // Load classes before categories, so we can get a dictionary of classes by address.
+        [self loadClasses];
+        [self loadCategories];
+    }
 }
 
 - (void)loadProtocols;
@@ -119,7 +121,7 @@
 
     [aVisitor willVisitObjectiveCProcessor:self];
 
-    if ([protocolNames count] > 0 || [classesAndCategories count] > 0) {
+    if ([protocolNames count] > 0 || [classesAndCategories count] > 0 || [machOFile isEncrypted]) {
         [aVisitor visitObjectiveCProcessor:self];
     }
 

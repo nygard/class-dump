@@ -78,7 +78,7 @@
 {
     [classDump appendHeaderToString:resultString];
 
-    if ([classDump containsObjectiveCData]) {
+    if ([classDump containsObjectiveCData] || [classDump hasEncryptedFiles]) {
         //[[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
     } else {

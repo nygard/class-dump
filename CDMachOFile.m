@@ -11,15 +11,16 @@
 #include <mach-o/swap.h>
 
 #import "CDDataCursor.h"
-#import "CDLCDylib.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
+#import "CDLCDylib.h"
+#import "CDLCDynamicSymbolTable.h"
+#import "CDLCEncryptionInfo.h"
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
+#import "CDLCSymbolTable.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDSection.h"
-#import "CDLCSymbolTable.h"
-#import "CDLCDynamicSymbolTable.h"
 #import "CDSymbol.h"
 #import "CDRelocationInfo.h"
 
@@ -384,6 +385,17 @@ static BOOL debug = NO;
     }
 
     return nil;
+}
+
+- (BOOL)isEncrypted;
+{
+    for (CDLoadCommand *loadCommand in loadCommands) {
+        if ([loadCommand isKindOfClass:[CDLCEncryptionInfo class]] && [(CDLCEncryptionInfo *)loadCommand isEncrypted]) {
+            return YES;
+        }
+    }
+
+    return NO;
 }
 
 - (BOOL)hasProtectedSegments;
