@@ -99,7 +99,7 @@ static BOOL debug = NO;
         return;
     }
 
-    // On 10.nevermind, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
+    // On 10.6, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
     scanner = [[NSScanner alloc] initWithString:attributeString];
 
     if ([scanner scanString:@"T" intoString:NULL]) {
