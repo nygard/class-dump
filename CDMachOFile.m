@@ -47,6 +47,7 @@ static BOOL debug = NO;
 
     byteOrder = CDByteOrderLittleEndian;
     loadCommands = [[NSMutableArray alloc] init];
+    segments = [[NSMutableArray alloc] init];
     symbolTable = nil;
     dynamicSymbolTable = nil;
     _flags.uses64BitABI = NO;
@@ -64,6 +65,8 @@ static BOOL debug = NO;
         loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
         if (loadCommand != nil) {
             [loadCommands addObject:loadCommand];
+            if ([loadCommand isKindOfClass:[CDLCSegment class]])
+                [segments addObject:loadCommand];
             if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])
                 [self setSymbolTable:(CDLCSymbolTable *)loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]])
@@ -76,6 +79,7 @@ static BOOL debug = NO;
 - (void)dealloc;
 {
     [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
+    [segments release];
     [symbolTable release];
     [dynamicSymbolTable release];
 
@@ -128,6 +132,11 @@ static BOOL debug = NO;
 - (NSArray *)loadCommands;
 {
     return loadCommands;
+}
+
+- (NSArray *)segments;
+{
+    return segments;
 }
 
 - (CDLCSymbolTable *)symbolTable;

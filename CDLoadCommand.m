@@ -7,6 +7,7 @@
 
 #include <mach-o/swap.h>
 
+#import "CDLCDyldInfo.h"
 #import "CDLCDylib.h"
 #import "CDLCDylinker.h"
 #import "CDLCDynamicSymbolTable.h"
@@ -64,6 +65,10 @@
       case LC_PREBOUND_DYLIB: targetClass = [CDLCPreboundDylib class]; break;
       case LC_TWOLEVEL_HINTS: targetClass = [CDLCTwoLevelHints class]; break;
       case LC_ENCRYPTION_INFO: targetClass = [CDLCEncryptionInfo class]; break;
+      case LC_DYLD_INFO:
+      case LC_DYLD_INFO_ONLY:
+          targetClass = [CDLCDyldInfo class];
+          break;
       default:
           NSLog(@"Unknown load command: 0x%08x", val);
     };

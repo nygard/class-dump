@@ -22,6 +22,7 @@
     CDByteOrder byteOrder;
 
     NSMutableArray *loadCommands;
+    NSMutableArray *segments;
     CDLCSymbolTable *symbolTable;
     CDLCDynamicSymbolTable *dynamicSymbolTable;
 
@@ -46,6 +47,7 @@
 - (uint32_t)flags;
 
 - (NSArray *)loadCommands;
+- (NSArray *)segments;
 
 - (CDLCSymbolTable *)symbolTable;
 - (void)setSymbolTable:(CDLCSymbolTable *)newSymbolTable;

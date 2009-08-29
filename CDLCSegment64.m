@@ -97,4 +97,9 @@
     return (address >= segmentCommand.vmaddr) && (address < segmentCommand.vmaddr + segmentCommand.vmsize);
 }
 
+- (NSString *)extraDescription;
+{
+    return [NSString stringWithFormat:@"addr: 0x%016lx", [self vmaddr]];
+}
+
 @end

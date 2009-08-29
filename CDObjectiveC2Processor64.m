@@ -211,13 +211,17 @@
         [category addClassMethod:method];
 
     if ([machOFile hasRelocationEntryForAddress:address + sizeof(objc2Category.name)]) {
+        NSLog(@"macho file has relocation entry for address of category class name");
         [category setClassName:[machOFile externalClassNameForAddress:address + sizeof(objc2Category.name)]];
         //NSLog(@"got external class name (%@) for category.", [category className]);
     } else if (objc2Category.class != 0) {
         CDOCClass *aClass;
 
+        NSLog(@"macho file has non-nil category class name");
         aClass = [classesByAddress objectForKey:[NSNumber numberWithUnsignedInteger:objc2Category.class]];
         [category setClassName:[aClass name]];
+    } else {
+        NSLog(@"This is the third case.");
     }
 
     [cursor release];

@@ -16,8 +16,6 @@
     if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
         return nil;
 
-    NSLog(@"CDLCEncryptionInfo");
-
     encryptionInfoCommand.cmd = [cursor readInt32];
     encryptionInfoCommand.cmdsize = [cursor readInt32];
 

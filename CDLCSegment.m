@@ -110,10 +110,19 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> name: %@",
+    NSString *extra = [self extraDescription];
+
+    if (extra == nil) {
+        return [NSString stringWithFormat:@"<%@:%p> name: %@",
+                         NSStringFromClass([self class]), self,
+                         name];
+    }
+
+    return [NSString stringWithFormat:@"<%@:%p> name: %@, %@",
                      NSStringFromClass([self class]), self,
-                     name];
+                     name, extra];
 }
+
 - (NSString *)extraDescription;
 {
 #if 0

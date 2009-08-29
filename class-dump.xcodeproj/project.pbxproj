@@ -166,6 +166,7 @@
 		017DDCBE0FFC3E7700F2DEE9 /* CDLCPreboundDylib.m in Sources */ = {isa = PBXBuildFile; fileRef = 017DDCBC0FFC3E7700F2DEE9 /* CDLCPreboundDylib.m */; };
 		017DDCE30FFC444200F2DEE9 /* CDLCTwoLevelHints.m in Sources */ = {isa = PBXBuildFile; fileRef = 017DDCE10FFC444200F2DEE9 /* CDLCTwoLevelHints.m */; };
 		0185BF340FF9B251006AE888 /* CDLCRunPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 0185BF320FF9B251006AE888 /* CDLCRunPath.m */; };
+		01A68BCE1049D38F0094DF3F /* CDLCDyldInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A68BCD1049D38F0094DF3F /* CDLCDyldInfo.m */; };
 		01A9A5560FF19C3B00475772 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		01A9A5570FF19C3C00475772 /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
 		01A9A5580FF19C3C00475772 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
@@ -478,6 +479,8 @@
 		0182A9950FED717500145175 /* CDSection64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSection64.m; sourceTree = "<group>"; };
 		0185BF310FF9B251006AE888 /* CDLCRunPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCRunPath.h; sourceTree = "<group>"; };
 		0185BF320FF9B251006AE888 /* CDLCRunPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRunPath.m; sourceTree = "<group>"; };
+		01A68BCC1049D38F0094DF3F /* CDLCDyldInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDyldInfo.h; sourceTree = "<group>"; };
+		01A68BCD1049D38F0094DF3F /* CDLCDyldInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCDyldInfo.m; sourceTree = "<group>"; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
 		01A9A4220FF18F8300475772 /* CDLCDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDylib.h; sourceTree = "<group>"; };
@@ -785,6 +788,8 @@
 			children = (
 				012E2AC208AE9CDC003E99F8 /* CDLoadCommand.h */,
 				012E2AC308AE9CDC003E99F8 /* CDLoadCommand.m */,
+				01A68BCC1049D38F0094DF3F /* CDLCDyldInfo.h */,
+				01A68BCD1049D38F0094DF3F /* CDLCDyldInfo.m */,
 				01A9A4220FF18F8300475772 /* CDLCDylib.h */,
 				01A9A4230FF18F8300475772 /* CDLCDylib.m */,
 				01AD084E0FF7F494008E6A49 /* CDLCDylinker.h */,
@@ -1253,6 +1258,7 @@
 				01F12C4F102F393700A8C12C /* CDTypeController.m in Sources */,
 				01DAB2EB103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
 				01B456A7103923F80062EF62 /* NSData-CDExtensions.m in Sources */,
+				01A68BCE1049D38F0094DF3F /* CDLCDyldInfo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1381,7 +1387,7 @@
 		010C4CD91001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = "32-Debug";
 		};
@@ -1472,7 +1478,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_64_BIT)";
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Debug;
 		};
@@ -1481,7 +1487,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 			};
 			name = Release;
 		};
