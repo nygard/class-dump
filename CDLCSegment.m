@@ -210,32 +210,53 @@
         AES_set_decrypt_key(k1, 256, &key1);
         AES_set_decrypt_key(k2, 256, &key2);
 
-        //NSLog(@"filesize: %08x, pagesize: %04x", segmentCommand.filesize, PAGE_SIZE);
+        //NSLog(@"filesize: %08x, pagesize: %04x", [self filesize], PAGE_SIZE);
         NSParameterAssert(([self filesize] % PAGE_SIZE) == 0);
         decryptedData = [[NSMutableData alloc] initWithLength:[self filesize]];
 
         src = [nonretainedMachOFile machODataBytes] + [self fileoff];
         dest = [decryptedData mutableBytes];
 
-        count = [self filesize] / PAGE_SIZE;
-        for (index = 0; index < count; index++) {
-            if (index < 3) {
-                //NSLog(@"src = %08x, not encrypted", src);
-                memcpy(dest, src, PAGE_SIZE);
-            } else {
-                unsigned char iv1[AES_BLOCK_SIZE];
-                unsigned char iv2[AES_BLOCK_SIZE];
+        if ([self filesize] <= PAGE_SIZE * 3) {
+            memcpy(dest, src, [self filesize]);
+        } else {
+            uint32_t magic;
 
-                //NSLog(@"src = %08x, encrypted", src);
-                memset(iv1, 0, AES_BLOCK_SIZE);
-                memset(iv2, 0, AES_BLOCK_SIZE);
-                AES_cbc_encrypt(src, dest, PAGE_SIZE / 2, &key1, iv1, AES_DECRYPT);
-                AES_cbc_encrypt(src + PAGE_SIZE / 2, dest + PAGE_SIZE / 2, PAGE_SIZE / 2, &key2, iv2, AES_DECRYPT);
+            memcpy(dest, src, PAGE_SIZE * 3);
+            src += PAGE_SIZE * 3;
+            dest += PAGE_SIZE * 3;
+            count = ([self filesize] / PAGE_SIZE) - 3;
+
+            magic = OSReadLittleInt32(src, 0);
+            NSLog(@"%s, magic= 0x%08x", _cmd, magic);
+            if (magic == 0x2e69cf40) {
+                // 10.6 decryption
+                NSLog(@"10.6 decryption");
+                exit(90);
+            } else if (magic == 0xc2286295) {
+                // 10.5 decryption
+
+                NSLog(@"10.5 decryption");
+                for (index = 0; index < count; index++) {
+                    unsigned char iv1[AES_BLOCK_SIZE];
+                    unsigned char iv2[AES_BLOCK_SIZE];
+
+                    //NSLog(@"src = %08x, encrypted", src);
+                    memset(iv1, 0, AES_BLOCK_SIZE);
+                    memset(iv2, 0, AES_BLOCK_SIZE);
+                    AES_cbc_encrypt(src, dest, PAGE_SIZE / 2, &key1, iv1, AES_DECRYPT);
+                    AES_cbc_encrypt(src + PAGE_SIZE / 2, dest + PAGE_SIZE / 2, PAGE_SIZE / 2, &key2, iv2, AES_DECRYPT);
+
+                    src += PAGE_SIZE;
+                    dest += PAGE_SIZE;
+                }
+            } else {
+                NSLog(@"Unknown encryption type: 0x%08x", magic);
+                exit(99);
             }
-            src += PAGE_SIZE;
-            dest += PAGE_SIZE;
         }
     }
+    //NSLog(@"decryptedData: %p", decryptedData);
 
     return decryptedData;
 }
