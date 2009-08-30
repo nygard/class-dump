@@ -263,6 +263,11 @@
         return NO;
     }
 
+    // Set before processing recursively.  This was getting caught on CoreUI on 10.6
+    assert([aMachOFile filename] != nil);
+    [machOFiles addObject:aMachOFile];
+    [machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
+
     if ([self shouldProcessRecursively]) {
         @try {
             for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
@@ -280,10 +285,6 @@
             return NO;
         }
     }
-
-    assert([aMachOFile filename] != nil);
-    [machOFiles addObject:aMachOFile];
-    [machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
 
     return YES;
 }
@@ -328,8 +329,12 @@
 
     aMachOFile = [machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
-        [self _loadFilename:adjustedID];
+        if ([self _loadFilename:adjustedID] == NO)
+            NSLog(@"Warning: Failed to load: %@", adjustedID);
         aMachOFile = [machOFilesByID objectForKey:adjustedID];
+        if (aMachOFile == nil) {
+            NSLog(@"Warning: Couldn't load MachOFile with ID: %@, adjustedID: %@", anID, adjustedID);
+        }
     }
 
     return aMachOFile;
