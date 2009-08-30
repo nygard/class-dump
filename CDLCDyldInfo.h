@@ -8,12 +8,17 @@
 @interface CDLCDyldInfo : CDLoadCommand
 {
     struct dyld_info_command dyldInfoCommand;
+
+    NSMutableDictionary *symbolNamesByAddress;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (void)dealloc;
 
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
+
+- (NSString *)symbolNameForAddress:(NSUInteger)address;
 
 // Rebasing
 - (void)logRebaseInfo;

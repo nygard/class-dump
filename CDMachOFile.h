@@ -11,7 +11,7 @@
 #import "CDDataCursor.h" // For CDByteOrder
 
 @class CDLCSegment;
-@class CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable;
+@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable;
 
 @protocol CDMachOFileDelegate
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDLCDylib *)aDylibCommand;
@@ -25,6 +25,7 @@
     NSMutableArray *segments;
     CDLCSymbolTable *symbolTable;
     CDLCDynamicSymbolTable *dynamicSymbolTable;
+    CDLCDyldInfo *dyldInfo;
 
     struct {
         unsigned int uses64BitABI:1;
@@ -49,11 +50,9 @@
 - (NSArray *)loadCommands;
 - (NSArray *)segments;
 
-- (CDLCSymbolTable *)symbolTable;
-- (void)setSymbolTable:(CDLCSymbolTable *)newSymbolTable;
-
-- (CDLCDynamicSymbolTable *)dynamicSymbolTable;
-- (void)setDynamicSymbolTable:(CDLCDynamicSymbolTable *)newSymbolTable;
+@property(retain) CDLCSymbolTable *symbolTable;
+@property(retain) CDLCDynamicSymbolTable *dynamicSymbolTable;
+@property(retain) CDLCDyldInfo *dyldInfo;
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
@@ -88,6 +87,10 @@
 
 - (NSString *)externalClassNameForAddress:(NSUInteger)address;
 - (BOOL)hasRelocationEntryForAddress:(NSUInteger)address;
+
+// Checks compressed dyld info on 10.6 or later.
+- (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
+- (NSString *)externalClassNameForAddress2:(NSUInteger)address;
 
 - (BOOL)hasObjectiveC1Data;
 - (BOOL)hasObjectiveC2Data;

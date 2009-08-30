@@ -210,18 +210,21 @@
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Category.classMethods])
         [category addClassMethod:method];
 
-    if ([machOFile hasRelocationEntryForAddress:address + sizeof(objc2Category.name)]) {
-        NSLog(@"macho file has relocation entry for address of category class name");
-        [category setClassName:[machOFile externalClassNameForAddress:address + sizeof(objc2Category.name)]];
-        //NSLog(@"got external class name (%@) for category.", [category className]);
-    } else if (objc2Category.class != 0) {
-        CDOCClass *aClass;
+    {
+        uint64_t classNameAddress = address + sizeof(objc2Category.name);
 
-        NSLog(@"macho file has non-nil category class name");
-        aClass = [classesByAddress objectForKey:[NSNumber numberWithUnsignedInteger:objc2Category.class]];
-        [category setClassName:[aClass name]];
-    } else {
-        NSLog(@"This is the third case.");
+        if ([machOFile hasRelocationEntryForAddress2:classNameAddress]) {
+            [category setClassName:[machOFile externalClassNameForAddress2:classNameAddress]];
+            //NSLog(@"category: got external class name (2): %@", [category className]);
+        } else if ([machOFile hasRelocationEntryForAddress:classNameAddress]) {
+            [category setClassName:[machOFile externalClassNameForAddress:classNameAddress]];
+            //NSLog(@"category: got external class name (1): %@", [aClass className]);
+        } else if (objc2Category.class != 0) {
+            CDOCClass *aClass;
+
+            aClass = [classesByAddress objectForKey:[NSNumber numberWithUnsignedInteger:objc2Category.class]];
+            [category setClassName:[aClass name]];
+        }
     }
 
     [cursor release];
@@ -290,14 +293,21 @@
 
     [cursor release];
 
-    if ([machOFile hasRelocationEntryForAddress:address + sizeof(objc2Class.isa)]) {
-        [aClass setSuperClassName:[machOFile externalClassNameForAddress:address + sizeof(objc2Class.isa)]];
-        //NSLog(@"got external class name: %@", [aClass superClassName]);
-    } else if (objc2Class.superclass != 0) {
-        CDOCClass *sc;
+    {
+        uint64_t classNameAddress = address + sizeof(objc2Class.isa);
 
-        sc = [self loadClassAtAddress:objc2Class.superclass];
-        [aClass setSuperClassName:[sc name]];
+        if ([machOFile hasRelocationEntryForAddress2:classNameAddress]) {
+            [aClass setSuperClassName:[machOFile externalClassNameForAddress2:classNameAddress]];
+            //NSLog(@"class: got external class name (2): %@", [aClass superClassName]);
+        } else if ([machOFile hasRelocationEntryForAddress:classNameAddress]) {
+            [aClass setSuperClassName:[machOFile externalClassNameForAddress:classNameAddress]];
+            //NSLog(@"class: got external class name (1): %@", [aClass superClassName]);
+        } else if (objc2Class.superclass != 0) {
+            CDOCClass *sc;
+
+            sc = [self loadClassAtAddress:objc2Class.superclass];
+            [aClass setSuperClassName:[sc name]];
+        }
     }
 
     for (CDOCMethod *method in [self loadMethodsOfMetaClassAtAddress:objc2Class.isa])

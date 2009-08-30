@@ -13,6 +13,7 @@
 #import "CDDataCursor.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
+#import "CDLCDyldInfo.h"
 #import "CDLCDylib.h"
 #import "CDLCDynamicSymbolTable.h"
 #import "CDLCEncryptionInfo.h"
@@ -50,6 +51,7 @@ static BOOL debug = NO;
     segments = [[NSMutableArray alloc] init];
     symbolTable = nil;
     dynamicSymbolTable = nil;
+    dyldInfo = nil;
     _flags.uses64BitABI = NO;
 
     return self;
@@ -65,12 +67,16 @@ static BOOL debug = NO;
         loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
         if (loadCommand != nil) {
             [loadCommands addObject:loadCommand];
+
             if ([loadCommand isKindOfClass:[CDLCSegment class]])
                 [segments addObject:loadCommand];
+
             if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])
                 [self setSymbolTable:(CDLCSymbolTable *)loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]])
                 [self setDynamicSymbolTable:(CDLCDynamicSymbolTable *)loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCDyldInfo class]])
+                [self setDyldInfo:(CDLCDyldInfo *)loadCommand];
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
@@ -82,6 +88,7 @@ static BOOL debug = NO;
     [segments release];
     [symbolTable release];
     [dynamicSymbolTable release];
+    [dyldInfo release];
 
     [super dealloc];
 }
@@ -139,33 +146,9 @@ static BOOL debug = NO;
     return segments;
 }
 
-- (CDLCSymbolTable *)symbolTable;
-{
-    return symbolTable;
-}
-
-- (void)setSymbolTable:(CDLCSymbolTable *)newSymbolTable;
-{
-    if (newSymbolTable == symbolTable)
-        return;
-
-    [symbolTable release];
-    symbolTable = [newSymbolTable retain];
-}
-
-- (CDLCDynamicSymbolTable *)dynamicSymbolTable;
-{
-    return dynamicSymbolTable;
-}
-
-- (void)setDynamicSymbolTable:(CDLCDynamicSymbolTable *)newSymbolTable;
-{
-    if (newSymbolTable == dynamicSymbolTable)
-        return;
-
-    [dynamicSymbolTable release];
-    dynamicSymbolTable = [newSymbolTable retain];
-}
+@synthesize symbolTable;
+@synthesize dynamicSymbolTable;
+@synthesize dyldInfo;
 
 - (NSString *)filetypeDescription;
 {
@@ -545,6 +528,29 @@ static BOOL debug = NO;
     rinfo = [dynamicSymbolTable relocationEntryWithOffset:address - [symbolTable baseAddress]];
     //NSLog(@"%s, rinfo= %@", _cmd, rinfo);
     return rinfo != nil;
+}
+
+- (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
+{
+    return [dyldInfo symbolNameForAddress:address] != nil;
+}
+
+- (NSString *)externalClassNameForAddress2:(NSUInteger)address;
+{
+    NSString *str = [dyldInfo symbolNameForAddress:address];
+
+    if (str != nil) {
+        NSString *prefix = @"_OBJC_CLASS_$_";
+
+        if ([str hasPrefix:prefix]) {
+            return [str substringFromIndex:[prefix length]];
+        } else {
+            NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
+            return str;
+        }
+    }
+
+    return nil;
 }
 
 - (BOOL)hasObjectiveC1Data;
