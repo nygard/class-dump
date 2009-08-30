@@ -21,6 +21,10 @@
 
 // Binding
 - (void)logBindInfo;
+- (void)logWeakBindInfo;
+
+- (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end;
+
 - (void)bindAddress:(uint64_t)address type:(uint8_t)type symbolName:(const char *)symbolName flags:(uint8_t)flags
              addend:(int64_t)addend libraryOrdinal:(int64_t)libraryOrdinal;
 

@@ -171,6 +171,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
     //[self logRebaseInfo];
     [self logBindInfo];
+    [self logWeakBindInfo];
     exit(99);
 
     return nil;
@@ -338,11 +339,35 @@ static NSString *CDBindTypeString(uint8_t type)
 
 - (void)logBindInfo;
 {
-    const uint8_t *start, *end, *ptr;
+    const uint8_t *start, *end;
+
+    NSLog(@"----------------------------------------------------------------------");
+    NSLog(@"bind_off: %u, bind_size: %u", self, dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
+    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.bind_off;
+    end = start + dyldInfoCommand.bind_size;
+
+    [self logBindOps:start end:end];
+}
+
+- (void)logWeakBindInfo;
+{
+    const uint8_t *start, *end;
+
+    NSLog(@"----------------------------------------------------------------------");
+    NSLog(@"weak_bind_off: %u, weak_bind_size: %u", self, dyldInfoCommand.weak_bind_off, dyldInfoCommand.weak_bind_size);
+    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.weak_bind_off;
+    end = start + dyldInfoCommand.weak_bind_size;
+
+    [self logBindOps:start end:end];
+}
+
+- (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end;
+{
     BOOL isDone = NO;
-    NSArray *segments;
     NSUInteger bindCount = 0;
 
+    const uint8_t *ptr;
+    NSArray *segments;
     uint64_t address;
     int64_t libraryOrdinal = 0;
     uint8_t type = 0;
@@ -356,11 +381,6 @@ static NSString *CDBindTypeString(uint8_t type)
     NSParameterAssert([segments count] > 0);
 
     address = [[segments objectAtIndex:0] vmaddr];
-
-    NSLog(@"----------------------------------------------------------------------");
-    NSLog(@"bind_off: %u, bind_size: %u", self, dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
-    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.bind_off;
-    end = start + dyldInfoCommand.bind_size;
 
     ptr = start;
     while ((ptr < end) && isDone == NO) {
@@ -387,10 +407,14 @@ static NSString *CDBindTypeString(uint8_t type)
               break;
 
           case BIND_OPCODE_SET_DYLIB_SPECIAL_IMM: {
-              int8_t val = immediate | BIND_OPCODE_MASK; // This sign extends the value
-
               // Special means negative
-              libraryOrdinal = val;
+              if (immediate == 0)
+                  libraryOrdinal = 0;
+              else {
+                  int8_t val = immediate | BIND_OPCODE_MASK; // This sign extends the value
+
+                  libraryOrdinal = val;
+              }
               //NSLog(@"BIND_OPCODE: SET_DYLIB_SPECIAL_IMM,          libraryOrdinal = %ld", libraryOrdinal);
               break;
           }
@@ -490,9 +514,9 @@ static NSString *CDBindTypeString(uint8_t type)
 - (void)bindAddress:(uint64_t)address type:(uint8_t)type symbolName:(const char *)symbolName flags:(uint8_t)flags
              addend:(int64_t)addend libraryOrdinal:(int64_t)libraryOrdinal;
 {
-#if 0
-    NSLog(@"    Bind address: %016lx, type: 0x%02x, symbolName: %s, flags: %02x, addend: %016lx, libraryOrdinal: %ld",
-          address, type, symbolName, flags, addend, libraryOrdinal);
+#if 1
+    NSLog(@"    Bind address: %016lx, type: 0x%02x, flags: %02x, addend: %016lx, libraryOrdinal: %ld, symbolName: %s",
+          address, type, flags, addend, libraryOrdinal, symbolName);
 #endif
 }
 
