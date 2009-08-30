@@ -554,7 +554,8 @@ static BOOL debug = NO;
 
 - (BOOL)hasObjectiveC2Data;
 {
-    return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil;
+    return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil
+        || [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_catlist"] != nil;
 }
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
