@@ -5,7 +5,6 @@
 
 #import "CDOCClass.h"
 
-#import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "CDClassDump.h"
 #import "CDOCIvar.h"

@@ -5,7 +5,6 @@
 
 #import "CDClassDump.h"
 
-#import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "NSString-Extensions.h"
 #import "CDFatArch.h"

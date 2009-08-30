@@ -5,8 +5,6 @@
 
 #import "CDLCDylib.h"
 
-#include <mach-o/swap.h>
-#import <Foundation/Foundation.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 

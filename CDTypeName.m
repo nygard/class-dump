@@ -5,8 +5,6 @@
 
 #import "CDTypeName.h"
 
-#import <Foundation/Foundation.h>
-
 @implementation CDTypeName
 
 - (id)init;

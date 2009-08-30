@@ -5,8 +5,6 @@
 
 #import "CDFatArch.h"
 
-#import <mach-o/swap.h>
-#import <Foundation/Foundation.h>
 #import "CDDataCursor.h"
 #import "CDFatFile.h"
 #import "CDMachOFile.h"

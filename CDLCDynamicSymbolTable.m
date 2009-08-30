@@ -5,8 +5,6 @@
 
 #import "CDLCDynamicSymbolTable.h"
 
-#include <mach-o/loader.h>
-#include <mach-o/swap.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDDataCursor.h"

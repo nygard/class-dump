@@ -5,8 +5,6 @@
 
 #import "CDLoadCommand.h"
 
-#include <mach-o/swap.h>
-
 #import "CDLCDyldInfo.h"
 #import "CDLCDylib.h"
 #import "CDLCDylinker.h"

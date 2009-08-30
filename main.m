@@ -88,6 +88,11 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
+    NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED: %d", MAC_OS_X_VERSION_MIN_REQUIRED);
+    NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED: %d", MAC_OS_X_VERSION_MAX_ALLOWED);
+    NSLog(@"MAC_OS_X_VERSION_10_5: %d", MAC_OS_X_VERSION_10_5);
+    exit(99);
+
     classDump = [[[CDClassDump alloc] init] autorelease];
     multiFileVisitor = [[[CDMultiFileVisitor alloc] init] autorelease];
     [multiFileVisitor setClassDump:classDump];

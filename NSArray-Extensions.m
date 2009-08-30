@@ -5,7 +5,6 @@
 
 #import "NSArray-Extensions.h"
 
-#import <Foundation/Foundation.h>
 #import "CDTopoSortNode.h"
 
 @implementation NSArray (CDExtensions)

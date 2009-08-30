@@ -5,8 +5,6 @@
 
 #import "NSObject-CDExtensions.h"
 
-#import <Foundation/Foundation.h>
-
 @implementation NSObject (CDExtensions)
 
 - (void)performSelector:(SEL)aSelector withObjectsFromArray:(NSArray *)anArray;

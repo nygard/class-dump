@@ -5,7 +5,6 @@
 
 #import "CDMethodType.h"
 
-#import <Foundation/Foundation.h>
 #import "CDType.h"
 
 @implementation CDMethodType

@@ -5,7 +5,6 @@
 
 #import "CDOCProtocol.h"
 
-#import <Foundation/Foundation.h>
 #import "NSArray-Extensions.h"
 #import "NSError-CDExtensions.h"
 #import "CDClassDump.h"

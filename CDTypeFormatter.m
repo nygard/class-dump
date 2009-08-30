@@ -6,7 +6,6 @@
 #import "CDTypeFormatter.h"
 
 #include <assert.h>
-#import <Foundation/Foundation.h>
 #import "NSError-CDExtensions.h"
 #import "NSScanner-Extensions.h"
 #import "NSString-Extensions.h"

@@ -5,7 +5,6 @@
 
 #import "CDOCModule.h"
 
-#import <Foundation/Foundation.h>
 #import "CDObjectiveC1Processor.h"
 #import "CDOCSymtab.h"
 

@@ -7,8 +7,6 @@
 
 #include <mach-o/arch.h>
 #include <mach-o/fat.h>
-#include <mach-o/swap.h>
-#import <Foundation/Foundation.h>
 
 #import "CDDataCursor.h"
 #import "CDFatArch.h"

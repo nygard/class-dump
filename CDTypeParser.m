@@ -6,7 +6,6 @@
 #import "CDTypeParser.h"
 
 #include <assert.h>
-#import <Foundation/Foundation.h>
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeName.h"

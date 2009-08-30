@@ -481,6 +481,7 @@
 		0185BF320FF9B251006AE888 /* CDLCRunPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRunPath.m; sourceTree = "<group>"; };
 		01A68BCC1049D38F0094DF3F /* CDLCDyldInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDyldInfo.h; sourceTree = "<group>"; };
 		01A68BCD1049D38F0094DF3F /* CDLCDyldInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCDyldInfo.m; sourceTree = "<group>"; };
+		01A68E28104B359D0094DF3F /* dyld-info-compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "dyld-info-compat.h"; sourceTree = "<group>"; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
 		01A9A4220FF18F8300475772 /* CDLCDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDylib.h; sourceTree = "<group>"; };
@@ -786,6 +787,7 @@
 		01A9A41F0FF18F6400475772 /* Load Commands */ = {
 			isa = PBXGroup;
 			children = (
+				01A68E28104B359D0094DF3F /* dyld-info-compat.h */,
 				012E2AC208AE9CDC003E99F8 /* CDLoadCommand.h */,
 				012E2AC308AE9CDC003E99F8 /* CDLoadCommand.m */,
 				01A68BCC1049D38F0094DF3F /* CDLCDyldInfo.h */,

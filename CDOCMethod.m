@@ -5,7 +5,6 @@
 
 #import "CDOCMethod.h"
 
-#import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"

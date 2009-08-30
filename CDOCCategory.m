@@ -5,7 +5,6 @@
 
 #import "CDOCCategory.h"
 
-#import <Foundation/Foundation.h>
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"

@@ -5,7 +5,6 @@
 
 #import "CDTopoSortNode.h"
 
-#import <Foundation/Foundation.h>
 #import "NSObject-CDExtensions.h"
 
 @implementation CDTopoSortNode

@@ -5,7 +5,6 @@
 
 #import "CDTypeLexer.h"
 
-#import <Foundation/Foundation.h>
 #import "NSScanner-Extensions.h"
 
 static BOOL debug = NO;

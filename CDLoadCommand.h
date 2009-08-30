@@ -6,6 +6,7 @@
 #import <Foundation/Foundation.h>
 
 #include <mach-o/loader.h>
+#include "dyld-info-compat.h"
 
 @class CDDataCursor, CDMachOFile;
 

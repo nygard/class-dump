@@ -5,7 +5,6 @@
 
 #import "CDSection.h"
 
-#include <mach-o/swap.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDLCSegment32.h"

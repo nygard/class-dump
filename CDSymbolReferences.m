@@ -5,8 +5,6 @@
 
 #import "CDSymbolReferences.h"
 
-#import <Foundation/Foundation.h>
-
 @implementation CDSymbolReferences
 
 - (id)init;
