@@ -15,8 +15,13 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
+// Rebasing
 - (void)logRebaseInfo;
-
 - (void)rebaseAddress:(uint64_t)address type:(uint8_t)type;
+
+// Binding
+- (void)logBindInfo;
+- (void)bindAddress:(uint64_t)address type:(uint8_t)type symbolName:(const char *)symbolName flags:(uint8_t)flags
+             addend:(int64_t)addend libraryOrdinal:(int64_t)libraryOrdinal;
 
 @end

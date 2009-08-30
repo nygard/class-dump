@@ -7,6 +7,7 @@ TESTDIR_NEW_32=$TESTDIR/new32
 TESTDIR_NEW_64=$TESTDIR/new64
 
 OLD_CD=~/Unix/bin/class-dump
+OLD_CD=/bin/echo
 NEW_CD=/Local/nygard/Products/Debug/class-dump
 
 # Must be a version that supports --list-arches
@@ -88,4 +89,4 @@ end
 #done
 
 echo "Ended tests at `date`"
-opendiff /tmp/cdt/old /tmp/cdt/new
+#opendiff /tmp/cdt/old /tmp/cdt/new
