@@ -50,6 +50,7 @@ void print_usage(void)
 
 #define CD_OPT_ARCH 1
 #define CD_OPT_LIST_ARCHES 2
+#define CD_OPT_VERSION 3
 
 int main(int argc, char *argv[])
 {
@@ -60,6 +61,7 @@ int main(int argc, char *argv[])
     NSString *searchString = nil;
     BOOL shouldGenerateSeparateHeaders = NO;
     BOOL shouldListArches = NO;
+    BOOL shouldPrintVersion = NO;
     CDArch targetArch;
     BOOL hasSpecifiedArch = NO;
 
@@ -80,6 +82,7 @@ int main(int argc, char *argv[])
         { "arch", required_argument, NULL, CD_OPT_ARCH },
         { "list-arches", no_argument, NULL, CD_OPT_LIST_ARCHES },
         { "suppress-header", no_argument, NULL, 't' },
+        { "version", no_argument, NULL, CD_OPT_VERSION },
         { NULL, 0, NULL, 0 },
     };
 
@@ -87,11 +90,6 @@ int main(int argc, char *argv[])
         print_usage();
         exit(0);
     }
-
-    NSLog(@"MAC_OS_X_VERSION_MIN_REQUIRED: %d", MAC_OS_X_VERSION_MIN_REQUIRED);
-    NSLog(@"MAC_OS_X_VERSION_MAX_ALLOWED: %d", MAC_OS_X_VERSION_MAX_ALLOWED);
-    NSLog(@"MAC_OS_X_VERSION_10_5: %d", MAC_OS_X_VERSION_10_5);
-    exit(99);
 
     classDump = [[[CDClassDump alloc] init] autorelease];
     multiFileVisitor = [[[CDMultiFileVisitor alloc] init] autorelease];
@@ -115,6 +113,10 @@ int main(int argc, char *argv[])
 
           case CD_OPT_LIST_ARCHES:
               shouldListArches = YES;
+              break;
+
+          case CD_OPT_VERSION:
+              shouldPrintVersion = YES;
               break;
 
           case 'a':
@@ -181,6 +183,11 @@ int main(int argc, char *argv[])
     if (errorFlag) {
         print_usage();
         exit(2);
+    }
+
+    if (shouldPrintVersion) {
+        printf("class-dump %s compiled %s\n", CLASS_DUMP_VERSION, __DATE__ " " __TIME__);
+        exit(0);
     }
 
     if (optind < argc) {
