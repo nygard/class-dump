@@ -111,9 +111,17 @@ static BOOL debug = NO;
         parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
         type = [[parser parseType:&error] retain];
         if (type != nil) {
+            NSString *str;
+
             typeRange.length = [[[parser lexer] scanner] scanLocation];
 
-            [self _setAttributeStringAfterType:[attributeString substringFromIndex:NSMaxRange(typeRange)]];
+            str = [attributeString substringFromIndex:NSMaxRange(typeRange)];
+
+            // Filter out so we don't get an empty string as an attribute.
+            if ([str hasPrefix:@","])
+                str = [str substringFromIndex:1];
+
+            [self _setAttributeStringAfterType:str];
             if ([attributeStringAfterType length] > 0) {
                 [attributes addObjectsFromArray:[attributeStringAfterType componentsSeparatedByString:@","]];
             } else {

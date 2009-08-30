@@ -196,7 +196,7 @@ static BOOL debug = NO;
             // @property int prop; // @dynamic prop;
             isDynamic = YES;
         } else {
-            if (debug) NSLog(@"Warning: Unknown property attribute %@", attr);
+            if (debug) NSLog(@"Warning: Unknown property attribute '%@'", attr);
             [unknownAttrs addObject:attr];
         }
     }
