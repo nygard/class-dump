@@ -225,7 +225,7 @@ static BOOL debug = NO;
 
     [resultString appendString:@"\n"];
     if ([unknownAttrs count] > 0) {
-        [resultString appendFormat:@"// Preceeding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
+        [resultString appendFormat:@"// Preceding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
         if ([[aProperty attributeString] length] > 80) {
             [resultString appendFormat:@"// Original attribute string (following type): %@\n\n", [aProperty attributeStringAfterType]];
         } else {
