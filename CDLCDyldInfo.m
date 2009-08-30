@@ -17,8 +17,10 @@
 // Top bit of byte is set until last byte.
 // Other 7 bits are the "slice".
 // Basically, it represents the low order bits 7 at a time, and can stop when the rest of the bits would be zero.
-static uint64_t read_uleb128(const uint8_t *ptr, const uint8_t *end)
+// This needs to modify ptr.
+static uint64_t read_uleb128(const uint8_t **ptrptr, const uint8_t *end)
 {
+    const uint8_t *ptr = *ptrptr;
     uint64_t result = 0;
     int bit = 0;
 
@@ -44,6 +46,7 @@ static uint64_t read_uleb128(const uint8_t *ptr, const uint8_t *end)
     }
     while ((*ptr++ & 0x80) != 0);
 
+    *ptrptr = ptr;
     return result;
 }
 
@@ -110,6 +113,7 @@ static NSString *CDRebaseTypeString(uint8_t type)
 }
 
 // address, slide, type
+// slide is constant throughout the loop
 - (void)logRebaseInfo;
 {
     const uint8_t *start, *end, *ptr;
@@ -117,6 +121,7 @@ static NSString *CDRebaseTypeString(uint8_t type)
     NSArray *segments;
     uint64_t address;
     uint8_t type;
+    NSUInteger rebaseCount = 0;
 
     segments = [nonretainedMachOFile segments];
     NSLog(@"segments: %@", segments);
@@ -142,7 +147,6 @@ static NSString *CDRebaseTypeString(uint8_t type)
         switch (opcode) {
           case REBASE_OPCODE_DONE:
               NSLog(@"REBASE_OPCODE: DONE");
-              NSLog(@"    ptr: %p, end: %p, bytes left over: %u", ptr, end, end - ptr);
               isDone = YES;
               break;
           case REBASE_OPCODE_SET_TYPE_IMM:
@@ -150,26 +154,26 @@ static NSString *CDRebaseTypeString(uint8_t type)
               type = immediate;
               break;
           case REBASE_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB: {
-              uint64_t val = read_uleb128(ptr, end);
-              NSLog(@"REBASE_OPCODE: SET_SEGMENT_AND_OFFSET_ULEB,        segment index: %u, uleb: %016lx", immediate, val);
+              uint64_t val = read_uleb128(&ptr, end);
+              NSLog(@"REBASE_OPCODE: SET_SEGMENT_AND_OFFSET_ULEB,        segment index: %u, offset: %016lx", immediate, val);
+              NSParameterAssert(immediate < [segments count]);
               address = [[segments objectAtIndex:immediate] vmaddr] + val;
               NSLog(@"    address: %016lx", address);
               break;
           }
           case REBASE_OPCODE_ADD_ADDR_ULEB: {
-              uint64_t val = read_uleb128(ptr, end);
+              uint64_t val = read_uleb128(&ptr, end);
 
               NSLog(@"REBASE_OPCODE: ADD_ADDR_ULEB,                      addr += %016lx", val);
               address += val;
               NSLog(@"    address: %016lx", address);
-              exit(55);
               break;
           }
           case REBASE_OPCODE_ADD_ADDR_IMM_SCALED:
               // I expect sizeof(uintptr_t) == sizeof(uint64_t)
               NSLog(@"REBASE_OPCODE: ADD_ADDR_IMM_SCALED,                addr += %u * %u", immediate, sizeof(uint64_t));
               address += immediate * sizeof(uint64_t);
-              exit(55);
+              NSLog(@"    address: %016lx", address);
               break;
           case REBASE_OPCODE_DO_REBASE_IMM_TIMES: {
               uint32_t index;
@@ -177,55 +181,56 @@ static NSString *CDRebaseTypeString(uint8_t type)
               NSLog(@"REBASE_OPCODE: DO_REBASE_IMM_TIMES,                count: %u", immediate);
               for (index = 0; index < immediate; index++) {
                   [self rebaseAddress:address type:type];
-                  [self rebaseAddress:address type:type];
                   address += sizeof(uint64_t);
               }
-              exit(55);
+              rebaseCount += immediate;
               break;
           }
           case REBASE_OPCODE_DO_REBASE_ULEB_TIMES: {
               uint64_t count, index;
 
-              count = read_uleb128(ptr, end);
+              count = read_uleb128(&ptr, end);
 
               NSLog(@"REBASE_OPCODE: DO_REBASE_ULEB_TIMES,               count: 0x%016lx", count);
               for (index = 0; index < count; index++) {
                   [self rebaseAddress:address type:type];
                   address += sizeof(uint64_t);
               }
-              exit(55);
+              rebaseCount += count;
               break;
           }
           case REBASE_OPCODE_DO_REBASE_ADD_ADDR_ULEB: {
               uint64_t val;
 
-              val = read_uleb128(ptr, end);
+              val = read_uleb128(&ptr, end);
               // --------------------------------------------------------:
               NSLog(@"REBASE_OPCODE: DO_REBASE_ADD_ADDR_ULEB,            addr += 0x%016lx", val);
               [self rebaseAddress:address type:type];
               address += sizeof(uint64_t) + val;
-              exit(55);
+              rebaseCount++;
               break;
           }
           case REBASE_OPCODE_DO_REBASE_ULEB_TIMES_SKIPPING_ULEB: {
               uint64_t count, skip, index;
 
-              count = read_uleb128(ptr, end);
-              skip = read_uleb128(ptr, end);
+              count = read_uleb128(&ptr, end);
+              skip = read_uleb128(&ptr, end);
               NSLog(@"REBASE_OPCODE: DO_REBASE_ULEB_TIMES_SKIPPING_ULEB, count: %016lx, skip: %016lx", count, skip);
               for (index = 0; index < count; index++) {
                   [self rebaseAddress:address type:type];
                   address += sizeof(uint64_t) + skip;
               }
+              rebaseCount += count;
               break;
           }
           default:
               NSLog(@"Unknown opcode op: %x, imm: %x", opcode, immediate);
         }
     }
-    // address begins as the vmaddr of segment 0
-    // slide is constant throughout the loop
-    // type begins as 0
+
+    NSLog(@"    ptr: %p, end: %p, bytes left over: %u", ptr, end, end - ptr);
+    NSLog(@"    rebaseCount: %lu", rebaseCount);
+    NSLog(@"----------------------------------------------------------------------");
 }
 
 - (void)rebaseAddress:(uint64_t)address type:(uint8_t)type;
