@@ -165,7 +165,7 @@
 
     //NSLog(@"uniqued protocol names: %@", [[[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@", "]);
 
-    // And finally fill in adopted protocols, instance and class methods
+    // And finally fill in adopted protocols, instance and class methods.  And properties.
     for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
         CDOCProtocol *p1, *uniqueProtocol;
 
@@ -200,6 +200,13 @@
                 [uniqueProtocol addOptionalInstanceMethod:method];
         } else {
             NSParameterAssert([[p1 optionalInstanceMethods] count] == 0 || [[uniqueProtocol optionalInstanceMethods] count] == [[p1 optionalInstanceMethods] count]);
+        }
+
+        if ([[uniqueProtocol properties] count] == 0) {
+            for (CDOCProperty *property in [p1 properties])
+                [uniqueProtocol addProperty:property];
+        } else {
+            NSParameterAssert([[p1 properties] count] == 0 || [[uniqueProtocol properties] count] == [[p1 properties] count]);
         }
     }
 

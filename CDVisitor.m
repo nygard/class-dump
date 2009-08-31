@@ -60,6 +60,14 @@
 {
 }
 
+- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+{
+}
+
+- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+{
+}
+
 - (void)willVisitOptionalMethods;
 {
 }

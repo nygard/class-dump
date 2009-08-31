@@ -167,6 +167,9 @@
         for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.optionalClassMethods])
             [protocol addOptionalClassMethod:method];
 
+        for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2Protocol.instanceProperties])
+            [protocol addProperty:property];
+
         [cursor release];
     }
 
@@ -198,7 +201,7 @@
     objc2Category.v8 = [cursor readInt64];
     //NSLog(@"----------------------------------------");
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.name, objc2Category.class, objc2Category.instanceMethods, objc2Category.classMethods);
-    NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.protocols, objc2Category.instanceProperties, objc2Category.v7, objc2Category.v8);
+    //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.protocols, objc2Category.instanceProperties, objc2Category.v7, objc2Category.v8);
 
     category = [[[CDOCCategory alloc] init] autorelease];
     str = [machOFile stringAtAddress:objc2Category.name];

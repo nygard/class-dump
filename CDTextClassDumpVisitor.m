@@ -267,4 +267,10 @@ static BOOL debug = NO;
         [resultString appendString:@"\n"];
 }
 
+- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+{
+    if ([[aProtocol properties] count] > 0 && [aProtocol hasMethods])
+        [resultString appendString:@"\n"];
+}
+
 @end

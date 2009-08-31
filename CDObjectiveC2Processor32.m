@@ -167,6 +167,9 @@
         for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.optionalClassMethods])
             [protocol addOptionalClassMethod:method];
 
+        for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2Protocol.instanceProperties])
+            [protocol addProperty:property];
+
         [cursor release];
     }
 

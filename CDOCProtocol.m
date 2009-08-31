@@ -193,6 +193,11 @@
         return;
 
     [aVisitor willVisitProtocol:self];
+
+    [aVisitor willVisitPropertiesOfProtocol:self];
+    [self visitProperties:aVisitor];
+    [aVisitor didVisitPropertiesOfProtocol:self];
+
     [self recursivelyVisitMethods:aVisitor];
     [aVisitor didVisitProtocol:self];
 }

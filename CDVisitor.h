@@ -28,6 +28,9 @@
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 - (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
 
+- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+
 - (void)willVisitOptionalMethods;
 - (void)didVisitOptionalMethods;
 
