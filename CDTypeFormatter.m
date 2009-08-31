@@ -135,7 +135,7 @@ static BOOL debug = NO;
     //NSLog(@"resultType: %p", resultType);
 
     if (resultType == nil) {
-        NSLog(@"Couldn't parse return type: %@", [error myExplanation]);
+        NSLog(@"Couldn't parse type: %@", [error myExplanation]);
         [aParser release];
         //NSLog(@"<  %s", _cmd);
         return nil;
@@ -179,7 +179,7 @@ static BOOL debug = NO;
     aParser = [[CDTypeParser alloc] initWithType:type];
     methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, [error myExplanation]);
+        NSLog(@"Warning: Parsing method types failed, %@", methodName);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {
@@ -271,7 +271,7 @@ static BOOL debug = NO;
     aParser = [[CDTypeParser alloc] initWithType:type];
     methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@, %@", methodName, [error myExplanation]);
+        NSLog(@"Warning: Parsing method types failed, %@", methodName);
     [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {

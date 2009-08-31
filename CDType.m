@@ -569,7 +569,7 @@ static BOOL debugMerge = NO;
     parser = [[CDTypeParser alloc] initWithType:str];
     copiedType = [[parser parseType:&error] retain];
     if (copiedType == nil)
-        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@, %@", str, [error myExplanation]);
+        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@", str);
     [parser release];
 
     NSParameterAssert([str isEqualToString:[copiedType typeString]]);
