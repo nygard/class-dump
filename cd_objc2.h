@@ -73,7 +73,7 @@ struct cd_objc2_category_32 {
     uint32_t instanceMethods;
     uint32_t classMethods;
     uint32_t protocols;
-    uint32_t v6;
+    uint32_t instanceProperties;
     uint32_t v7;
     uint32_t v8;
 };
@@ -143,7 +143,7 @@ struct cd_objc2_category_64 {
     uint64_t instanceMethods;
     uint64_t classMethods;
     uint64_t protocols;
-    uint64_t v6;
+    uint64_t instanceProperties;
     uint64_t v7;
     uint64_t v8;
 };

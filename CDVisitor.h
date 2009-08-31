@@ -43,6 +43,9 @@
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 - (void)didVisitCategory:(CDOCCategory *)aCategory;
 
+- (void)willVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+- (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod;
 - (void)visitIvar:(CDOCIvar *)anIvar;

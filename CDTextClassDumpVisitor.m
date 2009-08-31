@@ -261,4 +261,10 @@ static BOOL debug = NO;
         [resultString appendString:@"\n"];
 }
 
+- (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+{
+    if ([[aCategory properties] count] > 0 && [aCategory hasMethods])
+        [resultString appendString:@"\n"];
+}
+
 @end

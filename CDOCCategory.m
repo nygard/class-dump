@@ -57,6 +57,11 @@
         return;
 
     [aVisitor willVisitCategory:self];
+
+    [aVisitor willVisitPropertiesOfCategory:self];
+    [self visitProperties:aVisitor];
+    [aVisitor didVisitPropertiesOfCategory:self];
+
     [self recursivelyVisitMethods:aVisitor];
     [aVisitor didVisitCategory:self];
 }

@@ -113,6 +113,14 @@
 {
 }
 
+- (void)willVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+{
+}
+
+- (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+{
+}
+
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 {
 }
