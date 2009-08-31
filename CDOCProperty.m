@@ -5,6 +5,7 @@
 
 #import "CDOCProperty.h"
 
+#import "NSString-Extensions.h"
 #import "CDTypeParser.h"
 #import "CDTypeLexer.h"
 
@@ -21,11 +22,18 @@ static BOOL debug = NO;
 
     name = [aName retain];
     attributeString = [someAttributes retain];
-
-    hasParsedAttributes = NO;
     type = nil;
     attributes = [[NSMutableArray alloc] init];
+
+    hasParsedAttributes = NO;
     attributeStringAfterType = nil;
+    customGetter = nil;
+    customSetter = nil;
+
+    flags.isReadOnly = NO;
+    flags.isDynamic = NO;
+
+    [self _parseAttributes];
 
     return self;
 }
@@ -36,7 +44,10 @@ static BOOL debug = NO;
     [attributeString release];
     [type release];
     [attributes release];
+
     [attributeStringAfterType release];
+    [customGetter release];
+    [customSetter release];
 
     [super dealloc];
 }
@@ -53,14 +64,17 @@ static BOOL debug = NO;
 
 - (CDType *)type;
 {
-    [self parseAttributes];
     return type;
 }
 
 - (NSArray *)attributes;
 {
-    [self parseAttributes];
     return attributes;
+}
+
+- (NSString *)attributeStringAfterType;
+{
+    return attributeStringAfterType;
 }
 
 - (void)_setAttributeStringAfterType:(NSString *)newValue;
@@ -72,10 +86,68 @@ static BOOL debug = NO;
     attributeStringAfterType = [newValue retain];
 }
 
-- (NSString *)attributeStringAfterType;
+- (NSString *)defaultGetter;
 {
-    [self parseAttributes];
-    return attributeStringAfterType;
+    return name;
+}
+
+- (NSString *)defaultSetter;
+{
+    return [NSString stringWithFormat:@"set%@:", [name capitalizeFirstCharacter]];
+}
+
+- (NSString *)customGetter;
+{
+    return customGetter;
+}
+
+- (void)_setCustomGetter:(NSString *)newStr;
+{
+    if (newStr == customGetter)
+        return;
+
+    [customGetter release];
+    customGetter = [newStr retain];
+}
+
+- (NSString *)customSetter;
+{
+    return customSetter;
+}
+
+- (void)_setCustomSetter:(NSString *)newStr;
+{
+    if (newStr == customSetter)
+        return;
+
+    [customSetter release];
+    customSetter = [newStr retain];
+}
+
+- (NSString *)getter;
+{
+    if (customGetter != nil)
+        return customGetter;
+
+    return [self defaultGetter];
+}
+
+- (NSString *)setter;
+{
+    if (customSetter != nil)
+        return customSetter;
+
+    return [self defaultSetter];
+}
+
+- (BOOL)isReadOnly;
+{
+    return flags.isReadOnly;
+}
+
+- (BOOL)isDynamic;
+{
+    return flags.isDynamic;
 }
 
 - (NSString *)description;
@@ -91,13 +163,9 @@ static BOOL debug = NO;
 }
 
 // TODO (2009-07-09): Really, I don't need to require the "T" at the start.
-- (void)parseAttributes;
+- (void)_parseAttributes;
 {
     NSScanner *scanner;
-
-    if (hasParsedAttributes) {
-        return;
-    }
 
     // On 10.6, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
     scanner = [[NSScanner alloc] initWithString:attributeString];

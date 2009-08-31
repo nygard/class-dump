@@ -31,7 +31,7 @@
 - (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
 
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 - (void)visitIvar:(CDOCIvar *)anIvar;
 
 - (void)_visitProperty:(CDOCProperty *)aProperty parsedType:(CDType *)parsedType attributes:(NSArray *)attrs;
@@ -43,5 +43,7 @@
 
 - (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
 - (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+
+- (void)visitRemainingProperties:(CDVisitorPropertyState *)propertyState;
 
 @end

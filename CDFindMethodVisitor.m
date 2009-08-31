@@ -154,7 +154,7 @@
     }
 }
 
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 {
     NSRange range;
 

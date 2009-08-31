@@ -20,6 +20,7 @@
 #import "CDOCProperty.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeController.h"
+#import "CDVisitorPropertyState.h"
 
 static BOOL debug = NO;
 
@@ -139,11 +140,25 @@ static BOOL debug = NO;
     [resultString appendString:@"\n"];
 }
 
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    [resultString appendString:@"- "];
-    [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
-    [resultString appendString:@"\n"];
+    CDOCProperty *property;
+
+    property = [propertyState propertyForAccessor:[aMethod name]];
+    if (property == nil) {
+        //NSLog(@"No property for method: %@", [aMethod name]);
+        [resultString appendString:@"- "];
+        [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
+        [resultString appendString:@"\n"];
+    } else {
+        if ([propertyState hasUsedProperty:property] == NO) {
+            //NSLog(@"Emitting property %@ triggered by method %@", [property name], [aMethod name]);
+            [self visitProperty:property];
+            [propertyState useProperty:property];
+        } else {
+            //NSLog(@"Have already emitted property %@ triggered by method %@", [property name], [aMethod name]);
+        }
+    }
 }
 
 - (void)visitIvar:(CDOCIvar *)anIvar;
@@ -187,7 +202,7 @@ static BOOL debug = NO;
             // Only appears with GC.
             isWeak = YES;
         } else if ([attr hasPrefix:@"P"]) {
-            // @property(assign) __weak NSObject *prop;
+            // @property(assign) __strong NSObject *prop;
             // Only appears with GC.
             // This is the default.
             isWeak = NO;
@@ -295,6 +310,20 @@ static BOOL debug = NO;
     if ([[aProtocol properties] count] > 0 /*&& [aProtocol hasMethods]*/)
         [resultString appendString:@"\n"];
 #endif
+}
+
+- (void)visitRemainingProperties:(CDVisitorPropertyState *)propertyState;
+{
+    NSArray *remaining = [propertyState remainingProperties];
+
+    if ([remaining count] > 0) {
+        [resultString appendString:@"\n"];
+        [resultString appendFormat:@"// Remaining properties\n"];
+        //NSLog(@"Warning: remaining undeclared property count: %u", [remaining count]);
+        //NSLog(@"remaining: %@", remaining);
+        for (CDOCProperty *property in remaining)
+            [self visitProperty:property];
+    }
 }
 
 @end

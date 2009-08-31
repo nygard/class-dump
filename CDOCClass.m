@@ -14,6 +14,7 @@
 #import "CDTypeController.h"
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
+#import "CDVisitorPropertyState.h"
 
 @implementation CDOCClass
 
@@ -78,8 +79,13 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
+    CDVisitorPropertyState *propertyState;
+
     if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
+
+    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
+    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
 
     [aVisitor willVisitClass:self];
 
@@ -88,12 +94,16 @@
         [aVisitor visitIvar:ivar];
     [aVisitor didVisitIvarsOfClass:self];
 
-    [aVisitor willVisitPropertiesOfClass:self];
-    [self visitProperties:aVisitor];
-    [aVisitor didVisitPropertiesOfClass:self];
+    //[aVisitor willVisitPropertiesOfClass:self];
+    //[self visitProperties:aVisitor];
+    //[aVisitor didVisitPropertiesOfClass:self];
 
-    [self recursivelyVisitMethods:aVisitor];
+    [self visitMethods:aVisitor propertyState:propertyState];
+    // Should mostly be dynamic properties
+    [aVisitor visitRemainingProperties:propertyState];
     [aVisitor didVisitClass:self];
+
+    [propertyState release];
 }
 
 //

@@ -10,6 +10,7 @@
 #import "CDSymbolReferences.h"
 #import "NSArray-Extensions.h"
 #import "CDVisitor.h"
+#import "CDVisitorPropertyState.h"
 
 @implementation CDOCCategory
 
@@ -53,17 +54,27 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
+    CDVisitorPropertyState *propertyState;
+
     if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
+    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
+    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+
     [aVisitor willVisitCategory:self];
 
-    [aVisitor willVisitPropertiesOfCategory:self];
-    [self visitProperties:aVisitor];
-    [aVisitor didVisitPropertiesOfCategory:self];
+    //[aVisitor willVisitPropertiesOfCategory:self];
+    //[self visitProperties:aVisitor];
+    //[aVisitor didVisitPropertiesOfCategory:self];
 
-    [self recursivelyVisitMethods:aVisitor];
+    [self visitMethods:aVisitor propertyState:propertyState];
+    // This can happen when... the accessors are implemented on the main class.  Odd case, but we should still emit the remaining properties.
+    // Should mostly be dynamic properties
+    [aVisitor visitRemainingProperties:propertyState];
     [aVisitor didVisitCategory:self];
+
+    [propertyState release];
 }
 
 //

@@ -21,6 +21,7 @@
 - (NSString *)SHA1DigestString;
 
 - (BOOL)hasUnderscoreCapitalPrefix;
+- (NSString *)capitalizeFirstCharacter;
 
 @end
 

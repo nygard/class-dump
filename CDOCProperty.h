@@ -12,10 +12,18 @@
     NSString *name;
     NSString *attributeString;
 
-    BOOL hasParsedAttributes;
     CDType *type;
     NSMutableArray *attributes;
+
+    BOOL hasParsedAttributes;
     NSString *attributeStringAfterType;
+    NSString *customGetter;
+    NSString *customSetter;
+
+    struct {
+        unsigned int isReadOnly:1;
+        unsigned int isDynamic:1;
+    } flags;
 }
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
@@ -26,13 +34,25 @@
 - (CDType *)type;
 - (NSArray *)attributes;
 
-- (void)_setAttributeStringAfterType:(NSString *)newValue;
 - (NSString *)attributeStringAfterType;
+- (void)_setAttributeStringAfterType:(NSString *)newValue;
+
+- (NSString *)defaultGetter;
+- (NSString *)defaultSetter;
+- (NSString *)customGetter;
+- (void)_setCustomGetter:(NSString *)newStr;
+- (NSString *)customSetter;
+- (void)_setCustomSetter:(NSString *)newStr;
+- (NSString *)getter;
+- (NSString *)setter;
+
+- (BOOL)isReadOnly;
+- (BOOL)isDynamic;
 
 - (NSString *)description;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
 
-- (void)parseAttributes;
+- (void)_parseAttributes;
 
 @end

@@ -17,6 +17,7 @@
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeController.h"
+#import "CDVisitorPropertyState.h"
 
 @implementation CDOCProtocol
 
@@ -189,20 +190,32 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
+    CDVisitorPropertyState *propertyState;
+
     if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
+    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
+    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+
     [aVisitor willVisitProtocol:self];
 
-    [aVisitor willVisitPropertiesOfProtocol:self];
-    [self visitProperties:aVisitor];
-    [aVisitor didVisitPropertiesOfProtocol:self];
+    //[aVisitor willVisitPropertiesOfProtocol:self];
+    //[self visitProperties:aVisitor];
+    //[aVisitor didVisitPropertiesOfProtocol:self];
 
-    [self recursivelyVisitMethods:aVisitor];
+    [self visitMethods:aVisitor propertyState:propertyState];
+
+    // This shouldn't happen for protocols.  @optional properties will generate optional instance methods, and we'll emit @property in the @optional section.
+    // BTW, otool doesn't show optional methods.
+    [aVisitor visitRemainingProperties:propertyState];
+
     [aVisitor didVisitProtocol:self];
+
+    [propertyState release];
 }
 
-- (void)recursivelyVisitMethods:(CDVisitor *)aVisitor;
+- (void)visitMethods:(CDVisitor *)aVisitor propertyState:(CDVisitorPropertyState *)propertyState;
 {
     NSArray *methods;
 
@@ -216,11 +229,8 @@
     if ([[aVisitor classDump] shouldSortMethods])
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
-        [aVisitor visitInstanceMethod:method];
+        [aVisitor visitInstanceMethod:method propertyState:propertyState];
 
-    //NSLog(@"optionalClassMethods: %@", optionalClassMethods);
-    //NSLog(@"optionalInstanceMethods: %@", optionalInstanceMethods);
-    //exit(99);
     if ([optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0) {
         [aVisitor willVisitOptionalMethods];
 
@@ -234,7 +244,7 @@
         if ([[aVisitor classDump] shouldSortMethods])
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)
-            [aVisitor visitInstanceMethod:method];
+            [aVisitor visitInstanceMethod:method propertyState:propertyState];
 
         [aVisitor didVisitOptionalMethods];
     }

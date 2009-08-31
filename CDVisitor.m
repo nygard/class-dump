@@ -8,6 +8,7 @@
 #import "CDClassDump.h"
 #import "CDObjectiveC1Processor.h"
 #import "CDOCProperty.h"
+#import "CDVisitorPropertyState.h"
 
 @implementation CDVisitor
 
@@ -133,7 +134,7 @@
 {
 }
 
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 {
 }
 
@@ -142,6 +143,10 @@
 }
 
 - (void)visitProperty:(CDOCProperty *)aProperty;
+{
+}
+
+- (void)visitRemainingProperties:(CDVisitorPropertyState *)propertyState;
 {
 }
 

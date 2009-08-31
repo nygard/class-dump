@@ -93,6 +93,14 @@
     return [self hasPrefix:@"_"] && [[NSCharacterSet uppercaseLetterCharacterSet] characterIsMember:[self characterAtIndex:1]];
 }
 
+- (NSString *)capitalizeFirstCharacter;
+{
+    if ([self length] < 2)
+        return [self capitalizedString];
+
+    return [NSString stringWithFormat:@"%@%@", [[self substringToIndex:1] capitalizedString], [self substringFromIndex:1]];
+}
+
 @end
 
 @implementation NSMutableString (CDExtensions)

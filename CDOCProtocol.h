@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 
 @class CDClassDump, CDSymbolReferences, CDTypeController;
-@class CDVisitor;
+@class CDVisitor, CDVisitorPropertyState;
 @class CDOCMethod, CDOCProperty;
 
 @interface CDOCProtocol : NSObject
@@ -59,7 +59,7 @@
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
-- (void)recursivelyVisitMethods:(CDVisitor *)aVisitor;
+- (void)visitMethods:(CDVisitor *)aVisitor propertyState:(CDVisitorPropertyState *)propertyState;
 - (void)visitProperties:(CDVisitor *)aVisitor;
 
 @end

@@ -40,7 +40,7 @@
 - (void)didVisitCategory:(CDOCCategory *)aCategory;
 
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod;
+- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 
 - (void)visitIvar:(CDOCIvar *)anIvar;
 
