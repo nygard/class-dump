@@ -192,13 +192,13 @@
     objc2Category.class = [cursor readInt64];
     objc2Category.instanceMethods = [cursor readInt64];
     objc2Category.classMethods = [cursor readInt64];
-    objc2Category.v5 = [cursor readInt64];
+    objc2Category.protocols = [cursor readInt64];
     objc2Category.v6 = [cursor readInt64];
     objc2Category.v7 = [cursor readInt64];
     objc2Category.v8 = [cursor readInt64];
     //NSLog(@"----------------------------------------");
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.name, objc2Category.class, objc2Category.instanceMethods, objc2Category.classMethods);
-    //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.v5, objc2Category.v6, objc2Category.v7, objc2Category.v8);
+    //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.protocols, objc2Category.v6, objc2Category.v7, objc2Category.v8);
 
     category = [[[CDOCCategory alloc] init] autorelease];
     str = [machOFile stringAtAddress:objc2Category.name];
@@ -209,6 +209,9 @@
 
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Category.classMethods])
         [category addClassMethod:method];
+
+    for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objc2Category.protocols])
+        [category addProtocol:protocol];
 
     {
         uint64_t classNameAddress = address + sizeof(objc2Category.name);
