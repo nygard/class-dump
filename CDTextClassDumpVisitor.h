@@ -38,4 +38,10 @@
 - (void)visitProperty:(CDOCProperty *)aProperty;
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
 
+- (void)willVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+- (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+
+- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+
 @end

@@ -255,22 +255,46 @@ static BOOL debug = NO;
     }
 }
 
+#define ADD_SPACE
+
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
 {
+#ifdef ADD_SPACE
     if ([[aClass properties] count] > 0)
         [resultString appendString:@"\n"];
+#endif
+}
+
+- (void)willVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+{
+#ifdef ADD_SPACE
+    if ([[aCategory properties] count] > 0)
+        [resultString appendString:@"\n"];
+#endif
 }
 
 - (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
 {
-    if ([[aCategory properties] count] > 0 && [aCategory hasMethods])
+#ifdef ADD_SPACE
+    if ([[aCategory properties] count] > 0/* && [aCategory hasMethods]*/)
         [resultString appendString:@"\n"];
+#endif
+}
+
+- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+{
+#ifdef ADD_SPACE
+    if ([[aProtocol properties] count] > 0)
+        [resultString appendString:@"\n"];
+#endif
 }
 
 - (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
 {
-    if ([[aProtocol properties] count] > 0 && [aProtocol hasMethods])
+#ifdef ADD_SPACE
+    if ([[aProtocol properties] count] > 0 /*&& [aProtocol hasMethods]*/)
         [resultString appendString:@"\n"];
+#endif
 }
 
 @end
