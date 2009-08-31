@@ -15,6 +15,7 @@
 #import "CDLCDylib.h"
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
+#import "CDLCSegment.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
@@ -91,7 +92,25 @@
             }
         }
     } else if ([machOFile hasProtectedSegments]) {
-        [resultString appendString:@" *       (This file has protected segments, decrypting.)\n"];
+        if ([machOFile canDecryptAllSegments]) {
+            [resultString appendString:@" *       This file has protected segments, decrypting.\n"];
+        } else {
+            NSUInteger index = 0;
+
+            [resultString appendString:@" *       This file has protected segments that can't be decrypted:\n"];
+            for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+                if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
+                    CDLCSegment *segment = (CDLCSegment *)loadCommand;
+
+                    if ([segment canDecrypt] == NO) {
+                        [resultString appendFormat:@" *           Load command %u, segment encryption: %@\n",
+                                      index, CDSegmentEncryptionTypeName([segment encryptionType])];
+                    }
+                }
+
+                index++;
+            }
+        }
     }
     [resultString appendString:@" */\n\n"];
 }

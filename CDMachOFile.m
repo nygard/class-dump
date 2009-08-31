@@ -399,6 +399,16 @@ static BOOL debug = NO;
     return NO;
 }
 
+- (BOOL)canDecryptAllSegments;
+{
+    for (CDLoadCommand *loadCommand in loadCommands) {
+        if ([loadCommand isKindOfClass:[CDLCSegment class]] && [(CDLCSegment *)loadCommand canDecrypt] == NO)
+            return NO;
+    }
+
+    return YES;
+}
+
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 {
     NSMutableString *resultString;

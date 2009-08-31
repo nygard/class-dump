@@ -74,6 +74,7 @@
 
 - (BOOL)isEncrypted;
 - (BOOL)hasProtectedSegments;
+- (BOOL)canDecryptAllSegments;
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;

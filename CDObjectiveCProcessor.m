@@ -58,7 +58,7 @@
 
 - (void)process;
 {
-    if ([machOFile isEncrypted] == NO) {
+    if ([machOFile isEncrypted] == NO && [machOFile canDecryptAllSegments]) {
         [[machOFile symbolTable] loadSymbols];
         [[machOFile dynamicSymbolTable] loadSymbols];
 
@@ -121,7 +121,9 @@
 
     [aVisitor willVisitObjectiveCProcessor:self];
 
-    if ([protocolNames count] > 0 || [classesAndCategories count] > 0 || [machOFile isEncrypted]) {
+    // Skip if there are no protocols, classes, or categories to print.
+    // But don't skip if the file is encrypted or has segments that can't be decrypted.
+    if ([protocolNames count] > 0 || [classesAndCategories count] > 0 || [machOFile isEncrypted] || [machOFile canDecryptAllSegments] == NO) {
         [aVisitor visitObjectiveCProcessor:self];
     }
 

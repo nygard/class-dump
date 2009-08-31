@@ -9,6 +9,17 @@
 #import "CDSection.h"
 #include <openssl/aes.h>
 
+NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
+{
+    switch (type) {
+      case CDSegmentEncryptionTypeNone: return @"None";
+      case CDSegmentEncryptionType1: return @"Protected Segment Type 1 (prior to 10.6)";
+      case CDSegmentEncryptionType2: return @"Protected Segment Type 2 (10.6)";
+    }
+
+    return @"Unknown";
+}
+
 @implementation CDLCSegment
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
@@ -84,6 +95,41 @@
 - (BOOL)isProtected;
 {
     return ([self flags] & SG_PROTECTED_VERSION_1) == SG_PROTECTED_VERSION_1;
+}
+
+- (CDSegmentEncryptionType)encryptionType;
+{
+    //NSLog(@"%s, isProtected? %u, filesize: %lu, fileoff: %lu", _cmd, [self isProtected], [self filesize], [self fileoff]);
+    if ([self isProtected]) {
+        if ([self filesize] <= 3 * PAGE_SIZE) {
+            // First three pages aren't encrypted, so we can't tell.  Let's pretent it's something we can decrypt.
+            return CDSegmentEncryptionType1;
+        } else {
+            const void *src;
+            uint32_t magic;
+
+            src = [nonretainedMachOFile machODataBytes] + [self fileoff] + 3 * PAGE_SIZE;
+
+            magic = OSReadLittleInt32(src, 0);
+            //NSLog(@"%s, magic= 0x%08x", _cmd, magic);
+            switch (magic) {
+              case CDSegmentProtectedMagicTypeNone: return CDSegmentEncryptionTypeNone;
+              case CDSegmentProtectedMagicType1: return CDSegmentEncryptionType1;
+              case CDSegmentProtectedMagicType2: return CDSegmentEncryptionType2;
+            }
+
+            return CDSegmentEncryptionTypeUnknown;
+        }
+    }
+
+    return CDSegmentEncryptionTypeNone;
+}
+
+- (BOOL)canDecrypt;
+{
+    CDSegmentEncryptionType encryptionType = [self encryptionType];
+
+    return (encryptionType == CDSegmentEncryptionTypeNone) || (encryptionType == CDSegmentEncryptionType1);
 }
 
 - (NSString *)flagDescription;
@@ -208,16 +254,6 @@
     if (decryptedData == nil) {
         const void *src;
         void *dest;
-        unsigned int index, count;
-        uint8_t k1[32] = { 0x6f, 0x75, 0x72, 0x68, 0x61, 0x72, 0x64, 0x77, 0x6f, 0x72, 0x6b, 0x62, 0x79, 0x74, 0x68, 0x65,
-                           0x73, 0x65, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x67, 0x75, 0x61, 0x72, 0x64, 0x65, 0x64, 0x70, 0x6c, };
-        uint8_t k2[32] = { 0x65, 0x61, 0x73, 0x65, 0x64, 0x6f, 0x6e, 0x74, 0x73, 0x74, 0x65, 0x61, 0x6c, 0x28, 0x63, 0x29,
-                           0x41, 0x70, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x72, 0x49, 0x6e, 0x63, };
-        AES_KEY key1, key2;
-
-
-        AES_set_decrypt_key(k1, 256, &key1);
-        AES_set_decrypt_key(k2, 256, &key2);
 
         //NSLog(@"filesize: %08x, pagesize: %04x", [self filesize], PAGE_SIZE);
         NSParameterAssert(([self filesize] % PAGE_SIZE) == 0);
@@ -230,22 +266,31 @@
             memcpy(dest, src, [self filesize]);
         } else {
             uint32_t magic;
+            unsigned int index, count;
 
+            // First three pages are encrypted, just copy
             memcpy(dest, src, PAGE_SIZE * 3);
             src += PAGE_SIZE * 3;
             dest += PAGE_SIZE * 3;
             count = ([self filesize] / PAGE_SIZE) - 3;
 
             magic = OSReadLittleInt32(src, 0);
-            NSLog(@"%s, magic= 0x%08x", _cmd, magic);
-            if (magic == 0x2e69cf40) {
+            if (magic == CDSegmentProtectedMagicType2) {
                 // 10.6 decryption
                 NSLog(@"10.6 decryption");
                 exit(90);
-            } else if (magic == 0xc2286295) {
+            } else if (magic == CDSegmentProtectedMagicType1) {
+                uint8_t k1[32] = { 0x6f, 0x75, 0x72, 0x68, 0x61, 0x72, 0x64, 0x77, 0x6f, 0x72, 0x6b, 0x62, 0x79, 0x74, 0x68, 0x65,
+                                   0x73, 0x65, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x67, 0x75, 0x61, 0x72, 0x64, 0x65, 0x64, 0x70, 0x6c, };
+                uint8_t k2[32] = { 0x65, 0x61, 0x73, 0x65, 0x64, 0x6f, 0x6e, 0x74, 0x73, 0x74, 0x65, 0x61, 0x6c, 0x28, 0x63, 0x29,
+                                   0x41, 0x70, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x72, 0x49, 0x6e, 0x63, };
+                AES_KEY key1, key2;
+
                 // 10.5 decryption
 
-                NSLog(@"10.5 decryption");
+                AES_set_decrypt_key(k1, 256, &key1);
+                AES_set_decrypt_key(k2, 256, &key2);
+
                 for (index = 0; index < count; index++) {
                     unsigned char iv1[AES_BLOCK_SIZE];
                     unsigned char iv2[AES_BLOCK_SIZE];

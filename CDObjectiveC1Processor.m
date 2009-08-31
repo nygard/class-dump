@@ -152,7 +152,7 @@ static BOOL debug = NO;
 
 - (void)process;
 {
-    if ([machOFile isEncrypted] == NO) {
+    if ([machOFile isEncrypted] == NO && [machOFile canDecryptAllSegments]) {
         [super process];
 
         [self processModules];

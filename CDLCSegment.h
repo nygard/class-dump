@@ -8,6 +8,20 @@
 
 @class CDSection;
 
+#define CDSegmentProtectedMagicTypeNone 0
+#define CDSegmentProtectedMagicType1 0xc2286295
+#define CDSegmentProtectedMagicType2 0x2e69cf40
+
+enum {
+    CDSegmentEncryptionTypeNone = 0,
+    CDSegmentEncryptionType1 = 1, // Prior to 10.5
+    CDSegmentEncryptionType2 = 2, // 10.6
+    CDSegmentEncryptionTypeUnknown
+};
+typedef NSUInteger CDSegmentEncryptionType;
+
+extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
+
 @interface CDLCSegment : CDLoadCommand
 {
     NSString *name;
@@ -30,6 +44,9 @@
 - (vm_prot_t)initprot;
 - (uint32_t)flags;
 - (BOOL)isProtected;
+
+- (CDSegmentEncryptionType)encryptionType;
+- (BOOL)canDecrypt;
 
 - (NSString *)flagDescription;
 - (NSString *)extraDescription;
