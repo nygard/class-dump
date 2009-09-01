@@ -205,6 +205,17 @@ static BOOL debug = NO;
 
     [scanner release];
 
+    for (NSString *attr in attributes) {
+        if ([attr hasPrefix:@"R"])
+            flags.isReadOnly = YES;
+        else if ([attr hasPrefix:@"D"])
+            flags.isDynamic = YES;
+        else if ([attr hasPrefix:@"G"])
+            [self _setCustomGetter:[attr substringFromIndex:1]];
+        else if ([attr hasPrefix:@"S"])
+            [self _setCustomSetter:[attr substringFromIndex:1]];
+    }
+
     hasParsedAttributes = YES;
     // And then if parsedType is nil, we know we couldn't parse the type.
 }
