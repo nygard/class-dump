@@ -491,7 +491,7 @@ static BOOL debug = NO;
 
         str = [self stringAtAddress:address];
         NSLog(@"      address %016lx as a string: '%@' (length %lu)", address, str, [str length]);
-        NSLog(@"      address %016lx data offset: %lu", [self dataOffsetForAddress:address]);
+        NSLog(@"      address %016lx data offset: %lu", address, [self dataOffsetForAddress:address]);
     }
 }
 

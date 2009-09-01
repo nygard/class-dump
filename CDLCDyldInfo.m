@@ -362,7 +362,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
     if (debugBindOps) {
         NSLog(@"----------------------------------------------------------------------");
-        NSLog(@"bind_off: %u, bind_size: %u", self, dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
+        NSLog(@"bind_off: %u, bind_size: %u", dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
     }
     start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.bind_off;
     end = start + dyldInfoCommand.bind_size;
@@ -376,7 +376,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
     if (debugBindOps) {
         NSLog(@"----------------------------------------------------------------------");
-        NSLog(@"weak_bind_off: %u, weak_bind_size: %u", self, dyldInfoCommand.weak_bind_off, dyldInfoCommand.weak_bind_size);
+        NSLog(@"weak_bind_off: %u, weak_bind_size: %u", dyldInfoCommand.weak_bind_off, dyldInfoCommand.weak_bind_size);
     }
     start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.weak_bind_off;
     end = start + dyldInfoCommand.weak_bind_size;
@@ -513,7 +513,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
               count = read_uleb128(&ptr, end);
               skip = read_uleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ULEB_TIMES_SKIPPING_ULEB, count: %016lx, skip: %016lx");
+              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ULEB_TIMES_SKIPPING_ULEB, count: %016lx, skip: %016lx", count, skip);
               for (index = 0; index < count; index++) {
                   [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
                   address += sizeof(uint64_t) + skip;
