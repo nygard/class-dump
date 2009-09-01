@@ -387,12 +387,23 @@ static BOOL debugAnonStructures = NO;
         }
 
         if (canBeCombined) {
-            if ([phase2_namedStructureInfo objectForKey:key] != nil) {
-                NSLog(@"[%@] %s, WARNING: depth %u name %@ has conflict(?) at lower level", identifier, _cmd, depth, key);
-                NSLog(@"previous: %@", [[phase2_namedStructureInfo objectForKey:key] shortDescription]);
-                NSLog(@" current: %@", [combined shortDescription]);
+            CDStructureInfo *previousInfo;
+
+            previousInfo = [phase2_namedStructureInfo objectForKey:key];
+            if (previousInfo != nil) {
+                // struct _Vector_impl in HALLab.
+                [phase2_nameExceptions addObject:previousInfo];
+                //[phase2_nameExceptions addObjectsFromArray:group]; // Or just add the combined?
+                [phase2_nameExceptions addObject:combined];
+                [phase2_namedStructureInfo removeObjectForKey:key];
+                if (debugNamedStructures) {
+                    NSLog(@"[%@] %s, WARNING: depth %u name %@ has conflict(?) at lower level", identifier, _cmd, depth, key);
+                    NSLog(@"previous: %@", [[phase2_namedStructureInfo objectForKey:key] shortDescription]);
+                    NSLog(@" current: %@", [combined shortDescription]);
+                }
+            } else {
+                [phase2_namedStructureInfo setObject:combined forKey:key];
             }
-            [phase2_namedStructureInfo setObject:combined forKey:key];
         } else {
             if (debugNamedStructures) {
                 NSLog(@"----------------------------------------");
