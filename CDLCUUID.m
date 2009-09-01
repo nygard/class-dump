@@ -57,7 +57,6 @@
 
 - (uint32_t)cmdsize;
 {
-
     return uuidCommand.cmdsize;
 }
 
