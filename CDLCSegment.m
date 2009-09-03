@@ -275,7 +275,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             count = ([self filesize] / PAGE_SIZE) - 3;
 
             magic = OSReadLittleInt32(src, 0);
-            if (magic == CDSegmentProtectedMagicType2) {
+            if (magic == CDSegmentProtectedMagicTypeNone) {
+                memcpy(dest, src, [self filesize] - PAGE_SIZE * 3);
+            } else if (magic == CDSegmentProtectedMagicType2) {
                 // 10.6 decryption
                 NSLog(@"10.6 decryption");
                 exit(90);
