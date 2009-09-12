@@ -14,8 +14,8 @@
 
 enum {
     CDSegmentEncryptionTypeNone = 0,
-    CDSegmentEncryptionType1 = 1, // Prior to 10.5
-    CDSegmentEncryptionType2 = 2, // 10.6
+    CDSegmentEncryptionType1 = 1, // Prior to 10.5 (AES)
+    CDSegmentEncryptionType2 = 2, // 10.6 (Blowfish)
     CDSegmentEncryptionTypeUnknown
 };
 typedef NSUInteger CDSegmentEncryptionType;

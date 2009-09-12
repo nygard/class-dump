@@ -8,6 +8,7 @@
 #import "CDMachOFile.h"
 #import "CDSection.h"
 #include <openssl/aes.h>
+#include <openssl/blowfish.h>
 
 NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
@@ -129,7 +130,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
     CDSegmentEncryptionType encryptionType = [self encryptionType];
 
-    return (encryptionType == CDSegmentEncryptionTypeNone) || (encryptionType == CDSegmentEncryptionType1);
+    return (encryptionType == CDSegmentEncryptionTypeNone)
+        || (encryptionType == CDSegmentEncryptionType1)
+        || (encryptionType == CDSegmentEncryptionType2);
 }
 
 - (NSString *)flagDescription;
@@ -267,6 +270,10 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         } else {
             uint32_t magic;
             unsigned int index, count;
+            uint8_t keyData[64] = { 0x6f, 0x75, 0x72, 0x68, 0x61, 0x72, 0x64, 0x77, 0x6f, 0x72, 0x6b, 0x62, 0x79, 0x74, 0x68, 0x65,
+                                    0x73, 0x65, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x67, 0x75, 0x61, 0x72, 0x64, 0x65, 0x64, 0x70, 0x6c,
+                                    0x65, 0x61, 0x73, 0x65, 0x64, 0x6f, 0x6e, 0x74, 0x73, 0x74, 0x65, 0x61, 0x6c, 0x28, 0x63, 0x29,
+                                    0x41, 0x70, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x72, 0x49, 0x6e, 0x63, };
 
             // First three pages are encrypted, just copy
             memcpy(dest, src, PAGE_SIZE * 3);
@@ -279,19 +286,25 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
                 memcpy(dest, src, [self filesize] - PAGE_SIZE * 3);
             } else if (magic == CDSegmentProtectedMagicType2) {
                 // 10.6 decryption
-                NSLog(@"10.6 decryption");
-                exit(90);
+                unsigned char ivec[8];
+                BF_KEY key;
+
+                BF_set_key(&key, 64, keyData);
+
+                for (index = 0; index < count; index++) {
+                    memset(ivec, 0, 8);
+                    BF_cbc_encrypt(src, dest, 4096, &key, ivec, BF_DECRYPT);
+
+                    src += PAGE_SIZE;
+                    dest += PAGE_SIZE;
+                }
             } else if (magic == CDSegmentProtectedMagicType1) {
-                uint8_t k1[32] = { 0x6f, 0x75, 0x72, 0x68, 0x61, 0x72, 0x64, 0x77, 0x6f, 0x72, 0x6b, 0x62, 0x79, 0x74, 0x68, 0x65,
-                                   0x73, 0x65, 0x77, 0x6f, 0x72, 0x64, 0x73, 0x67, 0x75, 0x61, 0x72, 0x64, 0x65, 0x64, 0x70, 0x6c, };
-                uint8_t k2[32] = { 0x65, 0x61, 0x73, 0x65, 0x64, 0x6f, 0x6e, 0x74, 0x73, 0x74, 0x65, 0x61, 0x6c, 0x28, 0x63, 0x29,
-                                   0x41, 0x70, 0x70, 0x6c, 0x65, 0x43, 0x6f, 0x6d, 0x70, 0x75, 0x74, 0x65, 0x72, 0x49, 0x6e, 0x63, };
                 AES_KEY key1, key2;
 
                 // 10.5 decryption
 
-                AES_set_decrypt_key(k1, 256, &key1);
-                AES_set_decrypt_key(k2, 256, &key2);
+                AES_set_decrypt_key(keyData, 256, &key1);
+                AES_set_decrypt_key(keyData + 32, 256, &key2);
 
                 for (index = 0; index < count; index++) {
                     unsigned char iv1[AES_BLOCK_SIZE];
