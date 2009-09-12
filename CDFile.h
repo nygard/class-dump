@@ -43,7 +43,7 @@ extern CDArch CDArchFromName(NSString *name);
 - (NSUInteger)offset;
 - (void)setOffset:(NSUInteger)newOffset;
 
-- (CDArch)bestMatchForLocalArch;
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
 @end

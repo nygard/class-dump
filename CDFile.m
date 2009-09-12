@@ -143,14 +143,14 @@ CDArch CDArchFromName(NSString *name)
     offset = newOffset;
 }
 
-- (CDArch)bestMatchForLocalArch;
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
-    CDArch arch;
+    if (archPtr != NULL) {
+        archPtr->cputype = CPU_TYPE_ANY;
+        archPtr->cpusubtype = 0;
+    }
 
-    arch.cputype = CPU_TYPE_ANY;
-    arch.cpusubtype = 0;
-
-    return arch;
+    return YES;
 }
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;

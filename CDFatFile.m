@@ -74,55 +74,64 @@
 //
 // In either case, we can ignore the cpu subtype
 
-- (CDArch)bestMatchForLocalArch;
+// Returns YES on success, NO on failure.
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
     const NXArchInfo *archInfo;
     cpu_type_t targetType;
-    CDArch arch;
-    arch.cputype = CPU_TYPE_ANY;
-    arch.cpusubtype = 0;
 
     archInfo = NXGetLocalArchInfo();
-    if (archInfo == NULL) {
-        fprintf(stderr, "Error: Couldn't get local architecture\n");
-        return arch;
-    }
+    if (archInfo == NULL)
+        return NO;
+
+    if (archPtr == NULL)
+        return [arches count] > 0;
 
     targetType = archInfo->cputype & ~CPU_ARCH_MASK;
 
 #ifdef __LP64__
     // This architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
-        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI])
-            return [fatArch arch];
+        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI]) {
+            *archPtr = [fatArch arch];
+            return YES;
+        }
     }
 #endif
 
     // This architecture, 32 bit
     for (CDFatArch *fatArch in arches) {
-        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO)
-            return [fatArch arch];
+        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO) {
+            *archPtr = [fatArch arch];
+            return YES;
+        }
     }
 
 #ifdef __LP64__
     // Any architecture, 64 bit
     for (CDFatArch *fatArch in arches) {
-        if ([fatArch uses64BitABI])
-            return [fatArch arch];
+        if ([fatArch uses64BitABI]) {
+            *archPtr = [fatArch arch];
+            return YES;
+        }
     }
 #endif
 
     // Any architecture, 32 bit
     for (CDFatArch *fatArch in arches) {
-        if ([fatArch uses64BitABI] == NO)
-            return [fatArch arch];
+        if ([fatArch uses64BitABI] == NO) {
+            *archPtr = [fatArch arch];
+            return YES;
+        }
     }
 
     // Any architecture
-    if ([arches count] > 0)
-        return [[arches objectAtIndex:0] arch];
+    if ([arches count] > 0) {
+        *archPtr = [[arches objectAtIndex:0] arch];
+        return YES;
+    }
 
-    return arch;
+    return NO;
 }
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)cdarch;

@@ -248,7 +248,10 @@ int main(int argc, char *argv[])
             }
 #endif
             if (hasSpecifiedArch == NO) {
-                targetArch = [file bestMatchForLocalArch];
+                if ([file bestMatchForLocalArch:&targetArch] == NO) {
+                    fprintf(stderr, "Error: Couldn't get local architecture\n");
+                    exit(1);
+                }
                 //NSLog(@"No arch specified, best match for local arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
             } else {
                 //NSLog(@"chosen arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);

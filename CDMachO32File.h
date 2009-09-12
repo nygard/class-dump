@@ -18,7 +18,7 @@
 - (uint32_t)filetype;
 - (uint32_t)flags;
 
-- (CDArch)bestMatchForLocalArch;
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 
 - (Class)processorClass;
 

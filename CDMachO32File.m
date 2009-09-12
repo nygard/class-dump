@@ -84,14 +84,14 @@
     return header.flags;
 }
 
-- (CDArch)bestMatchForLocalArch;
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
-    CDArch arch;
+    if (archPtr != NULL) {
+        archPtr->cputype = header.cputype;
+        archPtr->cpusubtype = header.cpusubtype;
+    }
 
-    arch.cputype = header.cputype;
-    arch.cpusubtype = header.cpusubtype;
-
-    return arch;
+    return YES;
 }
 
 - (Class)processorClass;
