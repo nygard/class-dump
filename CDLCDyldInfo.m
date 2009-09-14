@@ -11,6 +11,9 @@
 #import "CDLCSegment.h"
 
 static BOOL debugBindOps = NO;
+static BOOL debugExportedSymbols = NO;
+
+// Can use dyldinfo(1) to view info.
 
 // http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/gnu-assembler/uleb128.html
 // uleb128 stands for "unsigned little endian base 128."
@@ -178,6 +181,8 @@ static NSString *CDBindTypeString(uint8_t type)
     //[self logRebaseInfo];
     [self logBindInfo]; // Acutally loads it for now.
     [self logWeakBindInfo];
+    //[self logLazyBindInfo];
+    //[self logExportedSymbols];
 
     //NSLog(@"symbolNamesByAddress: %@", symbolNamesByAddress);
 
@@ -367,7 +372,7 @@ static NSString *CDBindTypeString(uint8_t type)
     start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.bind_off;
     end = start + dyldInfoCommand.bind_size;
 
-    [self logBindOps:start end:end];
+    [self logBindOps:start end:end isLazy:NO];
 }
 
 - (void)logWeakBindInfo;
@@ -381,10 +386,24 @@ static NSString *CDBindTypeString(uint8_t type)
     start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.weak_bind_off;
     end = start + dyldInfoCommand.weak_bind_size;
 
-    [self logBindOps:start end:end];
+    [self logBindOps:start end:end isLazy:NO];
 }
 
-- (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end;
+- (void)logLazyBindInfo;
+{
+    const uint8_t *start, *end;
+
+    if (debugBindOps) {
+        NSLog(@"----------------------------------------------------------------------");
+        NSLog(@"lazy_bind_off: %u, lazy_bind_size: %u", dyldInfoCommand.lazy_bind_off, dyldInfoCommand.lazy_bind_size);
+    }
+    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.lazy_bind_off;
+    end = start + dyldInfoCommand.lazy_bind_size;
+
+    [self logBindOps:start end:end isLazy:YES];
+}
+
+- (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end isLazy:(BOOL)isLazy;
 {
     BOOL isDone = NO;
     NSUInteger bindCount = 0;
@@ -416,7 +435,10 @@ static NSString *CDBindTypeString(uint8_t type)
         switch (opcode) {
           case BIND_OPCODE_DONE:
               if (debugBindOps) NSLog(@"BIND_OPCODE: DONE");
-              isDone = YES;
+
+              // The lazy bindings have one of these at the end of each bind.
+              if (isLazy == NO)
+                  isDone = YES;
               break;
 
           case BIND_OPCODE_SET_DYLIB_ORDINAL_IMM:
@@ -550,6 +572,86 @@ static NSString *CDBindTypeString(uint8_t type)
     str = [[NSString alloc] initWithUTF8String:symbolName];
     [symbolNamesByAddress setObject:str forKey:key];
     [str release];
+}
+
+//
+// Exported symbols
+//
+
+- (void)logExportedSymbols;
+{
+    const uint8_t *start, *end;
+
+    if (debugExportedSymbols) {
+        NSLog(@"----------------------------------------------------------------------");
+        NSLog(@"export_off: %u, export_size: %u", dyldInfoCommand.export_off, dyldInfoCommand.export_size);
+        NSLog(@"hexdump -Cv -s %u -n %u", dyldInfoCommand.export_off, dyldInfoCommand.export_size);
+    }
+
+    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.export_off;
+    end = start + dyldInfoCommand.export_size;
+
+    NSLog(@"         Type Flags Offset           Name");
+    NSLog(@"------------- ----- ---------------- ----");
+    [self printSymbols:start end:end prefix:@"" offset:0];
+}
+
+- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint32_t)offset;
+{
+    uint8_t terminalSize;
+    const uint8_t *ptr, *tptr;
+    uint8_t childCount, index;
+
+    //NSLog(@" > %s, %p-%p, offset: %lx = %p", _cmd, start, end, offset, start + offset);
+
+    ptr = start + offset;
+    NSParameterAssert(ptr < end);
+
+    terminalSize = *ptr++;
+    tptr = ptr;
+    //NSLog(@"terminalSize: %u", terminalSize);
+
+    ptr += terminalSize;
+
+    childCount = *ptr++;
+
+    if (terminalSize > 0) {
+        uint64_t flags;
+        uint8_t kind;
+
+        //NSLog(@"symbol: '%@', terminalSize: %u", prefix, terminalSize);
+        flags = read_uleb128(&tptr, end);
+        kind = flags & EXPORT_SYMBOL_FLAGS_KIND_MASK;
+        if (kind == EXPORT_SYMBOL_FLAGS_KIND_REGULAR) {
+            uint64_t offset;
+
+            offset = read_uleb128(&tptr, end);
+            NSLog(@"     Regular: %04x  %016lx %@", flags, offset, prefix);
+            //NSLog(@"     Regular: %04x  0x%08x %@", flags, offset, prefix);
+        } else if (kind == EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL) {
+            NSLog(@"Thread Local: %04x                   %@, terminalSize: %u", flags, prefix, terminalSize);
+        } else {
+            NSLog(@"     Unknown: %04x  %x, name: %@, terminalSize: %u", flags, kind, prefix, terminalSize);
+        }
+    }
+
+    for (index = 0; index < childCount; index++) {
+        const uint8_t *edgeStart = ptr;
+        uint32_t length;
+        uint64_t nodeOffset;
+
+        while (*ptr++ != 0)
+            ;
+
+        length = ptr - edgeStart;
+        //NSLog(@"edge length: %u, edge: '%s'", length, edgeStart);
+        nodeOffset = read_uleb128(&ptr, end);
+        //NSLog(@"node offset: %lx", nodeOffset);
+
+        [self printSymbols:start end:end prefix:[NSString stringWithFormat:@"%@%s", prefix, edgeStart] offset:nodeOffset];
+    }
+
+    //NSLog(@"<  %s, %p-%p, offset: %lx = %p", _cmd, start, end, offset, start + offset);
 }
 
 @end

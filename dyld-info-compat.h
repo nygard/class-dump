@@ -70,4 +70,11 @@ struct dyld_info_command {
 #define BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED			0xB0
 #define BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB		0xC0
 
+#define EXPORT_SYMBOL_FLAGS_KIND_MASK                           0x03
+#define EXPORT_SYMBOL_FLAGS_KIND_REGULAR                        0x00
+#define EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL                   0x01
+#define EXPORT_SYMBOL_FLAGS_WEAK_DEFINITION                     0x04
+#define EXPORT_SYMBOL_FLAGS_INDIRECT_DEFINITION                 0x08
+#define EXPORT_SYMBOL_FLAGS_HAS_SPECIALIZATIONS                 0x10
+
 #endif
