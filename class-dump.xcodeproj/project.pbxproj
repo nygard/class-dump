@@ -11,7 +11,6 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 01A9A4D70FF19BE800475772 /* Build configuration list for PBXAggregateTarget "all" */;
 			buildPhases = (
-				0154C1C60FF58DBA00F87451 /* ShellScript */,
 			);
 			dependencies = (
 				01A9A4CC0FF19BC700475772 /* PBXTargetDependency */,
@@ -1093,19 +1092,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-		0154C1C60FF58DBA00F87451 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-			shellPath = /bin/zsh;
-			shellScript = "#!/bin/zsh\n\necho \"pwd:\" `pwd`\nsvn export . $DSTROOT/src\n\nif [ -e $DSTROOT/src ]; then\n    pushd $DSTROOT/src\n    mv README ..\n    rm -rf hold notes TODO keys.txt BuildRelease.class-dump\n    popd\nfi\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
