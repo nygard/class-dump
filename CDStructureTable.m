@@ -936,6 +936,37 @@ static BOOL debugAnonStructures = NO;
             }
         }
     }
+
+    for (NSString *key in [[phase3_namedStructureInfo allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDStructureInfo *info;
+        BOOL shouldShow;
+
+        info = [phase3_namedStructureInfo objectForKey:key];
+        shouldShow = [[info type] isTemplateType] && [info isUsedInMethod];
+        if (shouldShow || debugAnonStructures) {
+            NSString *formattedString;
+
+            if (hasAddedMark == NO) {
+                [resultString appendFormat:@"#pragma mark %@\n\n", markName];
+                hasAddedMark = YES;
+            }
+
+            if (hasShownExceptions == NO) {
+                [resultString appendString:@"// Template types\n"];
+                hasShownExceptions = YES;
+            }
+
+            if (debugAnonStructures) {
+                [resultString appendFormat:@"// %@\n", [[info type] reallyBareTypeString]];
+                [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", [[info type] structureDepth], [info referenceCount], [info isUsedInMethod]];
+            }
+            formattedString = [aTypeFormatter formatVariable:nil parsedType:[info type] symbolReferences:symbolReferences];
+            if (formattedString != nil) {
+                //[resultString appendFormat:@"%@;\n\n", formattedString];
+                [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, [info typedefName]];
+            }
+        }
+    }
 }
 
 - (void)generateTypedefNames;
@@ -952,6 +983,12 @@ static BOOL debugAnonStructures = NO;
     for (CDStructureInfo *info in [phase3_nameExceptions allValues]) {
         [info generateTypedefName:[NSString stringWithFormat:@"%@_", [[[info type] typeName] name]]];
         [[[info type] typeName] setName:@"?"];
+    }
+
+    for (CDStructureInfo *info in [phase3_namedStructureInfo allValues]) {
+        if ([[info type] isTemplateType] && [info isUsedInMethod]) {
+            [info generateTypedefName:[NSString stringWithFormat:@"%@_", [[[info type] typeName] name]]];
+        }
     }
 }
 
@@ -979,6 +1016,7 @@ static BOOL debugAnonStructures = NO;
 {
     return (info == nil)
         || ([info isUsedInMethod] == NO
+            && ([[info type] isTemplateType] == NO || [info isUsedInMethod] == NO)
             && [info referenceCount] < 2
             && (([[info name] hasPrefix:@"_"] && [[info name] hasUnderscoreCapitalPrefix] == NO) // TODO: Don't need the first hasPrefix check now.
                 || [@"?" isEqualToString:[info name]]));
@@ -1032,6 +1070,15 @@ static BOOL debugAnonStructures = NO;
             NSLog(@"Got typedef name for phase3 name exception: %@", [info typedefName]);
 #endif
     }
+
+    if (info == nil) {
+        info = [phase3_namedStructureInfo objectForKey:[[type typeName] description]];
+    }
+#if 0
+    if ([type isTemplateType] && [info typedefName] == nil) {
+        NSLog(@"Warning: no typedef name for type: %@", [type typeString]);
+    }
+#endif
 
     return [info typedefName];
 }

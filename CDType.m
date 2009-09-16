@@ -176,6 +176,11 @@ static BOOL debugMerge = NO;
     return type == T_NAMED_OBJECT;
 }
 
+- (BOOL)isTemplateType;
+{
+    return [typeName isTemplateType];
+}
+
 - (CDType *)subtype;
 {
     return subtype;

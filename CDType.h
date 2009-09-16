@@ -37,6 +37,7 @@
 - (int)type;
 - (BOOL)isIDType;
 - (BOOL)isNamedObject;
+- (BOOL)isTemplateType;
 
 - (CDType *)subtype;
 - (CDTypeName *)typeName;
