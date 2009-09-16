@@ -293,7 +293,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
                 for (index = 0; index < count; index++) {
                     memset(ivec, 0, 8);
-                    BF_cbc_encrypt(src, dest, 4096, &key, ivec, BF_DECRYPT);
+                    BF_cbc_encrypt(src, dest, PAGE_SIZE, &key, ivec, BF_DECRYPT);
 
                     src += PAGE_SIZE;
                     dest += PAGE_SIZE;
