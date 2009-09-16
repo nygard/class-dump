@@ -7,7 +7,7 @@ TESTDIR_NEW_32=$TESTDIR/new32
 TESTDIR_NEW_64=$TESTDIR/new64
 
 OLD_CD=~/Unix/bin/class-dump
-OLD_CD=/bin/echo
+#OLD_CD=/bin/echo
 NEW_CD=/Local/nygard/Products/Debug/class-dump
 
 # Must be a version that supports --list-arches
@@ -15,6 +15,7 @@ ARCH_CD=/Local/nygard/Products/Debug/class-dump
 
 FRAMEWORKS=(/System/Library/Frameworks/*.framework /System/Library/PrivateFrameworks/*.framework /Developer/Library/Frameworks/*.framework /Developer/Library/PrivateFrameworks/*.framework)
 APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /Developer/Applications/*.app /Developer/Applications/*/*.app ~/Applications/*.app ~/Applications/*.app /System/Library/CoreServices/*.app)
+BUNDLES=(/System/Library/CoreServices/*.bundle)
 #/Volumes/BigData/TestApplications/*.app
 
 # Uncomment these to just do iPhone frameowoks
@@ -27,10 +28,14 @@ APPS=(/Applications/*.app /Applications/*/*.app /Applications/Utilities/*.app /D
 #APPS=()
 
 echo "Starting tests at `date`"
-
+echo
+echo -n "Old class-dump: " ; ls -al $OLD_CD
+echo -n "New class-dump: " ; ls -al $NEW_CD
+echo
 echo "  Framework count: " `ls -ld $FRAMEWORKS | wc -l`
 echo "Application count: " `ls -ld $APPS | wc -l`
-echo "            Total: " `ls -ld $FRAMEWORKS $APPS | wc -l`
+echo "     Bundle count: " `ls -ld $BUNDLES | wc -l`
+echo "            Total: " `ls -ld $FRAMEWORKS $APPS $BUNDLES | wc -l`
 
 mkdir $TESTDIR $TESTDIR_OLD $TESTDIR_NEW
 
@@ -66,6 +71,21 @@ foreach i ($APPS) do
     done
 done
 
+foreach i ($BUNDLES) do
+    echo $i `basename $i .bundle`
+    arches=(`$ARCH_CD --list-arches $i`)
+    foreach arch ($arches) do
+        if [ $arch = "none" ]; then
+            $OLD_CD -s -t $i >& "$TESTDIR_OLD/`basename $i .bundle`-bundle.txt"
+            $NEW_CD -s -t $i >& "$TESTDIR_NEW/`basename $i .bundle`-bundle.txt"
+        else
+            echo $arch
+            $OLD_CD -s -t --arch $arch $i >& "$TESTDIR_OLD/`basename $i .bundle`-$arch-bundle.txt" &
+            $NEW_CD -s -t --arch $arch $i >& "$TESTDIR_NEW/`basename $i .bundle`-$arch-bundle.txt"
+        fi
+    done
+done
+
 # We can remove files that don't contain Objective-C runtime information.
 # Need to jump through some hoops because of the cursed spaces in filenames, grr.
 foreach i (/tmp/cdt/{old,new}/*.txt)
@@ -89,4 +109,4 @@ end
 #done
 
 echo "Ended tests at `date`"
-#opendiff /tmp/cdt/old /tmp/cdt/new
+opendiff /tmp/cdt/old /tmp/cdt/new
