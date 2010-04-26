@@ -236,6 +236,13 @@
 		01DAB2EA103350FE00F7A7A3 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */; };
 		01DAB2EB103350FE00F7A7A3 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */; };
 		01DAB2EC103350FE00F7A7A3 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DAB2E9103350FE00F7A7A3 /* CDStructureInfo.m */; };
+		01DDCB82108EB60600E31219 /* CDLCDyldInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A68BCD1049D38F0094DF3F /* CDLCDyldInfo.m */; };
+		01DDCB83108EB60900E31219 /* CDLCPrebindChecksum.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A690EC104CA2D00094DF3F /* CDLCPrebindChecksum.m */; };
+		01DDCB84108EB60E00E31219 /* CDLCSubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69102104CA7370094DF3F /* CDLCSubClient.m */; };
+		01DDCB85108EB60F00E31219 /* CDLCSubFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69104104CA7370094DF3F /* CDLCSubFramework.m */; };
+		01DDCB86108EB60F00E31219 /* CDLCSubLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69106104CA7370094DF3F /* CDLCSubLibrary.m */; };
+		01DDCB87108EB61000E31219 /* CDLCSubUmbrella.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69108104CA7370094DF3F /* CDLCSubUmbrella.m */; };
+		01DDCB88108EB61800E31219 /* CDVisitorPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A68FF1104B923E0094DF3F /* CDVisitorPropertyState.m */; };
 		01F12C4E102F393700A8C12C /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F12C4D102F393700A8C12C /* CDTypeController.m */; };
 		01F12C4F102F393700A8C12C /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F12C4D102F393700A8C12C /* CDTypeController.m */; };
 		01F12C50102F393700A8C12C /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F12C4D102F393700A8C12C /* CDTypeController.m */; };
@@ -1368,6 +1375,13 @@
 				01F12C4E102F393700A8C12C /* CDTypeController.m in Sources */,
 				01DAB2EA103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
 				01B456A6103923F80062EF62 /* NSData-CDExtensions.m in Sources */,
+				01DDCB82108EB60600E31219 /* CDLCDyldInfo.m in Sources */,
+				01DDCB83108EB60900E31219 /* CDLCPrebindChecksum.m in Sources */,
+				01DDCB84108EB60E00E31219 /* CDLCSubClient.m in Sources */,
+				01DDCB85108EB60F00E31219 /* CDLCSubFramework.m in Sources */,
+				01DDCB86108EB60F00E31219 /* CDLCSubLibrary.m in Sources */,
+				01DDCB87108EB61000E31219 /* CDLCSubUmbrella.m in Sources */,
+				01DDCB88108EB61800E31219 /* CDVisitorPropertyState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
