@@ -35,6 +35,7 @@
     objcProcessors = [[NSMutableArray alloc] init];
 
     typeController = [[CDTypeController alloc] init];
+    [typeController setClassDump:self];
 
     // These can be ppc, ppc7400, ppc64, i386, x86_64
     targetArch.cputype = CPU_TYPE_ANY;
