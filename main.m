@@ -226,6 +226,18 @@ int main(int argc, char *argv[])
             }
 
             data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
+            if (data == nil) {
+                NSFileManager *defaultManager = [NSFileManager defaultManager];
+
+                if ([defaultManager fileExistsAtPath:executablePath]) {
+                    fprintf(stderr, "class-dump: Input file (%s) is not readable (check read rights).\n", [executablePath UTF8String]);
+                } else {
+                    fprintf(stderr, "class-dump: Input file (%s) does not exist.\n", [executablePath UTF8String]);
+                }
+
+                exit(1);
+            }
+
             file = [CDFile fileWithData:data];
             [file setFilename:executablePath];
             if (file == nil) {
