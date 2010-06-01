@@ -29,6 +29,7 @@
         return nil;
 
     executablePath = nil;
+    sdkRoot = nil;
 
     machOFiles = [[NSMutableArray alloc] init];
     machOFilesByID = [[NSMutableDictionary alloc] init];
@@ -49,6 +50,7 @@
 - (void)dealloc;
 {
     [executablePath release];
+    [sdkRoot release];
 
     [machOFiles release];
     [machOFilesByID release];
@@ -193,6 +195,8 @@
 
     return YES;
 }
+
+@synthesize sdkRoot;
 
 - (NSArray *)machOFiles;
 {

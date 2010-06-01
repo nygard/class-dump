@@ -43,6 +43,7 @@
 
     regex_t compiledRegex;
 
+    NSString *sdkRoot;
     NSMutableArray *machOFiles;
     NSMutableDictionary *machOFilesByID;
     NSMutableArray *objcProcessors;
@@ -67,6 +68,8 @@
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;
+
+@property(retain) NSString *sdkRoot;
 
 - (NSArray *)machOFiles;
 - (NSArray *)objcProcessors;
