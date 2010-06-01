@@ -327,6 +327,8 @@
 
     if ([anID hasPrefix:replacementString]) {
         adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
+    } else if (sdkRoot != nil) {
+        adjustedID = [sdkRoot stringByAppendingPathComponent:anID];
     } else {
         adjustedID = anID;
     }
@@ -355,6 +357,12 @@
     [resultString appendString:@" *\n"];
     [resultString appendString:@" *     class-dump is Copyright (C) 1997-1998, 2000-2001, 2004-2010 by Steve Nygard.\n"];
     [resultString appendString:@" */\n\n"];
+
+    if (sdkRoot != nil) {
+        [resultString appendString:@"/*\n"];
+        [resultString appendFormat:@" * SDK Root: %@\n", sdkRoot];
+        [resultString appendString:@" *\n\n"];
+    }
 }
 
 - (void)registerTypes;
