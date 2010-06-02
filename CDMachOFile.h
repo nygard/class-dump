@@ -54,6 +54,8 @@
 @property(retain) CDLCDynamicSymbolTable *dynamicSymbolTable;
 @property(retain) CDLCDyldInfo *dyldInfo;
 
+- (BOOL)uses64BitABI;
+
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
 

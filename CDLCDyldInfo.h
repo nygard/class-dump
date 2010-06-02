@@ -9,6 +9,7 @@
 {
     struct dyld_info_command dyldInfoCommand;
 
+    NSUInteger ptrSize;
     NSMutableDictionary *symbolNamesByAddress;
 }
 

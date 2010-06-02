@@ -149,6 +149,11 @@ static BOOL debug = NO;
 @synthesize dynamicSymbolTable;
 @synthesize dyldInfo;
 
+- (BOOL)uses64BitABI;
+{
+    return _flags.uses64BitABI;
+}
+
 - (NSString *)filetypeDescription;
 {
     switch ([self filetype]) {
@@ -521,7 +526,7 @@ static BOOL debug = NO;
         if ([str hasPrefix:prefix]) {
             return [str substringFromIndex:[prefix length]];
         } else {
-            NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
+            NSLog(@"Warning: Unknown prefix on symbol name... %@ (addr %lx)", str, address);
             return str;
         }
     }
@@ -554,7 +559,7 @@ static BOOL debug = NO;
         if ([str hasPrefix:prefix]) {
             return [str substringFromIndex:[prefix length]];
         } else {
-            NSLog(@"Warning: Unknown prefix on symbol name... %@", str);
+            NSLog(@"Warning: Unknown prefix on symbol name... %@ (addr %lx)", str, address);
             return str;
         }
     }

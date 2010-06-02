@@ -176,6 +176,11 @@ static NSString *CDBindTypeString(uint8_t type)
     NSLog(@"   export_size: %08x", dyldInfoCommand.export_size);
 #endif
 
+    if ([aMachOFile uses64BitABI])
+        ptrSize = sizeof(uint64_t);
+    else
+        ptrSize = sizeof(uint32_t);
+
     symbolNamesByAddress = [[NSMutableDictionary alloc] init];
 
     //[self logRebaseInfo];
@@ -280,7 +285,7 @@ static NSString *CDBindTypeString(uint8_t type)
           case REBASE_OPCODE_ADD_ADDR_IMM_SCALED:
               // I expect sizeof(uintptr_t) == sizeof(uint64_t)
               //NSLog(@"REBASE_OPCODE: ADD_ADDR_IMM_SCALED,                addr += %u * %u", immediate, sizeof(uint64_t));
-              address += immediate * sizeof(uint64_t);
+              address += immediate * ptrSize;
               //NSLog(@"    address: %016lx", address);
               break;
 
@@ -290,7 +295,7 @@ static NSString *CDBindTypeString(uint8_t type)
               //NSLog(@"REBASE_OPCODE: DO_REBASE_IMM_TIMES,                count: %u", immediate);
               for (index = 0; index < immediate; index++) {
                   [self rebaseAddress:address type:type];
-                  address += sizeof(uint64_t);
+                  address += ptrSize;
               }
               rebaseCount += immediate;
               break;
@@ -304,7 +309,7 @@ static NSString *CDBindTypeString(uint8_t type)
               //NSLog(@"REBASE_OPCODE: DO_REBASE_ULEB_TIMES,               count: 0x%016lx", count);
               for (index = 0; index < count; index++) {
                   [self rebaseAddress:address type:type];
-                  address += sizeof(uint64_t);
+                  address += ptrSize;
               }
               rebaseCount += count;
               break;
@@ -317,7 +322,7 @@ static NSString *CDBindTypeString(uint8_t type)
               // --------------------------------------------------------:
               //NSLog(@"REBASE_OPCODE: DO_REBASE_ADD_ADDR_ULEB,            addr += 0x%016lx", val);
               [self rebaseAddress:address type:type];
-              address += sizeof(uint64_t) + val;
+              address += ptrSize + val;
               rebaseCount++;
               break;
           }
@@ -330,7 +335,7 @@ static NSString *CDBindTypeString(uint8_t type)
               //NSLog(@"REBASE_OPCODE: DO_REBASE_ULEB_TIMES_SKIPPING_ULEB, count: %016lx, skip: %016lx", count, skip);
               for (index = 0; index < count; index++) {
                   [self rebaseAddress:address type:type];
-                  address += sizeof(uint64_t) + skip;
+                  address += ptrSize + skip;
               }
               rebaseCount += count;
               break;
@@ -508,7 +513,7 @@ static NSString *CDBindTypeString(uint8_t type)
           case BIND_OPCODE_DO_BIND:
               if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND");
               [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
-              address += sizeof(uint64_t);
+              address += ptrSize;
               bindCount++;
               break;
 
@@ -518,15 +523,15 @@ static NSString *CDBindTypeString(uint8_t type)
               val = read_uleb128(&ptr, end);
               if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_ULEB,          address += %016lx", val);
               [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
-              address += sizeof(uint64_t) + val;
+              address += ptrSize + val;
               bindCount++;
               break;
           }
 
           case BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED:
-              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_IMM_SCALED,    address += %u * %u", immediate, sizeof(uint64_t));
+              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_IMM_SCALED,    address += %u * %u", immediate, ptrSize);
               [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
-              address += sizeof(uint64_t) + immediate * sizeof(uint64_t);
+              address += ptrSize + immediate * ptrSize;
               bindCount++;
               break;
 
@@ -538,7 +543,7 @@ static NSString *CDBindTypeString(uint8_t type)
               if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ULEB_TIMES_SKIPPING_ULEB, count: %016lx, skip: %016lx", count, skip);
               for (index = 0; index < count; index++) {
                   [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
-                  address += sizeof(uint64_t) + skip;
+                  address += ptrSize + skip;
               }
               bindCount += count;
               break;
