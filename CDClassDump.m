@@ -361,7 +361,7 @@
     if (sdkRoot != nil) {
         [resultString appendString:@"/*\n"];
         [resultString appendFormat:@" * SDK Root: %@\n", sdkRoot];
-        [resultString appendString:@" *\n\n"];
+        [resultString appendString:@" */\n\n"];
     }
 }
 
