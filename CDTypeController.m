@@ -14,7 +14,7 @@ static BOOL debug = NO;
 
 @implementation CDTypeController
 
-- (id)init;
+- (id)initWithClassDump:(CDClassDump *)aClassDump;
 {
     if ([super init] == nil)
         return nil;
@@ -51,7 +51,7 @@ static BOOL debug = NO;
     [unionTable setAnonymousBaseName:@"CDUnion_"];
     [unionTable setIdentifier:@"Unions"];
 
-    classDump = nil;
+    classDump = aClassDump;
 
     //[structureTable debugName:@"_xmlSAXHandler"];
     //[structureTable debugName:@"UCKeyboardTypeHeader"];
@@ -69,8 +69,6 @@ static BOOL debug = NO;
 
 - (void)dealloc;
 {
-    [classDump release];
-
     [ivarTypeFormatter release];
     [methodTypeFormatter release];
     [propertyTypeFormatter release];
@@ -81,8 +79,6 @@ static BOOL debug = NO;
 
     [super dealloc];
 }
-
-@synthesize classDump;
 
 - (CDTypeFormatter *)ivarTypeFormatter;
 {
@@ -309,6 +305,21 @@ static BOOL debug = NO;
 - (BOOL)shouldShowName:(NSString *)name;
 {
     return ([classDump shouldMatchRegex] == NO) || [classDump regexMatchesString:name];
+}
+
+- (BOOL)shouldShowIvarOffsets;
+{
+    return classDump.shouldShowIvarOffsets;
+}
+
+- (BOOL)shouldShowMethodAddresses;
+{
+    return classDump.shouldShowMethodAddresses;
+}
+
+- (BOOL)targetArchUses64BitABI;
+{
+    return CDArchUses64BitABI(classDump.targetArch);
 }
 
 - (CDType *)phase2ReplacementForType:(CDType *)type;

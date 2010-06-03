@@ -85,8 +85,8 @@
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([[typeController classDump] shouldShowIvarOffsets]) {
-            [resultString appendFormat:@"\t// %d = 0x%x", offset, offset];
+        if ([typeController shouldShowIvarOffsets]) {
+            [resultString appendFormat:@"\t// %1$d = 0x%1$x", offset];
         }
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];

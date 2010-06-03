@@ -56,6 +56,11 @@ CDArch CDArchFromName(NSString *name)
     return arch;
 }
 
+BOOL CDArchUses64BitABI(CDArch arch)
+{
+    return (arch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+}
+
 @implementation CDFile
 
 + (id)fileWithData:(NSData *)someData;

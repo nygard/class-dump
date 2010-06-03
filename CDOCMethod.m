@@ -105,8 +105,12 @@
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([[typeController classDump] shouldShowMethodAddresses] && imp != 0)
-            [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
+        if ([typeController shouldShowMethodAddresses] && imp != 0) {
+            if ([typeController targetArchUses64BitABI])
+                [resultString appendFormat:@"\t// IMP=0x%016lx", imp];
+            else
+                [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
+        }
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
 }

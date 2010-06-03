@@ -20,10 +20,8 @@
     CDStructureTable *unionTable;
 }
 
-- (id)init;
+- (id)initWithClassDump:(CDClassDump *)aClassDump;
 - (void)dealloc;
-
-@property(retain) CDClassDump *classDump; // TODO: retain loop.
 
 @property(readonly) CDTypeFormatter *ivarTypeFormatter;
 @property(readonly) CDTypeFormatter *methodTypeFormatter;
@@ -56,6 +54,10 @@
 - (void)startPhase3;
 
 - (BOOL)shouldShowName:(NSString *)name;
+- (BOOL)shouldShowIvarOffsets;
+- (BOOL)shouldShowMethodAddresses;
+- (BOOL)targetArchUses64BitABI;
+
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 
 - (void)phase3RegisterStructure:(CDType *)aStructure;

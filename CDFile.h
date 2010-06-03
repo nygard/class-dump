@@ -20,6 +20,7 @@ typedef struct {
 
 extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 extern CDArch CDArchFromName(NSString *name);
+extern BOOL CDArchUses64BitABI(CDArch arch);
 
 @interface CDFile : NSObject
 {
