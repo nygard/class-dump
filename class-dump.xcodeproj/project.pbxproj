@@ -644,8 +644,11 @@
 				01F77F160FF47E580055EECD /* CDOCProperty.h */,
 				01F77F170FF47E580055EECD /* CDOCProperty.m */,
 			);
+			indentWidth = 4;
 			name = Classes;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		012E2AA308AE9C3F003E99F8 /* Extensions */ = {
 			isa = PBXGroup;
@@ -791,8 +794,11 @@
 				012E2B7A08AE9E45003E99F8 /* CDStructHandlingUnitTest.h */,
 				012E2B7B08AE9E45003E99F8 /* CDStructHandlingUnitTest.m */,
 			);
+			indentWidth = 4;
 			name = "OCUnit tests";
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		01A9A41F0FF18F6400475772 /* Load Commands */ = {
 			isa = PBXGroup;
@@ -873,8 +879,11 @@
 				01F524831001D3640006B272 /* formatType.m */,
 				01F5264C1001F5C70006B272 /* deprotect.m */,
 			);
+			indentWidth = 4;
 			name = Source;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		08FB779DFE84155DC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
