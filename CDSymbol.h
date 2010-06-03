@@ -7,6 +7,8 @@
 
 #include <mach-o/nlist.h>
 
+extern NSString *const ObjCClassSymbolPrefix;
+
 @interface CDSymbol : NSObject
 {
     struct nlist_64 nlist;
@@ -22,6 +24,8 @@
 - (uint8_t)section;
 - (uint16_t)desc;
 - (uint64_t)value;
+
+- (BOOL)isExported;
 
 - (NSString *)name;
 - (NSString *)description;

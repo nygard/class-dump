@@ -9,6 +9,8 @@
 #import <mach-o/loader.h>
 #import "CDMachOFile.h"
 
+NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
+
 @implementation CDSymbol
 
 - (id)initWithName:(NSString *)aName nlist32:(struct nlist)nlist32;
@@ -66,6 +68,11 @@
 - (uint64_t)value;
 {
     return nlist.n_value;
+}
+
+- (BOOL)isExported;
+{
+    return (nlist.n_type & N_EXT) == N_EXT;
 }
 
 - (NSString *)name;

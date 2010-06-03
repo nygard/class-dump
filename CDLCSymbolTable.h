@@ -5,12 +5,16 @@
 
 #import "CDLoadCommand.h"
 
+@class CDSymbol;
+
 @interface CDLCSymbolTable : CDLoadCommand
 {
     struct symtab_command symtabCommand;
 
     NSMutableArray *symbols;
     NSUInteger baseAddress;
+
+    NSMutableDictionary *classesSymbols;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
@@ -28,6 +32,8 @@
 
 - (NSUInteger)baseAddress;
 - (NSArray *)symbols;
+
+- (CDSymbol *)symbolForClass:(NSString *)className;
 
 - (NSString *)extraDescription;
 

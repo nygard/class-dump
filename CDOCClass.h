@@ -10,6 +10,8 @@
 {
     NSString *superClassName;
     NSArray *ivars;
+
+    BOOL isExported;
 }
 
 - (void)dealloc;
@@ -19,6 +21,9 @@
 
 - (NSArray *)ivars;
 - (void)setIvars:(NSArray *)newIvars;
+
+- (BOOL)isExported;
+- (void)setExported:(BOOL)exported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 

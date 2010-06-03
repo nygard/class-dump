@@ -57,6 +57,9 @@ static BOOL debug = NO;
 {
     NSArray *protocols;
 
+    if (![aClass isExported])
+        [resultString appendString:@"// Not exported\n"];
+
     [resultString appendFormat:@"@interface %@", [aClass name]];
     if ([aClass superClassName] != nil)
         [resultString appendFormat:@" : %@", [aClass superClassName]];

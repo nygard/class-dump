@@ -18,6 +18,19 @@
 
 @implementation CDOCClass
 
+- (id)init;
+{
+    if ([super init] == nil)
+        return nil;
+
+    superClassName = nil;
+    ivars = nil;
+
+    isExported = YES;
+
+    return self;
+}
+
 - (void)dealloc;
 {
     [superClassName release];
@@ -52,6 +65,21 @@
 
     [ivars release];
     ivars = [newIvars retain];
+}
+
+- (BOOL)isExported;
+{
+    return isExported;
+}
+
+- (void)setExported:(BOOL)exported;
+{
+    isExported = exported;
+}
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"%@, exported: %@", [super description], isExported ? @"YES" : @"NO"];
 }
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;

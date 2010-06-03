@@ -300,6 +300,10 @@
 
     [aClass setIvars:[self loadIvarsAtAddress:objc2ClassData.ivars]];
 
+    CDSymbol *classSymbol = [[machOFile symbolTable] symbolForClass:str];
+    if (classSymbol)
+        [aClass setExported:[classSymbol isExported]];
+
     [cursor release];
 
     {

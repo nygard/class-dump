@@ -511,7 +511,6 @@ static BOOL debug = NO;
     //NSLog(@"rinfo: %@", rinfo);
     if (rinfo != nil) {
         CDSymbol *symbol;
-        NSString *prefix = @"_OBJC_CLASS_$_";
         NSString *str;
 
         symbol = [[symbolTable symbols] objectAtIndex:rinfo.symbolnum];
@@ -523,8 +522,8 @@ static BOOL debug = NO;
 
         // Or, we could be lazy and take advantage of the fact that the class name we're after is in the symbol name:
         str = [symbol name];
-        if ([str hasPrefix:prefix]) {
-            return [str substringFromIndex:[prefix length]];
+        if ([str hasPrefix:ObjCClassSymbolPrefix]) {
+            return [str substringFromIndex:[ObjCClassSymbolPrefix length]];
         } else {
             NSLog(@"Warning: Unknown prefix on symbol name... %@ (addr %lx)", str, address);
             return str;
@@ -554,10 +553,8 @@ static BOOL debug = NO;
     NSString *str = [dyldInfo symbolNameForAddress:address];
 
     if (str != nil) {
-        NSString *prefix = @"_OBJC_CLASS_$_";
-
-        if ([str hasPrefix:prefix]) {
-            return [str substringFromIndex:[prefix length]];
+        if ([str hasPrefix:ObjCClassSymbolPrefix]) {
+            return [str substringFromIndex:[ObjCClassSymbolPrefix length]];
         } else {
             NSLog(@"Warning: Unknown prefix on symbol name... %@ (addr %lx)", str, address);
             return str;
