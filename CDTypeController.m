@@ -51,7 +51,7 @@ static BOOL debug = NO;
     [unionTable setAnonymousBaseName:@"CDUnion_"];
     [unionTable setIdentifier:@"Unions"];
 
-    classDump = aClassDump;
+    nonretained_classDump = aClassDump;
 
     //[structureTable debugName:@"_xmlSAXHandler"];
     //[structureTable debugName:@"UCKeyboardTypeHeader"];
@@ -304,22 +304,22 @@ static BOOL debug = NO;
 
 - (BOOL)shouldShowName:(NSString *)name;
 {
-    return ([classDump shouldMatchRegex] == NO) || [classDump regexMatchesString:name];
+    return ([nonretained_classDump shouldMatchRegex] == NO) || [nonretained_classDump regexMatchesString:name];
 }
 
 - (BOOL)shouldShowIvarOffsets;
 {
-    return classDump.shouldShowIvarOffsets;
+    return nonretained_classDump.shouldShowIvarOffsets;
 }
 
 - (BOOL)shouldShowMethodAddresses;
 {
-    return classDump.shouldShowMethodAddresses;
+    return nonretained_classDump.shouldShowMethodAddresses;
 }
 
 - (BOOL)targetArchUses64BitABI;
 {
-    return CDArchUses64BitABI(classDump.targetArch);
+    return CDArchUses64BitABI(nonretained_classDump.targetArch);
 }
 
 - (CDType *)phase2ReplacementForType:(CDType *)type;

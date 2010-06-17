@@ -9,7 +9,7 @@
 
 @interface CDTypeController : NSObject
 {
-    CDClassDump *classDump; // passed during formatting, to get at options.
+    CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
 
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
