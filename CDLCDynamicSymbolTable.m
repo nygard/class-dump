@@ -89,13 +89,13 @@
     CDDataCursor *cursor;
     uint32_t index;
 
-    cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
-    [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
+    cursor = [[CDDataCursor alloc] initWithData:[nonretained_machOFile data]];
+    [cursor setByteOrder:[nonretained_machOFile byteOrder]];
 
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
     //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
 #if 0
-    [cursor setOffset:[nonretainedMachOFile offset] + dysymtab.indirectsymoff];
+    [cursor setOffset:[nonretained_machOFile offset] + dysymtab.indirectsymoff];
     for (index = 0; index < dysymtab.nindirectsyms; index++) {
         uint32_t val;
 
@@ -108,7 +108,7 @@
     //NSLog(@"extreloff: %lu", dysymtab.extreloff);
     //NSLog(@"nextrel:   %lu", dysymtab.nextrel);
 
-    [cursor setOffset:[nonretainedMachOFile offset] + dysymtab.extreloff];
+    [cursor setOffset:[nonretained_machOFile offset] + dysymtab.extreloff];
     //NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
     //NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
     for (index = 0; index < dysymtab.nextrel; index++) {

@@ -26,7 +26,7 @@ static BOOL debug = NO;
     if ([super init] == nil)
         return nil;
 
-    nonretainedTypeController = nil;
+    nonretained_typeController = nil;
 
     flags.shouldExpand = NO;
     flags.shouldAutoExpand = NO;
@@ -37,12 +37,12 @@ static BOOL debug = NO;
 
 - (CDTypeController *)typeController;
 {
-    return nonretainedTypeController;
+    return nonretained_typeController;
 }
 
 - (void)setTypeController:(CDTypeController *)newTypeController;
 {
-    nonretainedTypeController = newTypeController;
+    nonretained_typeController = newTypeController;
 }
 
 @synthesize baseLevel;
@@ -358,20 +358,20 @@ static BOOL debug = NO;
 // Called from CDType, which gets a formatter but not a type controller.
 - (CDType *)replacementForType:(CDType *)aType;
 {
-    return [nonretainedTypeController typeFormatter:self replacementForType:aType];
+    return [nonretained_typeController typeFormatter:self replacementForType:aType];
 }
 
 // Called from CDType, which gets a formatter but not a type controller.
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
-    return [nonretainedTypeController typeFormatter:self typedefNameForStruct:structType level:level];
+    return [nonretained_typeController typeFormatter:self typedefNameForStruct:structType level:level];
 }
 
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@:%p> baseLevel: %u, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
                      NSStringFromClass([self class]), self,
-                     baseLevel, flags.shouldExpand, flags.shouldAutoExpand, flags.shouldShowLexing, nonretainedTypeController];
+                     baseLevel, flags.shouldExpand, flags.shouldAutoExpand, flags.shouldShowLexing, nonretained_typeController];
 }
 
 @end

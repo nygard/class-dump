@@ -18,7 +18,7 @@
     if ([super init] == nil)
         return nil;
 
-    nonretainedSegment = aSegment;
+    nonretained_segment = aSegment;
 
     [cursor readBytesOfLength:16 intoBuffer:section.sectname];
     [cursor readBytesOfLength:16 intoBuffer:section.segname];
@@ -52,7 +52,7 @@
 
 - (CDLCSegment64 *)segment;
 {
-    return nonretainedSegment;
+    return nonretained_segment;
 }
 
 - (CDMachOFile *)machOFile;
@@ -73,7 +73,7 @@
 - (void)loadData;
 {
     if (_flags.hasLoadedData == NO) {
-        data = [[NSData alloc] initWithBytes:[[nonretainedSegment machOFile] machODataBytes] + section.offset length:section.size];
+        data = [[NSData alloc] initWithBytes:[[nonretained_segment machOFile] machODataBytes] + section.offset length:section.size];
         _flags.hasLoadedData = YES;
     }
 }

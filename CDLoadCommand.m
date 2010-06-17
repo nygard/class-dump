@@ -90,7 +90,7 @@
     if ([super init] == nil)
         return nil;
 
-    nonretainedMachOFile = aMachOFile;
+    nonretained_machOFile = aMachOFile;
     commandOffset = [cursor offset];
 
     return self;
@@ -98,7 +98,7 @@
 
 - (CDMachOFile *)machOFile;
 {
-    return nonretainedMachOFile;
+    return nonretained_machOFile;
 }
 
 - (NSUInteger)commandOffset;

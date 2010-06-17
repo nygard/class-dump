@@ -70,7 +70,7 @@
     const char *strtab, *ptr;
     BOOL didFindBaseAddress = NO;
 
-    for (CDLoadCommand *loadCommand in [nonretainedMachOFile loadCommands]) {
+    for (CDLoadCommand *loadCommand in [nonretained_machOFile loadCommands]) {
         if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
             CDLCSegment *segment = (CDLCSegment *)loadCommand;
 
@@ -86,16 +86,16 @@
     if (didFindBaseAddress == NO)
         NSLog(@"Warning: Couldn't find first read/write segment for base address of relocation entries.");
 
-    cursor = [[CDDataCursor alloc] initWithData:[nonretainedMachOFile data]];
-    [cursor setByteOrder:[nonretainedMachOFile byteOrder]];
-    [cursor setOffset:[nonretainedMachOFile offset] + symtabCommand.symoff];
+    cursor = [[CDDataCursor alloc] initWithData:[nonretained_machOFile data]];
+    [cursor setByteOrder:[nonretained_machOFile byteOrder]];
+    [cursor setOffset:[nonretained_machOFile offset] + symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    strtab = [nonretainedMachOFile machODataBytes] + symtabCommand.stroff;
+    strtab = [nonretained_machOFile machODataBytes] + symtabCommand.stroff;
 
-    if ([nonretainedMachOFile isKindOfClass:[CDMachO32File class]]) {
+    if ([nonretained_machOFile isKindOfClass:[CDMachO32File class]]) {
         //NSLog(@"32 bit...");
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  --------");

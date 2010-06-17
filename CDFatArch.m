@@ -16,7 +16,7 @@
     if ([super init] == nil)
         return nil;
 
-    nonretainedFatFile = nil;
+    nonretained_fatFile = nil;
 
     fatArch.cputype = [cursor readBigInt32];
     fatArch.cpusubtype = [cursor readBigInt32];
@@ -79,12 +79,12 @@
 
 - (CDFatFile *)fatFile;
 {
-    return nonretainedFatFile;
+    return nonretained_fatFile;
 }
 
 - (void)setFatFile:(CDFatFile *)newFatFile;
 {
-    nonretainedFatFile = [newFatFile retain];
+    nonretained_fatFile = [newFatFile retain];
 }
 
 - (NSString *)description;
@@ -113,8 +113,8 @@
 - (CDMachOFile *)machOFile;
 {
     if (machOFile == nil) {
-        machOFile = [[CDFile fileWithData:[nonretainedFatFile data] offset:fatArch.offset] retain];
-        [machOFile setFilename:[nonretainedFatFile filename]];
+        machOFile = [[CDFile fileWithData:[nonretained_fatFile data] offset:fatArch.offset] retain];
+        [machOFile setFilename:[nonretained_fatFile filename]];
     }
 
     return machOFile;
@@ -122,7 +122,7 @@
 
 - (NSData *)machOData;
 {
-    return [[[NSData alloc] initWithBytes:[[nonretainedFatFile data] bytes] + fatArch.offset length:fatArch.size] autorelease];
+    return [[[NSData alloc] initWithBytes:[[nonretained_fatFile data] bytes] + fatArch.offset length:fatArch.size] autorelease];
 }
 
 @end

@@ -12,7 +12,7 @@
 
 @interface CDLoadCommand : NSObject
 {
-    CDMachOFile *nonretainedMachOFile;
+    CDMachOFile *nonretained_machOFile;
     NSUInteger commandOffset;
 }
 

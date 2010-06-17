@@ -10,7 +10,7 @@
 
 @interface CDSection64 : CDSection
 {
-    CDLCSegment64 *nonretainedSegment;
+    CDLCSegment64 *nonretained_segment;
 
     struct section_64 section;
 }

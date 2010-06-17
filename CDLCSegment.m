@@ -109,7 +109,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             const void *src;
             uint32_t magic;
 
-            src = [nonretainedMachOFile machODataBytes] + [self fileoff] + 3 * PAGE_SIZE;
+            src = [nonretained_machOFile machODataBytes] + [self fileoff] + 3 * PAGE_SIZE;
 
             magic = OSReadLittleInt32(src, 0);
             //NSLog(@"%s, magic= 0x%08x", _cmd, magic);
@@ -262,7 +262,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         NSParameterAssert(([self filesize] % PAGE_SIZE) == 0);
         decryptedData = [[NSMutableData alloc] initWithLength:[self filesize]];
 
-        src = [nonretainedMachOFile machODataBytes] + [self fileoff];
+        src = [nonretained_machOFile machODataBytes] + [self fileoff];
         dest = [decryptedData mutableBytes];
 
         if ([self filesize] <= PAGE_SIZE * 3) {

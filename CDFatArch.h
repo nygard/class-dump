@@ -13,7 +13,7 @@
 
 @interface CDFatArch : NSObject
 {
-    CDFatFile *nonretainedFatFile;
+    CDFatFile *nonretained_fatFile;
 
     struct fat_arch fatArch;
 

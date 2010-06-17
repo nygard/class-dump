@@ -9,7 +9,7 @@
 
 @interface CDTypeFormatter : NSObject
 {
-    id nonretainedTypeController;
+    id nonretained_typeController;
 
     NSUInteger baseLevel;
 

@@ -231,7 +231,7 @@ static NSString *CDBindTypeString(uint8_t type)
     uint8_t type;
     NSUInteger rebaseCount = 0;
 
-    segments = [nonretainedMachOFile segments];
+    segments = [nonretained_machOFile segments];
     NSLog(@"segments: %@", segments);
     NSParameterAssert([segments count] > 0);
 
@@ -240,7 +240,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
     NSLog(@"----------------------------------------------------------------------");
     NSLog(@"rebase_off: %u, rebase_size: %u", dyldInfoCommand.rebase_off, dyldInfoCommand.rebase_size);
-    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.rebase_off;
+    start = [nonretained_machOFile machODataBytes] + dyldInfoCommand.rebase_off;
     end = start + dyldInfoCommand.rebase_size;
 
     NSLog(@"address: %016lx", address);
@@ -374,7 +374,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"bind_off: %u, bind_size: %u", dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
     }
-    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.bind_off;
+    start = [nonretained_machOFile machODataBytes] + dyldInfoCommand.bind_off;
     end = start + dyldInfoCommand.bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
@@ -388,7 +388,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"weak_bind_off: %u, weak_bind_size: %u", dyldInfoCommand.weak_bind_off, dyldInfoCommand.weak_bind_size);
     }
-    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.weak_bind_off;
+    start = [nonretained_machOFile machODataBytes] + dyldInfoCommand.weak_bind_off;
     end = start + dyldInfoCommand.weak_bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
@@ -402,7 +402,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"lazy_bind_off: %u, lazy_bind_size: %u", dyldInfoCommand.lazy_bind_off, dyldInfoCommand.lazy_bind_size);
     }
-    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.lazy_bind_off;
+    start = [nonretained_machOFile machODataBytes] + dyldInfoCommand.lazy_bind_off;
     end = start + dyldInfoCommand.lazy_bind_size;
 
     [self logBindOps:start end:end isLazy:YES];
@@ -423,7 +423,7 @@ static NSString *CDBindTypeString(uint8_t type)
     const char *symbolName = NULL;
     uint8_t symbolFlags = 0;
 
-    segments = [nonretainedMachOFile segments];
+    segments = [nonretained_machOFile segments];
     //NSLog(@"segments: %@", segments);
     NSParameterAssert([segments count] > 0);
 
@@ -593,7 +593,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"hexdump -Cv -s %u -n %u", dyldInfoCommand.export_off, dyldInfoCommand.export_size);
     }
 
-    start = [nonretainedMachOFile machODataBytes] + dyldInfoCommand.export_off;
+    start = [nonretained_machOFile machODataBytes] + dyldInfoCommand.export_off;
     end = start + dyldInfoCommand.export_size;
 
     NSLog(@"         Type Flags Offset           Name");

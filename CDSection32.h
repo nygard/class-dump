@@ -10,7 +10,7 @@
 
 @interface CDSection32 : CDSection
 {
-    CDLCSegment32 *nonretainedSegment;
+    CDLCSegment32 *nonretained_segment;
 
     struct section section;
 }
