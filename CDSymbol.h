@@ -15,7 +15,6 @@ extern NSString *const ObjCClassSymbolPrefix;
     NSString *name;
 }
 
-
 - (id)initWithName:(NSString *)aName nlist32:(struct nlist)nlist32;
 - (id)initWithName:(NSString *)aName nlist64:(struct nlist_64)nlist64;
 - (void)dealloc;

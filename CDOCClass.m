@@ -67,15 +67,7 @@
     ivars = [newIvars retain];
 }
 
-- (BOOL)isExported;
-{
-    return isExported;
-}
-
-- (void)setExported:(BOOL)exported;
-{
-    isExported = exported;
-}
+@synthesize isExported;
 
 - (NSString *)description;
 {

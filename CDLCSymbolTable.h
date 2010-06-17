@@ -14,7 +14,7 @@
     NSMutableArray *symbols;
     NSUInteger baseAddress;
 
-    NSMutableDictionary *classesSymbols;
+    NSMutableDictionary *classSymbols;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;

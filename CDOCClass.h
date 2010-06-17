@@ -22,8 +22,7 @@
 - (NSArray *)ivars;
 - (void)setIvars:(NSArray *)newIvars;
 
-- (BOOL)isExported;
-- (void)setExported:(BOOL)exported;
+@property BOOL isExported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 

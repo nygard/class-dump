@@ -38,7 +38,7 @@
     symbols = [[NSMutableArray alloc] init];
     baseAddress = 0;
 
-    classesSymbols = [[NSMutableDictionary alloc] init];
+    classSymbols = [[NSMutableDictionary alloc] init];
 
     return self;
 }
@@ -46,7 +46,7 @@
 - (void)dealloc;
 {
     [symbols release];
-    [classesSymbols release];
+    [classSymbols release];
 
     [super dealloc];
 }
@@ -148,9 +148,9 @@
             symbol = [[CDSymbol alloc] initWithName:str nlist64:nlist];
             [symbols addObject:symbol];
 
-            if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value]) {
+            if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value] != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
-                [classesSymbols setObject:symbol forKey:className];
+                [classSymbols setObject:symbol forKey:className];
             }
 
             [symbol release];
@@ -198,7 +198,7 @@
 
 - (CDSymbol *)symbolForClass:(NSString *)className;
 {
-    return [classesSymbols objectForKey:className];
+    return [classSymbols objectForKey:className];
 }
 
 - (NSString *)extraDescription;

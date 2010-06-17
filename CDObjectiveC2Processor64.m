@@ -300,11 +300,14 @@
 
     [aClass setIvars:[self loadIvarsAtAddress:objc2ClassData.ivars]];
 
-    CDSymbol *classSymbol = [[machOFile symbolTable] symbolForClass:str];
-    if (classSymbol)
-        [aClass setExported:[classSymbol isExported]];
-
     [cursor release];
+
+    {
+        CDSymbol *classSymbol = [[machOFile symbolTable] symbolForClass:str];
+
+        if (classSymbol != nil)
+            aClass.isExported = [classSymbol isExported];
+    }
 
     {
         uint64_t classNameAddress = address + sizeof(objc2Class.isa);
