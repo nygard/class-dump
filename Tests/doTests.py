@@ -13,12 +13,12 @@ TESTDIR_NEW = TESTDIR + "/new"
 TESTDIR_NEW_32 = TESTDIR + "/new32"
 TESTDIR_NEW_64 = TESTDIR + "/new64"
 
-OLD_CD = "~/Unix/bin/class-dump-3.3.2"
+OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-3.3.2")
 #OLD_CD = "/bin/echo"
-NEW_CD = "/Local/nygard/Products/Debug/class-dump"
+NEW_CD = os.path.expanduser("/Local/nygard/Products/Debug/class-dump")
 
 # Must be a version that supports --list-arches
-ARCH_CD = "/Local/nygard/Products/Debug/class-dump"
+ARCH_CD = os.path.expanduser("/Local/nygard/Products/Debug/class-dump")
 
 mac_frameworks = [
     "/System/Library/Frameworks/*.framework",
@@ -33,7 +33,6 @@ mac_apps = [
     "/Applications/Utilities/*.app",
     "/Developer/Applications/*.app",
     "/Developer/Applications/*/*.app",
-    "~/Applications/*.app",
     "~/Applications/*.app",
     "/System/Library/CoreServices/*.app",
 ]
@@ -91,15 +90,15 @@ def main(argv):
     if shouldTestIOs:
         print "Testing on iOS targets"
         sdict = build_ios_paths(sdk_root)
-        OLD_OPTS = ""
-        NEW_OPTS = "--sdk-root " + sdk_root
+        OLD_OPTS = []
+        NEW_OPTS = ["--sdk-root", sdk_root]
     else:
         print "Testing on Mac OS X targets"
         if sdk_root:
             print "Ignoring --sdk-root for macosx testing"
         sdict = dict(apps=mac_apps, frameworks=mac_frameworks, bundles=mac_bundles)
-        OLD_OPTS = ""
-        NEW_OPTS = ""
+        OLD_OPTS = []
+        NEW_OPTS = []
 
     print "Starting tests at", datetime.today().ctime()
     print
@@ -135,28 +134,40 @@ def main(argv):
         (base, ext) = os.path.splitext(os.path.basename(path))
         ext = ext.lstrip(".")
         print base, ext
-        proc = Popen(ARCH_CD + " --list-arches " + path, shell=True, stdout=PIPE)
+        proc = Popen([ARCH_CD, "--list-arches", path], shell=False, stdout=PIPE)
         arches = proc.stdout.readline().rstrip().split(" ")
-        #print arches
+        print arches
         proc.stdout.readlines()
         for arch in arches:
             if arch == "none":
+                command = [OLD_CD, "-s", "-t", path]
+                command.extend(OLD_OPTS)
+                #print command
                 out = open("%s/%s-%s.txt" % (TESTDIR_OLD, base, ext), "w");
-                Popen("%s -s -t %s %s" % (OLD_CD, OLD_OPTS, path), shell=True, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out)
                 out.close()
 
+                command = [NEW_CD, "-s", "-t", path]
+                command.extend(NEW_OPTS)
+                #print command
                 out = open("%s/%s-%s.txt" % (TESTDIR_NEW, base, ext), "w");
-                Popen("%s -s -t %s %s" % (NEW_CD, NEW_OPTS, path), shell=True, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out)
                 out.close()
             else:
                 print arch
 
+                command = [OLD_CD, "-s", "-t", "--arch", arch, path]
+                command.extend(OLD_OPTS)
+                #print command
                 out = open("%s/%s-%s-%s.txt" % (TESTDIR_OLD, base, arch, ext), "w");
-                Popen("%s -s -t %s --arch %s %s" % (OLD_CD, OLD_OPTS, arch, path), shell=True, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out)
                 out.close()
 
+                command = [NEW_CD, "-s", "-t", "--arch", arch, path]
+                command.extend(NEW_OPTS)
+                #print command
                 out = open("%s/%s-%s-%s.txt" % (TESTDIR_NEW, base, arch, ext), "w");
-                Popen("%s -s -t %s --arch %s %s" % (NEW_CD, NEW_OPTS, arch, path), shell=True, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out)
                 out.close()
 
     print "Ended tests at", datetime.today().ctime()
