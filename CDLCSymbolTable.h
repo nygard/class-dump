@@ -15,6 +15,11 @@
     NSUInteger baseAddress;
 
     NSMutableDictionary *classSymbols;
+
+    struct {
+        unsigned int didFindBaseAddress:1;
+        unsigned int didWarnAboutUnfoundBaseAddress:1;
+    } flags;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;

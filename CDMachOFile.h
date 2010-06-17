@@ -44,6 +44,8 @@
 - (uint32_t)magic;
 - (cpu_type_t)cputype;
 - (cpu_subtype_t)cpusubtype;
+- (cpu_type_t)cputypePlusArchBits;
+//- (const NXArchInfo *)archInfo;
 - (uint32_t)filetype;
 - (uint32_t)flags;
 

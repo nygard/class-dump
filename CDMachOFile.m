@@ -123,6 +123,30 @@ static BOOL debug = NO;
     return 0;
 }
 
+// Well... only the arch bits it knows about.
+- (cpu_type_t)cputypePlusArchBits;
+{
+    if ([self uses64BitABI])
+        return [self cputype] | CPU_ARCH_ABI64;
+
+    return [self cputype];
+}
+
+#if 0
+- (const NXArchInfo *)archInfo;
+{
+    const NXArchInfo *archInfo;
+
+    if ([self uses64BitABI]) {
+        archInfo = NXGetArchInfoFromCpuType([self cputype] | CPU_ARCH_ABI64, [self cpusubtype]);
+    } else {
+        archInfo = NXGetArchInfoFromCpuType([self cputype], [self cpusubtype]);
+    }
+
+    return archInfo;
+}
+#endif
+
 - (uint32_t)filetype;
 {
     // Implement in subclasses.
