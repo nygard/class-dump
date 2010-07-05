@@ -17,8 +17,6 @@
 
     struct fat_arch fatArch;
 
-    BOOL uses64BitABI;
-
     CDMachOFile *machOFile; // Lazily create this.
 }
 

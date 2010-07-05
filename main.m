@@ -328,7 +328,7 @@ int main(int argc, char *argv[])
             }
 
 #ifndef __LP64__
-            if ((targetArch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64) {
+            if (CDArchUses64BitABI(targetArch)) {
                 fprintf(stderr, "Error: Can't dump 64-bit files with 32-bit version of class-dump\n");
                 exit(1);
             }
