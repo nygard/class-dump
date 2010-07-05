@@ -84,7 +84,7 @@
     }
 }
 
-#if 0
+#if 1
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
