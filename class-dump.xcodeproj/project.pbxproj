@@ -170,6 +170,11 @@
 		01A6910A104CA7370094DF3F /* CDLCSubFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69104104CA7370094DF3F /* CDLCSubFramework.m */; };
 		01A6910B104CA7370094DF3F /* CDLCSubLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69106104CA7370094DF3F /* CDLCSubLibrary.m */; };
 		01A6910C104CA7370094DF3F /* CDLCSubUmbrella.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A69108104CA7370094DF3F /* CDLCSubUmbrella.m */; };
+		01A949A111E2F48900FDFA93 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A949A011E2F48900FDFA93 /* CDSearchPathState.m */; };
+		01A949A211E2F48900FDFA93 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A949A011E2F48900FDFA93 /* CDSearchPathState.m */; };
+		01A949A311E2F48900FDFA93 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A949A011E2F48900FDFA93 /* CDSearchPathState.m */; };
+		01A949A411E2F48900FDFA93 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A949A011E2F48900FDFA93 /* CDSearchPathState.m */; };
+		01A949A511E2F48900FDFA93 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A949A011E2F48900FDFA93 /* CDSearchPathState.m */; };
 		01A9A5560FF19C3B00475772 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		01A9A5570FF19C3C00475772 /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
 		01A9A5580FF19C3C00475772 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
@@ -492,6 +497,8 @@
 		01A69108104CA7370094DF3F /* CDLCSubUmbrella.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCSubUmbrella.m; sourceTree = "<group>"; };
 		01A905F30ADDF11000DAEDBA /* CDTypeLexerUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CDTypeLexerUnitTest.h; path = UnitTests/CDTypeLexerUnitTest.h; sourceTree = "<group>"; };
 		01A905F40ADDF11000DAEDBA /* CDTypeLexerUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CDTypeLexerUnitTest.m; path = UnitTests/CDTypeLexerUnitTest.m; sourceTree = "<group>"; };
+		01A9499F11E2F48900FDFA93 /* CDSearchPathState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDSearchPathState.h; sourceTree = "<group>"; };
+		01A949A011E2F48900FDFA93 /* CDSearchPathState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSearchPathState.m; sourceTree = "<group>"; };
 		01A9A4220FF18F8300475772 /* CDLCDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDylib.h; sourceTree = "<group>"; };
 		01A9A4230FF18F8300475772 /* CDLCDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCDylib.m; sourceTree = "<group>"; };
 		01A9A4240FF18F8300475772 /* CDLCDynamicSymbolTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDynamicSymbolTable.h; sourceTree = "<group>"; };
@@ -643,6 +650,8 @@
 				01F77E160FF44D900055EECD /* CDRelocationInfo.m */,
 				01F77F160FF47E580055EECD /* CDOCProperty.h */,
 				01F77F170FF47E580055EECD /* CDOCProperty.m */,
+				01A9499F11E2F48900FDFA93 /* CDSearchPathState.h */,
+				01A949A011E2F48900FDFA93 /* CDSearchPathState.m */,
 			);
 			indentWidth = 4;
 			name = Classes;
@@ -1155,6 +1164,7 @@
 				0114EDD90CDC9A530061F80F /* CDTypeFormatterUnitTest.m in Sources */,
 				0114EDE10CDC9E8F0061F80F /* CDStructHandlingUnitTest.m in Sources */,
 				0114EE6D0CDCC4880061F80F /* NSError-CDExtensions.m in Sources */,
+				01A949A411E2F48900FDFA93 /* CDSearchPathState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1201,6 +1211,7 @@
 				013182FD0CDF6EE400EC5A2C /* CDTypeFormatterUnitTest.m in Sources */,
 				013182FE0CDF6EE400EC5A2C /* CDStructHandlingUnitTest.m in Sources */,
 				013182FF0CDF6EE400EC5A2C /* NSError-CDExtensions.m in Sources */,
+				01A949A511E2F48900FDFA93 /* CDSearchPathState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1283,6 +1294,7 @@
 				01A6910A104CA7370094DF3F /* CDLCSubFramework.m in Sources */,
 				01A6910B104CA7370094DF3F /* CDLCSubLibrary.m in Sources */,
 				01A6910C104CA7370094DF3F /* CDLCSubUmbrella.m in Sources */,
+				01A949A111E2F48900FDFA93 /* CDSearchPathState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1309,6 +1321,7 @@
 				01F12C50102F393700A8C12C /* CDTypeController.m in Sources */,
 				01DAB2EC103350FE00F7A7A3 /* CDStructureInfo.m in Sources */,
 				01B456A8103923F80062EF62 /* NSData-CDExtensions.m in Sources */,
+				01A949A211E2F48900FDFA93 /* CDSearchPathState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1391,6 +1404,7 @@
 				01DDCB86108EB60F00E31219 /* CDLCSubLibrary.m in Sources */,
 				01DDCB87108EB61000E31219 /* CDLCSubUmbrella.m in Sources */,
 				01DDCB88108EB61800E31219 /* CDVisitorPropertyState.m in Sources */,
+				01A949A311E2F48900FDFA93 /* CDSearchPathState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

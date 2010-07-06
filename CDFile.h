@@ -16,7 +16,7 @@ typedef struct {
     cpu_subtype_t cpusubtype;
 } CDArch;
 
-@class CDMachOFile;
+@class CDMachOFile, CDSearchPathState;
 
 extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
 extern CDArch CDArchFromName(NSString *name);
@@ -27,13 +27,14 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
     NSString *filename;
     NSData *data;
     NSUInteger offset; // Or perhaps dataOffset, archiveOffset
+    CDSearchPathState *searchPathState;
 }
 
 // Returns CDFatFile, CDMachO32File, or CDMachO64File.
-+ (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename;
-+ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
++ (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 - (void)dealloc;
 
 - (NSString *)filename;
@@ -42,6 +43,8 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 
 - (NSUInteger)offset;
 - (void)setOffset:(NSUInteger)newOffset;
+
+- (CDSearchPathState *)searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;

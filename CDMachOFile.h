@@ -33,7 +33,7 @@
     } _flags;
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 - (void)dealloc;
 
 - (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;

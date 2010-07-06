@@ -5,6 +5,8 @@
 
 #import "CDLoadCommand.h"
 
+@class CDSearchPathState;
+
 @interface CDLCRunPath : CDLoadCommand
 {
     struct rpath_command rpathCommand;

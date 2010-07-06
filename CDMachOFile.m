@@ -24,6 +24,7 @@
 #import "CDSection.h"
 #import "CDSymbol.h"
 #import "CDRelocationInfo.h"
+#import "CDSearchPathState.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -41,9 +42,9 @@ static BOOL debug = NO;
 
 @implementation CDMachOFile
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    if ([super initWithData:someData offset:anOffset filename:aFilename] == nil)
+    if ([super initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
     byteOrder = CDByteOrderLittleEndian;
