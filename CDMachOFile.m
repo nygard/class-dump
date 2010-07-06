@@ -16,6 +16,7 @@
 #import "CDLCDylib.h"
 #import "CDLCDynamicSymbolTable.h"
 #import "CDLCEncryptionInfo.h"
+#import "CDLCRunPath.h"
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
@@ -40,9 +41,9 @@ static BOOL debug = NO;
 
 @implementation CDMachOFile
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 {
-    if ([super initWithData:someData offset:anOffset] == nil)
+    if ([super initWithData:someData offset:anOffset filename:aFilename] == nil)
         return nil;
 
     byteOrder = CDByteOrderLittleEndian;
@@ -51,6 +52,7 @@ static BOOL debug = NO;
     symbolTable = nil;
     dynamicSymbolTable = nil;
     dyldInfo = nil;
+    runPaths = [[NSMutableArray alloc] init];
     _flags.uses64BitABI = NO;
 
     return self;
@@ -76,6 +78,8 @@ static BOOL debug = NO;
                 [self setDynamicSymbolTable:(CDLCDynamicSymbolTable *)loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCDyldInfo class]])
                 [self setDyldInfo:(CDLCDyldInfo *)loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCRunPath class]])
+                [runPaths addObject:[(CDLCRunPath *)loadCommand resolvedRunPath]];
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
@@ -88,6 +92,7 @@ static BOOL debug = NO;
     [symbolTable release];
     [dynamicSymbolTable release];
     [dyldInfo release];
+    [runPaths release];
 
     [super dealloc];
 }
@@ -646,7 +651,11 @@ static BOOL debug = NO;
     [mdata writeToFile:path atomically:NO];
 
     [mdata release];
+}
 
+- (NSArray *)runPaths;
+{
+    return runPaths;
 }
 
 @end

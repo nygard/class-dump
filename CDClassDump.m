@@ -243,8 +243,7 @@
 
     data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
 
-    aFile = [CDFile fileWithData:data];
-    [aFile setFilename:aFilename];
+    aFile = [CDFile fileWithData:data filename:aFilename];
 
     [data release];
 
@@ -279,7 +278,7 @@
 
                     aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB)
-                        [self machOFileWithID:[aDylibCommand name]]; // Loads as a side effect
+                        [self machOFileWithID:[aDylibCommand name] runPaths:[aMachOFile runPaths]]; // Loads as a side effect
                 }
             }
         }
@@ -318,14 +317,25 @@
     [aVisitor didEndVisiting];
 }
 
-- (CDMachOFile *)machOFileWithID:(NSString *)anID;
+- (CDMachOFile *)machOFileWithID:(NSString *)anID runPaths:(NSArray *)runPaths;
 {
-    NSString *adjustedID;
+    NSString *adjustedID = nil;
     CDMachOFile *aMachOFile;
-    NSString *replacementString = @"@executable_path";
+    NSString *executablePathPrefix = @"@executable_path";
+    NSString *rpathPrefix = @"@rpath";
 
-    if ([anID hasPrefix:replacementString]) {
-        adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
+    if ([anID hasPrefix:executablePathPrefix]) {
+        adjustedID = [anID stringByReplacingOccurrencesOfString:executablePathPrefix withString:executablePath];
+    } else if ([anID hasPrefix:rpathPrefix]) {
+        for (NSString *searchPath in runPaths) {
+            NSString *str = [anID stringByReplacingOccurrencesOfString:rpathPrefix withString:searchPath];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:str]) {
+                adjustedID = str;
+                break;
+            }
+        }
+        if (adjustedID == nil)
+            adjustedID = anID;
     } else if (sdkRoot != nil) {
         adjustedID = [sdkRoot stringByAppendingPathComponent:anID];
     } else {

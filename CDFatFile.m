@@ -14,13 +14,13 @@
 
 @implementation CDFatFile
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 {
     CDDataCursor *cursor;
     unsigned int index;
     struct fat_header header;
 
-    if ([super initWithData:someData offset:anOffset] == nil)
+    if ([super initWithData:someData offset:anOffset filename:aFilename] == nil)
         return nil;
 
     arches = [[NSMutableArray alloc] init];

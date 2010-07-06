@@ -261,8 +261,7 @@ int main(int argc, char *argv[])
                 id macho;
 
                 data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
-                macho = [CDFile fileWithData:data];
-                [macho setFilename:executablePath];
+                macho = [CDFile fileWithData:data filename:executablePath];
                 if (macho == nil) {
                     printf("none\n");
                 } else {
@@ -296,8 +295,7 @@ int main(int argc, char *argv[])
                 exit(1);
             }
 
-            file = [CDFile fileWithData:data];
-            [file setFilename:executablePath];
+            file = [CDFile fileWithData:data filename:executablePath];
             if (file == nil) {
                 fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                 [data release];

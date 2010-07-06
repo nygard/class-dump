@@ -30,14 +30,13 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 }
 
 // Returns CDFatFile, CDMachO32File, or CDMachO64File.
-+ (id)fileWithData:(NSData *)someData;
-+ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset;
++ (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename;
++ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 - (void)dealloc;
 
 - (NSString *)filename;
-- (void)setFilename:(NSString *)newName;
 
 - (NSData *)data;
 

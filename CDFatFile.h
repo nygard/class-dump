@@ -12,7 +12,7 @@
     NSMutableArray *arches;
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 - (void)dealloc;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;

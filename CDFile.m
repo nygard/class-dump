@@ -63,24 +63,24 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 @implementation CDFile
 
-+ (id)fileWithData:(NSData *)someData;
++ (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename;
 {
-    return [self fileWithData:someData offset:0];
+    return [self fileWithData:someData offset:0 filename:aFilename];
 }
 
-+ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset;
++ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 {
     CDFatFile *aFatFile = nil;
 
     if (anOffset == 0)
-        aFatFile = [[[CDFatFile alloc] initWithData:someData offset:anOffset] autorelease];
+        aFatFile = [[[CDFatFile alloc] initWithData:someData offset:anOffset filename:aFilename] autorelease];
 
     if (aFatFile == nil) {
         CDMachOFile *machOFile;
 
-        machOFile = [[[CDMachO32File alloc] initWithData:someData offset:anOffset] autorelease];
+        machOFile = [[[CDMachO32File alloc] initWithData:someData offset:anOffset filename:aFilename] autorelease];
         if (machOFile == nil)
-            machOFile = [[[CDMachO64File alloc] initWithData:someData offset:anOffset] autorelease];
+            machOFile = [[[CDMachO64File alloc] initWithData:someData offset:anOffset filename:aFilename] autorelease];
         return machOFile;
     }
 
@@ -93,7 +93,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return nil;
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename;
 {
     if ([super init] == nil)
         return nil;
@@ -104,7 +104,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
         return nil;
     }
 
-    filename = nil;
+    filename = [aFilename retain];
     data = [someData retain];
     offset = anOffset;
 
@@ -122,15 +122,6 @@ BOOL CDArchUses64BitABI(CDArch arch)
 - (NSString *)filename;
 {
     return filename;
-}
-
-- (void)setFilename:(NSString *)newName;
-{
-    if (newName == filename)
-        return;
-
-    [filename release];
-    filename = [newName retain];
 }
 
 - (NSData *)data;

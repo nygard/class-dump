@@ -6,6 +6,7 @@
 #import "CDLCRunPath.h"
 
 #import "CDDataCursor.h"
+#import "CDMachOFile.h"
 
 @implementation CDLCRunPath
 
@@ -49,6 +50,22 @@
 
 - (NSString *)path;
 {
+    return path;
+}
+
+- (NSString *)resolvedRunPath;
+{
+    NSString *prefix = @"@loader_path";
+    
+    if ([path hasPrefix:prefix]) {
+        NSString *str, *loaderPath;
+        
+        loaderPath = [[[self machOFile] filename] stringByDeletingLastPathComponent];
+        str = [[path stringByReplacingOccurrencesOfString:prefix withString:loaderPath] stringByStandardizingPath];
+
+        return str;
+    }
+    
     return path;
 }
 

@@ -18,5 +18,6 @@
 - (uint32_t)cmdsize;
 
 - (NSString *)path;
+- (NSString *)resolvedRunPath;
 
 @end

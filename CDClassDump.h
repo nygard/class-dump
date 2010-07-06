@@ -87,7 +87,7 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
-- (CDMachOFile *)machOFileWithID:(NSString *)anID;
+- (CDMachOFile *)machOFileWithID:(NSString *)anID runPaths:(NSArray *)runPaths;
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
 
