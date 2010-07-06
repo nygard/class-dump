@@ -40,44 +40,44 @@
     val = [cursor peekInt32];
 
     switch (val) {
-      case LC_SEGMENT:            targetClass = [CDLCSegment32 class]; break;
-      case LC_SYMTAB:             targetClass = [CDLCSymbolTable class]; break;
-          //case LC_SYMSEG: // obsolete
-          //case LC_THREAD: // not used?
-      case LC_UNIXTHREAD:         targetClass = [CDLCUnixThread class]; break;
-          //case LC_LOADFVMLIB: // not used?
-          //case LC_IDFVMLIB: // not used?
-          //case LC_IDENT: // not used?
-          //case LC_FVMFILE: // not used?
-          //case LC_PREPAGE: // not used
-      case LC_DYSYMTAB:           targetClass = [CDLCDynamicSymbolTable class]; break;
-      case LC_LOAD_DYLIB:         targetClass = [CDLCDylib class]; break;
-      case LC_ID_DYLIB:           targetClass = [CDLCDylib class]; break;
-      case LC_LOAD_DYLINKER:      targetClass = [CDLCDylinker class]; break;
-      case LC_ID_DYLINKER:        targetClass = [CDLCDylinker class]; break;
-      case LC_PREBOUND_DYLIB:     targetClass = [CDLCPreboundDylib class]; break;
-      case LC_ROUTINES:           targetClass = [CDLCRoutines32 class]; break;
-          //case LC_SUB_FRAMEWORK: targetClass = [CDLCSubFramework class]; break;
-          //case LC_SUB_UMBRELLA: targetClass = [CDLCSubUmbrella class]; break;
-          //case LC_SUB_CLIENT: targetClass = [CDLCSubClient class]; break;
-          //case LC_SUB_LIBRARY: targetClass = [CDLCSubLibrary class]; break;
-      case LC_TWOLEVEL_HINTS:     targetClass = [CDLCTwoLevelHints class]; break;
-      case LC_PREBIND_CKSUM:      targetClass = [CDLCPrebindChecksum class]; break;
-      case LC_LOAD_WEAK_DYLIB:    targetClass = [CDLCDylib class]; break;
-      case LC_SEGMENT_64:         targetClass = [CDLCSegment64 class]; break;
-      case LC_ROUTINES_64:        targetClass = [CDLCRoutines64 class]; break;
-      case LC_UUID:               targetClass = [CDLCUUID class]; break;
-      case LC_RPATH:              targetClass = [CDLCRunPath class]; break;
-      case LC_CODE_SIGNATURE:     targetClass = [CDLCLinkeditData class]; break;
-      case LC_SEGMENT_SPLIT_INFO: targetClass = [CDLCLinkeditData class]; break;
-      case LC_REEXPORT_DYLIB:     targetClass = [CDLCDylib class]; break;
-          //case LC_LAZY_LOAD_DYLIB: targetClass = [CDLCDylib class]; break;
-      case LC_ENCRYPTION_INFO:    targetClass = [CDLCEncryptionInfo class]; break;
-      case LC_DYLD_INFO:          targetClass = [CDLCDyldInfo class]; break;
-      case LC_DYLD_INFO_ONLY:     targetClass = [CDLCDyldInfo class]; break;
-
-      default:
-          NSLog(@"Unknown load command: 0x%08x", val);
+        case LC_SEGMENT:            targetClass = [CDLCSegment32 class]; break;
+        case LC_SYMTAB:             targetClass = [CDLCSymbolTable class]; break;
+            //case LC_SYMSEG: // obsolete
+            //case LC_THREAD: // not used?
+        case LC_UNIXTHREAD:         targetClass = [CDLCUnixThread class]; break;
+            //case LC_LOADFVMLIB: // not used?
+            //case LC_IDFVMLIB: // not used?
+            //case LC_IDENT: // not used?
+            //case LC_FVMFILE: // not used?
+            //case LC_PREPAGE: // not used
+        case LC_DYSYMTAB:           targetClass = [CDLCDynamicSymbolTable class]; break;
+        case LC_LOAD_DYLIB:         targetClass = [CDLCDylib class]; break;
+        case LC_ID_DYLIB:           targetClass = [CDLCDylib class]; break;
+        case LC_LOAD_DYLINKER:      targetClass = [CDLCDylinker class]; break;
+        case LC_ID_DYLINKER:        targetClass = [CDLCDylinker class]; break;
+        case LC_PREBOUND_DYLIB:     targetClass = [CDLCPreboundDylib class]; break;
+        case LC_ROUTINES:           targetClass = [CDLCRoutines32 class]; break;
+        case LC_SUB_FRAMEWORK:      targetClass = [CDLCSubFramework class]; break;
+            //case LC_SUB_UMBRELLA: targetClass = [CDLCSubUmbrella class]; break;
+        case LC_SUB_CLIENT:         targetClass = [CDLCSubClient class]; break;
+            //case LC_SUB_LIBRARY: targetClass = [CDLCSubLibrary class]; break;
+        case LC_TWOLEVEL_HINTS:     targetClass = [CDLCTwoLevelHints class]; break;
+        case LC_PREBIND_CKSUM:      targetClass = [CDLCPrebindChecksum class]; break;
+        case LC_LOAD_WEAK_DYLIB:    targetClass = [CDLCDylib class]; break;
+        case LC_SEGMENT_64:         targetClass = [CDLCSegment64 class]; break;
+        case LC_ROUTINES_64:        targetClass = [CDLCRoutines64 class]; break;
+        case LC_UUID:               targetClass = [CDLCUUID class]; break;
+        case LC_RPATH:              targetClass = [CDLCRunPath class]; break;
+        case LC_CODE_SIGNATURE:     targetClass = [CDLCLinkeditData class]; break;
+        case LC_SEGMENT_SPLIT_INFO: targetClass = [CDLCLinkeditData class]; break;
+        case LC_REEXPORT_DYLIB:     targetClass = [CDLCDylib class]; break;
+            //case LC_LAZY_LOAD_DYLIB: targetClass = [CDLCDylib class]; break;
+        case LC_ENCRYPTION_INFO:    targetClass = [CDLCEncryptionInfo class]; break;
+        case LC_DYLD_INFO:          targetClass = [CDLCDyldInfo class]; break;
+        case LC_DYLD_INFO_ONLY:     targetClass = [CDLCDyldInfo class]; break;
+            
+        default:
+            NSLog(@"Unknown load command: 0x%08x", val);
     };
 
     //NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
