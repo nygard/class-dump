@@ -5,6 +5,8 @@
 
 #import "CDLoadCommand.h"
 
+@class CDSearchPathState;
+
 @interface CDLCRunPath : CDLoadCommand
 {
     struct rpath_command rpathCommand;
@@ -18,5 +20,6 @@
 - (uint32_t)cmdsize;
 
 - (NSString *)path;
+- (NSString *)resolvedRunPath;
 
 @end

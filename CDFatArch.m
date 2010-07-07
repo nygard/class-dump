@@ -112,8 +112,7 @@
 - (CDMachOFile *)machOFile;
 {
     if (machOFile == nil) {
-        machOFile = [[CDFile fileWithData:[nonretained_fatFile data] offset:fatArch.offset] retain];
-        [machOFile setFilename:[nonretained_fatFile filename]];
+        machOFile = [[CDFile fileWithData:[nonretained_fatFile data] offset:fatArch.offset filename:[nonretained_fatFile filename] searchPathState:[nonretained_fatFile searchPathState]] retain];
     }
 
     return machOFile;

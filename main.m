@@ -22,6 +22,7 @@
 #import "CDFatFile.h"
 #import "CDObjectiveC2Processor64.h"
 #import "CDFatArch.h"
+#import "CDSearchPathState.h"
 
 void print_usage(void)
 {
@@ -257,12 +258,14 @@ int main(int argc, char *argv[])
             if (executablePath == nil) {
                 printf("none\n");
             } else {
+                CDSearchPathState *searchPathState;
                 NSData *data;
                 id macho;
 
+                searchPathState = [[[CDSearchPathState alloc] init] autorelease];
+                searchPathState.executablePath = executablePath;
                 data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
-                macho = [CDFile fileWithData:data];
-                [macho setFilename:executablePath];
+                macho = [CDFile fileWithData:data filename:executablePath searchPathState:searchPathState];
                 if (macho == nil) {
                     printf("none\n");
                 } else {
@@ -296,8 +299,8 @@ int main(int argc, char *argv[])
                 exit(1);
             }
 
-            file = [CDFile fileWithData:data];
-            [file setFilename:executablePath];
+            classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
+            file = [CDFile fileWithData:data filename:executablePath searchPathState:classDump.searchPathState];
             if (file == nil) {
                 fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                 [data release];
@@ -335,7 +338,7 @@ int main(int argc, char *argv[])
 #endif
 
             [classDump setTargetArch:targetArch];
-            [classDump setExecutablePath:[executablePath stringByDeletingLastPathComponent]];
+            classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
             if ([classDump loadFile:file]) {
 #if 0

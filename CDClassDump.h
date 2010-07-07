@@ -24,10 +24,11 @@
 @class CDLCDylib, CDFile, CDMachOFile;
 @class CDSymbolReferences, CDType, CDTypeController, CDTypeFormatter;
 @class CDVisitor;
+@class CDSearchPathState;
 
 @interface CDClassDump : NSObject
 {
-    NSString *executablePath;
+    CDSearchPathState *searchPathState;
 
     struct {
         unsigned int shouldProcessRecursively:1;
@@ -56,7 +57,7 @@
 - (id)init;
 - (void)dealloc;
 
-@property(retain) NSString *executablePath;
+@property(readonly) CDSearchPathState *searchPathState;
 @property BOOL shouldProcessRecursively;
 @property BOOL shouldSortClasses;
 @property BOOL shouldSortClassesByInheritance;
@@ -81,7 +82,6 @@
 
 - (CDTypeController *)typeController;
 
-- (BOOL)_loadFilename:(NSString *)aFilename;
 - (BOOL)loadFile:(CDFile *)aFile;
 - (void)processObjectiveCData;
 

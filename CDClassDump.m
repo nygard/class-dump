@@ -20,6 +20,7 @@
 #import "CDVisitor.h"
 #import "CDLCSegment.h"
 #import "CDTypeController.h"
+#import "CDSearchPathState.h"
 
 @implementation CDClassDump
 
@@ -28,7 +29,7 @@
     if ([super init] == nil)
         return nil;
 
-    executablePath = nil;
+    searchPathState = [[CDSearchPathState alloc] init];
     sdkRoot = nil;
 
     machOFiles = [[NSMutableArray alloc] init];
@@ -48,7 +49,7 @@
 
 - (void)dealloc;
 {
-    [executablePath release];
+    [searchPathState release];
     [sdkRoot release];
 
     [machOFiles release];
@@ -63,7 +64,7 @@
     [super dealloc];
 }
 
-@synthesize executablePath;
+@synthesize searchPathState;
 
 - (BOOL)shouldProcessRecursively;
 {
@@ -235,25 +236,6 @@
     return typeController;
 }
 
-// Return YES if successful, NO if there was an error.
-- (BOOL)_loadFilename:(NSString *)aFilename;
-{
-    NSData *data;
-    CDFile *aFile;
-
-    data = [[NSData alloc] initWithContentsOfMappedFile:aFilename];
-
-    aFile = [CDFile fileWithData:data];
-    [aFile setFilename:aFilename];
-
-    [data release];
-
-    if (aFile == nil)
-        return NO;
-
-    return [self loadFile:aFile];
-}
-
 - (BOOL)loadFile:(CDFile *)aFile;
 {
     CDMachOFile *aMachOFile;
@@ -278,8 +260,11 @@
                     CDLCDylib *aDylibCommand;
 
                     aDylibCommand = (CDLCDylib *)loadCommand;
-                    if ([aDylibCommand cmd] == LC_LOAD_DYLIB)
+                    if ([aDylibCommand cmd] == LC_LOAD_DYLIB) {
+                        [searchPathState pushSearchPaths:[aMachOFile runPaths]];
                         [self machOFileWithID:[aDylibCommand name]]; // Loads as a side effect
+                        [searchPathState popSearchPaths];
+                    }
                 }
             }
         }
@@ -320,12 +305,28 @@
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 {
-    NSString *adjustedID;
+    NSString *adjustedID = nil;
     CDMachOFile *aMachOFile;
-    NSString *replacementString = @"@executable_path";
+    NSString *executablePathPrefix = @"@executable_path";
+    NSString *rpathPrefix = @"@rpath";
 
-    if ([anID hasPrefix:replacementString]) {
-        adjustedID = [executablePath stringByAppendingString:[anID substringFromIndex:[replacementString length]]];
+    if ([anID hasPrefix:executablePathPrefix]) {
+        adjustedID = [anID stringByReplacingOccurrencesOfString:executablePathPrefix withString:searchPathState.executablePath];
+    } else if ([anID hasPrefix:rpathPrefix]) {
+        //NSLog(@"Searching for %@ through run paths: %@", anID, [searchPathState searchPaths]);
+        for (NSString *searchPath in [searchPathState searchPaths]) {
+            NSString *str = [anID stringByReplacingOccurrencesOfString:rpathPrefix withString:searchPath];
+            //NSLog(@"trying %@", str);
+            if ([[NSFileManager defaultManager] fileExistsAtPath:str]) {
+                adjustedID = str;
+                //NSLog(@"Found it!");
+                break;
+            }
+        }
+        if (adjustedID == nil) {
+            adjustedID = anID;
+            //NSLog(@"Did not find it.");
+        }
     } else if (sdkRoot != nil) {
         adjustedID = [sdkRoot stringByAppendingPathComponent:anID];
     } else {
@@ -334,8 +335,16 @@
 
     aMachOFile = [machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
-        if ([self _loadFilename:adjustedID] == NO)
+        NSData *data;
+        CDFile *aFile;
+
+        data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
+        aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:searchPathState];
+        [data release];
+
+        if (aFile == nil || [self loadFile:aFile] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedID);
+
         aMachOFile = [machOFilesByID objectForKey:adjustedID];
         if (aMachOFile == nil) {
             NSLog(@"Warning: Couldn't load MachOFile with ID: %@, adjustedID: %@", anID, adjustedID);

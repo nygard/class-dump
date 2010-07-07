@@ -26,13 +26,14 @@
     CDLCSymbolTable *symbolTable;
     CDLCDynamicSymbolTable *dynamicSymbolTable;
     CDLCDyldInfo *dyldInfo;
+    NSMutableArray *runPaths;
 
     struct {
         unsigned int uses64BitABI:1;
     } _flags;
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 - (void)dealloc;
 
 - (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
@@ -101,5 +102,7 @@
 - (BOOL)hasObjectiveC2Data;
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
+
+- (NSArray *)runPaths;
 
 @end

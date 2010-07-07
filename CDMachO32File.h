@@ -10,7 +10,7 @@
     struct mach_header header; // header.magic is read in and stored in little endian order.
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 
 - (uint32_t)magic;
 - (cpu_type_t)cputype;

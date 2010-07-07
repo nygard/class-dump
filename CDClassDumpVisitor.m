@@ -79,6 +79,7 @@
             CDLCRunPath *runPath = (CDLCRunPath *)loadCommand;
 
             [resultString appendFormat:@" *       Run path: %@\n", [runPath path]];
+            [resultString appendFormat:@" *               = %@\n", [runPath resolvedRunPath]];
         }
     }
 

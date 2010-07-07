@@ -10,11 +10,11 @@
 
 @implementation CDMachO32File
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
     CDDataCursor *cursor;
 
-    if ([super initWithData:someData offset:anOffset] == nil)
+    if ([super initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
     cursor = [[CDDataCursor alloc] initWithData:someData];
