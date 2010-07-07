@@ -12,6 +12,7 @@ extern NSString *const ObjCClassSymbolPrefix;
 @interface CDSymbol : NSObject
 {
     struct nlist_64 nlist;
+    BOOL is32Bit;
     NSString *name;
 }
 

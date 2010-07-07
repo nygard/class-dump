@@ -174,11 +174,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
 - (NSString *)extraDescription;
 {
-#if 0
-    return [NSString stringWithFormat:@"name: '%@', vmaddr: 0x%08x - 0x%08x [0x%08x], offset: %d, flags: 0x%x (%@), nsects: %d, sections: %@",
-                     name, segmentCommand.vmaddr, segmentCommand.vmaddr + segmentCommand.vmsize - 1, segmentCommand.vmsize, segmentCommand.fileoff,
-                     [self flags], [self flagDescription], segmentCommand.nsects, sections];
-#endif
+    // Implement in subclasses
     return nil;
 }
 

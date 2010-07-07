@@ -24,10 +24,9 @@
     fatArch.size = [cursor readBigInt32];
     fatArch.align = [cursor readBigInt32];
 
-    uses64BitABI = (fatArch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
 #if 0
     NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
-          uses64BitABI, fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
+          [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
 #endif
 
     machOFile = nil;
@@ -74,7 +73,7 @@
 
 - (BOOL)uses64BitABI;
 {
-    return uses64BitABI;
+    return CDArchUses64BitABI((CDArch){ .cputype = fatArch.cputype, .cpusubtype = fatArch.cpusubtype });
 }
 
 - (CDFatFile *)fatFile;
@@ -90,7 +89,7 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
-                     uses64BitABI, fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.offset, fatArch.size, fatArch.size,
+                     [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.offset, fatArch.size, fatArch.size,
                      fatArch.align, 1 << fatArch.align, [self archName]];
 }
 

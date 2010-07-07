@@ -18,6 +18,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     if ([super init] == nil)
         return nil;
 
+    is32Bit = YES;
     name = [aName retain];
     nlist.n_un.n_strx = 0; // We don't use it.
     nlist.n_type = nlist32.n_type;
@@ -33,6 +34,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     if ([super init] == nil)
         return nil;
 
+    is32Bit = NO;
     name = [aName retain];
     nlist.n_un.n_strx = 0; // We don't use it.
     nlist.n_type = nlist64.n_type;
@@ -82,7 +84,8 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%016x %02x %02x %04x - %@",
+    NSString *valueFormat = [NSString stringWithFormat:@"%%0%ullx", is32Bit ? 8 : 16];
+    return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"],
                      nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
 }
 

@@ -50,7 +50,7 @@
     //NSLog(@"flags: 0x%08x", header.flags);
     //NSLog(@"reserved: 0x%08x", header.reserved);
 
-    _flags.uses64BitABI = (header.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+    _flags.uses64BitABI = CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype });
     header.cputype &= ~CPU_ARCH_MASK;
 
     [self _readLoadCommands:cursor count:header.ncmds];
