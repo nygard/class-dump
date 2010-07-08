@@ -262,7 +262,7 @@
                     aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB) {
                         [searchPathState pushSearchPaths:[aMachOFile runPaths]];
-                        [self machOFileWithID:[aDylibCommand name]]; // Loads as a side effect
+                        [self machOFileWithID:[aDylibCommand path]]; // Loads as a side effect
                         [searchPathState popSearchPaths];
                     }
                 }

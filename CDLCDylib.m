@@ -33,15 +33,15 @@ static NSString *CDDylibVersionString(unsigned long version)
     length = dylibCommand.cmdsize - sizeof(dylibCommand);
     //NSLog(@"expected length: %u", length);
 
-    name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    //NSLog(@"name: %@", name);
+    path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+    //NSLog(@"path: %@", path);
 
     return self;
 }
 
 - (void)dealloc;
 {
-    [name release];
+    [path release];
 
     [super dealloc];
 }
@@ -56,9 +56,9 @@ static NSString *CDDylibVersionString(unsigned long version)
     return dylibCommand.cmdsize;
 }
 
-- (NSString *)name;
+- (NSString *)path;
 {
-    return name;
+    return path;
 }
 
 - (uint32_t)timestamp;
@@ -90,7 +90,7 @@ static NSString *CDDylibVersionString(unsigned long version)
 - (NSString *)extraDescription;
 {
     return [NSString stringWithFormat:@"%@ (compatibility version %@, current version %@, timestamp %d [%@])",
-                     [self name], CDDylibVersionString([self compatibilityVersion]), CDDylibVersionString([self currentVersion]),
+                     [self path], CDDylibVersionString([self compatibilityVersion]), CDDylibVersionString([self currentVersion]),
                      [self timestamp], [NSDate dateWithTimeIntervalSince1970:[self timestamp]]];
 }
 #endif

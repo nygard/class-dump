@@ -9,7 +9,7 @@
 @interface CDLCDylib : CDLoadCommand
 {
     struct dylib_command dylibCommand;
-    NSString *name;
+    NSString *path;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
@@ -18,7 +18,7 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
-- (NSString *)name;
+- (NSString *)path;
 - (uint32_t)timestamp;
 - (uint32_t)currentVersion;
 - (uint32_t)compatibilityVersion;
