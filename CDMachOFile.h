@@ -51,6 +51,7 @@
 - (uint32_t)flags;
 
 - (NSArray *)loadCommands;
+- (NSArray *)dylibLoadCommands;
 - (NSArray *)segments;
 
 @property(retain) CDLCSymbolTable *symbolTable;

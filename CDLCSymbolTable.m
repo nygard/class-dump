@@ -117,7 +117,7 @@
             ptr = strtab + nlist.n_un.n_strx;
             str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
-            symbol = [[CDSymbol alloc] initWithName:str nlist32:nlist];
+            symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist32:nlist];
             [symbols addObject:symbol];
             [symbol release];
 
@@ -145,7 +145,7 @@
             ptr = strtab + nlist.n_un.n_strx;
             str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
-            symbol = [[CDSymbol alloc] initWithName:str nlist64:nlist];
+            symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist64:nlist];
             [symbols addObject:symbol];
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value] != 0) {

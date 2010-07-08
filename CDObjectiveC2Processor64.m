@@ -306,7 +306,7 @@
         CDSymbol *classSymbol = [[machOFile symbolTable] symbolForClass:str];
 
         if (classSymbol != nil)
-            aClass.isExported = [classSymbol isExported];
+            aClass.isExported = [classSymbol isExternal];
     }
 
     {

@@ -9,25 +9,28 @@
 
 extern NSString *const ObjCClassSymbolPrefix;
 
+@class CDMachOFile;
+
 @interface CDSymbol : NSObject
 {
     struct nlist_64 nlist;
     BOOL is32Bit;
     NSString *name;
+    CDMachOFile *nonretained_machOFile;
 }
 
-- (id)initWithName:(NSString *)aName nlist32:(struct nlist)nlist32;
-- (id)initWithName:(NSString *)aName nlist64:(struct nlist_64)nlist64;
+- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
+- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
 - (void)dealloc;
 
-- (uint8_t)type;
-- (uint8_t)section;
-- (uint16_t)desc;
 - (uint64_t)value;
-
-- (BOOL)isExported;
-
 - (NSString *)name;
+
+- (BOOL)isExternal;
+
+- (NSComparisonResult)compare:(CDSymbol *)aSymbol;
+- (NSComparisonResult)nameCompare:(CDSymbol *)aSymbol;
+
 - (NSString *)description;
 
 @end

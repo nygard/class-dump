@@ -170,6 +170,16 @@ static BOOL debug = NO;
     return loadCommands;
 }
 
+- (NSArray *)dylibLoadCommands;
+{
+    NSMutableArray *dylibLoadCommands = [NSMutableArray array];
+    for (id loadCommand in loadCommands) {
+        if ([loadCommand isKindOfClass:[CDLCDylib class]])
+            [dylibLoadCommands addObject:loadCommand];
+    }
+    return dylibLoadCommands;
+}
+
 - (NSArray *)segments;
 {
     return segments;
