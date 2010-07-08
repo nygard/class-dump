@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
         inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
 
-        file = [CDFile fileWithData:inputData];
+        file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
         if (file == nil) {
             fprintf(stderr, "deprotect: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [inputFile UTF8String]);
             exit(1);
