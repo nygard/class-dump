@@ -642,9 +642,9 @@ static BOOL debug = NO;
 
                 [mdata replaceBytesInRange:range withBytes:[decryptedData bytes]];
                 if ([segment isKindOfClass:[CDLCSegment64 class]]) {
-                    flagOffset = [segment commandOffset] + 68; // to flags
+                    flagOffset = [segment commandOffset] + offsetof(struct segment_command_64, flags);
                 } else {
-                    flagOffset = [segment commandOffset] + 52; // to flags
+                    flagOffset = [segment commandOffset] + offsetof(struct segment_command, flags);
                 }
 
                 // TODO (2009-07-10): Needs to be endian-neutral
