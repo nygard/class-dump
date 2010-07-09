@@ -611,8 +611,8 @@ static BOOL debug = NO;
 
 - (BOOL)hasObjectiveC2Data;
 {
-    return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"] != nil
-        || [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_catlist"] != nil;
+    // http://twitter.com/gparker/status/17962955683
+    return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] != nil;
 }
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
