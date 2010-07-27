@@ -130,7 +130,7 @@
 - (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
 {
     NSRange matchedRange;
-    unsigned int currentLocation;
+    NSUInteger currentLocation;
     NSCharacterSet *skipSet;
 
     currentLocation = [self scanLocation];

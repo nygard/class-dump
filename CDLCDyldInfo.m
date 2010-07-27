@@ -39,7 +39,7 @@ static BOOL debugExportedSymbols = NO;
 
 static uint64_t read_uleb128(const uint8_t **ptrptr, const uint8_t *end)
 {
-    static uint32_t maxlen = 0;
+    static NSUInteger maxlen = 0;
     const uint8_t *ptr = *ptrptr;
     uint64_t result = 0;
     int bit = 0;
@@ -601,7 +601,7 @@ static NSString *CDBindTypeString(uint8_t type)
     [self printSymbols:start end:end prefix:@"" offset:0];
 }
 
-- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint32_t)offset;
+- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint64_t)offset;
 {
     uint8_t terminalSize;
     const uint8_t *ptr, *tptr;
@@ -642,7 +642,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
     for (index = 0; index < childCount; index++) {
         const uint8_t *edgeStart = ptr;
-        uint32_t length;
+        NSUInteger length;
         uint64_t nodeOffset;
 
         while (*ptr++ != 0)

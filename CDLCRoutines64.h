@@ -7,7 +7,7 @@
 
 @interface CDLCRoutines64 : CDLoadCommand
 {
-    struct routines_command routinesCommand;
+    struct routines_command_64 routinesCommand;
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;

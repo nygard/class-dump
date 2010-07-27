@@ -321,7 +321,7 @@ static BOOL debug = NO;
 
     segment = [self segmentContainingAddress:address];
     if (segment == nil) {
-        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", address);
+        NSLog(@"Error: Cannot find offset for address 0x%08lx in stringAtAddress:", address);
         exit(5);
         return nil;
     }
@@ -457,7 +457,7 @@ static BOOL debug = NO;
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 {
     NSMutableString *resultString;
-    unsigned int count, index;
+    NSUInteger count, index;
 
     resultString = [NSMutableString string];
     count = [loadCommands count];

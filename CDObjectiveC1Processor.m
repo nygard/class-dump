@@ -536,7 +536,7 @@ static BOOL debug = NO;
     NSNumber *key;
     CDOCProtocol *aProtocol;
 
-    key = [NSNumber numberWithUnsignedInt:address];
+    key = [NSNumber numberWithUnsignedInteger:address];
     aProtocol = [protocolsByAddress objectForKey:key];
     if (aProtocol == nil) {
         CDDataCursor *cursor;
@@ -616,14 +616,14 @@ static BOOL debug = NO;
     CDLCSegment *objcSegment;
     CDSection *protocolSection;
     uint32_t addr;
-    int count, index;
+    NSUInteger count, index;
 
     objcSegment = [machOFile segmentWithName:@"__OBJC"];
     protocolSection = [objcSegment sectionWithName:@"__protocol"];
-    addr = [protocolSection addr];
+    addr = (uint32_t)[protocolSection addr];
 
     count = [protocolSection size] / sizeof(struct cd_objc_protocol);
-    for (index = 0; index < count; index++, addr += sizeof(struct cd_objc_protocol))
+    for (index = 0; index < count; index++, addr += (uint32_t)sizeof(struct cd_objc_protocol))
         [self protocolAtAddress:addr]; // Forces them to be loaded
 
     [self createUniquedProtocols];
