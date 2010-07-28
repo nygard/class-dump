@@ -20,6 +20,4 @@
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 
-- (Class)processorClass;
-
 @end

@@ -6,7 +6,6 @@
 #import "CDMachO64File.h"
 
 #import "CDLoadCommand.h"
-#import "CDObjectiveC2Processor64.h"
 
 @implementation CDMachO64File
 
@@ -92,11 +91,6 @@
     }
 
     return YES;
-}
-
-- (Class)processorClass;
-{
-    return [CDObjectiveC2Processor64 class];
 }
 
 @end

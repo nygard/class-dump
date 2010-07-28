@@ -176,10 +176,7 @@ static NSString *CDBindTypeString(uint8_t type)
     NSLog(@"   export_size: %08x", dyldInfoCommand.export_size);
 #endif
 
-    if ([aMachOFile uses64BitABI])
-        ptrSize = sizeof(uint64_t);
-    else
-        ptrSize = sizeof(uint32_t);
+    ptrSize = [aMachOFile ptrSize];
 
     symbolNamesByAddress = [[NSMutableDictionary alloc] init];
 

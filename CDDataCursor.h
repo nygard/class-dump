@@ -16,6 +16,7 @@ typedef NSUInteger CDByteOrder;
     NSData *data;
     NSUInteger offset;
     CDByteOrder byteOrder;
+    NSUInteger ptrSize;
 }
 
 - (id)initWithData:(NSData *)someData;
@@ -56,6 +57,9 @@ typedef NSUInteger CDByteOrder;
 - (uint16_t)readInt16;
 - (uint32_t)readInt32;
 - (uint64_t)readInt64;
+
+@property (assign) NSUInteger ptrSize;
+- (uint64_t)readPtr;
 
 - (uint32_t)peekInt32;
 

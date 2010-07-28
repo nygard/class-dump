@@ -59,6 +59,7 @@
 @property(retain) CDLCDyldInfo *dyldInfo;
 
 - (BOOL)uses64BitABI;
+- (NSUInteger)ptrSize;
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
@@ -101,6 +102,7 @@
 
 - (BOOL)hasObjectiveC1Data;
 - (BOOL)hasObjectiveC2Data;
+- (Class)processorClass;
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
 

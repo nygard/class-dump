@@ -7,7 +7,7 @@
 
 @class CDOCClass, CDOCCategory, CDOCProtocol;
 
-@interface CDObjectiveC2Processor64 : CDObjectiveCProcessor
+@interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
 }
 

@@ -254,6 +254,18 @@
     return [self readBigInt64];
 }
 
+@synthesize ptrSize;
+
+- (uint64_t)readPtr;
+{
+    switch (self.ptrSize) {
+        case sizeof(uint32_t): return [self readInt32];
+        case sizeof(uint64_t): return [self readInt64];
+    }
+    [NSException raise:NSInternalInconsistencyException format:@"The ptrSize must be either 4 (32-bit) or 8 (64-bit)"];
+    return 0;
+}
+
 - (uint32_t)peekInt32;
 {
     NSUInteger savedOffset;

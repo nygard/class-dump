@@ -20,7 +20,8 @@
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
-#import "CDObjectiveCProcessor.h"
+#import "CDObjectiveC1Processor.h"
+#import "CDObjectiveC2Processor.h"
 #import "CDSection.h"
 #import "CDSymbol.h"
 #import "CDRelocationInfo.h"
@@ -192,6 +193,11 @@ static BOOL debug = NO;
 - (BOOL)uses64BitABI;
 {
     return _flags.uses64BitABI;
+}
+
+- (NSUInteger)ptrSize
+{
+    return [self uses64BitABI] ? sizeof(uint64_t) : sizeof(uint32_t);
 }
 
 - (NSString *)filetypeDescription;
@@ -507,12 +513,6 @@ static BOOL debug = NO;
                      filename, data, offset];
 }
 
-- (Class)processorClass;
-{
-    // Implement in subclasses
-    return [CDObjectiveCProcessor class];
-}
-
 - (void)logInfoForAddress:(NSUInteger)address;
 {
     if (address != 0) {
@@ -613,6 +613,14 @@ static BOOL debug = NO;
 {
     // http://twitter.com/gparker/status/17962955683
     return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] != nil;
+}
+
+- (Class)processorClass;
+{
+    if ([self hasObjectiveC2Data])
+        return [CDObjectiveC2Processor class];
+    
+    return [CDObjectiveC1Processor class];
 }
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
