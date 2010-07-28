@@ -239,7 +239,7 @@
 		DAF696EE11E62EF3009AF361 /* CDRelocationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F77E160FF44D900055EECD /* CDRelocationInfo.m */; };
 		DAF696F011E62F7C009AF361 /* CDObjectiveCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */; };
 		DAF696F111E62F7C009AF361 /* CDObjectiveC1Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */; };
-		DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */; };
+		DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor.m */; };
 		DAF696F911E63032009AF361 /* CDDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F9C990DD0F66400EC8D0A /* CDDataCursor.m */; };
 		DAF696FE11E6308E009AF361 /* CDVisitorPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A68FF1104B923E0094DF3F /* CDVisitorPropertyState.m */; };
 		DAF6971A11E6396E009AF361 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2408AE9D6D003E99F8 /* CDTopoSortNode.m */; };
@@ -386,8 +386,8 @@
 		013183060CDF6EE400EC5A2C /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		0154C2560FF5E93800F87451 /* cd_objc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cd_objc2.h; sourceTree = "<group>"; };
-		0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor64.h; sourceTree = "<group>"; };
-		0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor64.m; sourceTree = "<group>"; };
+		0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor.h; sourceTree = "<group>"; };
+		0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor.m; sourceTree = "<group>"; };
 		017DDCBB0FFC3E7700F2DEE9 /* CDLCPreboundDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCPreboundDylib.h; sourceTree = "<group>"; };
 		017DDCBC0FFC3E7700F2DEE9 /* CDLCPreboundDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCPreboundDylib.m; sourceTree = "<group>"; };
 		017DDCE00FFC444200F2DEE9 /* CDLCTwoLevelHints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCTwoLevelHints.h; sourceTree = "<group>"; };
@@ -622,8 +622,8 @@
 				01CA52B20FF2875B000B857D /* CDObjectiveC1Processor.h */,
 				01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */,
 				0154C2560FF5E93800F87451 /* cd_objc2.h */,
-				0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor64.h */,
-				0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */,
+				0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor.h */,
+				0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor.m */,
 			);
 			name = "Mach-O";
 			sourceTree = "<group>";
@@ -1245,7 +1245,7 @@
 				DAF696EE11E62EF3009AF361 /* CDRelocationInfo.m in Sources */,
 				DAF696F011E62F7C009AF361 /* CDObjectiveCProcessor.m in Sources */,
 				DAF696F111E62F7C009AF361 /* CDObjectiveC1Processor.m in Sources */,
-				DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor64.m in Sources */,
+				DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor.m in Sources */,
 				DAF696FE11E6308E009AF361 /* CDVisitorPropertyState.m in Sources */,
 				DAF695FC11E62B35009AF361 /* CDOCCategory.m in Sources */,
 				DAF695FD11E62B35009AF361 /* CDOCClass.m in Sources */,
