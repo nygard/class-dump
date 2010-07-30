@@ -54,6 +54,7 @@
     [resultString appendString:@"#pragma mark -\n\n"];
     [resultString appendString:@"/*\n"];
     [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
+    [resultString appendFormat:@" * UUID: %@\n", [machOFile uuidString]];
 
     archInfo = NXGetArchInfoFromCpuType([machOFile cputypePlusArchBits], [machOFile cpusubtype]);
     //archInfo = [machOFile archInfo];

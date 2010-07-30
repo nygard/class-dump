@@ -20,6 +20,7 @@
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
+#import "CDLCUUID.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDSection.h"
 #import "CDSymbol.h"
@@ -491,6 +492,15 @@ static BOOL debug = NO;
     [resultString appendString:@"\n"];
 
     return resultString;
+}
+
+- (NSString *)uuidString;
+{
+    for (CDLoadCommand *loadCommand in loadCommands)
+        if ([loadCommand isKindOfClass:[CDLCUUID class]])
+            return [(CDLCUUID*)loadCommand uuidString];
+
+    return @"N/A";
 }
 
 // Must not return nil.

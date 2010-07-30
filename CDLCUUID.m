@@ -60,28 +60,17 @@
     return uuidCommand.cmdsize;
 }
 
+- (NSString *)uuidString;
+{
+    return [NSMakeCollectable(CFUUIDCreateString(kCFAllocatorDefault, uuid)) autorelease];
+}
+
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
-    unsigned int index;
-    CFUUIDBytes uuidBytes;
-    UInt8 *bytePtr = (UInt8 *)&uuidBytes;
-    UInt8 byte;
-
     [super appendToString:resultString verbose:isVerbose];
 
-    uuidBytes = CFUUIDGetUUIDBytes(uuid);
-    [resultString appendString:@"    uuid"];
-    for (index = 0; index < 8; index++) {
-        byte = bytePtr[index];
-        [resultString appendFormat:@" 0x%02x", byte];
-    }
-
-    [resultString appendString:@"\n"];
-    [resultString appendString:@"        "];
-    for (index = 0; index < 8; index++) {
-        byte = bytePtr[8 + index];
-        [resultString appendFormat:@" 0x%02x", byte];
-    }
+    [resultString appendString:@"    uuid "];
+    [resultString appendString:[self uuidString]];
     [resultString appendString:@"\n"];
 }
 

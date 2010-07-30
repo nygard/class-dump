@@ -20,6 +20,8 @@
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;
 
+- (NSString *)uuidString;
+
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 @end

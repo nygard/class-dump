@@ -85,6 +85,7 @@
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
 
+- (NSString *)uuidString;
 - (NSString *)archName;
 
 - (NSString *)description;
