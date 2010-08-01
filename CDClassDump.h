@@ -10,9 +10,9 @@
 #import "CDFile.h" // For CDArch
 
 #ifdef __LP64__
-#define CLASS_DUMP_BASE_VERSION "3.3.2 (64 bit)"
+#define CLASS_DUMP_BASE_VERSION "3.3.3 (64 bit)"
 #else
-#define CLASS_DUMP_BASE_VERSION "3.3.2 (32 bit)"
+#define CLASS_DUMP_BASE_VERSION "3.3.3 (32 bit)"
 #endif
 
 #ifdef DEBUG
