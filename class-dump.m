@@ -67,6 +67,7 @@ struct sdk_alias sdk_aliases[] = {
     { @"3.1.3", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.1.3.sdk", },
     { @"3.2", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.2.sdk", },
     { @"4.0", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk", },
+    { @"4.1", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.1.sdk", },
     { @"10.5", @"/Developer/SDKs/MacOSX10.5.sdk", },
     { @"10.6", @"/Developer/SDKs/MacOSX10.6.sdk", },
     { nil, nil, },
