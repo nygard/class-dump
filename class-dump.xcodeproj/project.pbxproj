@@ -963,7 +963,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 012E2A9408AE9B4F003E99F8 /* Build configuration list for PBXProject "class-dump" */;
 			compatibilityVersion = "Xcode 3.0";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 08FB7794FE84155DC02AAC07 /* class-dump */;
 			projectDirPath = "";
 			projectRoot = "";

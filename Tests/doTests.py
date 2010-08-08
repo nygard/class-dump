@@ -46,7 +46,7 @@ mac_bundles = [
 #]
 
 def resolve_sdk_root_alias(sdk_root="4.0"):
-    if sdk_root in ("3.2", "4.0"):
+    if sdk_root in ("3.2", "4.0", "4.1", ):
         return "/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS" + sdk_root + ".sdk"
     return sdk_root
 
@@ -66,7 +66,7 @@ def mkdir_ignore(dir):
         pass
 
 def printUsage():
-    print "doTests.py [--ios] [--sdk-root <path, 4.0 or 3.2>]"
+    print "doTests.py [--ios] [--sdk-root <path, 4.1, 4.0 or 3.2>]"
     print
 
 def main(argv):
