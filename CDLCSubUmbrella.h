@@ -11,7 +11,7 @@
     NSString *name;
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 - (void)dealloc;
 
 - (uint32_t)cmd;

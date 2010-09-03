@@ -5,12 +5,12 @@
 
 #import "CDSection64.h"
 
-#import "CDDataCursor.h"
+#import "CDMachOFileDataCursor.h"
 #import "CDMachOFile.h"
 
 @implementation CDSection64
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 {
     char buf[17];
     NSString *str;
@@ -73,7 +73,7 @@
 - (void)loadData;
 {
     if (_flags.hasLoadedData == NO) {
-        data = [[NSData alloc] initWithBytes:[[nonretained_segment machOFile] machODataBytes] + section.offset length:section.size];
+        data = [[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size];
         _flags.hasLoadedData = YES;
     }
 }

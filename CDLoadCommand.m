@@ -31,8 +31,7 @@
 
 @implementation CDLoadCommand
 
-//+ (id)loadCommandWithPointer:(const void *)ptr machOFile:(CDMachOFile *)aMachOFile;
-+ (id)loadCommandWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
++ (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     Class targetClass = [CDLCUnknown class];
     unsigned int val;
@@ -82,15 +81,15 @@
 
     //NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
 
-    return [[[targetClass alloc] initWithDataCursor:cursor machOFile:aMachOFile] autorelease];
+    return [[[targetClass alloc] initWithDataCursor:cursor] autorelease];
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ([super init] == nil)
         return nil;
 
-    nonretained_machOFile = aMachOFile;
+    nonretained_machOFile = [cursor machOFile];
     commandOffset = [cursor offset];
 
     return self;

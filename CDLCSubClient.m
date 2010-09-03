@@ -5,16 +5,14 @@
 
 #import "CDLCSubClient.h"
 
-#import "CDDataCursor.h"
-
 @implementation CDLCSubClient
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     NSUInteger length;
     uint32_t strOffset;
 
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     command.cmd = [cursor readInt32];

@@ -5,15 +5,13 @@
 
 #import "CDLCUnixThread.h"
 
-#import "CDDataCursor.h"
-
 // For now, this is all I need.  There is no data in here sensitive to its position in the file.
 
 @implementation CDLCUnixThread
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     loadCommand.cmd = [cursor readInt32];

@@ -8,7 +8,7 @@
 #import "CDMachOFile.h"
 #import "CDSection.h"
 #import "CDLCSegment.h"
-#import "CDDataCursor.h"
+#import "CDMachOFileDataCursor.h"
 #import "CDOCClass.h"
 #import "CDOCMethod.h"
 #import "CDOCIvar.h"
@@ -26,16 +26,12 @@
 {
     CDLCSegment *segment;
     CDSection *section;
-    NSData *sectionData;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     
     segment = [machOFile segmentWithName:@"__DATA"];
     section = [segment sectionWithName:@"__objc_protolist"];
-    sectionData = [section data];
     
-    cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    cursor.ptrSize = [machOFile ptrSize];
-    [cursor setByteOrder:[machOFile byteOrder]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
         [self protocolAtAddress:[cursor readPtr]];
     [cursor release];
@@ -47,16 +43,12 @@
 {
     CDLCSegment *segment;
     CDSection *section;
-    NSData *sectionData;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     
     segment = [machOFile segmentWithName:@"__DATA"];
     section = [segment sectionWithName:@"__objc_classlist"];
-    sectionData = [section data];
     
-    cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    cursor.ptrSize = [machOFile ptrSize];
-    [cursor setByteOrder:[machOFile byteOrder]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
         uint64_t val;
         CDOCClass *aClass;
@@ -76,16 +68,12 @@
 {
     CDLCSegment *segment;
     CDSection *section;
-    NSData *sectionData;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     
     segment = [machOFile segmentWithName:@"__DATA"];
     section = [segment sectionWithName:@"__objc_catlist"];
-    sectionData = [section data];
     
-    cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    cursor.ptrSize = [machOFile ptrSize];
-    [cursor setByteOrder:[machOFile byteOrder]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
         CDOCCategory *category;
         
@@ -109,16 +97,13 @@
     protocol = [protocolsByAddress objectForKey:key];
     if (protocol == nil) {
         struct cd_objc2_protocol objc2Protocol;
-        CDDataCursor *cursor;
+        CDMachOFileDataCursor *cursor;
         NSString *str;
         
         protocol = [[[CDOCProtocol alloc] init] autorelease];
         [protocolsByAddress setObject:protocol forKey:key];
         
-        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-        cursor.ptrSize = [machOFile ptrSize];
-        [cursor setByteOrder:[machOFile byteOrder]];
-        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         
         objc2Protocol.isa = [cursor readPtr];
@@ -140,7 +125,7 @@
         if (objc2Protocol.protocols != 0) {
             uint64_t count, index;
             
-            [cursor setOffset:[machOFile dataOffsetForAddress:objc2Protocol.protocols]];
+            [cursor setAddress:objc2Protocol.protocols];
             count = [cursor readPtr];
             for (index = 0; index < count; index++) {
                 uint64_t val;
@@ -180,17 +165,14 @@
 - (CDOCCategory *)loadCategoryAtAddress:(uint64_t)address;
 {
     struct cd_objc2_category objc2Category;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     NSString *str;
     CDOCCategory *category;
     
     if (address == 0)
         return nil;
     
-    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-    cursor.ptrSize = [machOFile ptrSize];
-    [cursor setByteOrder:[machOFile byteOrder]];
-    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
     objc2Category.name = [cursor readPtr];
@@ -247,7 +229,7 @@
 {
     struct cd_objc2_class objc2Class;
     struct cd_objc2_class_ro_t objc2ClassData;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     NSString *str;
     CDOCClass *aClass;
     
@@ -256,10 +238,7 @@
     
     //NSLog(@"%s, address=%016lx", _cmd, address);
     
-    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-    cursor.ptrSize = [machOFile ptrSize];
-    [cursor setByteOrder:[machOFile byteOrder]];
-    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
     objc2Class.isa = [cursor readPtr];
@@ -274,7 +253,7 @@
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.data, objc2Class.reserved1, objc2Class.reserved2, objc2Class.reserved3);
     
     NSParameterAssert(objc2Class.data != 0);
-    [cursor setOffset:[machOFile dataOffsetForAddress:objc2Class.data]];
+    [cursor setAddress:objc2Class.data];
     objc2ClassData.flags = [cursor readInt32];
     objc2ClassData.instanceStart = [cursor readInt32];
     objc2ClassData.instanceSize = [cursor readInt32];
@@ -351,14 +330,11 @@
     
     properties = [NSMutableArray array];
     if (address != 0) {
-        CDDataCursor *cursor;
+        CDMachOFileDataCursor *cursor;
         struct cd_objc2_list_header listHeader;
         uint32_t index;
         
-        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-        cursor.ptrSize = [machOFile ptrSize];
-        [cursor setByteOrder:[machOFile byteOrder]];
-        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"property list data offset: %lu", [cursor offset]);
         
@@ -392,15 +368,12 @@
 {
     struct cd_objc2_class objc2Class;
     struct cd_objc2_class_ro_t objc2ClassData;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     
     if (address == 0)
         return nil;
     
-    cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-    cursor.ptrSize = [machOFile ptrSize];
-    [cursor setByteOrder:[machOFile byteOrder]];
-    [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
     objc2Class.isa = [cursor readPtr];
@@ -415,7 +388,7 @@
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.data, objc2Class.reserved1, objc2Class.reserved2, objc2Class.reserved3);
     
     NSParameterAssert(objc2Class.data != 0);
-    [cursor setOffset:[machOFile dataOffsetForAddress:objc2Class.data]];
+    [cursor setAddress:objc2Class.data];
     objc2ClassData.flags = [cursor readInt32];
     objc2ClassData.instanceStart = [cursor readInt32];
     objc2ClassData.instanceSize = [cursor readInt32];
@@ -444,14 +417,11 @@
     methods = [NSMutableArray array];
     
     if (address != 0) {
-        CDDataCursor *cursor;
+        CDMachOFileDataCursor *cursor;
         struct cd_objc2_list_header listHeader;
         uint32_t index;
         
-        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-        cursor.ptrSize = [machOFile ptrSize];
-        [cursor setByteOrder:[machOFile byteOrder]];
-        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"method list data offset: %lu", [cursor offset]);
         
@@ -492,14 +462,11 @@
     ivars = [NSMutableArray array];
     
     if (address != 0) {
-        CDDataCursor *cursor;
+        CDMachOFileDataCursor *cursor;
         struct cd_objc2_list_header listHeader;
         uint32_t index;
         
-        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-        cursor.ptrSize = [machOFile ptrSize];
-        [cursor setByteOrder:[machOFile byteOrder]];
-        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"ivar list data offset: %lu", [cursor offset]);
         
@@ -545,13 +512,10 @@
     protocols = [[[NSMutableArray alloc] init] autorelease];;
     
     if (address != 0) {
-        CDDataCursor *cursor;
+        CDMachOFileDataCursor *cursor;
         uint64_t count, index;
         
-        cursor = [[CDDataCursor alloc] initWithData:[machOFile data]];
-        cursor.ptrSize = [machOFile ptrSize];
-        [cursor setByteOrder:[machOFile byteOrder]];
-        [cursor setOffset:[machOFile dataOffsetForAddress:address]];
+        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         
         count = [cursor readPtr];
         for (index = 0; index < count; index++) {
@@ -575,6 +539,11 @@
     }
     
     return protocols;
+}
+
+- (CDSection *)objcImageInfoSection;
+{
+    return [[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"];
 }
 
 @end

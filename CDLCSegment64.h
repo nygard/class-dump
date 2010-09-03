@@ -10,7 +10,7 @@
     struct segment_command_64 segmentCommand;
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;

@@ -5,25 +5,26 @@
 
 #import "CDMachO32File.h"
 
+#import "CDMachOFileDataCursor.h"
+
 @implementation CDMachO32File
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
     CDDataCursor *cursor;
 
-    if ([super initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] == nil)
+    if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
-    cursor = [[CDDataCursor alloc] initWithData:someData];
+    cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
     //NSLog(@"CDMachO32File - setting offset to %08x", offset);
-    [cursor setOffset:offset];
-    header.magic = [cursor readLittleInt32];
+    header.magic = [cursor readBigInt32];
 
     //NSLog(@"(testing macho 32) magic: 0x%x", header.magic);
     if (header.magic == MH_MAGIC) {
-        byteOrder = CDByteOrderLittleEndian;
-    } else if (header.magic == MH_CIGAM) {
         byteOrder = CDByteOrderBigEndian;
+    } else if (header.magic == MH_CIGAM) {
+        byteOrder = CDByteOrderLittleEndian;
     } else {
         [cursor release];
         [self release];
@@ -31,17 +32,26 @@
     }
 
     //NSLog(@"byte order: %d", byteOrder);
-    [cursor setByteOrder:byteOrder];
 
-    header.cputype = [cursor readInt32];
+    header.cputype = [cursor readBigInt32];
+    header.cpusubtype = [cursor readBigInt32];
+    header.filetype = [cursor readBigInt32];
+    header.ncmds = [cursor readBigInt32];
+    header.sizeofcmds = [cursor readBigInt32];
+    header.flags = [cursor readBigInt32];
+
+    [cursor release];
+
+    if (byteOrder == CDByteOrderLittleEndian) {
+        header.cputype = OSSwapInt32(header.cputype);
+        header.cpusubtype = OSSwapInt32(header.cpusubtype);
+        header.filetype = OSSwapInt32(header.filetype);
+        header.ncmds = OSSwapInt32(header.ncmds);
+        header.sizeofcmds = OSSwapInt32(header.sizeofcmds);
+        header.flags = OSSwapInt32(header.flags);
+    }
+
     //NSLog(@"cputype: 0x%08x", header.cputype);
-
-    header.cpusubtype = [cursor readInt32];
-    header.filetype = [cursor readInt32];
-    header.ncmds = [cursor readInt32];
-    header.sizeofcmds = [cursor readInt32];
-    header.flags = [cursor readInt32];
-
     //NSLog(@"cpusubtype: 0x%08x", header.cpusubtype);
     //NSLog(@"filetype: 0x%08x", header.filetype);
     //NSLog(@"ncmds: %u", header.ncmds);
@@ -51,7 +61,9 @@
     _flags.uses64BitABI = CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype });
     header.cputype &= ~CPU_ARCH_MASK;
 
-    [self _readLoadCommands:cursor count:header.ncmds];
+    CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:sizeof(struct mach_header)];
+    [self _readLoadCommands:fileCursor count:header.ncmds];
+    [fileCursor release];
 
     return self;
 }

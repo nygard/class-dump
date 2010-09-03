@@ -27,4 +27,6 @@
 
 - (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
 
+- (CDSection *)objcImageInfoSection;
+
 @end

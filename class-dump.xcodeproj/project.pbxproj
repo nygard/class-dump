@@ -178,6 +178,7 @@
 		01F524841001D3640006B272 /* formatType.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F524831001D3640006B272 /* formatType.m */; };
 		01F526461001F5AC0006B272 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
 		01F5264D1001F5C70006B272 /* deprotect.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F5264C1001F5C70006B272 /* deprotect.m */; };
+		DA88CA191200AF5D00FC6850 /* CDMachOFileDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */; };
 		DAF695D011E62B18009AF361 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		DAF695D111E62B18009AF361 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
 		DAF695D211E62B18009AF361 /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
@@ -478,6 +479,8 @@
 		01FB21E30FE926D60081556C /* CDFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDFile.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump_Prefix.pch"; sourceTree = "<group>"; };
+		DA88CA171200AF5D00FC6850 /* CDMachOFileDataCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachOFileDataCursor.h; sourceTree = "<group>"; };
+		DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDMachOFileDataCursor.m; sourceTree = "<group>"; };
 		DAF6959511E62A4F009AF361 /* libMachObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -594,6 +597,8 @@
 			children = (
 				017F9C980DD0F66400EC8D0A /* CDDataCursor.h */,
 				017F9C990DD0F66400EC8D0A /* CDDataCursor.m */,
+				DA88CA171200AF5D00FC6850 /* CDMachOFileDataCursor.h */,
+				DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */,
 				01A9A41F0FF18F6400475772 /* Load Commands */,
 				01FB21E20FE926D60081556C /* CDFile.h */,
 				01FB21E30FE926D60081556C /* CDFile.m */,
@@ -1262,6 +1267,7 @@
 				DAF6960F11E62C00009AF361 /* CDTypeLexer.m in Sources */,
 				DAF6961011E62C00009AF361 /* CDTypeName.m in Sources */,
 				DAF6961111E62C00009AF361 /* CDTypeParser.m in Sources */,
+				DA88CA191200AF5D00FC6850 /* CDMachOFileDataCursor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

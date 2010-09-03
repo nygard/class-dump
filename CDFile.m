@@ -65,22 +65,22 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    return [self fileWithData:someData offset:0 filename:aFilename searchPathState:aSearchPathState];
+    return [self fileWithData:someData archOffset:0 archSize:[someData length] filename:aFilename searchPathState:aSearchPathState];
 }
 
-+ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
     CDFatFile *aFatFile = nil;
 
     if (anOffset == 0)
-        aFatFile = [[[CDFatFile alloc] initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] autorelease];
+        aFatFile = [[[CDFatFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
 
     if (aFatFile == nil) {
         CDMachOFile *machOFile;
 
-        machOFile = [[[CDMachO32File alloc] initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] autorelease];
+        machOFile = [[[CDMachO32File alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
         if (machOFile == nil)
-            machOFile = [[[CDMachO64File alloc] initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] autorelease];
+            machOFile = [[[CDMachO64File alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
         return machOFile;
     }
 
@@ -93,7 +93,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return nil;
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
     if ([super init] == nil)
         return nil;
@@ -106,7 +106,8 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
     filename = [aFilename retain];
     data = [someData retain];
-    offset = anOffset;
+    archOffset = anOffset;
+    archSize = aSize;
     searchPathState = [aSearchPathState retain];
 
     return self;
@@ -129,16 +130,6 @@ BOOL CDArchUses64BitABI(CDArch arch)
 - (NSData *)data;
 {
     return data;
-}
-
-- (NSUInteger)offset;
-{
-    return offset;
-}
-
-- (void)setOffset:(NSUInteger)newOffset;
-{
-    offset = newOffset;
 }
 
 - (CDSearchPathState *)searchPathState;

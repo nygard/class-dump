@@ -13,9 +13,9 @@
 
 @implementation CDLCSymbolTable
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     symtabCommand.cmd = [cursor readInt32];
@@ -68,7 +68,7 @@
 
 - (void)loadSymbols;
 {
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     uint32_t index;
     const char *strtab, *ptr;
 
@@ -85,15 +85,12 @@
         }
     }
 
-
-    cursor = [[CDDataCursor alloc] initWithData:[nonretained_machOFile data]];
-    [cursor setByteOrder:[nonretained_machOFile byteOrder]];
-    [cursor setOffset:[nonretained_machOFile offset] + symtabCommand.symoff];
+    cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    strtab = [nonretained_machOFile machODataBytes] + symtabCommand.stroff;
+    strtab = [[nonretained_machOFile machOData] bytes] + symtabCommand.stroff;
 
     if ([nonretained_machOFile isKindOfClass:[CDMachO32File class]]) {
         //NSLog(@"32 bit...");

@@ -5,15 +5,13 @@
 
 #import "CDLCUnknown.h"
 
-#import "CDDataCursor.h"
-
 static BOOL debug = NO;
 
 @implementation CDLCUnknown
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     if (debug) NSLog(@"offset: %u", [cursor offset]);

@@ -5,17 +5,16 @@
 
 #import "CDLCRunPath.h"
 
-#import "CDDataCursor.h"
 #import "CDMachOFile.h"
 #import "CDSearchPathState.h"
 
 @implementation CDLCRunPath
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     NSUInteger length;
 
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     rpathCommand.cmd = [cursor readInt32];

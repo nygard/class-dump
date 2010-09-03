@@ -5,10 +5,12 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CDMachOFileDataCursor.h"
+
 #include <mach-o/loader.h>
 #include "dyld-info-compat.h"
 
-@class CDDataCursor, CDMachOFile;
+@class CDMachOFile;
 
 @interface CDLoadCommand : NSObject
 {
@@ -16,9 +18,9 @@
     NSUInteger commandOffset;
 }
 
-+ (id)loadCommandWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
++ (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 
 - (CDMachOFile *)machOFile;
 - (NSUInteger)commandOffset;

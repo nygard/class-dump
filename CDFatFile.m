@@ -14,19 +14,18 @@
 
 @implementation CDFatFile
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
     CDDataCursor *cursor;
     unsigned int index;
     struct fat_header header;
 
-    if ([super initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] == nil)
+    if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
     arches = [[NSMutableArray alloc] init];
 
-    cursor = [[CDDataCursor alloc] initWithData:someData];
-    [cursor setOffset:offset];
+    cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
     header.magic = [cursor readBigInt32];
 
     //NSLog(@"(testing fat) magic: 0x%x", header.magic);

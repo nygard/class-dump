@@ -9,7 +9,7 @@
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 
-#import "CDDataCursor.h"
+#import "CDMachOFileDataCursor.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDLCDyldInfo.h"
@@ -43,9 +43,9 @@ static BOOL debug = NO;
 
 @implementation CDMachOFile
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    if ([super initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] == nil)
+    if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
     byteOrder = CDByteOrderLittleEndian;
@@ -60,14 +60,14 @@ static BOOL debug = NO;
     return self;
 }
 
-- (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
+- (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 {
     uint32_t index;
 
     for (index = 0; index < count; index++) {
         id loadCommand;
 
-        loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
+        loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor];
         if (loadCommand != nil) {
             [loadCommands addObject:loadCommand];
 
@@ -195,7 +195,7 @@ static BOOL debug = NO;
     return _flags.uses64BitABI;
 }
 
-- (NSUInteger)ptrSize
+- (NSUInteger)ptrSize;
 {
     return [self uses64BitABI] ? sizeof(uint64_t) : sizeof(uint32_t);
 }
@@ -345,7 +345,7 @@ static BOOL debug = NO;
         return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
     }
 
-    anOffset = [self dataOffsetForAddress:address];
+    anOffset = archOffset + [self dataOffsetForAddress:address];
     if (anOffset == 0)
         return nil;
 
@@ -354,17 +354,12 @@ static BOOL debug = NO;
     return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
 }
 
-- (const void *)machODataBytes;
+- (NSData *)machOData;
 {
-    return [data bytes] + offset;
+    return [NSData dataWithBytesNoCopy:(void*)(archOffset + [data bytes]) length:archSize freeWhenDone:NO];
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
-{
-    return [self dataOffsetForAddress:address segmentName:nil];
-}
-
-- (NSUInteger)dataOffsetForAddress:(NSUInteger)address segmentName:(NSString *)aSegmentName;
 {
     CDLCSegment *segment;
 
@@ -375,16 +370,6 @@ static BOOL debug = NO;
     if (segment == nil) {
         NSLog(@"Error: Cannot find offset for address 0x%08lx in dataOffsetForAddress:", address);
         exit(5);
-        return 0;
-    }
-
-    if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
-        // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
-        // i.e. section offset is 0.
-        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08lx, %@)", address, aSegmentName);
-        //NSLog(@"\tsegment was: %@", segment);
-        //exit(5);
-        return 0;
     }
 
     if ([segment isProtected]) {
@@ -401,7 +386,7 @@ static BOOL debug = NO;
     NSLog(@"data offset:      0x%08x", offset + [segment fileOffsetForAddress:address]);
     NSLog(@"<----------");
 #endif
-    return offset + [segment fileOffsetForAddress:address];
+    return [segment fileOffsetForAddress:address];
 }
 
 - (const void *)bytes;
@@ -507,10 +492,10 @@ static BOOL debug = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, offset: %p",
+    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, archOffset: %p",
                      NSStringFromClass([self class]), self,
                      [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
-                     filename, data, offset];
+                     filename, data, archOffset];
 }
 
 - (void)logInfoForAddress:(NSUInteger)address;
@@ -628,7 +613,7 @@ static BOOL debug = NO;
     NSMutableData *mdata;
 
     // Not going to handle fat files -- thin it first
-    NSParameterAssert(offset == 0);
+    NSParameterAssert(archOffset == 0);
 
     mdata = [[NSMutableData alloc] initWithData:data];
     for (CDLoadCommand *command in loadCommands) {
