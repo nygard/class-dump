@@ -6,8 +6,7 @@
 #import "CDFile.h"
 
 #import "CDFatFile.h"
-#import "CDMachO32File.h"
-#import "CDMachO64File.h"
+#import "CDMachOFile.h"
 
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
@@ -76,11 +75,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
         aFatFile = [[[CDFatFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
 
     if (aFatFile == nil) {
-        CDMachOFile *machOFile;
-
-        machOFile = [[[CDMachO32File alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
-        if (machOFile == nil)
-            machOFile = [[[CDMachO64File alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
+        CDMachOFile *machOFile = [[[CDMachOFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
         return machOFile;
     }
 

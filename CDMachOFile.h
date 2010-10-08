@@ -31,6 +31,7 @@ typedef NSUInteger CDByteOrder;
     CDLCDynamicSymbolTable *dynamicSymbolTable;
     CDLCDyldInfo *dyldInfo;
     NSMutableArray *runPaths;
+    struct mach_header_64 header; // 64-bit, also holding 32-bit
 
     struct {
         unsigned int uses64BitABI:1;

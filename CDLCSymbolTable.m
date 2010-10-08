@@ -7,7 +7,6 @@
 
 #include <mach-o/nlist.h>
 #import "CDMachOFile.h"
-#import "CDMachO32File.h"
 #import "CDSymbol.h"
 #import "CDLCSegment.h"
 
@@ -92,7 +91,7 @@
 
     strtab = [[nonretained_machOFile machOData] bytes] + symtabCommand.stroff;
 
-    if ([nonretained_machOFile isKindOfClass:[CDMachO32File class]]) {
+    if (![nonretained_machOFile uses64BitABI]) {
         //NSLog(@"32 bit...");
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  --------");

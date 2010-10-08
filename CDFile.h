@@ -31,7 +31,7 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
     CDSearchPathState *searchPathState;
 }
 
-// Returns CDFatFile, CDMachO32File, or CDMachO64File.
+// Returns CDFatFile or CDMachOFile.
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 + (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 

@@ -39,8 +39,6 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [NSString stringWithFormat:@"0x%08x", magic];
 }
 
-static BOOL debug = NO;
-
 @implementation CDMachOFile
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
@@ -55,7 +53,50 @@ static BOOL debug = NO;
     dynamicSymbolTable = nil;
     dyldInfo = nil;
     runPaths = [[NSMutableArray alloc] init];
-    _flags.uses64BitABI = NO;
+
+    CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+    header.magic = [cursor readBigInt32];
+    if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
+        byteOrder = CDByteOrderBigEndian;
+    } else if (header.magic == MH_CIGAM || header.magic == MH_CIGAM_64) {
+        byteOrder = CDByteOrderLittleEndian;
+    } else {
+        [cursor release];
+        [self release];
+        return nil;
+    }
+
+    _flags.uses64BitABI = (header.magic == MH_MAGIC_64) || (header.magic == MH_CIGAM_64);
+
+    header.cputype = [cursor readBigInt32];
+    header.cpusubtype = [cursor readBigInt32];
+    header.filetype = [cursor readBigInt32];
+    header.ncmds = [cursor readBigInt32];
+    header.sizeofcmds = [cursor readBigInt32];
+    header.flags = [cursor readBigInt32];
+    if (_flags.uses64BitABI) {
+        header.reserved = [cursor readBigInt32];
+    }
+    
+    [cursor release];
+    
+    if (byteOrder == CDByteOrderLittleEndian) {
+        header.cputype = OSSwapInt32(header.cputype);
+        header.cpusubtype = OSSwapInt32(header.cpusubtype);
+        header.filetype = OSSwapInt32(header.filetype);
+        header.ncmds = OSSwapInt32(header.ncmds);
+        header.sizeofcmds = OSSwapInt32(header.sizeofcmds);
+        header.flags = OSSwapInt32(header.flags);
+        header.reserved = OSSwapInt32(header.reserved);
+    }
+
+    NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype }), @"Header magic should match cpu arch");
+    header.cputype &= ~CPU_ARCH_MASK;
+
+    NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
+    CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
+    [self _readLoadCommands:fileCursor count:header.ncmds];
+    [fileCursor release];
 
     return self;
 }
@@ -114,20 +155,17 @@ static BOOL debug = NO;
 
 - (uint32_t)magic;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.magic;
 }
 
 - (cpu_type_t)cputype;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.cputype;
 }
 
 - (cpu_subtype_t)cpusubtype;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.cpusubtype;
 }
 
 // Well... only the arch bits it knows about.
@@ -156,14 +194,12 @@ static BOOL debug = NO;
 
 - (uint32_t)filetype;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.filetype;
 }
 
 - (uint32_t)flags;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.flags;
 }
 
 - (NSArray *)loadCommands;
@@ -198,6 +234,16 @@ static BOOL debug = NO;
 - (NSUInteger)ptrSize;
 {
     return [self uses64BitABI] ? sizeof(uint64_t) : sizeof(uint32_t);
+}
+             
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
+{
+    if (archPtr != NULL) {
+        archPtr->cputype = header.cputype;
+        archPtr->cpusubtype = header.cpusubtype;
+    }
+
+    return YES;
 }
 
 - (NSString *)filetypeDescription;
