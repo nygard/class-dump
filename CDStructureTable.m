@@ -309,7 +309,7 @@ static BOOL debugAnonStructures = NO;
     NSMutableDictionary *nameDict, *anonDict;
 
     //NSLog(@"[%@] %s, depth: %u", identifier, _cmd, depth);
-    depthKey = [NSNumber numberWithUnsignedInt:depth];
+    depthKey = [NSNumber numberWithUnsignedInteger:depth];
     infos = [phase1_groupedByDepth objectForKey:depthKey];
 
     for (CDStructureInfo *info in infos) {

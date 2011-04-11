@@ -5,14 +5,13 @@
 
 #import "CDLCTwoLevelHints.h"
 
-#import "CDFatFile.h"
 #import "CDMachOFile.h"
 
 @implementation CDLCTwoLevelHints
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     hintsCommand.cmd = [cursor readInt32];

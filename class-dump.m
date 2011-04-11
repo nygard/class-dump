@@ -20,7 +20,6 @@
 #import "CDFile.h"
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
-#import "CDObjectiveC2Processor64.h"
 #import "CDFatArch.h"
 #import "CDSearchPathState.h"
 

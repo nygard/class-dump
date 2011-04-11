@@ -10,9 +10,9 @@
 
 @implementation CDLCPreboundDylib
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     //NSLog(@"current offset: %u", [cursor offset]);

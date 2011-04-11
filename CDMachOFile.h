@@ -8,9 +8,13 @@
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 #include <mach-o/loader.h>
 
-#import "CDDataCursor.h" // For CDByteOrder
+enum {
+    CDByteOrderLittleEndian = 0,
+    CDByteOrderBigEndian = 1,
+};
+typedef NSUInteger CDByteOrder;
 
-@class CDLCSegment;
+@class CDLCSegment, CDMachOFileDataCursor;
 @class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable;
 
 @protocol CDMachOFileDelegate
@@ -27,16 +31,17 @@
     CDLCDynamicSymbolTable *dynamicSymbolTable;
     CDLCDyldInfo *dyldInfo;
     NSMutableArray *runPaths;
+    struct mach_header_64 header; // 64-bit, also holding 32-bit
 
     struct {
         unsigned int uses64BitABI:1;
     } _flags;
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 - (void)dealloc;
 
-- (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
+- (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
 - (CDByteOrder)byteOrder;
 
@@ -59,6 +64,7 @@
 @property(retain) CDLCDyldInfo *dyldInfo;
 
 - (BOOL)uses64BitABI;
+- (NSUInteger)ptrSize;
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
@@ -69,9 +75,8 @@
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
 - (NSString *)stringAtAddress:(NSUInteger)address;
 
-- (const void *)machODataBytes;
+- (NSData *)machOData;
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
-- (NSUInteger)dataOffsetForAddress:(NSUInteger)address segmentName:(NSString *)aSegmentName;
 
 - (const void *)bytes;
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;
@@ -102,6 +107,7 @@
 
 - (BOOL)hasObjectiveC1Data;
 - (BOOL)hasObjectiveC2Data;
+- (Class)processorClass;
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
 

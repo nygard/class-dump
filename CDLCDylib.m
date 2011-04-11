@@ -15,11 +15,11 @@ static NSString *CDDylibVersionString(unsigned long version)
 
 @implementation CDLCDylib
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     NSUInteger length;
 
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     dylibCommand.cmd = [cursor readInt32];

@@ -7,14 +7,13 @@
 
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
-#import "CDDataCursor.h"
 #import "CDRelocationInfo.h"
 
 @implementation CDLCDynamicSymbolTable
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     dysymtab.cmd = [cursor readInt32];
@@ -86,11 +85,10 @@
 
 - (void)loadSymbols;
 {
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     uint32_t index;
 
-    cursor = [[CDDataCursor alloc] initWithData:[nonretained_machOFile data]];
-    [cursor setByteOrder:[nonretained_machOFile byteOrder]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:dysymtab.extreloff];
 
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
     //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
@@ -108,7 +106,6 @@
     //NSLog(@"extreloff: %lu", dysymtab.extreloff);
     //NSLog(@"nextrel:   %lu", dysymtab.nextrel);
 
-    [cursor setOffset:[nonretained_machOFile offset] + dysymtab.extreloff];
     //NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
     //NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
     for (index = 0; index < dysymtab.nextrel; index++) {

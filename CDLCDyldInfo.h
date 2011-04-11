@@ -13,7 +13,7 @@
     NSMutableDictionary *symbolNamesByAddress;
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 - (void)dealloc;
 
 - (uint32_t)cmd;
@@ -37,6 +37,6 @@
 
 // Exported symbols
 - (void)logExportedSymbols;
-- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint32_t)offset;
+- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint64_t)offset;
 
 @end

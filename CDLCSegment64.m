@@ -6,13 +6,12 @@
 #import "CDLCSegment64.h"
 
 #import "CDSection64.h"
-#import "CDDataCursor.h"
 
 @implementation CDLCSegment64
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor machOFile:aMachOFile] == nil)
+    if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
     segmentCommand.cmd = [cursor readInt32];

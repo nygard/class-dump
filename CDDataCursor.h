@@ -5,20 +5,14 @@
 
 #import <Foundation/Foundation.h>
 
-enum {
-    CDByteOrderLittleEndian = 0,
-    CDByteOrderBigEndian = 1,
-};
-typedef NSUInteger CDByteOrder;
-
 @interface CDDataCursor : NSObject
 {
     NSData *data;
     NSUInteger offset;
-    CDByteOrder byteOrder;
 }
 
 - (id)initWithData:(NSData *)someData;
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 - (void)dealloc;
 
 - (NSData *)data;
@@ -48,16 +42,6 @@ typedef NSUInteger CDByteOrder;
 - (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
 - (void)readBytesOfLength:(NSUInteger)length intoBuffer:(void *)buf;
 - (BOOL)isAtEnd;
-
-- (CDByteOrder)byteOrder;
-- (void)setByteOrder:(CDByteOrder)newByteOrder;
-
-// Read using the current byteOrder
-- (uint16_t)readInt16;
-- (uint32_t)readInt32;
-- (uint64_t)readInt64;
-
-- (uint32_t)peekInt32;
 
 - (NSString *)readCString;
 - (NSString *)readStringOfLength:(NSUInteger)length encoding:(NSStringEncoding)encoding;

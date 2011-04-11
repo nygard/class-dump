@@ -6,7 +6,7 @@
 #import "CDSection.h"
 #include <mach-o/loader.h>
 
-@class CDDataCursor, CDMachOFile, CDLCSegment32;
+@class CDMachOFileDataCursor, CDMachOFile, CDLCSegment32;
 
 @interface CDSection32 : CDSection
 {
@@ -15,7 +15,7 @@
     struct section section;
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 
 - (CDLCSegment32 *)segment;
 - (CDMachOFile *)machOFile;

@@ -10,7 +10,7 @@
 @interface CDMultiFileVisitor : CDTextClassDumpVisitor
 {
     NSString *outputPath;
-    unsigned int referenceIndex;
+    NSUInteger referenceIndex;
 }
 
 - (id)init;

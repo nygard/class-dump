@@ -213,24 +213,18 @@
     //NSLog(@"protocolsByName: %@", protocolsByName);
 }
 
-- (NSData *)objcImageInfoData;
+- (CDSection *)objcImageInfoSection;
 {
-    // Good for objc2.  Use __OBJC segment for objc1.
-    return [[[machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] data];
+    // Implement in subclasses.
+    return nil;
 }
 
 - (NSString *)garbageCollectionStatus;
 {
-    NSData *sectionData;
-    CDDataCursor *cursor;
+    CDMachOFileDataCursor *cursor;
     uint32_t v1, v2;
 
-    sectionData = [self objcImageInfoData];
-    if ([sectionData length] < 8)
-        return @"Unknown";
-
-    cursor = [[CDDataCursor alloc] initWithData:sectionData];
-    [cursor setByteOrder:[machOFile byteOrder]];
+    cursor = [[CDMachOFileDataCursor alloc] initWithSection:[self objcImageInfoSection]];
 
     v1 = [cursor readInt32];
     v2 = [cursor readInt32];

@@ -26,23 +26,21 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 {
     NSString *filename;
     NSData *data;
-    NSUInteger offset; // Or perhaps dataOffset, archiveOffset
+    NSUInteger archOffset;
+    NSUInteger archSize;
     CDSearchPathState *searchPathState;
 }
 
-// Returns CDFatFile, CDMachO32File, or CDMachO64File.
+// Returns CDFatFile or CDMachOFile.
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
-+ (id)fileWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 - (void)dealloc;
 
 - (NSString *)filename;
 
 - (NSData *)data;
-
-- (NSUInteger)offset;
-- (void)setOffset:(NSUInteger)newOffset;
 
 - (CDSearchPathState *)searchPathState;
 

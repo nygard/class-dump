@@ -7,7 +7,7 @@
 
 @class CDOCClass, CDOCCategory, CDOCProtocol;
 
-@interface CDObjectiveC2Processor64 : CDObjectiveCProcessor
+@interface CDObjectiveC2Processor : CDObjectiveCProcessor
 {
 }
 
@@ -26,5 +26,7 @@
 - (NSArray *)loadIvarsAtAddress:(uint64_t)address;
 
 - (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
+
+- (CDSection *)objcImageInfoSection;
 
 @end

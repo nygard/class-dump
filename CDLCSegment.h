@@ -30,7 +30,7 @@ extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
     NSMutableData *decryptedData;
 }
 
-- (id)initWithDataCursor:(CDDataCursor *)cursor machOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 - (void)dealloc;
 
 - (NSString *)name;

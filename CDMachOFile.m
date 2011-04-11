@@ -9,7 +9,7 @@
 #include <mach-o/loader.h>
 #include <mach-o/fat.h>
 
-#import "CDDataCursor.h"
+#import "CDMachOFileDataCursor.h"
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDLCDyldInfo.h"
@@ -20,8 +20,8 @@
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
-#import "CDLCUUID.h"
-#import "CDObjectiveCProcessor.h"
+#import "CDObjectiveC1Processor.h"
+#import "CDObjectiveC2Processor.h"
 #import "CDSection.h"
 #import "CDSymbol.h"
 #import "CDRelocationInfo.h"
@@ -39,13 +39,11 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [NSString stringWithFormat:@"0x%08x", magic];
 }
 
-static BOOL debug = NO;
-
 @implementation CDMachOFile
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    if ([super initWithData:someData offset:anOffset filename:aFilename searchPathState:aSearchPathState] == nil)
+    if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
     byteOrder = CDByteOrderLittleEndian;
@@ -55,19 +53,62 @@ static BOOL debug = NO;
     dynamicSymbolTable = nil;
     dyldInfo = nil;
     runPaths = [[NSMutableArray alloc] init];
-    _flags.uses64BitABI = NO;
+
+    CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+    header.magic = [cursor readBigInt32];
+    if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
+        byteOrder = CDByteOrderBigEndian;
+    } else if (header.magic == MH_CIGAM || header.magic == MH_CIGAM_64) {
+        byteOrder = CDByteOrderLittleEndian;
+    } else {
+        [cursor release];
+        [self release];
+        return nil;
+    }
+
+    _flags.uses64BitABI = (header.magic == MH_MAGIC_64) || (header.magic == MH_CIGAM_64);
+
+    header.cputype = [cursor readBigInt32];
+    header.cpusubtype = [cursor readBigInt32];
+    header.filetype = [cursor readBigInt32];
+    header.ncmds = [cursor readBigInt32];
+    header.sizeofcmds = [cursor readBigInt32];
+    header.flags = [cursor readBigInt32];
+    if (_flags.uses64BitABI) {
+        header.reserved = [cursor readBigInt32];
+    }
+    
+    [cursor release];
+    
+    if (byteOrder == CDByteOrderLittleEndian) {
+        header.cputype = OSSwapInt32(header.cputype);
+        header.cpusubtype = OSSwapInt32(header.cpusubtype);
+        header.filetype = OSSwapInt32(header.filetype);
+        header.ncmds = OSSwapInt32(header.ncmds);
+        header.sizeofcmds = OSSwapInt32(header.sizeofcmds);
+        header.flags = OSSwapInt32(header.flags);
+        header.reserved = OSSwapInt32(header.reserved);
+    }
+
+    NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype }), @"Header magic should match cpu arch");
+    header.cputype &= ~CPU_ARCH_MASK;
+
+    NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
+    CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
+    [self _readLoadCommands:fileCursor count:header.ncmds];
+    [fileCursor release];
 
     return self;
 }
 
-- (void)_readLoadCommands:(CDDataCursor *)cursor count:(uint32_t)count;
+- (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 {
     uint32_t index;
 
     for (index = 0; index < count; index++) {
         id loadCommand;
 
-        loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor machOFile:self];
+        loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor];
         if (loadCommand != nil) {
             [loadCommands addObject:loadCommand];
 
@@ -114,20 +155,17 @@ static BOOL debug = NO;
 
 - (uint32_t)magic;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.magic;
 }
 
 - (cpu_type_t)cputype;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.cputype;
 }
 
 - (cpu_subtype_t)cpusubtype;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.cpusubtype;
 }
 
 // Well... only the arch bits it knows about.
@@ -156,14 +194,12 @@ static BOOL debug = NO;
 
 - (uint32_t)filetype;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.filetype;
 }
 
 - (uint32_t)flags;
 {
-    // Implement in subclasses.
-    return 0;
+    return header.flags;
 }
 
 - (NSArray *)loadCommands;
@@ -193,6 +229,21 @@ static BOOL debug = NO;
 - (BOOL)uses64BitABI;
 {
     return _flags.uses64BitABI;
+}
+
+- (NSUInteger)ptrSize;
+{
+    return [self uses64BitABI] ? sizeof(uint64_t) : sizeof(uint32_t);
+}
+             
+- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
+{
+    if (archPtr != NULL) {
+        archPtr->cputype = header.cputype;
+        archPtr->cpusubtype = header.cpusubtype;
+    }
+
+    return YES;
 }
 
 - (NSString *)filetypeDescription;
@@ -322,7 +373,7 @@ static BOOL debug = NO;
 
     segment = [self segmentContainingAddress:address];
     if (segment == nil) {
-        NSLog(@"Error: Cannot find offset for address 0x%08x in dataOffsetForAddress:", address);
+        NSLog(@"Error: Cannot find offset for address 0x%08lx in stringAtAddress:", address);
         exit(5);
         return nil;
     }
@@ -340,7 +391,7 @@ static BOOL debug = NO;
         return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
     }
 
-    anOffset = [self dataOffsetForAddress:address];
+    anOffset = archOffset + [self dataOffsetForAddress:address];
     if (anOffset == 0)
         return nil;
 
@@ -349,17 +400,12 @@ static BOOL debug = NO;
     return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
 }
 
-- (const void *)machODataBytes;
+- (NSData *)machOData;
 {
-    return [data bytes] + offset;
+    return [NSData dataWithBytesNoCopy:(void*)(archOffset + [data bytes]) length:archSize freeWhenDone:NO];
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
-{
-    return [self dataOffsetForAddress:address segmentName:nil];
-}
-
-- (NSUInteger)dataOffsetForAddress:(NSUInteger)address segmentName:(NSString *)aSegmentName;
 {
     CDLCSegment *segment;
 
@@ -370,16 +416,6 @@ static BOOL debug = NO;
     if (segment == nil) {
         NSLog(@"Error: Cannot find offset for address 0x%08lx in dataOffsetForAddress:", address);
         exit(5);
-        return 0;
-    }
-
-    if (aSegmentName != nil && [[segment name] isEqual:aSegmentName] == NO) {
-        // This can happen with the symtab in a module.  In one case, the symtab is in __DATA, __bss, in the zero filled area.
-        // i.e. section offset is 0.
-        if (debug) NSLog(@"Note: Couldn't find address in specified segment (%08lx, %@)", address, aSegmentName);
-        //NSLog(@"\tsegment was: %@", segment);
-        //exit(5);
-        return 0;
     }
 
     if ([segment isProtected]) {
@@ -396,7 +432,7 @@ static BOOL debug = NO;
     NSLog(@"data offset:      0x%08x", offset + [segment fileOffsetForAddress:address]);
     NSLog(@"<----------");
 #endif
-    return offset + [segment fileOffsetForAddress:address];
+    return [segment fileOffsetForAddress:address];
 }
 
 - (const void *)bytes;
@@ -458,7 +494,7 @@ static BOOL debug = NO;
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 {
     NSMutableString *resultString;
-    unsigned int count, index;
+    NSUInteger count, index;
 
     resultString = [NSMutableString string];
     count = [loadCommands count];
@@ -511,16 +547,10 @@ static BOOL debug = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, offset: %p",
+    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, archOffset: %p",
                      NSStringFromClass([self class]), self,
                      [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
-                     filename, data, offset];
-}
-
-- (Class)processorClass;
-{
-    // Implement in subclasses
-    return [CDObjectiveCProcessor class];
+                     filename, data, archOffset];
 }
 
 - (void)logInfoForAddress:(NSUInteger)address;
@@ -625,12 +655,20 @@ static BOOL debug = NO;
     return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] != nil;
 }
 
+- (Class)processorClass;
+{
+    if ([self hasObjectiveC2Data])
+        return [CDObjectiveC2Processor class];
+    
+    return [CDObjectiveC1Processor class];
+}
+
 - (void)saveDeprotectedFileToPath:(NSString *)path;
 {
     NSMutableData *mdata;
 
     // Not going to handle fat files -- thin it first
-    NSParameterAssert(offset == 0);
+    NSParameterAssert(archOffset == 0);
 
     mdata = [[NSMutableData alloc] initWithData:data];
     for (CDLoadCommand *command in loadCommands) {

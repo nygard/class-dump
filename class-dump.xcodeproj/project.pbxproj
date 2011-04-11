@@ -178,6 +178,7 @@
 		01F524841001D3640006B272 /* formatType.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F524831001D3640006B272 /* formatType.m */; };
 		01F526461001F5AC0006B272 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
 		01F5264D1001F5C70006B272 /* deprotect.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F5264C1001F5C70006B272 /* deprotect.m */; };
+		DA88CA191200AF5D00FC6850 /* CDMachOFileDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */; };
 		DAF695D011E62B18009AF361 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		DAF695D111E62B18009AF361 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
 		DAF695D211E62B18009AF361 /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
@@ -211,8 +212,6 @@
 		DAF695F011E62B24009AF361 /* CDLCUnknown.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A42F0FF18F8300475772 /* CDLCUnknown.m */; };
 		DAF695F111E62B24009AF361 /* CDLCUUID.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4310FF18F8300475772 /* CDLCUUID.m */; };
 		DAF695F211E62B24009AF361 /* CDLoadCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AC308AE9CDC003E99F8 /* CDLoadCommand.m */; };
-		DAF695F311E62B24009AF361 /* CDMachO32File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9650FED69A500145175 /* CDMachO32File.m */; };
-		DAF695F411E62B24009AF361 /* CDMachO64File.m in Sources */ = {isa = PBXBuildFile; fileRef = 0182A9520FED694800145175 /* CDMachO64File.m */; };
 		DAF695F511E62B24009AF361 /* CDMachOFile.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AC508AE9CDC003E99F8 /* CDMachOFile.m */; };
 		DAF695F611E62B24009AF361 /* CDSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A6950FF1A4CC00475772 /* CDSection.m */; };
 		DAF695F711E62B24009AF361 /* CDSection32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A9A4830FF1930E00475772 /* CDSection32.m */; };
@@ -239,8 +238,7 @@
 		DAF696EE11E62EF3009AF361 /* CDRelocationInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01F77E160FF44D900055EECD /* CDRelocationInfo.m */; };
 		DAF696F011E62F7C009AF361 /* CDObjectiveCProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA528D0FF28578000B857D /* CDObjectiveCProcessor.m */; };
 		DAF696F111E62F7C009AF361 /* CDObjectiveC1Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */; };
-		DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */; };
-		DAF696F311E62F7C009AF361 /* CDObjectiveC2Processor32.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */; };
+		DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor.m in Sources */ = {isa = PBXBuildFile; fileRef = 0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor.m */; };
 		DAF696F911E63032009AF361 /* CDDataCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = 017F9C990DD0F66400EC8D0A /* CDDataCursor.m */; };
 		DAF696FE11E6308E009AF361 /* CDVisitorPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A68FF1104B923E0094DF3F /* CDVisitorPropertyState.m */; };
 		DAF6971A11E6396E009AF361 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B2408AE9D6D003E99F8 /* CDTopoSortNode.m */; };
@@ -387,20 +385,14 @@
 		013183060CDF6EE400EC5A2C /* CDUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CDUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		0154C2560FF5E93800F87451 /* cd_objc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cd_objc2.h; sourceTree = "<group>"; };
-		0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor64.h; sourceTree = "<group>"; };
-		0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor64.m; sourceTree = "<group>"; };
-		0154C26D0FF5EBE000F87451 /* CDObjectiveC2Processor32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor32.h; sourceTree = "<group>"; };
-		0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor32.m; sourceTree = "<group>"; };
+		0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDObjectiveC2Processor.h; sourceTree = "<group>"; };
+		0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDObjectiveC2Processor.m; sourceTree = "<group>"; };
 		017DDCBB0FFC3E7700F2DEE9 /* CDLCPreboundDylib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCPreboundDylib.h; sourceTree = "<group>"; };
 		017DDCBC0FFC3E7700F2DEE9 /* CDLCPreboundDylib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCPreboundDylib.m; sourceTree = "<group>"; };
 		017DDCE00FFC444200F2DEE9 /* CDLCTwoLevelHints.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCTwoLevelHints.h; sourceTree = "<group>"; };
 		017DDCE10FFC444200F2DEE9 /* CDLCTwoLevelHints.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCTwoLevelHints.m; sourceTree = "<group>"; };
 		017F9C980DD0F66400EC8D0A /* CDDataCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDDataCursor.h; sourceTree = "<group>"; };
 		017F9C990DD0F66400EC8D0A /* CDDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDDataCursor.m; sourceTree = "<group>"; };
-		0182A9510FED694800145175 /* CDMachO64File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachO64File.h; sourceTree = "<group>"; };
-		0182A9520FED694800145175 /* CDMachO64File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDMachO64File.m; sourceTree = "<group>"; };
-		0182A9640FED69A500145175 /* CDMachO32File.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachO32File.h; sourceTree = "<group>"; };
-		0182A9650FED69A500145175 /* CDMachO32File.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDMachO32File.m; sourceTree = "<group>"; };
 		0182A9940FED717500145175 /* CDSection64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDSection64.h; sourceTree = "<group>"; };
 		0182A9950FED717500145175 /* CDSection64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSection64.m; sourceTree = "<group>"; };
 		0185BF310FF9B251006AE888 /* CDLCRunPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCRunPath.h; sourceTree = "<group>"; };
@@ -481,6 +473,8 @@
 		01FB21E30FE926D60081556C /* CDFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDFile.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump_Prefix.pch"; sourceTree = "<group>"; };
+		DA88CA171200AF5D00FC6850 /* CDMachOFileDataCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachOFileDataCursor.h; sourceTree = "<group>"; };
+		DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDMachOFileDataCursor.m; sourceTree = "<group>"; };
 		DAF6959511E62A4F009AF361 /* libMachObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -597,6 +591,8 @@
 			children = (
 				017F9C980DD0F66400EC8D0A /* CDDataCursor.h */,
 				017F9C990DD0F66400EC8D0A /* CDDataCursor.m */,
+				DA88CA171200AF5D00FC6850 /* CDMachOFileDataCursor.h */,
+				DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */,
 				01A9A41F0FF18F6400475772 /* Load Commands */,
 				01FB21E20FE926D60081556C /* CDFile.h */,
 				01FB21E30FE926D60081556C /* CDFile.m */,
@@ -606,10 +602,6 @@
 				012E2ABF08AE9CDC003E99F8 /* CDFatArch.m */,
 				012E2AC408AE9CDC003E99F8 /* CDMachOFile.h */,
 				012E2AC508AE9CDC003E99F8 /* CDMachOFile.m */,
-				0182A9640FED69A500145175 /* CDMachO32File.h */,
-				0182A9650FED69A500145175 /* CDMachO32File.m */,
-				0182A9510FED694800145175 /* CDMachO64File.h */,
-				0182A9520FED694800145175 /* CDMachO64File.m */,
 				01A9A6940FF1A4CC00475772 /* CDSection.h */,
 				01A9A6950FF1A4CC00475772 /* CDSection.m */,
 				01A9A4820FF1930E00475772 /* CDSection32.h */,
@@ -625,10 +617,8 @@
 				01CA52B20FF2875B000B857D /* CDObjectiveC1Processor.h */,
 				01CA52B30FF2875B000B857D /* CDObjectiveC1Processor.m */,
 				0154C2560FF5E93800F87451 /* cd_objc2.h */,
-				0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor64.h */,
-				0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor64.m */,
-				0154C26D0FF5EBE000F87451 /* CDObjectiveC2Processor32.h */,
-				0154C26E0FF5EBE000F87451 /* CDObjectiveC2Processor32.m */,
+				0154C25C0FF5EA1200F87451 /* CDObjectiveC2Processor.h */,
+				0154C25D0FF5EA1200F87451 /* CDObjectiveC2Processor.m */,
 			);
 			name = "Mach-O";
 			sourceTree = "<group>";
@@ -1247,8 +1237,6 @@
 				DAF695F011E62B24009AF361 /* CDLCUnknown.m in Sources */,
 				DAF695F111E62B24009AF361 /* CDLCUUID.m in Sources */,
 				DAF695F211E62B24009AF361 /* CDLoadCommand.m in Sources */,
-				DAF695F311E62B24009AF361 /* CDMachO32File.m in Sources */,
-				DAF695F411E62B24009AF361 /* CDMachO64File.m in Sources */,
 				DAF695F511E62B24009AF361 /* CDMachOFile.m in Sources */,
 				DAF695F611E62B24009AF361 /* CDSection.m in Sources */,
 				DAF695F711E62B24009AF361 /* CDSection32.m in Sources */,
@@ -1257,8 +1245,7 @@
 				DAF696EE11E62EF3009AF361 /* CDRelocationInfo.m in Sources */,
 				DAF696F011E62F7C009AF361 /* CDObjectiveCProcessor.m in Sources */,
 				DAF696F111E62F7C009AF361 /* CDObjectiveC1Processor.m in Sources */,
-				DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor64.m in Sources */,
-				DAF696F311E62F7C009AF361 /* CDObjectiveC2Processor32.m in Sources */,
+				DAF696F211E62F7C009AF361 /* CDObjectiveC2Processor.m in Sources */,
 				DAF696FE11E6308E009AF361 /* CDVisitorPropertyState.m in Sources */,
 				DAF695FC11E62B35009AF361 /* CDOCCategory.m in Sources */,
 				DAF695FD11E62B35009AF361 /* CDOCClass.m in Sources */,
@@ -1275,6 +1262,7 @@
 				DAF6960F11E62C00009AF361 /* CDTypeLexer.m in Sources */,
 				DAF6961011E62C00009AF361 /* CDTypeName.m in Sources */,
 				DAF6961111E62C00009AF361 /* CDTypeParser.m in Sources */,
+				DA88CA191200AF5D00FC6850 /* CDMachOFileDataCursor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1302,6 +1290,7 @@
 		010C4CD91001930200B27A2B /* 32-Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = "32-Debug";
@@ -1397,6 +1386,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_64_BIT)";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Debug;
@@ -1406,6 +1396,7 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
 			};
 			name = Release;

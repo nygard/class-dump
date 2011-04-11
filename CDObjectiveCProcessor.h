@@ -5,8 +5,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDMachOFile, CDTypeController;
-@class CDVisitor;
+@class CDMachOFile, CDSection, CDTypeController;
+@class CDClassDump, CDVisitor;
 
 @interface CDObjectiveCProcessor : NSObject
 {
@@ -38,7 +38,7 @@
 
 - (void)createUniquedProtocols;
 
-- (NSData *)objcImageInfoData;
+- (CDSection *)objcImageInfoSection;
 - (NSString *)garbageCollectionStatus;
 
 @end

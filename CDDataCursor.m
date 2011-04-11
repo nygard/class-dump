@@ -9,12 +9,16 @@
 
 - (id)initWithData:(NSData *)someData;
 {
+    return [self initWithData:someData offset:0];
+}
+
+- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+{
     if ([super init] == nil)
         return nil;
 
     data = [someData retain];
-    offset = 0;
-    byteOrder = CDByteOrderLittleEndian;
+    offset = anOffset;
 
     return self;
 }
@@ -41,7 +45,6 @@
     return offset;
 }
 
-// Return NO on failure.
 - (void)setOffset:(NSUInteger)newOffset;
 {
     if (newOffset <= [data length]) {
@@ -214,56 +217,6 @@
 - (BOOL)isAtEnd;
 {
     return offset >= [data length];
-}
-
-- (CDByteOrder)byteOrder;
-{
-    return byteOrder;
-}
-
-- (void)setByteOrder:(CDByteOrder)newByteOrder;
-{
-    byteOrder = newByteOrder;
-}
-
-//
-// Read using the current byteOrder
-//
-
-- (uint16_t)readInt16;
-{
-    if (byteOrder == CDByteOrderLittleEndian)
-        return [self readLittleInt16];
-
-    return [self readBigInt16];
-}
-
-- (uint32_t)readInt32;
-{
-    if (byteOrder == CDByteOrderLittleEndian)
-        return [self readLittleInt32];
-
-    return [self readBigInt32];
-}
-
-- (uint64_t)readInt64;
-{
-    if (byteOrder == CDByteOrderLittleEndian)
-        return [self readLittleInt64];
-
-    return [self readBigInt64];
-}
-
-- (uint32_t)peekInt32;
-{
-    NSUInteger savedOffset;
-    uint32_t val;
-
-    savedOffset = offset;
-    val = [self readInt32];
-    offset = savedOffset;
-
-    return val;
 }
 
 - (NSString *)readCString;

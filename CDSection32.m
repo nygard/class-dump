@@ -12,7 +12,7 @@
 @implementation CDSection32
 
 // Just to resolve multiple different definitions...
-- (id)initWithDataCursor:(CDDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 {
     char buf[17];
     NSString *str;
@@ -79,7 +79,7 @@
 - (void)loadData;
 {
     if (_flags.hasLoadedData == NO) {
-        data = [[NSData alloc] initWithBytes:[[nonretained_segment machOFile] machODataBytes] + section.offset length:section.size];
+        data = [[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size];
         _flags.hasLoadedData = YES;
     }
 }
