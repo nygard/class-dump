@@ -20,6 +20,7 @@
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
+#import "CDLCUUID.h"
 #import "CDObjectiveC1Processor.h"
 #import "CDObjectiveC2Processor.h"
 #import "CDSection.h"
