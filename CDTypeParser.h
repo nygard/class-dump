@@ -5,6 +5,8 @@
 
 #import <Foundation/Foundation.h>
 
+#import "CDTypeLexer.h" // For CDTypeLexerState
+
 @class CDMethodType, CDType, CDTypeLexer, CDTypeName;
 
 extern NSString *CDSyntaxError;
@@ -32,7 +34,7 @@ extern NSString *CDTypeParserErrorDomain;
 @interface CDTypeParser (Private)
 
 - (void)match:(int)token;
-- (void)match:(int)token enterState:(int)newState;
+- (void)match:(int)token enterState:(CDTypeLexerState)newState;
 - (void)error:(NSString *)errorString;
 
 - (NSArray *)_parseMethodType;
