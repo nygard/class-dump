@@ -236,7 +236,7 @@
     if (address == 0)
         return nil;
     
-    //NSLog(@"%s, address=%016lx", _cmd, address);
+    //NSLog(@"%s, address=%016lx", __cmd, address);
     
     cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);

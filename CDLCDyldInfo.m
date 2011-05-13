@@ -239,7 +239,7 @@ static NSString *CDBindTypeString(uint8_t type)
     start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.rebase_off;
     end = start + dyldInfoCommand.rebase_size;
 
-    NSLog(@"address: %016lx", address);
+    NSLog(@"address: %016llx", address);
     ptr = start;
     while ((ptr < end) && isDone == NO) {
         uint8_t immediate, opcode;
@@ -343,7 +343,7 @@ static NSString *CDBindTypeString(uint8_t type)
         }
     }
 
-    NSLog(@"    ptr: %p, end: %p, bytes left over: %u", ptr, end, end - ptr);
+    NSLog(@"    ptr: %p, end: %p, bytes left over: %ld", ptr, end, end - ptr);
     NSLog(@"    rebaseCount: %lu", rebaseCount);
     NSLog(@"----------------------------------------------------------------------");
 }
@@ -444,12 +444,12 @@ static NSString *CDBindTypeString(uint8_t type)
 
           case BIND_OPCODE_SET_DYLIB_ORDINAL_IMM:
               libraryOrdinal = immediate;
-              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_DYLIB_ORDINAL_IMM,          libraryOrdinal = %ld", libraryOrdinal);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_DYLIB_ORDINAL_IMM,          libraryOrdinal = %lld", libraryOrdinal);
               break;
 
           case BIND_OPCODE_SET_DYLIB_ORDINAL_ULEB:
               libraryOrdinal = read_uleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_DYLIB_ORDINAL_ULEB,         libraryOrdinal = %ld", libraryOrdinal);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_DYLIB_ORDINAL_ULEB,         libraryOrdinal = %lld", libraryOrdinal);
               break;
 
           case BIND_OPCODE_SET_DYLIB_SPECIAL_IMM: {
@@ -461,7 +461,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
                   libraryOrdinal = val;
               }
-              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_DYLIB_SPECIAL_IMM,          libraryOrdinal = %ld", libraryOrdinal);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_DYLIB_SPECIAL_IMM,          libraryOrdinal = %lld", libraryOrdinal);
               break;
           }
 
@@ -483,7 +483,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
           case BIND_OPCODE_SET_ADDEND_SLEB:
               addend = read_sleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_ADDEND_SLEB,                addend = %ld", addend);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_ADDEND_SLEB,                addend = %lld", addend);
               break;
 
           case BIND_OPCODE_SET_SEGMENT_AND_OFFSET_ULEB: {
@@ -491,9 +491,9 @@ static NSString *CDBindTypeString(uint8_t type)
 
               segmentIndex = immediate;
               val = read_uleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_SEGMENT_AND_OFFSET_ULEB,    segmentIndex: %u, offset: 0x%016lx", segmentIndex, val);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: SET_SEGMENT_AND_OFFSET_ULEB,    segmentIndex: %u, offset: 0x%016llx", segmentIndex, val);
               address = [[segments objectAtIndex:segmentIndex] vmaddr] + val;
-              if (debugBindOps) NSLog(@"    address = 0x%016lx", address);
+              if (debugBindOps) NSLog(@"    address = 0x%016llx", address);
               break;
           }
 
@@ -501,7 +501,7 @@ static NSString *CDBindTypeString(uint8_t type)
               uint64_t val;
 
               val = read_uleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: ADD_ADDR_ULEB,                  addr += 0x%016lx", val);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: ADD_ADDR_ULEB,                  addr += 0x%016llx", val);
               address += val;
               break;
           }
@@ -517,7 +517,7 @@ static NSString *CDBindTypeString(uint8_t type)
               uint64_t val;
 
               val = read_uleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_ULEB,          address += %016lx", val);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_ULEB,          address += %016llx", val);
               [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
               address += ptrSize + val;
               bindCount++;
@@ -525,7 +525,7 @@ static NSString *CDBindTypeString(uint8_t type)
           }
 
           case BIND_OPCODE_DO_BIND_ADD_ADDR_IMM_SCALED:
-              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_IMM_SCALED,    address += %u * %u", immediate, ptrSize);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ADD_ADDR_IMM_SCALED,    address += %u * %lu", immediate, ptrSize);
               [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
               address += ptrSize + immediate * ptrSize;
               bindCount++;
@@ -536,7 +536,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
               count = read_uleb128(&ptr, end);
               skip = read_uleb128(&ptr, end);
-              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ULEB_TIMES_SKIPPING_ULEB, count: %016lx, skip: %016lx", count, skip);
+              if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ULEB_TIMES_SKIPPING_ULEB, count: %016llx, skip: %016llx", count, skip);
               for (index = 0; index < count; index++) {
                   [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
                   address += ptrSize + skip;
@@ -552,7 +552,7 @@ static NSString *CDBindTypeString(uint8_t type)
     }
 
     if (debugBindOps) {
-        NSLog(@"    ptr: %p, end: %p, bytes left over: %u", ptr, end, end - ptr);
+        NSLog(@"    ptr: %p, end: %p, bytes left over: %ld", ptr, end, end - ptr);
         NSLog(@"    bindCount: %lu", bindCount);
         NSLog(@"----------------------------------------------------------------------");
     }
@@ -603,7 +603,7 @@ static NSString *CDBindTypeString(uint8_t type)
     const uint8_t *ptr, *tptr;
     uint8_t childCount, index;
 
-    //NSLog(@" > %s, %p-%p, offset: %lx = %p", _cmd, start, end, offset, start + offset);
+    //NSLog(@" > %s, %p-%p, offset: %lx = %p", __cmd, start, end, offset, start + offset);
 
     ptr = start + offset;
     NSParameterAssert(ptr < end);
@@ -627,12 +627,12 @@ static NSString *CDBindTypeString(uint8_t type)
             uint64_t offset;
 
             offset = read_uleb128(&tptr, end);
-            NSLog(@"     Regular: %04x  %016lx %@", flags, offset, prefix);
+            NSLog(@"     Regular: %04llx  %016llx %@", flags, offset, prefix);
             //NSLog(@"     Regular: %04x  0x%08x %@", flags, offset, prefix);
         } else if (kind == EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL) {
-            NSLog(@"Thread Local: %04x                   %@, terminalSize: %u", flags, prefix, terminalSize);
+            NSLog(@"Thread Local: %04llx                   %@, terminalSize: %u", flags, prefix, terminalSize);
         } else {
-            NSLog(@"     Unknown: %04x  %x, name: %@, terminalSize: %u", flags, kind, prefix, terminalSize);
+            NSLog(@"     Unknown: %04llx  %x, name: %@, terminalSize: %u", flags, kind, prefix, terminalSize);
         }
     }
 
@@ -652,7 +652,7 @@ static NSString *CDBindTypeString(uint8_t type)
         [self printSymbols:start end:end prefix:[NSString stringWithFormat:@"%@%s", prefix, edgeStart] offset:nodeOffset];
     }
 
-    //NSLog(@"<  %s, %p-%p, offset: %lx = %p", _cmd, start, end, offset, start + offset);
+    //NSLog(@"<  %s, %p-%p, offset: %lx = %p", __cmd, start, end, offset, start + offset);
 }
 
 @end

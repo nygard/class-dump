@@ -137,7 +137,7 @@ static BOOL debug = NO;
     if (resultType == nil) {
         NSLog(@"Couldn't parse type: %@", [error myExplanation]);
         [aParser release];
-        //NSLog(@"<  %s", _cmd);
+        //NSLog(@"<  %s", __cmd);
         return nil;
     }
 

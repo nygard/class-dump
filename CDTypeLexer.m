@@ -55,7 +55,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
 - (void)setState:(CDTypeLexerState)newState;
 {
-    if (debug) NSLog(@"CDTypeLexer - changing state from %u (%@) to %u (%@)", state, CDTypeLexerStateName(state), newState, CDTypeLexerStateName(newState));
+    if (debug) NSLog(@"CDTypeLexer - changing state from %lu (%@) to %lu (%@)", state, CDTypeLexerStateName(state), newState, CDTypeLexerStateName(newState));
     state = newState;
 }
 
@@ -83,7 +83,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
     if ([scanner isAtEnd]) {
         if (shouldShowLexing)
-            NSLog(@"%s [state=%d], token = TK_EOS", _cmd, state);
+            NSLog(@"%s [state=%lu], token = TK_EOS", __cmd, state);
         return TK_EOS;
     }
 
@@ -92,26 +92,26 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
         if ([scanner scanString:@"<" intoString:NULL]) {
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, '<', '<');
+                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, '<', '<');
             return '<';
         }
 
         if ([scanner scanString:@">" intoString:NULL]) {
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, '>', '>');
+                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, '>', '>');
             return '>';
         }
 
         if ([scanner scanString:@"," intoString:NULL]) {
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, ',', ',');
+                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, ',', ',');
             return ',';
         }
 
         if ([scanner my_scanCharactersFromSet:[NSScanner cdTemplateTypeCharacterSet] intoString:&str]) {
             [self _setLexText:str];
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = TK_TEMPLATE_TYPE (%@)", _cmd, state, lexText);
+                NSLog(@"%s [state=%lu], token = TK_TEMPLATE_TYPE (%@)", __cmd, state, lexText);
             return TK_TEMPLATE_TYPE;
         }
 
@@ -125,7 +125,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         if ([scanner scanIdentifierIntoString:&anIdentifier]) {
             [self _setLexText:anIdentifier];
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = TK_IDENTIFIER (%@)", _cmd, state, lexText);
+                NSLog(@"%s [state=%lu], token = TK_IDENTIFIER (%@)", __cmd, state, lexText);
             state = CDTypeLexerState_Normal;
             return TK_IDENTIFIER;
         }
@@ -139,26 +139,26 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
                 [self _setLexText:@""];
             [scanner scanString:@"\"" intoString:NULL];
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = TK_QUOTED_STRING (%@)", _cmd, state, lexText);
+                NSLog(@"%s [state=%lu], token = TK_QUOTED_STRING (%@)", __cmd, state, lexText);
             return TK_QUOTED_STRING;
         }
 
         if ([scanner my_scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str]) {
             [self _setLexText:str];
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = TK_NUMBER (%@)", _cmd, state, lexText);
+                NSLog(@"%s [state=%lu], token = TK_NUMBER (%@)", __cmd, state, lexText);
             return TK_NUMBER;
         }
 
         if ([scanner scanCharacter:&ch]) {
             if (shouldShowLexing)
-                NSLog(@"%s [state=%d], token = %d '%c'", _cmd, state, ch, ch);
+                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, ch, ch);
             return ch;
         }
     }
 
     if (shouldShowLexing)
-        NSLog(@"%s [state=%d], token = TK_EOS", _cmd, state);
+        NSLog(@"%s [state=%lu], token = TK_EOS", __cmd, state);
 
     return TK_EOS;
 }

@@ -254,7 +254,7 @@ static NSString *CDTokenDescription(int token)
 #if 0
         if (lookahead == TK_QUOTED_STRING) {
             NSLog(@"%s, quoted string ahead, shouldCheckFieldNames: %d, end: %d",
-                  _cmd, shouldCheckFieldNames, [[lexer scanner] isAtEnd]);
+                  __cmd, shouldCheckFieldNames, [[lexer scanner] isAtEnd]);
             if ([[lexer scanner] isAtEnd] == NO)
                 NSLog(@"next character: %d (%c), isInTypeStartSet: %d", [lexer peekChar], [lexer peekChar], [self isTokenInTypeStartSet:[lexer peekChar]]);
         }
@@ -371,14 +371,14 @@ static NSString *CDTokenDescription(int token)
 {
     NSMutableArray *result;
 
-    //NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", __cmd);
 
     result = [NSMutableArray array];
 
     while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead])
         [result addObject:[self parseMember]];
 
-    //NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", __cmd);
 
     return result;
 }
@@ -387,7 +387,7 @@ static NSString *CDTokenDescription(int token)
 {
     CDType *result;
 
-    //NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", __cmd);
 
     if (lookahead == TK_QUOTED_STRING) {
         NSString *identifier = nil;
@@ -410,7 +410,7 @@ static NSString *CDTokenDescription(int token)
         result = [self _parseTypeInStruct:YES];
     }
 
-    //NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", __cmd);
     return result;
 }
 

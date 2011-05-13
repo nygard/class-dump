@@ -14,7 +14,7 @@ static BOOL debug = NO;
     if ([super initWithDataCursor:cursor] == nil)
         return nil;
 
-    if (debug) NSLog(@"offset: %u", [cursor offset]);
+    if (debug) NSLog(@"offset: %lu", [cursor offset]);
     loadCommand.cmd = [cursor readInt32];
     loadCommand.cmdsize = [cursor readInt32];
     if (debug) NSLog(@"cmdsize: %u", loadCommand.cmdsize);

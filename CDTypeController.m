@@ -196,7 +196,7 @@ static BOOL debug = NO;
     } else if ([aStructure type] == '(') {
         [unionTable phase0RegisterStructure:aStructure usedInMethod:isUsedInMethod];
     } else {
-        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
+        NSLog(@"%s, unknown structure type: %d", __cmd, [aStructure type]);
     }
 }
 
@@ -216,14 +216,14 @@ static BOOL debug = NO;
 // It does this by going through all the top level structures we found in phase 0.
 - (void)startPhase1;
 {
-    //NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", __cmd);
     // Structures and unions can be nested, so do phase 1 on each table before finishing the phase.
     [structureTable phase1WithTypeController:self];
     [unionTable phase1WithTypeController:self];
 
     [structureTable finishPhase1];
     [unionTable finishPhase1];
-    //NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", __cmd);
 }
 
 - (void)phase1RegisterStructure:(CDType *)aStructure;
@@ -233,7 +233,7 @@ static BOOL debug = NO;
     } else if ([aStructure type] == '(') {
         [unionTable phase1RegisterStructure:aStructure];
     } else {
-        NSLog(@"%s, unknown structure type: %d", _cmd, [aStructure type]);
+        NSLog(@"%s, unknown structure type: %d", __cmd, [aStructure type]);
     }
 }
 
@@ -245,13 +245,13 @@ static BOOL debug = NO;
 {
     NSUInteger maxDepth, depth;
 
-    //NSLog(@" > %s", _cmd);
+    //NSLog(@" > %s", __cmd);
 
     maxDepth = [structureTable phase1_maxDepth];
     if (maxDepth < [unionTable phase1_maxDepth])
         maxDepth = [unionTable phase1_maxDepth];
 
-    if (debug) NSLog(@"max structure/union depth is: %u", maxDepth);
+    if (debug) NSLog(@"max structure/union depth is: %lu", maxDepth);
 
     for (depth = 1; depth <= maxDepth; depth++) {
         [structureTable phase2AtDepth:depth typeController:self];
@@ -299,7 +299,7 @@ static BOOL debug = NO;
     // CDTypeController - (BOOL)shouldExpandType:(CDType *)type;
     // CDTypeController - (NSString *)typedefNameForType:(CDType *)type;
 
-    //NSLog(@"<  %s", _cmd);
+    //NSLog(@"<  %s", __cmd);
 }
 
 - (BOOL)shouldShowName:(NSString *)name;
@@ -335,7 +335,7 @@ static BOOL debug = NO;
 
 - (void)phase3RegisterStructure:(CDType *)aStructure;
 {
-    //NSLog(@"%s, type= %@", _cmd, [aStructure typeString]);
+    //NSLog(@"%s, type= %@", __cmd, [aStructure typeString]);
     if ([aStructure type] == '{')
         [structureTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
 

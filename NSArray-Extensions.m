@@ -50,7 +50,7 @@
 
         identifier = [aNode identifier];
         if ([nodesByName objectForKey:identifier] != nil)
-            NSLog(@"Warning: Duplicate identifier (%@) in %s", identifier, _cmd);
+            NSLog(@"Warning: Duplicate identifier (%@) in %s", identifier, __cmd);
         [nodesByName setObject:aNode forKey:identifier];
         [aNode release];
     }

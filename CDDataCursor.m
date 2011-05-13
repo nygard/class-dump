@@ -82,7 +82,7 @@
         result = OSReadLittleInt16([data bytes], offset);
         offset += sizeof(result);
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
         result = 0;
     }
 
@@ -97,7 +97,7 @@
         result = OSReadLittleInt32([data bytes], offset);
         offset += sizeof(result);
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
         result = 0;
     }
 
@@ -112,7 +112,7 @@
         result = OSReadLittleInt64([data bytes], offset);
         offset += sizeof(result);
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
         result = 0;
     }
 
@@ -127,7 +127,7 @@
         result = OSReadBigInt16([data bytes], offset);
         offset += sizeof(result);
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
         result = 0;
     }
 
@@ -142,7 +142,7 @@
         result = OSReadBigInt32([data bytes], offset);
         offset += sizeof(result);
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
         result = 0;
     }
 
@@ -157,7 +157,7 @@
         result = OSReadBigInt64([data bytes], offset);
         offset += sizeof(result);
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
         result = 0;
     }
 
@@ -200,7 +200,7 @@
         [targetData appendBytes:[data bytes] + offset length:length];
         offset += length;
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
     }
 }
 
@@ -210,7 +210,7 @@
         memcpy(buf, [data bytes] + offset, length);
         offset += length;
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
     }
 }
 
@@ -252,7 +252,7 @@
             return str;
         }
     } else {
-        [NSException raise:NSRangeException format:@"Trying to read past end in %s", _cmd];
+        [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
     }
 
     return nil;

@@ -29,8 +29,8 @@
         NSString *path;
         SenTestSuite *suite;
 
-        NSLog(@"%s, testCaseClass: %@[%@]", _cmd, testCaseClass, NSStringFromClass(testCaseClass));
-        NSLog(@"%s, self: %p, testCaseClass: %p", _cmd, self, testCaseClass);
+        NSLog(@"%s, testCaseClass: %@[%@]", __cmd, testCaseClass, NSStringFromClass(testCaseClass));
+        NSLog(@"%s, self: %p, testCaseClass: %p", __cmd, self, testCaseClass);
         if (testCaseClass != self) {
             NSLog(@"default test suite: %@", [testCaseClass defaultTestSuite]);
         }

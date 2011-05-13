@@ -620,7 +620,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     CDRelocationInfo *rinfo;
 
     rinfo = [dynamicSymbolTable relocationEntryWithOffset:address - [symbolTable baseAddress]];
-    //NSLog(@"%s, rinfo= %@", _cmd, rinfo);
+    //NSLog(@"%s, rinfo= %@", __cmd, rinfo);
     return rinfo != nil;
 }
 
