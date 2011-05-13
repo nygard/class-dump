@@ -74,7 +74,7 @@ static NSString *CDTokenDescription(int token)
 
         // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
         if ([[exception name] isEqual:CDSyntaxError]) {
-            code = CDTypeParserCodeSyntaxError;
+            code = CDTypeParserCode_SyntaxError;
             userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
                                              [NSString stringWithFormat:@"Syntax Error, %@:\n\t     type: %@\n\tremaining: %@",
                                                        [exception reason], [lexer string], [lexer remainingString]], @"explanation",
@@ -82,7 +82,7 @@ static NSString *CDTokenDescription(int token)
                                              [lexer remainingString], @"remaining string",
                                              nil];
         } else {
-            code = CDTypeParserCodeDefault;
+            code = CDTypeParserCode_Default;
             userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[exception reason], @"reason",
                                              [lexer string], @"type",
                                              [lexer remainingString], @"remaining string",
@@ -113,7 +113,7 @@ static NSString *CDTokenDescription(int token)
 
         // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
         if ([[exception name] isEqual:CDSyntaxError]) {
-            code = CDTypeParserCodeSyntaxError;
+            code = CDTypeParserCode_SyntaxError;
             userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
                                              [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@",
                                                        [exception reason], [lexer string], [lexer remainingString]], @"explanation",
@@ -121,7 +121,7 @@ static NSString *CDTokenDescription(int token)
                                              [lexer remainingString], @"remaining string",
                                              nil];
         } else {
-            code = CDTypeParserCodeDefault;
+            code = CDTypeParserCode_Default;
             userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[exception reason], @"reason",
                                              [lexer string], @"type",
                                              [lexer remainingString], @"remaining string",
@@ -284,7 +284,7 @@ static NSString *CDTokenDescription(int token)
         CDTypeLexerState savedState;
 
         savedState = [lexer state];
-        [self match:'{' enterState:CDTypeLexerStateIdentifier];
+        [self match:'{' enterState:CDTypeLexerState_Identifier];
         typeName = [self parseTypeName];
         optionalMembers = [self parseOptionalMembers];
         [self match:'}' enterState:savedState];
@@ -294,7 +294,7 @@ static NSString *CDTokenDescription(int token)
         CDTypeLexerState savedState;
 
         savedState = [lexer state];
-        [self match:'(' enterState:CDTypeLexerStateIdentifier];
+        [self match:'(' enterState:CDTypeLexerState_Identifier];
         if (lookahead == TK_IDENTIFIER) {
             CDTypeName *typeName;
             NSArray *optionalMembers;
@@ -425,7 +425,7 @@ static NSString *CDTokenDescription(int token)
         CDTypeLexerState savedState;
 
         savedState = [lexer state];
-        [self match:'<' enterState:CDTypeLexerStateTemplateTypes];
+        [self match:'<' enterState:CDTypeLexerState_TemplateTypes];
         [typeName addTemplateType:[self parseTypeName]];
         while (lookahead == ',') {
             [self match:','];
@@ -433,7 +433,7 @@ static NSString *CDTokenDescription(int token)
         }
         [self match:'>' enterState:savedState];
 
-        if ([lexer state] == CDTypeLexerStateTemplateTypes) {
+        if ([lexer state] == CDTypeLexerState_TemplateTypes) {
             if (lookahead == TK_IDENTIFIER) {
                 NSString *suffix = [lexer lexText];
 

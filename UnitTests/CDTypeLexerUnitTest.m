@@ -136,7 +136,7 @@ struct tokenValuePair {
 {
     NSString *str = @"iii)ii";
     struct tokenValuePair tokens[] = {
-        { 'i',              nil,               CDTypeLexerStateIdentifier },
+        { 'i',              nil,               CDTypeLexerState_Identifier },
         { TK_IDENTIFIER,    @"ii",             -1 },
         { ')',              nil,               -1 },
         { 'i',              nil,               -1 },
@@ -153,16 +153,16 @@ struct tokenValuePair {
 {
     NSString *str = @"{vector<IPPhotoInfo*,std::allocator<IPPhotoInfo*> >=iic}";
     struct tokenValuePair tokens[] = {
-        { '{',              nil,               CDTypeLexerStateIdentifier },
+        { '{',              nil,               CDTypeLexerState_Identifier },
         { TK_IDENTIFIER,    @"vector",         -1 },
-        { '<',              nil,               CDTypeLexerStateTemplateTypes },
+        { '<',              nil,               CDTypeLexerState_TemplateTypes },
         { TK_TEMPLATE_TYPE, @"IPPhotoInfo*",   -1 },
         { ',',              nil,               -1 },
         { TK_TEMPLATE_TYPE, @"std::allocator", -1 },
-        { '<',              nil,               CDTypeLexerStateTemplateTypes },
+        { '<',              nil,               CDTypeLexerState_TemplateTypes },
         { TK_TEMPLATE_TYPE, @"IPPhotoInfo*",   -1 },
         { '>',              nil,               -1 },
-        { '>',              nil,               CDTypeLexerStateNormal },
+        { '>',              nil,               CDTypeLexerState_Normal },
         { '=',              nil,               -1 },
         { 'i',              nil,               -1 },
         { 'i',              nil,               -1 },

@@ -8,15 +8,15 @@
 
 @class CDSection;
 
-#define CDSegmentProtectedMagicTypeNone 0
-#define CDSegmentProtectedMagicType1 0xc2286295
-#define CDSegmentProtectedMagicType2 0x2e69cf40
+#define CDSegmentProtectedMagic_None 0
+#define CDSegmentProtectedMagic_AES 0xc2286295
+#define CDSegmentProtectedMagic_Blowfish 0x2e69cf40
 
 enum {
-    CDSegmentEncryptionTypeNone = 0,
-    CDSegmentEncryptionType1 = 1, // Prior to 10.5 (AES)
-    CDSegmentEncryptionType2 = 2, // 10.6 (Blowfish)
-    CDSegmentEncryptionTypeUnknown
+    CDSegmentEncryptionType_None = 0,
+    CDSegmentEncryptionType_AES = 1, // Prior to 10.5 (AES)
+    CDSegmentEncryptionType_Blowfish = 2, // 10.6 (Blowfish)
+    CDSegmentEncryptionType_Unknown
 };
 typedef NSUInteger CDSegmentEncryptionType;
 

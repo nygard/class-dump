@@ -8,10 +8,10 @@
 #include <mach-o/reloc.h>
 
 enum {
-    CDRelocationInfoLength8Bit = 0,
-    CDRelocationInfoLength16Bit = 1,
-    CDRelocationInfoLength32Bit = 2,
-    CDRelocationInfoLength64Bit = 3,
+    CDRelocationInfoSize_8Bit = 0,
+    CDRelocationInfoSize_16Bit = 1,
+    CDRelocationInfoSize_32Bit = 2,
+    CDRelocationInfoSize_64Bit = 3,
 };
 typedef NSUInteger CDRelocationSize;
 

@@ -7,9 +7,9 @@
 #import "CDTopologicalSortProtocol.h"
 
 enum {
-    CDWhiteNodeColor = 0,
-    CDGrayNodeColor = 1,
-    CDBlackNodeColor = 2,
+    CDNodeColor_White = 0,
+    CDNodeColor_Gray = 1,
+    CDNodeColor_Black = 2,
 };
 typedef NSUInteger CDNodeColor;
 

@@ -9,8 +9,8 @@
 #include <mach-o/loader.h>
 
 enum {
-    CDByteOrderLittleEndian = 0,
-    CDByteOrderBigEndian = 1,
+    CDByteOrder_LittleEndian = 0,
+    CDByteOrder_BigEndian = 1,
 };
 typedef NSUInteger CDByteOrder;
 

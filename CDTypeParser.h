@@ -12,8 +12,8 @@
 extern NSString *CDSyntaxError;
 extern NSString *CDTypeParserErrorDomain;
 
-#define CDTypeParserCodeDefault 0
-#define CDTypeParserCodeSyntaxError 1
+#define CDTypeParserCode_Default 0
+#define CDTypeParserCode_SyntaxError 1
 
 @interface CDTypeParser : NSObject
 {

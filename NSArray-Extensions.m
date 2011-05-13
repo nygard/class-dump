@@ -59,7 +59,7 @@
 
     allNodes = [[nodesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByIdentifier:)];
     for (CDTopoSortNode *aNode in allNodes) {
-        if ([aNode color] == CDWhiteNodeColor)
+        if ([aNode color] == CDNodeColor_White)
             [aNode topologicallySortNodes:nodesByName intoArray:sortedArray];
     }
 

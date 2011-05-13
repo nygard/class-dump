@@ -47,7 +47,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
         return nil;
 
-    byteOrder = CDByteOrderLittleEndian;
+    byteOrder = CDByteOrder_LittleEndian;
     loadCommands = [[NSMutableArray alloc] init];
     segments = [[NSMutableArray alloc] init];
     symbolTable = nil;
@@ -58,9 +58,9 @@ NSString *CDMagicNumberString(uint32_t magic)
     CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
     header.magic = [cursor readBigInt32];
     if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
-        byteOrder = CDByteOrderBigEndian;
+        byteOrder = CDByteOrder_BigEndian;
     } else if (header.magic == MH_CIGAM || header.magic == MH_CIGAM_64) {
-        byteOrder = CDByteOrderLittleEndian;
+        byteOrder = CDByteOrder_LittleEndian;
     } else {
         [cursor release];
         [self release];
@@ -81,7 +81,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     
     [cursor release];
     
-    if (byteOrder == CDByteOrderLittleEndian) {
+    if (byteOrder == CDByteOrder_LittleEndian) {
         header.cputype = OSSwapInt32(header.cputype);
         header.cpusubtype = OSSwapInt32(header.cpusubtype);
         header.filetype = OSSwapInt32(header.filetype);

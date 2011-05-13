@@ -13,9 +13,9 @@
 NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
     switch (type) {
-      case CDSegmentEncryptionTypeNone: return @"None";
-      case CDSegmentEncryptionType1: return @"Protected Segment Type 1 (prior to 10.6)";
-      case CDSegmentEncryptionType2: return @"Protected Segment Type 2 (10.6)";
+      case CDSegmentEncryptionType_None: return @"None";
+      case CDSegmentEncryptionType_AES: return @"Protected Segment Type 1 (prior to 10.6)";
+      case CDSegmentEncryptionType_Blowfish: return @"Protected Segment Type 2 (10.6)";
     }
 
     return @"Unknown";
@@ -104,7 +104,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     if ([self isProtected]) {
         if ([self filesize] <= 3 * PAGE_SIZE) {
             // First three pages aren't encrypted, so we can't tell.  Let's pretent it's something we can decrypt.
-            return CDSegmentEncryptionType1;
+            return CDSegmentEncryptionType_AES;
         } else {
             const void *src;
             uint32_t magic;
@@ -114,25 +114,25 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             magic = OSReadLittleInt32(src, 0);
             //NSLog(@"%s, magic= 0x%08x", _cmd, magic);
             switch (magic) {
-              case CDSegmentProtectedMagicTypeNone: return CDSegmentEncryptionTypeNone;
-              case CDSegmentProtectedMagicType1: return CDSegmentEncryptionType1;
-              case CDSegmentProtectedMagicType2: return CDSegmentEncryptionType2;
+              case CDSegmentProtectedMagic_None: return CDSegmentEncryptionType_None;
+              case CDSegmentProtectedMagic_AES: return CDSegmentEncryptionType_AES;
+              case CDSegmentProtectedMagic_Blowfish: return CDSegmentEncryptionType_Blowfish;
             }
 
-            return CDSegmentEncryptionTypeUnknown;
+            return CDSegmentEncryptionType_Unknown;
         }
     }
 
-    return CDSegmentEncryptionTypeNone;
+    return CDSegmentEncryptionType_None;
 }
 
 - (BOOL)canDecrypt;
 {
     CDSegmentEncryptionType encryptionType = [self encryptionType];
 
-    return (encryptionType == CDSegmentEncryptionTypeNone)
-        || (encryptionType == CDSegmentEncryptionType1)
-        || (encryptionType == CDSegmentEncryptionType2);
+    return (encryptionType == CDSegmentEncryptionType_None)
+        || (encryptionType == CDSegmentEncryptionType_AES)
+        || (encryptionType == CDSegmentEncryptionType_Blowfish);
 }
 
 - (NSString *)flagDescription;
@@ -278,9 +278,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             count = ([self filesize] / PAGE_SIZE) - 3;
 
             magic = OSReadLittleInt32(src, 0);
-            if (magic == CDSegmentProtectedMagicTypeNone) {
+            if (magic == CDSegmentProtectedMagic_None) {
                 memcpy(dest, src, [self filesize] - PAGE_SIZE * 3);
-            } else if (magic == CDSegmentProtectedMagicType2) {
+            } else if (magic == CDSegmentProtectedMagic_Blowfish) {
                 // 10.6 decryption
                 unsigned char ivec[8];
                 BF_KEY key;
@@ -294,7 +294,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
                     src += PAGE_SIZE;
                     dest += PAGE_SIZE;
                 }
-            } else if (magic == CDSegmentProtectedMagicType1) {
+            } else if (magic == CDSegmentProtectedMagic_AES) {
                 AES_KEY key1, key2;
 
                 // 10.5 decryption

@@ -13,9 +13,9 @@
 #define TK_TEMPLATE_TYPE TK_IDENTIFIER
 
 enum {
-    CDTypeLexerStateNormal = 0,
-    CDTypeLexerStateIdentifier = 1,
-    CDTypeLexerStateTemplateTypes = 2,
+    CDTypeLexerState_Normal = 0,
+    CDTypeLexerState_Identifier = 1,
+    CDTypeLexerState_TemplateTypes = 2,
 };
 typedef NSUInteger CDTypeLexerState;
 

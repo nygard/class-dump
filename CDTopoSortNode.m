@@ -16,7 +16,7 @@
 
     sortableObject = [anObject retain];
     dependancies = [[NSMutableSet alloc] init];
-    color = CDWhiteNodeColor;
+    color = CDNodeColor_White;
 
     [self addDependanciesFromArray:[sortableObject dependancies]];
 
@@ -90,16 +90,16 @@
     dependantIdentifiers = [self dependancies];
     for (NSString *anIdentifier in dependantIdentifiers) {
         aNode = [nodesByIdentifier objectForKey:anIdentifier];
-        if ([aNode color] == CDWhiteNodeColor) {
-            [aNode setColor:CDGrayNodeColor];
+        if ([aNode color] == CDNodeColor_White) {
+            [aNode setColor:CDNodeColor_Gray];
             [aNode topologicallySortNodes:nodesByIdentifier intoArray:sortedArray];
-        } else if ([aNode color] == CDGrayNodeColor) {
+        } else if ([aNode color] == CDNodeColor_Gray) {
             NSLog(@"Warning: Possible circular reference? %@ -> %@", [self identifier], [aNode identifier]);
         }
     }
 
     [sortedArray addObject:[self sortableObject]];
-    [self setColor:CDBlackNodeColor];
+    [self setColor:CDNodeColor_Black];
 }
 
 @end

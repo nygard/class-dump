@@ -12,9 +12,9 @@ static BOOL debug = NO;
 static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 {
     switch (state) {
-      case CDTypeLexerStateNormal: return @"Normal";
-      case CDTypeLexerStateIdentifier: return @"Identifier";
-      case CDTypeLexerStateTemplateTypes: return @"Template";
+      case CDTypeLexerState_Normal: return @"Normal";
+      case CDTypeLexerState_Identifier: return @"Identifier";
+      case CDTypeLexerState_TemplateTypes: return @"Template";
     }
 
     return @"Unknown";
@@ -29,7 +29,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
     scanner = [[NSScanner alloc] initWithString:aString];
     [scanner setCharactersToBeSkipped:nil];
-    state = CDTypeLexerStateNormal;
+    state = CDTypeLexerState_Normal;
     shouldShowLexing = debug;
 
     return self;
@@ -87,7 +87,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         return TK_EOS;
     }
 
-    if (state == CDTypeLexerStateTemplateTypes) {
+    if (state == CDTypeLexerState_TemplateTypes) {
         // Skip whitespace, scan '<', ',', '>'.  Everything else is lumped together as a string.
         [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
         if ([scanner scanString:@"<" intoString:NULL]) {
@@ -116,7 +116,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         }
 
         NSLog(@"Ooops, fell through in template types state.");
-    } else if (state == CDTypeLexerStateIdentifier) {
+    } else if (state == CDTypeLexerState_Identifier) {
         NSString *anIdentifier;
 
         //NSLog(@"Scanning in identifier state.");
@@ -126,7 +126,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
             [self _setLexText:anIdentifier];
             if (shouldShowLexing)
                 NSLog(@"%s [state=%d], token = TK_IDENTIFIER (%@)", _cmd, state, lexText);
-            state = CDTypeLexerStateNormal;
+            state = CDTypeLexerState_Normal;
             return TK_IDENTIFIER;
         }
     } else {

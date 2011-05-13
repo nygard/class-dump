@@ -8,8 +8,8 @@
 @class CDClassDump, CDType, CDStructureInfo, CDSymbolReferences, CDTypeController, CDTypeFormatter;
 
 enum {
-    CDTableTypeStructure = 0,
-    CDTableTypeUnion = 1,
+    CDTableType_Structure = 0,
+    CDTableType_Union = 1,
 };
 typedef NSUInteger CDTableType;
 

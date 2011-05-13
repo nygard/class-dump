@@ -63,7 +63,7 @@
 
 - (uint16_t)readInt16;
 {
-    if ([nonretained_machOFile byteOrder] == CDByteOrderLittleEndian)
+    if ([nonretained_machOFile byteOrder] == CDByteOrder_LittleEndian)
         return [self readLittleInt16];
 
     return [self readBigInt16];
@@ -71,7 +71,7 @@
 
 - (uint32_t)readInt32;
 {
-    if ([nonretained_machOFile byteOrder] == CDByteOrderLittleEndian)
+    if ([nonretained_machOFile byteOrder] == CDByteOrder_LittleEndian)
         return [self readLittleInt32];
 
     return [self readBigInt32];
@@ -79,7 +79,7 @@
 
 - (uint64_t)readInt64;
 {
-    if ([nonretained_machOFile byteOrder] == CDByteOrderLittleEndian)
+    if ([nonretained_machOFile byteOrder] == CDByteOrder_LittleEndian)
         return [self readLittleInt64];
 
     return [self readBigInt64];
