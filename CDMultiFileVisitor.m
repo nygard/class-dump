@@ -50,14 +50,12 @@
 - (void)createOutputPathIfNecessary;
 {
     if (outputPath != nil) {
-        NSFileManager *fileManager;
         BOOL isDirectory;
 
-        fileManager = [NSFileManager defaultManager];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
         if ([fileManager fileExistsAtPath:outputPath isDirectory:&isDirectory] == NO) {
-            BOOL result;
-
-            result = [fileManager createDirectoryAtPath:outputPath attributes:nil];
+            NSError *error = nil;
+            BOOL result = [fileManager createDirectoryAtPath:outputPath withIntermediateDirectories:YES attributes:nil error:&error];
             if (result == NO) {
                 NSLog(@"Error: Couldn't create output directory: %@", outputPath);
                 return;
