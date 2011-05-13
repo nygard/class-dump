@@ -29,24 +29,18 @@ typedef NSUInteger CDTypeLexerState;
 }
 
 - (id)initWithString:(NSString *)aString;
-- (void)dealloc;
 
-- (NSScanner *)scanner;
+@property (readonly) NSScanner *scanner;
+@property (nonatomic, assign) CDTypeLexerState state;
+@property (assign) BOOL shouldShowLexing;
 
-- (CDTypeLexerState)state;
-- (void)setState:(CDTypeLexerState)newState;
-
-- (BOOL)shouldShowLexing;
-- (void)setShouldShowLexing:(BOOL)newFlag;
-
-- (NSString *)string;
+@property (readonly) NSString *string;
 - (int)scanNextToken;
 
-- (NSString *)lexText;
-- (void)_setLexText:(NSString *)newString;
+@property (retain) NSString *lexText;
 
-- (unichar)peekChar;
-- (NSString *)remainingString;
-- (NSString *)peekIdentifier;
+@property (readonly) unichar peekChar;
+@property (readonly) NSString *remainingString;
+@property (readonly) NSString *peekIdentifier;
 
 @end

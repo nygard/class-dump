@@ -28,13 +28,11 @@
     static NSCharacterSet *identifierStartCharacterSet = nil;
 
     if (identifierStartCharacterSet == nil) {
-        NSMutableCharacterSet *aSet;
+        NSMutableCharacterSet *set = [[NSCharacterSet letterCharacterSet] mutableCopy];
+        [set formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
+        identifierStartCharacterSet = [set copy];
 
-        aSet = [[NSCharacterSet letterCharacterSet] mutableCopy];
-        [aSet formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
-        identifierStartCharacterSet = [aSet copy];
-
-        [aSet release];
+        [set release];
     }
 
     return identifierStartCharacterSet;
@@ -45,13 +43,11 @@
     static NSCharacterSet *identifierCharacterSet = nil;
 
     if (identifierCharacterSet == nil) {
-        NSMutableCharacterSet *aSet;
+        NSMutableCharacterSet *set = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
+        [set formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
+        identifierCharacterSet = [set copy];
 
-        aSet = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
-        [aSet formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
-        identifierCharacterSet = [aSet copy];
-
-        [aSet release];
+        [set release];
     }
 
     return identifierCharacterSet;
@@ -84,14 +80,12 @@
 
 - (BOOL)scanCharacter:(unichar *)value;
 {
-    unichar ch;
-
     //[self skipCharacters];
 
     if ([self isAtEnd])
         return NO;
 
-    ch = [[self string] characterAtIndex:[self scanLocation]];
+    unichar ch = [[self string] characterAtIndex:[self scanLocation]];
     if (value != NULL)
         *value = ch;
 
@@ -102,14 +96,12 @@
 
 - (BOOL)scanCharacterFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
 {
-    unichar ch;
-
     //[self skipCharacters];
 
     if ([self isAtEnd])
         return NO;
 
-    ch = [[self string] characterAtIndex:[self scanLocation]];
+    unichar ch = [[self string] characterAtIndex:[self scanLocation]];
     if ([set characterIsMember:ch]) {
         if (value != NULL) {
             *value = [NSString stringWithUnichar:ch];
@@ -129,11 +121,9 @@
 
 - (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
 {
-    NSRange matchedRange;
-    NSUInteger currentLocation;
     NSCharacterSet *skipSet;
 
-    currentLocation = [self scanLocation];
+    NSUInteger currentLocation = [self scanLocation];
 
     // Skip over characters
     skipSet = [self charactersToBeSkipped];
@@ -148,13 +138,10 @@
         [self setScanLocation:currentLocation];
     }
 
-    matchedRange.location = currentLocation;
-    matchedRange.length = 0;
+    NSRange matchedRange = NSMakeRange(currentLocation, 0);
 
     while ([self isAtEnd] == NO) {
-        unichar ch;
-
-        ch = [[self string] characterAtIndex:currentLocation];
+        unichar ch = [[self string] characterAtIndex:currentLocation];
         if ([set characterIsMember:ch] == NO)
             break;
 

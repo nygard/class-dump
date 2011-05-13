@@ -42,15 +42,10 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
     [super dealloc];
 }
 
-- (NSScanner *)scanner;
-{
-    return scanner;
-}
+#pragma mark -
 
-- (CDTypeLexerState)state;
-{
-    return state;
-}
+@synthesize scanner;
+@synthesize state;
 
 - (void)setState:(CDTypeLexerState)newState;
 {
@@ -58,15 +53,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
     state = newState;
 }
 
-- (BOOL)shouldShowLexing;
-{
-    return shouldShowLexing;
-}
-
-- (void)setShouldShowLexing:(BOOL)newFlag;
-{
-    shouldShowLexing = newFlag;
-}
+@synthesize shouldShowLexing;
 
 - (NSString *)string;
 {
@@ -78,7 +65,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
     NSString *str;
     unichar ch;
 
-    [self _setLexText:nil];
+    self.lexText = nil;
 
     if ([scanner isAtEnd]) {
         if (shouldShowLexing)
@@ -108,7 +95,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         }
 
         if ([scanner my_scanCharactersFromSet:[NSScanner cdTemplateTypeCharacterSet] intoString:&str]) {
-            [self _setLexText:str];
+            self.lexText = str;
             if (shouldShowLexing)
                 NSLog(@"%s [state=%lu], token = TK_TEMPLATE_TYPE (%@)", __cmd, state, lexText);
             return TK_TEMPLATE_TYPE;
@@ -122,7 +109,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         [scanner setCharactersToBeSkipped:nil];
 
         if ([scanner scanIdentifierIntoString:&anIdentifier]) {
-            [self _setLexText:anIdentifier];
+            self.lexText = anIdentifier;
             if (shouldShowLexing)
                 NSLog(@"%s [state=%lu], token = TK_IDENTIFIER (%@)", __cmd, state, lexText);
             state = CDTypeLexerState_Normal;
@@ -133,9 +120,10 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
         if ([scanner scanString:@"\"" intoString:NULL]) {
             if ([scanner scanUpToString:@"\"" intoString:&str])
-                [self _setLexText:str];
+                self.lexText = str;
             else
-                [self _setLexText:@""];
+                self.lexText = @"";
+
             [scanner scanString:@"\"" intoString:NULL];
             if (shouldShowLexing)
                 NSLog(@"%s [state=%lu], token = TK_QUOTED_STRING (%@)", __cmd, state, lexText);
@@ -143,7 +131,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         }
 
         if ([scanner my_scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str]) {
-            [self _setLexText:str];
+            self.lexText = str;
             if (shouldShowLexing)
                 NSLog(@"%s [state=%lu], token = TK_NUMBER (%@)", __cmd, state, lexText);
             return TK_NUMBER;
@@ -162,19 +150,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
     return TK_EOS;
 }
 
-- (NSString *)lexText;
-{
-    return lexText;
-}
-
-- (void)_setLexText:(NSString *)newString;
-{
-    if (newString == lexText)
-        return;
-
-    [lexText release];
-    lexText = [newString retain];
-}
+@synthesize lexText;
 
 - (unichar)peekChar;
 {
@@ -188,15 +164,14 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
 - (NSString *)peekIdentifier;
 {
-    NSScanner *aScanner;
-    NSString *anIdentifier;
+    NSString *identifier;
 
-    aScanner = [[NSScanner alloc] initWithString:[scanner string]];
+    NSScanner *aScanner = [[NSScanner alloc] initWithString:[scanner string]];
     [aScanner setScanLocation:[scanner scanLocation]];
 
-    if ([aScanner scanIdentifierIntoString:&anIdentifier]) {
+    if ([aScanner scanIdentifierIntoString:&identifier]) {
         [aScanner release];
-        return anIdentifier;
+        return identifier;
     }
 
     [aScanner release];

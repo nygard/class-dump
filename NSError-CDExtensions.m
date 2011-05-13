@@ -10,9 +10,7 @@
 // The normal methods confuse me, and it's late.
 - (NSString *)myExplanation;
 {
-    NSString *str;
-
-    str = [[self userInfo] objectForKey:@"explanation"];
+    NSString *str = [[self userInfo] objectForKey:@"explanation"];
     if (str != nil)
         return str;
 

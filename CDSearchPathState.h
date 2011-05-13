@@ -11,9 +11,6 @@
     NSMutableArray *searchPathStack;
 }
 
-- (id)init;
-- (void)dealloc;
-
 @property (nonatomic, retain) NSString *executablePath;
 
 - (void)pushSearchPaths:(NSArray *)searchPaths;

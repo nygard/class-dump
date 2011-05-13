@@ -25,6 +25,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 @synthesize executablePath;
 
 - (void)pushSearchPaths:(NSArray *)searchPaths;
@@ -55,9 +57,7 @@
 
 - (NSArray *)searchPaths;
 {
-    NSMutableArray *result;
-
-    result = [NSMutableArray array];
+    NSMutableArray *result = [NSMutableArray array];
     for (NSArray *group in searchPathStack) {
         [result addObjectsFromArray:group];
     }

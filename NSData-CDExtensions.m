@@ -11,7 +11,6 @@
 
 - (NSString *)SHA1DigestString;
 {
-    NSMutableString *str;
     unsigned char digest[SHA_DIGEST_LENGTH];
     unsigned int index;
 
@@ -19,7 +18,7 @@
     SHA1((unsigned char *)[self bytes], [self length], digest);
 
     //NSLog(@"SHA_DIGEST_LENGTH: %u", SHA_DIGEST_LENGTH);
-    str = [NSMutableString string];
+    NSMutableString *str = [NSMutableString string];
     for (index = 0; index < SHA_DIGEST_LENGTH; index++)
         [str appendFormat:@"%02x", digest[index]];
 

@@ -23,15 +23,12 @@
 + (NSString *)spacesIndentedToLevel:(NSUInteger)level spacesPerLevel:(NSUInteger)spacesPerLevel;
 {
     NSString *spaces = @"                                        ";
-    NSString *levelSpaces;
-    NSMutableString *str;
-    NSUInteger l;
 
     NSParameterAssert(spacesPerLevel <= [spaces length]);
-    levelSpaces = [spaces substringToIndex:spacesPerLevel];
+    NSString *levelSpaces = [spaces substringToIndex:spacesPerLevel];
 
-    str = [NSMutableString string];
-    for (l = 0; l < level; l++)
+    NSMutableString *str = [NSMutableString string];
+    for (NSUInteger l = 0; l < level; l++)
         [str appendString:levelSpaces];
 
     return str;
@@ -44,9 +41,7 @@
 
 - (BOOL)isFirstLetterUppercase;
 {
-    NSRange letterRange;
-
-    letterRange = [self rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]];
+    NSRange letterRange = [self rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]];
     if (letterRange.length == 0)
         return NO;
 
@@ -55,19 +50,16 @@
 
 - (void)print;
 {
-    NSData *data;
-
-    data = [self dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [self dataUsingEncoding:NSUTF8StringEncoding];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 }
 
 - (NSString *)executablePathForFilename;
 {
-    NSBundle *bundle;
     NSString *path;
 
     // I give up, all the methods dealing with paths seem to resolve symlinks with a vengence.
-    bundle = [NSBundle bundleWithPath:self];
+    NSBundle *bundle = [NSBundle bundleWithPath:self];
     if (bundle != nil) {
         if ([bundle executablePath] == nil)
             return nil;
@@ -113,13 +105,11 @@
 - (void)appendSpacesIndentedToLevel:(NSUInteger)level spacesPerLevel:(NSUInteger)spacesPerLevel;
 {
     NSString *spaces = @"                                        ";
-    NSString *levelSpaces;
-    NSUInteger l;
 
     NSParameterAssert(spacesPerLevel <= [spaces length]);
-    levelSpaces = [spaces substringToIndex:spacesPerLevel];
+    NSString *levelSpaces = [spaces substringToIndex:spacesPerLevel];
 
-    for (l = 0; l < level; l++)
+    for (NSUInteger l = 0; l < level; l++)
         [self appendString:levelSpaces];
 }
 

@@ -27,19 +27,14 @@
     [super dealloc];
 }
 
-- (CDType *)type;
-{
-    return type;
-}
+#pragma mark -
 
-- (NSString *)offset;
-{
-    return offset;
-}
+@synthesize type;
+@synthesize offset;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] type: %@, offset: %@", NSStringFromClass([self class]), type, offset];
+    return [NSString stringWithFormat:@"[%@] type: %@, offset: %@", NSStringFromClass([self class]), self.type, self.offset];
 }
 
 @end

@@ -16,9 +16,7 @@
 
 - (NSArray *)arrayByMappingSelector:(SEL)aSelector;
 {
-    NSMutableArray *newArray;
-
-    newArray = [NSMutableArray array];
+    NSMutableArray *newArray = [NSMutableArray array];
     for (id object in self) {
         id value = [object performSelector:aSelector];
         if (value != nil)
@@ -35,32 +33,24 @@
 
 - (NSArray *)topologicallySortedArray;
 {
-    NSMutableDictionary *nodesByName;
-    NSMutableArray *sortedArray;
-    NSArray *allNodes;
-
-    nodesByName = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *nodesByName = [[NSMutableDictionary alloc] init];
 
     for (id <CDTopologicalSort> anObject in self) {
-        NSString *identifier;
-        CDTopoSortNode *aNode;
+        CDTopoSortNode *node = [[CDTopoSortNode alloc] initWithObject:anObject];
+        [node addDependanciesFromArray:[anObject dependancies]];
 
-        aNode = [[CDTopoSortNode alloc] initWithObject:anObject];
-        [aNode addDependanciesFromArray:[anObject dependancies]];
-
-        identifier = [aNode identifier];
-        if ([nodesByName objectForKey:identifier] != nil)
-            NSLog(@"Warning: Duplicate identifier (%@) in %s", identifier, __cmd);
-        [nodesByName setObject:aNode forKey:identifier];
-        [aNode release];
+        if ([nodesByName objectForKey:node.identifier] != nil)
+            NSLog(@"Warning: Duplicate identifier (%@) in %s", node.identifier, __cmd);
+        [nodesByName setObject:node forKey:node.identifier];
+        [node release];
     }
 
-    sortedArray = [NSMutableArray array];
+    NSMutableArray *sortedArray = [NSMutableArray array];
 
-    allNodes = [[nodesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByIdentifier:)];
-    for (CDTopoSortNode *aNode in allNodes) {
-        if ([aNode color] == CDNodeColor_White)
-            [aNode topologicallySortNodes:nodesByName intoArray:sortedArray];
+    NSArray *allNodes = [[nodesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByIdentifier:)];
+    for (CDTopoSortNode *node in allNodes) {
+        if (node.color == CDNodeColor_White)
+            [node topologicallySortNodes:nodesByName intoArray:sortedArray];
     }
 
     [nodesByName release];
@@ -75,9 +65,7 @@
 
 - (void)sortTopologically;
 {
-    NSArray *sortedArray;
-
-    sortedArray = [self topologicallySortedArray];
+    NSArray *sortedArray = [self topologicallySortedArray];
     assert([self count] == [sortedArray count]);
 
     [self removeAllObjects];

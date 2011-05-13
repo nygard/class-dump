@@ -14,10 +14,9 @@
 }
 
 - (id)initWithType:(CDType *)aType offset:(NSString *)anOffset;
-- (void)dealloc;
 
-- (CDType *)type;
-- (NSString *)offset;
+@property (readonly) CDType *type;
+@property (readonly) NSString *offset;
 
 - (NSString *)description;
 

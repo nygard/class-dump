@@ -21,23 +21,22 @@ typedef NSUInteger CDNodeColor;
     CDNodeColor color;
 }
 
-- (id)initWithObject:(id <CDTopologicalSort>)anObject;
-- (void)dealloc;
+- (id)initWithObject:(id <CDTopologicalSort>)object;
 
-- (NSString *)identifier;
-- (id <CDTopologicalSort>)sortableObject;
+@property (readonly) NSString *identifier;
+@property (readonly) id <CDTopologicalSort> sortableObject;
 
 - (NSArray *)dependancies;
-- (void)addDependancy:(NSString *)anIdentifier;
-- (void)removeDependancy:(NSString *)anIdentifier;
+- (void)addDependancy:(NSString *)identifier;
+- (void)removeDependancy:(NSString *)identifier;
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
+@property (readonly) NSString *dependancyDescription;
 
-- (CDNodeColor)color;
-- (void)setColor:(CDNodeColor)newColor;
+@property (assign) CDNodeColor color;
 
 - (NSString *)description;
 
-- (NSComparisonResult)ascendingCompareByIdentifier:(id)otherNode;
+- (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)otherNode;
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
 
 @end

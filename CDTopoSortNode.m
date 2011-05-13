@@ -7,10 +7,10 @@
 
 @implementation CDTopoSortNode
 
-- (id)initWithObject:(id <CDTopologicalSort>)anObject;
+- (id)initWithObject:(id <CDTopologicalSort>)object;
 {
     if ((self = [super init])) {
-        sortableObject = [anObject retain];
+        sortableObject = [object retain];
         dependancies = [[NSMutableSet alloc] init];
         color = CDNodeColor_White;
 
@@ -28,76 +28,72 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (NSString *)identifier;
 {
     return [sortableObject identifier];
 }
 
-- (id <CDTopologicalSort>)sortableObject;
-{
-    return sortableObject;
-}
+@synthesize sortableObject;
 
 - (NSArray *)dependancies;
 {
     return [dependancies allObjects];
 }
 
-- (void)addDependancy:(NSString *)anIdentifier;
+- (void)addDependancy:(NSString *)identifier;
 {
-    [dependancies addObject:anIdentifier];
+    [dependancies addObject:identifier];
 }
 
-- (void)removeDependancy:(NSString *)anIdentifier;
+- (void)removeDependancy:(NSString *)identifier;
 {
-    [dependancies removeObject:anIdentifier];
+    [dependancies removeObject:identifier];
 }
 
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
 {
-    for (id identifier in identifiers) {
-        [self addDependancy:identifier];
-    }
+    [dependancies addObjectsFromArray:identifiers];
 }
 
-- (CDNodeColor)color;
+- (NSString *)dependancyDescription;
 {
-    return color;
+    return [[dependancies allObjects] componentsJoinedByString:@", "];
 }
 
-- (void)setColor:(CDNodeColor)newColor;
-{
-    color = newColor;
-}
+@synthesize color;
+
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%@ (%d) depends on %@", [self identifier], color, [[dependancies allObjects] componentsJoinedByString:@", "]];
+    return [NSString stringWithFormat:@"%@ (%u) depends on %@", self.identifier, self.color, self.dependancyDescription];
 }
 
-- (NSComparisonResult)ascendingCompareByIdentifier:(id)otherNode;
+#pragma mark - Sorting
+
+- (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)otherNode;
 {
-    return [[self identifier] compare:[otherNode identifier]];
+    return [self.identifier compare:otherNode.identifier];
 }
 
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
 {
-    NSArray *dependantIdentifiers;
-    CDTopoSortNode *aNode;
+    NSArray *dependantIdentifiers = [self dependancies];
 
-    dependantIdentifiers = [self dependancies];
-    for (NSString *anIdentifier in dependantIdentifiers) {
-        aNode = [nodesByIdentifier objectForKey:anIdentifier];
-        if ([aNode color] == CDNodeColor_White) {
-            [aNode setColor:CDNodeColor_Gray];
-            [aNode topologicallySortNodes:nodesByIdentifier intoArray:sortedArray];
-        } else if ([aNode color] == CDNodeColor_Gray) {
-            NSLog(@"Warning: Possible circular reference? %@ -> %@", [self identifier], [aNode identifier]);
+    for (NSString *identifier in dependantIdentifiers) {
+        CDTopoSortNode *node = [nodesByIdentifier objectForKey:identifier];
+        if ([node color] == CDNodeColor_White) {
+            [node setColor:CDNodeColor_Gray];
+            [node topologicallySortNodes:nodesByIdentifier intoArray:sortedArray];
+        } else if ([node color] == CDNodeColor_Gray) {
+            NSLog(@"Warning: Possible circular reference? %@ -> %@", self.identifier, node.identifier);
         }
     }
 
     [sortedArray addObject:[self sortableObject]];
-    [self setColor:CDNodeColor_Black];
+    self.color = CDNodeColor_Black;
 }
 
 @end
