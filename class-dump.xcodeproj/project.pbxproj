@@ -61,7 +61,6 @@
 		012FF20A0CDBA12C00F31E61 /* CDFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ABF08AE9CDC003E99F8 /* CDFatArch.m */; };
 		012FF20D0CDBA12F00F31E61 /* NSString-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AB108AE9C9D003E99F8 /* NSString-Extensions.m */; };
 		012FF20E0CDBA13000F31E61 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
-		012FF20F0CDBA13200F31E61 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		012FF2120CDBA13900F31E61 /* CDOCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE308AE9D04003E99F8 /* CDOCCategory.m */; };
 		012FF2130CDBA13A00F31E61 /* CDOCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE508AE9D04003E99F8 /* CDOCClass.m */; };
 		012FF2140CDBA13B00F31E61 /* CDOCIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE708AE9D04003E99F8 /* CDOCIvar.m */; };
@@ -127,7 +126,6 @@
 		013182DA0CDF6EE400EC5A2C /* CDFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ABF08AE9CDC003E99F8 /* CDFatArch.m */; };
 		013182DD0CDF6EE400EC5A2C /* NSString-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AB108AE9C9D003E99F8 /* NSString-Extensions.m */; };
 		013182DE0CDF6EE400EC5A2C /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
-		013182DF0CDF6EE400EC5A2C /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		013182E00CDF6EE400EC5A2C /* CDOCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE308AE9D04003E99F8 /* CDOCCategory.m */; };
 		013182E10CDF6EE400EC5A2C /* CDOCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE508AE9D04003E99F8 /* CDOCClass.m */; };
 		013182E20CDF6EE400EC5A2C /* CDOCIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AE708AE9D04003E99F8 /* CDOCIvar.m */; };
@@ -182,7 +180,6 @@
 		DAF695D011E62B18009AF361 /* NSArray-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */; };
 		DAF695D111E62B18009AF361 /* NSData-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B456A5103923F80062EF62 /* NSData-CDExtensions.m */; };
 		DAF695D211E62B18009AF361 /* NSError-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */; };
-		DAF695D311E62B18009AF361 /* NSObject-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */; };
 		DAF695D411E62B18009AF361 /* NSScanner-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */; };
 		DAF695D511E62B18009AF361 /* NSString-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2AB108AE9C9D003E99F8 /* NSString-Extensions.m */; };
 		DAF695D811E62B24009AF361 /* CDFatArch.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2ABF08AE9CDC003E99F8 /* CDFatArch.m */; };
@@ -294,8 +291,6 @@
 		0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSError-CDExtensions.m"; sourceTree = "<group>"; };
 		012E2AAA08AE9C9D003E99F8 /* NSArray-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSArray-Extensions.h"; sourceTree = "<group>"; };
 		012E2AAB08AE9C9D003E99F8 /* NSArray-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSArray-Extensions.m"; sourceTree = "<group>"; };
-		012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSObject-CDExtensions.h"; sourceTree = "<group>"; };
-		012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSObject-CDExtensions.m"; sourceTree = "<group>"; };
 		012E2AAE08AE9C9D003E99F8 /* NSScanner-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSScanner-Extensions.h"; sourceTree = "<group>"; };
 		012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSScanner-Extensions.m"; sourceTree = "<group>"; };
 		012E2AB008AE9C9D003E99F8 /* NSString-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString-Extensions.h"; sourceTree = "<group>"; };
@@ -576,8 +571,6 @@
 				01B456A5103923F80062EF62 /* NSData-CDExtensions.m */,
 				0114EE6B0CDCC4880061F80F /* NSError-CDExtensions.h */,
 				0114EE6C0CDCC4880061F80F /* NSError-CDExtensions.m */,
-				012E2AAC08AE9C9D003E99F8 /* NSObject-CDExtensions.h */,
-				012E2AAD08AE9C9D003E99F8 /* NSObject-CDExtensions.m */,
 				012E2AAE08AE9C9D003E99F8 /* NSScanner-Extensions.h */,
 				012E2AAF08AE9C9D003E99F8 /* NSScanner-Extensions.m */,
 				012E2AB008AE9C9D003E99F8 /* NSString-Extensions.h */,
@@ -1081,7 +1074,6 @@
 				012FF20A0CDBA12C00F31E61 /* CDFatArch.m in Sources */,
 				012FF20D0CDBA12F00F31E61 /* NSString-Extensions.m in Sources */,
 				012FF20E0CDBA13000F31E61 /* NSScanner-Extensions.m in Sources */,
-				012FF20F0CDBA13200F31E61 /* NSObject-CDExtensions.m in Sources */,
 				012FF2120CDBA13900F31E61 /* CDOCCategory.m in Sources */,
 				012FF2130CDBA13A00F31E61 /* CDOCClass.m in Sources */,
 				012FF2140CDBA13B00F31E61 /* CDOCIvar.m in Sources */,
@@ -1128,7 +1120,6 @@
 				013182DA0CDF6EE400EC5A2C /* CDFatArch.m in Sources */,
 				013182DD0CDF6EE400EC5A2C /* NSString-Extensions.m in Sources */,
 				013182DE0CDF6EE400EC5A2C /* NSScanner-Extensions.m in Sources */,
-				013182DF0CDF6EE400EC5A2C /* NSObject-CDExtensions.m in Sources */,
 				013182E00CDF6EE400EC5A2C /* CDOCCategory.m in Sources */,
 				013182E10CDF6EE400EC5A2C /* CDOCClass.m in Sources */,
 				013182E20CDF6EE400EC5A2C /* CDOCIvar.m in Sources */,
@@ -1206,7 +1197,6 @@
 				DAF695D011E62B18009AF361 /* NSArray-Extensions.m in Sources */,
 				DAF695D111E62B18009AF361 /* NSData-CDExtensions.m in Sources */,
 				DAF695D211E62B18009AF361 /* NSError-CDExtensions.m in Sources */,
-				DAF695D311E62B18009AF361 /* NSObject-CDExtensions.m in Sources */,
 				DAF695D411E62B18009AF361 /* NSScanner-Extensions.m in Sources */,
 				DAF695D511E62B18009AF361 /* NSString-Extensions.m in Sources */,
 				DAF696F911E63032009AF361 /* CDDataCursor.m in Sources */,

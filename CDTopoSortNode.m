@@ -5,8 +5,6 @@
 
 #import "CDTopoSortNode.h"
 
-#import "NSObject-CDExtensions.h"
-
 @implementation CDTopoSortNode
 
 - (id)initWithObject:(id <CDTopologicalSort>)anObject;
@@ -57,8 +55,9 @@
 
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
 {
-    [self performSelector:@selector(addDependancy:) withObjectsFromArray:identifiers];
-    //[identifiers makeObject:self performSelector:@selector(addDependancy:)];
+    for (id identifier in identifiers) {
+        [self addDependancy:identifier];
+    }
 }
 
 - (CDNodeColor)color;
