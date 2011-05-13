@@ -1,4 +1,4 @@
 APPNAME=class-dump
 SHORT_DESCRIPTION=a utility for examining the Objective-C segment of Mach-O files
 OWNER=Steve Nygard
-COPYRIGHT=Copyright (C) 1997-1998, 2000-2001, 2004-2010 Steve Nygard.
+COPYRIGHT=Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
