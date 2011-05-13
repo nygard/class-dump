@@ -14,11 +14,10 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    classes = [[NSMutableArray alloc] init];
-    categories = [[NSMutableArray alloc] init];
+    if ((self = [super init])) {
+        classes = [[NSMutableArray alloc] init];
+        categories = [[NSMutableArray alloc] init];
+    }
 
     return self;
 }

@@ -26,23 +26,22 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    searchPathState = [[CDSearchPathState alloc] init];
-    sdkRoot = nil;
-
-    machOFiles = [[NSMutableArray alloc] init];
-    machOFilesByID = [[NSMutableDictionary alloc] init];
-    objcProcessors = [[NSMutableArray alloc] init];
-
-    typeController = [[CDTypeController alloc] initWithClassDump:self];
-
-    // These can be ppc, ppc7400, ppc64, i386, x86_64
-    targetArch.cputype = CPU_TYPE_ANY;
-    targetArch.cpusubtype = 0;
-
-    flags.shouldShowHeader = YES;
+    if ((self = [super init])) {
+        searchPathState = [[CDSearchPathState alloc] init];
+        sdkRoot = nil;
+        
+        machOFiles = [[NSMutableArray alloc] init];
+        machOFilesByID = [[NSMutableDictionary alloc] init];
+        objcProcessors = [[NSMutableArray alloc] init];
+        
+        typeController = [[CDTypeController alloc] initWithClassDump:self];
+        
+        // These can be ppc, ppc7400, ppc64, i386, x86_64
+        targetArch.cputype = CPU_TYPE_ANY;
+        targetArch.cpusubtype = 0;
+        
+        flags.shouldShowHeader = YES;
+    }
 
     return self;
 }

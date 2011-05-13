@@ -14,19 +14,18 @@
 {
     NSUInteger length;
 
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    rpathCommand.cmd = [cursor readInt32];
-    rpathCommand.cmdsize = [cursor readInt32];
-
-    rpathCommand.path.offset = [cursor readInt32];
-
-    length = rpathCommand.cmdsize - sizeof(rpathCommand);
-    //NSLog(@"expected length: %u", length);
-
-    path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    //NSLog(@"path: %@", path);
+    if ((self = [super initWithDataCursor:cursor])) {
+        rpathCommand.cmd = [cursor readInt32];
+        rpathCommand.cmdsize = [cursor readInt32];
+        
+        rpathCommand.path.offset = [cursor readInt32];
+        
+        length = rpathCommand.cmdsize - sizeof(rpathCommand);
+        //NSLog(@"expected length: %u", length);
+        
+        path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        //NSLog(@"path: %@", path);
+    }
 
     return self;
 }

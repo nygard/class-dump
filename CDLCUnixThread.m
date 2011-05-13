@@ -11,17 +11,16 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    loadCommand.cmd = [cursor readInt32];
-    loadCommand.cmdsize = [cursor readInt32];
-
-    if (loadCommand.cmdsize > 8) {
-        commandData = [[NSMutableData alloc] init];
-        [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:commandData];
-    } else {
-        commandData = nil;
+    if ((self = [super initWithDataCursor:cursor])) {
+        loadCommand.cmd = [cursor readInt32];
+        loadCommand.cmdsize = [cursor readInt32];
+        
+        if (loadCommand.cmdsize > 8) {
+            commandData = [[NSMutableData alloc] init];
+            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:commandData];
+        } else {
+            commandData = nil;
+        }
     }
 
     return self;

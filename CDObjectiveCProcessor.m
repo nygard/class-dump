@@ -21,15 +21,14 @@
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
-    if ([super init] == nil)
-        return nil;
-
-    machOFile = [aMachOFile retain];
-    classes = [[NSMutableArray alloc] init];
-    classesByAddress = [[NSMutableDictionary alloc] init];
-    categories = [[NSMutableArray alloc] init];
-    protocolsByName = [[NSMutableDictionary alloc] init];
-    protocolsByAddress = [[NSMutableDictionary alloc] init];
+    if ((self = [super init])) {
+        machOFile = [aMachOFile retain];
+        classes = [[NSMutableArray alloc] init];
+        classesByAddress = [[NSMutableDictionary alloc] init];
+        categories = [[NSMutableArray alloc] init];
+        protocolsByName = [[NSMutableDictionary alloc] init];
+        protocolsByAddress = [[NSMutableDictionary alloc] init];
+    }
 
     return self;
 }

@@ -11,14 +11,13 @@
 
 - (id)initWithObject:(id <CDTopologicalSort>)anObject;
 {
-    if ([super init] == nil)
-        return nil;
+    if ((self = [super init])) {
+        sortableObject = [anObject retain];
+        dependancies = [[NSMutableSet alloc] init];
+        color = CDNodeColor_White;
 
-    sortableObject = [anObject retain];
-    dependancies = [[NSMutableSet alloc] init];
-    color = CDNodeColor_White;
-
-    [self addDependanciesFromArray:[sortableObject dependancies]];
+        [self addDependanciesFromArray:[sortableObject dependancies]];
+    }
 
     return self;
 }

@@ -14,11 +14,10 @@
 
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
-    if ([super init] == nil)
-        return nil;
-
-    data = [someData retain];
-    offset = anOffset;
+    if ((self = [super init])) {
+        data = [someData retain];
+        offset = anOffset;
+    }
 
     return self;
 }

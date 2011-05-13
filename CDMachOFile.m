@@ -44,60 +44,59 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
-        return nil;
-
-    byteOrder = CDByteOrder_LittleEndian;
-    loadCommands = [[NSMutableArray alloc] init];
-    segments = [[NSMutableArray alloc] init];
-    symbolTable = nil;
-    dynamicSymbolTable = nil;
-    dyldInfo = nil;
-    runPaths = [[NSMutableArray alloc] init];
-
-    CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
-    header.magic = [cursor readBigInt32];
-    if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
-        byteOrder = CDByteOrder_BigEndian;
-    } else if (header.magic == MH_CIGAM || header.magic == MH_CIGAM_64) {
+    if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState])) {
         byteOrder = CDByteOrder_LittleEndian;
-    } else {
+        loadCommands = [[NSMutableArray alloc] init];
+        segments = [[NSMutableArray alloc] init];
+        symbolTable = nil;
+        dynamicSymbolTable = nil;
+        dyldInfo = nil;
+        runPaths = [[NSMutableArray alloc] init];
+        
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+        header.magic = [cursor readBigInt32];
+        if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
+            byteOrder = CDByteOrder_BigEndian;
+        } else if (header.magic == MH_CIGAM || header.magic == MH_CIGAM_64) {
+            byteOrder = CDByteOrder_LittleEndian;
+        } else {
+            [cursor release];
+            [self release];
+            return nil;
+        }
+        
+        _flags.uses64BitABI = (header.magic == MH_MAGIC_64) || (header.magic == MH_CIGAM_64);
+        
+        header.cputype = [cursor readBigInt32];
+        header.cpusubtype = [cursor readBigInt32];
+        header.filetype = [cursor readBigInt32];
+        header.ncmds = [cursor readBigInt32];
+        header.sizeofcmds = [cursor readBigInt32];
+        header.flags = [cursor readBigInt32];
+        if (_flags.uses64BitABI) {
+            header.reserved = [cursor readBigInt32];
+        }
+        
         [cursor release];
-        [self release];
-        return nil;
+        
+        if (byteOrder == CDByteOrder_LittleEndian) {
+            header.cputype = OSSwapInt32(header.cputype);
+            header.cpusubtype = OSSwapInt32(header.cpusubtype);
+            header.filetype = OSSwapInt32(header.filetype);
+            header.ncmds = OSSwapInt32(header.ncmds);
+            header.sizeofcmds = OSSwapInt32(header.sizeofcmds);
+            header.flags = OSSwapInt32(header.flags);
+            header.reserved = OSSwapInt32(header.reserved);
+        }
+        
+        NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype }), @"Header magic should match cpu arch");
+        header.cputype &= ~CPU_ARCH_MASK;
+        
+        NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
+        CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
+        [self _readLoadCommands:fileCursor count:header.ncmds];
+        [fileCursor release];
     }
-
-    _flags.uses64BitABI = (header.magic == MH_MAGIC_64) || (header.magic == MH_CIGAM_64);
-
-    header.cputype = [cursor readBigInt32];
-    header.cpusubtype = [cursor readBigInt32];
-    header.filetype = [cursor readBigInt32];
-    header.ncmds = [cursor readBigInt32];
-    header.sizeofcmds = [cursor readBigInt32];
-    header.flags = [cursor readBigInt32];
-    if (_flags.uses64BitABI) {
-        header.reserved = [cursor readBigInt32];
-    }
-    
-    [cursor release];
-    
-    if (byteOrder == CDByteOrder_LittleEndian) {
-        header.cputype = OSSwapInt32(header.cputype);
-        header.cpusubtype = OSSwapInt32(header.cpusubtype);
-        header.filetype = OSSwapInt32(header.filetype);
-        header.ncmds = OSSwapInt32(header.ncmds);
-        header.sizeofcmds = OSSwapInt32(header.sizeofcmds);
-        header.flags = OSSwapInt32(header.flags);
-        header.reserved = OSSwapInt32(header.reserved);
-    }
-
-    NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype }), @"Header magic should match cpu arch");
-    header.cputype &= ~CPU_ARCH_MASK;
-
-    NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
-    CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
-    [self _readLoadCommands:fileCursor count:header.ncmds];
-    [fileCursor release];
 
     return self;
 }

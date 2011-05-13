@@ -15,13 +15,12 @@
 
 - (id)initWithType:(CDType *)aType;
 {
-    if ([super init] == nil)
-        return nil;
-
-    type = [aType copy];
-    referenceCount = 1;
-    isUsedInMethod = NO;
-    typedefName = nil;
+    if ((self = [super init])) {
+        type = [aType copy];
+        referenceCount = 1;
+        isUsedInMethod = NO;
+        typedefName = nil;
+    }
 
     return self;
 }

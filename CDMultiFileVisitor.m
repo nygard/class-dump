@@ -18,10 +18,9 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    outputPath = nil;
+    if ((self = [super init])) {
+        outputPath = nil;
+    }
 
     return self;
 }

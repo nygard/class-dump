@@ -24,13 +24,12 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
 - (id)initWithString:(NSString *)aString;
 {
-    if ([super init] == nil)
-        return nil;
-
-    scanner = [[NSScanner alloc] initWithString:aString];
-    [scanner setCharactersToBeSkipped:nil];
-    state = CDTypeLexerState_Normal;
-    shouldShowLexing = debug;
+    if ((self = [super init])) {
+        scanner = [[NSScanner alloc] initWithString:aString];
+        [scanner setCharactersToBeSkipped:nil];
+        state = CDTypeLexerState_Normal;
+        shouldShowLexing = debug;
+    }
 
     return self;
 }

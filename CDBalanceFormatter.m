@@ -13,13 +13,12 @@ static BOOL debug = NO;
 
 - (id)initWithString:(NSString *)str;
 {
-    if ([super init] == nil)
-        return nil;
-
-    scanner = [[NSScanner alloc] initWithString:str];
-    openCloseSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}<>()"] retain];
-
-    result = [[NSMutableString alloc] init];
+    if ((self = [super init])) {
+        scanner = [[NSScanner alloc] initWithString:str];
+        openCloseSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}<>()"] retain];
+        
+        result = [[NSMutableString alloc] init];
+    }
 
     return self;
 }

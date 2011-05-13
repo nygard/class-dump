@@ -86,11 +86,10 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super init] == nil)
-        return nil;
-
-    nonretained_machOFile = [cursor machOFile];
-    commandOffset = [cursor offset];
+    if ((self = [super init])) {
+        nonretained_machOFile = [cursor machOFile];
+        commandOffset = [cursor offset];
+    }
 
     return self;
 }

@@ -19,22 +19,21 @@ static NSString *CDDylibVersionString(unsigned long version)
 {
     NSUInteger length;
 
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    dylibCommand.cmd = [cursor readInt32];
-    dylibCommand.cmdsize = [cursor readInt32];
-
-    dylibCommand.dylib.name.offset = [cursor readInt32];
-    dylibCommand.dylib.timestamp = [cursor readInt32];
-    dylibCommand.dylib.current_version = [cursor readInt32];
-    dylibCommand.dylib.compatibility_version = [cursor readInt32];
-
-    length = dylibCommand.cmdsize - sizeof(dylibCommand);
-    //NSLog(@"expected length: %u", length);
-
-    path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    //NSLog(@"path: %@", path);
+    if ((self = [super initWithDataCursor:cursor])) {
+        dylibCommand.cmd = [cursor readInt32];
+        dylibCommand.cmdsize = [cursor readInt32];
+        
+        dylibCommand.dylib.name.offset = [cursor readInt32];
+        dylibCommand.dylib.timestamp = [cursor readInt32];
+        dylibCommand.dylib.current_version = [cursor readInt32];
+        dylibCommand.dylib.compatibility_version = [cursor readInt32];
+        
+        length = dylibCommand.cmdsize - sizeof(dylibCommand);
+        //NSLog(@"expected length: %u", length);
+        
+        path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        //NSLog(@"path: %@", path);
+    }
 
     return self;
 }

@@ -14,10 +14,9 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    classDump = nil;
+    if ((self = [super init])) {
+        classDump = nil;
+    }
 
     return self;
 }

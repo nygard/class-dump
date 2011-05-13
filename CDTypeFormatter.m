@@ -23,14 +23,13 @@ static BOOL debug = NO;
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    nonretained_typeController = nil;
-
-    flags.shouldExpand = NO;
-    flags.shouldAutoExpand = NO;
-    flags.shouldShowLexing = debug;
+    if ((self = [super init])) {
+        nonretained_typeController = nil;
+        
+        flags.shouldExpand = NO;
+        flags.shouldAutoExpand = NO;
+        flags.shouldShowLexing = debug;
+    }
 
     return self;
 }

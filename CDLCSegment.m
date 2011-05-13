@@ -25,12 +25,11 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    name = nil;
-    sections = [[NSMutableArray alloc] init];
-    decryptedData = nil;
+    if ((self = [super initWithDataCursor:cursor])) {
+        name = nil;
+        sections = [[NSMutableArray alloc] init];
+        decryptedData = nil;
+    }
 
     return self;
 }

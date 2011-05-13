@@ -11,13 +11,12 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    hintsCommand.cmd = [cursor readInt32];
-    hintsCommand.cmdsize = [cursor readInt32];
-    hintsCommand.offset = [cursor readInt32];
-    hintsCommand.nhints = [cursor readInt32];
+    if ((self = [super initWithDataCursor:cursor])) {
+        hintsCommand.cmd = [cursor readInt32];
+        hintsCommand.cmdsize = [cursor readInt32];
+        hintsCommand.offset = [cursor readInt32];
+        hintsCommand.nhints = [cursor readInt32];
+    }
 
     return self;
 }

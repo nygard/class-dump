@@ -14,33 +14,32 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    symtabCommand.cmd = [cursor readInt32];
-    symtabCommand.cmdsize = [cursor readInt32];
-
-    symtabCommand.symoff = [cursor readInt32];
-    symtabCommand.nsyms = [cursor readInt32];
-    symtabCommand.stroff = [cursor readInt32];
-    symtabCommand.strsize = [cursor readInt32];
-
-    // symoff is at the start of the first section (__pointers) of the __IMPORT segment
-    // stroff falls within the __LINKEDIT segment
+    if ((self = [super initWithDataCursor:cursor])) {
+        symtabCommand.cmd = [cursor readInt32];
+        symtabCommand.cmdsize = [cursor readInt32];
+        
+        symtabCommand.symoff = [cursor readInt32];
+        symtabCommand.nsyms = [cursor readInt32];
+        symtabCommand.stroff = [cursor readInt32];
+        symtabCommand.strsize = [cursor readInt32];
+        
+        // symoff is at the start of the first section (__pointers) of the __IMPORT segment
+        // stroff falls within the __LINKEDIT segment
 #if 0
-    NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
-          symtabCommand.cmd, symtabCommand.cmdsize,
-          symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
-    NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
+        NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
+              symtabCommand.cmd, symtabCommand.cmdsize,
+              symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
+        NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
 #endif
-
-    symbols = [[NSMutableArray alloc] init];
-    baseAddress = 0;
-
-    classSymbols = [[NSMutableDictionary alloc] init];
-
-    flags.didFindBaseAddress = NO;
-    flags.didWarnAboutUnfoundBaseAddress = NO;
+        
+        symbols = [[NSMutableArray alloc] init];
+        baseAddress = 0;
+        
+        classSymbols = [[NSMutableDictionary alloc] init];
+        
+        flags.didFindBaseAddress = NO;
+        flags.didWarnAboutUnfoundBaseAddress = NO;
+    }
 
     return self;
 }

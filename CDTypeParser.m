@@ -31,17 +31,16 @@ static NSString *CDTokenDescription(int token)
 {
     NSMutableString *str;
 
-    if ([super init] == nil)
-        return nil;
-
-    // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
-    str = [aType mutableCopy];
-    [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [aType length])];
-
-    lexer = [[CDTypeLexer alloc] initWithString:str];
-    lookahead = 0;
-
-    [str release];
+    if ((self = [super init])) {
+        // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
+        str = [aType mutableCopy];
+        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [aType length])];
+        
+        lexer = [[CDTypeLexer alloc] initWithString:str];
+        lookahead = 0;
+        
+        [str release];
+    }
 
     return self;
 }

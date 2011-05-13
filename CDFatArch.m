@@ -13,23 +13,22 @@
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 {
-    if ([super init] == nil)
-        return nil;
-
-    nonretained_fatFile = nil;
-
-    fatArch.cputype = [cursor readBigInt32];
-    fatArch.cpusubtype = [cursor readBigInt32];
-    fatArch.offset = [cursor readBigInt32];
-    fatArch.size = [cursor readBigInt32];
-    fatArch.align = [cursor readBigInt32];
-
+    if ((self = [super init])) {
+        nonretained_fatFile = nil;
+        
+        fatArch.cputype = [cursor readBigInt32];
+        fatArch.cpusubtype = [cursor readBigInt32];
+        fatArch.offset = [cursor readBigInt32];
+        fatArch.size = [cursor readBigInt32];
+        fatArch.align = [cursor readBigInt32];
+        
 #if 0
-    NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
-          [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
+        NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
+              [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
 #endif
-
-    machOFile = nil;
+        
+        machOFile = nil;
+    }
 
     return self;
 }

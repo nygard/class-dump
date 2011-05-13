@@ -28,11 +28,10 @@ static BOOL debug = NO;
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    resultString = [[NSMutableString alloc] init];
-    symbolReferences = [[CDSymbolReferences alloc] init];
+    if ((self = [super init])) {
+        resultString = [[NSMutableString alloc] init];
+        symbolReferences = [[CDSymbolReferences alloc] init];
+    }
 
     return self;
 }

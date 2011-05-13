@@ -90,20 +90,19 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    if ([super init] == nil)
-        return nil;
-
-    // Otherwise reading the magic number fails.
-    if ([someData length] < 4) {
-        [self release];
-        return nil;
+    if ((self = [super init])) {
+        // Otherwise reading the magic number fails.
+        if ([someData length] < 4) {
+            [self release];
+            return nil;
+        }
+        
+        filename = [aFilename retain];
+        data = [someData retain];
+        archOffset = anOffset;
+        archSize = aSize;
+        searchPathState = [aSearchPathState retain];
     }
-
-    filename = [aFilename retain];
-    data = [someData retain];
-    archOffset = anOffset;
-    archSize = aSize;
-    searchPathState = [aSearchPathState retain];
 
     return self;
 }

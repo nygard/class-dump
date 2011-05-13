@@ -9,10 +9,9 @@
 
 - (id)initWithInfo:(struct relocation_info)info;
 {
-    if ([super init] == nil)
-        return nil;
-
-    rinfo = info;
+    if ((self = [super init])) {
+        rinfo = info;
+    }
 
     return self;
 }

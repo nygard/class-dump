@@ -58,35 +58,34 @@ static BOOL debugAnonStructures = NO;
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    identifier = nil;
-    anonymousBaseName = nil;
-
-    phase0_structureInfo = [[NSMutableDictionary alloc] init];
-
-    phase1_structureInfo = [[NSMutableDictionary alloc] init];
-    phase1_maxDepth = 0;
-    phase1_groupedByDepth = [[NSMutableDictionary alloc] init];
-
-    phase2_namedStructureInfo = [[NSMutableDictionary alloc] init];
-    phase2_anonStructureInfo = [[NSMutableDictionary alloc] init];
-    phase2_nameExceptions = [[NSMutableArray alloc] init];
-    phase2_anonExceptions = [[NSMutableArray alloc] init];
-
-    phase3_namedStructureInfo = [[NSMutableDictionary alloc] init];
-    phase3_anonStructureInfo = [[NSMutableDictionary alloc] init];
-    phase3_nameExceptions = [[NSMutableDictionary alloc] init];
-    phase3_anonExceptions = [[NSMutableDictionary alloc] init];
-
-    phase3_exceptionalNames = [[NSMutableSet alloc] init];
-    phase3_inMethodNameExceptions = [[NSMutableSet alloc] init];
-
-    flags.shouldDebug = NO;
-
-    debugNames = [[NSMutableSet alloc] init];
-    debugAnon = [[NSMutableSet alloc] init];
+    if ((self = [super init])) {
+        identifier = nil;
+        anonymousBaseName = nil;
+        
+        phase0_structureInfo = [[NSMutableDictionary alloc] init];
+        
+        phase1_structureInfo = [[NSMutableDictionary alloc] init];
+        phase1_maxDepth = 0;
+        phase1_groupedByDepth = [[NSMutableDictionary alloc] init];
+        
+        phase2_namedStructureInfo = [[NSMutableDictionary alloc] init];
+        phase2_anonStructureInfo = [[NSMutableDictionary alloc] init];
+        phase2_nameExceptions = [[NSMutableArray alloc] init];
+        phase2_anonExceptions = [[NSMutableArray alloc] init];
+        
+        phase3_namedStructureInfo = [[NSMutableDictionary alloc] init];
+        phase3_anonStructureInfo = [[NSMutableDictionary alloc] init];
+        phase3_nameExceptions = [[NSMutableDictionary alloc] init];
+        phase3_anonExceptions = [[NSMutableDictionary alloc] init];
+        
+        phase3_exceptionalNames = [[NSMutableSet alloc] init];
+        phase3_inMethodNameExceptions = [[NSMutableSet alloc] init];
+        
+        flags.shouldDebug = NO;
+        
+        debugNames = [[NSMutableSet alloc] init];
+        debugAnon = [[NSMutableSet alloc] init];
+    }
 
     return self;
 }

@@ -18,34 +18,32 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 {
-    if ([super init] == nil)
-        return nil;
-
-    is32Bit = YES;
-    name = [aName retain];
-    nonretained_machOFile = aMachOFile;
-    nlist.n_un.n_strx = 0; // We don't use it.
-    nlist.n_type = nlist32.n_type;
-    nlist.n_sect = nlist32.n_sect;
-    nlist.n_desc = nlist32.n_desc;
-    nlist.n_value = nlist32.n_value;
+    if ((self = [super init])) {
+        is32Bit = YES;
+        name = [aName retain];
+        nonretained_machOFile = aMachOFile;
+        nlist.n_un.n_strx = 0; // We don't use it.
+        nlist.n_type = nlist32.n_type;
+        nlist.n_sect = nlist32.n_sect;
+        nlist.n_desc = nlist32.n_desc;
+        nlist.n_value = nlist32.n_value;
+    }
 
     return self;
 }
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
 {
-    if ([super init] == nil)
-        return nil;
-
-    is32Bit = NO;
-    name = [aName retain];
-    nonretained_machOFile = aMachOFile;
-    nlist.n_un.n_strx = 0; // We don't use it.
-    nlist.n_type = nlist64.n_type;
-    nlist.n_sect = nlist64.n_sect;
-    nlist.n_desc = nlist64.n_desc;
-    nlist.n_value = nlist64.n_value;
+    if ((self = [super init])) {
+        is32Bit = NO;
+        name = [aName retain];
+        nonretained_machOFile = aMachOFile;
+        nlist.n_un.n_strx = 0; // We don't use it.
+        nlist.n_type = nlist64.n_type;
+        nlist.n_sect = nlist64.n_sect;
+        nlist.n_desc = nlist64.n_desc;
+        nlist.n_value = nlist64.n_value;
+    }
 
     return self;
 }

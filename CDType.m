@@ -21,31 +21,29 @@ static BOOL debugMerge = NO;
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    type = 0; // ??
-    protocols = nil;
-    subtype = nil;
-    typeName = nil;
-    members = nil;
-    variableName = nil;
-    bitfieldSize = nil;
-    arraySize = nil;
+    if ((self = [super init])) {
+        type = 0; // ??
+        protocols = nil;
+        subtype = nil;
+        typeName = nil;
+        members = nil;
+        variableName = nil;
+        bitfieldSize = nil;
+        arraySize = nil;
+    }
 
     return self;
 }
 
 - (id)initSimpleType:(int)aTypeCode;
 {
-    if ([self init] == nil)
-        return nil;
-
-    if (aTypeCode == '*') {
-        type = '^';
-        subtype = [[CDType alloc] initSimpleType:'c'];
-    } else {
-        type = aTypeCode;
+    if ((self = [self init])) {
+        if (aTypeCode == '*') {
+            type = '^';
+            subtype = [[CDType alloc] initSimpleType:'c'];
+        } else {
+            type = aTypeCode;
+        }
     }
 
     return self;
@@ -53,14 +51,13 @@ static BOOL debugMerge = NO;
 
 - (id)initIDType:(CDTypeName *)aName;
 {
-    if ([self init] == nil)
-        return nil;
-
-    if (aName != nil) {
-        type = T_NAMED_OBJECT;
-        typeName = [aName retain];
-    } else {
-        type = '@';
+    if ((self = [self init])) {
+        if (aName != nil) {
+            type = T_NAMED_OBJECT;
+            typeName = [aName retain];
+        } else {
+            type = '@';
+        }
     }
 
     return self;
@@ -68,80 +65,73 @@ static BOOL debugMerge = NO;
 
 - (id)initIDTypeWithProtocols:(NSArray *)someProtocols;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = '@';
-    protocols = [someProtocols retain];
+    if ((self = [self init])) {
+        type = '@';
+        protocols = [someProtocols retain];
+    }
 
     return self;
 }
 
 - (id)initStructType:(CDTypeName *)aName members:(NSArray *)someMembers;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = '{';
-    typeName = [aName retain];
-    members = [[NSMutableArray alloc] initWithArray:someMembers];
+    if ((self = [self init])) {
+        type = '{';
+        typeName = [aName retain];
+        members = [[NSMutableArray alloc] initWithArray:someMembers];
+    }
 
     return self;
 }
 
 - (id)initUnionType:(CDTypeName *)aName members:(NSArray *)someMembers;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = '(';
-    typeName = [aName retain];
-    members = [[NSMutableArray alloc] initWithArray:someMembers];
+    if ((self = [self init])) {
+        type = '(';
+        typeName = [aName retain];
+        members = [[NSMutableArray alloc] initWithArray:someMembers];
+    }
 
     return self;
 }
 
 - (id)initBitfieldType:(NSString *)aBitfieldSize;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = 'b';
-    bitfieldSize = [aBitfieldSize retain];
+    if ((self = [self init])) {
+        type = 'b';
+        bitfieldSize = [aBitfieldSize retain];
+    }
 
     return self;
 }
 
 - (id)initArrayType:(CDType *)aType count:(NSString *)aCount;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = '[';
-    arraySize = [aCount retain];
-    subtype = [aType retain];
+    if ((self = [self init])) {
+        type = '[';
+        arraySize = [aCount retain];
+        subtype = [aType retain];
+    }
 
     return self;
 }
 
 - (id)initPointerType:(CDType *)aType;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = '^';
-    subtype = [aType retain];
+    if ((self = [self init])) {
+        type = '^';
+        subtype = [aType retain];
+    }
 
     return self;
 }
 
 - (id)initModifier:(int)aModifier type:(CDType *)aType;
 {
-    if ([self init] == nil)
-        return nil;
-
-    type = aModifier;
-    subtype = [aType retain];
+    if ((self = [self init])) {
+        type = aModifier;
+        subtype = [aType retain];
+    }
 
     return self;
 }

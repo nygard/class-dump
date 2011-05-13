@@ -21,25 +21,23 @@
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
 {
-    if ([self initWithName:aName type:aType] == nil)
-        return nil;
-
-    [self setImp:anImp];
+    if ((self = [self initWithName:aName type:aType])) {
+        [self setImp:anImp];
+    }
 
     return self;
 }
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;
 {
-    if ([super init] == nil)
-        return nil;
-
-    name = [aName retain];
-    type = [aType retain];
-    imp = 0;
-
-    hasParsedType = NO;
-    parsedMethodTypes = nil;
+    if ((self = [super init])) {
+        name = [aName retain];
+        type = [aType retain];
+        imp = 0;
+        
+        hasParsedType = NO;
+        parsedMethodTypes = nil;
+    }
 
     return self;
 }

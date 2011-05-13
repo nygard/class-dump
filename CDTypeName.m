@@ -9,12 +9,11 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    name = nil;
-    templateTypes = [[NSMutableArray alloc] init];
-    suffix = nil;
+    if ((self = [super init])) {
+        name = nil;
+        templateTypes = [[NSMutableArray alloc] init];
+        suffix = nil;
+    }
 
     return self;
 }

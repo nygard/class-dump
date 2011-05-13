@@ -15,15 +15,14 @@
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 {
-    if ([super init] == nil)
-        return nil;
-
-    name = [aName retain];
-    type = [aType retain];
-    offset = anOffset;
-
-    hasParsedType = NO;
-    parsedType = nil;
+    if ((self = [super init])) {
+        name = [aName retain];
+        type = [aType retain];
+        offset = anOffset;
+        
+        hasParsedType = NO;
+        parsedType = nil;
+    }
 
     return self;
 }

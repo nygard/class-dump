@@ -11,19 +11,18 @@ static BOOL debug = NO;
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    if (debug) NSLog(@"offset: %lu", [cursor offset]);
-    loadCommand.cmd = [cursor readInt32];
-    loadCommand.cmdsize = [cursor readInt32];
-    if (debug) NSLog(@"cmdsize: %u", loadCommand.cmdsize);
-
-    if (loadCommand.cmdsize > 8) {
-        commandData = [[NSMutableData alloc] init];
-        [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:commandData];
-    } else {
-        commandData = nil;
+    if ((self = [super initWithDataCursor:cursor])) {
+        if (debug) NSLog(@"offset: %lu", [cursor offset]);
+        loadCommand.cmd = [cursor readInt32];
+        loadCommand.cmdsize = [cursor readInt32];
+        if (debug) NSLog(@"cmdsize: %u", loadCommand.cmdsize);
+        
+        if (loadCommand.cmdsize > 8) {
+            commandData = [[NSMutableData alloc] init];
+            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:commandData];
+        } else {
+            commandData = nil;
+        }
     }
 
     return self;

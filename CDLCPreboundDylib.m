@@ -12,26 +12,25 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    //NSLog(@"current offset: %u", [cursor offset]);
-    preboundDylibCommand.cmd = [cursor readInt32];
-    preboundDylibCommand.cmdsize = [cursor readInt32];
-    //NSLog(@"cmdsize: %u", preboundDylibCommand.cmdsize);
-
-    preboundDylibCommand.name.offset = [cursor readInt32];
-    preboundDylibCommand.nmodules = [cursor readInt32];
-    preboundDylibCommand.linked_modules.offset = [cursor readInt32];
-
-    if (preboundDylibCommand.cmdsize > 20) {
-        // Don't need this info right now.
-        [cursor advanceByLength:preboundDylibCommand.cmdsize - 20];
+    if ((self = [super initWithDataCursor:cursor])) {
+        //NSLog(@"current offset: %u", [cursor offset]);
+        preboundDylibCommand.cmd = [cursor readInt32];
+        preboundDylibCommand.cmdsize = [cursor readInt32];
+        //NSLog(@"cmdsize: %u", preboundDylibCommand.cmdsize);
+        
+        preboundDylibCommand.name.offset = [cursor readInt32];
+        preboundDylibCommand.nmodules = [cursor readInt32];
+        preboundDylibCommand.linked_modules.offset = [cursor readInt32];
+        
+        if (preboundDylibCommand.cmdsize > 20) {
+            // Don't need this info right now.
+            [cursor advanceByLength:preboundDylibCommand.cmdsize - 20];
+        }
+        
+        //name = [[cursor readCString] retain];
+        //NSLog(@"name: %@", name);
+        //exit(99);
     }
-
-    //name = [[cursor readCString] retain];
-    //NSLog(@"name: %@", name);
-    //exit(99);
 
     return self;
 }

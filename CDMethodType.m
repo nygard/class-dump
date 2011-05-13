@@ -11,11 +11,10 @@
 
 - (id)initWithType:(CDType *)aType offset:(NSString *)anOffset;
 {
-    if ([super init] == nil)
-        return nil;
-
-    type = [aType retain];
-    offset = [anOffset retain];
+    if ((self = [super init])) {
+        type = [aType retain];
+        offset = [anOffset retain];
+    }
 
     return self;
 }

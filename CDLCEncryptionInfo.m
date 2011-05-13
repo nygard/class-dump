@@ -11,15 +11,14 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    encryptionInfoCommand.cmd = [cursor readInt32];
-    encryptionInfoCommand.cmdsize = [cursor readInt32];
-
-    encryptionInfoCommand.cryptoff = [cursor readInt32];
-    encryptionInfoCommand.cryptsize = [cursor readInt32];
-    encryptionInfoCommand.cryptid = [cursor readInt32];
+    if ((self = [super initWithDataCursor:cursor])) {
+        encryptionInfoCommand.cmd = [cursor readInt32];
+        encryptionInfoCommand.cmdsize = [cursor readInt32];
+        
+        encryptionInfoCommand.cryptoff = [cursor readInt32];
+        encryptionInfoCommand.cryptsize = [cursor readInt32];
+        encryptionInfoCommand.cryptid = [cursor readInt32];
+    }
 
     return self;
 }

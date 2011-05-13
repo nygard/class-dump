@@ -15,12 +15,11 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
-    frameworkNamesByProtocolName = [[NSMutableDictionary alloc] init];
-    frameworkName = nil;
+    if ((self = [super init])) {
+        frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+        frameworkNamesByProtocolName = [[NSMutableDictionary alloc] init];
+        frameworkName = nil;
+    }
 
     return self;
 }

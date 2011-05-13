@@ -9,14 +9,13 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    linkeditDataCommand.cmd = [cursor readInt32];
-    linkeditDataCommand.cmdsize = [cursor readInt32];
-
-    linkeditDataCommand.dataoff = [cursor readInt32];
-    linkeditDataCommand.datasize = [cursor readInt32];
+    if ((self = [super initWithDataCursor:cursor])) {
+        linkeditDataCommand.cmd = [cursor readInt32];
+        linkeditDataCommand.cmdsize = [cursor readInt32];
+        
+        linkeditDataCommand.dataoff = [cursor readInt32];
+        linkeditDataCommand.datasize = [cursor readInt32];
+    }
 
     return self;
 }

@@ -11,45 +11,44 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    segmentCommand.cmd = [cursor readInt32];
-    segmentCommand.cmdsize = [cursor readInt32];
-
-    [cursor readBytesOfLength:16 intoBuffer:segmentCommand.segname];
-    segmentCommand.vmaddr = [cursor readInt32];
-    segmentCommand.vmsize = [cursor readInt32];
-    segmentCommand.fileoff = [cursor readInt32];
-    segmentCommand.filesize = [cursor readInt32];
-    segmentCommand.maxprot = [cursor readInt32];
-    segmentCommand.initprot = [cursor readInt32];
-    segmentCommand.nsects = [cursor readInt32];
-    segmentCommand.flags = [cursor readInt32];
-
-    {
-        char buf[17];
-        NSString *str;
-
-        memcpy(buf, segmentCommand.segname, 16);
-        buf[16] = 0;
-        str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-        if ([str length] >= 16) {
-            NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", str);
+    if ((self = [super initWithDataCursor:cursor])) {
+        segmentCommand.cmd = [cursor readInt32];
+        segmentCommand.cmdsize = [cursor readInt32];
+        
+        [cursor readBytesOfLength:16 intoBuffer:segmentCommand.segname];
+        segmentCommand.vmaddr = [cursor readInt32];
+        segmentCommand.vmsize = [cursor readInt32];
+        segmentCommand.fileoff = [cursor readInt32];
+        segmentCommand.filesize = [cursor readInt32];
+        segmentCommand.maxprot = [cursor readInt32];
+        segmentCommand.initprot = [cursor readInt32];
+        segmentCommand.nsects = [cursor readInt32];
+        segmentCommand.flags = [cursor readInt32];
+        
+        {
+            char buf[17];
+            NSString *str;
+            
+            memcpy(buf, segmentCommand.segname, 16);
+            buf[16] = 0;
+            str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+            if ([str length] >= 16) {
+                NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", str);
+            }
+            [self setName:str];
+            [str release];
         }
-        [self setName:str];
-        [str release];
-    }
-
-    {
-        unsigned int index;
-
-        for (index = 0; index < segmentCommand.nsects; index++) {
-            CDSection32 *section;
-
-            section = [[CDSection32 alloc] initWithDataCursor:cursor segment:self];
-            [sections addObject:section];
-            [section release];
+        
+        {
+            unsigned int index;
+            
+            for (index = 0; index < segmentCommand.nsects; index++) {
+                CDSection32 *section;
+                
+                section = [[CDSection32 alloc] initWithDataCursor:cursor segment:self];
+                [sections addObject:section];
+                [section release];
+            }
         }
     }
 

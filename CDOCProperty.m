@@ -17,23 +17,22 @@ static BOOL debug = NO;
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 {
-    if ([super init] == nil)
-        return nil;
-
-    name = [aName retain];
-    attributeString = [someAttributes retain];
-    type = nil;
-    attributes = [[NSMutableArray alloc] init];
-
-    hasParsedAttributes = NO;
-    attributeStringAfterType = nil;
-    customGetter = nil;
-    customSetter = nil;
-
-    flags.isReadOnly = NO;
-    flags.isDynamic = NO;
-
-    [self _parseAttributes];
+    if ((self = [super init])) {
+        name = [aName retain];
+        attributeString = [someAttributes retain];
+        type = nil;
+        attributes = [[NSMutableArray alloc] init];
+        
+        hasParsedAttributes = NO;
+        attributeStringAfterType = nil;
+        customGetter = nil;
+        customSetter = nil;
+        
+        flags.isReadOnly = NO;
+        flags.isDynamic = NO;
+        
+        [self _parseAttributes];
+    }
 
     return self;
 }

@@ -9,20 +9,19 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    routinesCommand.cmd = [cursor readInt32];
-    routinesCommand.cmdsize = [cursor readInt32];
-
-    routinesCommand.init_address = [cursor readInt64];
-    routinesCommand.init_module = [cursor readInt64];
-    routinesCommand.reserved1 = [cursor readInt64];
-    routinesCommand.reserved2 = [cursor readInt64];
-    routinesCommand.reserved3 = [cursor readInt64];
-    routinesCommand.reserved4 = [cursor readInt64];
-    routinesCommand.reserved5 = [cursor readInt64];
-    routinesCommand.reserved6 = [cursor readInt64];
+    if ((self = [super initWithDataCursor:cursor])) {
+        routinesCommand.cmd = [cursor readInt32];
+        routinesCommand.cmdsize = [cursor readInt32];
+        
+        routinesCommand.init_address = [cursor readInt64];
+        routinesCommand.init_module = [cursor readInt64];
+        routinesCommand.reserved1 = [cursor readInt64];
+        routinesCommand.reserved2 = [cursor readInt64];
+        routinesCommand.reserved3 = [cursor readInt64];
+        routinesCommand.reserved4 = [cursor readInt64];
+        routinesCommand.reserved5 = [cursor readInt64];
+        routinesCommand.reserved6 = [cursor readInt64];
+    }
 
     return self;
 }

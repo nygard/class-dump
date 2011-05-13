@@ -20,13 +20,12 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    findString = nil;
-    resultString = [[NSMutableString alloc] init];
-    context = nil;
-    hasShownContext = NO;
+    if ((self = [super init])) {
+        findString = nil;
+        resultString = [[NSMutableString alloc] init];
+        context = nil;
+        hasShownContext = NO;
+    }
 
     return self;
 }

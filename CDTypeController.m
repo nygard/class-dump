@@ -16,53 +16,52 @@ static BOOL debug = NO;
 
 - (id)initWithClassDump:(CDClassDump *)aClassDump;
 {
-    if ([super init] == nil)
-        return nil;
-
-    ivarTypeFormatter = [[CDTypeFormatter alloc] init];
-    [ivarTypeFormatter setShouldExpand:NO];
-    [ivarTypeFormatter setShouldAutoExpand:YES];
-    [ivarTypeFormatter setBaseLevel:1];
-    [ivarTypeFormatter setTypeController:self];
-
-    methodTypeFormatter = [[CDTypeFormatter alloc] init];
-    [methodTypeFormatter setShouldExpand:NO];
-    [methodTypeFormatter setShouldAutoExpand:NO];
-    [methodTypeFormatter setBaseLevel:0];
-    [methodTypeFormatter setTypeController:self];
-
-    propertyTypeFormatter = [[CDTypeFormatter alloc] init];
-    [propertyTypeFormatter setShouldExpand:NO];
-    [propertyTypeFormatter setShouldAutoExpand:NO];
-    [propertyTypeFormatter setBaseLevel:0];
-    [propertyTypeFormatter setTypeController:self];
-
-    structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
-    [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
-    [structDeclarationTypeFormatter setShouldAutoExpand:YES];
-    [structDeclarationTypeFormatter setBaseLevel:0];
-    [structDeclarationTypeFormatter setTypeController:self]; // But need to ignore some things?
-
-    structureTable = [[CDStructureTable alloc] init];
-    [structureTable setAnonymousBaseName:@"CDStruct_"];
-    [structureTable setIdentifier:@"Structs"];
-
-    unionTable = [[CDStructureTable alloc] init];
-    [unionTable setAnonymousBaseName:@"CDUnion_"];
-    [unionTable setIdentifier:@"Unions"];
-
-    nonretained_classDump = aClassDump;
-
-    //[structureTable debugName:@"_xmlSAXHandler"];
-    //[structureTable debugName:@"UCKeyboardTypeHeader"];
-    //[structureTable debugName:@"UCKeyboardLayout"];
-    //[structureTable debugName:@"ppd_group_s"];
-    //[structureTable debugName:@"stat"];
-    //[structureTable debugName:@"timespec"];
-    //[structureTable debugName:@"AudioUnitEvent"];
-    //[structureTable debugAnon:@"{?=II}"];
-    //[structureTable debugName:@"_CommandStackEntry"];
-    //[structureTable debugName:@"_flags"];
+    if ((self = [super init])) {
+        ivarTypeFormatter = [[CDTypeFormatter alloc] init];
+        [ivarTypeFormatter setShouldExpand:NO];
+        [ivarTypeFormatter setShouldAutoExpand:YES];
+        [ivarTypeFormatter setBaseLevel:1];
+        [ivarTypeFormatter setTypeController:self];
+        
+        methodTypeFormatter = [[CDTypeFormatter alloc] init];
+        [methodTypeFormatter setShouldExpand:NO];
+        [methodTypeFormatter setShouldAutoExpand:NO];
+        [methodTypeFormatter setBaseLevel:0];
+        [methodTypeFormatter setTypeController:self];
+        
+        propertyTypeFormatter = [[CDTypeFormatter alloc] init];
+        [propertyTypeFormatter setShouldExpand:NO];
+        [propertyTypeFormatter setShouldAutoExpand:NO];
+        [propertyTypeFormatter setBaseLevel:0];
+        [propertyTypeFormatter setTypeController:self];
+        
+        structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
+        [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
+        [structDeclarationTypeFormatter setShouldAutoExpand:YES];
+        [structDeclarationTypeFormatter setBaseLevel:0];
+        [structDeclarationTypeFormatter setTypeController:self]; // But need to ignore some things?
+        
+        structureTable = [[CDStructureTable alloc] init];
+        [structureTable setAnonymousBaseName:@"CDStruct_"];
+        [structureTable setIdentifier:@"Structs"];
+        
+        unionTable = [[CDStructureTable alloc] init];
+        [unionTable setAnonymousBaseName:@"CDUnion_"];
+        [unionTable setIdentifier:@"Unions"];
+        
+        nonretained_classDump = aClassDump;
+        
+        //[structureTable debugName:@"_xmlSAXHandler"];
+        //[structureTable debugName:@"UCKeyboardTypeHeader"];
+        //[structureTable debugName:@"UCKeyboardLayout"];
+        //[structureTable debugName:@"ppd_group_s"];
+        //[structureTable debugName:@"stat"];
+        //[structureTable debugName:@"timespec"];
+        //[structureTable debugName:@"AudioUnitEvent"];
+        //[structureTable debugAnon:@"{?=II}"];
+        //[structureTable debugName:@"_CommandStackEntry"];
+        //[structureTable debugName:@"_flags"];
+    }
 
     return self;
 }

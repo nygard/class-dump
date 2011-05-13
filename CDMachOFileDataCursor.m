@@ -17,31 +17,28 @@
 
 - (id)initWithFile:(CDMachOFile *)aMachOFile offset:(NSUInteger)anOffset;
 {
-    if ([super initWithData:[aMachOFile machOData]] == nil)
-        return nil;
-
-    nonretained_machOFile = aMachOFile;
-    [self setOffset:anOffset];
+    if ((self = [super initWithData:[aMachOFile machOData]])) {
+        nonretained_machOFile = aMachOFile;
+        [self setOffset:anOffset];
+    }
 
     return self;
 }
 - (id)initWithFile:(CDMachOFile *)aMachOFile address:(NSUInteger)anAddress;
 {
-    if ([super initWithData:[aMachOFile machOData]] == nil)
-        return nil;
-
-    nonretained_machOFile = aMachOFile;
-    [self setAddress:anAddress];
+    if ((self = [super initWithData:[aMachOFile machOData]])) {
+        nonretained_machOFile = aMachOFile;
+        [self setAddress:anAddress];
+    }
 
     return self;
 }
 
 - (id)initWithSection:(CDSection *)section;
 {
-    if ([super initWithData:[section data]] == nil)
-        return nil;
-
-    nonretained_machOFile = [section machOFile];
+    if ((self = [super initWithData:[section data]])) {
+        nonretained_machOFile = [section machOFile];
+    }
 
     return self;
 }

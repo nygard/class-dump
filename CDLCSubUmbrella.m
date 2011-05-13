@@ -11,17 +11,16 @@
 {
     NSUInteger length;
 
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    command.cmd = [cursor readInt32];
-    command.cmdsize = [cursor readInt32];
-
-    length = command.cmdsize - sizeof(command);
-    //NSLog(@"expected length: %u", length);
-
-    name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    //NSLog(@"name: %@", name);
+    if ((self = [super initWithDataCursor:cursor])) {
+        command.cmd = [cursor readInt32];
+        command.cmdsize = [cursor readInt32];
+        
+        length = command.cmdsize - sizeof(command);
+        //NSLog(@"expected length: %u", length);
+        
+        name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        //NSLog(@"name: %@", name);
+    }
 
     return self;
 }

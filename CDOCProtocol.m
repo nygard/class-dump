@@ -23,18 +23,17 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    name = nil;
-    protocols = [[NSMutableArray alloc] init];
-    classMethods = [[NSMutableArray alloc] init];
-    instanceMethods = [[NSMutableArray alloc] init];
-    optionalClassMethods = [[NSMutableArray alloc] init];
-    optionalInstanceMethods = [[NSMutableArray alloc] init];
-    properties = [[NSMutableArray alloc] init];
-
-    adoptedProtocolNames = [[NSMutableSet alloc] init];
+    if ((self = [super init])) {
+        name = nil;
+        protocols = [[NSMutableArray alloc] init];
+        classMethods = [[NSMutableArray alloc] init];
+        instanceMethods = [[NSMutableArray alloc] init];
+        optionalClassMethods = [[NSMutableArray alloc] init];
+        optionalInstanceMethods = [[NSMutableArray alloc] init];
+        properties = [[NSMutableArray alloc] init];
+        
+        adoptedProtocolNames = [[NSMutableSet alloc] init];
+    }
 
     return self;
 }

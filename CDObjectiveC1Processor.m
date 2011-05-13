@@ -135,10 +135,9 @@ static BOOL debug = NO;
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
-    if ([super initWithMachOFile:aMachOFile] == nil)
-        return nil;
-
-    modules = [[NSMutableArray alloc] init];
+    if ((self = [super initWithMachOFile:aMachOFile])) {
+        modules = [[NSMutableArray alloc] init];
+    }
 
     return self;
 }

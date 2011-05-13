@@ -14,14 +14,13 @@
 // Just to resolve multiple different definitions...
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    segmentName = nil;
-    sectionName = nil;
-
-    data = nil;
-    _flags.hasLoadedData = NO;
+    if ((self = [super init])) {
+        segmentName = nil;
+        sectionName = nil;
+        
+        data = nil;
+        _flags.hasLoadedData = NO;
+    }
 
     return self;
 }

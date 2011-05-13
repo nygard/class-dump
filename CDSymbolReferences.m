@@ -9,14 +9,13 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    frameworkNamesByClassName = nil;
-    frameworkNamesByProtocolName = nil;
-
-    classes = [[NSMutableSet alloc] init];
-    protocols = [[NSMutableSet alloc] init];
+    if ((self = [super init])) {
+        frameworkNamesByClassName = nil;
+        frameworkNamesByProtocolName = nil;
+        
+        classes = [[NSMutableSet alloc] init];
+        protocols = [[NSMutableSet alloc] init];
+    }
 
     return self;
 }

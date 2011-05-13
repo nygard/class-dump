@@ -11,19 +11,18 @@
 {
     NSUInteger length;
 
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    dylinkerCommand.cmd = [cursor readInt32];
-    dylinkerCommand.cmdsize = [cursor readInt32];
-
-    dylinkerCommand.name.offset = [cursor readInt32];
-
-    length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
-    //NSLog(@"expected length: %u", length);
-
-    name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
-    //NSLog(@"name: %@", name);
+    if ((self = [super initWithDataCursor:cursor])) {
+        dylinkerCommand.cmd = [cursor readInt32];
+        dylinkerCommand.cmdsize = [cursor readInt32];
+        
+        dylinkerCommand.name.offset = [cursor readInt32];
+        
+        length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
+        //NSLog(@"expected length: %u", length);
+        
+        name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        //NSLog(@"name: %@", name);
+    }
 
     return self;
 }

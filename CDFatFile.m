@@ -20,35 +20,34 @@
     unsigned int index;
     struct fat_header header;
 
-    if ([super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] == nil)
-        return nil;
-
-    arches = [[NSMutableArray alloc] init];
-
-    cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
-    header.magic = [cursor readBigInt32];
-
-    //NSLog(@"(testing fat) magic: 0x%x", header.magic);
-    if (header.magic != FAT_MAGIC) {
+    if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState])) {
+        arches = [[NSMutableArray alloc] init];
+        
+        cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+        header.magic = [cursor readBigInt32];
+        
+        //NSLog(@"(testing fat) magic: 0x%x", header.magic);
+        if (header.magic != FAT_MAGIC) {
+            [cursor release];
+            [self release];
+            return nil;
+        }
+        
+        header.nfat_arch = [cursor readBigInt32];
+        //NSLog(@"nfat_arch: %u", header.nfat_arch);
+        for (index = 0; index < header.nfat_arch; index++) {
+            CDFatArch *arch;
+            
+            arch = [[CDFatArch alloc] initWithDataCursor:cursor];
+            [arch setFatFile:self];
+            [arches addObject:arch];
+            [arch release];
+        }
+        
         [cursor release];
-        [self release];
-        return nil;
+        
+        //NSLog(@"arches: %@", arches);
     }
-
-    header.nfat_arch = [cursor readBigInt32];
-    //NSLog(@"nfat_arch: %u", header.nfat_arch);
-    for (index = 0; index < header.nfat_arch; index++) {
-        CDFatArch *arch;
-
-        arch = [[CDFatArch alloc] initWithDataCursor:cursor];
-        [arch setFatFile:self];
-        [arches addObject:arch];
-        [arch release];
-    }
-
-    [cursor release];
-
-    //NSLog(@"arches: %@", arches);
 
     return self;
 }

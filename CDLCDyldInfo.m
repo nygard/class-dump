@@ -144,48 +144,47 @@ static NSString *CDBindTypeString(uint8_t type)
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    dyldInfoCommand.cmd = [cursor readInt32];
-    dyldInfoCommand.cmdsize = [cursor readInt32];
-
-    dyldInfoCommand.rebase_off = [cursor readInt32];
-    dyldInfoCommand.rebase_size = [cursor readInt32];
-    dyldInfoCommand.bind_off = [cursor readInt32];
-    dyldInfoCommand.bind_size = [cursor readInt32];
-    dyldInfoCommand.weak_bind_off = [cursor readInt32];
-    dyldInfoCommand.weak_bind_size = [cursor readInt32];
-    dyldInfoCommand.lazy_bind_off = [cursor readInt32];
-    dyldInfoCommand.lazy_bind_size = [cursor readInt32];
-    dyldInfoCommand.export_off = [cursor readInt32];
-    dyldInfoCommand.export_size = [cursor readInt32];
-
+    if ((self = [super initWithDataCursor:cursor])) {
+        dyldInfoCommand.cmd = [cursor readInt32];
+        dyldInfoCommand.cmdsize = [cursor readInt32];
+        
+        dyldInfoCommand.rebase_off = [cursor readInt32];
+        dyldInfoCommand.rebase_size = [cursor readInt32];
+        dyldInfoCommand.bind_off = [cursor readInt32];
+        dyldInfoCommand.bind_size = [cursor readInt32];
+        dyldInfoCommand.weak_bind_off = [cursor readInt32];
+        dyldInfoCommand.weak_bind_size = [cursor readInt32];
+        dyldInfoCommand.lazy_bind_off = [cursor readInt32];
+        dyldInfoCommand.lazy_bind_size = [cursor readInt32];
+        dyldInfoCommand.export_off = [cursor readInt32];
+        dyldInfoCommand.export_size = [cursor readInt32];
+        
 #if 0
-    NSLog(@"       cmdsize: %08x", dyldInfoCommand.cmdsize);
-    NSLog(@"    rebase_off: %08x", dyldInfoCommand.rebase_off);
-    NSLog(@"   rebase_size: %08x", dyldInfoCommand.rebase_size);
-    NSLog(@"      bind_off: %08x", dyldInfoCommand.bind_off);
-    NSLog(@"     bind_size: %08x", dyldInfoCommand.bind_size);
-    NSLog(@" weak_bind_off: %08x", dyldInfoCommand.weak_bind_off);
-    NSLog(@"weak_bind_size: %08x", dyldInfoCommand.weak_bind_size);
-    NSLog(@" lazy_bind_off: %08x", dyldInfoCommand.lazy_bind_off);
-    NSLog(@"lazy_bind_size: %08x", dyldInfoCommand.lazy_bind_size);
-    NSLog(@"    export_off: %08x", dyldInfoCommand.export_off);
-    NSLog(@"   export_size: %08x", dyldInfoCommand.export_size);
+        NSLog(@"       cmdsize: %08x", dyldInfoCommand.cmdsize);
+        NSLog(@"    rebase_off: %08x", dyldInfoCommand.rebase_off);
+        NSLog(@"   rebase_size: %08x", dyldInfoCommand.rebase_size);
+        NSLog(@"      bind_off: %08x", dyldInfoCommand.bind_off);
+        NSLog(@"     bind_size: %08x", dyldInfoCommand.bind_size);
+        NSLog(@" weak_bind_off: %08x", dyldInfoCommand.weak_bind_off);
+        NSLog(@"weak_bind_size: %08x", dyldInfoCommand.weak_bind_size);
+        NSLog(@" lazy_bind_off: %08x", dyldInfoCommand.lazy_bind_off);
+        NSLog(@"lazy_bind_size: %08x", dyldInfoCommand.lazy_bind_size);
+        NSLog(@"    export_off: %08x", dyldInfoCommand.export_off);
+        NSLog(@"   export_size: %08x", dyldInfoCommand.export_size);
 #endif
-
-    ptrSize = [[cursor machOFile] ptrSize];
-
-    symbolNamesByAddress = [[NSMutableDictionary alloc] init];
-
-    //[self logRebaseInfo];
-    [self logBindInfo]; // Acutally loads it for now.
-    [self logWeakBindInfo];
-    //[self logLazyBindInfo];
-    //[self logExportedSymbols];
-
-    //NSLog(@"symbolNamesByAddress: %@", symbolNamesByAddress);
+        
+        ptrSize = [[cursor machOFile] ptrSize];
+        
+        symbolNamesByAddress = [[NSMutableDictionary alloc] init];
+        
+        //[self logRebaseInfo];
+        [self logBindInfo]; // Acutally loads it for now.
+        [self logWeakBindInfo];
+        //[self logLazyBindInfo];
+        //[self logExportedSymbols];
+        
+        //NSLog(@"symbolNamesByAddress: %@", symbolNamesByAddress);
+    }
 
     return self;
 }

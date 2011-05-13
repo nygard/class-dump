@@ -11,18 +11,17 @@
 
 - (id)initWithProperties:(NSArray *)properties;
 {
-    if ([super init] == nil)
-        return nil;
-
-    propertiesByAccessor = [[NSMutableDictionary alloc] init];
-    propertiesByName = [[NSMutableDictionary alloc] init];
-
-    for (CDOCProperty *property in properties) {
-        //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
-        [propertiesByName setObject:property forKey:[property name]];
-        [propertiesByAccessor setObject:property forKey:[property getter]];
-        if ([property isReadOnly] == NO)
-            [propertiesByAccessor setObject:property forKey:[property setter]];
+    if ((self = [super init])) {
+        propertiesByAccessor = [[NSMutableDictionary alloc] init];
+        propertiesByName = [[NSMutableDictionary alloc] init];
+        
+        for (CDOCProperty *property in properties) {
+            //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
+            [propertiesByName setObject:property forKey:[property name]];
+            [propertiesByAccessor setObject:property forKey:[property getter]];
+            if ([property isReadOnly] == NO)
+                [propertiesByAccessor setObject:property forKey:[property setter]];
+        }
     }
 
     return self;

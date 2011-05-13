@@ -9,11 +9,10 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    executablePath = nil;
-    searchPathStack = [[NSMutableArray alloc] init];
+    if ((self = [super init])) {
+        executablePath = nil;
+        searchPathStack = [[NSMutableArray alloc] init];
+    }
 
     return self;
 }

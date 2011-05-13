@@ -17,36 +17,35 @@
     char buf[17];
     NSString *str;
 
-    if ([super init] == nil)
-        return nil;
-
-    nonretained_segment = aSegment;
-
-    [cursor readBytesOfLength:16 intoBuffer:section.sectname];
-    [cursor readBytesOfLength:16 intoBuffer:section.segname];
-    section.addr = [cursor readInt32];
-    section.size = [cursor readInt32];
-    section.offset = [cursor readInt32];
-    section.align = [cursor readInt32];
-    section.reloff = [cursor readInt32];
-    section.nreloc = [cursor readInt32];
-    section.flags = [cursor readInt32];
-    section.reserved1 = [cursor readInt32];
-    section.reserved2 = [cursor readInt32];
-
-    // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
-
-    memcpy(buf, section.segname, 16);
-    buf[16] = 0;
-    str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-    [self setSegmentName:str];
-    [str release];
-
-    memcpy(buf, section.sectname, 16);
-    buf[16] = 0;
-    str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-    [self setSectionName:str];
-    [str release];
+    if ((self = [super init])) {
+        nonretained_segment = aSegment;
+        
+        [cursor readBytesOfLength:16 intoBuffer:section.sectname];
+        [cursor readBytesOfLength:16 intoBuffer:section.segname];
+        section.addr = [cursor readInt32];
+        section.size = [cursor readInt32];
+        section.offset = [cursor readInt32];
+        section.align = [cursor readInt32];
+        section.reloff = [cursor readInt32];
+        section.nreloc = [cursor readInt32];
+        section.flags = [cursor readInt32];
+        section.reserved1 = [cursor readInt32];
+        section.reserved2 = [cursor readInt32];
+        
+        // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
+        
+        memcpy(buf, section.segname, 16);
+        buf[16] = 0;
+        str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+        [self setSegmentName:str];
+        [str release];
+        
+        memcpy(buf, section.sectname, 16);
+        buf[16] = 0;
+        str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
+        [self setSectionName:str];
+        [str release];
+    }
 
     return self;
 }

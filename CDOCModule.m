@@ -12,12 +12,11 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    version = 0;
-    name = nil;
-    symtab = nil;
+    if ((self = [super init])) {
+        version = 0;
+        name = nil;
+        symtab = nil;
+    }
 
     return self;
 }

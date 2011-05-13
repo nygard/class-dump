@@ -20,13 +20,12 @@
 
 - (id)init;
 {
-    if ([super init] == nil)
-        return nil;
-
-    superClassName = nil;
-    ivars = nil;
-
-    isExported = YES;
+    if ((self = [super init])) {
+        superClassName = nil;
+        ivars = nil;
+        
+        isExported = YES;
+    }
 
     return self;
 }
