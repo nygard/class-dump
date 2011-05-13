@@ -1291,7 +1291,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
 			};
 			name = "32-Debug";
 		};
@@ -1387,7 +1388,8 @@
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_64_BIT)";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -1397,7 +1399,8 @@
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.5.sdk";
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				SDKROOT = macosx;
 			};
 			name = Release;
 		};
