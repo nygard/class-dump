@@ -914,6 +914,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = macosx;
+				SYMROOT = /Local/$USER/Products;
 			};
 			name = "32-Debug";
 		};
@@ -957,6 +958,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = macosx;
+				SYMROOT = /Local/$USER/Products;
 			};
 			name = Debug;
 		};
@@ -970,6 +972,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = macosx;
+				SYMROOT = /Local/$USER/Products;
 			};
 			name = Release;
 		};
