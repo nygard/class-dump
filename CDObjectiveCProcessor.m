@@ -231,12 +231,12 @@
     // v2 == 0 -> Objective-C Garbage Collection: Unsupported
     // v2 == 2 -> Supported
     // v2 == 6 -> Required
-    NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
+    //NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
 
     [cursor release];
 
     // These are probably bitfields that should be tested/masked...
-    switch (v2) {
+    switch (v2 & 0x07) {
       case 0: return @"Unsupported";
       case 2: return @"Supported";
       case 6: return @"Required";
