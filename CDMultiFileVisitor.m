@@ -57,6 +57,7 @@
             BOOL result = [fileManager createDirectoryAtPath:outputPath withIntermediateDirectories:YES attributes:nil error:&error];
             if (result == NO) {
                 NSLog(@"Error: Couldn't create output directory: %@", outputPath);
+                NSLog(@"error: %@", error); // TODO: Test this
                 return;
             }
         } else if (isDirectory == NO) {
