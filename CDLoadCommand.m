@@ -80,7 +80,7 @@
         case LC_VERSION_MIN_MACOSX:  targetClass = [CDLCVersionMinimum class]; break;
         case LC_VERSION_MIN_IPHONEOS:  targetClass = [CDLCVersionMinimum class]; break;
         //case LC_FUNCTION_STARTS:  targetClass = [foo class]; break;
-        //case LC_DYLD_ENVIRONMENT:  targetClass = [foo class]; break;
+        case LC_DYLD_ENVIRONMENT:  targetClass = [CDLCDylinker class]; break;
             
         default:
             NSLog(@"Unknown load command: 0x%08x", val);

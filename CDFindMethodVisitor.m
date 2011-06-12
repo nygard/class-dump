@@ -77,11 +77,18 @@
 {
     [classDump appendHeaderToString:resultString];
 
-    if ([classDump containsObjectiveCData] || [classDump hasEncryptedFiles]) {
+    if (classDump.hasObjectiveCRuntimeInfo) {
         //[[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
-    } else {
-        [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];
+    }
+}
+
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+{
+    if (!classDump.hasObjectiveCRuntimeInfo) {
+        [resultString appendString:@"//\n"];
+        [resultString appendString:@"// This file does not contain any Objective-C runtime information.\n"];
+        [resultString appendString:@"//\n"];
     }
 }
 

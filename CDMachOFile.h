@@ -33,6 +33,7 @@ typedef NSUInteger CDByteOrder;
     CDLCVersionMinimum *minVersionMacOSX;
     CDLCVersionMinimum *minVersionIOS;
     NSMutableArray *runPaths;
+    NSMutableArray *dyldEnvironment;
     struct mach_header_64 header; // 64-bit, also holding 32-bit
 
     struct {
@@ -115,6 +116,7 @@ typedef NSUInteger CDByteOrder;
 
 - (void)saveDeprotectedFileToPath:(NSString *)path;
 
-- (NSArray *)runPaths;
+@property (readonly) NSMutableArray *runPaths;
+@property (readonly) NSMutableArray *dyldEnvironment;
 
 @end

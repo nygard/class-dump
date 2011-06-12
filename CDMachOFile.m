@@ -55,6 +55,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         minVersionMacOSX = nil;
         minVersionIOS = nil;
         runPaths = [[NSMutableArray alloc] init];
+        dyldEnvironment = [[NSMutableArray alloc] init];
         
         CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
         header.magic = [cursor readBigInt32];
@@ -115,21 +116,14 @@ NSString *CDMagicNumberString(uint32_t magic)
         if (loadCommand != nil) {
             [loadCommands addObject:loadCommand];
 
-            if ([loadCommand isKindOfClass:[CDLCSegment class]])
-                [segments addObject:loadCommand];
-
-            if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])
-                [self setSymbolTable:(CDLCSymbolTable *)loadCommand];
-            else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]])
-                [self setDynamicSymbolTable:(CDLCDynamicSymbolTable *)loadCommand];
-            else if ([loadCommand isKindOfClass:[CDLCDyldInfo class]])
-                [self setDyldInfo:(CDLCDyldInfo *)loadCommand];
-            else if ([loadCommand isKindOfClass:[CDLCRunPath class]])
-                [runPaths addObject:[(CDLCRunPath *)loadCommand resolvedRunPath]];
-            else if (loadCommand.cmd == LC_VERSION_MIN_MACOSX)
-                self.minVersionMacOSX = (CDLCVersionMinimum *)loadCommand;
-            else if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)
-                self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
+            if (loadCommand.cmd == LC_VERSION_MIN_MACOSX)                        self.minVersionMacOSX = (CDLCVersionMinimum *)loadCommand;
+            else if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)                 self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
+            else if (loadCommand.cmd == LC_DYLD_ENVIRONMENT)                     [self.dyldEnvironment addObject:loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCSegment class]])            [segments addObject:loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])        [self setSymbolTable:(CDLCSymbolTable *)loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]]) [self setDynamicSymbolTable:(CDLCDynamicSymbolTable *)loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCDyldInfo class]])           [self setDyldInfo:(CDLCDyldInfo *)loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCRunPath class]])            [runPaths addObject:[(CDLCRunPath *)loadCommand resolvedRunPath]];
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
@@ -145,9 +139,12 @@ NSString *CDMagicNumberString(uint32_t magic)
     [minVersionMacOSX release];
     [minVersionIOS release];
     [runPaths release];
+    [dyldEnvironment release];
 
     [super dealloc];
 }
+
+#pragma mark -
 
 - (CDByteOrder)byteOrder;
 {
@@ -216,6 +213,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     return loadCommands;
 }
 
+// TODO: Handle like run paths
 - (NSArray *)dylibLoadCommands;
 {
     NSMutableArray *dylibLoadCommands = [NSMutableArray array];
@@ -345,6 +343,8 @@ NSString *CDMagicNumberString(uint32_t magic)
     return nil;
 }
 
+#pragma mark -
+
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 {
     for (id loadCommand in loadCommands) {
@@ -470,6 +470,8 @@ NSString *CDMagicNumberString(uint32_t magic)
 
     return nil;
 }
+
+#pragma mark -
 
 - (BOOL)isEncrypted;
 {
@@ -723,9 +725,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     [mdata release];
 }
 
-- (NSArray *)runPaths;
-{
-    return runPaths;
-}
+@synthesize runPaths;
+@synthesize dyldEnvironment;
 
 @end

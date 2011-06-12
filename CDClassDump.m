@@ -63,6 +63,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 @synthesize searchPathState;
 
 - (BOOL)shouldProcessRecursively;
@@ -148,6 +150,8 @@
     flags.shouldShowHeader = newFlag;
 }
 
+#pragma mark - Regular expression handling
+
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 {
     int result;
@@ -195,6 +199,8 @@
     return YES;
 }
 
+#pragma mark -
+
 @synthesize sdkRoot;
 
 - (NSArray *)machOFiles;
@@ -228,6 +234,11 @@
     }
 
     return NO;
+}
+
+- (BOOL)hasObjectiveCRuntimeInfo;
+{
+    return self.containsObjectiveCData || self.hasEncryptedFiles;
 }
 
 - (CDTypeController *)typeController;
@@ -276,6 +287,8 @@
     return YES;
 }
 
+#pragma mark -
+
 - (void)processObjectiveCData;
 {
     for (CDMachOFile *machOFile in machOFiles) {
@@ -293,10 +306,8 @@
 {
     [aVisitor willBeginVisiting];
 
-    if ([self containsObjectiveCData] || [self hasEncryptedFiles]) {
-        for (CDObjectiveCProcessor *processor in objcProcessors) {
-            [processor recursivelyVisit:aVisitor];
-        }
+    for (CDObjectiveCProcessor *processor in objcProcessors) {
+        [processor recursivelyVisit:aVisitor];
     }
 
     [aVisitor didEndVisiting];

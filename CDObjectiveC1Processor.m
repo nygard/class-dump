@@ -149,6 +149,8 @@ static BOOL debug = NO;
     [super dealloc];
 }
 
+#pragma mark -
+
 - (void)process;
 {
     if ([machOFile isEncrypted] == NO && [machOFile canDecryptAllSegments]) {

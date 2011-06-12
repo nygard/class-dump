@@ -109,7 +109,7 @@
 
     [classDump appendHeaderToString:resultString];
 
-    if ([classDump containsObjectiveCData] || [classDump hasEncryptedFiles]) {
+    if (classDump.hasObjectiveCRuntimeInfo) {
         [self buildClassFrameworks];
         [self createOutputPathIfNecessary];
         [self generateStructureHeader];

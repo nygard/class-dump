@@ -39,6 +39,6 @@
 - (void)createUniquedProtocols;
 
 - (CDSection *)objcImageInfoSection;
-- (NSString *)garbageCollectionStatus;
+@property (readonly) NSString *garbageCollectionStatus;
 
 @end

@@ -119,12 +119,7 @@
     protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
     [aVisitor willVisitObjectiveCProcessor:self];
-
-    // Skip if there are no protocols, classes, or categories to print.
-    // But don't skip if the file is encrypted or has segments that can't be decrypted.
-    if ([protocolNames count] > 0 || [classesAndCategories count] > 0 || [machOFile isEncrypted] || [machOFile canDecryptAllSegments] == NO) {
-        [aVisitor visitObjectiveCProcessor:self];
-    }
+    [aVisitor visitObjectiveCProcessor:self];
 
     for (NSString *protocolName in protocolNames) {
         [[protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
@@ -220,29 +215,31 @@
 
 - (NSString *)garbageCollectionStatus;
 {
-    CDMachOFileDataCursor *cursor;
-    uint32_t v1, v2;
-
-    cursor = [[CDMachOFileDataCursor alloc] initWithSection:[self objcImageInfoSection]];
-
-    v1 = [cursor readInt32];
-    v2 = [cursor readInt32];
-    //NSLog(@"%s: %08x %08x", __cmd, v1, v2);
-    // v2 == 0 -> Objective-C Garbage Collection: Unsupported
-    // v2 == 2 -> Supported
-    // v2 == 6 -> Required
-    //NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
-
-    [cursor release];
-
-    // These are probably bitfields that should be tested/masked...
-    switch (v2 & 0x07) {
-      case 0: return @"Unsupported";
-      case 2: return @"Supported";
-      case 6: return @"Required";
+    if ([self objcImageInfoSection] != nil) {
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:[self objcImageInfoSection]];
+        
+        uint32_t v1 = [cursor readInt32];
+        uint32_t v2 = [cursor readInt32];
+        //NSLog(@"%s: %08x %08x", __cmd, v1, v2);
+        // v2 == 0 -> Objective-C Garbage Collection: Unsupported
+        // v2 == 2 -> Supported
+        // v2 == 6 -> Required
+        //NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
+        
+        [cursor release];
+        
+        // These are probably bitfields that should be tested/masked...
+        switch (v2 & 0x07) {
+            case 0: return @"Unsupported";
+            case 2: return @"Supported";
+            case 6: return @"Required";
+        }
+        
+        return [NSString stringWithFormat:@"Unknown (0x%08x)", v2];
     }
 
-    return [NSString stringWithFormat:@"Unknown (0x%08x)", v2];
+#warning TODO (2011-06-12): The compiler should be complaining that we aren't returning a value here.
+    //return 13;
 }
 
 @end

@@ -13,6 +13,7 @@
 #import "CDMachOFile.h"
 #import "CDOCProtocol.h"
 #import "CDLCDylib.h"
+#import "CDLCDylinker.h"
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDLCSegment.h"
@@ -30,11 +31,8 @@
 
     [classDump appendHeaderToString:resultString];
 
-    if ([classDump containsObjectiveCData] || [classDump hasEncryptedFiles]) {
+    if (classDump.hasObjectiveCRuntimeInfo) {
         [[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
-        //[resultString appendString:@"// [structures go here]\n"];
-    } else {
-        [resultString appendString:@"This file does not contain any Objective-C runtime information.\n"];
     }
 }
 
@@ -79,7 +77,20 @@
         [resultString appendFormat:@" *       Minimum IOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
 
     [resultString appendFormat:@" *\n"];
-    [resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", [aProcessor garbageCollectionStatus]];
+    if (aProcessor.garbageCollectionStatus != nil)
+        [resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", aProcessor.garbageCollectionStatus];
+    
+    if ([machOFile.dyldEnvironment count] > 0) {
+        BOOL first = YES;
+        for (CDLCDylinker *env in machOFile.dyldEnvironment) {
+            if (first) {
+                [resultString appendFormat:@" *       dyld environment: %@\n", env.name];
+                first = NO;
+            } else {
+                [resultString appendFormat:@" *                         %@\n", env.name];
+            }
+        }
+    }
 
     for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
         if ([loadCommand isKindOfClass:[CDLCRunPath class]]) {
@@ -122,6 +133,12 @@
         }
     }
     [resultString appendString:@" */\n\n"];
+    
+    if (!classDump.hasObjectiveCRuntimeInfo) {
+        [resultString appendString:@"//\n"];
+        [resultString appendString:@"// This file does not contain any Objective-C runtime information.\n"];
+        [resultString appendString:@"//\n"];
+    }
 }
 
 @end
