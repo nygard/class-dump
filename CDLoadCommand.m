@@ -27,6 +27,7 @@
 #import "CDLCUnixThread.h"
 #import "CDLCUUID.h"
 #import "CDLCUnknown.h"
+#import "CDLCVersionMinimum.h"
 #import "CDMachOFile.h"
 
 @implementation CDLoadCommand
@@ -74,6 +75,12 @@
         case LC_ENCRYPTION_INFO:    targetClass = [CDLCEncryptionInfo class]; break;
         case LC_DYLD_INFO:          targetClass = [CDLCDyldInfo class]; break;
         case LC_DYLD_INFO_ONLY:     targetClass = [CDLCDyldInfo class]; break;
+
+        //case LC_LOAD_UPWARD_DYLIB:  targetClass = [foo class]; break;
+        case LC_VERSION_MIN_MACOSX:  targetClass = [CDLCVersionMinimum class]; break;
+        case LC_VERSION_MIN_IPHONEOS:  targetClass = [CDLCVersionMinimum class]; break;
+        //case LC_FUNCTION_STARTS:  targetClass = [foo class]; break;
+        //case LC_DYLD_ENVIRONMENT:  targetClass = [foo class]; break;
             
         default:
             NSLog(@"Unknown load command: 0x%08x", val);

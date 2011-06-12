@@ -16,6 +16,7 @@
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDLCSegment.h"
+#import "CDLCVersionMinimum.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
@@ -71,6 +72,11 @@
             [resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
                           [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
     }
+
+    if (machOFile.minVersionMacOSX != nil) 
+        [resultString appendFormat:@" *       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];
+    if (machOFile.minVersionIOS != nil) 
+        [resultString appendFormat:@" *       Minimum IOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
 
     [resultString appendFormat:@" *\n"];
     [resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", [aProcessor garbageCollectionStatus]];

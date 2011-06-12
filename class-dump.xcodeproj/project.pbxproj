@@ -22,6 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		0154C1AD0FF58BFA00F87451 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0154C1AC0FF58BFA00F87451 /* libcrypto.dylib */; };
+		01A418A813A4314800D0F332 /* CDLCVersionMinimum.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A418A713A4314800D0F332 /* CDLCVersionMinimum.m */; };
 		01A949A111E2F48900FDFA93 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01A949A011E2F48900FDFA93 /* CDSearchPathState.m */; };
 		01A9A57C0FF19C5F00475772 /* CDClassDump.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B1908AE9D6D003E99F8 /* CDClassDump.m */; };
 		01A9A57F0FF19C6100475772 /* CDStructureTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 012E2B1F08AE9D6D003E99F8 /* CDStructureTable.m */; };
@@ -254,6 +255,8 @@
 		0182A9950FED717500145175 /* CDSection64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDSection64.m; sourceTree = "<group>"; };
 		0185BF310FF9B251006AE888 /* CDLCRunPath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCRunPath.h; sourceTree = "<group>"; };
 		0185BF320FF9B251006AE888 /* CDLCRunPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRunPath.m; sourceTree = "<group>"; };
+		01A418A613A4314700D0F332 /* CDLCVersionMinimum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCVersionMinimum.h; sourceTree = "<group>"; };
+		01A418A713A4314800D0F332 /* CDLCVersionMinimum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCVersionMinimum.m; sourceTree = "<group>"; };
 		01A68BCC1049D38F0094DF3F /* CDLCDyldInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCDyldInfo.h; sourceTree = "<group>"; };
 		01A68BCD1049D38F0094DF3F /* CDLCDyldInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCDyldInfo.m; sourceTree = "<group>"; };
 		01A68E28104B359D0094DF3F /* dyld-info-compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "dyld-info-compat.h"; sourceTree = "<group>"; };
@@ -623,6 +626,8 @@
 				01A9A42F0FF18F8300475772 /* CDLCUnknown.m */,
 				01A9A4300FF18F8300475772 /* CDLCUUID.h */,
 				01A9A4310FF18F8300475772 /* CDLCUUID.m */,
+				01A418A613A4314700D0F332 /* CDLCVersionMinimum.h */,
+				01A418A713A4314800D0F332 /* CDLCVersionMinimum.m */,
 			);
 			name = "Load Commands";
 			sourceTree = "<group>";
@@ -882,6 +887,7 @@
 				DAF6961011E62C00009AF361 /* CDTypeName.m in Sources */,
 				DAF6961111E62C00009AF361 /* CDTypeParser.m in Sources */,
 				DA88CA191200AF5D00FC6850 /* CDMachOFileDataCursor.m in Sources */,
+				01A418A813A4314800D0F332 /* CDLCVersionMinimum.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

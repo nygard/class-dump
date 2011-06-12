@@ -15,7 +15,7 @@ enum {
 typedef NSUInteger CDByteOrder;
 
 @class CDLCSegment, CDMachOFileDataCursor;
-@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable;
+@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum;
 
 @protocol CDMachOFileDelegate
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDLCDylib *)aDylibCommand;
@@ -30,6 +30,8 @@ typedef NSUInteger CDByteOrder;
     CDLCSymbolTable *symbolTable;
     CDLCDynamicSymbolTable *dynamicSymbolTable;
     CDLCDyldInfo *dyldInfo;
+    CDLCVersionMinimum *minVersionMacOSX;
+    CDLCVersionMinimum *minVersionIOS;
     NSMutableArray *runPaths;
     struct mach_header_64 header; // 64-bit, also holding 32-bit
 
@@ -62,6 +64,8 @@ typedef NSUInteger CDByteOrder;
 @property(retain) CDLCSymbolTable *symbolTable;
 @property(retain) CDLCDynamicSymbolTable *dynamicSymbolTable;
 @property(retain) CDLCDyldInfo *dyldInfo;
+@property(retain) CDLCVersionMinimum *minVersionMacOSX;
+@property(retain) CDLCVersionMinimum *minVersionIOS;
 
 - (BOOL)uses64BitABI;
 - (NSUInteger)ptrSize;

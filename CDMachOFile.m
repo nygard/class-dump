@@ -21,6 +21,7 @@
 #import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
 #import "CDLCUUID.h"
+#import "CDLCVersionMinimum.h"
 #import "CDObjectiveC1Processor.h"
 #import "CDObjectiveC2Processor.h"
 #import "CDSection.h"
@@ -51,6 +52,8 @@ NSString *CDMagicNumberString(uint32_t magic)
         symbolTable = nil;
         dynamicSymbolTable = nil;
         dyldInfo = nil;
+        minVersionMacOSX = nil;
+        minVersionIOS = nil;
         runPaths = [[NSMutableArray alloc] init];
         
         CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
@@ -106,7 +109,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     uint32_t index;
 
     for (index = 0; index < count; index++) {
-        id loadCommand;
+        CDLoadCommand *loadCommand;
 
         loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor];
         if (loadCommand != nil) {
@@ -123,6 +126,10 @@ NSString *CDMagicNumberString(uint32_t magic)
                 [self setDyldInfo:(CDLCDyldInfo *)loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCRunPath class]])
                 [runPaths addObject:[(CDLCRunPath *)loadCommand resolvedRunPath]];
+            else if (loadCommand.cmd == LC_VERSION_MIN_MACOSX)
+                self.minVersionMacOSX = (CDLCVersionMinimum *)loadCommand;
+            else if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)
+                self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
@@ -135,6 +142,8 @@ NSString *CDMagicNumberString(uint32_t magic)
     [symbolTable release];
     [dynamicSymbolTable release];
     [dyldInfo release];
+    [minVersionMacOSX release];
+    [minVersionIOS release];
     [runPaths release];
 
     [super dealloc];
@@ -225,6 +234,8 @@ NSString *CDMagicNumberString(uint32_t magic)
 @synthesize symbolTable;
 @synthesize dynamicSymbolTable;
 @synthesize dyldInfo;
+@synthesize minVersionMacOSX;
+@synthesize minVersionIOS;
 
 - (BOOL)uses64BitABI;
 {
@@ -534,7 +545,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 {
     for (CDLoadCommand *loadCommand in loadCommands)
         if ([loadCommand isKindOfClass:[CDLCUUID class]])
-            return [(CDLCUUID*)loadCommand uuidString];
+            return [(CDLCUUID *)loadCommand uuidString];
 
     return @"N/A";
 }
