@@ -307,6 +307,10 @@
 		01AD08650FF7F6EA008E6A49 /* CDLCRoutines32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRoutines32.m; sourceTree = "<group>"; };
 		01AD086B0FF7F741008E6A49 /* CDLCRoutines64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCRoutines64.h; sourceTree = "<group>"; };
 		01AD086C0FF7F741008E6A49 /* CDLCRoutines64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDLCRoutines64.m; sourceTree = "<group>"; };
+		01B02D1C13A5B2BB0047BC53 /* class-dump-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump-Prefix.pch"; sourceTree = "<group>"; };
+		01B02D1D13A5B3080047BC53 /* formatType-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "formatType-Prefix.pch"; sourceTree = "<group>"; };
+		01B02D1E13A5B3150047BC53 /* deprotect-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "deprotect-Prefix.pch"; sourceTree = "<group>"; };
+		01B02D1F13A5B3210047BC53 /* MachObjC-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "MachObjC-Prefix.pch"; sourceTree = "<group>"; };
 		01B456A4103923F80062EF62 /* NSData-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData-CDExtensions.h"; sourceTree = "<group>"; };
 		01B456A5103923F80062EF62 /* NSData-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData-CDExtensions.m"; sourceTree = "<group>"; };
 		01B68D1F1006011100288194 /* CDLCEncryptionInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDLCEncryptionInfo.h; sourceTree = "<group>"; };
@@ -332,7 +336,6 @@
 		01FB21E20FE926D60081556C /* CDFile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDFile.h; sourceTree = "<group>"; };
 		01FB21E30FE926D60081556C /* CDFile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDFile.m; sourceTree = "<group>"; };
 		08FB779EFE84155DC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
-		32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump_Prefix.pch"; sourceTree = "<group>"; };
 		DA88CA171200AF5D00FC6850 /* CDMachOFileDataCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CDMachOFileDataCursor.h; sourceTree = "<group>"; };
 		DA88CA181200AF5D00FC6850 /* CDMachOFileDataCursor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CDMachOFileDataCursor.m; sourceTree = "<group>"; };
 		DAF6959511E62A4F009AF361 /* libMachObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -649,7 +652,10 @@
 			isa = PBXGroup;
 			children = (
 				010C4CF01001999100B27A2B /* Info.plist */,
-				32A70AAB03705E1F00C91783 /* class-dump_Prefix.pch */,
+				01B02D1C13A5B2BB0047BC53 /* class-dump-Prefix.pch */,
+				01B02D1D13A5B3080047BC53 /* formatType-Prefix.pch */,
+				01B02D1E13A5B3150047BC53 /* deprotect-Prefix.pch */,
+				01B02D1F13A5B3210047BC53 /* MachObjC-Prefix.pch */,
 				012E2B3208AE9D8F003E99F8 /* class-dump.m */,
 				01F524831001D3640006B272 /* formatType.m */,
 				01F5264C1001F5C70006B272 /* deprotect.m */,
@@ -912,57 +918,13 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		010C4CD91001930200B27A2B /* 32-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
-				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				SDKROOT = macosx;
-				SYMROOT = /Local/$USER/Products;
-			};
-			name = "32-Debug";
-		};
-		010C4CDA1001930200B27A2B /* 32-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = all;
-			};
-			name = "32-Debug";
-		};
-		010C4CDB1001930200B27A2B /* 32-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				INSTALL_PATH = "$(HOME)/bin";
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
-				PRODUCT_NAME = "class-dump";
-				SDKROOT = macosx;
-			};
-			name = "32-Debug";
-		};
 		012E2A9508AE9B4F003E99F8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(NATIVE_ARCH_64_BIT)";
-				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
 				SYMROOT = /Local/$USER/Products;
 			};
@@ -973,10 +935,9 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1)";
 				ARCHS_STANDARD_32_64_BIT_PRE_XCODE_3_1 = "ppc i386 ppc64 x86_64";
-				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
 				SYMROOT = /Local/$USER/Products;
 			};
@@ -989,7 +950,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
+				GCC_PREFIX_HEADER = "class-dump-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -1009,7 +970,7 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "class-dump_Prefix.pch";
+				GCC_PREFIX_HEADER = "class-dump-Prefix.pch";
 				INSTALL_PATH = /;
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1055,7 +1016,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREFIX_HEADER = "formatType-Prefix.pch";
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1066,23 +1027,6 @@
 			};
 			name = Debug;
 		};
-		01F523921001D19C0006B272 /* 32-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
-				INSTALL_PATH = /usr/local/bin;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
-				PRODUCT_NAME = formatType;
-				SDKROOT = macosx;
-			};
-			name = "32-Debug";
-		};
 		01F523931001D19C0006B272 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1091,7 +1035,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREFIX_HEADER = "formatType-Prefix.pch";
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1112,7 +1056,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREFIX_HEADER = "deprotect-Prefix.pch";
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1123,24 +1067,6 @@
 			};
 			name = Debug;
 		};
-		01F525031001F3E80006B272 /* 32-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_MODEL_TUNING = G5;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
-				INSTALL_PATH = /usr/local/bin;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
-				PRODUCT_NAME = deprotect;
-				SDKROOT = macosx;
-			};
-			name = "32-Debug";
-		};
 		01F525041001F3E80006B272 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1149,7 +1075,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREFIX_HEADER = "deprotect-Prefix.pch";
 				INSTALL_PATH = /usr/local/bin;
 				OTHER_LDFLAGS = (
 					"-all_load",
@@ -1167,22 +1093,12 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/lib;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MachObjC-Prefix.pch";
 				PRODUCT_NAME = MachObjC;
 				SDKROOT = macosx;
 			};
 			name = Debug;
-		};
-		DAF6959711E62A51009AF361 /* 32-Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				INSTALL_PATH = /usr/local/lib;
-				PRODUCT_NAME = MachObjC;
-				SDKROOT = macosx;
-			};
-			name = "32-Debug";
 		};
 		DAF6959811E62A51009AF361 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1191,6 +1107,8 @@
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MachObjC-Prefix.pch";
 				PRODUCT_NAME = MachObjC;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -1204,7 +1122,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				012E2A9508AE9B4F003E99F8 /* Debug */,
-				010C4CD91001930200B27A2B /* 32-Debug */,
 				012E2A9608AE9B4F003E99F8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1214,7 +1131,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01A9A4BF0FF19B2F00475772 /* Debug */,
-				010C4CDB1001930200B27A2B /* 32-Debug */,
 				01A9A4C00FF19B2F00475772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1224,7 +1140,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01A9A4C50FF19BAE00475772 /* Debug */,
-				010C4CDA1001930200B27A2B /* 32-Debug */,
 				01A9A4C60FF19BAE00475772 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1234,7 +1149,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F523911001D19C0006B272 /* Debug */,
-				01F523921001D19C0006B272 /* 32-Debug */,
 				01F523931001D19C0006B272 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1244,7 +1158,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01F525021001F3E80006B272 /* Debug */,
-				01F525031001F3E80006B272 /* 32-Debug */,
 				01F525041001F3E80006B272 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
@@ -1254,7 +1167,6 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DAF6959611E62A51009AF361 /* Debug */,
-				DAF6959711E62A51009AF361 /* 32-Debug */,
 				DAF6959811E62A51009AF361 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
