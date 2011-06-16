@@ -393,7 +393,7 @@
 				01B02D1213A5B16E0047BC53 /* deprotect-Prefix.pch */,
 				013D1F0913A5A11100BF0A67 /* deprotect.m */,
 			);
-			path = deprotect;
+			name = deprotect;
 			sourceTree = "<group>";
 		};
 		01B02D0213A5B0DC0047BC53 /* formatType */ = {
@@ -402,7 +402,7 @@
 				01B02D0F13A5B1220047BC53 /* formatType-Prefix.pch */,
 				01B02D0D13A5B0FB0047BC53 /* formatType.m */,
 			);
-			path = formatType;
+			name = formatType;
 			sourceTree = "<group>";
 		};
 		01EB825413A590D9003EDE60 = {
@@ -470,7 +470,7 @@
 				01EB82FC13A591D8003EDE60 /* CDSearchPathState.m */,
 				01B02D1013A5B1460047BC53 /* class-dump.m */,
 			);
-			path = "class-dump";
+			name = "class-dump";
 			sourceTree = "<group>";
 		};
 		01EB827C13A5916D003EDE60 /* Other Frameworks */ = {
@@ -493,7 +493,6 @@
 				01EB836A13A59414003EDE60 /* Type Parsing/Lexing */,
 			);
 			name = MachObjC;
-			path = libMachObjC;
 			sourceTree = "<group>";
 		};
 		01EB836513A59202003EDE60 /* Extensions */ = {
