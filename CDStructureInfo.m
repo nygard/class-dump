@@ -28,106 +28,85 @@
 - (void)dealloc;
 {
     [type release];
+    [typedefName release];
 
     [super dealloc];
 }
 
-- (CDType *)type;
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone;
 {
-    return type;
+    CDStructureInfo *copy = [[CDStructureInfo alloc] initWithType:type]; // type gets copied
+    copy.referenceCount = self.referenceCount;
+    copy.isUsedInMethod = self.isUsedInMethod;
+    copy.typedefName = self.typedefName;
+    
+    return copy;
 }
 
-- (NSUInteger)referenceCount;
-{
-    return referenceCount;
-}
+#pragma mark -
 
-- (void)setReferenceCount:(NSUInteger)newCount;
-{
-    referenceCount = newCount;
-}
+@synthesize type;
+@synthesize referenceCount;
 
 - (void)addReferenceCount:(NSUInteger)count;
 {
-    referenceCount += count;
+    self.referenceCount += count;
 }
 
-- (BOOL)isUsedInMethod;
-{
-    return isUsedInMethod;
-}
-
-- (void)setIsUsedInMethod:(BOOL)newFlag;
-{
-    isUsedInMethod = newFlag;
-}
-
-- (NSString *)typedefName;
-{
-    return typedefName;
-}
-
-- (void)setTypedefName:(NSString *)newName;
-{
-    if (newName == typedefName)
-        return;
-
-    [typedefName release];
-    typedefName = [newName retain];
-}
+@synthesize isUsedInMethod;
+@synthesize typedefName;
 
 // Do this before generating member names.
 - (void)generateTypedefName:(NSString *)baseName;
 {
-    NSString *digest;
-    NSUInteger length;
-
-    digest = [[type typeString] SHA1DigestString];
-    length = [digest length];
+    NSString *digest = [[self.type typeString] SHA1DigestString];
+    NSUInteger length = [digest length];
     if (length > 8)
         digest = [digest substringFromIndex:length - 8];
 
-    [self setTypedefName:[NSString stringWithFormat:@"%@%@", baseName, digest]];
-    //NSLog(@"typedefName: %@", typedefName);
+    self.typedefName = [NSString stringWithFormat:@"%@%@", baseName, digest];
+    //NSLog(@"typedefName: %@", self.typedefName);
 }
 
 - (NSString *)name;
 {
-    return [[type typeName] description];
+    return [[self.type typeName] description];
 }
+
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, type: %p",
                      NSStringFromClass([self class]), self,
-                     [type structureDepth], referenceCount, isUsedInMethod, type];
+                     [self.type structureDepth], self.referenceCount, self.isUsedInMethod, self.type];
 }
 
 - (NSString *)shortDescription;
 {
-    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", [type structureDepth], referenceCount, isUsedInMethod, [type bareTypeString], [type typeString]];
+    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", [self.type structureDepth], self.referenceCount, self.isUsedInMethod, [self.type bareTypeString], [self.type typeString]];
 }
+
+#pragma mark - Sorting
 
 // Structure depth, reallyBareTypeString, typeString
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 {
-    NSUInteger thisDepth, otherDepth;
-    NSString *str1, *str2;
-    NSComparisonResult result;
-
-    thisDepth = [type structureDepth];
-    otherDepth = [[otherInfo type] structureDepth];
+    NSUInteger thisDepth = [self.type structureDepth];
+    NSUInteger otherDepth = [[otherInfo type] structureDepth];
 
     if (thisDepth < otherDepth)
         return NSOrderedAscending;
     else if (thisDepth > otherDepth)
         return NSOrderedDescending;
 
-    str1 = [type reallyBareTypeString];
-    str2 = [[otherInfo type] reallyBareTypeString];
-    result = [str1 compare:str2];
+    NSString *str1 = [self.type reallyBareTypeString];
+    NSString *str2 = [[otherInfo type] reallyBareTypeString];
+    NSComparisonResult result = [str1 compare:str2];
     if (result == NSOrderedSame) {
-        str1 = [type typeString];
+        str1 = [self.type typeString];
         str2 = [[otherInfo type] typeString];
         result = [str1 compare:str2];
     }
@@ -137,40 +116,24 @@
 
 - (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 {
-    NSUInteger thisDepth, otherDepth;
-    NSString *str1, *str2;
-    NSComparisonResult result;
-
-    thisDepth = [type structureDepth];
-    otherDepth = [[otherInfo type] structureDepth];
+    NSUInteger thisDepth = [self.type structureDepth];
+    NSUInteger otherDepth = [[otherInfo type] structureDepth];
 
     if (thisDepth < otherDepth)
         return NSOrderedDescending;
     else if (thisDepth > otherDepth)
         return NSOrderedAscending;
 
-    str1 = [type reallyBareTypeString];
-    str2 = [[otherInfo type] reallyBareTypeString];
-    result = -[str1 compare:str2];
+    NSString *str1 = [self.type reallyBareTypeString];
+    NSString *str2 = [[otherInfo type] reallyBareTypeString];
+    NSComparisonResult result = -[str1 compare:str2];
     if (result == NSOrderedSame) {
-        str1 = [type typeString];
+        str1 = [self.type typeString];
         str2 = [[otherInfo type] typeString];
         result = -[str1 compare:str2];
     }
 
     return result;
-}
-
-- (id)copyWithZone:(NSZone *)zone;
-{
-    CDStructureInfo *copy;
-
-    copy = [[CDStructureInfo alloc] initWithType:type]; // type gets copied
-    [copy setReferenceCount:referenceCount];
-    [copy setIsUsedInMethod:isUsedInMethod];
-    [copy setTypedefName:typedefName];
-
-    return copy;
 }
 
 @end

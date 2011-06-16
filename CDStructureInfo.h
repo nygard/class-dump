@@ -15,21 +15,18 @@
     NSString *typedefName;
 }
 
-// TODO: Or just pass in type?
 - (id)initWithType:(CDType *)aType;
 - (void)dealloc;
 
-- (CDType *)type;
+- (id)copyWithZone:(NSZone *)zone;
 
-- (NSUInteger)referenceCount;
-- (void)setReferenceCount:(NSUInteger)newCount;
+@property (readonly) CDType *type;
+
+@property (assign) NSUInteger referenceCount;
 - (void)addReferenceCount:(NSUInteger)count;
 
-- (BOOL)isUsedInMethod;
-- (void)setIsUsedInMethod:(BOOL)newFlag;
-
-- (NSString *)typedefName;
-- (void)setTypedefName:(NSString *)newName;
+@property (assign) BOOL isUsedInMethod;
+@property (retain) NSString *typedefName;
 
 - (void)generateTypedefName:(NSString *)baseName;
 
@@ -40,7 +37,5 @@
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 - (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
-
-- (id)copyWithZone:(NSZone *)zone;
 
 @end

@@ -395,6 +395,25 @@
 			tabWidth = 4;
 			usesTabs = 0;
 		};
+		01984AC013AA9EA900EABFF6 /* Visitors */ = {
+			isa = PBXGroup;
+			children = (
+				01EB829B13A591D7003EDE60 /* CDClassDumpVisitor.h */,
+				01EB829C13A591D7003EDE60 /* CDClassDumpVisitor.m */,
+				01EB82A713A591D7003EDE60 /* CDFindMethodVisitor.h */,
+				01EB82A813A591D7003EDE60 /* CDFindMethodVisitor.m */,
+				01EB831D13A591D8003EDE60 /* CDVisitor.h */,
+				01EB831E13A591D8003EDE60 /* CDVisitor.m */,
+				01EB829D13A591D7003EDE60 /* CDClassFrameworkVisitor.h */,
+				01EB829E13A591D7003EDE60 /* CDClassFrameworkVisitor.m */,
+				01EB82E113A591D8003EDE60 /* CDMultiFileVisitor.h */,
+				01EB82E213A591D8003EDE60 /* CDMultiFileVisitor.m */,
+				01EB830B13A591D8003EDE60 /* CDTextClassDumpVisitor.h */,
+				01EB830C13A591D8003EDE60 /* CDTextClassDumpVisitor.m */,
+			);
+			name = Visitors;
+			sourceTree = "<group>";
+		};
 		01B02D0213A5B0DC0047BC53 /* formatType */ = {
 			isa = PBXGroup;
 			children = (
@@ -454,18 +473,7 @@
 				01EB830413A591D8003EDE60 /* CDStructureInfo.m */,
 				01EB830913A591D8003EDE60 /* CDSymbolReferences.h */,
 				01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */,
-				01EB829B13A591D7003EDE60 /* CDClassDumpVisitor.h */,
-				01EB829C13A591D7003EDE60 /* CDClassDumpVisitor.m */,
-				01EB82A713A591D7003EDE60 /* CDFindMethodVisitor.h */,
-				01EB82A813A591D7003EDE60 /* CDFindMethodVisitor.m */,
-				01EB831D13A591D8003EDE60 /* CDVisitor.h */,
-				01EB831E13A591D8003EDE60 /* CDVisitor.m */,
-				01EB829D13A591D7003EDE60 /* CDClassFrameworkVisitor.h */,
-				01EB829E13A591D7003EDE60 /* CDClassFrameworkVisitor.m */,
-				01EB82E113A591D8003EDE60 /* CDMultiFileVisitor.h */,
-				01EB82E213A591D8003EDE60 /* CDMultiFileVisitor.m */,
-				01EB830B13A591D8003EDE60 /* CDTextClassDumpVisitor.h */,
-				01EB830C13A591D8003EDE60 /* CDTextClassDumpVisitor.m */,
+				01984AC013AA9EA900EABFF6 /* Visitors */,
 				01EB82FB13A591D8003EDE60 /* CDSearchPathState.h */,
 				01EB82FC13A591D8003EDE60 /* CDSearchPathState.m */,
 				01B02D1013A5B1460047BC53 /* class-dump.m */,
