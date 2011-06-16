@@ -43,7 +43,9 @@ void print_usage(void)
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
             "        --list-arches  list the arches in the file, then exit\n"
-            "        --sdk-root     specify the SDK root path (full path, or 4.1, 4.0, 3.2, 10.6, 10.5, 3.1.3, 3.1.2, 3.1)\n"
+            "        --sdk-ios      specify iOS SDK version (will look in /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
+            "        --sdk-mac      specify Mac OS X version (will look in /Developer/SDKs/MacOSX<version>.sdk\n"
+            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
             ,
             CLASS_DUMP_VERSION
        );
@@ -52,46 +54,9 @@ void print_usage(void)
 #define CD_OPT_ARCH 1
 #define CD_OPT_LIST_ARCHES 2
 #define CD_OPT_VERSION 3
-#define CD_OPT_SDK_ROOT 4
-
-struct sdk_alias {
-    NSString *alias;
-    NSString *path;
-};
-
-struct sdk_alias sdk_aliases[] = {
-    { @"3.0", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.0.sdk", },
-    { @"3.1", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.1.sdk", },
-    { @"3.1.2", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.1.2.sdk", },
-    { @"3.1.3", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.1.3.sdk", },
-    { @"3.2", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS3.2.sdk", },
-    { @"4.0", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.0.sdk", },
-    { @"4.1", @"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.1.sdk", },
-    { @"10.5", @"/Developer/SDKs/MacOSX10.5.sdk", },
-    { @"10.6", @"/Developer/SDKs/MacOSX10.6.sdk", },
-    { nil, nil, },
-};
-
-// Keyed by alias, value is full path.
-NSDictionary *sdkAliases(void)
-{
-    static NSDictionary *aliases = nil;
-
-    if (aliases == nil) {
-        NSMutableDictionary *dict;
-        struct sdk_alias *ptr = sdk_aliases;
-
-        dict = [[NSMutableDictionary alloc] init];
-        while (ptr->alias != nil) {
-            [dict setObject:ptr->path forKey:ptr->alias];
-            ptr++;
-        }
-        aliases = [dict copy];
-        [dict release];
-    }
-
-    return aliases;
-}
+#define CD_OPT_SDK_IOS 4
+#define CD_OPT_SDK_MAC 5
+#define CD_OPT_SDK_ROOT 6
 
 int main(int argc, char *argv[])
 {
@@ -124,6 +89,8 @@ int main(int argc, char *argv[])
         { "list-arches", no_argument, NULL, CD_OPT_LIST_ARCHES },
         { "suppress-header", no_argument, NULL, 't' },
         { "version", no_argument, NULL, CD_OPT_VERSION },
+        { "sdk-ios", required_argument, NULL, CD_OPT_SDK_IOS },
+        { "sdk-mac", required_argument, NULL, CD_OPT_SDK_MAC },
         { "sdk-root", required_argument, NULL, CD_OPT_SDK_ROOT },
         { NULL, 0, NULL, 0 },
     };
@@ -139,103 +106,118 @@ int main(int argc, char *argv[])
 
     while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
         switch (ch) {
-          case CD_OPT_ARCH: {
-              NSString *name;
-
-              name = [NSString stringWithUTF8String:optarg];
-              targetArch = CDArchFromName(name);
-              if (targetArch.cputype != CPU_TYPE_ANY)
-                  hasSpecifiedArch = YES;
-              else {
-                  fprintf(stderr, "Error: Unknown arch %s\n\n", optarg);
-                  errorFlag = YES;
-              }
-              break;
-          }
-
-          case CD_OPT_LIST_ARCHES:
-              shouldListArches = YES;
-              break;
-
-          case CD_OPT_VERSION:
-              shouldPrintVersion = YES;
-              break;
-
-          case CD_OPT_SDK_ROOT: {
-              NSString *root, *str;
-              NSDictionary *aliases = sdkAliases();
-
-              root = [NSString stringWithUTF8String:optarg];
-              //NSLog(@"root: %@", root);
-              //NSLog(@"aliases: %@", aliases);
-              str = [aliases objectForKey:root];
-              if (str == nil) {
-                  classDump.sdkRoot = root;
-              } else {
-                  classDump.sdkRoot = str;
-              }
-
-              break;
-          }
-
-          case 'a':
-              [classDump setShouldShowIvarOffsets:YES];
-              break;
-
-          case 'A':
-              [classDump setShouldShowMethodAddresses:YES];
-              break;
-
-          case 'C': {
-              NSString *errorMessage;
-
-              if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
-                  fprintf(stderr, "class-dump: Error with regex: '%s'\n\n", [errorMessage UTF8String]);
-                  errorFlag = YES;
-              }
-              // Last one wins now.
-              break;
-          }
-
-          case 'f': {
-              shouldFind = YES;
-
-              searchString = [NSString stringWithUTF8String:optarg];
-              break;
-          }
-
-          case 'H':
-              shouldGenerateSeparateHeaders = YES;
-              break;
-
-          case 'I':
-              [classDump setShouldSortClassesByInheritance:YES];
-              break;
-
-          case 'o':
-              [multiFileVisitor setOutputPath:[NSString stringWithUTF8String:optarg]];
-              break;
-
-          case 'r':
-              [classDump setShouldProcessRecursively:YES];
-              break;
-
-          case 's':
-              [classDump setShouldSortClasses:YES];
-              break;
-
-          case 'S':
-              [classDump setShouldSortMethods:YES];
-              break;
-
-          case 't':
-              [classDump setShouldShowHeader:NO];
-              break;
-
-          case '?':
-          default:
-              errorFlag = YES;
-              break;
+            case CD_OPT_ARCH: {
+                NSString *name;
+                
+                name = [NSString stringWithUTF8String:optarg];
+                targetArch = CDArchFromName(name);
+                if (targetArch.cputype != CPU_TYPE_ANY)
+                    hasSpecifiedArch = YES;
+                else {
+                    fprintf(stderr, "Error: Unknown arch %s\n\n", optarg);
+                    errorFlag = YES;
+                }
+                break;
+            }
+                
+            case CD_OPT_LIST_ARCHES:
+                shouldListArches = YES;
+                break;
+                
+            case CD_OPT_VERSION:
+                shouldPrintVersion = YES;
+                break;
+                
+            case CD_OPT_SDK_IOS: {
+                NSString *root, *str;
+                
+                root = [NSString stringWithUTF8String:optarg];
+                //NSLog(@"root: %@", root);
+                str = [NSString stringWithFormat:@"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                classDump.sdkRoot = str;
+                
+                break;
+            }
+                
+            case CD_OPT_SDK_MAC: {
+                NSString *root, *str;
+                
+                root = [NSString stringWithUTF8String:optarg];
+                //NSLog(@"root: %@", root);
+                str = [NSString stringWithFormat:@"/Developer/SDKs/MacOSX%@.sdk", root];
+                classDump.sdkRoot = str;
+                
+                break;
+            }
+                
+            case CD_OPT_SDK_ROOT: {
+                NSString *root;
+                
+                root = [NSString stringWithUTF8String:optarg];
+                //NSLog(@"root: %@", root);
+                classDump.sdkRoot = root;
+                
+                break;
+            }
+                
+            case 'a':
+                [classDump setShouldShowIvarOffsets:YES];
+                break;
+                
+            case 'A':
+                [classDump setShouldShowMethodAddresses:YES];
+                break;
+                
+            case 'C': {
+                NSString *errorMessage;
+                
+                if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
+                    fprintf(stderr, "class-dump: Error with regex: '%s'\n\n", [errorMessage UTF8String]);
+                    errorFlag = YES;
+                }
+                // Last one wins now.
+                break;
+            }
+                
+            case 'f': {
+                shouldFind = YES;
+                
+                searchString = [NSString stringWithUTF8String:optarg];
+                break;
+            }
+                
+            case 'H':
+                shouldGenerateSeparateHeaders = YES;
+                break;
+                
+            case 'I':
+                [classDump setShouldSortClassesByInheritance:YES];
+                break;
+                
+            case 'o':
+                [multiFileVisitor setOutputPath:[NSString stringWithUTF8String:optarg]];
+                break;
+                
+            case 'r':
+                [classDump setShouldProcessRecursively:YES];
+                break;
+                
+            case 's':
+                [classDump setShouldSortClasses:YES];
+                break;
+                
+            case 'S':
+                [classDump setShouldSortMethods:YES];
+                break;
+                
+            case 't':
+                [classDump setShouldShowHeader:NO];
+                break;
+                
+            case '?':
+            default:
+                errorFlag = YES;
+                break;
         }
     }
 
