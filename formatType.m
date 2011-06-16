@@ -104,7 +104,6 @@ int main(int argc, char *argv[])
         NSString *input;
         NSError *error;
         NSArray *lines;
-        CDTypeFormatter *formatter;
         NSString *name, *type;
 
         arg = [NSString stringWithFileSystemRepresentation:argv[index]];

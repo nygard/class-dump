@@ -272,7 +272,7 @@ static BOOL debug = NO;
     CDMachOFileDataCursor *cursor;
     struct cd_objc_class objcClass;
     CDOCClass *aClass;
-    NSString *name;
+    NSString *className;
 
     cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
 
@@ -287,17 +287,17 @@ static BOOL debug = NO;
     objcClass.cache = [cursor readInt32];
     objcClass.protocols = [cursor readInt32];
 
-    name = [machOFile stringAtAddress:objcClass.name];
+    className = [machOFile stringAtAddress:objcClass.name];
     //NSLog(@"name: %08x", objcClass.name);
-    //NSLog(@"name = %@", name);
-    if (name == nil) {
+    //NSLog(@"className = %@", className);
+    if (className == nil) {
         NSLog(@"Note: objcClass.name was %08x, returning nil.", objcClass.name);
         [cursor release];
         return nil;
     }
 
     aClass = [[[CDOCClass alloc] init] autorelease];
-    [aClass setName:name];
+    [aClass setName:className];
     [aClass setSuperClassName:[machOFile stringAtAddress:objcClass.super_class]];
     //NSLog(@"[aClass superClassName]: %@", [aClass superClassName]);
 

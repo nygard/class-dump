@@ -218,7 +218,7 @@
     if ([self objcImageInfoSection] != nil) {
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:[self objcImageInfoSection]];
         
-        uint32_t v1 = [cursor readInt32];
+        [cursor readInt32];
         uint32_t v2 = [cursor readInt32];
         //NSLog(@"%s: %08x %08x", __cmd, v1, v2);
         // v2 == 0 -> Objective-C Garbage Collection: Unsupported

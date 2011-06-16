@@ -623,11 +623,9 @@ static NSString *CDBindTypeString(uint8_t type)
         flags = read_uleb128(&tptr, end);
         kind = flags & EXPORT_SYMBOL_FLAGS_KIND_MASK;
         if (kind == EXPORT_SYMBOL_FLAGS_KIND_REGULAR) {
-            uint64_t offset;
-
-            offset = read_uleb128(&tptr, end);
-            NSLog(@"     Regular: %04llx  %016llx %@", flags, offset, prefix);
-            //NSLog(@"     Regular: %04x  0x%08x %@", flags, offset, prefix);
+            uint64_t symbolOffset = read_uleb128(&tptr, end);
+            NSLog(@"     Regular: %04llx  %016llx %@", flags, symbolOffset, prefix);
+            //NSLog(@"     Regular: %04x  0x%08x %@", flags, symbolOffset, prefix);
         } else if (kind == EXPORT_SYMBOL_FLAGS_KIND_THREAD_LOCAL) {
             NSLog(@"Thread Local: %04llx                   %@, terminalSize: %u", flags, prefix, terminalSize);
         } else {
