@@ -390,35 +390,19 @@
 		013D1EFE13A5A0F100BF0A67 /* deprotect */ = {
 			isa = PBXGroup;
 			children = (
+				01B02D1213A5B16E0047BC53 /* deprotect-Prefix.pch */,
 				013D1F0913A5A11100BF0A67 /* deprotect.m */,
-				013D1F0113A5A0F100BF0A67 /* Supporting Files */,
 			);
 			path = deprotect;
-			sourceTree = "<group>";
-		};
-		013D1F0113A5A0F100BF0A67 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				01B02D1213A5B16E0047BC53 /* deprotect-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		01B02D0213A5B0DC0047BC53 /* formatType */ = {
 			isa = PBXGroup;
 			children = (
+				01B02D0F13A5B1220047BC53 /* formatType-Prefix.pch */,
 				01B02D0D13A5B0FB0047BC53 /* formatType.m */,
-				01B02D0513A5B0DC0047BC53 /* Supporting Files */,
 			);
 			path = formatType;
-			sourceTree = "<group>";
-		};
-		01B02D0513A5B0DC0047BC53 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				01B02D0F13A5B1220047BC53 /* formatType-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		01EB825413A590D9003EDE60 = {
@@ -458,6 +442,8 @@
 		01EB826513A590D9003EDE60 /* class-dump */ = {
 			isa = PBXGroup;
 			children = (
+				01B02D1B13A5B2A40047BC53 /* class-dump-Prefix.pch */,
+				01B02D4913A5B9090047BC53 /* Info.plist */,
 				01EB829913A591D7003EDE60 /* CDClassDump.h */,
 				01EB829A13A591D7003EDE60 /* CDClassDump.m */,
 				01EB830513A591D8003EDE60 /* CDStructureTable.h */,
@@ -483,18 +469,8 @@
 				01EB82FB13A591D8003EDE60 /* CDSearchPathState.h */,
 				01EB82FC13A591D8003EDE60 /* CDSearchPathState.m */,
 				01B02D1013A5B1460047BC53 /* class-dump.m */,
-				01EB826813A590D9003EDE60 /* Supporting Files */,
 			);
 			path = "class-dump";
-			sourceTree = "<group>";
-		};
-		01EB826813A590D9003EDE60 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				01B02D1B13A5B2A40047BC53 /* class-dump-Prefix.pch */,
-				01B02D4913A5B9090047BC53 /* Info.plist */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		01EB827C13A5916D003EDE60 /* Other Frameworks */ = {
@@ -510,22 +486,14 @@
 		01EB828013A5916D003EDE60 /* MachObjC */ = {
 			isa = PBXGroup;
 			children = (
+				01EB828213A5916D003EDE60 /* MachObjC-Prefix.pch */,
 				01EB836513A59202003EDE60 /* Extensions */,
 				01EB836613A59227003EDE60 /* Mach-O */,
 				01EB836913A593C7003EDE60 /* Objective-C */,
 				01EB836A13A59414003EDE60 /* Type Parsing/Lexing */,
-				01EB828113A5916D003EDE60 /* Supporting Files */,
 			);
 			name = MachObjC;
 			path = libMachObjC;
-			sourceTree = "<group>";
-		};
-		01EB828113A5916D003EDE60 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				01EB828213A5916D003EDE60 /* MachObjC-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		01EB836513A59202003EDE60 /* Extensions */ = {
