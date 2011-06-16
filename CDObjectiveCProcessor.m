@@ -238,8 +238,7 @@
         return [NSString stringWithFormat:@"Unknown (0x%08x)", v2];
     }
 
-#warning TODO (2011-06-12): The compiler should be complaining that we aren't returning a value here.
-    //return 13;
+    return nil;
 }
 
 @end
