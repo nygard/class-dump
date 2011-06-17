@@ -56,6 +56,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         minVersionIOS = nil;
         runPaths = [[NSMutableArray alloc] init];
         dyldEnvironment = [[NSMutableArray alloc] init];
+        reExportedDylibs = [[NSMutableArray alloc] init]; 
         
         CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
         header.magic = [cursor readBigInt32];
@@ -119,6 +120,7 @@ NSString *CDMagicNumberString(uint32_t magic)
             if (loadCommand.cmd == LC_VERSION_MIN_MACOSX)                        self.minVersionMacOSX = (CDLCVersionMinimum *)loadCommand;
             else if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)                 self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
             else if (loadCommand.cmd == LC_DYLD_ENVIRONMENT)                     [self.dyldEnvironment addObject:loadCommand];
+            else if (loadCommand.cmd == LC_REEXPORT_DYLIB)                       [self.reExportedDylibs addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSegment class]])            [segments addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])        [self setSymbolTable:(CDLCSymbolTable *)loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]]) [self setDynamicSymbolTable:(CDLCDynamicSymbolTable *)loadCommand];
@@ -140,6 +142,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     [minVersionIOS release];
     [runPaths release];
     [dyldEnvironment release];
+    [reExportedDylibs release];
 
     [super dealloc];
 }
@@ -727,5 +730,6 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 @synthesize runPaths;
 @synthesize dyldEnvironment;
+@synthesize reExportedDylibs;
 
 @end

@@ -34,6 +34,7 @@ typedef NSUInteger CDByteOrder;
     CDLCVersionMinimum *minVersionIOS;
     NSMutableArray *runPaths;
     NSMutableArray *dyldEnvironment;
+    NSMutableArray *reExportedDylibs;
     struct mach_header_64 header; // 64-bit, also holding 32-bit
 
     struct {
@@ -118,5 +119,6 @@ typedef NSUInteger CDByteOrder;
 
 @property (readonly) NSMutableArray *runPaths;
 @property (readonly) NSMutableArray *dyldEnvironment;
+@property (readonly) NSMutableArray *reExportedDylibs;
 
 @end
