@@ -115,8 +115,6 @@ typedef NSUInteger CDByteOrder;
 - (BOOL)hasObjectiveC2Data;
 - (Class)processorClass;
 
-- (void)saveDeprotectedFileToPath:(NSString *)path;
-
 @property (readonly) NSMutableArray *runPaths;
 @property (readonly) NSMutableArray *dyldEnvironment;
 @property (readonly) NSMutableArray *reExportedDylibs;

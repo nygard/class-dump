@@ -679,55 +679,6 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [CDObjectiveC1Processor class];
 }
 
-- (void)saveDeprotectedFileToPath:(NSString *)path;
-{
-    NSMutableData *mdata;
-
-    // Not going to handle fat files -- thin it first
-    NSParameterAssert(archOffset == 0);
-
-    mdata = [[NSMutableData alloc] initWithData:data];
-    for (CDLoadCommand *command in loadCommands) {
-        if ([command isKindOfClass:[CDLCSegment class]]) {
-            CDLCSegment *segment = (CDLCSegment *)command;
-
-            if ([segment isProtected]) {
-                NSData *decryptedData;
-                NSRange range;
-                uint32_t flags;
-                NSUInteger flagOffset;
-
-                NSLog(@"segment is protected: %@", segment);
-                range.location = [segment fileoff];
-                range.length = [segment filesize];
-
-                decryptedData = [segment decryptedData];
-                NSParameterAssert([decryptedData length] == range.length);
-
-                [mdata replaceBytesInRange:range withBytes:[decryptedData bytes]];
-                if ([segment isKindOfClass:[CDLCSegment64 class]]) {
-                    flagOffset = [segment commandOffset] + offsetof(struct segment_command_64, flags);
-                } else {
-                    flagOffset = [segment commandOffset] + offsetof(struct segment_command, flags);
-                }
-
-                // TODO (2009-07-10): Needs to be endian-neutral
-                flags = OSReadLittleInt32([mdata mutableBytes], flagOffset);
-                NSLog(@"old flags: %08x", flags);
-                NSLog(@"segment flags: %08x", [segment flags]);
-                flags &= ~SG_PROTECTED_VERSION_1;
-                NSLog(@"new flags: %08x", flags);
-
-                OSWriteLittleInt32([mdata mutableBytes], flagOffset, flags);
-            }
-        }
-    }
-
-    [mdata writeToFile:path atomically:NO];
-
-    [mdata release];
-}
-
 @synthesize runPaths;
 @synthesize dyldEnvironment;
 @synthesize reExportedDylibs;
