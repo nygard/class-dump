@@ -67,9 +67,10 @@
     }
 
     if ([path hasPrefix:executablePathPrefix]) {
-        NSString *str;
-
-        str = [[path stringByReplacingOccurrencesOfString:executablePathPrefix withString:[[[self machOFile] searchPathState] executablePath]] stringByStandardizingPath];
+        NSString *str = @"";
+        NSString *executablePath = [[[self machOFile] searchPathState] executablePath];
+        if (executablePath)
+            str = [[path stringByReplacingOccurrencesOfString:executablePathPrefix withString:executablePath] stringByStandardizingPath];
 
         return str;
     }

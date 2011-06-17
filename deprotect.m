@@ -14,6 +14,9 @@
 
 #import "CDClassDump.h"
 #import "CDMachOFile.h"
+#import "CDLoadCommand.h"
+#import "CDLCSegment.h"
+#import "CDLCSegment64.h"
 
 void print_usage(void)
 {
@@ -28,11 +31,47 @@ void print_usage(void)
        );
 }
 
-enum {
-    CDFormatIvar = 0,
-    CDFormatMethod = 1,
-    CDFormatBalance = 2,
-};
+void saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
+{
+    NSMutableData *mdata = [[NSMutableData alloc] initWithData:file.data];
+    for (CDLoadCommand *command in file.loadCommands) {
+        if ([command isKindOfClass:[CDLCSegment class]]) {
+            CDLCSegment *segment = (CDLCSegment *)command;
+            
+            if ([segment isProtected]) {
+                NSRange range;
+                NSUInteger flagOffset;
+                
+                NSLog(@"segment is protected: %@", segment);
+                range.location = [segment fileoff];
+                range.length = [segment filesize];
+                
+                NSData *decryptedData = [segment decryptedData];
+                NSCParameterAssert([decryptedData length] == range.length);
+                
+                [mdata replaceBytesInRange:range withBytes:[decryptedData bytes]];
+                if ([segment isKindOfClass:[CDLCSegment64 class]]) {
+                    flagOffset = [segment commandOffset] + offsetof(struct segment_command_64, flags);
+                } else {
+                    flagOffset = [segment commandOffset] + offsetof(struct segment_command, flags);
+                }
+                
+                // TODO (2009-07-10): Needs to be endian-neutral
+                uint32_t flags = OSReadLittleInt32([mdata mutableBytes], flagOffset);
+                NSLog(@"old flags: %08x", flags);
+                NSLog(@"segment flags: %08x", [segment flags]);
+                flags &= ~SG_PROTECTED_VERSION_1;
+                NSLog(@"new flags: %08x", flags);
+                
+                OSWriteLittleInt32([mdata mutableBytes], flagOffset, flags);
+            }
+        }
+    }
+    
+    [mdata writeToFile:path atomically:NO];
+    
+    [mdata release];
+}
 
 int main(int argc, char *argv[])
 {
@@ -88,7 +127,7 @@ int main(int argc, char *argv[])
 
         if ([file isKindOfClass:[CDMachOFile class]]) {
             NSLog(@"file: %@", file);
-            [(CDMachOFile *)file saveDeprotectedFileToPath:outputFile];
+            saveDeprotectedFileToPath((CDMachOFile*)file, outputFile);
         } else {
             NSLog(@"Can only deprotect thin mach-o files at this point.");
         }

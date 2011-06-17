@@ -389,8 +389,11 @@
 				01B02D1213A5B16E0047BC53 /* deprotect-Prefix.pch */,
 				013D1F0913A5A11100BF0A67 /* deprotect.m */,
 			);
+			indentWidth = 4;
 			name = deprotect;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		01B02D0213A5B0DC0047BC53 /* formatType */ = {
 			isa = PBXGroup;
@@ -398,8 +401,11 @@
 				01B02D0F13A5B1220047BC53 /* formatType-Prefix.pch */,
 				01B02D0D13A5B0FB0047BC53 /* formatType.m */,
 			);
+			indentWidth = 4;
 			name = formatType;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		01EB825413A590D9003EDE60 = {
 			isa = PBXGroup;
@@ -464,8 +470,11 @@
 				01EB82FC13A591D8003EDE60 /* CDSearchPathState.m */,
 				01B02D1013A5B1460047BC53 /* class-dump.m */,
 			);
+			indentWidth = 4;
 			name = "class-dump";
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		01EB828013A5916D003EDE60 /* MachObjC */ = {
 			isa = PBXGroup;
@@ -476,8 +485,11 @@
 				01EB836913A593C7003EDE60 /* Objective-C */,
 				01EB836A13A59414003EDE60 /* Type Parsing/Lexing */,
 			);
+			indentWidth = 4;
 			name = MachObjC;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		01EB836513A59202003EDE60 /* Extensions */ = {
 			isa = PBXGroup;
