@@ -5,16 +5,8 @@
 
 #import "NSError-CDExtensions.h"
 
+NSString *NSErrorDomain_ClassDump = @"com.codethecode.MachObjC.ErrorDomain";
+
 @implementation NSError (CDExtensions)
-
-// The normal methods confuse me, and it's late.
-- (NSString *)myExplanation;
-{
-    NSString *str = [[self userInfo] objectForKey:@"explanation"];
-    if (str != nil)
-        return str;
-
-    return [self description];
-}
 
 @end

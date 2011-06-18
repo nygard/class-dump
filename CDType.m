@@ -554,7 +554,7 @@ static BOOL debugMerge = NO;
 - (id)copyWithZone:(NSZone *)zone;
 {
     CDTypeParser *parser;
-    NSError *error;
+    NSError *error = nil;
     NSString *str;
     CDType *copiedType;
 

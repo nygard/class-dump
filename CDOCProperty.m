@@ -170,7 +170,7 @@ static BOOL debug = NO;
     scanner = [[NSScanner alloc] initWithString:attributeString];
 
     if ([scanner scanString:@"T" intoString:NULL]) {
-        NSError *error;
+        NSError *error = nil;
         NSRange typeRange;
         CDTypeParser *parser;
 

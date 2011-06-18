@@ -114,7 +114,7 @@ static BOOL debug = NO;
     NSString *specialCase;
     CDTypeParser *aParser;
     CDType *resultType;
-    NSError *error;
+    NSError *error = nil;
 
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
     specialCase = [self _specialCaseVariable:name type:type];
@@ -134,7 +134,7 @@ static BOOL debug = NO;
     //NSLog(@"resultType: %p", resultType);
 
     if (resultType == nil) {
-        NSLog(@"Couldn't parse type: %@", [error myExplanation]);
+        NSLog(@"Couldn't parse type: %@", [[error userInfo] objectForKey:CDErrorKey_LocalizedLongDescription]);
         [aParser release];
         //NSLog(@"<  %s", __cmd);
         return nil;
@@ -171,7 +171,7 @@ static BOOL debug = NO;
 {
     CDTypeParser *aParser;
     NSArray *methodTypes;
-    NSError *error;
+    NSError *error = nil;
     NSMutableDictionary *typeDict;
     NSMutableArray *parameterTypes;
 
@@ -265,7 +265,7 @@ static BOOL debug = NO;
     CDTypeParser *aParser;
     NSArray *methodTypes;
     NSMutableString *resultString;
-    NSError *error;
+    NSError *error = nil;
 
     aParser = [[CDTypeParser alloc] initWithType:type];
     methodTypes = [aParser parseMethodType:&error];

@@ -7,6 +7,6 @@
 
 @interface NSError (CDExtensions)
 
-- (NSString *)myExplanation;
-
 @end
+
+extern NSString *NSErrorDomain_ClassDump;

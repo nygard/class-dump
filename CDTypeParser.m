@@ -12,8 +12,14 @@
 #import "CDTypeLexer.h"
 #import "NSString-Extensions.h"
 
-NSString *CDSyntaxError = @"Syntax Error";
-NSString *CDTypeParserErrorDomain = @"CDTypeParserErrorDomain";
+NSString *CDExceptionName_SyntaxError = @"CDExceptionName_SyntaxError";
+
+NSString *CDErrorDomain_TypeParser = @"CDErrorDomain_TypeParser";
+
+NSString *CDErrorKey_Type                     = @"CDErrorKey_Type";
+NSString *CDErrorKey_RemainingString          = @"CDErrorKey_RemainingString";
+NSString *CDErrorKey_MethodOrVariable         = @"CDErrorKey_MethodOrVariable";
+NSString *CDErrorKey_LocalizedLongDescription = @"CDErrorKey_LocalizedLongDescription";
 
 static BOOL debug = NO;
 
@@ -61,34 +67,30 @@ static NSString *CDTokenDescription(int token)
 {
     NSArray *result;
 
-    *error = nil;
-
     @try {
         lookahead = [lexer scanNextToken];
         result = [self _parseMethodType];
     }
     @catch (NSException *exception) {
-        NSDictionary *userInfo;
-        int code;
-
-        // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
-        if ([[exception name] isEqual:CDSyntaxError]) {
-            code = CDTypeParserCode_SyntaxError;
-            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
-                                             [NSString stringWithFormat:@"Syntax Error, %@:\n\t     type: %@\n\tremaining: %@",
-                                                       [exception reason], [lexer string], [lexer remainingString]], @"explanation",
-                                             [lexer string], @"type",
-                                             [lexer remainingString], @"remaining string",
-                                             nil];
-        } else {
-            code = CDTypeParserCode_Default;
-            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[exception reason], @"reason",
-                                             [lexer string], @"type",
-                                             [lexer remainingString], @"remaining string",
-                                             nil];
+        if (error != NULL) {
+            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+            int code;
+            
+            [userInfo setObject:[lexer string] forKey:CDErrorKey_Type];
+            [userInfo setObject:[lexer remainingString] forKey:CDErrorKey_RemainingString];
+            [userInfo setObject:@"method" forKey:CDErrorKey_MethodOrVariable];
+            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], [lexer string], [lexer remainingString]] forKey:CDErrorKey_LocalizedLongDescription];
+            
+            if ([exception name] == CDExceptionName_SyntaxError) {
+                code = CDTypeParserCode_SyntaxError;
+                [userInfo setObject:@"Syntax Error" forKey:NSLocalizedDescriptionKey];
+                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+            } else {
+                code = CDTypeParserCode_Default;
+                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+            }
+            *error = [NSError errorWithDomain:CDErrorDomain_TypeParser code:code userInfo:userInfo];
         }
-        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:code userInfo:userInfo];
-        [userInfo release];
 
         result = nil;
     }
@@ -100,34 +102,30 @@ static NSString *CDTokenDescription(int token)
 {
     CDType *result;
 
-    *error = nil;
-
     @try {
         lookahead = [lexer scanNextToken];
         result = [self _parseType];
     }
     @catch (NSException *exception) {
-        NSDictionary *userInfo;
-        int code;
-
-        // Obviously I need to figure out a sane method of dealing with errors here.  This is not.
-        if ([[exception name] isEqual:CDSyntaxError]) {
-            code = CDTypeParserCode_SyntaxError;
-            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:@"Syntax Error", @"reason",
-                                             [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@",
-                                                       [exception reason], [lexer string], [lexer remainingString]], @"explanation",
-                                             [lexer string], @"type",
-                                             [lexer remainingString], @"remaining string",
-                                             nil];
-        } else {
-            code = CDTypeParserCode_Default;
-            userInfo = [[NSDictionary alloc] initWithObjectsAndKeys:[exception reason], @"reason",
-                                             [lexer string], @"type",
-                                             [lexer remainingString], @"remaining string",
-                                             nil];
+        if (error != NULL) {
+            NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
+            int code;
+            
+            [userInfo setObject:[lexer string] forKey:CDErrorKey_Type];
+            [userInfo setObject:[lexer remainingString] forKey:CDErrorKey_RemainingString];
+            [userInfo setObject:@"variable" forKey:CDErrorKey_MethodOrVariable];
+            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], [lexer string], [lexer remainingString]] forKey:CDErrorKey_LocalizedLongDescription];
+            
+            if ([exception name] == CDExceptionName_SyntaxError) {
+                code = CDTypeParserCode_SyntaxError;
+                [userInfo setObject:@"Syntax Error" forKey:NSLocalizedDescriptionKey];
+                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+            } else {
+                code = CDTypeParserCode_Default;
+                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+            }
+            *error = [NSError errorWithDomain:CDErrorDomain_TypeParser code:code userInfo:userInfo];
         }
-        *error = [NSError errorWithDomain:CDTypeParserErrorDomain code:code userInfo:userInfo];
-        [userInfo release];
 
         result = nil;
     }
@@ -151,7 +149,7 @@ static NSString *CDTokenDescription(int token)
         [lexer setState:newState];
         lookahead = [lexer scanNextToken];
     } else {
-        [NSException raise:CDSyntaxError format:@"expected token %@, got %@",
+        [NSException raise:CDExceptionName_SyntaxError format:@"expected token %@, got %@",
                      CDTokenDescription(token),
                      CDTokenDescription(lookahead)];
     }
@@ -159,7 +157,7 @@ static NSString *CDTokenDescription(int token)
 
 - (void)error:(NSString *)errorString;
 {
-    [NSException raise:CDSyntaxError format:@"%@", errorString];
+    [NSException raise:CDExceptionName_SyntaxError format:@"%@", errorString];
 }
 
 - (NSArray *)_parseMethodType;
@@ -329,7 +327,7 @@ static NSString *CDTokenDescription(int token)
         result = [[CDType alloc] initSimpleType:simpleType];
     } else {
         result = nil;
-        [NSException raise:CDSyntaxError format:@"expected (many things), got %@", CDTokenDescription(lookahead)];
+        [NSException raise:CDExceptionName_SyntaxError format:@"expected (many things), got %@", CDTokenDescription(lookahead)];
     }
 
     return [result autorelease];

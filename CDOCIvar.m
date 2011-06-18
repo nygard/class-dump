@@ -56,7 +56,7 @@
 {
     if (hasParsedType == NO) {
         CDTypeParser *parser;
-        NSError *error;
+        NSError *error = nil;
 
         parser = [[CDTypeParser alloc] initWithType:type];
         parsedType = [[parser parseType:&error] retain];

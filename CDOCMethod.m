@@ -76,7 +76,7 @@
 {
     if (hasParsedType == NO) {
         CDTypeParser *parser;
-        NSError *error;
+        NSError *error = nil;
 
         parser = [[CDTypeParser alloc] initWithType:type];
         parsedMethodTypes = [[parser parseMethodType:&error] retain];
