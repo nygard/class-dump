@@ -27,14 +27,16 @@
     [super dealloc];
 }
 
-#pragma mark -
-
-@synthesize type;
-@synthesize offset;
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] type: %@, offset: %@", NSStringFromClass([self class]), self.type, self.offset];
 }
+
+#pragma mark -
+
+@synthesize type;
+@synthesize offset;
 
 @end

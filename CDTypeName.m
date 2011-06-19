@@ -27,61 +27,55 @@
     [super dealloc];
 }
 
-@synthesize name;
+#pragma mark - NSCopying
 
-- (NSArray *)templateTypes;
+- (id)copyWithZone:(NSZone *)zone;
 {
-    return templateTypes;
+    CDTypeName *copy = [[CDTypeName alloc] init];
+    copy.name = self.name;
+    copy.suffix = self.suffix;
+    
+    for (CDTypeName *subtype in self.templateTypes) {
+        CDTypeName *subcopy = [subtype copy];
+        [copy.templateTypes addObject:subcopy];
+        [subcopy release];
+    }
+    
+    return copy;
 }
 
-- (void)addTemplateType:(CDTypeName *)aTemplateType;
-{
-    [templateTypes addObject:aTemplateType];
-}
-
-@synthesize suffix;
-
-- (NSString *)description;
-{
-    if ([templateTypes count] == 0)
-        return name;
-
-    if (suffix != nil)
-        return [NSString stringWithFormat:@"%@<%@>%@", name, [templateTypes componentsJoinedByString:@", "], suffix];
-
-    return [NSString stringWithFormat:@"%@<%@>", name, [templateTypes componentsJoinedByString:@", "]];
-}
-
-- (BOOL)isTemplateType;
-{
-    return [templateTypes count] > 0;
-}
+#pragma mark -
 
 - (BOOL)isEqual:(id)otherObject;
 {
     if ([otherObject isKindOfClass:[self class]] == NO)
         return NO;
-
+    
     return [[self description] isEqual:[otherObject description]];
 }
 
-- (id)copyWithZone:(NSZone *)zone;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    CDTypeName *copy;
+    if ([self.templateTypes count] == 0)
+        return name;
+    
+    if (self.suffix != nil)
+        return [NSString stringWithFormat:@"%@<%@>%@", self.name, [self.templateTypes componentsJoinedByString:@", "], self.suffix];
+    
+    return [NSString stringWithFormat:@"%@<%@>", self.name, [self.templateTypes componentsJoinedByString:@", "]];
+}
 
-    copy = [[CDTypeName alloc] init];
-    [copy setName:name];
-    [copy setSuffix:suffix];
+#pragma mark -
 
-    for (CDTypeName *subtype in templateTypes) {
-        CDTypeName *subcopy;
+@synthesize name;
+@synthesize templateTypes;
+@synthesize suffix;
 
-        subcopy = [subtype copy];
-        [copy addTemplateType:subcopy];
-        [subcopy release];
-    }
-
-    return copy;
+- (BOOL)isTemplateType;
+{
+    return [self.templateTypes count] > 0;
 }
 
 @end

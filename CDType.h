@@ -32,12 +32,17 @@
 - (id)initModifier:(int)aModifier type:(CDType *)aType;
 - (void)dealloc;
 
+- (id)copyWithZone:(NSZone *)zone;
+- (BOOL)isEqual:(CDType *)otherType;
+
+- (NSString *)description;
+
 @property(retain) NSString *variableName;
 
 - (int)type;
-- (BOOL)isIDType;
-- (BOOL)isNamedObject;
-- (BOOL)isTemplateType;
+@property (readonly) BOOL isIDType;
+@property (readonly) BOOL isNamedObject;
+@property (readonly) BOOL isTemplateType;
 
 - (CDType *)subtype;
 - (CDTypeName *)typeName;
@@ -46,8 +51,6 @@
 
 - (int)typeIgnoringModifiers;
 - (NSUInteger)structureDepth;
-
-- (NSString *)description;
 
 - (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
@@ -60,8 +63,6 @@
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 
-- (BOOL)isEqual:(CDType *)otherType;
-- (id)copyWithZone:(NSZone *)zone;
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;

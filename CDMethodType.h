@@ -15,9 +15,9 @@
 
 - (id)initWithType:(CDType *)aType offset:(NSString *)anOffset;
 
+- (NSString *)description;
+
 @property (readonly) CDType *type;
 @property (readonly) NSString *offset;
-
-- (NSString *)description;
 
 @end

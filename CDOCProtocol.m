@@ -53,19 +53,17 @@
     [super dealloc];
 }
 
-- (NSString *)name;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return name;
+    return [NSString stringWithFormat:@"<%@:%p> name: %@, protocols: %d, class methods: %d, instance methods: %d",
+            NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 
-- (void)setName:(NSString *)newName;
-{
-    if (newName == name)
-        return;
+#pragma mark -
 
-    [name release];
-    name = [newName retain];
-}
+@synthesize name;
 
 - (NSArray *)protocols;
 {
@@ -142,12 +140,6 @@
     return [classMethods count] > 0 || [instanceMethods count] > 0 || [optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0;
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> name: %@, protocols: %d, class methods: %d, instance methods: %d",
-                     NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
-}
-
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
     [self registerTypesFromMethods:classMethods withObject:typeController phase:phase];
@@ -166,6 +158,8 @@
     }
 }
 
+#pragma mark - Sorting
+
 - (NSString *)sortableName;
 {
     return name;
@@ -175,6 +169,8 @@
 {
     return [[self sortableName] compare:[otherProtocol sortableName]];
 }
+
+#pragma mark -
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 {
@@ -189,13 +185,11 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    CDVisitorPropertyState *propertyState;
-
     if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
     // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
-    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+    CDVisitorPropertyState *propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
 
     [aVisitor willVisitProtocol:self];
 
@@ -216,9 +210,7 @@
 
 - (void)visitMethods:(CDVisitor *)aVisitor propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    NSArray *methods;
-
-    methods = classMethods;
+    NSArray *methods = classMethods;
     if ([[aVisitor classDump] shouldSortMethods])
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
@@ -251,9 +243,7 @@
 
 - (void)visitProperties:(CDVisitor *)aVisitor;
 {
-    NSArray *array;
-
-    array = properties;
+    NSArray *array = properties;
     if ([[aVisitor classDump] shouldSortMethods])
         array = [array sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCProperty *property in array)

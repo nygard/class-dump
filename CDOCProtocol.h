@@ -25,8 +25,9 @@
 - (id)init;
 - (void)dealloc;
 
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
+- (NSString *)description;
+
+@property (retain) NSString *name;
 
 - (NSArray *)protocols;
 - (void)addProtocol:(CDOCProtocol *)aProtocol;
@@ -49,7 +50,6 @@
 
 - (BOOL)hasMethods;
 
-- (NSString *)description;
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 

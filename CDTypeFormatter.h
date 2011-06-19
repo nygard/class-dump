@@ -13,20 +13,17 @@
 
     NSUInteger baseLevel;
 
-    struct {
-        unsigned int shouldExpand:1; // But just top level struct, level == 0
-        unsigned int shouldAutoExpand:1;
-        unsigned int shouldShowLexing:1;
-    } flags;
+    BOOL shouldExpand; // But just top level struct, level == 0
+    BOOL shouldAutoExpand;
+    BOOL shouldShowLexing;
 }
 
-@property NSUInteger baseLevel;
-@property BOOL shouldExpand;
-@property BOOL shouldAutoExpand;
-@property BOOL shouldShowLexing;
+@property (assign) NSUInteger baseLevel;
+@property (assign) BOOL shouldExpand;
+@property (assign) BOOL shouldAutoExpand;
+@property (assign) BOOL shouldShowLexing;
 
-- (CDTypeController *)typeController;
-- (void)setTypeController:(CDTypeController *)newTypeController;
+@property (assign) CDTypeController *typeController;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 - (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;

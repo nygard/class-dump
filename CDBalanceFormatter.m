@@ -33,19 +33,20 @@ static BOOL debug = NO;
     [super dealloc];
 }
 
+#pragma mark -
+
 - (void)parse:(NSString *)open index:(NSUInteger)openIndex level:(NSUInteger)level;
 {
-    NSArray *pairs;
-    NSString *pre;
     NSString *opens[] = { @"{", @"<", @"(", nil};
     NSString *closes[] = { @"}", @">", @")", nil};
-    NSUInteger index;
     BOOL foundOpen = NO;
     BOOL foundClose = NO;
 
-    pairs = [[NSArray alloc] initWithObjects:@"{}", @"<>", @"()", nil];
+    NSArray *pairs = [[NSArray alloc] initWithObjects:@"{}", @"<>", @"()", nil];
 
     while ([scanner isAtEnd] == NO) {
+        NSString *pre;
+
         if ([scanner scanUpToCharactersFromSet:openCloseSet intoString:&pre]) {
             if (debug) NSLog(@"pre = '%@'", pre);
             [result appendFormat:@"%@%@\n", [NSString spacesIndentedToLevel:level], pre];
@@ -53,7 +54,7 @@ static BOOL debug = NO;
         if (debug) NSLog(@"remaining: '%@'", [[scanner string] substringFromIndex:[scanner scanLocation]]);
 
         foundOpen = foundClose = NO;
-        for (index = 0; index < 3; index++) {
+        for (NSUInteger index = 0; index < 3; index++) {
             if (debug) NSLog(@"Checking open %lu: '%@'", index, opens[index]);
             if ([scanner scanString:opens[index] intoString:NULL]) {
                 if (debug) NSLog(@"Start %@", opens[index]);

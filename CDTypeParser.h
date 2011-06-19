@@ -29,7 +29,7 @@ extern NSString *CDErrorKey_LocalizedLongDescription;
 - (id)initWithType:(NSString *)aType;
 - (void)dealloc;
 
-- (CDTypeLexer *)lexer;
+@property (readonly) CDTypeLexer *lexer;
 
 - (NSArray *)parseMethodType:(NSError **)error;
 - (CDType *)parseType:(NSError **)error;

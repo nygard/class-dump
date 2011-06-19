@@ -149,6 +149,47 @@ static BOOL debugMerge = NO;
     [super dealloc];
 }
 
+#pragma mark - NSCopying
+
+// An easy deep copy.
+- (id)copyWithZone:(NSZone *)zone;
+{
+    NSString *str = [self typeString];
+    NSParameterAssert(str != nil);
+    
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:str];
+
+    NSError *error = nil;
+    CDType *copiedType = [[parser parseType:&error] retain];
+    if (copiedType == nil)
+        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@", str);
+    [parser release];
+    
+    NSParameterAssert([str isEqualToString:[copiedType typeString]]);
+    
+    [copiedType setVariableName:variableName];
+    
+    return copiedType;
+}
+
+#pragma mark -
+
+// TODO (2009-08-26): Looks like this doesn't compare the variable name.
+- (BOOL)isEqual:(CDType *)otherType;
+{
+    return [[self typeString] isEqual:[otherType typeString]];
+}
+
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %@, arraySize: %@, members: %@, variableName: %@",
+            NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
+}
+
+#pragma mark -
+
 @synthesize variableName;
 
 - (int)type;
@@ -218,12 +259,6 @@ static BOOL debugMerge = NO;
     return 0;
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %@, arraySize: %@, members: %@, variableName: %@",
-                     NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
-}
-
 - (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     NSString *result, *currentName;
@@ -279,9 +314,7 @@ static BOOL debugMerge = NO;
       case '(':
           baseType = nil;
           /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-              NSString *typedefName;
-
-              typedefName = [typeFormatter typedefNameForStruct:self level:level];
+              NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
               if (typedefName != nil) {
                   baseType = typedefName;
               }
@@ -313,9 +346,7 @@ static BOOL debugMerge = NO;
       case '{':
           baseType = nil;
           /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-              NSString *typedefName;
-
-              typedefName = [typeFormatter typedefNameForStruct:self level:level];
+              NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
               if (typedefName != nil) {
                   baseType = typedefName;
               }
@@ -385,10 +416,8 @@ static BOOL debugMerge = NO;
 
 - (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSMutableString *str;
-
-    assert(type == '{' || type == '(');
-    str = [NSMutableString string];
+    NSParameterAssert(type == '{' || type == '(');
+    NSMutableString *str = [NSMutableString string];
 
     for (CDType *member in members) {
         [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
@@ -406,35 +435,35 @@ static BOOL debugMerge = NO;
 {
     // Ugly but simple:
     switch (type) {
-      case 'c': return @"char";
-      case 'i': return @"int";
-      case 's': return @"short";
-      case 'l': return @"long";
-      case 'q': return @"long long";
-      case 'C': return @"unsigned char";
-      case 'I': return @"unsigned int";
-      case 'S': return @"unsigned short";
-      case 'L': return @"unsigned long";
-      case 'Q': return @"unsigned long long";
-      case 'f': return @"float";
-      case 'd': return @"double";
-      case 'B': return @"_Bool"; /* C99 _Bool or C++ bool */
-      case 'v': return @"void";
-      case '*': return @"STR";
-      case '#': return @"Class";
-      case ':': return @"SEL";
-      case '%': return @"NXAtom";
-      case '?': return @"void";
-          //case '?': return @"UNKNOWN"; // For easier regression testing.
-      case 'r': return @"const";
-      case 'n': return @"in";
-      case 'N': return @"inout";
-      case 'o': return @"out";
-      case 'O': return @"bycopy";
-      case 'R': return @"byref";
-      case 'V': return @"oneway";
-      default:
-          break;
+        case 'c': return @"char";
+        case 'i': return @"int";
+        case 's': return @"short";
+        case 'l': return @"long";
+        case 'q': return @"long long";
+        case 'C': return @"unsigned char";
+        case 'I': return @"unsigned int";
+        case 'S': return @"unsigned short";
+        case 'L': return @"unsigned long";
+        case 'Q': return @"unsigned long long";
+        case 'f': return @"float";
+        case 'd': return @"double";
+        case 'B': return @"_Bool"; /* C99 _Bool or C++ bool */
+        case 'v': return @"void";
+        case '*': return @"STR";
+        case '#': return @"Class";
+        case ':': return @"SEL";
+        case '%': return @"NXAtom";
+        case '?': return @"void";
+            //case '?': return @"UNKNOWN"; // For easier regression testing.
+        case 'r': return @"const";
+        case 'n': return @"in";
+        case 'N': return @"inout";
+        case 'o': return @"out";
+        case 'O': return @"bycopy";
+        case 'R': return @"byref";
+        case 'V': return @"oneway";
+        default:
+            break;
     }
 
     return nil;
@@ -464,65 +493,65 @@ static BOOL debugMerge = NO;
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 {
     NSString *result;
-
+    
     switch (type) {
-      case T_NAMED_OBJECT:
-          assert(typeName != nil);
-          if (shouldShowObjectTypes)
-              result = [NSString stringWithFormat:@"@\"%@\"", typeName];
-          else
-              result = @"@";
-          break;
-
-      case '@':
-          result = @"@";
-          break;
-
-      case 'b':
-          result = [NSString stringWithFormat:@"b%@", bitfieldSize];
-          break;
-
-      case '[':
-          result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          break;
-
-      case '(':
-          if (typeName == nil) {
-              return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          } else if ([members count] == 0) {
-              return [NSString stringWithFormat:@"(%@)", typeName];
-          } else {
-              return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          }
-          break;
-
-      case '{':
-          if (typeName == nil) {
-              return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          } else if ([members count] == 0) {
-              return [NSString stringWithFormat:@"{%@}", typeName];
-          } else {
-              return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          }
-          break;
-
-      case '^':
-          result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          break;
-
-      case 'r':
-      case 'n':
-      case 'N':
-      case 'o':
-      case 'O':
-      case 'R':
-      case 'V':
-          result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
-          break;
-
-      default:
-          result = [NSString stringWithFormat:@"%c", type];
-          break;
+        case T_NAMED_OBJECT:
+            assert(typeName != nil);
+            if (shouldShowObjectTypes)
+                result = [NSString stringWithFormat:@"@\"%@\"", typeName];
+            else
+                result = @"@";
+            break;
+            
+        case '@':
+            result = @"@";
+            break;
+            
+        case 'b':
+            result = [NSString stringWithFormat:@"b%@", bitfieldSize];
+            break;
+            
+        case '[':
+            result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            break;
+            
+        case '(':
+            if (typeName == nil) {
+                return [NSString stringWithFormat:@"(%@)", [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            } else if ([members count] == 0) {
+                return [NSString stringWithFormat:@"(%@)", typeName];
+            } else {
+                return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            }
+            break;
+            
+        case '{':
+            if (typeName == nil) {
+                return [NSString stringWithFormat:@"{%@}", [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            } else if ([members count] == 0) {
+                return [NSString stringWithFormat:@"{%@}", typeName];
+            } else {
+                return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            }
+            break;
+            
+        case '^':
+            result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            break;
+            
+        case 'r':
+        case 'n':
+        case 'N':
+        case 'o':
+        case 'O':
+        case 'R':
+        case 'V':
+            result = [NSString stringWithFormat:@"%c%@", type, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            break;
+            
+        default:
+            result = [NSString stringWithFormat:@"%c", type];
+            break;
     }
 
     return result;
@@ -530,10 +559,8 @@ static BOOL debugMerge = NO;
 
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 {
-    NSMutableString *str;
-
-    assert(type == '{' || type == '(');
-    str = [NSMutableString string];
+    NSParameterAssert(type == '{' || type == '(');
+    NSMutableString *str = [NSMutableString string];
 
     for (CDType *aMember in members) {
         if ([aMember variableName] != nil && level > 0)
@@ -544,42 +571,8 @@ static BOOL debugMerge = NO;
     return str;
 }
 
-// TODO (2009-08-26): Looks like this doesn't compare the variable name.
-- (BOOL)isEqual:(CDType *)otherType;
-{
-    return [[self typeString] isEqual:[otherType typeString]];
-}
-
-// An easy deep copy.
-- (id)copyWithZone:(NSZone *)zone;
-{
-    CDTypeParser *parser;
-    NSError *error = nil;
-    NSString *str;
-    CDType *copiedType;
-
-    str = [self typeString];
-    NSParameterAssert(str != nil);
-
-    parser = [[CDTypeParser alloc] initWithType:str];
-    copiedType = [[parser parseType:&error] retain];
-    if (copiedType == nil)
-        NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@", str);
-    [parser release];
-
-    NSParameterAssert([str isEqualToString:[copiedType typeString]]);
-
-    [copiedType setVariableName:variableName];
-
-    return copiedType;
-}
-
 - (BOOL)canMergeWithType:(CDType *)otherType;
 {
-    NSUInteger count, index;
-    NSUInteger otherCount;
-    NSArray *otherMembers;
-
     if ([self isIDType] && [otherType isNamedObject])
         return YES;
 
@@ -611,9 +604,9 @@ static BOOL debugMerge = NO;
         return NO;
     }
 
-    otherMembers = [otherType members];
-    count = [members count];
-    otherCount = [otherMembers count];
+    NSArray *otherMembers = [otherType members];
+    NSUInteger count = [members count];
+    NSUInteger otherCount = [otherMembers count];
 
     //NSLog(@"members: %p", members);
     //NSLog(@"otherMembers: %p", otherMembers);
@@ -631,18 +624,14 @@ static BOOL debugMerge = NO;
 
     // count == 0 is ok: we just have a name in that case.
     if (count == otherCount) {
-        for (index = 0; index < count; index++) { // Oooh
-            CDType *thisMember, *otherMember;
-            CDTypeName *thisTypeName, *otherTypeName;
-            NSString *thisVariableName, *otherVariableName;
+        for (NSUInteger index = 0; index < count; index++) { // Oooh
+            CDType *thisMember = [members objectAtIndex:index];
+            CDType *otherMember = [otherMembers objectAtIndex:index];
 
-            thisMember = [members objectAtIndex:index];
-            otherMember = [otherMembers objectAtIndex:index];
-
-            thisTypeName = [thisMember typeName];
-            otherTypeName = [otherMember typeName];
-            thisVariableName = [thisMember variableName];
-            otherVariableName = [otherMember variableName];
+            CDTypeName *thisTypeName = [thisMember typeName];
+            CDTypeName *otherTypeName = [otherMember typeName];
+            NSString *thisVariableName = [thisMember variableName];
+            NSString *otherVariableName = [otherMember variableName];
 
             // It seems to be okay if one of them didn't have a name
             if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO) {
@@ -669,11 +658,9 @@ static BOOL debugMerge = NO;
 // Recursively merges, not just the top level.
 - (void)mergeWithType:(CDType *)otherType;
 {
-    NSString *before, *after;
-
-    before = [self typeString];
+    NSString *before = [self typeString];
     [self _recursivelyMergeWithType:otherType];
-    after = [self typeString];
+    NSString *after = [self typeString];
     if (debugMerge) {
         NSLog(@"----------------------------------------");
         NSLog(@"%s", __cmd);
@@ -685,10 +672,6 @@ static BOOL debugMerge = NO;
 
 - (void)_recursivelyMergeWithType:(CDType *)otherType;
 {
-    NSUInteger count, index;
-    NSUInteger otherCount;
-    NSArray *otherMembers;
-
     if ([self isIDType] && [otherType isNamedObject]) {
         //NSLog(@"thisType: %@", [self typeString]);
         //NSLog(@"otherType: %@", [otherType typeString]);
@@ -708,9 +691,9 @@ static BOOL debugMerge = NO;
 
     [subtype _recursivelyMergeWithType:[otherType subtype]];
 
-    otherMembers = [otherType members];
-    count = [members count];
-    otherCount = [otherMembers count];
+    NSArray *otherMembers = [otherType members];
+    NSUInteger count = [members count];
+    NSUInteger otherCount = [otherMembers count];
 
     // The counts can be zero when we register structures that just have a name.  That happened while I was working on the
     // structure registration.
@@ -729,25 +712,21 @@ static BOOL debugMerge = NO;
     }
 
     //NSLog(@"****************************************");
-    for (index = 0; index < count; index++) {
-        CDType *thisMember, *otherMember;
-        CDTypeName *thisTypeName, *otherTypeName;
-        NSString *thisVariableName, *otherVariableName;
+    for (NSUInteger index = 0; index < count; index++) {
+        CDType *thisMember = [members objectAtIndex:index];
+        CDType *otherMember = [otherMembers objectAtIndex:index];
 
-        thisMember = [members objectAtIndex:index];
-        otherMember = [otherMembers objectAtIndex:index];
-
-        thisTypeName = [thisMember typeName];
-        otherTypeName = [otherMember typeName];
-        thisVariableName = [thisMember variableName];
-        otherVariableName = [otherMember variableName];
+        CDTypeName *thisTypeName = [thisMember typeName];
+        CDTypeName *otherTypeName = [otherMember typeName];
+        NSString *thisVariableName = [thisMember variableName];
+        NSString *otherVariableName = [otherMember variableName];
         //NSLog(@"%d: type: %@ vs %@", index, thisTypeName, otherTypeName);
         //NSLog(@"%d: vari: %@ vs %@", index, thisVariableName, otherVariableName);
 
-        if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil))
+        if ((thisTypeName == nil && otherTypeName != nil) || (thisTypeName != nil && otherTypeName == nil)) {
             ; // It seems to be okay if one of them didn't have a name
             //NSLog(@"Warning: (1) type names don't match, %@ vs %@", thisTypeName, otherTypeName);
-        else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO) {
+        } else if (thisTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO) {
             NSLog(@"Warning: (2) type names don't match:\n\t%@ vs \n\t%@.", thisTypeName, otherTypeName);
             // In this case, we should skip the merge.
         }
@@ -766,18 +745,15 @@ static BOOL debugMerge = NO;
 - (void)generateMemberNames;
 {
     if (type == '{' || type == '(') {
-        NSSet *usedNames;
-        unsigned int number;
-        NSString *name;
+        NSSet *usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
 
-        usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
-
-        number = 1;
+        unsigned int number = 1;
         for (CDType *aMember in members) {
             [aMember generateMemberNames];
 
             // Bitfields don't need a name.
             if ([aMember variableName] == nil && [aMember type] != 'b') {
+                NSString *name;
                 do {
                     name = [NSString stringWithFormat:@"_field%u", number++];
                 } while ([usedNames containsObject:name]);
@@ -792,9 +768,7 @@ static BOOL debugMerge = NO;
     [subtype generateMemberNames];
 }
 
-//
-// Phase 0
-//
+#pragma mark - Phase 0
 
 - (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 {
@@ -828,9 +802,7 @@ static BOOL debugMerge = NO;
         [member phase0RecursivelyFixStructureNames:flag];
 }
 
-//
-// Phase 1
-//
+#pragma mark - Phase 1
 
 // Recursively go through type, registering structs/unions.
 - (void)phase1RegisterStructuresWithObject:(CDTypeController *)typeController;
@@ -846,9 +818,7 @@ static BOOL debugMerge = NO;
     }
 }
 
-//
-// Phase 2
-//
+#pragma mark - Phase 2
 
 // This wraps the recursive method, optionally logging if anything changed.
 - (void)phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
@@ -875,9 +845,7 @@ static BOOL debugMerge = NO;
         [member _phase2MergeWithTypeController:typeController debug:phase2Debug];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        CDType *phase2Type;
-
-        phase2Type = [typeController phase2ReplacementForType:self];
+        CDType *phase2Type = [typeController phase2ReplacementForType:self];
         if (phase2Type != nil) {
             // >0 members so we don't try replacing things like... {_xmlNode=^{_xmlNode}}
             if ([members count] > 0 && [self canMergeWithType:phase2Type]) {
@@ -893,9 +861,7 @@ static BOOL debugMerge = NO;
     }
 }
 
-//
-// Phase 3
-//
+#pragma mark - Phase 3
 
 - (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
 {
@@ -924,9 +890,7 @@ static BOOL debugMerge = NO;
         [member phase3MergeWithTypeController:typeController];
 
     if ((type == '{' || type == '(') && [members count] > 0) {
-        CDType *phase3Type;
-
-        phase3Type = [typeController phase3ReplacementForType:self];
+        CDType *phase3Type = [typeController phase3ReplacementForType:self];
         if (phase3Type != nil) {
             // >0 members so we don't try replacing things like... {_xmlNode=^{_xmlNode}}
             if ([members count] > 0 && [self canMergeWithType:phase3Type]) {

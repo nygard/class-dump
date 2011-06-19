@@ -35,11 +35,9 @@ static NSString *CDTokenDescription(int token)
 
 - (id)initWithType:(NSString *)aType;
 {
-    NSMutableString *str;
-
     if ((self = [super init])) {
         // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
-        str = [aType mutableCopy];
+        NSMutableString *str = [aType mutableCopy];
         [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [aType length])];
         
         lexer = [[CDTypeLexer alloc] initWithString:str];
@@ -58,10 +56,9 @@ static NSString *CDTokenDescription(int token)
     [super dealloc];
 }
 
-- (CDTypeLexer *)lexer;
-{
-    return lexer;
-}
+#pragma mark -
+
+@synthesize lexer;
 
 - (NSArray *)parseMethodType:(NSError **)error;
 {
@@ -76,10 +73,10 @@ static NSString *CDTokenDescription(int token)
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             int code;
             
-            [userInfo setObject:[lexer string] forKey:CDErrorKey_Type];
-            [userInfo setObject:[lexer remainingString] forKey:CDErrorKey_RemainingString];
+            [userInfo setObject:lexer.string forKey:CDErrorKey_Type];
+            [userInfo setObject:lexer.remainingString forKey:CDErrorKey_RemainingString];
             [userInfo setObject:@"method" forKey:CDErrorKey_MethodOrVariable];
-            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], [lexer string], [lexer remainingString]] forKey:CDErrorKey_LocalizedLongDescription];
+            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], lexer.string, lexer.remainingString] forKey:CDErrorKey_LocalizedLongDescription];
             
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
@@ -111,10 +108,10 @@ static NSString *CDTokenDescription(int token)
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             int code;
             
-            [userInfo setObject:[lexer string] forKey:CDErrorKey_Type];
-            [userInfo setObject:[lexer remainingString] forKey:CDErrorKey_RemainingString];
+            [userInfo setObject:lexer.string forKey:CDErrorKey_Type];
+            [userInfo setObject:lexer.remainingString forKey:CDErrorKey_RemainingString];
             [userInfo setObject:@"variable" forKey:CDErrorKey_MethodOrVariable];
-            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], [lexer string], [lexer remainingString]] forKey:CDErrorKey_LocalizedLongDescription];
+            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], lexer.string, lexer.remainingString] forKey:CDErrorKey_LocalizedLongDescription];
             
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
@@ -135,18 +132,20 @@ static NSString *CDTokenDescription(int token)
 
 @end
 
+#pragma mark -
+
 @implementation CDTypeParser (Private)
 
 - (void)match:(int)token;
 {
-    [self match:token enterState:[lexer state]];
+    [self match:token enterState:lexer.state];
 }
 
 - (void)match:(int)token enterState:(CDTypeLexerState)newState;
 {
     if (lookahead == token) {
         if (debug) NSLog(@"matched %@", CDTokenDescription(token));
-        [lexer setState:newState];
+        lexer.state = newState;
         lookahead = [lexer scanNextToken];
     } else {
         [NSException raise:CDExceptionName_SyntaxError format:@"expected token %@, got %@",
@@ -162,22 +161,17 @@ static NSString *CDTokenDescription(int token)
 
 - (NSArray *)_parseMethodType;
 {
-    NSMutableArray *methodTypes;
-    CDMethodType *aMethodType;
-    CDType *type;
-    NSString *number;
-
-    methodTypes = [NSMutableArray array];
+    NSMutableArray *methodTypes = [NSMutableArray array];
 
     // Has to have at least one pair for the return type;
     // Probably needs at least two more, for object and selector
     // So it must be <type><number><type><number><type><number>.  Three pairs at a minimum.
 
     do {
-        type = [self _parseType];
-        number = [self parseNumber];
+        CDType *type = [self _parseType];
+        NSString *number = [self parseNumber];
 
-        aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
+        CDMethodType *aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
         [methodTypes addObject:aMethodType];
         [aMethodType release];
     } while ([self isTokenInTypeStartSet:lookahead]);
@@ -217,11 +211,10 @@ static NSString *CDTokenDescription(int token)
         || lookahead == 'O'
         || lookahead == 'R'
         || lookahead == 'V') { // modifiers
-        int modifier;
-        CDType *unmodifiedType;
-        modifier = lookahead;
+        int modifier = lookahead;
         [self match:modifier];
 
+        CDType *unmodifiedType;
         if ([self isTokenInTypeStartSet:lookahead])
             unmodifiedType = [self _parseTypeInStruct:isInStruct];
         else
@@ -241,31 +234,26 @@ static NSString *CDTokenDescription(int token)
             result = [[CDType alloc] initPointerType:type];
         }
     } else if (lookahead == 'b') { // bitfield
-        NSString *number;
-
         [self match:'b'];
-        number = [self parseNumber];
+        NSString *number = [self parseNumber];
         result = [[CDType alloc] initBitfieldType:number];
     } else if (lookahead == '@') { // id
         [self match:'@'];
 #if 0
         if (lookahead == TK_QUOTED_STRING) {
             NSLog(@"%s, quoted string ahead, shouldCheckFieldNames: %d, end: %d",
-                  __cmd, shouldCheckFieldNames, [[lexer scanner] isAtEnd]);
-            if ([[lexer scanner] isAtEnd] == NO)
-                NSLog(@"next character: %d (%c), isInTypeStartSet: %d", [lexer peekChar], [lexer peekChar], [self isTokenInTypeStartSet:[lexer peekChar]]);
+                  __cmd, shouldCheckFieldNames, [lexer.scanner isAtEnd]);
+            if ([lexer.scanner isAtEnd] == NO)
+                NSLog(@"next character: %d (%c), isInTypeStartSet: %d", lexer.peekChar, lexer.peekChar, [self isTokenInTypeStartSet:lexer.peekChar]);
         }
 #endif
-        if (lookahead == TK_QUOTED_STRING && (isInStruct == NO || [[lexer lexText] isFirstLetterUppercase] || [self isTokenInTypeStartSet:[lexer peekChar]] == NO)) {
-            NSString *str;
-            CDTypeName *typeName;
-
-            str = [lexer lexText];
+        if (lookahead == TK_QUOTED_STRING && (isInStruct == NO || [lexer.lexText isFirstLetterUppercase] || [self isTokenInTypeStartSet:lexer.peekChar] == NO)) {
+            NSString *str = lexer.lexText;
             if ([str hasPrefix:@"<"] && [str hasSuffix:@">"]) {
                 str = [str substringWithRange:NSMakeRange(1, [str length] - 2)];
                 result = [[CDType alloc] initIDTypeWithProtocols:[str componentsSeparatedByString:@","]];
             } else {
-                typeName = [[CDTypeName alloc] init];
+                CDTypeName *typeName = [[CDTypeName alloc] init];
                 [typeName setName:str];
                 result = [[CDType alloc] initIDType:typeName];
                 [typeName release];
@@ -276,53 +264,37 @@ static NSString *CDTokenDescription(int token)
             result = [[CDType alloc] initIDType:nil];
         }
     } else if (lookahead == '{') { // structure
-        CDTypeName *typeName;
-        NSArray *optionalMembers;
-        CDTypeLexerState savedState;
-
-        savedState = [lexer state];
+        CDTypeLexerState savedState = lexer.state;
         [self match:'{' enterState:CDTypeLexerState_Identifier];
-        typeName = [self parseTypeName];
-        optionalMembers = [self parseOptionalMembers];
+        CDTypeName *typeName = [self parseTypeName];
+        NSArray *optionalMembers = [self parseOptionalMembers];
         [self match:'}' enterState:savedState];
 
         result = [[CDType alloc] initStructType:typeName members:optionalMembers];
     } else if (lookahead == '(') { // union
-        CDTypeLexerState savedState;
-
-        savedState = [lexer state];
+        CDTypeLexerState savedState = lexer.state;
         [self match:'(' enterState:CDTypeLexerState_Identifier];
         if (lookahead == TK_IDENTIFIER) {
-            CDTypeName *typeName;
-            NSArray *optionalMembers;
-
-            typeName = [self parseTypeName];
-            optionalMembers = [self parseOptionalMembers];
+            CDTypeName *typeName = [self parseTypeName];
+            NSArray *optionalMembers = [self parseOptionalMembers];
             [self match:')' enterState:savedState];
 
             result = [[CDType alloc] initUnionType:typeName members:optionalMembers];
         } else {
-            NSArray *unionTypes;
-
-            unionTypes = [self parseUnionTypes];
+            NSArray *unionTypes = [self parseUnionTypes];
             [self match:')' enterState:savedState];
 
             result = [[CDType alloc] initUnionType:nil members:unionTypes];
         }
     } else if (lookahead == '[') { // array
-        NSString *number;
-        CDType *type;
-
         [self match:'['];
-        number = [self parseNumber];
-        type = [self _parseType];
+        NSString *number = [self parseNumber];
+        CDType *type = [self _parseType];
         [self match:']'];
 
         result = [[CDType alloc] initArrayType:type count:number];
     } else if ([self isTokenInSimpleTypeSet:lookahead]) { // simple type
-        int simpleType;
-
-        simpleType = lookahead;
+        int simpleType = lookahead;
         [self match:simpleType];
         result = [[CDType alloc] initSimpleType:simpleType];
     } else {
@@ -336,14 +308,10 @@ static NSString *CDTokenDescription(int token)
 // This seems to be used in method types -- no names
 - (NSArray *)parseUnionTypes;
 {
-    NSMutableArray *members;
-
-    members = [NSMutableArray array];
+    NSMutableArray *members = [NSMutableArray array];
 
     while ([self isTokenInTypeSet:lookahead]) {
-        CDType *aType;
-
-        aType = [self _parseType];
+        CDType *aType = [self _parseType];
         //[aType setVariableName:@"___"];
         [members addObject:aType];
     }
@@ -366,11 +334,9 @@ static NSString *CDTokenDescription(int token)
 
 - (NSArray *)parseMemberList;
 {
-    NSMutableArray *result;
-
     //NSLog(@" > %s", __cmd);
 
-    result = [NSMutableArray array];
+    NSMutableArray *result = [NSMutableArray array];
 
     while (lookahead == TK_QUOTED_STRING || [self isTokenInTypeSet:lookahead])
         [result addObject:[self parseMember]];
@@ -391,10 +357,10 @@ static NSString *CDTokenDescription(int token)
 
         while (lookahead == TK_QUOTED_STRING) {
             if (identifier == nil)
-                identifier = [lexer lexText];
+                identifier = lexer.lexText;
             else {
                 // TextMate 1.5.4 has structures like... "storage""stack"{etc} -- two quoted strings next to each other.
-                identifier = [NSString stringWithFormat:@"%@__%@", identifier, [lexer lexText]];
+                identifier = [NSString stringWithFormat:@"%@__%@", identifier, lexer.lexText];
             }
             [self match:TK_QUOTED_STRING];
         }
@@ -413,26 +379,22 @@ static NSString *CDTokenDescription(int token)
 
 - (CDTypeName *)parseTypeName;
 {
-    CDTypeName *typeName;
-
-    typeName = [[[CDTypeName alloc] init] autorelease];
+    CDTypeName *typeName = [[[CDTypeName alloc] init] autorelease];
     [typeName setName:[self parseIdentifier]];
 
     if (lookahead == '<') {
-        CDTypeLexerState savedState;
-
-        savedState = [lexer state];
+        CDTypeLexerState savedState = lexer.state;
         [self match:'<' enterState:CDTypeLexerState_TemplateTypes];
-        [typeName addTemplateType:[self parseTypeName]];
+        [typeName.templateTypes addObject:[self parseTypeName]];
         while (lookahead == ',') {
             [self match:','];
-            [typeName addTemplateType:[self parseTypeName]];
+            [typeName.templateTypes addObject:[self parseTypeName]];
         }
         [self match:'>' enterState:savedState];
 
-        if ([lexer state] == CDTypeLexerState_TemplateTypes) {
+        if (lexer.state == CDTypeLexerState_TemplateTypes) {
             if (lookahead == TK_IDENTIFIER) {
-                NSString *suffix = [lexer lexText];
+                NSString *suffix = lexer.lexText;
 
                 [self match:TK_IDENTIFIER];
                 [typeName setSuffix:suffix];
@@ -455,7 +417,7 @@ static NSString *CDTokenDescription(int token)
     NSString *result = nil;
 
     if (lookahead == TK_IDENTIFIER) {
-        result = [lexer lexText];
+        result = lexer.lexText;
         [self match:TK_IDENTIFIER];
     }
 
@@ -465,9 +427,7 @@ static NSString *CDTokenDescription(int token)
 - (NSString *)parseNumber;
 {
     if (lookahead == TK_NUMBER) {
-        NSString *result;
-
-        result = [lexer lexText];
+        NSString *result = lexer.lexText;
         [self match:TK_NUMBER];
         return result;
     }

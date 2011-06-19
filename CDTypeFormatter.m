@@ -5,11 +5,9 @@
 
 #import "CDTypeFormatter.h"
 
-#include <assert.h>
 #import "NSError-CDExtensions.h"
 #import "NSScanner-Extensions.h"
 #import "NSString-Extensions.h"
-#import "CDClassDump.h" // not ideal
 #import "CDMethodType.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
@@ -25,56 +23,32 @@ static BOOL debug = NO;
 {
     if ((self = [super init])) {
         nonretained_typeController = nil;
-        
-        flags.shouldExpand = NO;
-        flags.shouldAutoExpand = NO;
-        flags.shouldShowLexing = debug;
+        baseLevel = 0;
+        shouldExpand = NO;
+        shouldAutoExpand = NO;
+        shouldShowLexing = debug;
     }
 
     return self;
 }
 
-- (CDTypeController *)typeController;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return nonretained_typeController;
+    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %u, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
+            NSStringFromClass([self class]), self,
+            baseLevel, self.shouldExpand, self.shouldAutoExpand, self.shouldShowLexing, self.typeController];
 }
 
-- (void)setTypeController:(CDTypeController *)newTypeController;
-{
-    nonretained_typeController = newTypeController;
-}
+#pragma mark -
+
+@synthesize typeController = nonretained_typeController;
 
 @synthesize baseLevel;
-
-- (BOOL)shouldExpand;
-{
-    return flags.shouldExpand;
-}
-
-- (void)setShouldExpand:(BOOL)newFlag;
-{
-    flags.shouldExpand = newFlag;
-}
-
-- (BOOL)shouldAutoExpand;
-{
-    return flags.shouldAutoExpand;
-}
-
-- (void)setShouldAutoExpand:(BOOL)newFlag;
-{
-    flags.shouldAutoExpand = newFlag;
-}
-
-- (BOOL)shouldShowLexing;
-{
-    return flags.shouldShowLexing;
-}
-
-- (void)setShouldShowLexing:(BOOL)newFlag;
-{
-    flags.shouldShowLexing = newFlag;
-}
+@synthesize shouldExpand;
+@synthesize shouldAutoExpand;
+@synthesize shouldShowLexing;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 {
@@ -111,56 +85,48 @@ static BOOL debug = NO;
 // TODO (2009-07-09): Now that we have the other method, see if we can use it instead.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSString *specialCase;
-    CDTypeParser *aParser;
-    CDType *resultType;
-    NSError *error = nil;
-
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
-    specialCase = [self _specialCaseVariable:name type:type];
+    NSString *specialCase = [self _specialCaseVariable:name type:type];
     if (specialCase != nil) {
-        NSMutableString *resultString;
-
-        resultString = [NSMutableString string];
-        [resultString appendString:[NSString spacesIndentedToLevel:baseLevel spacesPerLevel:4]];
+        NSMutableString *resultString = [NSMutableString string];
+        [resultString appendString:[NSString spacesIndentedToLevel:self.baseLevel spacesPerLevel:4]];
         [resultString appendString:specialCase];
 
         return resultString;
     }
 
-    aParser = [[CDTypeParser alloc] initWithType:type];
-    [[aParser lexer] setShouldShowLexing:flags.shouldShowLexing];
-    resultType = [aParser parseType:&error];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
+    parser.lexer.shouldShowLexing = self.shouldShowLexing;
+
+    NSError *error = nil;
+    CDType *resultType = [parser parseType:&error];
     //NSLog(@"resultType: %p", resultType);
 
     if (resultType == nil) {
         NSLog(@"Couldn't parse type: %@", [[error userInfo] objectForKey:CDErrorKey_LocalizedLongDescription]);
-        [aParser release];
+        [parser release];
         //NSLog(@"<  %s", __cmd);
         return nil;
     }
 
-    [aParser release];
+    [parser release];
 
     return [self formatVariable:name parsedType:resultType symbolReferences:symbolReferences];
 }
 
 - (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSString *specialCase;
-    NSMutableString *resultString;
+    NSMutableString *resultString = [NSMutableString string];
 
-    resultString = [NSMutableString string];
-
-    specialCase = [self _specialCaseVariable:name parsedType:type];
-    [resultString appendSpacesIndentedToLevel:baseLevel spacesPerLevel:4];
+    NSString *specialCase = [self _specialCaseVariable:name parsedType:type];
+    [resultString appendSpacesIndentedToLevel:self.baseLevel spacesPerLevel:4];
     if (specialCase != nil) {
         [resultString appendString:specialCase];
     } else {
         // TODO (2009-08-26): Ideally, just formatting a type shouldn't change it.  These changes should be done before, but this is handy.
         [type setVariableName:name];
         [type phase0RecursivelyFixStructureNames:NO]; // Nuke the $_ names
-        [type phase3MergeWithTypeController:[self typeController]];
+        [type phase3MergeWithTypeController:self.typeController];
         [resultString appendString:[type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
     }
 
@@ -169,14 +135,10 @@ static BOOL debug = NO;
 
 - (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    CDTypeParser *aParser;
-    NSArray *methodTypes;
-    NSError *error = nil;
-    NSMutableDictionary *typeDict;
-    NSMutableArray *parameterTypes;
+    CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
 
-    aParser = [[CDTypeParser alloc] initWithType:type];
-    methodTypes = [aParser parseMethodType:&error];
+    NSError *error = nil;
+    NSArray *methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
         NSLog(@"Warning: Parsing method types failed, %@", methodName);
     [aParser release];
@@ -185,36 +147,28 @@ static BOOL debug = NO;
         return nil;
     }
 
-    typeDict = [NSMutableDictionary dictionary];
+    NSMutableDictionary *typeDict = [NSMutableDictionary dictionary];
     {
-        NSUInteger count, index;
-        BOOL noMoreTypes;
-        CDMethodType *aMethodType;
-        NSScanner *scanner;
-        NSString *specialCase;
+        NSUInteger count = [methodTypes count];
+        NSUInteger index = 0;
+        BOOL noMoreTypes = NO;
 
-        count = [methodTypes count];
-        index = 0;
-        noMoreTypes = NO;
-
-        aMethodType = [methodTypes objectAtIndex:index];
-        specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+        CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
+        NSString *specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
         if (specialCase != nil) {
             [typeDict setValue:specialCase forKey:@"return-type"];
         } else {
-            NSString *str;
-
-            str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
             if (str != nil)
                 [typeDict setValue:str forKey:@"return-type"];
         }
 
         index += 3;
 
-        parameterTypes = [NSMutableArray array];
+        NSMutableArray *parameterTypes = [NSMutableArray array];
         [typeDict setValue:parameterTypes forKey:@"parametertypes"];
 
-        scanner = [[NSScanner alloc] initWithString:methodName];
+        NSScanner *scanner = [[NSScanner alloc] initWithString:methodName];
         while ([scanner isAtEnd] == NO) {
             NSString *str;
 
@@ -227,12 +181,11 @@ static BOOL debug = NO;
 //					[parameterTypes addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"type", @"", @"name", nil]];
             }
             if ([scanner scanString:@":" intoString:NULL]) {
-                NSString *typeString;
-
                 if (index >= count) {
                     noMoreTypes = YES;
                 } else {
                     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
+                    NSString *typeString;
 
                     aMethodType = [methodTypes objectAtIndex:index];
                     specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
@@ -262,13 +215,10 @@ static BOOL debug = NO;
 
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    CDTypeParser *aParser;
-    NSArray *methodTypes;
-    NSMutableString *resultString;
-    NSError *error = nil;
+    CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
 
-    aParser = [[CDTypeParser alloc] initWithType:type];
-    methodTypes = [aParser parseMethodType:&error];
+    NSError *error = nil;
+    NSArray *methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
         NSLog(@"Warning: Parsing method types failed, %@", methodName);
     [aParser release];
@@ -277,27 +227,19 @@ static BOOL debug = NO;
         return nil;
     }
 
-    resultString = [NSMutableString string];
+    NSMutableString *resultString = [NSMutableString string];
     {
-        NSUInteger count, index;
-        BOOL noMoreTypes;
-        CDMethodType *aMethodType;
-        NSScanner *scanner;
-        NSString *specialCase;
+        NSUInteger count = [methodTypes count];
+        NSUInteger index = 0;
+        BOOL noMoreTypes = NO;
 
-        count = [methodTypes count];
-        index = 0;
-        noMoreTypes = NO;
-
-        aMethodType = [methodTypes objectAtIndex:index];
+        CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
         [resultString appendString:@"("];
-        specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+        NSString *specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
         if (specialCase != nil) {
             [resultString appendString:specialCase];
         } else {
-            NSString *str;
-
-            str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
             if (str != nil)
                 [resultString appendFormat:@"%@", str];
         }
@@ -305,7 +247,7 @@ static BOOL debug = NO;
 
         index += 3;
 
-        scanner = [[NSScanner alloc] initWithString:methodName];
+        NSScanner *scanner = [[NSScanner alloc] initWithString:methodName];
         while ([scanner isAtEnd] == NO) {
             NSString *str;
 
@@ -315,20 +257,18 @@ static BOOL debug = NO;
                 [resultString appendString:str];
             }
             if ([scanner scanString:@":" intoString:NULL]) {
-                NSString *typeString;
-
                 [resultString appendString:@":"];
                 if (index >= count) {
                     noMoreTypes = YES;
                 } else {
                     NSString *ch;
-
+                    
                     aMethodType = [methodTypes objectAtIndex:index];
                     specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
-                        typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                        NSString *typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
                         //if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     }
@@ -357,20 +297,13 @@ static BOOL debug = NO;
 // Called from CDType, which gets a formatter but not a type controller.
 - (CDType *)replacementForType:(CDType *)aType;
 {
-    return [nonretained_typeController typeFormatter:self replacementForType:aType];
+    return [self.typeController typeFormatter:self replacementForType:aType];
 }
 
 // Called from CDType, which gets a formatter but not a type controller.
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
-    return [nonretained_typeController typeFormatter:self typedefNameForStruct:structType level:level];
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %u, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
-                     NSStringFromClass([self class]), self,
-                     baseLevel, flags.shouldExpand, flags.shouldAutoExpand, flags.shouldShowLexing, nonretained_typeController];
+    return [self.typeController typeFormatter:self typedefNameForStruct:structType level:level];
 }
 
 @end

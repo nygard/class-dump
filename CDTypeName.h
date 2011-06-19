@@ -15,19 +15,14 @@
 - (id)init;
 - (void)dealloc;
 
-@property(retain) NSString *name;
-
-- (NSArray *)templateTypes;
-- (void)addTemplateType:(CDTypeName *)aTemplateType;
-
-@property(retain) NSString *suffix;
+- (id)copyWithZone:(NSZone *)zone;
+- (BOOL)isEqual:(id)otherObject;
 
 - (NSString *)description;
 
-- (BOOL)isTemplateType;
-
-- (BOOL)isEqual:(id)otherObject;
-
-- (id)copyWithZone:(NSZone *)zone;
+@property (retain) NSString *name;
+@property (readonly) NSMutableArray *templateTypes;
+@property (retain) NSString *suffix;
+@property (readonly) BOOL isTemplateType;
 
 @end
