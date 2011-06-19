@@ -23,7 +23,6 @@
 }
 
 - (id)init;
-- (void)dealloc;
 
 - (NSString *)description;
 

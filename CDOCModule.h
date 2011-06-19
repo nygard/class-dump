@@ -14,9 +14,6 @@
     CDOCSymtab *symtab;
 }
 
-- (id)init;
-- (void)dealloc;
-
 - (NSString *)description;
 
 @property (assign) uint32_t version;

@@ -14,19 +14,13 @@
     BOOL isExported;
 }
 
-- (void)dealloc;
-
 @property (retain) NSString *superClassName;
 @property (retain) NSArray *ivars;
-@property BOOL isExported;
+@property (assign) BOOL isExported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
-
-// CDTopologicalSort protocol
-- (NSString *)identifier;
-- (NSArray *)dependancies;
 
 @end

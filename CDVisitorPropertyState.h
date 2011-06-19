@@ -14,7 +14,6 @@
 }
 
 - (id)initWithProperties:(NSArray *)properties;
-- (void)dealloc;
 
 - (void)log;
 

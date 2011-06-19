@@ -18,7 +18,6 @@
 }
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
-- (void)dealloc;
 
 - (NSString *)description;
 

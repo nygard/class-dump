@@ -25,7 +25,6 @@
 }
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
-- (void)dealloc;
 
 - (NSString *)description;
 

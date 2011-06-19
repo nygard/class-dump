@@ -19,9 +19,6 @@
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;
-- (void)dealloc;
-
-- (id)copyWithZone:(NSZone *)zone;
 
 - (NSString *)description;
 

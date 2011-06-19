@@ -21,14 +21,16 @@
     [super dealloc];
 }
 
-#pragma mark -
-
-@synthesize className;
+#pragma mark - Superclass overrides
 
 - (NSString *)sortableName;
 {
     return [NSString stringWithFormat:@"%@ (%@)", self.className, self.name];
 }
+
+#pragma mark -
+
+@synthesize className;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 {

@@ -14,9 +14,6 @@
     NSMutableArray *categories;
 }
 
-- (id)init;
-- (void)dealloc;
-
 - (NSString *)description;
 
 @property (readonly) NSMutableArray *classes;

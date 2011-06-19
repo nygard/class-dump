@@ -13,16 +13,9 @@
     NSString *className;
 }
 
-- (void)dealloc;
-
 @property (retain) NSString *className;
-@property (readonly) NSString *sortableName;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
-
-// CDTopologicalSort protocol
-- (NSString *)identifier;
-- (NSArray *)dependancies;
 
 @end
