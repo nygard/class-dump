@@ -52,25 +52,26 @@
     [super dealloc];
 }
 
-- (NSString *)name;
+#pragma mark - NSCopying
+
+- (id)copyWithZone:(NSZone *)zone;
 {
-    return name;
+    return [[CDOCMethod alloc] initWithName:name type:type imp:imp];
 }
 
-- (NSString *)type;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return type;
+    return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%016lx",
+            NSStringFromClass([self class]), name, type, imp];
 }
 
-- (NSUInteger)imp;
-{
-    return imp;
-}
+#pragma mark -
 
-- (void)setImp:(NSUInteger)newValue;
-{
-    imp = newValue;
-}
+@synthesize name;
+@synthesize type;
+@synthesize imp;
 
 - (NSArray *)parsedMethodTypes;
 {
@@ -87,12 +88,6 @@
     }
 
     return parsedMethodTypes;
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%016lx",
-                     NSStringFromClass([self class]), name, type, imp];
 }
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
@@ -113,14 +108,11 @@
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
 }
 
+#pragma mark - Sorting
+
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 {
     return [name compare:[otherMethod name]];
-}
-
-- (id)copyWithZone:(NSZone *)zone;
-{
-    return [[CDOCMethod alloc] initWithName:name type:type imp:imp];
 }
 
 @end

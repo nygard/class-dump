@@ -37,50 +37,41 @@
     [super dealloc];
 }
 
-- (NSString *)name;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return name;
+    return [NSString stringWithFormat:@"[%@] name: %@, type: '%@', offset: %lu",
+            NSStringFromClass([self class]), self.name, self.type, self.offset];
 }
 
-- (NSString *)type;
-{
-    return type;
-}
+#pragma mark -
 
-- (NSUInteger)offset;
-{
-    return offset;
-}
+@synthesize name;
+@synthesize type;
+@synthesize offset;
+@synthesize hasParsedType;
 
 - (CDType *)parsedType;
 {
-    if (hasParsedType == NO) {
-        CDTypeParser *parser;
+    if (self.hasParsedType == NO) {
         NSError *error = nil;
 
-        parser = [[CDTypeParser alloc] initWithType:type];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
         parsedType = [[parser parseType:&error] retain];
         if (parsedType == nil)
             NSLog(@"Warning: Parsing ivar type failed, %@", name);
         [parser release];
 
-        hasParsedType = YES;
+        self.hasParsedType = YES;
     }
 
     return parsedType;
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%@] name: %@, type: '%@', offset: %lu",
-                     NSStringFromClass([self class]), name, type, offset];
-}
-
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSString *formattedString;
-
-    formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type symbolReferences:symbolReferences];
+    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type symbolReferences:symbolReferences];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

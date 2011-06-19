@@ -21,30 +21,20 @@
     [super dealloc];
 }
 
-- (NSString *)className;
-{
-    return className;
-}
+#pragma mark -
 
-- (void)setClassName:(NSString *)newClassName;
-{
-    if (newClassName == className)
-        return;
-
-    [className release];
-    className = [newClassName retain];
-}
+@synthesize className;
 
 - (NSString *)sortableName;
 {
-    return [NSString stringWithFormat:@"%@ (%@)", className, name];
+    return [NSString stringWithFormat:@"%@ (%@)", self.className, self.name];
 }
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 {
     NSMutableString *resultString = [NSMutableString string];
 
-    [resultString appendFormat:@"@interface %@ (%@)", className, name];
+    [resultString appendFormat:@"@interface %@ (%@)", self.className, self.name];
 
     if ([protocols count] > 0)
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
@@ -77,21 +67,19 @@
     [propertyState release];
 }
 
-//
-// CDTopologicalSort protocol
-//
+#pragma mark - CDTopologicalSort protocol
 
 - (NSString *)identifier;
 {
-    return [self sortableName];
+    return self.sortableName;
 }
 
 - (NSArray *)dependancies;
 {
-    if (className == nil)
+    if (self.className == nil)
         return [NSArray array];
 
-    return [NSArray arrayWithObject:className];
+    return [NSArray arrayWithObject:self.className];
 }
 
 @end

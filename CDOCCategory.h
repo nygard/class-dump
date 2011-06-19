@@ -15,10 +15,8 @@
 
 - (void)dealloc;
 
-- (NSString *)className;
-- (void)setClassName:(NSString *)newClassName;
-
-- (NSString *)sortableName;
+@property (retain) NSString *className;
+@property (readonly) NSString *sortableName;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;

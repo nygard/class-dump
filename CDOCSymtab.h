@@ -17,12 +17,12 @@
 - (id)init;
 - (void)dealloc;
 
-- (NSArray *)classes;
+- (NSString *)description;
+
+@property (readonly) NSMutableArray *classes;
 - (void)addClass:(CDOCClass *)aClass;
 
-- (NSArray *)categories;
+@property (readonly) NSMutableArray *categories;
 - (void)addCategory:(CDOCCategory *)aCategory;
-
-- (NSString *)description;
 
 @end

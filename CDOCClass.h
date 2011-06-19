@@ -16,12 +16,8 @@
 
 - (void)dealloc;
 
-- (NSString *)superClassName;
-- (void)setSuperClassName:(NSString *)newSuperClassName;
-
-- (NSArray *)ivars;
-- (void)setIvars:(NSArray *)newIvars;
-
+@property (retain) NSString *superClassName;
+@property (retain) NSArray *ivars;
 @property BOOL isExported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;

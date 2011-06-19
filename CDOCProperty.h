@@ -20,36 +20,33 @@
     NSString *customGetter;
     NSString *customSetter;
 
-    struct {
-        unsigned int isReadOnly:1;
-        unsigned int isDynamic:1;
-    } flags;
+    BOOL isReadOnly;
+    BOOL isDynamic;
 }
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 - (void)dealloc;
 
-- (NSString *)name;
-- (NSString *)attributeString;
-- (CDType *)type;
-- (NSArray *)attributes;
-
-- (NSString *)attributeStringAfterType;
-- (void)_setAttributeStringAfterType:(NSString *)newValue;
-
-- (NSString *)defaultGetter;
-- (NSString *)defaultSetter;
-- (NSString *)customGetter;
-- (void)_setCustomGetter:(NSString *)newStr;
-- (NSString *)customSetter;
-- (void)_setCustomSetter:(NSString *)newStr;
-- (NSString *)getter;
-- (NSString *)setter;
-
-- (BOOL)isReadOnly;
-- (BOOL)isDynamic;
-
 - (NSString *)description;
+
+@property (readonly) NSString *name;
+@property (readonly) NSString *attributeString;
+@property (readonly) CDType *type;
+@property (readonly) NSArray *attributes;
+
+@property (retain) NSString *attributeStringAfterType;
+
+@property (readonly) NSString *defaultGetter;
+@property (readonly) NSString *defaultSetter;
+
+@property (retain) NSString *customGetter;
+@property (retain) NSString *customSetter;
+
+@property (readonly) NSString *getter;
+@property (readonly) NSString *setter;
+
+@property (readonly) BOOL isReadOnly;
+@property (readonly) BOOL isDynamic;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
 

@@ -30,29 +30,27 @@
     [super dealloc];
 }
 
-- (NSArray *)classes;
-{
-    return classes;
-}
-
-- (void)addClass:(CDOCClass *)aClass;
-{
-    [classes addObject:aClass];
-}
-
-- (NSArray *)categories;
-{
-    return categories;
-}
-
-- (void)addCategory:(CDOCCategory *)aCategory;
-{
-    [categories addObject:aCategory];
-}
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] classes: %@, categories: %@", NSStringFromClass([self class]), classes, categories];
+    return [NSString stringWithFormat:@"[%@] classes: %@, categories: %@", NSStringFromClass([self class]), self.classes, self.categories];
+}
+
+#pragma mark -
+
+@synthesize classes;
+
+- (void)addClass:(CDOCClass *)aClass;
+{
+    [self.classes addObject:aClass];
+}
+
+@synthesize categories;
+
+- (void)addCategory:(CDOCCategory *)aCategory;
+{
+    [self.categories addObject:aCategory];
 }
 
 @end

@@ -16,13 +16,13 @@
 - (id)initWithProperties:(NSArray *)properties;
 - (void)dealloc;
 
+- (void)log;
+
 - (CDOCProperty *)propertyForAccessor:(NSString *)str;
 
 - (BOOL)hasUsedProperty:(CDOCProperty *)property;
 - (void)useProperty:(CDOCProperty *)property;
 
 - (NSArray *)remainingProperties;
-
-- (void)log;
 
 @end

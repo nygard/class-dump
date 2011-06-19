@@ -20,13 +20,15 @@
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 - (void)dealloc;
 
-- (NSString *)name;
-- (NSString *)type;
-- (NSUInteger)offset;
-
-- (CDType *)parsedType;
-
 - (NSString *)description;
+
+@property (readonly) NSString *name;
+@property (readonly) NSString *type;
+@property (readonly) NSUInteger offset;
+
+@property (assign) BOOL hasParsedType; // Private
+@property (readonly) CDType *parsedType;
+
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 @end

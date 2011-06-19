@@ -17,16 +17,12 @@
 - (id)init;
 - (void)dealloc;
 
-- (uint32_t)version;
-- (void)setVersion:(uint32_t)aVersion;
-
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
-
-- (CDOCSymtab *)symtab;
-- (void)setSymtab:(CDOCSymtab *)newSymtab;
-
 - (NSString *)description;
+
+@property (assign) uint32_t version;
+@property (retain) NSString *name;
+@property (retain) CDOCSymtab *symtab;
+
 - (NSString *)formattedString;
 
 @end

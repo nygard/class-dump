@@ -21,19 +21,18 @@
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;
 - (void)dealloc;
 
-- (NSString *)name;
-- (NSString *)type;
+- (id)copyWithZone:(NSZone *)zone;
 
-- (NSUInteger)imp;
-- (void)setImp:(NSUInteger)newValue;
+- (NSString *)description;
+
+@property (readonly) NSString *name;
+@property (readonly) NSString *type;
+@property (assign) NSUInteger imp;
 
 - (NSArray *)parsedMethodTypes;
 
-- (NSString *)description;
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
-
-- (id)copyWithZone:(NSZone *)zone;
 
 @end

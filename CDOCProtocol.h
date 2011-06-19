@@ -53,7 +53,7 @@
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 
-- (NSString *)sortableName;
+@property (readonly) NSString *sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;

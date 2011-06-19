@@ -29,52 +29,22 @@
     [super dealloc];
 }
 
-- (uint32_t)version;
-{
-    return version;
-}
-
-- (void)setVersion:(uint32_t)aVersion;
-{
-    version = aVersion;
-}
-
-- (NSString *)name;
-{
-    return name;
-}
-
-- (void)setName:(NSString *)newName;
-{
-    if (newName == name)
-        return;
-
-    [name release];
-    name = [newName retain];
-}
-
-- (CDOCSymtab *)symtab;
-{
-    return symtab;
-}
-
-- (void)setSymtab:(CDOCSymtab *)newSymtab;
-{
-    if (newSymtab == symtab)
-        return;
-
-    [symtab release];
-    symtab = [newSymtab retain];
-}
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, version: %u, symtab: %@", NSStringFromClass([self class]), name, version, symtab];
+    return [NSString stringWithFormat:@"[%@] name: %@, version: %u, symtab: %@", NSStringFromClass([self class]), self.name, self.version, self.symtab];
 }
+
+#pragma mark -
+
+@synthesize version;
+@synthesize name;
+@synthesize symtab;
 
 - (NSString *)formattedString;
 {
-    return [NSString stringWithFormat:@"/*\n * %@\n */\n", name];
+    return [NSString stringWithFormat:@"/*\n * %@\n */\n", self.name];
 }
 
 @end

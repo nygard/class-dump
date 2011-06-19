@@ -38,46 +38,24 @@
     [super dealloc];
 }
 
-- (NSString *)superClassName;
-{
-    return superClassName;
-}
-
-- (void)setSuperClassName:(NSString *)newSuperClassName;
-{
-    if (newSuperClassName == superClassName)
-        return;
-
-    [superClassName release];
-    superClassName = [newSuperClassName retain];
-}
-
-- (NSArray *)ivars;
-{
-    return ivars;
-}
-
-- (void)setIvars:(NSArray *)newIvars;
-{
-    if (newIvars == ivars)
-        return;
-
-    [ivars release];
-    ivars = [newIvars retain];
-}
-
-@synthesize isExported;
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%@, exported: %@", [super description], isExported ? @"YES" : @"NO"];
+    return [NSString stringWithFormat:@"%@, exported: %@", [super description], self.isExported ? @"YES" : @"NO"];
 }
+
+#pragma mark -
+
+@synthesize superClassName;
+@synthesize ivars;
+@synthesize isExported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
     [super registerTypesWithObject:typeController phase:phase];
 
-    for (CDOCIvar *ivar in ivars) {
+    for (CDOCIvar *ivar in self.ivars) {
         [[ivar parsedType] phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
@@ -86,9 +64,9 @@
 {
     NSMutableString *resultString = [NSMutableString string];
 
-    [resultString appendFormat:@"@interface %@", name];
-    if (superClassName != nil)
-        [resultString appendFormat:@" : %@", superClassName];
+    [resultString appendFormat:@"@interface %@", self.name];
+    if (self.superClassName != nil)
+        [resultString appendFormat:@" : %@", self.superClassName];
 
     if ([protocols count] > 0)
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
@@ -98,13 +76,11 @@
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    CDVisitorPropertyState *propertyState;
-
     if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
         return;
 
     // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
-    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+    CDVisitorPropertyState *propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
 
     [aVisitor willVisitClass:self];
 
@@ -125,21 +101,19 @@
     [propertyState release];
 }
 
-//
-// CDTopologicalSort protocol
-//
+#pragma mark - CDTopologicalSort protocol
 
 - (NSString *)identifier;
 {
-    return [self name];
+    return self.name;
 }
 
 - (NSArray *)dependancies;
 {
-    if (superClassName == nil)
+    if (self.superClassName == nil)
         return [NSArray array];
 
-    return [NSArray arrayWithObject:superClassName];
+    return [NSArray arrayWithObject:self.superClassName];
 }
 
 @end

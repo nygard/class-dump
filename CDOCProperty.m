@@ -28,8 +28,8 @@ static BOOL debug = NO;
         customGetter = nil;
         customSetter = nil;
         
-        flags.isReadOnly = NO;
-        flags.isDynamic = NO;
+        isReadOnly = NO;
+        isDynamic = NO;
         
         [self _parseAttributes];
     }
@@ -51,146 +51,89 @@ static BOOL debug = NO;
     [super dealloc];
 }
 
-- (NSString *)name;
-{
-    return name;
-}
-
-- (NSString *)attributeString;
-{
-    return attributeString;
-}
-
-- (CDType *)type;
-{
-    return type;
-}
-
-- (NSArray *)attributes;
-{
-    return attributes;
-}
-
-- (NSString *)attributeStringAfterType;
-{
-    return attributeStringAfterType;
-}
-
-- (void)_setAttributeStringAfterType:(NSString *)newValue;
-{
-    if (newValue == attributeStringAfterType)
-        return;
-
-    [attributeStringAfterType release];
-    attributeStringAfterType = [newValue retain];
-}
-
-- (NSString *)defaultGetter;
-{
-    return name;
-}
-
-- (NSString *)defaultSetter;
-{
-    return [NSString stringWithFormat:@"set%@:", [name capitalizeFirstCharacter]];
-}
-
-- (NSString *)customGetter;
-{
-    return customGetter;
-}
-
-- (void)_setCustomGetter:(NSString *)newStr;
-{
-    if (newStr == customGetter)
-        return;
-
-    [customGetter release];
-    customGetter = [newStr retain];
-}
-
-- (NSString *)customSetter;
-{
-    return customSetter;
-}
-
-- (void)_setCustomSetter:(NSString *)newStr;
-{
-    if (newStr == customSetter)
-        return;
-
-    [customSetter release];
-    customSetter = [newStr retain];
-}
-
-- (NSString *)getter;
-{
-    if (customGetter != nil)
-        return customGetter;
-
-    return [self defaultGetter];
-}
-
-- (NSString *)setter;
-{
-    if (customSetter != nil)
-        return customSetter;
-
-    return [self defaultSetter];
-}
-
-- (BOOL)isReadOnly;
-{
-    return flags.isReadOnly;
-}
-
-- (BOOL)isDynamic;
-{
-    return flags.isDynamic;
-}
+#pragma mark - Debugging
 
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@:%p> name: %@, attributeString: %@",
-                     NSStringFromClass([self class]), self,
-                     name, attributeString];
+            NSStringFromClass([self class]), self,
+            name, attributeString];
 }
+
+#pragma mark -
+
+@synthesize name;
+@synthesize attributeString;
+@synthesize type;
+@synthesize attributes;
+@synthesize attributeStringAfterType;
+
+- (NSString *)defaultGetter;
+{
+    return self.name;
+}
+
+- (NSString *)defaultSetter;
+{
+    return [NSString stringWithFormat:@"set%@:", [self.name capitalizeFirstCharacter]];
+}
+
+@synthesize customGetter;
+@synthesize customSetter;
+
+- (NSString *)getter;
+{
+    if (self.customGetter != nil)
+        return self.customGetter;
+
+    return self.defaultGetter;
+}
+
+- (NSString *)setter;
+{
+    if (self.customSetter != nil)
+        return self.customSetter;
+
+    return self.defaultSetter;
+}
+
+@synthesize isReadOnly;
+@synthesize isDynamic;
+
+#pragma mark - Sorting
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
 {
-    return [name compare:[otherProperty name]];
+    return [self.name compare:otherProperty.name];
 }
+
+#pragma mark -
 
 // TODO (2009-07-09): Really, I don't need to require the "T" at the start.
 - (void)_parseAttributes;
 {
-    NSScanner *scanner;
-
     // On 10.6, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.
-    scanner = [[NSScanner alloc] initWithString:attributeString];
+    NSScanner *scanner = [[NSScanner alloc] initWithString:self.attributeString];
 
     if ([scanner scanString:@"T" intoString:NULL]) {
         NSError *error = nil;
         NSRange typeRange;
-        CDTypeParser *parser;
 
         typeRange.location = [scanner scanLocation];
-        parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
         type = [[parser parseType:&error] retain];
         if (type != nil) {
-            NSString *str;
-
             typeRange.length = [[[parser lexer] scanner] scanLocation];
 
-            str = [attributeString substringFromIndex:NSMaxRange(typeRange)];
+            NSString *str = [attributeString substringFromIndex:NSMaxRange(typeRange)];
 
             // Filter out so we don't get an empty string as an attribute.
             if ([str hasPrefix:@","])
                 str = [str substringFromIndex:1];
 
-            [self _setAttributeStringAfterType:str];
-            if ([attributeStringAfterType length] > 0) {
-                [attributes addObjectsFromArray:[attributeStringAfterType componentsSeparatedByString:@","]];
+            self.attributeStringAfterType = str;
+            if ([self.attributeStringAfterType length] > 0) {
+                [attributes addObjectsFromArray:[self.attributeStringAfterType componentsSeparatedByString:@","]];
             } else {
                 // For a simple case like "Ti", we'd get the empty string.
                 // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
@@ -206,13 +149,13 @@ static BOOL debug = NO;
 
     for (NSString *attr in attributes) {
         if ([attr hasPrefix:@"R"])
-            flags.isReadOnly = YES;
+            isReadOnly = YES;
         else if ([attr hasPrefix:@"D"])
-            flags.isDynamic = YES;
+            isDynamic = YES;
         else if ([attr hasPrefix:@"G"])
-            [self _setCustomGetter:[attr substringFromIndex:1]];
+            self.customGetter = [attr substringFromIndex:1];
         else if ([attr hasPrefix:@"S"])
-            [self _setCustomSetter:[attr substringFromIndex:1]];
+            self.customSetter = [attr substringFromIndex:1];
     }
 
     hasParsedAttributes = YES;

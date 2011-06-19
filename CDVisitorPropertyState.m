@@ -17,10 +17,10 @@
         
         for (CDOCProperty *property in properties) {
             //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
-            [propertiesByName setObject:property forKey:[property name]];
-            [propertiesByAccessor setObject:property forKey:[property getter]];
+            [propertiesByName setObject:property forKey:property.name];
+            [propertiesByAccessor setObject:property forKey:property.getter];
             if ([property isReadOnly] == NO)
-                [propertiesByAccessor setObject:property forKey:[property setter]];
+                [propertiesByAccessor setObject:property forKey:property.setter];
         }
     }
 
@@ -35,6 +35,16 @@
     [super dealloc];
 }
 
+#pragma mark - Debugging
+
+- (void)log;
+{
+    NSLog(@"propertiesByAccessor: %@", propertiesByAccessor);
+    NSLog(@"propertiesByName: %@", propertiesByName);
+}
+
+#pragma mark -
+
 - (CDOCProperty *)propertyForAccessor:(NSString *)str;
 {
     return [propertiesByAccessor objectForKey:str];
@@ -42,23 +52,17 @@
 
 - (BOOL)hasUsedProperty:(CDOCProperty *)property;
 {
-    return [propertiesByName objectForKey:[property name]] == nil;
+    return [propertiesByName objectForKey:property.name] == nil;
 }
 
 - (void)useProperty:(CDOCProperty *)property;
 {
-    [propertiesByName removeObjectForKey:[property name]];
+    [propertiesByName removeObjectForKey:property.name];
 }
 
 - (NSArray *)remainingProperties;
 {
     return [[propertiesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
-}
-
-- (void)log;
-{
-    NSLog(@"propertiesByAccessor: %@", propertiesByAccessor);
-    NSLog(@"propertiesByName: %@", propertiesByName);
 }
 
 @end
