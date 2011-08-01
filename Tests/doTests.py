@@ -13,7 +13,7 @@ TESTDIR_NEW = TESTDIR + "/new"
 TESTDIR_NEW_32 = TESTDIR + "/new32"
 TESTDIR_NEW_64 = TESTDIR + "/new64"
 
-OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-3.3.2")
+OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-30e6db9b3c")
 #OLD_CD = "/bin/echo"
 NEW_CD = os.path.expanduser("/Local/nygard/Products/Debug/class-dump")
 
@@ -45,9 +45,10 @@ mac_bundles = [
 #    "/Volumes/BigData/TestApplications/*.app",
 #]
 
-def resolve_sdk_root_alias(sdk_root="4.0"):
-    if sdk_root in ("3.2", "4.0", "4.1", ):
-        return "/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS" + sdk_root + ".sdk"
+def resolve_sdk_root_alias(sdk_root="4.3", dev_root="/Developer"):
+    """ Resolves SDK root alias into full path.  Can also specify dev_root to handle multiple dev tool installations."""
+    if sdk_root in ("3.2", "4.0", "4.1", "4.2", "4.3", "5.0" ):
+        return dev_root + "/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS" + sdk_root + ".sdk"
     return sdk_root
 
 def build_ios_paths(sdk_root):
@@ -66,26 +67,32 @@ def mkdir_ignore(dir):
         pass
 
 def printUsage():
-    print "doTests.py [--ios] [--sdk-root <path, 4.1, 4.0 or 3.2>]"
+    print "doTests.py [--ios] [--sdk-root <path, 4.1, 4.0 or 3.2>] [--dev-root <path>]"
+    print
+    print "    doTests.py --ios --sdk-root 5.0 --dev-root /Xcode42"
     print
 
 def main(argv):
     try:
-        opts, args = getopt.getopt(argv, "", ["sdk-root=", "ios"])
+        opts, args = getopt.getopt(argv, "", ["dev-root=", "sdk-root=", "ios"])
     except getopt.GetoptError:
         printUsage()
         sys.exit(2)
 
     shouldTestIOs = False
     sdk_root = None
+    dev_root = "/Developer"
 
     for opt, arg in opts:
         if opt in ("--ios",):
             shouldTestIOs = True
         if opt in ("--sdk-root",):
             sdk_root = arg
+        if opt in ("--dev-root",):
+            dev_root = arg
 
-    sdk_root = resolve_sdk_root_alias(sdk_root)
+    sdk_root = resolve_sdk_root_alias(sdk_root, dev_root)
+    #print "Resolved sdk_root:", sdk_root
 
     if shouldTestIOs:
         print "Testing on iOS targets"
