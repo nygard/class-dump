@@ -204,7 +204,8 @@ static NSString *CDTokenDescription(int token)
 {
     CDType *result;
 
-    if (lookahead == 'r'
+    if (lookahead == 'j'
+        || lookahead == 'r'
         || lookahead == 'n'
         || lookahead == 'N'
         || lookahead == 'o'
@@ -437,7 +438,8 @@ static NSString *CDTokenDescription(int token)
 
 - (BOOL)isTokenInModifierSet:(int)aToken;
 {
-    if (aToken == 'r'
+    if (aToken == 'j'
+        || aToken == 'r'
         || aToken == 'n'
         || aToken == 'N'
         || aToken == 'o'

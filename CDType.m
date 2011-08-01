@@ -229,7 +229,7 @@ static BOOL debugMerge = NO;
 
 - (BOOL)isModifierType;
 {
-    return type == 'r' || type == 'n' || type == 'N' || type == 'o' || type == 'O' || type == 'R' || type == 'V';
+    return type == 'j' || type == 'r' || type == 'n' || type == 'N' || type == 'o' || type == 'O' || type == 'R' || type == 'V';
 }
 
 - (int)typeIgnoringModifiers;
@@ -271,146 +271,147 @@ static BOOL debugMerge = NO;
         currentName = previousName;
 
     switch (type) {
-      case T_NAMED_OBJECT:
-          assert(typeName != nil);
-          [symbolReferences addClassName:[typeName name]];
-          if (currentName == nil)
-              result = [NSString stringWithFormat:@"%@ *", typeName];
-          else
-              result = [NSString stringWithFormat:@"%@ *%@", typeName, currentName];
-          break;
-
-      case '@':
-          if (currentName == nil) {
-              if (protocols == nil)
-                  result = @"id";
-              else
-                  result = [NSString stringWithFormat:@"id <%@>", [protocols componentsJoinedByString:@", "]];
-          } else {
-              if (protocols == nil)
-                  result = [NSString stringWithFormat:@"id %@", currentName];
-              else
-                  result = [NSString stringWithFormat:@"id <%@> %@", [protocols componentsJoinedByString:@", "], currentName];
-          }
-          break;
-
-      case 'b':
-          if (currentName == nil) {
-              // This actually compiles!
-              result = [NSString stringWithFormat:@"unsigned int :%@", bitfieldSize];
-          } else
-              result = [NSString stringWithFormat:@"unsigned int %@:%@", currentName, bitfieldSize];
-          break;
-
-      case '[':
-          if (currentName == nil)
-              result = [NSString stringWithFormat:@"[%@]", arraySize];
-          else
-              result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
-
-          result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
-          break;
-
-      case '(':
-          baseType = nil;
-          /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-              NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
-              if (typedefName != nil) {
-                  baseType = typedefName;
-              }
-          }
-
-          if (baseType == nil) {
-              if (typeName == nil || [@"?" isEqual:[typeName description]])
-                  baseType = @"union";
-              else
-                  baseType = [NSString stringWithFormat:@"union %@", typeName];
-
-              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
-                  || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
-                  memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
-                                           [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
-              else
-                  memberString = @"";
-
-              baseType = [baseType stringByAppendingString:memberString];
-          }
-
-          if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
-              result = baseType;
-          else
-              result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
-          break;
-
-      case '{':
-          baseType = nil;
-          /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-              NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
-              if (typedefName != nil) {
-                  baseType = typedefName;
-              }
-          }
-          if (baseType == nil) {
-              if (typeName == nil || [@"?" isEqual:[typeName description]])
-                  baseType = @"struct";
-              else
-                  baseType = [NSString stringWithFormat:@"struct %@", typeName];
-
-              if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
-                  || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
-                  memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                           [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
-                                           [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
-              else
-                  memberString = @"";
-
-              baseType = [baseType stringByAppendingString:memberString];
-          }
-
-          if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
-              result = baseType;
-          else
-              result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
-          break;
-
-      case '^':
-          if (currentName == nil)
-              result = @"*";
-          else
-              result = [@"*" stringByAppendingString:currentName];
-
-          if (subtype != nil && [subtype type] == '[')
-              result = [NSString stringWithFormat:@"(%@)", result];
-
-          result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
-          break;
-
-      case 'r':
-      case 'n':
-      case 'N':
-      case 'o':
-      case 'O':
-      case 'R':
-      case 'V':
-          if (subtype == nil) {
-              if (currentName == nil)
-                  result = [self formattedStringForSimpleType];
-              else
-                  result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
-          } else
-              result = [NSString stringWithFormat:@"%@ %@",
-                                 [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level symbolReferences:symbolReferences]];
-          break;
-
-      default:
-          if (currentName == nil)
-              result = [self formattedStringForSimpleType];
-          else
-              result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
-          break;
+        case T_NAMED_OBJECT:
+            assert(typeName != nil);
+            [symbolReferences addClassName:[typeName name]];
+            if (currentName == nil)
+                result = [NSString stringWithFormat:@"%@ *", typeName];
+            else
+                result = [NSString stringWithFormat:@"%@ *%@", typeName, currentName];
+            break;
+            
+        case '@':
+            if (currentName == nil) {
+                if (protocols == nil)
+                    result = @"id";
+                else
+                    result = [NSString stringWithFormat:@"id <%@>", [protocols componentsJoinedByString:@", "]];
+            } else {
+                if (protocols == nil)
+                    result = [NSString stringWithFormat:@"id %@", currentName];
+                else
+                    result = [NSString stringWithFormat:@"id <%@> %@", [protocols componentsJoinedByString:@", "], currentName];
+            }
+            break;
+            
+        case 'b':
+            if (currentName == nil) {
+                // This actually compiles!
+                result = [NSString stringWithFormat:@"unsigned int :%@", bitfieldSize];
+            } else
+                result = [NSString stringWithFormat:@"unsigned int %@:%@", currentName, bitfieldSize];
+            break;
+            
+        case '[':
+            if (currentName == nil)
+                result = [NSString stringWithFormat:@"[%@]", arraySize];
+            else
+                result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
+            
+            result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
+            break;
+            
+        case '(':
+            baseType = nil;
+            /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
+                NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
+                if (typedefName != nil) {
+                    baseType = typedefName;
+                }
+            }
+            
+            if (baseType == nil) {
+                if (typeName == nil || [@"?" isEqual:[typeName description]])
+                    baseType = @"union";
+                else
+                    baseType = [NSString stringWithFormat:@"union %@", typeName];
+                
+                if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
+                    || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
+                    memberString = [NSString stringWithFormat:@" {\n%@%@}",
+                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
+                                    [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
+                else
+                    memberString = @"";
+                
+                baseType = [baseType stringByAppendingString:memberString];
+            }
+            
+            if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
+                result = baseType;
+            else
+                result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
+            break;
+            
+        case '{':
+            baseType = nil;
+            /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
+                NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
+                if (typedefName != nil) {
+                    baseType = typedefName;
+                }
+            }
+            if (baseType == nil) {
+                if (typeName == nil || [@"?" isEqual:[typeName description]])
+                    baseType = @"struct";
+                else
+                    baseType = [NSString stringWithFormat:@"struct %@", typeName];
+                
+                if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
+                    || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
+                    memberString = [NSString stringWithFormat:@" {\n%@%@}",
+                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
+                                    [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
+                else
+                    memberString = @"";
+                
+                baseType = [baseType stringByAppendingString:memberString];
+            }
+            
+            if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
+                result = baseType;
+            else
+                result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
+            break;
+            
+        case '^':
+            if (currentName == nil)
+                result = @"*";
+            else
+                result = [@"*" stringByAppendingString:currentName];
+            
+            if (subtype != nil && [subtype type] == '[')
+                result = [NSString stringWithFormat:@"(%@)", result];
+            
+            result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
+            break;
+            
+        case 'j':
+        case 'r':
+        case 'n':
+        case 'N':
+        case 'o':
+        case 'O':
+        case 'R':
+        case 'V':
+            if (subtype == nil) {
+                if (currentName == nil)
+                    result = [self formattedStringForSimpleType];
+                else
+                    result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
+            } else
+                result = [NSString stringWithFormat:@"%@ %@",
+                          [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level symbolReferences:symbolReferences]];
+            break;
+            
+        default:
+            if (currentName == nil)
+                result = [self formattedStringForSimpleType];
+            else
+                result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
+            break;
     }
-
+    
     return result;
 }
 
@@ -456,6 +457,7 @@ static BOOL debugMerge = NO;
         case '%': return @"NXAtom";
         case '?': return @"void";
             //case '?': return @"UNKNOWN"; // For easier regression testing.
+        case 'j': return @"_Complex";
         case 'r': return @"const";
         case 'n': return @"in";
         case 'N': return @"inout";
@@ -540,6 +542,7 @@ static BOOL debugMerge = NO;
             result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             
+        case 'j':
         case 'r':
         case 'n':
         case 'N':
