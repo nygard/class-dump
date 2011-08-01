@@ -228,8 +228,8 @@
         
         [cursor release];
         
-        // These are probably bitfields that should be tested/masked...
-        switch (v2 & 0x07) {
+        // See markgc.c in the objc4 project
+        switch (v2 & 0x06) {
             case 0: return @"Unsupported";
             case 2: return @"Supported";
             case 6: return @"Required";
