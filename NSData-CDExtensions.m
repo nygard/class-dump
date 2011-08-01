@@ -9,6 +9,43 @@
 
 @implementation NSData (CDExtensions)
 
+- (NSString *)hexString;
+{
+    NSMutableString *str = [NSMutableString string];
+    const uint8_t *ptr = [self bytes];
+    for (NSUInteger index = 0; index < [self length]; index++) {
+        [str appendFormat:@"%02x", *ptr++];
+    }
+    
+    return str;
+}
+
+#if 0
+// Need to link with Security.framework on Lion for this:
+- (NSString *)SHA1DigestString;
+{
+    NSString *str = nil;
+    CFErrorRef error = nil;
+    SecTransformRef t1 = SecDigestTransformCreate(kSecDigestSHA1, 0, &error);
+    if (t1 == NULL) {
+        NSLog(@"Failed to create SHA1 transform, error: %@", error);
+    } else {
+        error = nil;
+        Boolean flag = SecTransformSetAttribute(t1, kSecTransformInputAttributeName, self, &error);
+        if (!flag) NSLog(@"set attribute error: %@", error);
+        
+        error = nil;
+        NSData *result = SecTransformExecute(t1, &error);
+        if (error != nil) NSLog(@"execute error: %@", error);
+        str = [result hexString];
+        CFRelease(t1);
+    }
+    
+    //NSLog(@"result is %@", str);
+    
+    return str;
+}
+#endif
 - (NSString *)SHA1DigestString;
 {
     unsigned char digest[SHA_DIGEST_LENGTH];
@@ -26,5 +63,4 @@
 
     return str;
 }
-
 @end
