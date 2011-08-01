@@ -77,7 +77,7 @@
         case LC_DYLD_INFO:             targetClass = [CDLCDyldInfo class]; break;
         case LC_DYLD_INFO_ONLY:        targetClass = [CDLCDyldInfo class]; break;
 
-        //case LC_LOAD_UPWARD_DYLIB:     targetClass = [CDLoadCommand class]; break;
+        case LC_LOAD_UPWARD_DYLIB:     targetClass = [CDLCDylib class]; break;
         case LC_VERSION_MIN_MACOSX:    targetClass = [CDLCVersionMinimum class]; break;
         case LC_VERSION_MIN_IPHONEOS:  targetClass = [CDLCVersionMinimum class]; break;
         case LC_FUNCTION_STARTS:       targetClass = [CDLCFunctionStarts class]; break;
