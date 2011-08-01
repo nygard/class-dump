@@ -463,6 +463,7 @@ static NSString *CDTokenDescription(int token)
         || aToken == 'Q'
         || aToken == 'f'
         || aToken == 'd'
+        || aToken == 'D'
         || aToken == 'B'
         || aToken == 'v'
         || aToken == '*'
