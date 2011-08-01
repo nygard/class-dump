@@ -1,0 +1,13 @@
+#!/bin/zsh
+
+pushd /tmp/cdt/new
+foreach i (*.txt)
+echo -e "\\033[32m"
+echo $i
+echo -e "\\033[0m"
+diff ../old/$i $i | colordiff.pl
+echo
+echo
+echo
+
+end
