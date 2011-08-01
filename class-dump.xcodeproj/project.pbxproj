@@ -418,6 +418,17 @@
 			name = Visitors;
 			sourceTree = "<group>";
 		};
+		01AFB28E13E6365800896CC7 /* Cursor */ = {
+			isa = PBXGroup;
+			children = (
+				01EB829F13A591D7003EDE60 /* CDDataCursor.h */,
+				01EB82A013A591D7003EDE60 /* CDDataCursor.m */,
+				01EB82DD13A591D8003EDE60 /* CDMachOFileDataCursor.h */,
+				01EB82DE13A591D8003EDE60 /* CDMachOFileDataCursor.m */,
+			);
+			name = Cursor;
+			sourceTree = "<group>";
+		};
 		01B02D0213A5B0DC0047BC53 /* formatType */ = {
 			isa = PBXGroup;
 			children = (
@@ -493,6 +504,8 @@
 			children = (
 				01EB828213A5916D003EDE60 /* MachObjC-Prefix.pch */,
 				01EB836513A59202003EDE60 /* Extensions */,
+				01AFB28E13E6365800896CC7 /* Cursor */,
+				01EB836713A592A2003EDE60 /* Load Commands */,
 				01EB836613A59227003EDE60 /* Mach-O */,
 				01EB836913A593C7003EDE60 /* Objective-C */,
 				01EB836A13A59414003EDE60 /* Type Parsing/Lexing */,
@@ -526,11 +539,6 @@
 		01EB836613A59227003EDE60 /* Mach-O */ = {
 			isa = PBXGroup;
 			children = (
-				01EB829F13A591D7003EDE60 /* CDDataCursor.h */,
-				01EB82A013A591D7003EDE60 /* CDDataCursor.m */,
-				01EB82DD13A591D8003EDE60 /* CDMachOFileDataCursor.h */,
-				01EB82DE13A591D8003EDE60 /* CDMachOFileDataCursor.m */,
-				01EB836713A592A2003EDE60 /* Load Commands */,
 				01EB82A513A591D7003EDE60 /* CDFile.h */,
 				01EB82A613A591D7003EDE60 /* CDFile.m */,
 				01EB82A313A591D7003EDE60 /* CDFatFile.h */,
