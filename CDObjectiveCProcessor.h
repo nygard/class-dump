@@ -22,11 +22,12 @@
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
-- (void)dealloc;
 
-- (CDMachOFile *)machOFile;
+@property (readonly) CDMachOFile *machOFile;
+@property (readonly) BOOL hasObjectiveCData;
 
-- (BOOL)hasObjectiveCData;
+@property (readonly) CDSection *objcImageInfoSection;
+@property (readonly) NSString *garbageCollectionStatus;
 
 - (void)process;
 - (void)loadProtocols;
@@ -37,8 +38,5 @@
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 
 - (void)createUniquedProtocols;
-
-- (CDSection *)objcImageInfoSection;
-@property (readonly) NSString *garbageCollectionStatus;
 
 @end

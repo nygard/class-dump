@@ -14,9 +14,6 @@
 // Just to resolve multiple different definitions...
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 {
-    char buf[17];
-    NSString *str;
-
     if ((self = [super init])) {
         nonretained_segment = aSegment;
         
@@ -33,6 +30,8 @@
         section.reserved2 = [cursor readInt32];
         
         // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
+        char buf[17];
+        NSString *str;
         
         memcpy(buf, section.segname, 16);
         buf[16] = 0;
@@ -50,14 +49,21 @@
     return self;
 }
 
-- (CDLCSegment32 *)segment;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return nonretained_segment;
+    return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
+            section.addr, section.offset, section.size, section.size, segmentName, sectionName];
 }
+
+#pragma mark -
+
+@synthesize segment = nonretianed_segment;
 
 - (CDMachOFile *)machOFile;
 {
-    return [[self segment] machOFile];
+    return [self.segment machOFile];
 }
 
 - (NSUInteger)addr;
@@ -82,14 +88,6 @@
         _flags.hasLoadedData = YES;
     }
 }
-
-#if 1
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
-                     section.addr, section.offset, section.size, section.size, segmentName, sectionName];
-}
-#endif
 
 - (BOOL)containsAddress:(NSUInteger)address;
 {

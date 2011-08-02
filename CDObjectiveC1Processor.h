@@ -13,7 +13,6 @@
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
-- (void)dealloc;
 
 - (void)process;
 

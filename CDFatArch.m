@@ -40,6 +40,17 @@
     [super dealloc];
 }
 
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
+            [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.offset, fatArch.size, fatArch.size,
+            fatArch.align, 1 << fatArch.align, [self archName]];
+}
+
+#pragma mark -
+
 - (cpu_type_t)cpuType;
 {
     return fatArch.cputype;
@@ -75,29 +86,11 @@
     return CDArchUses64BitABI((CDArch){ .cputype = fatArch.cputype, .cpusubtype = fatArch.cpusubtype });
 }
 
-- (CDFatFile *)fatFile;
-{
-    return nonretained_fatFile;
-}
-
-- (void)setFatFile:(CDFatFile *)newFatFile;
-{
-    nonretained_fatFile = [newFatFile retain];
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
-                     [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.offset, fatArch.size, fatArch.size,
-                     fatArch.align, 1 << fatArch.align, [self archName]];
-}
+@synthesize fatFile = nonretained_fatFile;
 
 - (CDArch)arch;
 {
-    CDArch arch;
-
-    arch.cputype = fatArch.cputype;
-    arch.cpusubtype = fatArch.cpusubtype;
+    CDArch arch = { fatArch.cputype, fatArch.cpusubtype };
 
     return arch;
 }

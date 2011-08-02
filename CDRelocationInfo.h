@@ -22,11 +22,11 @@ typedef NSUInteger CDRelocationSize;
 
 - (id)initWithInfo:(struct relocation_info)info;
 
-- (NSUInteger)offset;
-- (CDRelocationSize)size;
-- (uint32_t)symbolnum;
-- (BOOL)isExtern;
-
 - (NSString *)description;
+
+@property (readonly) NSUInteger offset;
+@property (readonly) CDRelocationSize size;
+@property (readonly) uint32_t symbolnum;
+@property (readonly) BOOL isExtern;
 
 @end

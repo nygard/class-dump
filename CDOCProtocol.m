@@ -199,8 +199,7 @@
 
     [self visitMethods:aVisitor propertyState:propertyState];
 
-    // This shouldn't happen for protocols.  @optional properties will generate optional instance methods, and we'll emit @property in the @optional section.
-    // BTW, otool doesn't show optional methods.
+    // @optional properties will generate optional instance methods, and we'll emit @property in the @optional section.
     [aVisitor visitRemainingProperties:propertyState];
 
     [aVisitor didVisitProtocol:self];

@@ -21,27 +21,24 @@
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
-- (void)dealloc;
-
-- (cpu_type_t)cpuType;
-- (cpu_type_t)maskedCPUType;
-- (cpu_subtype_t)cpuSubtype;
-- (uint32_t)offset;
-- (uint32_t)size;
-- (uint32_t)align;
-
-- (BOOL)uses64BitABI;
-
-- (CDFatFile *)fatFile;
-- (void)setFatFile:(CDFatFile *)newFatFile;
 
 - (NSString *)description;
 
-- (CDArch)arch;
-- (NSString *)archName;
+@property (readonly) cpu_type_t cpuType;
+@property (readonly) cpu_type_t maskedCPUType;
+@property (readonly) cpu_subtype_t cpuSubtype;
+@property (readonly) uint32_t offset;
+@property (readonly) uint32_t size;
+@property (readonly) uint32_t align;
 
-- (CDMachOFile *)machOFile;
+@property (readonly) BOOL uses64BitABI;
 
-- (NSData *)machOData;
+@property (assign) CDFatFile *fatFile;
+
+@property (readonly) CDArch arch;
+@property (readonly) NSString *archName;
+
+@property (readonly) CDMachOFile *machOFile;
+@property (readonly) NSData *machOData;
 
 @end

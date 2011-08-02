@@ -10,9 +10,7 @@
 
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
-    const NXArchInfo *archInfo;
-
-    archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
+    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
     if (archInfo == NULL)
         return [NSString stringWithFormat:@"0x%x:0x%x", cputype, cpusubtype];
 
@@ -21,7 +19,6 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 
 CDArch CDArchFromName(NSString *name)
 {
-    const NXArchInfo *archInfo;
     CDArch arch;
 
     arch.cputype = CPU_TYPE_ANY;
@@ -30,7 +27,7 @@ CDArch CDArchFromName(NSString *name)
     if (name == nil)
         return arch;
 
-    archInfo = NXGetArchInfoFromName([name UTF8String]);
+    const NXArchInfo *archInfo = NXGetArchInfoFromName([name UTF8String]);
     if (archInfo == NULL) {
         NSScanner *scanner;
         NSString *ignore;
@@ -116,20 +113,11 @@ BOOL CDArchUses64BitABI(CDArch arch)
     [super dealloc];
 }
 
-- (NSString *)filename;
-{
-    return filename;
-}
+#pragma mark -
 
-- (NSData *)data;
-{
-    return data;
-}
-
-- (CDSearchPathState *)searchPathState;
-{
-    return searchPathState;
-}
+@synthesize filename;
+@synthesize data;
+@synthesize searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {

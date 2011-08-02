@@ -17,18 +17,7 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 
-- (CDLCSegment32 *)segment;
-- (CDMachOFile *)machOFile;
-
-- (NSUInteger)addr;
-- (NSUInteger)size;
-- (uint32_t)offset;
-
-- (void)loadData;
-
-//- (NSString *)description;
-
-- (BOOL)containsAddress:(NSUInteger)address;
-- (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
+@property (readonly) CDLCSegment32 *segment;
+@property (readonly) uint32_t offset;
 
 @end

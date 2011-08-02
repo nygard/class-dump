@@ -20,24 +20,20 @@
 }
 
 - (id)init;
-- (void)dealloc;
 
-- (NSString *)segmentName;
-- (void)setSegmentName:(NSString *)newName;
+- (NSString *)description;
 
-- (NSString *)sectionName;
-- (void)setSectionName:(NSString *)newName;
+@property (retain) NSString *segmentName;
+@property (retain) NSString *sectionName;
 
 - (NSData *)data;
 - (void)loadData;
 - (void)unloadData;
 
-- (NSUInteger)addr;
-- (NSUInteger)size;
+@property (readonly) NSUInteger addr;
+@property (readonly) NSUInteger size;
 
 - (CDMachOFile *)machOFile;
-
-- (NSString *)description;
 
 - (BOOL)containsAddress:(NSUInteger)address;
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;

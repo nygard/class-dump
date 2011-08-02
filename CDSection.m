@@ -34,33 +34,19 @@
     [super dealloc];
 }
 
-- (NSString *)segmentName;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return segmentName;
+    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s'",
+            NSStringFromClass([self class]), self,
+            segmentName, [sectionName UTF8String]];
 }
 
-- (void)setSegmentName:(NSString *)newName;
-{
-    if (newName == segmentName)
-        return;
+#pragma mark -
 
-    [segmentName release];
-    segmentName = [newName retain];
-}
-
-- (NSString *)sectionName;
-{
-    return sectionName;
-}
-
-- (void)setSectionName:(NSString *)newName;
-{
-    if (newName == sectionName)
-        return;
-
-    [sectionName release];
-    sectionName = [newName retain];
-}
+@synthesize segmentName;
+@synthesize sectionName;
 
 - (NSData *)data;
 {
@@ -99,13 +85,6 @@
 {
     // Implement in subclass (for now).
     return nil;
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s'",
-                     NSStringFromClass([self class]), self,
-                     segmentName, [sectionName UTF8String]];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;

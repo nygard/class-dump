@@ -24,14 +24,10 @@
 
 - (void)loadProtocols;
 {
-    CDLCSegment *segment;
-    CDSection *section;
-    CDMachOFileDataCursor *cursor;
+    CDLCSegment *segment = [machOFile segmentWithName:@"__DATA"];
+    CDSection *section = [segment sectionWithName:@"__objc_protolist"];
     
-    segment = [machOFile segmentWithName:@"__DATA"];
-    section = [segment sectionWithName:@"__objc_protolist"];
-    
-    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
         [self protocolAtAddress:[cursor readPtr]];
     [cursor release];
@@ -41,20 +37,13 @@
 
 - (void)loadClasses;
 {
-    CDLCSegment *segment;
-    CDSection *section;
-    CDMachOFileDataCursor *cursor;
+    CDLCSegment *segment = [machOFile segmentWithName:@"__DATA"];
+    CDSection *section = [segment sectionWithName:@"__objc_classlist"];
     
-    segment = [machOFile segmentWithName:@"__DATA"];
-    section = [segment sectionWithName:@"__objc_classlist"];
-    
-    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
-        uint64_t val;
-        CDOCClass *aClass;
-        
-        val = [cursor readPtr];
-        aClass = [self loadClassAtAddress:val];
+        uint64_t val = [cursor readPtr];
+        CDOCClass *aClass = [self loadClassAtAddress:val];
         if (aClass != nil) {
             [classes addObject:aClass];
             [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedLongLong:val]];
@@ -66,18 +55,12 @@
 
 - (void)loadCategories;
 {
-    CDLCSegment *segment;
-    CDSection *section;
-    CDMachOFileDataCursor *cursor;
+    CDLCSegment *segment = [machOFile segmentWithName:@"__DATA"];
+    CDSection *section = [segment sectionWithName:@"__objc_catlist"];
     
-    segment = [machOFile segmentWithName:@"__DATA"];
-    section = [segment sectionWithName:@"__objc_catlist"];
-    
-    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
-        CDOCCategory *category;
-        
-        category = [self loadCategoryAtAddress:[cursor readPtr]];
+        CDOCCategory *category = [self loadCategoryAtAddress:[cursor readPtr]];
         if (category != nil)
             [categories addObject:category];
     }
@@ -87,25 +70,19 @@
 
 - (CDOCProtocol *)protocolAtAddress:(uint64_t)address;
 {
-    NSNumber *key;
-    CDOCProtocol *protocol;
-    
     if (address == 0)
         return nil;
     
-    key = [NSNumber numberWithUnsignedLongLong:address];
-    protocol = [protocolsByAddress objectForKey:key];
+    NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
+    CDOCProtocol *protocol = [protocolsByAddress objectForKey:key];
     if (protocol == nil) {
-        struct cd_objc2_protocol objc2Protocol;
-        CDMachOFileDataCursor *cursor;
-        NSString *str;
-        
         protocol = [[[CDOCProtocol alloc] init] autorelease];
         [protocolsByAddress setObject:protocol forKey:key];
         
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         
+        struct cd_objc2_protocol objc2Protocol;
         objc2Protocol.isa = [cursor readPtr];
         objc2Protocol.name = [cursor readPtr];
         objc2Protocol.protocols = [cursor readPtr];
@@ -119,20 +96,15 @@
         //NSLog(@"%016lx %016lx %016lx %016lx", objc2Protocol.isa, objc2Protocol.name, objc2Protocol.protocols, objc2Protocol.instanceMethods);
         //NSLog(@"%016lx %016lx %016lx %016lx", objc2Protocol.classMethods, objc2Protocol.optionalInstanceMethods, objc2Protocol.optionalClassMethods, objc2Protocol.instanceProperties);
         
-        str = [machOFile stringAtAddress:objc2Protocol.name];
+        NSString *str = [machOFile stringAtAddress:objc2Protocol.name];
         [protocol setName:str];
         
         if (objc2Protocol.protocols != 0) {
-            uint64_t count, index;
-            
             [cursor setAddress:objc2Protocol.protocols];
-            count = [cursor readPtr];
-            for (index = 0; index < count; index++) {
-                uint64_t val;
-                CDOCProtocol *anotherProtocol;
-                
-                val = [cursor readPtr];
-                anotherProtocol = [self protocolAtAddress:val];
+            uint64_t count = [cursor readPtr];
+            for (uint64_t index = 0; index < count; index++) {
+                uint64_t val = [cursor readPtr];
+                CDOCProtocol *anotherProtocol = [self protocolAtAddress:val];
                 if (anotherProtocol != nil) {
                     [protocol addProtocol:anotherProtocol];
                 } else {
@@ -164,17 +136,13 @@
 
 - (CDOCCategory *)loadCategoryAtAddress:(uint64_t)address;
 {
-    struct cd_objc2_category objc2Category;
-    CDMachOFileDataCursor *cursor;
-    NSString *str;
-    CDOCCategory *category;
-    
     if (address == 0)
         return nil;
     
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
+    struct cd_objc2_category objc2Category;
     objc2Category.name = [cursor readPtr];
     objc2Category.class = [cursor readPtr];
     objc2Category.instanceMethods = [cursor readPtr];
@@ -187,8 +155,8 @@
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.name, objc2Category.class, objc2Category.instanceMethods, objc2Category.classMethods);
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.protocols, objc2Category.instanceProperties, objc2Category.v7, objc2Category.v8);
     
-    category = [[[CDOCCategory alloc] init] autorelease];
-    str = [machOFile stringAtAddress:objc2Category.name];
+    CDOCCategory *category = [[[CDOCCategory alloc] init] autorelease];
+    NSString *str = [machOFile stringAtAddress:objc2Category.name];
     [category setName:str];
     
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Category.instanceMethods])
@@ -227,20 +195,15 @@
 
 - (CDOCClass *)loadClassAtAddress:(uint64_t)address;
 {
-    struct cd_objc2_class objc2Class;
-    struct cd_objc2_class_ro_t objc2ClassData;
-    CDMachOFileDataCursor *cursor;
-    NSString *str;
-    CDOCClass *aClass;
-    
     if (address == 0)
         return nil;
     
     //NSLog(@"%s, address=%016lx", __cmd, address);
     
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
+    struct cd_objc2_class objc2Class;
     objc2Class.isa = [cursor readPtr];
     objc2Class.superclass = [cursor readPtr];
     objc2Class.cache = [cursor readPtr];
@@ -254,6 +217,8 @@
     
     NSParameterAssert(objc2Class.data != 0);
     [cursor setAddress:objc2Class.data];
+
+    struct cd_objc2_class_ro_t objc2ClassData;
     objc2ClassData.flags = [cursor readInt32];
     objc2ClassData.instanceStart = [cursor readInt32];
     objc2ClassData.instanceSize = [cursor readInt32];
@@ -274,10 +239,10 @@
     
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2ClassData.ivarLayout, objc2ClassData.name, objc2ClassData.baseMethods, objc2ClassData.baseProtocols);
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2ClassData.ivars, objc2ClassData.weakIvarLayout, objc2ClassData.baseProperties);
-    str = [machOFile stringAtAddress:objc2ClassData.name];
+    NSString *str = [machOFile stringAtAddress:objc2ClassData.name];
     //NSLog(@"name = %@", str);
     
-    aClass = [[[CDOCClass alloc] init] autorelease];
+    CDOCClass *aClass = [[[CDOCClass alloc] init] autorelease];
     [aClass setName:str];
     
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2ClassData.baseMethods])
@@ -304,9 +269,7 @@
             [aClass setSuperClassName:[machOFile externalClassNameForAddress:classNameAddress]];
             //NSLog(@"class: got external class name (1): %@", [aClass superClassName]);
         } else if (objc2Class.superclass != 0) {
-            CDOCClass *sc;
-            
-            sc = [self loadClassAtAddress:objc2Class.superclass];
+            CDOCClass *sc = [self loadClassAtAddress:objc2Class.superclass];
             [aClass setSuperClassName:[sc name]];
         }
     }
@@ -326,15 +289,11 @@
 
 - (NSArray *)loadPropertiesAtAddress:(uint64_t)address;
 {
-    NSMutableArray *properties;
-    
-    properties = [NSMutableArray array];
+    NSMutableArray *properties = [NSMutableArray array];
     if (address != 0) {
-        CDMachOFileDataCursor *cursor;
         struct cd_objc2_list_header listHeader;
-        uint32_t index;
         
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"property list data offset: %lu", [cursor offset]);
         
@@ -342,17 +301,15 @@
         listHeader.count = [cursor readInt32];
         NSParameterAssert(listHeader.entsize == [machOFile uses64BitABI] ? 16 : 8);
         
-        for (index = 0; index < listHeader.count; index++) {
+        for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_property objc2Property;
-            NSString *name, *attributes;
-            CDOCProperty *property;
             
             objc2Property.name = [cursor readPtr];
             objc2Property.attributes = [cursor readPtr];
-            name = [machOFile stringAtAddress:objc2Property.name];
-            attributes = [machOFile stringAtAddress:objc2Property.attributes];
+            NSString *name = [machOFile stringAtAddress:objc2Property.name];
+            NSString *attributes = [machOFile stringAtAddress:objc2Property.attributes];
             
-            property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
+            CDOCProperty *property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
             [properties addObject:property];
             [property release];
         }
@@ -366,16 +323,14 @@
 // This just gets the methods.
 - (NSArray *)loadMethodsOfMetaClassAtAddress:(uint64_t)address;
 {
-    struct cd_objc2_class objc2Class;
-    struct cd_objc2_class_ro_t objc2ClassData;
-    CDMachOFileDataCursor *cursor;
     
     if (address == 0)
         return nil;
     
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
+    struct cd_objc2_class objc2Class;
     objc2Class.isa = [cursor readPtr];
     objc2Class.superclass = [cursor readPtr];
     objc2Class.cache = [cursor readPtr];
@@ -389,6 +344,8 @@
     
     NSParameterAssert(objc2Class.data != 0);
     [cursor setAddress:objc2Class.data];
+
+    struct cd_objc2_class_ro_t objc2ClassData;
     objc2ClassData.flags = [cursor readInt32];
     objc2ClassData.instanceStart = [cursor readInt32];
     objc2ClassData.instanceSize = [cursor readInt32];
@@ -412,39 +369,33 @@
 
 - (NSArray *)loadMethodsAtAddress:(uint64_t)address;
 {
-    NSMutableArray *methods;
-    
-    methods = [NSMutableArray array];
+    NSMutableArray *methods = [NSMutableArray array];
     
     if (address != 0) {
-        CDMachOFileDataCursor *cursor;
-        struct cd_objc2_list_header listHeader;
-        uint32_t index;
-        
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"method list data offset: %lu", [cursor offset]);
+        
+        struct cd_objc2_list_header listHeader;
         
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
         NSParameterAssert(listHeader.entsize == [machOFile uses64BitABI] ? 24 : 12);
         
-        for (index = 0; index < listHeader.count; index++) {
+        for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_method objc2Method;
-            NSString *name, *types;
-            CDOCMethod *method;
             
             objc2Method.name = [cursor readPtr];
             objc2Method.types = [cursor readPtr];
             objc2Method.imp = [cursor readPtr];
-            name = [machOFile stringAtAddress:objc2Method.name];
-            types = [machOFile stringAtAddress:objc2Method.types];
+            NSString *name = [machOFile stringAtAddress:objc2Method.name];
+            NSString *types = [machOFile stringAtAddress:objc2Method.types];
             
             //NSLog(@"%3u: %016lx %016lx %016lx", index, objc2Method.name, objc2Method.types, objc2Method.imp);
             //NSLog(@"name: %@", name);
             //NSLog(@"types: %@", types);
             
-            method = [[CDOCMethod alloc] initWithName:name type:types imp:objc2Method.imp];
+            CDOCMethod *method = [[CDOCMethod alloc] initWithName:name type:types imp:objc2Method.imp];
             [methods addObject:method];
             [method release];
         }
@@ -457,26 +408,21 @@
 
 - (NSArray *)loadIvarsAtAddress:(uint64_t)address;
 {
-    NSMutableArray *ivars;
-    
-    ivars = [NSMutableArray array];
+    NSMutableArray *ivars = [NSMutableArray array];
     
     if (address != 0) {
-        CDMachOFileDataCursor *cursor;
-        struct cd_objc2_list_header listHeader;
-        uint32_t index;
-        
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"ivar list data offset: %lu", [cursor offset]);
+        
+        struct cd_objc2_list_header listHeader;
         
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
         NSParameterAssert(listHeader.entsize == [machOFile uses64BitABI] ? 32 : 20);
         
-        for (index = 0; index < listHeader.count; index++) {
+        for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_ivar objc2Ivar;
-            CDOCIvar *ivar;
             
             objc2Ivar.offset = [cursor readPtr];
             objc2Ivar.name = [cursor readPtr];
@@ -485,12 +431,10 @@
             objc2Ivar.size = [cursor readInt32];
             
             if (objc2Ivar.name != 0) {
-                NSString *name, *type;
+                NSString *name = [machOFile stringAtAddress:objc2Ivar.name];
+                NSString *type = [machOFile stringAtAddress:objc2Ivar.type];
                 
-                name = [machOFile stringAtAddress:objc2Ivar.name];
-                type = [machOFile stringAtAddress:objc2Ivar.type];
-                
-                ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset];
+                CDOCIvar *ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset];
                 [ivars addObject:ivar];
                 [ivar release];
             } else {
@@ -507,28 +451,20 @@
 // Returns list of uniqued protocols.
 - (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
 {
-    NSMutableArray *protocols;
-    
-    protocols = [[[NSMutableArray alloc] init] autorelease];;
+    NSMutableArray *protocols = [[[NSMutableArray alloc] init] autorelease];;
     
     if (address != 0) {
-        CDMachOFileDataCursor *cursor;
-        uint64_t count, index;
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
         
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
-        
-        count = [cursor readPtr];
-        for (index = 0; index < count; index++) {
-            uint64_t val;
-            CDOCProtocol *protocol, *uniqueProtocol;
-            
-            val = [cursor readPtr];
+        uint64_t count = [cursor readPtr];
+        for (uint64_t index = 0; index < count; index++) {
+            uint64_t val = [cursor readPtr];
             if (val == 0) {
                 NSLog(@"Warning: protocol address in protocol list was 0.");
             } else {
-                protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:val]];
+                CDOCProtocol *protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:val]];
                 if (protocol != nil) {
-                    uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
+                    CDOCProtocol *uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
                     if (uniqueProtocol != nil)
                         [protocols addObject:uniqueProtocol];
                 }

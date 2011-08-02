@@ -16,14 +16,10 @@
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    CDDataCursor *cursor;
-    unsigned int index;
-    struct fat_header header;
-
     if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState])) {
-        arches = [[NSMutableArray alloc] init];
-        
-        cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+
+        struct fat_header header;
         header.magic = [cursor readBigInt32];
         
         //NSLog(@"(testing fat) magic: 0x%x", header.magic);
@@ -33,16 +29,18 @@
             return nil;
         }
         
+        NSMutableArray *_arches = [[NSMutableArray alloc] init];
+        
         header.nfat_arch = [cursor readBigInt32];
         //NSLog(@"nfat_arch: %u", header.nfat_arch);
-        for (index = 0; index < header.nfat_arch; index++) {
-            CDFatArch *arch;
-            
-            arch = [[CDFatArch alloc] initWithDataCursor:cursor];
+        for (unsigned int index = 0; index < header.nfat_arch; index++) {
+            CDFatArch *arch = [[CDFatArch alloc] initWithDataCursor:cursor];
             [arch setFatFile:self];
-            [arches addObject:arch];
+            [_arches addObject:arch];
             [arch release];
         }
+        arches = [_arches copy];
+        [_arches release];
         
         [cursor release];
         
@@ -58,6 +56,15 @@
 
     [super dealloc];
 }
+
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"[%p] CDFatFile with %u arches", self, [arches count]];
+}
+
+#pragma mark -
 
 
 // Case 1: no arch specified
@@ -75,17 +82,14 @@
 // Returns YES on success, NO on failure.
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
-    const NXArchInfo *archInfo;
-    cpu_type_t targetType;
-
-    archInfo = NXGetLocalArchInfo();
+    const NXArchInfo *archInfo = NXGetLocalArchInfo();
     if (archInfo == NULL)
         return NO;
 
     if (archPtr == NULL)
         return [arches count] > 0;
 
-    targetType = archInfo->cputype & ~CPU_ARCH_MASK;
+    cpu_type_t targetType = archInfo->cputype & ~CPU_ARCH_MASK;
 
 #ifdef __LP64__
     // This architecture, 64 bit
@@ -142,11 +146,6 @@
     return nil;
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"[%p] CDFatFile with %u arches", self, [arches count]];
-}
-
 - (NSArray *)arches;
 {
     return arches;
@@ -154,9 +153,7 @@
 
 - (NSArray *)archNames;
 {
-    NSMutableArray *archNames;
-
-    archNames = [NSMutableArray array];
+    NSMutableArray *archNames = [NSMutableArray array];
     for (CDFatArch *arch in arches)
         [archNames addObject:[arch archName]];
 

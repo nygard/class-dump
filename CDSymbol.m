@@ -55,15 +55,31 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     [super dealloc];
 }
 
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    NSString *valueFormat = [NSString stringWithFormat:@"%%0%ullx", is32Bit ? 8 : 16];
+    NSString *valuePad = is32Bit ? @"        " : @"                ";
+    NSString *valueString = self.isUndefined ? valuePad : [NSString stringWithFormat:valueFormat, self.value];
+    NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
+    NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
+
+    return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], name];
+
+    return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
+    return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"],
+            nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
+}
+
+#pragma mark -
+
 - (uint64_t)value;
 {
     return nlist.n_value;
 }
 
-- (NSString *)name;
-{
-    return name;
-}
+@synthesize name;
 
 - (CDSection *)section
 {
@@ -116,50 +132,50 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (BOOL)isUndefined;
 {
-    return [self type] == N_UNDF;
+    return self.type == N_UNDF;
 }
 
-- (BOOL)isAbsolte;
+- (BOOL)isAbsolute;
 {
-    return [self type] == N_ABS;
+    return self.type == N_ABS;
 }
 
 - (BOOL)isInSection;
 {
-    return [self type] == N_SECT;
+    return self.type == N_SECT;
 }
 
 - (BOOL)isPrebound;
 {
-    return [self type] == N_PBUD;
+    return self.type == N_PBUD;
 }
 
 - (BOOL)isIndirect;
 {
-    return [self type] == N_INDR;
+    return self.type == N_INDR;
 }
 
 - (BOOL)isCommon;
 {
-    return [self isUndefined] && [self isExternal] && nlist.n_value != 0;
+    return self.isUndefined && self.isExternal && nlist.n_value != 0;
 }
 
 - (BOOL)isInTextSection;
 {
-    CDSection *section = [self section];
-    return [[section segmentName] isEqualToString:@"__TEXT"] && [[section sectionName] isEqualToString:@"__text"];
+    CDSection *section = self.section;
+    return [section.segmentName isEqualToString:@"__TEXT"] && [section.sectionName isEqualToString:@"__text"];
 }
 
 - (BOOL)isInDataSection;
 {
-    CDSection *section = [self section];
-    return [[section segmentName] isEqualToString:@"__DATA"] && [[section sectionName] isEqualToString:@"__data"];
+    CDSection *section = self.section;
+    return [section.segmentName isEqualToString:@"__DATA"] && [section.sectionName isEqualToString:@"__data"];
 }
 
 - (BOOL)isInBssSection;
 {
-    CDSection *section = [self section];
-    return [[section segmentName] isEqualToString:@"__DATA"] && [[section sectionName] isEqualToString:@"__bss"];
+    CDSection *section = self.section;
+    return [section.segmentName isEqualToString:@"__DATA"] && [section.sectionName isEqualToString:@"__bss"];
 }
 
 - (NSUInteger)referenceType;
@@ -169,100 +185,87 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSString *)referenceTypeName
 {
-    switch ([self referenceType]) {
-      case REFERENCE_FLAG_UNDEFINED_NON_LAZY: return @"undefined non lazy";
-      case REFERENCE_FLAG_UNDEFINED_LAZY: return @"undefined lazy";
-      case REFERENCE_FLAG_DEFINED: return @"defined";
-      case REFERENCE_FLAG_PRIVATE_DEFINED: return @"private defined";
-      case REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY: return @"private undefined non lazy";
-      case REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY: return @"private undefined lazy";
+    switch (self.referenceType) {
+        case REFERENCE_FLAG_UNDEFINED_NON_LAZY:         return @"undefined non lazy";
+        case REFERENCE_FLAG_UNDEFINED_LAZY:             return @"undefined lazy";
+        case REFERENCE_FLAG_DEFINED:                    return @"defined";
+        case REFERENCE_FLAG_PRIVATE_DEFINED:            return @"private defined";
+        case REFERENCE_FLAG_PRIVATE_UNDEFINED_NON_LAZY: return @"private undefined non lazy";
+        case REFERENCE_FLAG_PRIVATE_UNDEFINED_LAZY:     return @"private undefined lazy";
     }
     return nil;
 }
 
-- (NSComparisonResult)compare:(CDSymbol *)aSymbol;
+- (NSComparisonResult)compare:(CDSymbol *)otherSymbol;
 {
-    if ([aSymbol value] > [self value])
+    if (otherSymbol.value > self.value)
         return NSOrderedAscending;
-    else if ([aSymbol value] < [self value])
+    else if (otherSymbol.value < self.value)
         return NSOrderedDescending;
     else
         return NSOrderedSame;
 }
 
-- (NSComparisonResult)nameCompare:(CDSymbol *)aSymbol;
+- (NSComparisonResult)nameCompare:(CDSymbol *)otherSymbol;
 {
-    return [[self name] compare:[aSymbol name]];
+    return [self.name compare:otherSymbol.name];
 }
 
 - (NSString *)shortTypeDescription;
 {
     NSString *c = nil;
 
-    if ([self stab])
+    if (self.stab)
         c = @"-";
-    else if ([self isCommon])
+    else if (self.isCommon)
         c = @"c";
-    else if ([self isUndefined] || [self isPrebound])
+    else if (self.isUndefined || self.isPrebound)
         c =  @"u";
-    else if ([self isAbsolte])
+    else if (self.isAbsolute)
         c =  @"a";
-    else if ([self isInSection]) {
-        if ([self isInTextSection])
+    else if (self.isInSection) {
+        if (self.isInTextSection)
             c = @"t";
-        else if ([self isInDataSection])
+        else if (self.isInDataSection)
             c = @"d";
-        else if ([self isInBssSection])
+        else if (self.isInBssSection)
             c = @"b";
         else
             c = @"s";
     }
-    else if ([self isIndirect])
+    else if (self.isIndirect)
         c = @"i";
     else
         c = @"?";
 
-    return [self isExternal] ? [c uppercaseString] : c;
+    return self.isExternal ? [c uppercaseString] : c;
 }
 
 - (NSString *)longTypeDescription;
 {
     NSString *c = nil;
 
-    if ([self isCommon])
+    if (self.isCommon)
         c = @"common";
-    else if ([self isUndefined])
+    else if (self.isUndefined)
         c =  @"undefined";
-    else if ([self isPrebound])
+    else if (self.isPrebound)
         c =  @"prebound";
-    else if ([self isAbsolte])
+    else if (self.isAbsolute)
         c =  @"absolute";
-    else if ([self isInSection]) {
-        CDSection *section = [self section];
+    else if (self.isInSection) {
+        CDSection *section = self.section;
         if (section)
-            c = [NSString stringWithFormat:@"%@,%@", [section segmentName], [section sectionName]];
+            c = [NSString stringWithFormat:@"%@,%@", section.segmentName, section.sectionName];
         else
             c = @"?,?";
     }
-    else if ([self isIndirect])
+    else if (self.isIndirect)
         c = @"indirect";
     else
         c = @"?";
 
     return c;
-}
-
-- (NSString *)description;
-{
-    NSString *valueFormat = [NSString stringWithFormat:@"%%0%ullx", is32Bit ? 8 : 16];
-    NSString *valuePad = is32Bit ? @"        " : @"                ";
-    NSString *valueString = [self isUndefined] ? valuePad : [NSString stringWithFormat:valueFormat, [self value]];
-    NSString *dylibName = [[[[[self dylibLoadCommand] path] lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
-    NSString *fromString = [self isUndefined] ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
-    return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], name];
-    return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
-    return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"],
-            nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
 }
 
 @end

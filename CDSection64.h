@@ -17,15 +17,11 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 
-- (CDLCSegment64 *)segment;
-- (CDMachOFile *)machOFile;
+- (NSString *)description;
 
-- (NSUInteger)addr;
-- (NSUInteger)size;
+@property (readonly) CDLCSegment64 *segment;
 
 - (void)loadData;
-
-- (NSString *)description;
 
 - (BOOL)containsAddress:(NSUInteger)address;
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;

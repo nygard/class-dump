@@ -9,16 +9,15 @@
 
 @interface CDFatFile : CDFile
 {
-    NSMutableArray *arches;
+    NSArray *arches;
 }
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
-- (void)dealloc;
+
+- (NSString *)description;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
-
-- (NSString *)description;
 
 - (NSArray *)arches;
 - (NSArray *)archNames;

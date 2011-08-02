@@ -36,13 +36,10 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 + (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
-- (void)dealloc;
 
-- (NSString *)filename;
-
-- (NSData *)data;
-
-- (CDSearchPathState *)searchPathState;
+@property (readonly) NSString *filename;
+@property (readonly) NSData *data;
+@property (readonly) CDSearchPathState *searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;

@@ -166,19 +166,12 @@ static BOOL debug = NO;
 
 - (void)processModules;
 {
-    CDLCSegment *objcSegment;
-    CDSection *moduleSection;
-    CDMachOFileDataCursor *cursor;
+    CDLCSegment *objcSegment = [machOFile segmentWithName:@"__OBJC"];
+    CDSection *moduleSection = [objcSegment sectionWithName:@"__module_info"];
 
-    objcSegment = [machOFile segmentWithName:@"__OBJC"];
-    moduleSection = [objcSegment sectionWithName:@"__module_info"];
-
-    cursor = [[CDMachOFileDataCursor alloc] initWithSection:moduleSection];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:moduleSection];
     while ([cursor isAtEnd] == NO) {
         struct cd_objc_module objcModule;
-        CDOCModule *module;
-        NSString *name;
-        NSArray *array;
 
         objcModule.version = [cursor readInt32];
         objcModule.size = [cursor readInt32];
@@ -189,7 +182,7 @@ static BOOL debug = NO;
         //NSLog(@"sizeof(struct cd_objc_module): %u", sizeof(struct cd_objc_module));
         assert(objcModule.size == sizeof(struct cd_objc_module)); // Because this is what we're assuming.
 
-        name = [machOFile stringAtAddress:objcModule.name];
+        NSString *name = [machOFile stringAtAddress:objcModule.name];
         if (name != nil && [name length] > 0 && debug)
             NSLog(@"Note: a module name is set: %@", name);
 
@@ -197,13 +190,13 @@ static BOOL debug = NO;
         //NSLog(@"\tsect: %@", [[machOFile segmentContainingAddress:objcModule.name] sectionContainingAddress:objcModule.name]);
         //NSLog(@"symtab: %08x", objcModule.symtab);
 
-        module = [[CDOCModule alloc] init];
+        CDOCModule *module = [[CDOCModule alloc] init];
         [module setVersion:objcModule.version];
         [module setName:[machOFile stringAtAddress:objcModule.name]];
         [module setSymtab:[self processSymtabAtAddress:objcModule.symtab]];
         [modules addObject:module];
 
-        array = [[module symtab] classes];
+        NSArray *array = [[module symtab] classes];
         if (array != nil)
             [classes addObjectsFromArray:array];
 
@@ -224,12 +217,11 @@ static BOOL debug = NO;
     if (![[section segmentName] isEqualToString:@"__OBJC"])
         return nil; // This can happen with the symtab in a module. In one case, the symtab is in __DATA, __bss, in the zero filled area.
 
-    CDMachOFileDataCursor *cursor;
-    struct cd_objc_symtab objcSymtab;
     CDOCSymtab *aSymtab = nil;
-    unsigned int index;
 
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+
+    struct cd_objc_symtab objcSymtab;
     objcSymtab.sel_ref_cnt = [cursor readInt32];
     objcSymtab.refs = [cursor readInt32];
     objcSymtab.cls_def_count = [cursor readInt16];
@@ -238,26 +230,20 @@ static BOOL debug = NO;
 
     aSymtab = [[[CDOCSymtab alloc] init] autorelease];
     
-    for (index = 0; index < objcSymtab.cls_def_count; index++) {
-        CDOCClass *aClass;
-        uint32_t val;
-
-        val = [cursor readInt32];
+    for (unsigned int index = 0; index < objcSymtab.cls_def_count; index++) {
+        uint32_t val = [cursor readInt32];
         //NSLog(@"%4d: %08x", index, val);
 
-        aClass = [self processClassDefinitionAtAddress:val];
+        CDOCClass *aClass = [self processClassDefinitionAtAddress:val];
         if (aClass != nil)
             [aSymtab addClass:aClass];
     }
 
-    for (index = 0; index < objcSymtab.cat_def_count; index++) {
-        CDOCCategory *aCategory;
-        uint32_t val;
-
-        val = [cursor readInt32];
+    for (unsigned int index = 0; index < objcSymtab.cat_def_count; index++) {
+        uint32_t val = [cursor readInt32];
         //NSLog(@"%4d: %08x", index, val);
 
-        aCategory = [self processCategoryDefinitionAtAddress:val];
+        CDOCCategory *aCategory = [self processCategoryDefinitionAtAddress:val];
         if (aCategory != nil)
             [aSymtab addCategory:aCategory];
     }
@@ -269,12 +255,9 @@ static BOOL debug = NO;
 
 - (CDOCClass *)processClassDefinitionAtAddress:(uint32_t)address;
 {
-    CDMachOFileDataCursor *cursor;
-    struct cd_objc_class objcClass;
-    CDOCClass *aClass;
-    NSString *className;
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
 
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+    struct cd_objc_class objcClass;
 
     objcClass.isa = [cursor readInt32];
     objcClass.super_class = [cursor readInt32];
@@ -287,7 +270,7 @@ static BOOL debug = NO;
     objcClass.cache = [cursor readInt32];
     objcClass.protocols = [cursor readInt32];
 
-    className = [machOFile stringAtAddress:objcClass.name];
+    NSString *className = [machOFile stringAtAddress:objcClass.name];
     //NSLog(@"name: %08x", objcClass.name);
     //NSLog(@"className = %@", className);
     if (className == nil) {
@@ -296,38 +279,32 @@ static BOOL debug = NO;
         return nil;
     }
 
-    aClass = [[[CDOCClass alloc] init] autorelease];
+    CDOCClass *aClass = [[[CDOCClass alloc] init] autorelease];
     [aClass setName:className];
     [aClass setSuperClassName:[machOFile stringAtAddress:objcClass.super_class]];
     //NSLog(@"[aClass superClassName]: %@", [aClass superClassName]);
 
     // Process ivars
     if (objcClass.ivars != 0) {
-        uint32_t count, index;
-        NSMutableArray *ivars;
-
         [cursor setAddress:objcClass.ivars];
         NSParameterAssert([cursor offset] != 0);
 
-        count = [cursor readInt32];
-        ivars = [[NSMutableArray alloc] init];
-        for (index = 0; index < count; index++) {
+        uint32_t count = [cursor readInt32];
+        NSMutableArray *ivars = [[NSMutableArray alloc] init];
+        for (uint32_t index = 0; index < count; index++) {
             struct cd_objc_ivar objcIvar;
-            NSString *name, *type;
 
             objcIvar.name = [cursor readInt32];
             objcIvar.type = [cursor readInt32];
             objcIvar.offset = [cursor readInt32];
 
-            name = [machOFile stringAtAddress:objcIvar.name];
-            type = [machOFile stringAtAddress:objcIvar.type];
+            NSString *name = [machOFile stringAtAddress:objcIvar.name];
+            NSString *type = [machOFile stringAtAddress:objcIvar.type];
 
             // bitfields don't need names.
             // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
             if (type != nil) {
-                CDOCIvar *anIvar;
-
-                anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset];
+                CDOCIvar *anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset];
                 [ivars addObject:anIvar];
                 [anIvar release];
             }
@@ -343,13 +320,13 @@ static BOOL debug = NO;
 
     // Process meta class
     {
-        struct cd_objc_class metaClass;
-
         NSParameterAssert(objcClass.isa != 0);
         //NSLog(@"meta class, isa = %08x", objcClass.isa);
 
         [cursor setAddress:objcClass.isa];
 
+        struct cd_objc_class metaClass;
+        
         metaClass.isa = [cursor readInt32];
         metaClass.super_class = [cursor readInt32];
         metaClass.name = [cursor readInt32];
@@ -384,29 +361,21 @@ static BOOL debug = NO;
 // Returns list of uniqued protocols.
 - (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
 {
-    NSMutableArray *protocols;
-
-    protocols = [[[NSMutableArray alloc] init] autorelease];;
+    NSMutableArray *protocols = [[[NSMutableArray alloc] init] autorelease];;
 
     if (address != 0) {
-        CDMachOFileDataCursor *cursor;
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+
         struct cd_objc_protocol_list protocolList;
-        uint32_t index;
-
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
-
         protocolList.next = [cursor readInt32];
         protocolList.count = [cursor readInt32];
 
-        for (index = 0; index < protocolList.count; index++) {
-            uint32_t val;
-            CDOCProtocol *protocol, *uniqueProtocol;
-
-            val = [cursor readInt32];
-            protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInt:val]];
+        for (uint32_t index = 0; index < protocolList.count; index++) {
+            uint32_t val = [cursor readInt32];
+            CDOCProtocol *protocol = [protocolsByAddress objectForKey:[NSNumber numberWithUnsignedInt:val]];
             //NSLog(@"%3d protocol @ %08x: %@", index, val, [protocol name]);
             if (protocol != nil) {
-                uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
+                CDOCProtocol *uniqueProtocol = [protocolsByName objectForKey:[protocol name]];
                 if (uniqueProtocol != nil)
                     [protocols addObject:uniqueProtocol];
             }
@@ -425,18 +394,14 @@ static BOOL debug = NO;
 
 - (NSArray *)processMethodsAtAddress:(uint32_t)address isFromProtocolDefinition:(BOOL)isFromProtocolDefinition;
 {
-    CDMachOFileDataCursor *cursor;
-    NSMutableArray *methods;
-
     if (address == 0)
         return [NSArray array];
 
-    methods = [NSMutableArray array];
+    NSMutableArray *methods = [NSMutableArray array];
 
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
     if ([cursor offset] != 0) {
         struct cd_objc_method_list methodList;
-        uint32_t index;
 
         if (isFromProtocolDefinition)
             methodList._obsolete = 0;
@@ -444,9 +409,8 @@ static BOOL debug = NO;
             methodList._obsolete = [cursor readInt32];
         methodList.method_count = [cursor readInt32];
 
-        for (index = 0; index < methodList.method_count; index++) {
+        for (uint32_t index = 0; index < methodList.method_count; index++) {
             struct cd_objc_method objcMethod;
-            NSString *name, *type;
 
             objcMethod.name = [cursor readInt32];
             objcMethod.types = [cursor readInt32];
@@ -455,12 +419,10 @@ static BOOL debug = NO;
             else
                 objcMethod.imp = [cursor readInt32];
 
-            name = [machOFile stringAtAddress:objcMethod.name];
-            type = [machOFile stringAtAddress:objcMethod.types];
+            NSString *name = [machOFile stringAtAddress:objcMethod.name];
+            NSString *type = [machOFile stringAtAddress:objcMethod.types];
             if (name != nil && type != nil) {
-                CDOCMethod *method;
-
-                method = [[CDOCMethod alloc] initWithName:name type:type imp:objcMethod.imp];
+                CDOCMethod *method = [[CDOCMethod alloc] initWithName:name type:type imp:objcMethod.imp];
                 [methods addObject:method];
                 [method release];
             } else {
@@ -480,19 +442,16 @@ static BOOL debug = NO;
     CDOCCategory *aCategory = nil;
 
     if (address != 0) {
-        CDMachOFileDataCursor *cursor;
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+
         struct cd_objc_category objcCategory;
-        NSString *name;
-
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
-
         objcCategory.category_name = [cursor readInt32];
         objcCategory.class_name = [cursor readInt32];
         objcCategory.methods = [cursor readInt32];
         objcCategory.class_methods = [cursor readInt32];
         objcCategory.protocols = [cursor readInt32];
 
-        name = [machOFile stringAtAddress:objcCategory.category_name];
+        NSString *name = [machOFile stringAtAddress:objcCategory.category_name];
         if (name == nil) {
             NSLog(@"Note: objcCategory.category_name was %08x, returning nil.", objcCategory.category_name);
             [cursor release];
@@ -520,51 +479,38 @@ static BOOL debug = NO;
 
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
 {
-    NSNumber *key;
-    CDOCProtocol *aProtocol;
-
-    key = [NSNumber numberWithUnsignedInteger:address];
-    aProtocol = [protocolsByAddress objectForKey:key];
+    NSNumber *key = [NSNumber numberWithUnsignedInteger:address];
+    CDOCProtocol *aProtocol = [protocolsByAddress objectForKey:key];
     if (aProtocol == nil) {
-        CDMachOFileDataCursor *cursor;
-        uint32_t v1, v2, v3, v4, v5;
-        NSString *name;
-
         //NSLog(@"Creating new protocol from address: 0x%08x", address);
         aProtocol = [[[CDOCProtocol alloc] init] autorelease];
         [protocolsByAddress setObject:aProtocol forKey:key];
 
-        cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:machOFile address:address];
 
-        v1 = [cursor readInt32];
-        v2 = [cursor readInt32];
-        v3 = [cursor readInt32];
-        v4 = [cursor readInt32];
-        v5 = [cursor readInt32];
-        name = [machOFile stringAtAddress:v2];
+        /*uint32_t v1 =*/ [cursor readInt32];
+        uint32_t v2 = [cursor readInt32];
+        uint32_t v3 = [cursor readInt32];
+        uint32_t v4 = [cursor readInt32];
+        uint32_t v5 = [cursor readInt32];
+        NSString *name = [machOFile stringAtAddress:v2];
         [aProtocol setName:name]; // Need to set name before adding to another protocol
         //NSLog(@"data offset for %08x: %08x", v2, [machOFile dataOffsetForAddress:v2]);
         //NSLog(@"[@ %08x] v1-5: 0x%08x 0x%08x 0x%08x 0x%08x 0x%08x (%@)", address, v1, v2, v3, v4, v5, name);
 
         {
-            uint32_t count, index;
-
             // Protocols
             if (v3 != 0) {
-                uint32_t val;
-
                 [cursor setAddress:v3];
-                val = [cursor readInt32];
+                uint32_t val = [cursor readInt32];
                 NSParameterAssert(val == 0); // next pointer, let me know if it's ever not zero
                 //NSLog(@"val: 0x%08x", val);
-                count = [cursor readInt32];
+                uint32_t count = [cursor readInt32];
                 //NSLog(@"protocol count: %08x", count);
-                for (index = 0; index < count; index++) {
-                    CDOCProtocol *anotherProtocol;
-
+                for (uint32_t index = 0; index < count; index++) {
                     val = [cursor readInt32];
                     //NSLog(@"val[%2d]: 0x%08x", index, val);
-                    anotherProtocol = [self protocolAtAddress:val];
+                    CDOCProtocol *anotherProtocol = [self protocolAtAddress:val];
                     if (anotherProtocol != nil) {
                         [aProtocol addProtocol:anotherProtocol];
                     } else {
@@ -598,17 +544,12 @@ static BOOL debug = NO;
 // Perhaps a bit more work than necessary, but at least I can see exactly what is happening.
 - (void)loadProtocols;
 {
-    CDLCSegment *objcSegment;
-    CDSection *protocolSection;
-    uint32_t addr;
-    NSUInteger count, index;
+    CDLCSegment *objcSegment = [machOFile segmentWithName:@"__OBJC"];
+    CDSection *protocolSection = [objcSegment sectionWithName:@"__protocol"];
+    uint32_t addr = (uint32_t)[protocolSection addr];
 
-    objcSegment = [machOFile segmentWithName:@"__OBJC"];
-    protocolSection = [objcSegment sectionWithName:@"__protocol"];
-    addr = (uint32_t)[protocolSection addr];
-
-    count = [protocolSection size] / sizeof(struct cd_objc_protocol);
-    for (index = 0; index < count; index++, addr += (uint32_t)sizeof(struct cd_objc_protocol))
+    NSUInteger count = [protocolSection size] / sizeof(struct cd_objc_protocol);
+    for (NSUInteger index = 0; index < count; index++, addr += (uint32_t)sizeof(struct cd_objc_protocol))
         [self protocolAtAddress:addr]; // Forces them to be loaded
 
     [self createUniquedProtocols];

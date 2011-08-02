@@ -9,7 +9,7 @@
 
 extern NSString *const ObjCClassSymbolPrefix;
 
-@class CDMachOFile;
+@class CDMachOFile, CDSection, CDLCDylib;
 
 @interface CDSymbol : NSObject
 {
@@ -21,16 +21,33 @@ extern NSString *const ObjCClassSymbolPrefix;
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
-- (void)dealloc;
 
-- (uint64_t)value;
-- (NSString *)name;
+- (NSString *)description;
 
-- (BOOL)isExternal;
+@property (readonly) uint64_t value;
+@property (readonly) NSString *name;
+@property (readonly) CDSection *section;
+@property (readonly) CDLCDylib *dylibLoadCommand;
+
+@property (readonly) BOOL isExternal;
+@property (readonly) BOOL isPrivateExternal;
+@property (readonly) NSUInteger stab;
+@property (readonly) NSUInteger type;
+@property (readonly) BOOL isUndefined;
+@property (readonly) BOOL isAbsolute;
+@property (readonly) BOOL isInSection;
+@property (readonly) BOOL isPrebound;
+@property (readonly) BOOL isIndirect;
+@property (readonly) BOOL isCommon;
+@property (readonly) BOOL isInTextSection;
+@property (readonly) BOOL isInDataSection;
+@property (readonly) BOOL isInBssSection;
+@property (readonly) NSUInteger referenceType;
+@property (readonly) NSString *referenceTypeName;
+@property (readonly) NSString *shortTypeDescription;
+@property (readonly) NSString *longTypeDescription;
 
 - (NSComparisonResult)compare:(CDSymbol *)aSymbol;
 - (NSComparisonResult)nameCompare:(CDSymbol *)aSymbol;
-
-- (NSString *)description;
 
 @end

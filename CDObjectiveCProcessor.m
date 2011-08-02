@@ -45,21 +45,65 @@
     [super dealloc];
 }
 
-- (CDMachOFile *)machOFile;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return machOFile;
+    return [NSString stringWithFormat:@"<%@:%p> machOFile: %@",
+            NSStringFromClass([self class]), self,
+            machOFile.filename];
 }
+
+#pragma mark -
+
+@synthesize machOFile;
 
 - (BOOL)hasObjectiveCData;
 {
-    return [machOFile hasObjectiveC1Data] || [machOFile hasObjectiveC2Data];
+    return machOFile.hasObjectiveC1Data || machOFile.hasObjectiveC2Data;
 }
+
+- (CDSection *)objcImageInfoSection;
+{
+    // Implement in subclasses.
+    return nil;
+}
+
+- (NSString *)garbageCollectionStatus;
+{
+    if (self.objcImageInfoSection != nil) {
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:self.objcImageInfoSection];
+        
+        [cursor readInt32];
+        uint32_t v2 = [cursor readInt32];
+        //NSLog(@"%s: %08x %08x", __cmd, v1, v2);
+        // v2 == 0 -> Objective-C Garbage Collection: Unsupported
+        // v2 == 2 -> Supported
+        // v2 == 6 -> Required
+        //NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
+        
+        [cursor release];
+        
+        // See markgc.c in the objc4 project
+        switch (v2 & 0x06) {
+            case 0: return @"Unsupported";
+            case 2: return @"Supported";
+            case 6: return @"Required";
+        }
+        
+        return [NSString stringWithFormat:@"Unknown (0x%08x)", v2];
+    }
+    
+    return nil;
+}
+
+#pragma mark - Processing
 
 - (void)process;
 {
-    if ([machOFile isEncrypted] == NO && [machOFile canDecryptAllSegments]) {
-        [[machOFile symbolTable] loadSymbols];
-        [[machOFile dynamicSymbolTable] loadSymbols];
+    if (machOFile.isEncrypted == NO && machOFile.canDecryptAllSegments) {
+        [machOFile.symbolTable loadSymbols];
+        [machOFile.dynamicSymbolTable loadSymbols];
 
         [self loadProtocols];
 
@@ -97,26 +141,16 @@
         [[protocolsByName objectForKey:name] registerTypesWithObject:typeController phase:phase];
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> machOFile: %@",
-                     NSStringFromClass([self class]), self,
-                     [machOFile filename]];
-}
-
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
-    NSMutableArray *classesAndCategories;
-    NSArray *protocolNames;
-
-    classesAndCategories = [[NSMutableArray alloc] init];
+    NSMutableArray *classesAndCategories = [[NSMutableArray alloc] init];
     [classesAndCategories addObjectsFromArray:classes];
     [classesAndCategories addObjectsFromArray:categories];
 
     // TODO: Sort protocols by dependency
     // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
-    protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    NSArray *protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
     [aVisitor willVisitObjectiveCProcessor:self];
     [aVisitor visitObjectiveCProcessor:self];
@@ -143,10 +177,8 @@
     // Now unique the protocols by name and store in protocolsByName
 
     for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1, *p2;
-
-        p1 = [protocolsByAddress objectForKey:key];
-        p2 = [protocolsByName objectForKey:[p1 name]];
+        CDOCProtocol *p1 = [protocolsByAddress objectForKey:key];
+        CDOCProtocol *p2 = [protocolsByName objectForKey:[p1 name]];
         if (p2 == nil) {
             p2 = [[CDOCProtocol alloc] init];
             [p2 setName:[p1 name]];
@@ -161,10 +193,8 @@
 
     // And finally fill in adopted protocols, instance and class methods.  And properties.
     for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1, *uniqueProtocol;
-
-        p1 = [protocolsByAddress objectForKey:key];
-        uniqueProtocol = [protocolsByName objectForKey:[p1 name]];
+        CDOCProtocol *p1 = [protocolsByAddress objectForKey:key];
+        CDOCProtocol *uniqueProtocol = [protocolsByName objectForKey:[p1 name]];
         for (CDOCProtocol *p2 in [p1 protocols])
             [uniqueProtocol addProtocol:[protocolsByName objectForKey:[p2 name]]];
 
@@ -179,6 +209,11 @@
             for (CDOCMethod *method in [p1 instanceMethods])
                 [uniqueProtocol addInstanceMethod:method];
         } else {
+            if (!([[p1 instanceMethods] count] == 0 || [[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count])) {
+                //NSLog(@"p1 name: %@, uniqueProtocol name: %@", [p1 name], [uniqueProtocol name]);
+                //NSLog(@"p1 instanceMethods: %@", [p1 instanceMethods]);
+                //NSLog(@"uniqueProtocol instanceMethods: %@", [uniqueProtocol instanceMethods]);
+            }
             NSParameterAssert([[p1 instanceMethods] count] == 0 || [[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
         }
 
@@ -205,40 +240,6 @@
     }
 
     //NSLog(@"protocolsByName: %@", protocolsByName);
-}
-
-- (CDSection *)objcImageInfoSection;
-{
-    // Implement in subclasses.
-    return nil;
-}
-
-- (NSString *)garbageCollectionStatus;
-{
-    if ([self objcImageInfoSection] != nil) {
-        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:[self objcImageInfoSection]];
-        
-        [cursor readInt32];
-        uint32_t v2 = [cursor readInt32];
-        //NSLog(@"%s: %08x %08x", __cmd, v1, v2);
-        // v2 == 0 -> Objective-C Garbage Collection: Unsupported
-        // v2 == 2 -> Supported
-        // v2 == 6 -> Required
-        //NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
-        
-        [cursor release];
-        
-        // See markgc.c in the objc4 project
-        switch (v2 & 0x06) {
-            case 0: return @"Unsupported";
-            case 2: return @"Supported";
-            case 6: return @"Required";
-        }
-        
-        return [NSString stringWithFormat:@"Unknown (0x%08x)", v2];
-    }
-
-    return nil;
 }
 
 @end

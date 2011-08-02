@@ -16,6 +16,17 @@
     return self;
 }
 
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@:%p> addr/off: %08x, sym #: %5u, pcrel? %u, len: %u, extern? %u, type: %x",
+            NSStringFromClass([self class]), self,
+            rinfo.r_address, rinfo.r_symbolnum, rinfo.r_pcrel, rinfo.r_length, rinfo.r_extern, rinfo.r_type];
+}
+
+#pragma mark -
+
 - (NSUInteger)offset;
 {
     return rinfo.r_address;
@@ -34,13 +45,6 @@
 - (BOOL)isExtern;
 {
     return rinfo.r_extern == 1;
-}
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> addr/off: %08x, sym #: %5u, pcrel? %u, len: %u, extern? %u, type: %x",
-                     NSStringFromClass([self class]), self,
-                     rinfo.r_address, rinfo.r_symbolnum, rinfo.r_pcrel, rinfo.r_length, rinfo.r_extern, rinfo.r_type];
 }
 
 @end
