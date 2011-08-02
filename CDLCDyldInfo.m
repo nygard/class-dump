@@ -178,8 +178,8 @@ static NSString *CDBindTypeString(uint8_t type)
         symbolNamesByAddress = [[NSMutableDictionary alloc] init];
         
         //[self logRebaseInfo];
-        [self logBindInfo]; // Acutally loads it for now.
-        [self logWeakBindInfo];
+        //[self logBindInfo]; // Actually loads it for now.  Can't log now until finished reading all the load commands.
+        //[self logWeakBindInfo];
         //[self logLazyBindInfo];
         //[self logExportedSymbols];
         
@@ -363,28 +363,24 @@ static NSString *CDBindTypeString(uint8_t type)
 
 - (void)logBindInfo;
 {
-    const uint8_t *start, *end;
-
     if (debugBindOps) {
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"bind_off: %u, bind_size: %u", dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
     }
-    start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.bind_off;
-    end = start + dyldInfoCommand.bind_size;
+    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.bind_off;
+    const uint8_t *end = start + dyldInfoCommand.bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
 }
 
 - (void)logWeakBindInfo;
 {
-    const uint8_t *start, *end;
-
     if (debugBindOps) {
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"weak_bind_off: %u, weak_bind_size: %u", dyldInfoCommand.weak_bind_off, dyldInfoCommand.weak_bind_size);
     }
-    start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.weak_bind_off;
-    end = start + dyldInfoCommand.weak_bind_size;
+    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.weak_bind_off;
+    const uint8_t *end = start + dyldInfoCommand.weak_bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
 }
