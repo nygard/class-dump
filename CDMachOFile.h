@@ -25,16 +25,17 @@ typedef NSUInteger CDByteOrder;
 {
     CDByteOrder byteOrder;
 
-    NSMutableArray *loadCommands;
-    NSMutableArray *segments;
+    NSArray *loadCommands;
+    NSArray *dylibLoadCommands;
+    NSArray *segments;
     CDLCSymbolTable *symbolTable;
     CDLCDynamicSymbolTable *dynamicSymbolTable;
     CDLCDyldInfo *dyldInfo;
     CDLCVersionMinimum *minVersionMacOSX;
     CDLCVersionMinimum *minVersionIOS;
-    NSMutableArray *runPaths;
-    NSMutableArray *dyldEnvironment;
-    NSMutableArray *reExportedDylibs;
+    NSArray *runPaths;
+    NSArray *dyldEnvironment;
+    NSArray *reExportedDylibs;
     struct mach_header_64 header; // 64-bit, also holding 32-bit
 
     struct {
@@ -43,31 +44,34 @@ typedef NSUInteger CDByteOrder;
 }
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
-- (void)dealloc;
+
+- (NSString *)description;
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
-- (CDByteOrder)byteOrder;
+@property (readonly) CDByteOrder byteOrder;
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
-- (uint32_t)magic;
-- (cpu_type_t)cputype;
-- (cpu_subtype_t)cpusubtype;
-- (cpu_type_t)cputypePlusArchBits;
-//- (const NXArchInfo *)archInfo;
-- (uint32_t)filetype;
-- (uint32_t)flags;
+@property (readonly) uint32_t magic;
+@property (readonly) cpu_type_t cputype;
+@property (readonly) cpu_subtype_t cpusubtype;
+@property (readonly) cpu_type_t cputypePlusArchBits;
+@property (readonly) uint32_t filetype;
+@property (readonly) uint32_t flags;
 
-- (NSArray *)loadCommands;
-- (NSArray *)dylibLoadCommands;
-- (NSArray *)segments;
+@property (readonly) NSArray *loadCommands;
+@property (readonly) NSArray *dylibLoadCommands;
+@property (readonly) NSArray *segments;
+@property (readonly) NSArray *runPaths;
+@property (readonly) NSArray *dyldEnvironment;
+@property (readonly) NSArray *reExportedDylibs;
 
-@property(retain) CDLCSymbolTable *symbolTable;
-@property(retain) CDLCDynamicSymbolTable *dynamicSymbolTable;
-@property(retain) CDLCDyldInfo *dyldInfo;
-@property(retain) CDLCVersionMinimum *minVersionMacOSX;
-@property(retain) CDLCVersionMinimum *minVersionIOS;
+@property (retain) CDLCSymbolTable *symbolTable;
+@property (retain) CDLCDynamicSymbolTable *dynamicSymbolTable;
+@property (retain) CDLCDyldInfo *dyldInfo;
+@property (retain) CDLCVersionMinimum *minVersionMacOSX;
+@property (retain) CDLCVersionMinimum *minVersionIOS;
 
 - (BOOL)uses64BitABI;
 - (NSUInteger)ptrSize;
@@ -89,17 +93,15 @@ typedef NSUInteger CDByteOrder;
 
 - (NSString *)importBaseName;
 
-- (BOOL)isEncrypted;
-- (BOOL)hasProtectedSegments;
-- (BOOL)canDecryptAllSegments;
+@property (readonly) BOOL isEncrypted;
+@property (readonly) BOOL hasProtectedSegments;
+@property (readonly) BOOL canDecryptAllSegments;
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
 
 - (NSString *)uuidString;
 - (NSString *)archName;
-
-- (NSString *)description;
 
 - (Class)processorClass;
 - (void)logInfoForAddress:(NSUInteger)address;
@@ -111,12 +113,8 @@ typedef NSUInteger CDByteOrder;
 - (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
 - (NSString *)externalClassNameForAddress2:(NSUInteger)address;
 
-- (BOOL)hasObjectiveC1Data;
-- (BOOL)hasObjectiveC2Data;
-- (Class)processorClass;
-
-@property (readonly) NSMutableArray *runPaths;
-@property (readonly) NSMutableArray *dyldEnvironment;
-@property (readonly) NSMutableArray *reExportedDylibs;
+@property (readonly) BOOL hasObjectiveC1Data;
+@property (readonly) BOOL hasObjectiveC2Data;
+@property (readonly) Class processorClass;
 
 @end
