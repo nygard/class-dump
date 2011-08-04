@@ -140,7 +140,10 @@ NSString *CDMagicNumberString(uint32_t magic)
     runPaths = [_runPaths copy]; [_runPaths release];
     dyldEnvironment = [_dyldEnvironment copy]; [_dyldEnvironment release];
     reExportedDylibs = [_reExportedDylibs copy]; [_reExportedDylibs release];
-    
+
+    for (CDLoadCommand *loadCommand in loadCommands) {
+        [loadCommand machOFileDidReadLoadCommands:self];
+    }
 }
 
 - (void)dealloc;

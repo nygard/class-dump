@@ -14,7 +14,6 @@
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-- (void)dealloc;
 
 - (uint32_t)cmd;
 - (uint32_t)cmdsize;

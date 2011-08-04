@@ -203,4 +203,8 @@
     return ([self cmd] & LC_REQ_DYLD) != 0;
 }
 
+- (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;
+{
+}
+
 @end

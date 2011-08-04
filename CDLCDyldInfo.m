@@ -169,14 +169,6 @@ static NSString *CDBindTypeString(uint8_t type)
         ptrSize = [[cursor machOFile] ptrSize];
         
         symbolNamesByAddress = [[NSMutableDictionary alloc] init];
-        
-        //[self logRebaseInfo];
-        //[self logBindInfo]; // Actually loads it for now.  Can't log now until finished reading all the load commands.
-        //[self logWeakBindInfo];
-        //[self logLazyBindInfo];
-        //[self logExportedSymbols];
-        
-        //NSLog(@"symbolNamesByAddress: %@", symbolNamesByAddress);
     }
 
     return self;
@@ -187,6 +179,19 @@ static NSString *CDBindTypeString(uint8_t type)
     [symbolNamesByAddress release];
 
     [super dealloc];
+}
+
+#pragma mark -
+
+- (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;
+{
+    //[self logRebaseInfo];
+    [self logBindInfo]; // Actually loads it for now.  Can't log now until finished reading all the load commands.
+    [self logWeakBindInfo];
+    //[self logLazyBindInfo];
+    //[self logExportedSymbols];
+    
+    //NSLog(@"symbolNamesByAddress: %@", symbolNamesByAddress);
 }
 
 #pragma mark -

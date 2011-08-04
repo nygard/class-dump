@@ -36,4 +36,6 @@
 
 - (BOOL)mustUnderstandToExecute;
 
+- (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;
+
 @end
