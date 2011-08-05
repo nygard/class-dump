@@ -37,7 +37,7 @@
 {
     Class targetClass = [CDLCUnknown class];
 
-    unsigned int val = [cursor peekInt32];
+    uint32_t val = [cursor peekInt32];
 
     switch (val) {
         case LC_SEGMENT:               targetClass = [CDLCSegment32 class]; break;
