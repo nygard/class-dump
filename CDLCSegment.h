@@ -4,12 +4,11 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
 
 #import "CDLoadCommand.h"
-#include <mach-o/loader.h>
 
 @class CDSection;
 
-#define CDSegmentProtectedMagic_None 0
-#define CDSegmentProtectedMagic_AES 0xc2286295
+#define CDSegmentProtectedMagic_None     0
+#define CDSegmentProtectedMagic_AES      0xc2286295
 #define CDSegmentProtectedMagic_Blowfish 0x2e69cf40
 
 enum {
@@ -30,34 +29,27 @@ extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
     NSMutableData *decryptedData;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-- (void)dealloc;
+@property (retain) NSString *name;
 
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
+@property (readonly) NSArray *sections;
 
-- (NSArray *)sections;
+@property (readonly) NSUInteger vmaddr;
+@property (readonly) NSUInteger fileoff;
+@property (readonly) NSUInteger filesize;
+@property (readonly) vm_prot_t initprot;
+@property (readonly) uint32_t flags;
+@property (readonly) BOOL isProtected;
 
-- (NSUInteger)vmaddr;
-- (NSUInteger)fileoff;
-- (NSUInteger)filesize;
-- (vm_prot_t)initprot;
-- (uint32_t)flags;
-- (BOOL)isProtected;
-
-- (CDSegmentEncryptionType)encryptionType;
-- (BOOL)canDecrypt;
+@property (readonly) CDSegmentEncryptionType encryptionType;
+@property (readonly) BOOL canDecrypt;
 
 - (NSString *)flagDescription;
-- (NSString *)extraDescription;
 
 - (BOOL)containsAddress:(NSUInteger)address;
 - (CDSection *)sectionContainingAddress:(NSUInteger)address;
 - (CDSection *)sectionWithName:(NSString *)aName;
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
 - (NSUInteger)segmentOffsetForAddress:(NSUInteger)address;
-
-- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 - (void)writeSectionData;
 

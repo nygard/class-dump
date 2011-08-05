@@ -22,19 +22,19 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 
-- (CDMachOFile *)machOFile;
-- (NSUInteger)commandOffset;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (NSString *)commandName;
 - (NSString *)description;
 - (NSString *)extraDescription;
 
-- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
+@property (readonly) CDMachOFile *machOFile;
+@property (readonly) NSUInteger commandOffset;
 
-- (BOOL)mustUnderstandToExecute;
+@property (readonly) uint32_t cmd;
+@property (readonly) uint32_t cmdsize;
+@property (readonly) BOOL mustUnderstandToExecute;
+
+@property (readonly) NSString *commandName;
+
+- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 - (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;
 

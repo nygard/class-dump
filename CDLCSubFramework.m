@@ -9,17 +9,14 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    NSUInteger length;
-    uint32_t strOffset;
-
     if ((self = [super initWithDataCursor:cursor])) {
         command.cmd = [cursor readInt32];
         command.cmdsize = [cursor readInt32];
         
-        strOffset = [cursor readInt32];
-        NSAssert(strOffset == 12, @"expected strOffset to be 8");
+        uint32_t strOffset = [cursor readInt32];
+        NSParameterAssert(strOffset == 12);
         
-        length = command.cmdsize - sizeof(command);
+        NSUInteger length = command.cmdsize - sizeof(command);
         //NSLog(@"expected length: %u", length);
         
         name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
@@ -36,6 +33,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return command.cmd;
@@ -46,9 +45,6 @@
     return command.cmdsize;
 }
 
-- (NSString *)name;
-{
-    return name;
-}
+@synthesize name;
 
 @end

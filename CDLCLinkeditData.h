@@ -5,16 +5,9 @@
 
 #import "CDLoadCommand.h"
 
-#include <mach-o/loader.h>
-
 @interface CDLCLinkeditData : CDLoadCommand
 {
     struct linkedit_data_command linkeditDataCommand;
 }
-
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
 
 @end

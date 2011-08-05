@@ -11,12 +11,6 @@
     NSString *name;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-- (void)dealloc;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (NSString *)name;
+@property (readonly) NSString *name;
 
 @end

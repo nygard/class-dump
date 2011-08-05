@@ -52,6 +52,17 @@
     [super dealloc];
 }
 
+#pragma mark - Debugging
+
+- (NSString *)extraDescription;
+{
+    return [NSString stringWithFormat:@"symoff: 0x%08x (%u), nsyms: 0x%08x (%u), stroff: 0x%08x (%u), strsize: 0x%08x (%u)",
+            symtabCommand.symoff, symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.nsyms,
+            symtabCommand.stroff, symtabCommand.stroff, symtabCommand.strsize, symtabCommand.strsize];
+}
+
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return symtabCommand.cmd;
@@ -66,10 +77,6 @@
 
 - (void)loadSymbols;
 {
-    CDMachOFileDataCursor *cursor;
-    uint32_t index;
-    const char *strtab, *ptr;
-
     for (CDLoadCommand *loadCommand in [nonretained_machOFile loadCommands]) {
         if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
             CDLCSegment *segment = (CDLCSegment *)loadCommand;
@@ -83,21 +90,19 @@
         }
     }
 
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:symtabCommand.symoff];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    strtab = [[nonretained_machOFile machOData] bytes] + symtabCommand.stroff;
+    const char *strtab = [[nonretained_machOFile machOData] bytes] + symtabCommand.stroff;
 
     if (![nonretained_machOFile uses64BitABI]) {
         //NSLog(@"32 bit...");
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  --------");
-        for (index = 0; index < symtabCommand.nsyms; index++) {
+        for (uint32_t index = 0; index < symtabCommand.nsyms; index++) {
             struct nlist nlist;
-            CDSymbol *symbol;
-            NSString *str;
 
             nlist.n_un.n_strx = [cursor readInt32];
             nlist.n_type = [cursor readByte];
@@ -109,10 +114,10 @@
                   index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
 #endif
 
-            ptr = strtab + nlist.n_un.n_strx;
-            str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+            const char *ptr = strtab + nlist.n_un.n_strx;
+            NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
-            symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist32:nlist];
+            CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist32:nlist];
             [symbols addObject:symbol];
             [symbol release];
 
@@ -123,10 +128,8 @@
     } else {
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  ----------------");
-        for (index = 0; index < symtabCommand.nsyms; index++) {
+        for (uint32_t index = 0; index < symtabCommand.nsyms; index++) {
             struct nlist_64 nlist;
-            CDSymbol *symbol;
-            NSString *str;
 
             nlist.n_un.n_strx = [cursor readInt32];
             nlist.n_type = [cursor readByte];
@@ -137,10 +140,10 @@
             NSLog(@"%5u: %08x           %02x    %02x  %04x  %016x - %s",
                   index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
 #endif
-            ptr = strtab + nlist.n_un.n_strx;
-            str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+            const char *ptr = strtab + nlist.n_un.n_strx;
+            NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
-            symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist64:nlist];
+            CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist64:nlist];
             [symbols addObject:symbol];
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value] != 0) {
@@ -199,13 +202,6 @@
 - (CDSymbol *)symbolForClass:(NSString *)className;
 {
     return [classSymbols objectForKey:className];
-}
-
-- (NSString *)extraDescription;
-{
-    return [NSString stringWithFormat:@"symoff: 0x%08x (%u), nsyms: 0x%08x (%u), stroff: 0x%08x (%u), strsize: 0x%08x (%u)",
-                     symtabCommand.symoff, symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.nsyms,
-                     symtabCommand.stroff, symtabCommand.stroff, symtabCommand.strsize, symtabCommand.strsize];
 }
 
 @end

@@ -9,15 +9,13 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    NSUInteger length;
-
     if ((self = [super initWithDataCursor:cursor])) {
         dylinkerCommand.cmd = [cursor readInt32];
         dylinkerCommand.cmdsize = [cursor readInt32];
-        
+
         dylinkerCommand.name.offset = [cursor readInt32];
         
-        length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
+        NSUInteger length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
         //NSLog(@"expected length: %u", length);
         
         name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
@@ -34,6 +32,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return dylinkerCommand.cmd;
@@ -44,9 +44,6 @@
     return dylinkerCommand.cmdsize;
 }
 
-- (NSString *)name;
-{
-    return name;
-}
+@synthesize name;
 
 @end

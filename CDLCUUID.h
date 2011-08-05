@@ -14,14 +14,6 @@
     CFUUIDRef uuid;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-- (void)dealloc;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (NSString *)uuidString;
-
-- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
+@property (readonly) NSString *uuidString;
 
 @end

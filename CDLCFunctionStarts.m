@@ -31,6 +31,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return loadCommand.cmd;

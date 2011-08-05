@@ -10,19 +10,4 @@
     struct segment_command_64 segmentCommand;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (NSUInteger)vmaddr;
-- (NSUInteger)fileoff;
-- (NSUInteger)filesize;
-- (vm_prot_t)initprot;
-- (uint32_t)flags;
-
-- (BOOL)containsAddress:(NSUInteger)address;
-
-- (NSString *)extraDescription;
-
 @end

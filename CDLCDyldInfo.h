@@ -13,11 +13,6 @@
     NSMutableDictionary *symbolNamesByAddress;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
 - (NSString *)symbolNameForAddress:(NSUInteger)address;
 
 // Rebasing

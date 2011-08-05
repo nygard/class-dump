@@ -26,10 +26,6 @@
             // Don't need this info right now.
             [cursor advanceByLength:preboundDylibCommand.cmdsize - 20];
         }
-        
-        //name = [[cursor readCString] retain];
-        //NSLog(@"name: %@", name);
-        //exit(99);
     }
 
     return self;
@@ -42,6 +38,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return preboundDylibCommand.cmd;
@@ -52,9 +50,6 @@
     return preboundDylibCommand.cmdsize;
 }
 
-- (NSString *)name;
-{
-    return name;
-}
+@synthesize name;
 
 @end

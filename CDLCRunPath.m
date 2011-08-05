@@ -12,15 +12,13 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    NSUInteger length;
-
     if ((self = [super initWithDataCursor:cursor])) {
         rpathCommand.cmd = [cursor readInt32];
         rpathCommand.cmdsize = [cursor readInt32];
         
         rpathCommand.path.offset = [cursor readInt32];
         
-        length = rpathCommand.cmdsize - sizeof(rpathCommand);
+        NSUInteger length = rpathCommand.cmdsize - sizeof(rpathCommand);
         //NSLog(@"expected length: %u", length);
         
         path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
@@ -36,6 +34,8 @@
 
     [super dealloc];
 }
+
+#pragma mark -
 
 - (uint32_t)cmd;
 {
@@ -58,10 +58,8 @@
     NSString *executablePathPrefix = @"@executable_path";
 
     if ([path hasPrefix:loaderPathPrefix]) {
-        NSString *str, *loaderPath;
-
-        loaderPath = [[[self machOFile] filename] stringByDeletingLastPathComponent];
-        str = [[path stringByReplacingOccurrencesOfString:loaderPathPrefix withString:loaderPath] stringByStandardizingPath];
+        NSString *loaderPath = [[[self machOFile] filename] stringByDeletingLastPathComponent];
+        NSString *str = [[path stringByReplacingOccurrencesOfString:loaderPathPrefix withString:loaderPath] stringByStandardizingPath];
 
         return str;
     }

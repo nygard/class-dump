@@ -5,7 +5,7 @@
 
 #import "CDLCEncryptionInfo.h"
 
-// This is used in iPhone apps.
+// This is used on iOS.
 
 @implementation CDLCEncryptionInfo
 
@@ -22,6 +22,8 @@
 
     return self;
 }
+
+#pragma mark -
 
 - (uint32_t)cmd;
 {

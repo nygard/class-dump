@@ -22,24 +22,16 @@
     } flags;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-- (void)dealloc;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
 - (void)loadSymbols;
 
-- (uint32_t)symoff;
-- (uint32_t)nsyms;
-- (uint32_t)stroff;
-- (uint32_t)strsize;
+@property (readonly) uint32_t symoff;
+@property (readonly) uint32_t nsyms;
+@property (readonly) uint32_t stroff;
+@property (readonly) uint32_t strsize;
 
-- (NSUInteger)baseAddress;
-- (NSArray *)symbols;
+@property (readonly) NSUInteger baseAddress;
+@property (readonly) NSArray *symbols;
 
 - (CDSymbol *)symbolForClass:(NSString *)className;
-
-- (NSString *)extraDescription;
 
 @end

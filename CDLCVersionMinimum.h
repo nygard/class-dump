@@ -5,20 +5,11 @@
 
 #import "CDLoadCommand.h"
 
-#import <CoreFoundation/CoreFoundation.h>
-
 @interface CDLCVersionMinimum : CDLoadCommand
 {
     struct version_min_command versionMinCommand;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
 @property (readonly) NSString *minimumVersionString;
-
-- (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 
 @end

@@ -26,6 +26,8 @@
     return self;
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return routinesCommand.cmd;

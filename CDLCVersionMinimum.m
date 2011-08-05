@@ -11,16 +11,17 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    if ([super initWithDataCursor:cursor] == nil)
-        return nil;
-
-    versionMinCommand.cmd = [cursor readInt32];
-    versionMinCommand.cmdsize = [cursor readInt32];
-    versionMinCommand.version = [cursor readInt32];
-    versionMinCommand.reserved = [cursor readInt32];
+    if ((self = [super initWithDataCursor:cursor])) {
+        versionMinCommand.cmd = [cursor readInt32];
+        versionMinCommand.cmdsize = [cursor readInt32];
+        versionMinCommand.version = [cursor readInt32];
+        versionMinCommand.reserved = [cursor readInt32];
+    }
 
     return self;
 }
+
+#pragma mark -
 
 - (uint32_t)cmd;
 {

@@ -27,33 +27,25 @@
         
         {
             char buf[17];
-            NSString *str;
             
             memcpy(buf, segmentCommand.segname, 16);
             buf[16] = 0;
-            str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-            if ([str length] >= 16) {
-                NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", str);
-            }
+            NSString *str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
             [self setName:str];
             [str release];
         }
         
-        {
-            unsigned int index;
-            
-            for (index = 0; index < segmentCommand.nsects; index++) {
-                CDSection64 *section;
-                
-                section = [[CDSection64 alloc] initWithDataCursor:cursor segment:self];
-                [sections addObject:section];
-                [section release];
-            }
+        for (NSUInteger index = 0; index < segmentCommand.nsects; index++) {
+            CDSection64 *section = [[CDSection64 alloc] initWithDataCursor:cursor segment:self];
+            [sections addObject:section];
+            [section release];
         }
     }
 
     return self;
 }
+
+#pragma mark -
 
 - (uint32_t)cmd;
 {

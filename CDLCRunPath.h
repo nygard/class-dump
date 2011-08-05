@@ -5,21 +5,13 @@
 
 #import "CDLoadCommand.h"
 
-@class CDSearchPathState;
-
 @interface CDLCRunPath : CDLoadCommand
 {
     struct rpath_command rpathCommand;
     NSString *path;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-- (void)dealloc;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (NSString *)path;
-- (NSString *)resolvedRunPath;
+@property (readonly) NSString *path;
+@property (readonly) NSString *resolvedRunPath;
 
 @end

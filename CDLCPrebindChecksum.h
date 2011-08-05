@@ -10,11 +10,6 @@
     struct prebind_cksum_command prebindChecksumCommand;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (uint32_t)cksum;
+@property (readonly) uint32_t cksum;
 
 @end

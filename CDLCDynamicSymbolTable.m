@@ -72,6 +72,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return dysymtab.cmd;
@@ -84,20 +86,15 @@
 
 - (void)loadSymbols;
 {
-    CDMachOFileDataCursor *cursor;
-    uint32_t index;
-
-    cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:dysymtab.extreloff];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:dysymtab.extreloff];
 
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
     //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
 #if 0
     [cursor setOffset:[nonretained_machOFile offset] + dysymtab.indirectsymoff];
-    for (index = 0; index < dysymtab.nindirectsyms; index++) {
-        uint32_t val;
-
+    for (uint32_t index = 0; index < dysymtab.nindirectsyms; index++) {
         // From loader.h: An indirect symbol table entry is simply a 32bit index into the symbol table to the symbol that the pointer or stub is referring to.
-        val = [cursor readInt32];
+        uint32_t val = [cursor readInt32];
         NSLog(@"%3u: %08x (%u)", index, val, val);
     }
 #endif
@@ -107,14 +104,12 @@
 
     //NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
     //NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
-    for (index = 0; index < dysymtab.nextrel; index++) {
+    for (uint32_t index = 0; index < dysymtab.nextrel; index++) {
         struct relocation_info rinfo;
-        uint32_t val;
-        CDRelocationInfo *ri;
 
         rinfo.r_address = [cursor readInt32];
-        val = [cursor readInt32];
-        // TODO (2009-06-25): Make sure this works on PPC.
+        uint32_t val = [cursor readInt32];
+
         rinfo.r_symbolnum = val & 0x00ffffff;
         rinfo.r_pcrel = (val & 0x01000000) >> 24;
         rinfo.r_length = (val & 0x06000000) >> 25;
@@ -125,7 +120,7 @@
               rinfo.r_symbolnum, rinfo.r_pcrel, rinfo.r_length, rinfo.r_extern, rinfo.r_type);
 #endif
 
-        ri = [[CDRelocationInfo alloc] initWithInfo:rinfo];
+        CDRelocationInfo *ri = [[CDRelocationInfo alloc] initWithInfo:rinfo];
         [externalRelocationEntries addObject:ri];
         [ri release];
     }
@@ -147,7 +142,7 @@
 - (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
 {
     for (CDRelocationInfo *info in externalRelocationEntries) {
-        if ([info isExtern] && [info offset] == offset) {
+        if (info.isExtern && info.offset == offset) {
             return info;
         }
     }

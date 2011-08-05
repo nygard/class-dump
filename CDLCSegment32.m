@@ -27,33 +27,25 @@
         
         {
             char buf[17];
-            NSString *str;
             
             memcpy(buf, segmentCommand.segname, 16);
             buf[16] = 0;
-            str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-            if ([str length] >= 16) {
-                NSLog(@"Notice: segment '%@' has length >= 16, which means it's not always null terminated.", str);
-            }
+            NSString *str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
             [self setName:str];
             [str release];
         }
         
-        {
-            unsigned int index;
-            
-            for (index = 0; index < segmentCommand.nsects; index++) {
-                CDSection32 *section;
-                
-                section = [[CDSection32 alloc] initWithDataCursor:cursor segment:self];
-                [sections addObject:section];
-                [section release];
-            }
+        for (NSUInteger index = 0; index < segmentCommand.nsects; index++) {
+            CDSection32 *section = [[CDSection32 alloc] initWithDataCursor:cursor segment:self];
+            [sections addObject:section];
+            [section release];
         }
     }
 
     return self;
 }
+
+#pragma mark -
 
 - (uint32_t)cmd;
 {
@@ -92,12 +84,9 @@
 
 - (NSString *)extraDescription;
 {
-#if 1
     return [NSString stringWithFormat:@"vmaddr: 0x%08x - 0x%08x [0x%08x], offset: %d, flags: 0x%x (%@), nsects: %d, sections: %@",
                      segmentCommand.vmaddr, segmentCommand.vmaddr + segmentCommand.vmsize - 1, segmentCommand.vmsize, segmentCommand.fileoff,
-                     [self flags], [self flagDescription], segmentCommand.nsects, sections];
-#endif
-    return nil;
+                     self.flags, [self flagDescription], segmentCommand.nsects, sections];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;

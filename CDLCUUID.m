@@ -11,12 +11,10 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    unsigned int index;
-
     if ((self = [super initWithDataCursor:cursor])) {
         uuidCommand.cmd = [cursor readInt32];
         uuidCommand.cmdsize = [cursor readInt32];
-        for (index = 0; index < 16; index++) {
+        for (NSUInteger index = 0; index < 16; index++) {
             uuidCommand.uuid[index] = [cursor readByte];
         }
         // Lovely API
@@ -48,6 +46,8 @@
 
     [super dealloc];
 }
+
+#pragma mark -
 
 - (uint32_t)cmd;
 {

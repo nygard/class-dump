@@ -10,9 +10,4 @@
     struct routines_command routinesCommand;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
 @end

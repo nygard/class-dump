@@ -10,15 +10,10 @@
     struct encryption_info_command encryptionInfoCommand;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
+@property (readonly) uint32_t cryptoff;
+@property (readonly) uint32_t cryptsize;
+@property (readonly) uint32_t cryptid;
 
-- (uint32_t)cmd;
-- (uint32_t)cmdsize;
-
-- (uint32_t)cryptoff;
-- (uint32_t)cryptsize;
-- (uint32_t)cryptid;
-
-- (BOOL)isEncrypted;
+@property (readonly) BOOL isEncrypted;
 
 @end

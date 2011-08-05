@@ -36,9 +36,8 @@
 + (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     Class targetClass = [CDLCUnknown class];
-    unsigned int val;
 
-    val = [cursor peekInt32];
+    unsigned int val = [cursor peekInt32];
 
     switch (val) {
         case LC_SEGMENT:               targetClass = [CDLCSegment32 class]; break;
@@ -102,15 +101,24 @@
     return self;
 }
 
-- (CDMachOFile *)machOFile;
+#pragma mark - Debugging
+
+- (NSString *)description;
 {
-    return nonretained_machOFile;
+    return [NSString stringWithFormat:@"<%@:%p> cmd: 0x%08x (%@), cmdsize: %d // %@",
+            NSStringFromClass([self class]), self,
+            self.cmd, self.commandName, self.cmdsize, [self extraDescription]];
 }
 
-- (NSUInteger)commandOffset;
+- (NSString *)extraDescription;
 {
-    return commandOffset;
+    return @"";
 }
+
+#pragma mark -
+
+@synthesize machOFile = nonretained_machOFile;
+@synthesize commandOffset;
 
 - (uint32_t)cmd;
 {
@@ -126,9 +134,14 @@
     return 0;
 }
 
+- (BOOL)mustUnderstandToExecute;
+{
+    return (self.cmd & LC_REQ_DYLD) != 0;
+}
+
 - (NSString *)commandName;
 {
-    switch ([self cmd]) {
+    switch (self.cmd) {
         case LC_SEGMENT:               return @"LC_SEGMENT";
         case LC_SYMTAB:                return @"LC_SYMTAB";
         case LC_SYMSEG:                return @"LC_SYMSEG";
@@ -177,30 +190,13 @@
     return [NSString stringWithFormat:@"0x%08x", [self cmd]];
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> cmd: 0x%08x (%@), cmdsize: %d // %@",
-                     NSStringFromClass([self class]), self,
-                     [self cmd], [self commandName], [self cmdsize], [self extraDescription]];
-}
-
-- (NSString *)extraDescription;
-{
-    return @"";
-}
-
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
     [resultString appendFormat:@"     cmd %@", [self commandName]];
-    if ([self mustUnderstandToExecute])
+    if (self.mustUnderstandToExecute)
         [resultString appendFormat:@" (must understand to execute)"];
     [resultString appendFormat:@"\n"];
     [resultString appendFormat:@" cmdsize %u\n", [self cmdsize]];
-}
-
-- (BOOL)mustUnderstandToExecute;
-{
-    return ([self cmd] & LC_REQ_DYLD) != 0;
 }
 
 - (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;

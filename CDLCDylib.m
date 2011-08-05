@@ -8,7 +8,7 @@
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 
-static NSString *CDDylibVersionString(unsigned long version)
+static NSString *CDDylibVersionString(uint32_t version)
 {
     return [NSString stringWithFormat:@"%d.%d.%d", version >> 16, (version >> 8) & 0xff, version & 0xff];
 }
@@ -17,8 +17,6 @@ static NSString *CDDylibVersionString(unsigned long version)
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
-    NSUInteger length;
-
     if ((self = [super initWithDataCursor:cursor])) {
         dylibCommand.cmd = [cursor readInt32];
         dylibCommand.cmdsize = [cursor readInt32];
@@ -28,7 +26,7 @@ static NSString *CDDylibVersionString(unsigned long version)
         dylibCommand.dylib.current_version = [cursor readInt32];
         dylibCommand.dylib.compatibility_version = [cursor readInt32];
         
-        length = dylibCommand.cmdsize - sizeof(dylibCommand);
+        NSUInteger length = dylibCommand.cmdsize - sizeof(dylibCommand);
         //NSLog(@"expected length: %u", length);
         
         path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
@@ -45,6 +43,8 @@ static NSString *CDDylibVersionString(unsigned long version)
     [super dealloc];
 }
 
+#pragma mark -
+
 - (uint32_t)cmd;
 {
     return dylibCommand.cmd;
@@ -55,10 +55,7 @@ static NSString *CDDylibVersionString(unsigned long version)
     return dylibCommand.cmdsize;
 }
 
-- (NSString *)path;
-{
-    return path;
-}
+@synthesize path;
 
 - (uint32_t)timestamp;
 {
@@ -89,8 +86,8 @@ static NSString *CDDylibVersionString(unsigned long version)
 - (NSString *)extraDescription;
 {
     return [NSString stringWithFormat:@"%@ (compatibility version %@, current version %@, timestamp %d [%@])",
-                     [self path], CDDylibVersionString([self compatibilityVersion]), CDDylibVersionString([self currentVersion]),
-                     [self timestamp], [NSDate dateWithTimeIntervalSince1970:[self timestamp]]];
+                     self.path, CDDylibVersionString(self.compatibilityVersion), CDDylibVersionString(self.currentVersion),
+                     self.timestamp, [NSDate dateWithTimeIntervalSince1970:self.timestamp]];
 }
 #endif
 
