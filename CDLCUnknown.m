@@ -18,8 +18,9 @@ static BOOL debug = NO;
         if (debug) NSLog(@"cmdsize: %u", loadCommand.cmdsize);
         
         if (loadCommand.cmdsize > 8) {
-            commandData = [[NSMutableData alloc] init];
-            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:commandData];
+            NSMutableData *_commandData = [[NSMutableData alloc] init];
+            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:_commandData];
+            commandData = [_commandData copy]; [_commandData release];
         } else {
             commandData = nil;
         }

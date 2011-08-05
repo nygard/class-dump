@@ -11,7 +11,7 @@
 {
     struct dysymtab_command dysymtab;
 
-    NSMutableArray *externalRelocationEntries;
+    NSArray *externalRelocationEntries;
 }
 
 - (void)loadSymbols;

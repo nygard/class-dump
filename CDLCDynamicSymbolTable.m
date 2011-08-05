@@ -86,6 +86,8 @@
 
 - (void)loadSymbols;
 {
+    NSMutableArray *_externalRelocationEntries = [[NSMutableArray alloc] init];
+    
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:dysymtab.extreloff];
 
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
@@ -121,7 +123,7 @@
 #endif
 
         CDRelocationInfo *ri = [[CDRelocationInfo alloc] initWithInfo:rinfo];
-        [externalRelocationEntries addObject:ri];
+        [_externalRelocationEntries addObject:ri];
         [ri release];
     }
 
@@ -136,6 +138,8 @@
     // GET_LIBRARY_ORDINAL() from nlist.h for library.
 
     [cursor release];
+    
+    externalRelocationEntries = [_externalRelocationEntries copy]; [_externalRelocationEntries release];
 }
 
 // Just search for externals.

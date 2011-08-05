@@ -9,7 +9,7 @@
 {
     struct load_command loadCommand;
 
-    NSMutableData *commandData;
+    NSData *commandData;
 }
 
 @end

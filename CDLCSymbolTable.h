@@ -11,10 +11,10 @@
 {
     struct symtab_command symtabCommand;
 
-    NSMutableArray *symbols;
+    NSArray *symbols;
     NSUInteger baseAddress;
 
-    NSMutableDictionary *classSymbols;
+    NSDictionary *classSymbols;
 
     struct {
         unsigned int didFindBaseAddress:1;

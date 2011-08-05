@@ -24,7 +24,7 @@ extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 @interface CDLCSegment : CDLoadCommand
 {
     NSString *name;
-    NSMutableArray *sections;
+    NSArray *sections;
 
     NSMutableData *decryptedData;
 }

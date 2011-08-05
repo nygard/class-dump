@@ -32,10 +32,10 @@
         NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
 #endif
         
-        symbols = [[NSMutableArray alloc] init];
+        symbols = nil;
         baseAddress = 0;
         
-        classSymbols = [[NSMutableDictionary alloc] init];
+        classSymbols = nil;
         
         flags.didFindBaseAddress = NO;
         flags.didWarnAboutUnfoundBaseAddress = NO;
@@ -89,6 +89,9 @@
             }
         }
     }
+    
+    NSMutableArray *_symbols = [[NSMutableArray alloc] init];
+    NSMutableDictionary *_classSymbols = [[NSMutableDictionary alloc] init];
 
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
@@ -118,7 +121,7 @@
             NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist32:nlist];
-            [symbols addObject:symbol];
+            [_symbols addObject:symbol];
             [symbol release];
 
             [str release];
@@ -144,11 +147,11 @@
             NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist64:nlist];
-            [symbols addObject:symbol];
+            [_symbols addObject:symbol];
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value] != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
-                [classSymbols setObject:symbol forKey:className];
+                [_classSymbols setObject:symbol forKey:className];
             }
 
             [symbol release];
@@ -160,6 +163,9 @@
     }
 
     [cursor release];
+    
+    symbols = [_symbols copy]; [_symbols release];
+    classSymbols = [_classSymbols copy]; [_classSymbols release];
 
     //NSLog(@"symbols: %@", symbols);
 }

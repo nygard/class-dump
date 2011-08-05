@@ -27,7 +27,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
     if ((self = [super initWithDataCursor:cursor])) {
         name = nil;
-        sections = [[NSMutableArray alloc] init];
+        sections = nil;
         decryptedData = nil;
     }
 

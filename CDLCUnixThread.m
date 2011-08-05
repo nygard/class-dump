@@ -16,8 +16,9 @@
         loadCommand.cmdsize = [cursor readInt32];
         
         if (loadCommand.cmdsize > 8) {
-            commandData = [[NSMutableData alloc] init];
-            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:commandData];
+            NSMutableData *_commandData = [[NSMutableData alloc] init];
+            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:_commandData];
+            commandData = [_commandData copy]; [_commandData release];
         } else {
             commandData = nil;
         }

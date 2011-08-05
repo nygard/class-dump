@@ -34,12 +34,14 @@
             [self setName:str];
             [str release];
         }
-        
+
+        NSMutableArray *_sections = [[NSMutableArray alloc] init];
         for (NSUInteger index = 0; index < segmentCommand.nsects; index++) {
             CDSection64 *section = [[CDSection64 alloc] initWithDataCursor:cursor segment:self];
-            [sections addObject:section];
+            [_sections addObject:section];
             [section release];
         }
+        sections = [_sections copy]; [_sections release];
     }
 
     return self;
