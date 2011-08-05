@@ -25,8 +25,8 @@
 - (void)rebaseAddress:(uint64_t)address type:(uint8_t)type;
 
 // Binding
-- (void)logBindInfo;
-- (void)logWeakBindInfo;
+- (void)parseBindInfo;
+- (void)parseWeakBindInfo;
 - (void)logLazyBindInfo;
 
 - (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end isLazy:(BOOL)isLazy;

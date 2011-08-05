@@ -186,8 +186,8 @@ static NSString *CDBindTypeString(uint8_t type)
 - (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;
 {
     //[self logRebaseInfo];
-    [self logBindInfo]; // Actually loads it for now.  Can't log now until finished reading all the load commands.
-    [self logWeakBindInfo];
+    [self parseBindInfo];
+    [self parseWeakBindInfo];
     //[self logLazyBindInfo];
     //[self logExportedSymbols];
     
@@ -342,7 +342,7 @@ static NSString *CDBindTypeString(uint8_t type)
 // Conceptually the bind information is a table of tuples:
 //    <seg-index, seg-offset, type, symbol-library-ordinal, symbol-name, addend>
 
-- (void)logBindInfo;
+- (void)parseBindInfo;
 {
     if (debugBindOps) {
         NSLog(@"----------------------------------------------------------------------");
@@ -354,7 +354,7 @@ static NSString *CDBindTypeString(uint8_t type)
     [self logBindOps:start end:end isLazy:NO];
 }
 
-- (void)logWeakBindInfo;
+- (void)parseWeakBindInfo;
 {
     if (debugBindOps) {
         NSLog(@"----------------------------------------------------------------------");
