@@ -62,14 +62,13 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     NSString *valueFormat = [NSString stringWithFormat:@"%%0%ullx", is32Bit ? 8 : 16];
     NSString *valuePad = is32Bit ? @"        " : @"                ";
     NSString *valueString = self.isUndefined ? valuePad : [NSString stringWithFormat:valueFormat, self.value];
-    NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
-    NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
+    //NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
+    //NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
 
     return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], name];
 
-    return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
-    return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"],
-            nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
+    //return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
+    //return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"], nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
 }
 
 #pragma mark -
