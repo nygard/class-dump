@@ -13,27 +13,12 @@
     NSUInteger referenceIndex;
 }
 
-- (id)init;
-- (void)dealloc;
-
-- (NSString *)outputPath;
-- (void)setOutputPath:(NSString *)newOutputPath;
+@property (retain) NSString *outputPath;
 
 - (void)createOutputPathIfNecessary;
 
 - (void)buildClassFrameworks;
 
 - (void)generateStructureHeader;
-
-- (void)willBeginVisiting;
-
-- (void)willVisitClass:(CDOCClass *)aClass;
-- (void)didVisitClass:(CDOCClass *)aClass;
-
-- (void)willVisitCategory:(CDOCCategory *)aCategory;
-- (void)didVisitCategory:(CDOCCategory *)aCategory;
-
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
 
 @end

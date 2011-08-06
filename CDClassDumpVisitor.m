@@ -45,17 +45,14 @@
 
 - (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
-    CDMachOFile *machOFile;
-    const NXArchInfo *archInfo;
-
-    machOFile = [aProcessor machOFile];
+    CDMachOFile *machOFile = [aProcessor machOFile];
 
     [resultString appendString:@"#pragma mark -\n\n"];
     [resultString appendString:@"/*\n"];
     [resultString appendFormat:@" * File: %@\n", [machOFile filename]];
     [resultString appendFormat:@" * UUID: %@\n", [machOFile uuidString]];
 
-    archInfo = NXGetArchInfoFromCpuType([machOFile cputypePlusArchBits], [machOFile cpusubtype]);
+    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType([machOFile cputypePlusArchBits], [machOFile cpusubtype]);
     //archInfo = [machOFile archInfo];
     if (archInfo == NULL)
         [resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", [machOFile cputype], [machOFile cpusubtype]];
@@ -63,9 +60,7 @@
         [resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
 
     if ([machOFile filetype] == MH_DYLIB) {
-        CDLCDylib *identifier;
-
-        identifier = [machOFile dylibIdentifier];
+        CDLCDylib *identifier = [machOFile dylibIdentifier];
         if (identifier != nil)
             [resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
                           [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];

@@ -13,35 +13,11 @@
     BOOL hasShownContext;
 }
 
-- (id)init;
-- (void)dealloc;
-
-- (NSString *)findString;
-- (void)setFindString:(NSString *)newFindString;
+@property (retain) NSString *findString;
 
 - (void)setContext:(CDOCProtocol *)newContext;
 - (void)showContextIfNecessary;
 
-- (void)willBeginVisiting;
-- (void)didEndVisiting;
-
 - (void)writeResultToStandardOutput;
-
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
-
-- (void)willVisitClass:(CDOCClass *)aClass;
-- (void)didVisitClass:(CDOCClass *)aClass;
-
-- (void)willVisitIvarsOfClass:(CDOCClass *)aClass;
-- (void)didVisitIvarsOfClass:(CDOCClass *)aClass;
-
-- (void)willVisitCategory:(CDOCCategory *)aCategory;
-- (void)didVisitCategory:(CDOCCategory *)aCategory;
-
-- (void)visitClassMethod:(CDOCMethod *)aMethod;
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
-
-- (void)visitIvar:(CDOCIvar *)anIvar;
 
 @end

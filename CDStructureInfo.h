@@ -16,9 +16,9 @@
 }
 
 - (id)initWithType:(CDType *)aType;
-- (void)dealloc;
 
-- (id)copyWithZone:(NSZone *)zone;
+- (NSString *)description;
+- (NSString *)shortDescription;
 
 @property (readonly) CDType *type;
 
@@ -31,9 +31,6 @@
 - (void)generateTypedefName:(NSString *)baseName;
 
 - (NSString *)name;
-
-- (NSString *)description;
-- (NSString *)shortDescription;
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 - (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;

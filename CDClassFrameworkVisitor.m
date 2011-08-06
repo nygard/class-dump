@@ -33,6 +33,8 @@
     [super dealloc];
 }
 
+#pragma mark -
+
 - (NSDictionary *)frameworkNamesByClassName;
 {
     return frameworkNamesByClassName;
@@ -43,19 +45,7 @@
     return frameworkNamesByProtocolName;
 }
 
-- (NSString *)frameworkName;
-{
-    return frameworkName;
-}
-
-- (void)setFrameworkName:(NSString *)newFrameworkName;
-{
-    if (newFrameworkName == frameworkName)
-        return;
-
-    [frameworkName release];
-    frameworkName = [newFrameworkName retain];
-}
+@synthesize frameworkName;
 
 - (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)anObjCSegment;
 {

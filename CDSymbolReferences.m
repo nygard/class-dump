@@ -31,6 +31,18 @@
     [super dealloc];
 }
 
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@:%p> frameworkNamesByClassName: %@, frameworkNamesByProtocolName: %@, classes: %@, protocols: %@",
+            NSStringFromClass([self class]), self,
+            frameworkNamesByClassName, frameworkNamesByProtocolName,
+            [self classes], [self protocols]];
+}
+
+#pragma mark -
+
 - (void)setFrameworkNamesByClassName:(NSDictionary *)newValue;
 {
     if (newValue == frameworkNamesByClassName)
@@ -90,23 +102,11 @@
     [protocols addObjectsFromArray:protocolNames];
 }
 
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"<%@:%p> frameworkNamesByClassName: %@, frameworkNamesByProtocolName: %@, classes: %@, protocols: %@",
-                     NSStringFromClass([self class]), self,
-                     frameworkNamesByClassName, frameworkNamesByProtocolName,
-                     [self classes], [self protocols]];
-}
-
 - (void)_appendToString:(NSMutableString *)resultString;
 {
-    NSArray *names;
-
-    names = [self protocols];
+    NSArray *names = [self protocols];
     for (NSString *name in names) {
-        NSString *str;
-
-        str = [self importStringForProtocolName:name];
+        NSString *str = [self importStringForProtocolName:name];
         if (str != nil)
             [resultString appendString:str];
     }
@@ -121,9 +121,7 @@
 
 - (NSString *)referenceString;
 {
-    NSMutableString *referenceString;
-
-    referenceString = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *referenceString = [[[NSMutableString alloc] init] autorelease];
     [self _appendToString:referenceString];
 
     if ([referenceString length] == 0)
@@ -141,9 +139,7 @@
 - (NSString *)importStringForClassName:(NSString *)aClassName;
 {
     if (aClassName != nil) {
-        NSString *framework;
-
-        framework = [self frameworkForClassName:aClassName];
+        NSString *framework = [self frameworkForClassName:aClassName];
         if (framework == nil)
             return [NSString stringWithFormat:@"#import \"%@.h\"\n", aClassName];
         else
@@ -156,9 +152,7 @@
 - (NSString *)importStringForProtocolName:(NSString *)aProtocolName;
 {
     if (aProtocolName != nil) {
-        NSString *framework;
-
-        framework = [self frameworkForClassName:aProtocolName];
+        NSString *framework = [self frameworkForClassName:aProtocolName];
         if (framework == nil)
             return [NSString stringWithFormat:@"#import \"%@-Protocol.h\"\n", aProtocolName];
         else

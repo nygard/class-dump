@@ -39,19 +39,9 @@
     [super dealloc];
 }
 
-- (NSString *)findString;
-{
-    return findString;
-}
+#pragma mark -
 
-- (void)setFindString:(NSString *)newFindString;
-{
-    if (newFindString == findString)
-        return;
-
-    [findString release];
-    findString = [newFindString retain];
-}
+@synthesize findString;
 
 - (void)setContext:(CDOCProtocol *)newContext;
 {
@@ -99,9 +89,7 @@
 
 - (void)writeResultToStandardOutput;
 {
-    NSData *data;
-
-    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 }
 
@@ -148,9 +136,7 @@
 
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 {
-    NSRange range;
-
-    range = [[aMethod name] rangeOfString:findString];
+    NSRange range = [[aMethod name] rangeOfString:findString];
     if (range.length > 0) {
         [self showContextIfNecessary];
 
@@ -162,9 +148,7 @@
 
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    NSRange range;
-
-    range = [[aMethod name] rangeOfString:findString];
+    NSRange range = [[aMethod name] rangeOfString:findString];
     if (range.length > 0) {
         [self showContextIfNecessary];
 

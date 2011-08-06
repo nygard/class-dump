@@ -13,11 +13,7 @@
     CDClassDump *classDump;
 }
 
-- (id)init;
-- (void)dealloc;
-
-- (CDClassDump *)classDump;
-- (void)setClassDump:(CDClassDump *)newClassDump;
+@property (retain) CDClassDump *classDump;
 
 - (void)willBeginVisiting;
 - (void)didEndVisiting;

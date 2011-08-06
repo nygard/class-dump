@@ -79,25 +79,12 @@ static BOOL debug = NO;
     [super dealloc];
 }
 
-- (CDTypeFormatter *)ivarTypeFormatter;
-{
-    return ivarTypeFormatter;
-}
+#pragma mark -
 
-- (CDTypeFormatter *)methodTypeFormatter;
-{
-    return methodTypeFormatter;
-}
-
-- (CDTypeFormatter *)propertyTypeFormatter;
-{
-    return propertyTypeFormatter;
-}
-
-- (CDTypeFormatter *)structDeclarationTypeFormatter;
-{
-    return structDeclarationTypeFormatter;
-}
+@synthesize ivarTypeFormatter;
+@synthesize methodTypeFormatter;
+@synthesize propertyTypeFormatter;
+@synthesize structDeclarationTypeFormatter;
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 {
@@ -113,9 +100,6 @@ static BOOL debug = NO;
 
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
-    //CDType *searchType;
-    //CDStructureTable *targetTable;
-
     if (level == 0 && aFormatter == structDeclarationTypeFormatter)
         return nil;
 
@@ -151,9 +135,7 @@ static BOOL debug = NO;
     [unionTable generateMemberNames];
 }
 
-//
-// Run phase 1+
-//
+#pragma mark - Run phase 1+
 
 - (void)workSomeMagic;
 {
@@ -165,9 +147,7 @@ static BOOL debug = NO;
     [self generateMemberNames];
 
     if (debug) {
-        NSMutableString *str;
-
-        str = [NSMutableString string];
+        NSMutableString *str = [NSMutableString string];
         [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
                         markName:@"Named Structures"];
         [unionTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
@@ -184,9 +164,7 @@ static BOOL debug = NO;
     }
 }
 
-//
-// Phase 0
-//
+#pragma mark - Phase 0
 
 - (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
 {
@@ -207,9 +185,7 @@ static BOOL debug = NO;
     }
 }
 
-//
-// Phase 1
-//
+#pragma mark - Phase 1
 
 // Phase one builds a list of all of the named and unnamed structures.
 // It does this by going through all the top level structures we found in phase 0.
@@ -236,23 +212,17 @@ static BOOL debug = NO;
     }
 }
 
-//
-// Phase 2
-//
+#pragma mark - Phase 2
 
 - (void)startPhase2;
 {
-    NSUInteger maxDepth, depth;
-
-    //NSLog(@" > %s", __cmd);
-
-    maxDepth = [structureTable phase1_maxDepth];
+    NSUInteger maxDepth = [structureTable phase1_maxDepth];
     if (maxDepth < [unionTable phase1_maxDepth])
         maxDepth = [unionTable phase1_maxDepth];
 
     if (debug) NSLog(@"max structure/union depth is: %lu", maxDepth);
 
-    for (depth = 1; depth <= maxDepth; depth++) {
+    for (NSUInteger depth = 1; depth <= maxDepth; depth++) {
         [structureTable phase2AtDepth:depth typeController:self];
         [unionTable phase2AtDepth:depth typeController:self];
     }
@@ -303,7 +273,7 @@ static BOOL debug = NO;
 
 - (BOOL)shouldShowName:(NSString *)name;
 {
-    return ([nonretained_classDump shouldMatchRegex] == NO) || [nonretained_classDump regexMatchesString:name];
+    return (nonretained_classDump.shouldMatchRegex == NO) || [nonretained_classDump regexMatchesString:name];
 }
 
 - (BOOL)shouldShowIvarOffsets;

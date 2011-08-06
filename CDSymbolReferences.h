@@ -14,8 +14,7 @@
     NSMutableSet *protocols;
 }
 
-- (id)init;
-- (void)dealloc;
+- (NSString *)description;
 
 - (void)setFrameworkNamesByClassName:(NSDictionary *)newValue;
 - (void)setFrameworkNamesByProtocolName:(NSDictionary *)newValue;
@@ -30,8 +29,6 @@
 - (NSArray *)protocols;
 - (void)addProtocolName:(NSString *)aProtocolName;
 - (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
-
-- (NSString *)description;
 
 - (void)_appendToString:(NSMutableString *)resultString;
 - (NSString *)referenceString;

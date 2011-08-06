@@ -40,7 +40,7 @@
         targetArch.cputype = CPU_TYPE_ANY;
         targetArch.cpusubtype = 0;
         
-        flags.shouldShowHeader = YES;
+        shouldShowHeader = YES;
     }
 
     return self;
@@ -57,7 +57,7 @@
 
     [typeController release];
 
-    if (flags.shouldMatchRegex)
+    if (shouldMatchRegex)
         regfree(&compiledRegex);
 
     [super dealloc];
@@ -66,100 +66,35 @@
 #pragma mark -
 
 @synthesize searchPathState;
-
-- (BOOL)shouldProcessRecursively;
-{
-    return flags.shouldProcessRecursively;
-}
-
-- (void)setShouldProcessRecursively:(BOOL)newFlag;
-{
-    flags.shouldProcessRecursively = newFlag;
-}
-
-- (BOOL)shouldSortClasses;
-{
-    return flags.shouldSortClasses;
-}
-
-- (void)setShouldSortClasses:(BOOL)newFlag;
-{
-    flags.shouldSortClasses = newFlag;
-}
-
-- (BOOL)shouldSortClassesByInheritance;
-{
-    return flags.shouldSortClassesByInheritance;
-}
-
-- (void)setShouldSortClassesByInheritance:(BOOL)newFlag;
-{
-    flags.shouldSortClassesByInheritance = newFlag;
-}
-
-- (BOOL)shouldSortMethods;
-{
-    return flags.shouldSortMethods;
-}
-
-- (void)setShouldSortMethods:(BOOL)newFlag;
-{
-    flags.shouldSortMethods = newFlag;
-}
-
-- (BOOL)shouldShowIvarOffsets;
-{
-    return flags.shouldShowIvarOffsets;
-}
-
-- (void)setShouldShowIvarOffsets:(BOOL)newFlag;
-{
-    flags.shouldShowIvarOffsets = newFlag;
-}
-
-- (BOOL)shouldShowMethodAddresses;
-{
-    return flags.shouldShowMethodAddresses;
-}
-
-- (void)setShouldShowMethodAddresses:(BOOL)newFlag;
-{
-    flags.shouldShowMethodAddresses = newFlag;
-}
+@synthesize shouldProcessRecursively;
+@synthesize shouldSortClasses;
+@synthesize shouldSortClassesByInheritance;
+@synthesize shouldSortMethods;
+@synthesize shouldShowIvarOffsets;
+@synthesize shouldShowMethodAddresses;
+@synthesize shouldShowHeader;
 
 - (BOOL)shouldMatchRegex;
 {
-    return flags.shouldMatchRegex;
+    return shouldMatchRegex;
 }
 
 - (void)setShouldMatchRegex:(BOOL)newFlag;
 {
-    if (flags.shouldMatchRegex && newFlag == NO)
+    if (shouldMatchRegex && newFlag == NO)
         regfree(&compiledRegex);
 
-    flags.shouldMatchRegex = newFlag;
-}
-
-- (BOOL)shouldShowHeader;
-{
-    return flags.shouldShowHeader;
-}
-
-- (void)setShouldShowHeader:(BOOL)newFlag;
-{
-    flags.shouldShowHeader = newFlag;
+    shouldMatchRegex = newFlag;
 }
 
 #pragma mark - Regular expression handling
 
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 {
-    int result;
-
-    if (flags.shouldMatchRegex)
+    if (self.shouldMatchRegex)
         regfree(&compiledRegex);
 
-    result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
+    int result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
     if (result != 0) {
         char regex_error_buffer[256];
 
@@ -175,16 +110,14 @@
         return NO;
     }
 
-    [self setShouldMatchRegex:YES];
+    self.shouldMatchRegex = YES;
 
     return YES;
 }
 
 - (BOOL)regexMatchesString:(NSString *)aString;
 {
-    int result;
-
-    result = regexec(&compiledRegex, [aString UTF8String], 0, NULL, 0);
+    int result = regexec(&compiledRegex, [aString UTF8String], 0, NULL, 0);
     if (result != 0) {
         if (result != REG_NOMATCH) {
             char regex_error_buffer[256];
@@ -202,17 +135,8 @@
 #pragma mark -
 
 @synthesize sdkRoot;
-
-- (NSArray *)machOFiles;
-{
-    return machOFiles;
-}
-
-- (NSArray *)objcProcessors;
-{
-    return objcProcessors;
-}
-
+@synthesize machOFiles;
+@synthesize objcProcessors;
 @synthesize targetArch;
 
 - (BOOL)containsObjectiveCData;
@@ -241,17 +165,12 @@
     return self.containsObjectiveCData || self.hasEncryptedFiles;
 }
 
-- (CDTypeController *)typeController;
-{
-    return typeController;
-}
+@synthesize typeController;
 
 - (BOOL)loadFile:(CDFile *)aFile;
 {
-    CDMachOFile *aMachOFile;
-
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
-    aMachOFile = [aFile machOFileWithArch:targetArch];
+    CDMachOFile *aMachOFile = [aFile machOFileWithArch:targetArch];
     //NSLog(@"aMachOFile: %@", aMachOFile);
     if (aMachOFile == nil) {
         fprintf(stderr, "Error: file doesn't contain the specified arch.\n\n");
@@ -267,9 +186,7 @@
         @try {
             for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
                 if ([loadCommand isKindOfClass:[CDLCDylib class]]) {
-                    CDLCDylib *aDylibCommand;
-
-                    aDylibCommand = (CDLCDylib *)loadCommand;
+                    CDLCDylib *aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB) {
                         [searchPathState pushSearchPaths:[aMachOFile runPaths]];
                         [self machOFileWithID:[aDylibCommand path]]; // Loads as a side effect
@@ -292,9 +209,7 @@
 - (void)processObjectiveCData;
 {
     for (CDMachOFile *machOFile in machOFiles) {
-        CDObjectiveCProcessor *aProcessor;
-
-        aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
+        CDObjectiveCProcessor *aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objcProcessors addObject:aProcessor];
         [aProcessor release];
@@ -316,7 +231,6 @@
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 {
     NSString *adjustedID = nil;
-    CDMachOFile *aMachOFile;
     NSString *executablePathPrefix = @"@executable_path";
     NSString *rpathPrefix = @"@rpath";
 
@@ -343,13 +257,10 @@
         adjustedID = anID;
     }
 
-    aMachOFile = [machOFilesByID objectForKey:adjustedID];
+    CDMachOFile *aMachOFile = [machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
-        NSData *data;
-        CDFile *aFile;
-
-        data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
-        aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:searchPathState];
+        NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
+        CDFile *aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:searchPathState];
         [data release];
 
         if (aFile == nil || [self loadFile:aFile] == NO)
@@ -367,7 +278,7 @@
 - (void)appendHeaderToString:(NSMutableString *)resultString;
 {
     // Since this changes each version, for regression testing it'll be better to be able to not show it.
-    if (flags.shouldShowHeader == NO)
+    if (self.shouldShowHeader == NO)
         return;
 
     [resultString appendString:@"/*\n"];
@@ -376,9 +287,9 @@
     [resultString appendString:@" *     class-dump is Copyright (C) 1997-1998, 2000-2001, 2004-2011 by Steve Nygard.\n"];
     [resultString appendString:@" */\n\n"];
 
-    if (sdkRoot != nil) {
+    if (self.sdkRoot != nil) {
         [resultString appendString:@"/*\n"];
-        [resultString appendFormat:@" * SDK Root: %@\n", sdkRoot];
+        [resultString appendFormat:@" * SDK Root: %@\n", self.sdkRoot];
         [resultString appendString:@" */\n\n"];
     }
 }

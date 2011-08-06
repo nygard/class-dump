@@ -43,6 +43,8 @@
     return self;
 }
 
+#pragma mark -
+
 - (CDMachOFile *)machOFile;
 {
     return nonretained_machOFile;
@@ -54,13 +56,11 @@
     [self setOffset:dataOffset];
 }
 
-//
-// Read using the current byteOrder
-//
+#pragma mark - Read using the current byteOrder
 
 - (uint16_t)readInt16;
 {
-    if ([nonretained_machOFile byteOrder] == CDByteOrder_LittleEndian)
+    if (nonretained_machOFile.byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt16];
 
     return [self readBigInt16];
@@ -68,7 +68,7 @@
 
 - (uint32_t)readInt32;
 {
-    if ([nonretained_machOFile byteOrder] == CDByteOrder_LittleEndian)
+    if (nonretained_machOFile.byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt32];
 
     return [self readBigInt32];
@@ -76,7 +76,7 @@
 
 - (uint64_t)readInt64;
 {
-    if ([nonretained_machOFile byteOrder] == CDByteOrder_LittleEndian)
+    if (nonretained_machOFile.byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt64];
 
     return [self readBigInt64];
@@ -84,11 +84,8 @@
 
 - (uint32_t)peekInt32;
 {
-    NSUInteger savedOffset;
-    uint32_t val;
-    
-    savedOffset = offset;
-    val = [self readInt32];
+    NSUInteger savedOffset = offset;
+    uint32_t val = [self readInt32];
     offset = savedOffset;
     
     return val;

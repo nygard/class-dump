@@ -21,12 +21,11 @@
 }
 
 - (id)initWithClassDump:(CDClassDump *)aClassDump;
-- (void)dealloc;
 
-@property(readonly) CDTypeFormatter *ivarTypeFormatter;
-@property(readonly) CDTypeFormatter *methodTypeFormatter;
-@property(readonly) CDTypeFormatter *propertyTypeFormatter;
-@property(readonly) CDTypeFormatter *structDeclarationTypeFormatter;
+@property (readonly) CDTypeFormatter *ivarTypeFormatter;
+@property (readonly) CDTypeFormatter *methodTypeFormatter;
+@property (readonly) CDTypeFormatter *propertyTypeFormatter;
+@property (readonly) CDTypeFormatter *structDeclarationTypeFormatter;
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
 - (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;

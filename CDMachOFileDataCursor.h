@@ -18,7 +18,7 @@
 
 - (id)initWithSection:(CDSection *)section;
 
-- (CDMachOFile *)machOFile;
+@property (readonly) CDMachOFile *machOFile;
 
 - (void)setAddress:(NSUInteger)address;
 

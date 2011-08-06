@@ -44,18 +44,16 @@ static BOOL debug = NO;
     [super dealloc];
 }
 
+#pragma mark -
+
 - (void)writeResultToStandardOutput;
 {
-    NSData *data;
-
-    data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 }
 
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
-    NSArray *protocols;
-
     if ([aClass isExported] == NO)
         [resultString appendString:@"// Not exported\n"];
 
@@ -63,7 +61,7 @@ static BOOL debug = NO;
     if ([aClass superClassName] != nil)
         [resultString appendFormat:@" : %@", [aClass superClassName]];
 
-    protocols = [aClass protocols];
+    NSArray *protocols = [aClass protocols];
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
         [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
@@ -112,11 +110,9 @@ static BOOL debug = NO;
 
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 {
-    NSArray *protocols;
-
     [resultString appendFormat:@"@protocol %@", [aProtocol name]];
 
-    protocols = [aProtocol protocols];
+    NSArray *protocols = [aProtocol protocols];
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
         [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
@@ -144,9 +140,7 @@ static BOOL debug = NO;
 
 - (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    CDOCProperty *property;
-
-    property = [propertyState propertyForAccessor:[aMethod name]];
+    CDOCProperty *property = [propertyState propertyForAccessor:[aMethod name]];
     if (property == nil) {
         //NSLog(@"No property for method: %@", [aMethod name]);
         [resultString appendString:@"- "];
@@ -171,14 +165,12 @@ static BOOL debug = NO;
 
 - (void)_visitProperty:(CDOCProperty *)aProperty parsedType:(CDType *)parsedType attributes:(NSArray *)attrs;
 {
-    NSMutableArray *alist, *unknownAttrs;
     NSString *backingVar = nil;
-    NSString *formattedString;
     BOOL isWeak = NO;
     BOOL isDynamic = NO;
 
-    alist = [[NSMutableArray alloc] init];
-    unknownAttrs = [[NSMutableArray alloc] init];
+    NSMutableArray *alist = [[NSMutableArray alloc] init];
+    NSMutableArray *unknownAttrs = [[NSMutableArray alloc] init];
 
     // objc_v2_encode_prop_attr() in gcc/objc/objc-act.c
 
@@ -227,7 +219,7 @@ static BOOL debug = NO;
     if (isWeak)
         [resultString appendString:@"__weak "];
 
-    formattedString = [[[classDump typeController] propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
+    NSString *formattedString = [[[classDump typeController] propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
     [resultString appendFormat:@"%@;", formattedString];
 
     if (isDynamic) {
@@ -256,9 +248,7 @@ static BOOL debug = NO;
 
 - (void)visitProperty:(CDOCProperty *)aProperty;
 {
-    CDType *parsedType;
-
-    parsedType = [aProperty type];
+    CDType *parsedType = [aProperty type];
     if (parsedType == nil) {
         if ([[aProperty attributeString] hasPrefix:@"T"]) {
             [resultString appendFormat:@"// Error parsing type for property %@:\n", [aProperty name]];

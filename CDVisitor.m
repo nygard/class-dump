@@ -28,19 +28,9 @@
     [super dealloc];
 }
 
-- (CDClassDump *)classDump;
-{
-    return classDump;
-}
+#pragma mark -
 
-- (void)setClassDump:(CDClassDump *)newClassDump;
-{
-    if (newClassDump == classDump)
-        return;
-
-    [classDump release];
-    classDump = [newClassDump retain];
-}
+@synthesize classDump;
 
 - (void)willBeginVisiting;
 {

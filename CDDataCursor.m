@@ -22,6 +22,8 @@
     return self;
 }
 
+#pragma mark -
+
 - (void)dealloc;
 {
     [data release];
@@ -62,6 +64,8 @@
 {
     return [data length] - offset;
 }
+
+#pragma mark -
 
 - (uint8_t)readByte;
 {

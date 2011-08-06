@@ -42,25 +42,15 @@ typedef NSUInteger CDTableType;
     NSMutableSet *phase3_exceptionalNames; // Of NSString
     NSMutableSet *phase3_inMethodNameExceptions; // Of NSString
 
-    struct {
-        unsigned int shouldDebug:1;
-    } flags;
+    BOOL shouldDebug;
 
     NSMutableSet *debugNames; // NSString (name)
     NSMutableSet *debugAnon; // NSString (reallyBareTypeString)
 }
 
-- (id)init;
-- (void)dealloc;
-
-- (NSString *)identifier;
-- (void)setIdentifier:(NSString *)newIdentifier;
-
-- (NSString *)anonymousBaseName;
-- (void)setAnonymousBaseName:(NSString *)newName;
-
-- (BOOL)shouldDebug;
-- (void)setShouldDebug:(BOOL)newFlag;
+@property (retain) NSString *identifier;
+@property (retain) NSString *anonymousBaseName;
+@property (assign) BOOL shouldDebug;
 
 // Phase 0
 - (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;

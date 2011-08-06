@@ -12,17 +12,9 @@
     NSString *frameworkName;
 }
 
-- (id)init;
-- (void)dealloc;
-
 - (NSDictionary *)frameworkNamesByClassName;
 - (NSDictionary *)frameworkNamesByProtocolName;
 
-- (NSString *)frameworkName;
-- (void)setFrameworkName:(NSString *)newFrameworkName;
-
-- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)anObjCSegment;
-- (void)willVisitClass:(CDOCClass *)aClass;
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+@property (retain) NSString *frameworkName;
 
 @end

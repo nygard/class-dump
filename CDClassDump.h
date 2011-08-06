@@ -30,18 +30,16 @@
 {
     CDSearchPathState *searchPathState;
 
-    struct {
-        unsigned int shouldProcessRecursively:1;
-        unsigned int shouldSortClasses:1; // And categories, protocols
-        unsigned int shouldSortClassesByInheritance:1; // And categories, protocols
-        unsigned int shouldSortMethods:1;
+    BOOL shouldProcessRecursively;
+    BOOL shouldSortClasses; // And categories, protocols
+    BOOL shouldSortClassesByInheritance; // And categories, protocols
+    BOOL shouldSortMethods;
+    
+    BOOL shouldShowIvarOffsets;
+    BOOL shouldShowMethodAddresses;
+    BOOL shouldShowHeader;
 
-        unsigned int shouldShowIvarOffsets:1;
-        unsigned int shouldShowMethodAddresses:1;
-        unsigned int shouldMatchRegex:1;
-        unsigned int shouldShowHeader:1;
-    } flags;
-
+    BOOL shouldMatchRegex;
     regex_t compiledRegex;
 
     NSString *sdkRoot;
@@ -54,34 +52,32 @@
     CDArch targetArch;
 }
 
-- (id)init;
-- (void)dealloc;
+@property (readonly) CDSearchPathState *searchPathState;
 
-@property(readonly) CDSearchPathState *searchPathState;
-@property BOOL shouldProcessRecursively;
-@property BOOL shouldSortClasses;
-@property BOOL shouldSortClassesByInheritance;
-@property BOOL shouldSortMethods;
-@property BOOL shouldShowIvarOffsets;
-@property BOOL shouldShowMethodAddresses;
-@property BOOL shouldMatchRegex;
-@property BOOL shouldShowHeader;
+@property (assign) BOOL shouldProcessRecursively;
+@property (assign) BOOL shouldSortClasses;
+@property (assign) BOOL shouldSortClassesByInheritance;
+@property (assign) BOOL shouldSortMethods;
+@property (assign) BOOL shouldShowIvarOffsets;
+@property (assign) BOOL shouldShowMethodAddresses;
+@property (assign) BOOL shouldShowHeader;
 
+@property (nonatomic, assign) BOOL shouldMatchRegex;
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;
 
-@property(retain) NSString *sdkRoot;
+@property (retain) NSString *sdkRoot;
 
-- (NSArray *)machOFiles;
-- (NSArray *)objcProcessors;
+@property (readonly) NSArray *machOFiles;
+@property (readonly) NSArray *objcProcessors;
 
-@property CDArch targetArch;
+@property (assign) CDArch targetArch;
 
 @property (readonly) BOOL containsObjectiveCData;
 @property (readonly) BOOL hasEncryptedFiles;
 @property (readonly) BOOL hasObjectiveCRuntimeInfo;
 
-- (CDTypeController *)typeController;
+@property (readonly) CDTypeController *typeController;
 
 - (BOOL)loadFile:(CDFile *)aFile;
 - (void)processObjectiveCData;

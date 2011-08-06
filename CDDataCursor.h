@@ -13,7 +13,6 @@
 
 - (id)initWithData:(NSData *)someData;
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
-- (void)dealloc;
 
 - (NSData *)data;
 - (const void *)bytes;

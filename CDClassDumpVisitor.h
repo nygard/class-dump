@@ -9,9 +9,4 @@
 {
 }
 
-- (void)willBeginVisiting;
-- (void)didEndVisiting;
-
-- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
-
 @end
