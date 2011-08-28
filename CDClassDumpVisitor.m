@@ -69,7 +69,7 @@
     if (machOFile.minVersionMacOSX != nil) 
         [resultString appendFormat:@" *       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];
     if (machOFile.minVersionIOS != nil) 
-        [resultString appendFormat:@" *       Minimum IOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
+        [resultString appendFormat:@" *       Minimum iOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
 
     [resultString appendFormat:@" *\n"];
     if (aProcessor.garbageCollectionStatus != nil)
