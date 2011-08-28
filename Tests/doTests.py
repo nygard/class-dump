@@ -7,6 +7,10 @@ import os
 import sys
 import getopt
 
+# ./doTests.py
+# ./doTests.py --ios --sdk-root 4.3
+# ./doTests.py --ios --sdk-root 5.0 --dev-root /Dev42
+
 TESTDIR = "/tmp/cdt"
 TESTDIR_OLD = TESTDIR + "/old"
 TESTDIR_NEW = TESTDIR + "/new"
@@ -60,6 +64,19 @@ def build_ios_paths(sdk_root):
     iphone_bundles = []
     return dict(apps=iphone_apps, frameworks=iphone_frameworks, bundles=iphone_bundles)
 
+def print_path_dict(sdict):
+    print "Frameworks:"
+    for path in sdict["frameworks"]:
+        print "    %s" % (path)
+
+    print "Applications:"
+    for path in sdict["apps"]:
+        print "    %s" % (path)
+
+    print "Bundles:"
+    for path in sdict["bundles"]:
+        print "    %s" % (path)
+
 def mkdir_ignore(dir):
     try:
         os.mkdir(dir)
@@ -94,23 +111,32 @@ def main(argv):
     sdk_root = resolve_sdk_root_alias(sdk_root, dev_root)
     #print "Resolved sdk_root:", sdk_root
 
-    if shouldTestIOs:
-        print "Testing on iOS targets"
-        sdict = build_ios_paths(sdk_root)
-        OLD_OPTS = []
-        NEW_OPTS = ["--sdk-root", sdk_root]
-    else:
-        print "Testing on Mac OS X targets"
-        if sdk_root:
-            print "Ignoring --sdk-root for macosx testing"
-        sdict = dict(apps=mac_apps, frameworks=mac_frameworks, bundles=mac_bundles)
-        OLD_OPTS = []
-        NEW_OPTS = []
-
     print "Starting tests at", datetime.today().ctime()
     print
     print "Old class-dump:", " ".join(Popen("ls -al " + OLD_CD, shell=True, stdout=PIPE).stdout.readlines()),
     print "New class-dump:", " ".join(Popen("ls -al " + NEW_CD, shell=True, stdout=PIPE).stdout.readlines()),
+    print
+
+    if shouldTestIOs:
+        print "Testing on iOS targets"
+        print
+        print "sdk_root:", sdk_root
+        sdict = build_ios_paths(sdk_root)
+        print_path_dict(sdict)
+        print
+        OLD_OPTS = []
+        NEW_OPTS = ["--sdk-root", sdk_root]
+    else:
+        print "Testing on Mac OS X targets"
+        print
+        print "sdk_root:", sdk_root
+        if sdk_root:
+            print "Ignoring --sdk-root for macosx testing"
+        sdict = dict(apps=mac_apps, frameworks=mac_frameworks, bundles=mac_bundles)
+        print_path_dict(sdict)
+        print
+        OLD_OPTS = []
+        NEW_OPTS = []
 
     apps = []
     frameworks = []
@@ -127,6 +153,7 @@ def main(argv):
     print "Application count:", len(apps)
     print "     Bundle count:", len(bundles)
     print "            Total:", len(frameworks) + len(apps) + len(bundles)
+    print
 
     mkdir_ignore(TESTDIR)
     mkdir_ignore(TESTDIR_OLD)
