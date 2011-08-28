@@ -59,7 +59,7 @@
 
 #pragma mark -
 
-@synthesize segment = nonretianed_segment;
+@synthesize segment = nonretained_segment;
 
 - (CDMachOFile *)machOFile;
 {
