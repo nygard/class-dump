@@ -39,15 +39,19 @@ Usage
             --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)
 
 - class-dump AppKit:
+
     class-dump /System/Library/Frameworks/AppKit.framework
 
 - class-dump UIKit:
+
     class-dump /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/UIKit.framework
 
 - class-dump UIKit and all the frameworks it uses:
+
     class-dump /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk/System/Library/Frameworks/UIKit.framework -r --sdk-ios 4.3
 
 - class-dump UIKit (and all the frameworks it uses) from developer tools that have been installed in /Dev42 instead of /Developer:
+
     class-dump /Dev42/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk/System/Library/Frameworks/UIKit.framework -r --sdk-root /Dev42/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk
 
 
