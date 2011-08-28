@@ -74,7 +74,7 @@
 
 - (NSString *)SHA1DigestString;
 {
-    return [[[self decomposedStringWithCanonicalMapping] dataUsingEncoding:NSUTF8StringEncoding] SHA1DigestString];
+    return [[[[self decomposedStringWithCanonicalMapping] dataUsingEncoding:NSUTF8StringEncoding] SHA1Digest] hexString];
 }
 
 - (BOOL)hasUnderscoreCapitalPrefix;
