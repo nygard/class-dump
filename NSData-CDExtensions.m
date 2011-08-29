@@ -5,7 +5,7 @@
 
 #import "NSData-CDExtensions.h"
 
-#include <openssl/sha.h>
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation NSData (CDExtensions)
 
@@ -20,47 +20,14 @@
     return str;
 }
 
-#if 0
-// Need to link with Security.framework on Lion for this:
-- (NSString *)SHA1DigestString;
+- (NSData *)SHA1Digest;
 {
-    NSString *str = nil;
-    CFErrorRef error = nil;
-    SecTransformRef t1 = SecDigestTransformCreate(kSecDigestSHA1, 0, &error);
-    if (t1 == NULL) {
-        NSLog(@"Failed to create SHA1 transform, error: %@", error);
-    } else {
-        error = nil;
-        Boolean flag = SecTransformSetAttribute(t1, kSecTransformInputAttributeName, self, &error);
-        if (!flag) NSLog(@"set attribute error: %@", error);
-        
-        error = nil;
-        NSData *result = SecTransformExecute(t1, &error);
-        if (error != nil) NSLog(@"execute error: %@", error);
-        str = [result hexString];
-        CFRelease(t1);
-    }
+    NSParameterAssert([self length] <= UINT32_MAX);
     
-    //NSLog(@"result is %@", str);
+    unsigned char digest[CC_SHA1_DIGEST_LENGTH];
+    CC_SHA1([self bytes], (CC_LONG)[self length], digest);
     
-    return str;
+    return [NSData dataWithBytes:digest length:CC_SHA1_DIGEST_LENGTH];
 }
-#endif
-- (NSString *)SHA1DigestString;
-{
-    unsigned char digest[SHA_DIGEST_LENGTH];
-    unsigned int index;
 
-    //NSLog(@"Calculating SHA1 of %u bytes", [self length]);
-    SHA1((unsigned char *)[self bytes], [self length], digest);
-
-    //NSLog(@"SHA_DIGEST_LENGTH: %u", SHA_DIGEST_LENGTH);
-    NSMutableString *str = [NSMutableString string];
-    for (index = 0; index < SHA_DIGEST_LENGTH; index++)
-        [str appendFormat:@"%02x", digest[index]];
-
-    //NSLog(@"result is %@", str);
-
-    return str;
-}
 @end

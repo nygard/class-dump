@@ -8,6 +8,6 @@
 @interface NSData (CDExtensions)
 
 - (NSString *)hexString;
-- (NSString *)SHA1DigestString;
+- (NSData *)SHA1Digest;
 
 @end
