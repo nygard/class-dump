@@ -260,16 +260,17 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (NSString *)filetypeDescription;
 {
     switch ([self filetype]) {
-        case MH_OBJECT:     return @"OBJECT";
-        case MH_EXECUTE:    return @"EXECUTE";
-        case MH_FVMLIB:     return @"FVMLIB";
-        case MH_CORE:       return @"CORE";
-        case MH_PRELOAD:    return @"PRELOAD";
-        case MH_DYLIB:      return @"DYLIB";
-        case MH_DYLINKER:   return @"DYLINKER";
-        case MH_BUNDLE:     return @"BUNDLE";
-        case MH_DYLIB_STUB: return @"DYLIB_STUB";
-        case MH_DSYM:       return @"DSYM";
+        case MH_OBJECT:      return @"OBJECT";
+        case MH_EXECUTE:     return @"EXECUTE";
+        case MH_FVMLIB:      return @"FVMLIB";
+        case MH_CORE:        return @"CORE";
+        case MH_PRELOAD:     return @"PRELOAD";
+        case MH_DYLIB:       return @"DYLIB";
+        case MH_DYLINKER:    return @"DYLINKER";
+        case MH_BUNDLE:      return @"BUNDLE";
+        case MH_DYLIB_STUB:  return @"DYLIB_STUB";
+        case MH_DSYM:        return @"DSYM";
+        case MH_KEXT_BUNDLE: return @"KEXT_BUNDLE";
         default:
             break;
     }
