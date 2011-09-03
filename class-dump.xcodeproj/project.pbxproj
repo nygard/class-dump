@@ -13,7 +13,7 @@
 			buildPhases = (
 			);
 			dependencies = (
-				01B02D3713A5B5E20047BC53 /* PBXTargetDependency */,
+				0106C8221412D07C00B29890 /* PBXTargetDependency */,
 				01B02D3313A5B5E20047BC53 /* PBXTargetDependency */,
 				01B02D3513A5B5E20047BC53 /* PBXTargetDependency */,
 				01B02D3913A5B5E20047BC53 /* PBXTargetDependency */,
@@ -116,6 +116,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		0106C81D1412D05F00B29890 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 013D1F1013A5AE5A00BF0A67;
+			remoteInfo = MachObjC;
+		};
+		0106C81F1412D07000B29890 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 013D1F1013A5AE5A00BF0A67;
+			remoteInfo = MachObjC;
+		};
+		0106C8211412D07C00B29890 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 013D1F1013A5AE5A00BF0A67;
+			remoteInfo = MachObjC;
+		};
+		0158A8151412DED0003FEB91 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 013D1F1013A5AE5A00BF0A67;
+			remoteInfo = MachObjC;
+		};
 		01B02D3213A5B5E20047BC53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
@@ -129,13 +157,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 013D1EFA13A5A0F100BF0A67;
 			remoteInfo = deprotect;
-		};
-		01B02D3613A5B5E20047BC53 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 013D1F1013A5AE5A00BF0A67;
-			remoteInfo = MachObjC;
 		};
 		01B02D3813A5B5E20047BC53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -699,6 +720,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0106C81E1412D05F00B29890 /* PBXTargetDependency */,
 			);
 			name = deprotect;
 			productName = deprotect;
@@ -733,6 +755,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0106C8201412D07000B29890 /* PBXTargetDependency */,
 			);
 			name = formatType;
 			productName = formatType;
@@ -750,6 +773,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				0158A8161412DED0003FEB91 /* PBXTargetDependency */,
 			);
 			name = "class-dump";
 			productName = "class-dump";
@@ -894,6 +918,26 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		0106C81E1412D05F00B29890 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 013D1F1013A5AE5A00BF0A67 /* MachObjC */;
+			targetProxy = 0106C81D1412D05F00B29890 /* PBXContainerItemProxy */;
+		};
+		0106C8201412D07000B29890 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 013D1F1013A5AE5A00BF0A67 /* MachObjC */;
+			targetProxy = 0106C81F1412D07000B29890 /* PBXContainerItemProxy */;
+		};
+		0106C8221412D07C00B29890 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 013D1F1013A5AE5A00BF0A67 /* MachObjC */;
+			targetProxy = 0106C8211412D07C00B29890 /* PBXContainerItemProxy */;
+		};
+		0158A8161412DED0003FEB91 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 013D1F1013A5AE5A00BF0A67 /* MachObjC */;
+			targetProxy = 0158A8151412DED0003FEB91 /* PBXContainerItemProxy */;
+		};
 		01B02D3313A5B5E20047BC53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 01EB825E13A590D9003EDE60 /* class-dump */;
@@ -903,11 +947,6 @@
 			isa = PBXTargetDependency;
 			target = 013D1EFA13A5A0F100BF0A67 /* deprotect */;
 			targetProxy = 01B02D3413A5B5E20047BC53 /* PBXContainerItemProxy */;
-		};
-		01B02D3713A5B5E20047BC53 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 013D1F1013A5AE5A00BF0A67 /* MachObjC */;
-			targetProxy = 01B02D3613A5B5E20047BC53 /* PBXContainerItemProxy */;
 		};
 		01B02D3913A5B5E20047BC53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1021,6 +1060,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -1042,6 +1082,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
 				SYMROOT = /Local/$USER/Products;
