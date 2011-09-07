@@ -71,7 +71,7 @@
         case LC_CODE_SIGNATURE:        targetClass = [CDLCLinkeditData class]; break;
         case LC_SEGMENT_SPLIT_INFO:    targetClass = [CDLCLinkeditData class]; break;
         case LC_REEXPORT_DYLIB:        targetClass = [CDLCDylib class]; break;
-            //case LC_LAZY_LOAD_DYLIB: targetClass = [CDLCDylib class]; break;
+        case LC_LAZY_LOAD_DYLIB:       targetClass = [CDLCDylib class]; break;
         case LC_ENCRYPTION_INFO:       targetClass = [CDLCEncryptionInfo class]; break;
         case LC_DYLD_INFO:             targetClass = [CDLCDyldInfo class]; break;
         case LC_DYLD_INFO_ONLY:        targetClass = [CDLCDyldInfo class]; break;
