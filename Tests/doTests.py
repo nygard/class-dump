@@ -7,6 +7,35 @@ import os
 import sys
 import getopt
 
+# xcodebuild -showsdks
+
+# Mac OS X SDKs:
+#     Mac OS X 10.6                 -sdk macosx10.6
+#     Mac OS X 10.7                 -sdk macosx10.7
+#
+# iOS SDKs:
+#     iOS 5.0                       -sdk iphoneos5.0
+#
+# iOS Simulator SDKs:
+#     Simulator - iOS 4.3           -sdk iphonesimulator4.3
+#     Simulator - iOS 5.0           -sdk iphonesimulator5.0
+
+# xcodebuild -version -sdk iphoneos
+
+# iPhoneOS5.0.sdk - iOS 5.0 (iphoneos5.0)
+# SDKVersion: 5.0
+# Path: /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk
+# PlatformVersion: 5.0
+# PlatformPath: /Developer/Platforms/iPhoneOS.platform
+# ProductBuildVersion: 9A334
+# ProductCopyright: 1983-2011 Apple Inc.
+# ProductName: iPhone OS
+# ProductVersion: 5.0
+
+# xcodebuild -version -sdk iphoneos Path
+
+# /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk
+
 # ./doTests.py
 # ./doTests.py --ios --sdk-root 4.3
 # ./doTests.py --ios --sdk-root 5.0 --dev-root /Dev42
