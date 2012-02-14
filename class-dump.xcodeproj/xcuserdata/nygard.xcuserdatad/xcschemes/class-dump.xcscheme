@@ -9,7 +9,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "env &gt; /tmp/env-cd">
+               scriptText = "#env &gt; /tmp/env-cd&#10;mkdir -p /Local/$USER/$CONFIGURATION&#10;cp -f $TARGET_BUILD_DIR/$PRODUCT_NAME /Local/$USER/$CONFIGURATION&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"

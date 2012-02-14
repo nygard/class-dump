@@ -4,6 +4,24 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "mkdir -p /Local/$USER/$CONFIGURATION&#10;cp -f $TARGET_BUILD_DIR/$PRODUCT_NAME /Local/$USER/$CONFIGURATION&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "013D1EFA13A5A0F100BF0A67"
+                     BuildableName = "deprotect"
+                     BlueprintName = "deprotect"
+                     ReferencedContainer = "container:class-dump.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"

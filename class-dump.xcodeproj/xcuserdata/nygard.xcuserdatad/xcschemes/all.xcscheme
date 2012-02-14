@@ -4,6 +4,24 @@
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
+      <PostActions>
+         <ExecutionAction
+            ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
+            <ActionContent
+               title = "Run Script"
+               scriptText = "#env &gt; /tmp/env-all&#10;# Building this target doesn&apos;t execute post-actions for dependant targets (Xcode 4.2.1)&#10;mkdir -p /Local/$USER/$CONFIGURATION&#10;for name in class-dump deprotect formatType ; do&#10;    cp -f $TARGET_BUILD_DIR/$name /Local/$USER/$CONFIGURATION&#10;done&#10;">
+               <EnvironmentBuildable>
+                  <BuildableReference
+                     BuildableIdentifier = "primary"
+                     BlueprintIdentifier = "01B02D2E13A5B5D50047BC53"
+                     BuildableName = "all"
+                     BlueprintName = "all"
+                     ReferencedContainer = "container:class-dump.xcodeproj">
+                  </BuildableReference>
+               </EnvironmentBuildable>
+            </ActionContent>
+         </ExecutionAction>
+      </PostActions>
       <BuildActionEntries>
          <BuildActionEntry
             buildForTesting = "YES"
