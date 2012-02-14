@@ -1064,7 +1064,6 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
-				SYMROOT = /Local/$USER/Products;
 			};
 			name = Debug;
 		};
@@ -1085,7 +1084,6 @@
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = macosx;
-				SYMROOT = /Local/$USER/Products;
 			};
 			name = Release;
 		};
