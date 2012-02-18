@@ -18,7 +18,7 @@
         versionMinCommand.cmd = [cursor readInt32];
         versionMinCommand.cmdsize = [cursor readInt32];
         versionMinCommand.version = [cursor readInt32];
-        versionMinCommand.reserved = [cursor readInt32];
+        versionMinCommand.sdk = [cursor readInt32];
     }
 
     return self;
