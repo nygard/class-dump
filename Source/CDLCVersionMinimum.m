@@ -45,11 +45,21 @@
     return [NSString stringWithFormat:@"%u.%u.%u", x, y, z];
 }
 
+- (NSString *)SDKVersionString;
+{
+    uint32_t x = (versionMinCommand.sdk >> 16);
+    uint32_t y = (versionMinCommand.sdk >> 8) & 0xff;
+    uint32_t z = versionMinCommand.sdk & 0xff;
+    
+    return [NSString stringWithFormat:@"%u.%u.%u", x, y, z];
+}
+
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
     [super appendToString:resultString verbose:isVerbose];
 
     [resultString appendFormat:@"    Minimum version: %@\n", self.minimumVersionString];
+    [resultString appendFormat:@"    SDK version: %@\n", self.SDKVersionString];
 }
 
 @end
