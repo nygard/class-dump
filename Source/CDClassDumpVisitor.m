@@ -15,6 +15,7 @@
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDLCSegment.h"
+#import "CDLCSourceVersion.h"
 #import "CDLCVersionMinimum.h"
 #import "CDTypeController.h"
 
@@ -61,11 +62,18 @@
             [self.resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
              identifier.formattedCurrentVersion, identifier.formattedCompatibilityVersion];
     }
+    
+    if (machOFile.sourceVersion != nil)
+        [resultString appendFormat:@" *       Source version: %@\n", machOFile.sourceVersion.sourceVersionString];
 
-    if (machOFile.minVersionMacOSX != nil) 
+    if (machOFile.minVersionMacOSX != nil) {
         [self.resultString appendFormat:@" *       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];
-    if (machOFile.minVersionIOS != nil) 
+        [self.resultString appendFormat:@" *       SDK version: %@\n", machOFile.minVersionMacOSX.SDKVersionString];
+    }
+    if (machOFile.minVersionIOS != nil) {
         [self.resultString appendFormat:@" *       Minimum iOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
+        [self.resultString appendFormat:@" *       SDK version: %@\n", machOFile.minVersionIOS.SDKVersionString];
+    }
 
     [self.resultString appendFormat:@" *\n"];
     if (processor.garbageCollectionStatus != nil)

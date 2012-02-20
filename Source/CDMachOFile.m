@@ -28,6 +28,7 @@
 #import "CDSymbol.h"
 #import "CDRelocationInfo.h"
 #import "CDSearchPathState.h"
+#import "CDLCSourceVersion.h"
 
 NSString *CDMagicNumberString(uint32_t magic)
 {
@@ -53,6 +54,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     CDLCDyldInfo *dyldInfo;
     CDLCVersionMinimum *minVersionMacOSX;
     CDLCVersionMinimum *minVersionIOS;
+    CDLCSourceVersion *sourceVersion;
     NSArray *runPaths;
     NSArray *dyldEnvironment;
     NSArray *reExportedDylibs;
@@ -75,6 +77,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         dyldInfo = nil;
         minVersionMacOSX = nil;
         minVersionIOS = nil;
+        sourceVersion = nil;
         runPaths = nil;
         dyldEnvironment = nil;
         reExportedDylibs = nil;
@@ -140,6 +143,7 @@ NSString *CDMagicNumberString(uint32_t magic)
             else if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)                 self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
             else if (loadCommand.cmd == LC_DYLD_ENVIRONMENT)                     [_dyldEnvironment addObject:loadCommand];
             else if (loadCommand.cmd == LC_REEXPORT_DYLIB)                       [_reExportedDylibs addObject:loadCommand];
+            else if ([loadCommand isKindOfClass:[CDLCSourceVersion class]])      self.sourceVersion = (CDLCSourceVersion *)loadCommand;
             else if ([loadCommand isKindOfClass:[CDLCDylib class]])              [_dylibLoadCommands addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSegment class]])            [_segments addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])        self.symbolTable = (CDLCSymbolTable *)loadCommand;
@@ -234,6 +238,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 @synthesize dyldInfo;
 @synthesize minVersionMacOSX;
 @synthesize minVersionIOS;
+@synthesize sourceVersion;
 
 - (BOOL)uses64BitABI;
 {

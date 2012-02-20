@@ -15,7 +15,7 @@ enum {
 typedef NSUInteger CDByteOrder;
 
 @class CDLCSegment, CDMachOFileDataCursor;
-@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum;
+@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
 @protocol CDMachOFileDelegate
 - (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDLCDylib *)aDylibCommand;
@@ -52,6 +52,7 @@ typedef NSUInteger CDByteOrder;
 @property (strong) CDLCDyldInfo *dyldInfo;
 @property (strong) CDLCVersionMinimum *minVersionMacOSX;
 @property (strong) CDLCVersionMinimum *minVersionIOS;
+@property (strong) CDLCSourceVersion *sourceVersion;
 
 - (BOOL)uses64BitABI;
 - (NSUInteger)ptrSize;
