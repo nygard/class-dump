@@ -115,22 +115,18 @@
 }
 
 // On 10.3 (7D24) the Foundation scanCharactersFromSet:intoString: inverts the set each call, creating an autoreleased CFCharacterSet.
-// This cuts the total CFCharacterSet alloctions (when run on Foundation) from 161682 down to 17.
+// This cuts the total CFCharacterSet allocations (when run on Foundation) from 161682 down to 17.
 
 // This works for my purposes, but I haven't tested it to make sure it's fully compatible with the standard version.
 
 - (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
 {
-    NSCharacterSet *skipSet;
-
     NSUInteger currentLocation = [self scanLocation];
 
     // Skip over characters
-    skipSet = [self charactersToBeSkipped];
+    NSCharacterSet *skipSet = [self charactersToBeSkipped];
     while ([self isAtEnd] == NO) {
-        unichar ch;
-
-        ch = [[self string] characterAtIndex:currentLocation];
+        unichar ch = [[self string] characterAtIndex:currentLocation];
         if ([skipSet characterIsMember:ch] == NO)
             break;
 
