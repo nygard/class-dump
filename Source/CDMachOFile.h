@@ -59,7 +59,7 @@ typedef NSUInteger CDByteOrder;
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
 
-- (CDLCDylib *)dylibIdentifier;
+@property (nonatomic, readonly) CDLCDylib *dylibIdentifier;
 
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
@@ -80,8 +80,8 @@ typedef NSUInteger CDByteOrder;
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
 
-- (NSString *)uuidString;
-- (NSString *)archName;
+@property (nonatomic, readonly) NSString *uuidString;
+@property (nonatomic, readonly) NSString *archName;
 
 - (Class)processorClass;
 - (void)logInfoForAddress:(NSUInteger)address;

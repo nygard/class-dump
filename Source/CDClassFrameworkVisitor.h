@@ -7,9 +7,7 @@
 
 @interface CDClassFrameworkVisitor : CDVisitor
 
-- (NSDictionary *)frameworkNamesByClassName;
-- (NSDictionary *)frameworkNamesByProtocolName;
-
-@property (retain) NSString *frameworkName;
+@property (readonly) NSDictionary *frameworkNamesByClassName;
+@property (readonly) NSDictionary *frameworkNamesByProtocolName;
 
 @end

@@ -132,10 +132,7 @@
     [optionalInstanceMethods addObject:method];
 }
 
-- (NSArray *)properties;
-{
-    return properties;
-}
+@synthesize properties;
 
 - (void)addProperty:(CDOCProperty *)property;
 {

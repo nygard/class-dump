@@ -14,6 +14,4 @@
 
 - (void)writeResultToStandardOutput;
 
-- (void)_visitProperty:(CDOCProperty *)aProperty parsedType:(CDType *)parsedType attributes:(NSArray *)attrs;
-
 @end

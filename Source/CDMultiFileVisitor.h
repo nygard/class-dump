@@ -5,16 +5,8 @@
 
 #import "CDTextClassDumpVisitor.h"
 
-@class CDSymbolReferences;
-
 @interface CDMultiFileVisitor : CDTextClassDumpVisitor
 
 @property (retain) NSString *outputPath;
-
-- (void)createOutputPathIfNecessary;
-
-- (void)buildClassFrameworks;
-
-- (void)generateStructureHeader;
 
 @end

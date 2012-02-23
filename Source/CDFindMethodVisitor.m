@@ -16,9 +16,17 @@
 #import "CDOCMethod.h"
 #import "CDTypeController.h"
 
+@interface CDFindMethodVisitor ()
+@property (nonatomic, retain) CDOCProtocol *context;
+- (void)showContextIfNecessary;
+- (void)writeResultToStandardOutput;
+@end
+
+#pragma mark -
+
 @implementation CDFindMethodVisitor
 {
-    NSString *findString;
+    NSString *searchString;
     NSMutableString *resultString;
     CDOCProtocol *context;
     BOOL hasShownContext;
@@ -27,7 +35,7 @@
 - (id)init;
 {
     if ((self = [super init])) {
-        findString = nil;
+        searchString = nil;
         resultString = [[NSMutableString alloc] init];
         context = nil;
         hasShownContext = NO;
@@ -38,7 +46,7 @@
 
 - (void)dealloc;
 {
-    [findString release];
+    [searchString release];
     [resultString release];
     [context release];
 
@@ -46,28 +54,6 @@
 }
 
 #pragma mark -
-
-@synthesize findString;
-
-- (void)setContext:(CDOCProtocol *)newContext;
-{
-    if (newContext == context)
-        return;
-
-    [context release];
-    context = [newContext retain];
-
-    hasShownContext = NO;
-}
-
-- (void)showContextIfNecessary;
-{
-    if (hasShownContext == NO) {
-        [resultString appendString:[context findTag:nil]];
-        [resultString appendString:@"\n"];
-        hasShownContext = YES;
-    }
-}
 
 - (void)willBeginVisiting;
 {
@@ -79,7 +65,7 @@
     }
 }
 
-- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
     if (!self.classDump.hasObjectiveCRuntimeInfo) {
         [resultString appendString:@"//\n"];
@@ -99,12 +85,12 @@
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 }
 
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitProtocol:(CDOCProtocol *)protocol;
 {
-    [self setContext:aProtocol];
+    [self setContext:protocol];
 }
 
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitProtocol:(CDOCProtocol *)protocol;
 {
     if (hasShownContext)
         [resultString appendString:@"\n"];
@@ -129,43 +115,67 @@
 {
 }
 
-- (void)willVisitCategory:(CDOCCategory *)aCategory;
+- (void)willVisitCategory:(CDOCCategory *)category;
 {
-    [self setContext:aCategory];
+    [self setContext:category];
 }
 
-- (void)didVisitCategory:(CDOCCategory *)aCategory;
+- (void)didVisitCategory:(CDOCCategory *)category;
 {
     if (hasShownContext)
         [resultString appendString:@"\n"];
 }
 
-- (void)visitClassMethod:(CDOCMethod *)aMethod;
+- (void)visitClassMethod:(CDOCMethod *)method;
 {
-    NSRange range = [[aMethod name] rangeOfString:findString];
+    NSRange range = [[method name] rangeOfString:searchString];
     if (range.length > 0) {
         [self showContextIfNecessary];
 
         [resultString appendString:@"+ "];
-        [aMethod appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
+        [method appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }
 
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
+- (void)visitInstanceMethod:(CDOCMethod *)method propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    NSRange range = [[aMethod name] rangeOfString:findString];
+    NSRange range = [[method name] rangeOfString:searchString];
     if (range.length > 0) {
         [self showContextIfNecessary];
 
         [resultString appendString:@"- "];
-        [aMethod appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
+        [method appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }
 
-- (void)visitIvar:(CDOCIvar *)anIvar;
+- (void)visitIvar:(CDOCIvar *)ivar;
 {
+}
+
+#pragma mark -
+
+@synthesize searchString;
+@synthesize context;
+
+- (void)setContext:(CDOCProtocol *)newContext;
+{
+    if (newContext != context) {
+        [context release];
+        context = [newContext retain];
+    
+        hasShownContext = NO;
+    }
+}
+
+- (void)showContextIfNecessary;
+{
+    if (hasShownContext == NO) {
+        [resultString appendString:[self.context findTag:nil]];
+        [resultString appendString:@"\n"];
+        hasShownContext = YES;
+    }
 }
 
 @end

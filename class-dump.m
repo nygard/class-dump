@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
                 if (shouldFind) {
                     CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                     visitor.classDump = classDump;
-                    visitor.findString = searchString;
+                    visitor.searchString = searchString;
                     [classDump recursivelyVisit:visitor];
                     [visitor release];
                 } else if (shouldGenerateSeparateHeaders) {

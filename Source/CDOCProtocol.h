@@ -34,10 +34,10 @@
 - (NSArray *)optionalInstanceMethods;
 - (void)addOptionalInstanceMethod:(CDOCMethod *)method;
 
-- (NSArray *)properties;
+@property (readonly) NSArray *properties;
 - (void)addProperty:(CDOCProperty *)property;
 
-- (BOOL)hasMethods;
+@property (nonatomic, readonly) BOOL hasMethods;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;

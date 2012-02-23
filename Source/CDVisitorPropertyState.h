@@ -18,6 +18,6 @@
 - (BOOL)hasUsedProperty:(CDOCProperty *)property;
 - (void)useProperty:(CDOCProperty *)property;
 
-- (NSArray *)remainingProperties;
+@property (nonatomic, readonly) NSArray *remainingProperties;
 
 @end

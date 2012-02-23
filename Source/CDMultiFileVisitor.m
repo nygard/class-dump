@@ -14,19 +14,18 @@
 #import "CDOCIvar.h"
 #import "CDTypeController.h"
 
+@interface CDMultiFileVisitor ()
+- (void)createOutputPathIfNecessary;
+- (void)buildClassFrameworks;
+- (void)generateStructureHeader;
+@end
+
+#pragma mark -
+
 @implementation CDMultiFileVisitor
 {
     NSString *outputPath;
     NSUInteger referenceIndex;
-}
-
-- (id)init;
-{
-    if ((self = [super init])) {
-        outputPath = nil;
-    }
-
-    return self;
 }
 
 - (void)dealloc;
@@ -37,60 +36,6 @@
 }
 
 #pragma mark -
-
-@synthesize outputPath;
-
-- (void)createOutputPathIfNecessary;
-{
-    if (outputPath != nil) {
-        BOOL isDirectory;
-
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        if ([fileManager fileExistsAtPath:outputPath isDirectory:&isDirectory] == NO) {
-            NSError *error = nil;
-            BOOL result = [fileManager createDirectoryAtPath:outputPath withIntermediateDirectories:YES attributes:nil error:&error];
-            if (result == NO) {
-                NSLog(@"Error: Couldn't create output directory: %@", outputPath);
-                NSLog(@"error: %@", error); // TODO: Test this
-                return;
-            }
-        } else if (isDirectory == NO) {
-            NSLog(@"Error: File exists at output path: %@", outputPath);
-            return;
-        }
-    }
-}
-
-- (void)buildClassFrameworks;
-{
-    CDClassFrameworkVisitor *visitor = [[CDClassFrameworkVisitor alloc] init];
-    [visitor setClassDump:self.classDump];
-    [self.classDump recursivelyVisit:visitor];
-    [self.symbolReferences setFrameworkNamesByClassName:[visitor frameworkNamesByClassName]];
-    [self.symbolReferences setFrameworkNamesByProtocolName:[visitor frameworkNamesByProtocolName]];
-    [visitor release];
-}
-
-- (void)generateStructureHeader;
-{
-    [self.resultString setString:@""];
-    [self.classDump appendHeaderToString:self.resultString];
-
-    [self.symbolReferences removeAllReferences];
-    referenceIndex = [self.resultString length];
-
-    [[self.classDump typeController] appendStructuresToString:self.resultString symbolReferences:self.symbolReferences];
-
-    NSString *referenceString = [self.symbolReferences referenceString];
-    if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:referenceIndex];
-
-    NSString *filename = @"CDStructures.h";
-    if (outputPath != nil)
-        filename = [outputPath stringByAppendingPathComponent:filename];
-
-    [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
-}
 
 - (void)willBeginVisiting;
 {
@@ -146,14 +91,14 @@
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
-- (void)willVisitCategory:(CDOCCategory *)aCategory;
+- (void)willVisitCategory:(CDOCCategory *)category;
 {
     // First, we set up some context...
     [self.resultString setString:@""];
     [self.classDump appendHeaderToString:self.resultString];
 
     [self.symbolReferences removeAllReferences];
-    NSString *str = [self.symbolReferences importStringForClassName:[aCategory className]];
+    NSString *str = [self.symbolReferences importStringForClassName:[category className]];
     if (str != nil) {
         [self.resultString appendString:str];
         [self.resultString appendString:@"\n"];
@@ -161,28 +106,28 @@
     referenceIndex = [self.resultString length];
 
     // And then generate the regular output
-    [super willVisitCategory:aCategory];
+    [super willVisitCategory:category];
 }
 
-- (void)didVisitCategory:(CDOCCategory *)aCategory;
+- (void)didVisitCategory:(CDOCCategory *)category;
 {
     // Generate the regular output
-    [super didVisitCategory:aCategory];
+    [super didVisitCategory:category];
 
     // Then insert the imports and write the file.
-    [self.symbolReferences removeClassName:[aCategory className]];
+    [self.symbolReferences removeClassName:[category className]];
     NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
         [self.resultString insertString:referenceString atIndex:referenceIndex];
 
-    NSString *filename = [NSString stringWithFormat:@"%@-%@.h", [aCategory className], [aCategory name]];
+    NSString *filename = [NSString stringWithFormat:@"%@-%@.h", [category className], [category name]];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitProtocol:(CDOCProtocol *)protocol;
 {
     [self.resultString setString:@""];
     [self.classDump appendHeaderToString:self.resultString];
@@ -191,23 +136,79 @@
     referenceIndex = [self.resultString length];
 
     // And then generate the regular output
-    [super willVisitProtocol:aProtocol];
+    [super willVisitProtocol:protocol];
 }
 
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitProtocol:(CDOCProtocol *)protocol;
 {
     // Generate the regular output
-    [super didVisitProtocol:aProtocol];
+    [super didVisitProtocol:protocol];
 
     // Then insert the imports and write the file.
     NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
         [self.resultString insertString:referenceString atIndex:referenceIndex];
 
-    NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", [aProtocol name]];
+    NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", [protocol name]];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
+    [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+}
+
+#pragma mark -
+
+@synthesize outputPath;
+
+- (void)createOutputPathIfNecessary;
+{
+    if (outputPath != nil) {
+        BOOL isDirectory;
+        
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:outputPath isDirectory:&isDirectory] == NO) {
+            NSError *error = nil;
+            BOOL result = [fileManager createDirectoryAtPath:outputPath withIntermediateDirectories:YES attributes:nil error:&error];
+            if (result == NO) {
+                NSLog(@"Error: Couldn't create output directory: %@", outputPath);
+                NSLog(@"error: %@", error); // TODO: Test this
+                return;
+            }
+        } else if (isDirectory == NO) {
+            NSLog(@"Error: File exists at output path: %@", outputPath);
+            return;
+        }
+    }
+}
+
+- (void)buildClassFrameworks;
+{
+    CDClassFrameworkVisitor *visitor = [[CDClassFrameworkVisitor alloc] init];
+    [visitor setClassDump:self.classDump];
+    [self.classDump recursivelyVisit:visitor];
+    [self.symbolReferences setFrameworkNamesByClassName:[visitor frameworkNamesByClassName]];
+    [self.symbolReferences setFrameworkNamesByProtocolName:[visitor frameworkNamesByProtocolName]];
+    [visitor release];
+}
+
+- (void)generateStructureHeader;
+{
+    [self.resultString setString:@""];
+    [self.classDump appendHeaderToString:self.resultString];
+    
+    [self.symbolReferences removeAllReferences];
+    referenceIndex = [self.resultString length];
+    
+    [[self.classDump typeController] appendStructuresToString:self.resultString symbolReferences:self.symbolReferences];
+    
+    NSString *referenceString = [self.symbolReferences referenceString];
+    if (referenceString != nil)
+        [self.resultString insertString:referenceString atIndex:referenceIndex];
+    
+    NSString *filename = @"CDStructures.h";
+    if (outputPath != nil)
+        filename = [outputPath stringByAppendingPathComponent:filename];
+    
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 

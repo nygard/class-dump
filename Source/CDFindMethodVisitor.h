@@ -7,11 +7,6 @@
 
 @interface CDFindMethodVisitor : CDVisitor
 
-@property (retain) NSString *findString;
-
-- (void)setContext:(CDOCProtocol *)newContext;
-- (void)showContextIfNecessary;
-
-- (void)writeResultToStandardOutput;
+@property (retain) NSString *searchString;
 
 @end

@@ -15,15 +15,6 @@
     CDClassDump *classDump;
 }
 
-- (id)init;
-{
-    if ((self = [super init])) {
-        classDump = nil;
-    }
-
-    return self;
-}
-
 - (void)dealloc;
 {
     [classDump release];
@@ -44,20 +35,20 @@
 }
 
 // Called before visiting.
-- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
 }
 
 // This gets called before visiting the children, but only if it has children it will visit.
-- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
 }
 
-- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)protocol;
 {
 }
 
-- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)protocol;
 {
 }
 
@@ -70,15 +61,15 @@
 }
 
 // Called after visiting.
-- (void)didVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+- (void)didVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
 }
 
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitProtocol:(CDOCProtocol *)protocol;
 {
 }
 
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)didVisitProtocol:(CDOCProtocol *)protocol;
 {
 }
 
@@ -106,35 +97,35 @@
 {
 }
 
-- (void)willVisitCategory:(CDOCCategory *)aCategory;
+- (void)willVisitCategory:(CDOCCategory *)category;
 {
 }
 
-- (void)didVisitCategory:(CDOCCategory *)aCategory;
+- (void)didVisitCategory:(CDOCCategory *)category;
 {
 }
 
-- (void)willVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+- (void)willVisitPropertiesOfCategory:(CDOCCategory *)category;
 {
 }
 
-- (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+- (void)didVisitPropertiesOfCategory:(CDOCCategory *)category;
 {
 }
 
-- (void)visitClassMethod:(CDOCMethod *)aMethod;
+- (void)visitClassMethod:(CDOCMethod *)method;
 {
 }
 
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
+- (void)visitInstanceMethod:(CDOCMethod *)method propertyState:(CDVisitorPropertyState *)propertyState;
 {
 }
 
-- (void)visitIvar:(CDOCIvar *)anIvar;
+- (void)visitIvar:(CDOCIvar *)ivar;
 {
 }
 
-- (void)visitProperty:(CDOCProperty *)aProperty;
+- (void)visitProperty:(CDOCProperty *)property;
 {
 }
 

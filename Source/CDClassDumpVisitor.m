@@ -34,7 +34,7 @@
     [self.classDump appendHeaderToString:self.resultString];
 
     if (self.classDump.hasObjectiveCRuntimeInfo) {
-        [[self.classDump typeController] appendStructuresToString:self.resultString symbolReferences:nil];
+        [self.classDump.typeController appendStructuresToString:self.resultString symbolReferences:nil];
     }
 }
 
@@ -45,27 +45,26 @@
     [self writeResultToStandardOutput];
 }
 
-- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
-    CDMachOFile *machOFile = [aProcessor machOFile];
+    CDMachOFile *machOFile = processor.machOFile;
 
     [self.resultString appendString:@"#pragma mark -\n\n"];
     [self.resultString appendString:@"/*\n"];
-    [self.resultString appendFormat:@" * File: %@\n", [machOFile filename]];
-    [self.resultString appendFormat:@" * UUID: %@\n", [machOFile uuidString]];
+    [self.resultString appendFormat:@" * File: %@\n", machOFile.filename];
+    [self.resultString appendFormat:@" * UUID: %@\n", machOFile.uuidString];
 
-    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType([machOFile cputypePlusArchBits], [machOFile cpusubtype]);
-    //archInfo = [machOFile archInfo];
+    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(machOFile.cputypePlusArchBits, machOFile.cpusubtype);
     if (archInfo == NULL)
-        [self.resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", [machOFile cputype], [machOFile cpusubtype]];
+        [self.resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", machOFile.cputype, machOFile.cpusubtype];
     else
         [self.resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
 
-    if ([machOFile filetype] == MH_DYLIB) {
-        CDLCDylib *identifier = [machOFile dylibIdentifier];
+    if (machOFile.filetype == MH_DYLIB) {
+        CDLCDylib *identifier = machOFile.dylibIdentifier;
         if (identifier != nil)
             [self.resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
-             [identifier formattedCurrentVersion], [identifier formattedCompatibilityVersion]];
+             identifier.formattedCurrentVersion, identifier.formattedCompatibilityVersion];
     }
 
     if (machOFile.minVersionMacOSX != nil) 
@@ -74,8 +73,8 @@
         [self.resultString appendFormat:@" *       Minimum iOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
 
     [self.resultString appendFormat:@" *\n"];
-    if (aProcessor.garbageCollectionStatus != nil)
-        [self.resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", aProcessor.garbageCollectionStatus];
+    if (processor.garbageCollectionStatus != nil)
+        [self.resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", processor.garbageCollectionStatus];
     
     if ([machOFile.dyldEnvironment count] > 0) {
         BOOL first = YES;
@@ -89,39 +88,39 @@
         }
     }
 
-    for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+    for (CDLoadCommand *loadCommand in machOFile.loadCommands) {
         if ([loadCommand isKindOfClass:[CDLCRunPath class]]) {
             CDLCRunPath *runPath = (CDLCRunPath *)loadCommand;
 
-            [self.resultString appendFormat:@" *       Run path: %@\n", [runPath path]];
-            [self.resultString appendFormat:@" *               = %@\n", [runPath resolvedRunPath]];
+            [self.resultString appendFormat:@" *       Run path: %@\n", runPath.path];
+            [self.resultString appendFormat:@" *               = %@\n", runPath.resolvedRunPath];
         }
     }
 
-    if ([machOFile isEncrypted]) {
+    if (machOFile.isEncrypted) {
         [self.resultString appendString:@" *       This file is encrypted:\n"];
-        for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+        for (CDLoadCommand *loadCommand in machOFile.loadCommands) {
             if ([loadCommand isKindOfClass:[CDLCEncryptionInfo class]]) {
                 CDLCEncryptionInfo *encryptionInfo = (CDLCEncryptionInfo *)loadCommand;
 
                 [self.resultString appendFormat:@" *           cryptid: 0x%08x, cryptoff: 0x%08x, cryptsize: 0x%08x\n",
-                 [encryptionInfo cryptid], [encryptionInfo cryptoff], [encryptionInfo cryptsize]];
+                 encryptionInfo.cryptid, encryptionInfo.cryptoff, encryptionInfo.cryptsize];
             }
         }
-    } else if ([machOFile hasProtectedSegments]) {
-        if ([machOFile canDecryptAllSegments]) {
+    } else if (machOFile.hasProtectedSegments) {
+        if (machOFile.canDecryptAllSegments) {
             [self.resultString appendString:@" *       This file has protected segments, decrypting.\n"];
         } else {
             NSUInteger index = 0;
 
             [self.resultString appendString:@" *       This file has protected segments that can't be decrypted:\n"];
-            for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
+            for (CDLoadCommand *loadCommand in machOFile.loadCommands) {
                 if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
                     CDLCSegment *segment = (CDLCSegment *)loadCommand;
 
-                    if ([segment canDecrypt] == NO) {
+                    if (segment.canDecrypt == NO) {
                         [self.resultString appendFormat:@" *           Load command %u, segment encryption: %@\n",
-                                      index, CDSegmentEncryptionTypeName([segment encryptionType])];
+                                      index, CDSegmentEncryptionTypeName(segment.encryptionType)];
                     }
                 }
 

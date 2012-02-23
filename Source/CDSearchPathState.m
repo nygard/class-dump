@@ -48,15 +48,15 @@
 
 }
 
-- (NSString *)resolvePath:(NSString *)aPath;
+- (NSString *)resolvePath:(NSString *)path;
 {
     for (NSArray *group in searchPathStack) {
-        for (NSString *path in group) {
-            NSLog(@"path %@", path);
+        for (NSString *thisPath in group) {
+            NSLog(@"path %@", thisPath);
         }
     }
 
-    return aPath;
+    return path;
 }
 
 - (NSArray *)searchPaths;

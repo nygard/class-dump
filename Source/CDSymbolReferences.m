@@ -52,20 +52,18 @@
 
 - (void)setFrameworkNamesByClassName:(NSDictionary *)newValue;
 {
-    if (newValue == frameworkNamesByClassName)
-        return;
-
-    [frameworkNamesByClassName release];
-    frameworkNamesByClassName = [newValue retain];
+    if (newValue != frameworkNamesByClassName) {
+        [frameworkNamesByClassName release];
+        frameworkNamesByClassName = [newValue retain];
+    }
 }
 
 - (void)setFrameworkNamesByProtocolName:(NSDictionary *)newValue;
 {
-    if (newValue == frameworkNamesByProtocolName)
-        return;
-
-    [frameworkNamesByProtocolName release];
-    frameworkNamesByProtocolName = [newValue retain];
+    if (newValue != frameworkNamesByProtocolName) {
+        [frameworkNamesByProtocolName release];
+        frameworkNamesByProtocolName = [newValue retain];
+    }
 }
 
 - (NSString *)frameworkForClassName:(NSString *)aClassName;

@@ -11,10 +11,16 @@
 
 // This builds up a dictionary mapping class names to a framework name.  It is used to generate individual imports when creating separate header files.
 
+@interface CDClassFrameworkVisitor ()
+@property (retain) NSString *frameworkName;
+@end
+
+#pragma mark -
+
 @implementation CDClassFrameworkVisitor
 {
-    NSMutableDictionary *frameworkNamesByClassName;
-    NSMutableDictionary *frameworkNamesByProtocolName;
+    NSMutableDictionary *frameworkNamesByClassName;     // NSString (class name)    -> NSString (framework name)
+    NSMutableDictionary *frameworkNamesByProtocolName;  // NSString (protocol name) -> NSString (framework name)
     NSString *frameworkName;
 }
 
@@ -40,35 +46,29 @@
 
 #pragma mark -
 
-- (NSDictionary *)frameworkNamesByClassName;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
-    return frameworkNamesByClassName;
-}
-
-- (NSDictionary *)frameworkNamesByProtocolName;
-{
-    return frameworkNamesByProtocolName;
-}
-
-@synthesize frameworkName;
-
-- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)anObjCSegment;
-{
-    [self setFrameworkName:[[anObjCSegment machOFile] importBaseName]];
+    self.frameworkName = [processor.machOFile importBaseName];
 }
 
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
-    if (frameworkName != nil) {
-        [frameworkNamesByClassName setObject:frameworkName forKey:[aClass name]];
+    if (self.frameworkName != nil) {
+        [frameworkNamesByClassName setObject:self.frameworkName forKey:aClass.name];
     }
 }
 
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitProtocol:(CDOCProtocol *)protocol;
 {
-    if (frameworkName != nil) {
-        [frameworkNamesByProtocolName setObject:frameworkName forKey:[aProtocol name]];
+    if (self.frameworkName != nil) {
+        [frameworkNamesByProtocolName setObject:self.frameworkName forKey:protocol.name];
     }
 }
+
+#pragma mark -
+
+@synthesize frameworkNamesByClassName;
+@synthesize frameworkNamesByProtocolName;
+@synthesize frameworkName;
 
 @end
