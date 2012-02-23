@@ -8,6 +8,11 @@
 #import "CDMachOFile.h"
 
 @implementation CDLCUUID
+{
+    struct uuid_command uuidCommand;
+    
+    CFUUIDRef uuid;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

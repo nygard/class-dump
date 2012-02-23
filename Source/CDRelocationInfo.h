@@ -16,9 +16,6 @@ enum {
 typedef NSUInteger CDRelocationSize;
 
 @interface CDRelocationInfo : NSObject
-{
-    struct relocation_info rinfo;
-}
 
 - (id)initWithInfo:(struct relocation_info)info;
 

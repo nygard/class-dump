@@ -8,6 +8,11 @@
 static BOOL debug = NO;
 
 @implementation CDLCUnknown
+{
+    struct load_command loadCommand;
+    
+    NSData *commandData;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

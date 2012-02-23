@@ -8,19 +8,6 @@
 @class CDSymbol;
 
 @interface CDLCSymbolTable : CDLoadCommand
-{
-    struct symtab_command symtabCommand;
-
-    NSArray *symbols;
-    NSUInteger baseAddress;
-
-    NSDictionary *classSymbols;
-
-    struct {
-        unsigned int didFindBaseAddress:1;
-        unsigned int didWarnAboutUnfoundBaseAddress:1;
-    } flags;
-}
 
 - (void)loadSymbols;
 

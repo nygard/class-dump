@@ -6,10 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCSubUmbrella : CDLoadCommand
-{
-    struct sub_umbrella_command command;
-    NSString *name;
-}
 
 @property (readonly) NSString *name;
 

@@ -8,6 +8,9 @@
 #import "CDSection64.h"
 
 @implementation CDLCSegment64
+{
+    struct segment_command_64 segmentCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -41,7 +44,7 @@
             [_sections addObject:section];
             [section release];
         }
-        sections = [_sections copy]; [_sections release];
+        self.sections = [[_sections copy] autorelease]; [_sections release];
     }
 
     return self;

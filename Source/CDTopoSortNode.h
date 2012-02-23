@@ -14,12 +14,6 @@ enum {
 typedef NSUInteger CDNodeColor;
 
 @interface CDTopoSortNode : NSObject
-{
-    id <CDTopologicalSort> sortableObject;
-
-    NSMutableSet *dependancies;
-    CDNodeColor color;
-}
 
 - (id)initWithObject:(id <CDTopologicalSort>)object;
 

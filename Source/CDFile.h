@@ -23,13 +23,6 @@ extern CDArch CDArchFromName(NSString *name);
 extern BOOL CDArchUses64BitABI(CDArch arch);
 
 @interface CDFile : NSObject
-{
-    NSString *filename;
-    NSData *data;
-    NSUInteger archOffset;
-    NSUInteger archSize;
-    CDSearchPathState *searchPathState;
-}
 
 // Returns CDFatFile or CDMachOFile.
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
@@ -39,6 +32,8 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 
 @property (readonly) NSString *filename;
 @property (readonly) NSData *data;
+@property (readonly) NSUInteger archOffset;
+@property (readonly) NSUInteger archSize;
 @property (readonly) CDSearchPathState *searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;

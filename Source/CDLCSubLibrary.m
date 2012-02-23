@@ -6,6 +6,10 @@
 #import "CDLCSubLibrary.h"
 
 @implementation CDLCSubLibrary
+{
+    struct sub_library_command command;
+    NSString *name;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

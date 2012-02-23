@@ -10,6 +10,12 @@
 static BOOL debug = NO;
 
 @implementation CDBalanceFormatter
+{
+    NSScanner *scanner;
+    NSCharacterSet *openCloseSet;
+    
+    NSMutableString *result;
+}
 
 - (id)initWithString:(NSString *)str;
 {

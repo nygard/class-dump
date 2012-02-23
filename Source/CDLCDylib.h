@@ -6,10 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCDylib : CDLoadCommand
-{
-    struct dylib_command dylibCommand;
-    NSString *path;
-}
 
 @property (readonly) NSString *path;
 @property (readonly) uint32_t timestamp;

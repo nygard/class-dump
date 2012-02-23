@@ -6,6 +6,12 @@
 #import "CDTopoSortNode.h"
 
 @implementation CDTopoSortNode
+{
+    id <CDTopologicalSort> sortableObject;
+    
+    NSMutableSet *dependancies;
+    CDNodeColor color;
+}
 
 - (id)initWithObject:(id <CDTopologicalSort>)object;
 {

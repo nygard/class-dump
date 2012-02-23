@@ -6,10 +6,5 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCUnknown : CDLoadCommand
-{
-    struct load_command loadCommand;
-
-    NSData *commandData;
-}
 
 @end

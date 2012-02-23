@@ -22,6 +22,12 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 }
 
 @implementation CDLCSegment
+{
+    NSString *name;
+    NSArray *sections;
+    
+    NSMutableData *decryptedData;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -114,7 +120,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             // First three pages aren't encrypted, so we can't tell.  Let's pretent it's something we can decrypt.
             return CDSegmentEncryptionType_AES;
         } else {
-            const void *src = [[nonretained_machOFile machOData] bytes] + self.fileoff + 3 * PAGE_SIZE;
+            const void *src = [[self.machOFile machOData] bytes] + self.fileoff + 3 * PAGE_SIZE;
 
             uint32_t magic = OSReadLittleInt32(src, 0);
             //NSLog(@"%s, magic= 0x%08x", __cmd, magic);
@@ -232,7 +238,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         NSParameterAssert((self.filesize % PAGE_SIZE) == 0);
         decryptedData = [[NSMutableData alloc] initWithLength:self.filesize];
 
-        const void *src = [[nonretained_machOFile machOData] bytes] + self.fileoff;
+        const void *src = [[self.machOFile machOData] bytes] + self.fileoff;
         void *dest = [decryptedData mutableBytes];
 
         if (self.filesize <= PAGE_SIZE * 3) {

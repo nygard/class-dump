@@ -12,12 +12,6 @@ extern NSString *const ObjCClassSymbolPrefix;
 @class CDMachOFile, CDSection, CDLCDylib;
 
 @interface CDSymbol : NSObject
-{
-    struct nlist_64 nlist;
-    BOOL is32Bit;
-    NSString *name;
-    CDMachOFile *nonretained_machOFile;
-}
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;

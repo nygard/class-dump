@@ -9,6 +9,10 @@
 #import "CDMachOFile.h"
 
 @implementation CDLCPreboundDylib
+{
+    struct prebound_dylib_command preboundDylibCommand;
+    NSString *name;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

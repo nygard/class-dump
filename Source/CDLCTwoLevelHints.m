@@ -8,6 +8,9 @@
 #import "CDMachOFile.h"
 
 @implementation CDLCTwoLevelHints
+{
+    struct twolevel_hints_command hintsCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

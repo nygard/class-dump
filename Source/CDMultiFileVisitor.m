@@ -15,6 +15,10 @@
 #import "CDTypeController.h"
 
 @implementation CDMultiFileVisitor
+{
+    NSString *outputPath;
+    NSUInteger referenceIndex;
+}
 
 - (id)init;
 {
@@ -60,41 +64,41 @@
 - (void)buildClassFrameworks;
 {
     CDClassFrameworkVisitor *visitor = [[CDClassFrameworkVisitor alloc] init];
-    [visitor setClassDump:classDump];
-    [classDump recursivelyVisit:visitor];
-    [symbolReferences setFrameworkNamesByClassName:[visitor frameworkNamesByClassName]];
-    [symbolReferences setFrameworkNamesByProtocolName:[visitor frameworkNamesByProtocolName]];
+    [visitor setClassDump:self.classDump];
+    [self.classDump recursivelyVisit:visitor];
+    [self.symbolReferences setFrameworkNamesByClassName:[visitor frameworkNamesByClassName]];
+    [self.symbolReferences setFrameworkNamesByProtocolName:[visitor frameworkNamesByProtocolName]];
     [visitor release];
 }
 
 - (void)generateStructureHeader;
 {
-    [resultString setString:@""];
-    [classDump appendHeaderToString:resultString];
+    [self.resultString setString:@""];
+    [self.classDump appendHeaderToString:self.resultString];
 
-    [symbolReferences removeAllReferences];
-    referenceIndex = [resultString length];
+    [self.symbolReferences removeAllReferences];
+    referenceIndex = [self.resultString length];
 
-    [[classDump typeController] appendStructuresToString:resultString symbolReferences:symbolReferences];
+    [[self.classDump typeController] appendStructuresToString:self.resultString symbolReferences:self.symbolReferences];
 
-    NSString *referenceString = [symbolReferences referenceString];
+    NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
-        [resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:referenceIndex];
 
     NSString *filename = @"CDStructures.h";
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
-    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+    [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
 - (void)willBeginVisiting;
 {
     [super willBeginVisiting];
 
-    [classDump appendHeaderToString:resultString];
+    [self.classDump appendHeaderToString:self.resultString];
 
-    if (classDump.hasObjectiveCRuntimeInfo) {
+    if (self.classDump.hasObjectiveCRuntimeInfo) {
         [self buildClassFrameworks];
         [self createOutputPathIfNecessary];
         [self generateStructureHeader];
@@ -107,17 +111,17 @@
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
     // First, we set up some context...
-    [resultString setString:@""];
-    [classDump appendHeaderToString:resultString];
+    [self.resultString setString:@""];
+    [self.classDump appendHeaderToString:self.resultString];
 
-    [symbolReferences removeAllReferences];
-    NSString *str = [symbolReferences importStringForClassName:[aClass superClassName]];
+    [self.symbolReferences removeAllReferences];
+    NSString *str = [self.symbolReferences importStringForClassName:[aClass superClassName]];
     if (str != nil) {
-        [resultString appendString:str];
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:str];
+        [self.resultString appendString:@"\n"];
     }
 
-    referenceIndex = [resultString length];
+    referenceIndex = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitClass:aClass];
@@ -129,32 +133,32 @@
     [super didVisitClass:aClass];
 
     // Then insert the imports and write the file.
-    [symbolReferences removeClassName:[aClass name]];
-    [symbolReferences removeClassName:[aClass superClassName]];
-    NSString *referenceString = [symbolReferences referenceString];
+    [self.symbolReferences removeClassName:[aClass name]];
+    [self.symbolReferences removeClassName:[aClass superClassName]];
+    NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
-        [resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:referenceIndex];
 
     NSString *filename = [NSString stringWithFormat:@"%@.h", [aClass name]];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
-    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+    [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
 - (void)willVisitCategory:(CDOCCategory *)aCategory;
 {
     // First, we set up some context...
-    [resultString setString:@""];
-    [classDump appendHeaderToString:resultString];
+    [self.resultString setString:@""];
+    [self.classDump appendHeaderToString:self.resultString];
 
-    [symbolReferences removeAllReferences];
-    NSString *str = [symbolReferences importStringForClassName:[aCategory className]];
+    [self.symbolReferences removeAllReferences];
+    NSString *str = [self.symbolReferences importStringForClassName:[aCategory className]];
     if (str != nil) {
-        [resultString appendString:str];
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:str];
+        [self.resultString appendString:@"\n"];
     }
-    referenceIndex = [resultString length];
+    referenceIndex = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitCategory:aCategory];
@@ -166,25 +170,25 @@
     [super didVisitCategory:aCategory];
 
     // Then insert the imports and write the file.
-    [symbolReferences removeClassName:[aCategory className]];
-    NSString *referenceString = [symbolReferences referenceString];
+    [self.symbolReferences removeClassName:[aCategory className]];
+    NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
-        [resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:referenceIndex];
 
     NSString *filename = [NSString stringWithFormat:@"%@-%@.h", [aCategory className], [aCategory name]];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
-    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+    [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
 - (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
 {
-    [resultString setString:@""];
-    [classDump appendHeaderToString:resultString];
+    [self.resultString setString:@""];
+    [self.classDump appendHeaderToString:self.resultString];
 
-    [symbolReferences removeAllReferences];
-    referenceIndex = [resultString length];
+    [self.symbolReferences removeAllReferences];
+    referenceIndex = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitProtocol:aProtocol];
@@ -196,15 +200,15 @@
     [super didVisitProtocol:aProtocol];
 
     // Then insert the imports and write the file.
-    NSString *referenceString = [symbolReferences referenceString];
+    NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
-        [resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:referenceIndex];
 
     NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", [aProtocol name]];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
-    [[resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+    [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
 @end

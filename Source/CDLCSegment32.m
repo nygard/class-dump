@@ -8,6 +8,9 @@
 #import "CDSection32.h"
 
 @implementation CDLCSegment32
+{
+    struct segment_command segmentCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -41,7 +44,7 @@
             [_sections addObject:section];
             [section release];
         }
-        sections = [_sections copy]; [_sections release];
+        self.sections = [[_sections copy] autorelease]; [_sections release];
     }
 
     return self;
@@ -88,7 +91,7 @@
 {
     return [NSString stringWithFormat:@"vmaddr: 0x%08x - 0x%08x [0x%08x], offset: %d, flags: 0x%x (%@), nsects: %d, sections: %@",
                      segmentCommand.vmaddr, segmentCommand.vmaddr + segmentCommand.vmsize - 1, segmentCommand.vmsize, segmentCommand.fileoff,
-                     self.flags, [self flagDescription], segmentCommand.nsects, sections];
+                     self.flags, [self flagDescription], segmentCommand.nsects, self.sections];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;

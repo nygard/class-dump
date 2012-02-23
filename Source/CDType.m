@@ -18,6 +18,17 @@
 static BOOL debugMerge = NO;
 
 @implementation CDType
+{
+    int type;
+    NSArray *protocols;
+    CDType *subtype;
+    CDTypeName *typeName;
+    NSMutableArray *members;
+    NSString *bitfieldSize;
+    NSString *arraySize;
+    
+    NSString *variableName;
+}
 
 - (id)init;
 {

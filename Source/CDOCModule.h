@@ -8,11 +8,6 @@
 @class CDClassDump, CDOCSymtab;
 
 @interface CDOCModule : NSObject
-{
-    uint32_t version;
-    NSString *name;
-    CDOCSymtab *symtab;
-}
 
 - (NSString *)description;
 

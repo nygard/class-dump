@@ -9,9 +9,6 @@
 @class CDVisitorPropertyState;
 
 @interface CDVisitor : NSObject
-{
-    CDClassDump *classDump;
-}
 
 @property (retain) CDClassDump *classDump;
 

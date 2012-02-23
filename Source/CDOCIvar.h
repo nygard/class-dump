@@ -8,14 +8,6 @@
 @class CDSymbolReferences, CDType, CDTypeController;
 
 @interface CDOCIvar : NSObject
-{
-    NSString *name;
-    NSString *type;
-    NSUInteger offset;
-
-    BOOL hasParsedType;
-    CDType *parsedType;
-}
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 

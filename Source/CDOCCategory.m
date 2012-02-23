@@ -13,6 +13,9 @@
 #import "CDVisitorPropertyState.h"
 
 @implementation CDOCCategory
+{
+    NSString *className;
+}
 
 - (void)dealloc;
 {
@@ -38,8 +41,8 @@
 
     [resultString appendFormat:@"@interface %@ (%@)", self.className, self.name];
 
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+    if ([self.protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
     return resultString;
 }

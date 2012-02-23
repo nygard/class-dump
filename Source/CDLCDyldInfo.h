@@ -6,12 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCDyldInfo : CDLoadCommand
-{
-    struct dyld_info_command dyldInfoCommand;
-
-    NSUInteger ptrSize;
-    NSMutableDictionary *symbolNamesByAddress;
-}
 
 - (NSString *)symbolNameForAddress:(NSUInteger)address;
 

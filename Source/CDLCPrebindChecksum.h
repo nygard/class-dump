@@ -6,9 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCPrebindChecksum : CDLoadCommand
-{
-    struct prebind_cksum_command prebindChecksumCommand;
-}
 
 @property (readonly) uint32_t cksum;
 

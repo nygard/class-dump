@@ -4,20 +4,10 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import <Foundation/Foundation.h>
-#include <mach-o/loader.h>
 
 @class CDDataCursor, CDMachOFile, CDLCSegment32;
 
 @interface CDSection : NSObject
-{
-    NSString *segmentName;
-    NSString *sectionName;
-
-    NSData *data;
-    struct {
-        unsigned int hasLoadedData:1;
-    } _flags;
-}
 
 - (id)init;
 
@@ -26,7 +16,9 @@
 @property (retain) NSString *segmentName;
 @property (retain) NSString *sectionName;
 
-- (NSData *)data;
+@property (nonatomic, retain) NSData *data;
+
+@property (assign) BOOL hasLoadedData;
 - (void)loadData;
 - (void)unloadData;
 

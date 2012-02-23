@@ -17,6 +17,12 @@
 #import "CDVisitorPropertyState.h"
 
 @implementation CDOCClass
+{
+    NSString *superClassName;
+    NSArray *ivars;
+    
+    BOOL isExported;
+}
 
 - (id)init;
 {
@@ -68,8 +74,8 @@
     if (self.superClassName != nil)
         [resultString appendFormat:@" : %@", self.superClassName];
 
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+    if ([self.protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
     return resultString;
 }

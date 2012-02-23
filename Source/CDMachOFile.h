@@ -22,26 +22,6 @@ typedef NSUInteger CDByteOrder;
 @end
 
 @interface CDMachOFile : CDFile
-{
-    CDByteOrder byteOrder;
-
-    NSArray *loadCommands;
-    NSArray *dylibLoadCommands;
-    NSArray *segments;
-    CDLCSymbolTable *symbolTable;
-    CDLCDynamicSymbolTable *dynamicSymbolTable;
-    CDLCDyldInfo *dyldInfo;
-    CDLCVersionMinimum *minVersionMacOSX;
-    CDLCVersionMinimum *minVersionIOS;
-    NSArray *runPaths;
-    NSArray *dyldEnvironment;
-    NSArray *reExportedDylibs;
-    struct mach_header_64 header; // 64-bit, also holding 32-bit
-
-    struct {
-        unsigned int uses64BitABI:1;
-    } _flags;
-}
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 

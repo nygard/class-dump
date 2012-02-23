@@ -25,6 +25,10 @@
 static BOOL debug = NO;
 
 @implementation CDTextClassDumpVisitor
+{
+    NSMutableString *resultString;
+    CDSymbolReferences *symbolReferences;
+}
 
 - (id)init;
 {
@@ -45,6 +49,9 @@ static BOOL debug = NO;
 }
 
 #pragma mark -
+
+@synthesize resultString;
+@synthesize symbolReferences;
 
 - (void)writeResultToStandardOutput;
 {
@@ -134,7 +141,7 @@ static BOOL debug = NO;
 - (void)visitClassMethod:(CDOCMethod *)aMethod;
 {
     [resultString appendString:@"+ "];
-    [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
+    [aMethod appendToString:resultString typeController:[self.classDump typeController] symbolReferences:symbolReferences];
     [resultString appendString:@"\n"];
 }
 
@@ -144,7 +151,7 @@ static BOOL debug = NO;
     if (property == nil) {
         //NSLog(@"No property for method: %@", [aMethod name]);
         [resultString appendString:@"- "];
-        [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
+        [aMethod appendToString:resultString typeController:[self.classDump typeController] symbolReferences:symbolReferences];
         [resultString appendString:@"\n"];
     } else {
         if ([propertyState hasUsedProperty:property] == NO) {
@@ -159,7 +166,7 @@ static BOOL debug = NO;
 
 - (void)visitIvar:(CDOCIvar *)anIvar;
 {
-    [anIvar appendToString:resultString typeController:[classDump typeController] symbolReferences:symbolReferences];
+    [anIvar appendToString:resultString typeController:[self.classDump typeController] symbolReferences:symbolReferences];
     [resultString appendString:@"\n"];
 }
 
@@ -219,7 +226,7 @@ static BOOL debug = NO;
     if (isWeak)
         [resultString appendString:@"__weak "];
 
-    NSString *formattedString = [[[classDump typeController] propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
+    NSString *formattedString = [[[self.classDump typeController] propertyTypeFormatter] formatVariable:[aProperty name] parsedType:parsedType symbolReferences:symbolReferences];
     [resultString appendFormat:@"%@;", formattedString];
 
     if (isDynamic) {

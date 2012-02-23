@@ -32,6 +32,10 @@
 #import "CDMachOFile.h"
 
 @implementation CDLoadCommand
+{
+    CDMachOFile *nonretained_machOFile;
+    NSUInteger commandOffset;
+}
 
 + (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

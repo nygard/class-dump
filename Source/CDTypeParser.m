@@ -32,6 +32,10 @@ static NSString *CDTokenDescription(int token)
 }
 
 @implementation CDTypeParser
+{
+    CDTypeLexer *lexer;
+    int lookahead;
+}
 
 - (id)initWithType:(NSString *)aType;
 {

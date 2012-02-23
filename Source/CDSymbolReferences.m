@@ -6,6 +6,13 @@
 #import "CDSymbolReferences.h"
 
 @implementation CDSymbolReferences
+{
+    NSDictionary *frameworkNamesByClassName;
+    NSDictionary *frameworkNamesByProtocolName;
+    
+    NSMutableSet *classes;
+    NSMutableSet *protocols;
+}
 
 - (id)init;
 {

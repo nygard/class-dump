@@ -6,6 +6,11 @@
 #import "CDLCFunctionStarts.h"
 
 @implementation CDLCFunctionStarts
+{
+    struct load_command loadCommand;
+    
+    NSData *commandData;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

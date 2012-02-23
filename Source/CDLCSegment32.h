@@ -6,8 +6,5 @@
 #import "CDLCSegment.h"
 
 @interface CDLCSegment32 : CDLCSegment
-{
-    struct segment_command segmentCommand;
-}
 
 @end

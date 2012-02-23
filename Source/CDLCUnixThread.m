@@ -8,6 +8,11 @@
 // For now, this is all I need.  There is no data in here sensitive to its position in the file.
 
 @implementation CDLCUnixThread
+{
+    struct load_command loadCommand;
+    
+    NSData *commandData;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

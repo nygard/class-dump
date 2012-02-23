@@ -8,15 +8,6 @@
 @class CDSymbolReferences, CDType, CDTypeController;
 
 @interface CDTypeFormatter : NSObject
-{
-    id nonretained_typeController;
-
-    NSUInteger baseLevel;
-
-    BOOL shouldExpand; // But just top level struct, level == 0
-    BOOL shouldAutoExpand;
-    BOOL shouldShowLexing;
-}
 
 @property (assign) NSUInteger baseLevel;
 @property (assign) BOOL shouldExpand;

@@ -6,10 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCPreboundDylib : CDLoadCommand
-{
-    struct prebound_dylib_command preboundDylibCommand;
-    NSString *name;
-}
 
 @property (readonly) NSString *name;
 

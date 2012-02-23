@@ -9,6 +9,9 @@
 #import "CDSection.h"
 
 @implementation CDMachOFileDataCursor
+{
+    CDMachOFile *nonretained_machOFile;
+}
 
 - (id)initWithFile:(CDMachOFile *)aMachOFile;
 {
@@ -84,9 +87,9 @@
 
 - (uint32_t)peekInt32;
 {
-    NSUInteger savedOffset = offset;
+    NSUInteger savedOffset = self.offset;
     uint32_t val = [self readInt32];
-    offset = savedOffset;
+    self.offset = savedOffset;
     
     return val;
 }

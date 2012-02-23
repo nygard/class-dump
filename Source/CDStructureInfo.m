@@ -12,6 +12,12 @@
 // If it's used in a method, then it should be declared at the top. (name or typedef)
 
 @implementation CDStructureInfo
+{
+    CDType *type;
+    NSUInteger referenceCount;
+    BOOL isUsedInMethod;
+    NSString *typedefName;
+}
 
 - (id)initWithType:(CDType *)aType;
 {

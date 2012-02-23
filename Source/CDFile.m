@@ -57,7 +57,16 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return (arch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
 }
 
+#pragma mark -
+
 @implementation CDFile
+{
+    NSString *filename;
+    NSData *data;
+    NSUInteger archOffset;
+    NSUInteger archSize;
+    CDSearchPathState *searchPathState;
+}
 
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
@@ -117,6 +126,8 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 @synthesize filename;
 @synthesize data;
+@synthesize archOffset;
+@synthesize archSize;
 @synthesize searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;

@@ -8,6 +8,9 @@
 #import "CDMachOFile.h"
 
 @implementation CDLCVersionMinimum
+{
+    struct version_min_command versionMinCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

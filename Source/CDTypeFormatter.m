@@ -18,6 +18,15 @@
 static BOOL debug = NO;
 
 @implementation CDTypeFormatter
+{
+    id nonretained_typeController;
+    
+    NSUInteger baseLevel;
+    
+    BOOL shouldExpand; // But just top level struct, level == 0
+    BOOL shouldAutoExpand;
+    BOOL shouldShowLexing;
+}
 
 - (id)init;
 {

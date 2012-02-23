@@ -6,6 +6,10 @@
 #import "CDDataCursor.h"
 
 @implementation CDDataCursor
+{
+    NSData *data;
+    NSUInteger offset;
+}
 
 - (id)initWithData:(NSData *)someData;
 {

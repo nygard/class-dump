@@ -6,8 +6,5 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCRoutines64 : CDLoadCommand
-{
-    struct routines_command_64 routinesCommand;
-}
 
 @end

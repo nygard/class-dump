@@ -9,6 +9,10 @@
 #import "CDSearchPathState.h"
 
 @implementation CDLCRunPath
+{
+    struct rpath_command rpathCommand;
+    NSString *path;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

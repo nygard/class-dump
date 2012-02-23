@@ -12,6 +12,11 @@
 // This builds up a dictionary mapping class names to a framework name.  It is used to generate individual imports when creating separate header files.
 
 @implementation CDClassFrameworkVisitor
+{
+    NSMutableDictionary *frameworkNamesByClassName;
+    NSMutableDictionary *frameworkNamesByProtocolName;
+    NSString *frameworkName;
+}
 
 - (id)init;
 {

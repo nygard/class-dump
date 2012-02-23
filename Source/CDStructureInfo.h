@@ -8,12 +8,6 @@
 @class CDType;
 
 @interface CDStructureInfo : NSObject <NSCopying>
-{
-    CDType *type;
-    NSUInteger referenceCount;
-    BOOL isUsedInMethod;
-    NSString *typedefName;
-}
 
 - (id)initWithType:(CDType *)aType;
 

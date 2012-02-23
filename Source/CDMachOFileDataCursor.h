@@ -5,12 +5,9 @@
 
 #import "CDDataCursor.h"
 
-@class CDMachOFile, CDLCSegment, CDSection;
+@class CDMachOFile, CDSection;
 
 @interface CDMachOFileDataCursor : CDDataCursor
-{
-    CDMachOFile *nonretained_machOFile;
-}
 
 - (id)initWithFile:(CDMachOFile *)aMachOFile;
 - (id)initWithFile:(CDMachOFile *)aMachOFile offset:(NSUInteger)anOffset;

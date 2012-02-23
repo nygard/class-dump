@@ -14,6 +14,10 @@ static NSString *CDDylibVersionString(uint32_t version)
 }
 
 @implementation CDLCDylib
+{
+    struct dylib_command dylibCommand;
+    NSString *path;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

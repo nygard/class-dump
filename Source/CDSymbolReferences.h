@@ -6,13 +6,6 @@
 #import <Foundation/Foundation.h>
 
 @interface CDSymbolReferences : NSObject
-{
-    NSDictionary *frameworkNamesByClassName;
-    NSDictionary *frameworkNamesByProtocolName;
-
-    NSMutableSet *classes;
-    NSMutableSet *protocols;
-}
 
 - (NSString *)description;
 

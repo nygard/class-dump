@@ -6,10 +6,6 @@
 #import <Foundation/Foundation.h>
 
 @interface CDSearchPathState : NSObject
-{
-    NSString *executablePath;
-    NSMutableArray *searchPathStack;
-}
 
 @property (nonatomic, retain) NSString *executablePath;
 

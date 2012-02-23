@@ -5,11 +5,19 @@
 
 #import "CDFatArch.h"
 
+#include <mach-o/fat.h>
 #import "CDDataCursor.h"
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 
 @implementation CDFatArch
+{
+    CDFatFile *nonretained_fatFile;
+    
+    struct fat_arch fatArch;
+    
+    CDMachOFile *machOFile; // Lazily create this.
+}
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 {

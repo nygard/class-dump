@@ -8,10 +8,6 @@
 @class CDType;
 
 @interface CDMethodType : NSObject
-{
-    CDType *type;
-    NSString *offset;
-}
 
 - (id)initWithType:(CDType *)aType offset:(NSString *)anOffset;
 

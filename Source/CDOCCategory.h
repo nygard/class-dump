@@ -9,9 +9,6 @@
 @class CDSymbolReferences;
 
 @interface CDOCCategory : CDOCProtocol <CDTopologicalSort>
-{
-    NSString *className;
-}
 
 @property (retain) NSString *className;
 

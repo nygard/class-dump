@@ -6,6 +6,11 @@
 #import "CDTypeName.h"
 
 @implementation CDTypeName
+{
+    NSString *name;
+    NSMutableArray *templateTypes;
+    NSString *suffix;
+}
 
 - (id)init;
 {

@@ -12,6 +12,14 @@
 #import "CDTypeController.h"
 
 @implementation CDOCMethod
+{
+    NSString *name;
+    NSString *type;
+    NSUInteger imp;
+    
+    BOOL hasParsedType;
+    NSArray *parsedMethodTypes;
+}
 
 - (id)init;
 {

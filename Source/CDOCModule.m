@@ -9,6 +9,11 @@
 #import "CDOCSymtab.h"
 
 @implementation CDOCModule
+{
+    uint32_t version;
+    NSString *name;
+    CDOCSymtab *symtab;
+}
 
 - (id)init;
 {

@@ -8,21 +8,6 @@
 @class CDType;
 
 @interface CDOCProperty : NSObject
-{
-    NSString *name;
-    NSString *attributeString;
-
-    CDType *type;
-    NSMutableArray *attributes;
-
-    BOOL hasParsedAttributes;
-    NSString *attributeStringAfterType;
-    NSString *customGetter;
-    NSString *customSetter;
-
-    BOOL isReadOnly;
-    BOOL isDynamic;
-}
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 

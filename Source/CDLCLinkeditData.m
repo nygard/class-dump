@@ -6,6 +6,9 @@
 #import "CDLCLinkeditData.h"
 
 @implementation CDLCLinkeditData
+{
+    struct linkedit_data_command linkeditDataCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

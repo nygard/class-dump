@@ -5,10 +5,16 @@
 
 #import "CDSection64.h"
 
+#include <mach-o/loader.h>
 #import "CDMachOFileDataCursor.h"
 #import "CDMachOFile.h"
 
 @implementation CDSection64
+{
+    CDLCSegment64 *nonretained_segment;
+    
+    struct section_64 section;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 {
@@ -54,7 +60,7 @@
 {
     return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s', addr: %016lx, size: %016lx",
             NSStringFromClass([self class]), self,
-            segmentName, [sectionName UTF8String],
+            self.segmentName, [self.sectionName UTF8String],
             section.addr, section.size];
 }
 
@@ -79,9 +85,9 @@
 
 - (void)loadData;
 {
-    if (_flags.hasLoadedData == NO) {
-        data = [[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size];
-        _flags.hasLoadedData = YES;
+    if (self.hasLoadedData == NO) {
+        self.data = [[[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size] autorelease];
+        self.hasLoadedData = YES;
     }
 }
 

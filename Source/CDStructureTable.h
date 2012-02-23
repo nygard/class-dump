@@ -14,39 +14,6 @@ enum {
 typedef NSUInteger CDTableType;
 
 @interface CDStructureTable : NSObject
-{
-    NSString *identifier;
-    NSString *anonymousBaseName;
-
-    // Phase 0 - top level
-    NSMutableDictionary *phase0_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-
-    // Phase 1 - all substructures
-    NSMutableDictionary *phase1_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSUInteger phase1_maxDepth;
-    NSMutableDictionary *phase1_groupedByDepth; // key: NSNumber (structureDepth), value: NSMutableArray of CDStructureInfo
-
-    // Phase 2 - merging all structure bottom up
-    NSMutableDictionary *phase2_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase2_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
-    NSMutableArray *phase2_nameExceptions; // Of CDStructureInfo
-    NSMutableArray *phase2_anonExceptions; // Of CDStructureInfo
-
-    // Phase 3 - merged reference counts from updated phase0 types
-    NSMutableDictionary *phase3_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase3_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
-
-    NSMutableDictionary *phase3_nameExceptions; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *phase3_anonExceptions; // key: NSString (typeString), value: CDStructureInfo
-
-    NSMutableSet *phase3_exceptionalNames; // Of NSString
-    NSMutableSet *phase3_inMethodNameExceptions; // Of NSString
-
-    BOOL shouldDebug;
-
-    NSMutableSet *debugNames; // NSString (name)
-    NSMutableSet *debugAnon; // NSString (reallyBareTypeString)
-}
 
 @property (retain) NSString *identifier;
 @property (retain) NSString *anonymousBaseName;

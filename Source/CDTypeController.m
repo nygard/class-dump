@@ -13,6 +13,17 @@
 static BOOL debug = NO;
 
 @implementation CDTypeController
+{
+    CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
+    
+    CDTypeFormatter *ivarTypeFormatter;
+    CDTypeFormatter *methodTypeFormatter;
+    CDTypeFormatter *propertyTypeFormatter;
+    CDTypeFormatter *structDeclarationTypeFormatter;
+    
+    CDStructureTable *structureTable;
+    CDStructureTable *unionTable;
+}
 
 - (id)initWithClassDump:(CDClassDump *)aClassDump;
 {

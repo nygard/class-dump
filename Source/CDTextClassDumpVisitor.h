@@ -8,10 +8,9 @@
 @class CDSymbolReferences, CDType;
 
 @interface CDTextClassDumpVisitor : CDVisitor
-{
-    NSMutableString *resultString;
-    CDSymbolReferences *symbolReferences;
-}
+
+@property (readonly) NSMutableString *resultString;
+@property (readonly) CDSymbolReferences *symbolReferences;
 
 - (void)writeResultToStandardOutput;
 

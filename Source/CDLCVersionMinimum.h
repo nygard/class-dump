@@ -6,9 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCVersionMinimum : CDLoadCommand
-{
-    struct version_min_command versionMinCommand;
-}
 
 @property (readonly) NSString *minimumVersionString;
 

@@ -20,13 +20,6 @@ enum {
 typedef NSUInteger CDTypeLexerState;
 
 @interface CDTypeLexer : NSObject
-{
-    NSScanner *scanner;
-    CDTypeLexerState state;
-    NSString *lexText;
-
-    BOOL shouldShowLexing;
-}
 
 - (id)initWithString:(NSString *)aString;
 

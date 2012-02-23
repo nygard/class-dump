@@ -22,16 +22,9 @@ typedef NSUInteger CDSegmentEncryptionType;
 extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 
 @interface CDLCSegment : CDLoadCommand
-{
-    NSString *name;
-    NSArray *sections;
-
-    NSMutableData *decryptedData;
-}
 
 @property (retain) NSString *name;
-
-@property (readonly) NSArray *sections;
+@property (retain) NSArray *sections;
 
 @property (readonly) NSUInteger vmaddr;
 @property (readonly) NSUInteger fileoff;

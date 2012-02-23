@@ -13,10 +13,6 @@
 @class CDMachOFile;
 
 @interface CDLoadCommand : NSObject
-{
-    CDMachOFile *nonretained_machOFile;
-    NSUInteger commandOffset;
-}
 
 + (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
 

@@ -9,10 +9,6 @@
 @class CDOCCategory, CDOCClass;
 
 @interface CDOCSymtab : NSObject
-{
-    NSMutableArray *classes;
-    NSMutableArray *categories;
-}
 
 - (NSString *)description;
 

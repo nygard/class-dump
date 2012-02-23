@@ -6,9 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCEncryptionInfo : CDLoadCommand
-{
-    struct encryption_info_command encryptionInfoCommand;
-}
 
 @property (readonly) uint32_t cryptoff;
 @property (readonly) uint32_t cryptsize;

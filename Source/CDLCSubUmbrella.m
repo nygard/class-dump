@@ -6,6 +6,10 @@
 #import "CDLCSubUmbrella.h"
 
 @implementation CDLCSubUmbrella
+{
+    struct sub_umbrella_command command;
+    NSString *name;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

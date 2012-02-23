@@ -8,8 +8,6 @@
 @class CDOCClass, CDOCCategory, CDOCProtocol;
 
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
-{
-}
 
 - (void)loadProtocols;
 - (void)loadClasses;

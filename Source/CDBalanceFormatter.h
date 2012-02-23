@@ -6,12 +6,6 @@
 #import <Foundation/Foundation.h>
 
 @interface CDBalanceFormatter : NSObject
-{
-    NSScanner *scanner;
-    NSCharacterSet *openCloseSet;
-
-    NSMutableString *result;
-}
 
 - (id)initWithString:(NSString *)str;
 - (void)dealloc;

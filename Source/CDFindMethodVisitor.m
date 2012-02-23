@@ -17,6 +17,12 @@
 #import "CDTypeController.h"
 
 @implementation CDFindMethodVisitor
+{
+    NSString *findString;
+    NSMutableString *resultString;
+    CDOCProtocol *context;
+    BOOL hasShownContext;
+}
 
 - (id)init;
 {
@@ -65,9 +71,9 @@
 
 - (void)willBeginVisiting;
 {
-    [classDump appendHeaderToString:resultString];
+    [self.classDump appendHeaderToString:resultString];
 
-    if (classDump.hasObjectiveCRuntimeInfo) {
+    if (self.classDump.hasObjectiveCRuntimeInfo) {
         //[[classDump typeController] appendStructuresToString:resultString symbolReferences:nil];
         //[resultString appendString:@"// [structures go here]\n"];
     }
@@ -75,7 +81,7 @@
 
 - (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
 {
-    if (!classDump.hasObjectiveCRuntimeInfo) {
+    if (!self.classDump.hasObjectiveCRuntimeInfo) {
         [resultString appendString:@"//\n"];
         [resultString appendString:@"// This file does not contain any Objective-C runtime information.\n"];
         [resultString appendString:@"//\n"];
@@ -141,7 +147,7 @@
         [self showContextIfNecessary];
 
         [resultString appendString:@"+ "];
-        [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:nil];
+        [aMethod appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }
@@ -153,7 +159,7 @@
         [self showContextIfNecessary];
 
         [resultString appendString:@"- "];
-        [aMethod appendToString:resultString typeController:[classDump typeController] symbolReferences:nil];
+        [aMethod appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }

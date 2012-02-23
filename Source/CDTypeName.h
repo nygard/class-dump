@@ -6,11 +6,6 @@
 #import <Foundation/Foundation.h>
 
 @interface CDTypeName : NSObject <NSCopying>
-{
-    NSString *name;
-    NSMutableArray *templateTypes;
-    NSString *suffix;
-}
 
 - (id)init;
 - (void)dealloc;

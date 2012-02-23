@@ -6,11 +6,6 @@
 #import "CDVisitor.h"
 
 @interface CDClassFrameworkVisitor : CDVisitor
-{
-    NSMutableDictionary *frameworkNamesByClassName;
-    NSMutableDictionary *frameworkNamesByProtocolName;
-    NSString *frameworkName;
-}
 
 - (NSDictionary *)frameworkNamesByClassName;
 - (NSDictionary *)frameworkNamesByProtocolName;

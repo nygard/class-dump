@@ -20,6 +20,17 @@
 #import "CDVisitorPropertyState.h"
 
 @implementation CDOCProtocol
+{
+    NSString *name;
+    NSMutableArray *protocols;
+    NSMutableArray *classMethods;
+    NSMutableArray *instanceMethods;
+    NSMutableArray *optionalClassMethods;
+    NSMutableArray *optionalInstanceMethods;
+    NSMutableArray *properties;
+    
+    NSMutableSet *adoptedProtocolNames;
+}
 
 - (id)init;
 {
@@ -64,11 +75,7 @@
 #pragma mark -
 
 @synthesize name;
-
-- (NSArray *)protocols;
-{
-    return protocols;
-}
+@synthesize protocols;
 
 // This assumes that the protocol name doesn't change after it's been added to this.
 - (void)addProtocol:(CDOCProtocol *)aProtocol;

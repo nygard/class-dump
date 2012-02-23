@@ -8,14 +8,6 @@
 @class CDSymbolReferences, CDTypeController;
 
 @interface CDOCMethod : NSObject <NSCopying>
-{
-    NSString *name;
-    NSString *type;
-    NSUInteger imp;
-
-    BOOL hasParsedType;
-    NSArray *parsedMethodTypes;
-}
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;

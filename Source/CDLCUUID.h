@@ -8,11 +8,6 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 @interface CDLCUUID : CDLoadCommand
-{
-    struct uuid_command uuidCommand;
-
-    CFUUIDRef uuid;
-}
 
 @property (readonly) NSString *uuidString;
 

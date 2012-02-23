@@ -6,7 +6,5 @@
 #import "CDTextClassDumpVisitor.h"
 
 @interface CDClassDumpVisitor : CDTextClassDumpVisitor
-{
-}
 
 @end

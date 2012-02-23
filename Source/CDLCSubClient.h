@@ -6,10 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCSubClient : CDLoadCommand
-{
-    struct sub_client_command command;
-    NSString *name;
-}
 
 @property (readonly) NSString *name;
 

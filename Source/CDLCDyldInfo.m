@@ -134,6 +134,12 @@ static NSString *CDBindTypeString(uint8_t type)
 // Needs access to: list of segments
 
 @implementation CDLCDyldInfo
+{
+    struct dyld_info_command dyldInfoCommand;
+    
+    NSUInteger ptrSize;
+    NSMutableDictionary *symbolNamesByAddress;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -220,7 +226,7 @@ static NSString *CDBindTypeString(uint8_t type)
     BOOL isDone = NO;
     NSUInteger rebaseCount = 0;
 
-    NSArray *segments = [nonretained_machOFile segments];
+    NSArray *segments = [self.machOFile segments];
     NSParameterAssert([segments count] > 0);
 
     uint64_t address = [[segments objectAtIndex:0] vmaddr];
@@ -228,7 +234,7 @@ static NSString *CDBindTypeString(uint8_t type)
 
     NSLog(@"----------------------------------------------------------------------");
     NSLog(@"rebase_off: %u, rebase_size: %u", dyldInfoCommand.rebase_off, dyldInfoCommand.rebase_size);
-    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.rebase_off;
+    const uint8_t *start = [[self.machOFile machOData] bytes] + dyldInfoCommand.rebase_off;
     const uint8_t *end = start + dyldInfoCommand.rebase_size;
 
     NSLog(@"address: %016llx", address);
@@ -348,7 +354,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"bind_off: %u, bind_size: %u", dyldInfoCommand.bind_off, dyldInfoCommand.bind_size);
     }
-    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.bind_off;
+    const uint8_t *start = [[self.machOFile machOData] bytes] + dyldInfoCommand.bind_off;
     const uint8_t *end = start + dyldInfoCommand.bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
@@ -360,7 +366,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"weak_bind_off: %u, weak_bind_size: %u", dyldInfoCommand.weak_bind_off, dyldInfoCommand.weak_bind_size);
     }
-    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.weak_bind_off;
+    const uint8_t *start = [[self.machOFile machOData] bytes] + dyldInfoCommand.weak_bind_off;
     const uint8_t *end = start + dyldInfoCommand.weak_bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
@@ -372,7 +378,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"lazy_bind_off: %u, lazy_bind_size: %u", dyldInfoCommand.lazy_bind_off, dyldInfoCommand.lazy_bind_size);
     }
-    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.lazy_bind_off;
+    const uint8_t *start = [[self.machOFile machOData] bytes] + dyldInfoCommand.lazy_bind_off;
     const uint8_t *end = start + dyldInfoCommand.lazy_bind_size;
 
     [self logBindOps:start end:end isLazy:YES];
@@ -389,7 +395,7 @@ static NSString *CDBindTypeString(uint8_t type)
     const char *symbolName = NULL;
     uint8_t symbolFlags = 0;
 
-    NSArray *segments = [nonretained_machOFile segments];
+    NSArray *segments = [self.machOFile segments];
     NSParameterAssert([segments count] > 0);
 
     uint64_t address = [[segments objectAtIndex:0] vmaddr];
@@ -541,7 +547,7 @@ static NSString *CDBindTypeString(uint8_t type)
         NSLog(@"hexdump -Cv -s %u -n %u", dyldInfoCommand.export_off, dyldInfoCommand.export_size);
     }
 
-    const uint8_t *start = [[nonretained_machOFile machOData] bytes] + dyldInfoCommand.export_off;
+    const uint8_t *start = [[self.machOFile machOData] bytes] + dyldInfoCommand.export_off;
     const uint8_t *end = start + dyldInfoCommand.export_size;
 
     NSLog(@"         Type Flags Offset           Name");

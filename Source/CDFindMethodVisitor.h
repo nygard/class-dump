@@ -6,12 +6,6 @@
 #import "CDVisitor.h"
 
 @interface CDFindMethodVisitor : CDVisitor
-{
-    NSString *findString;
-    NSMutableString *resultString;
-    CDOCProtocol *context;
-    BOOL hasShownContext;
-}
 
 @property (retain) NSString *findString;
 

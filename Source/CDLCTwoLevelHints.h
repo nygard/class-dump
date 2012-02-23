@@ -6,8 +6,5 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCTwoLevelHints : CDLoadCommand
-{
-    struct twolevel_hints_command hintsCommand;
-}
 
 @end

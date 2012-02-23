@@ -21,6 +21,13 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 }
 
 @implementation CDTypeLexer
+{
+    NSScanner *scanner;
+    CDTypeLexerState state;
+    NSString *lexText;
+    
+    BOOL shouldShowLexing;
+}
 
 - (id)initWithString:(NSString *)aString;
 {

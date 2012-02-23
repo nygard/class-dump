@@ -8,9 +8,6 @@
 @class CDFatArch, CDMachOFile;
 
 @interface CDFatFile : CDFile
-{
-    NSArray *arches;
-}
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 

@@ -6,6 +6,10 @@
 #import "CDSearchPathState.h"
 
 @implementation CDSearchPathState
+{
+    NSString *executablePath;
+    NSMutableArray *searchPathStack;
+}
 
 - (id)init;
 {

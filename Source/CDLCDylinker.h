@@ -6,10 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCDylinker : CDLoadCommand
-{
-    struct dylinker_command dylinkerCommand;
-    NSString *name;
-}
 
 @property (readonly) NSString *name;
 

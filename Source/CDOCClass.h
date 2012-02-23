@@ -7,12 +7,6 @@
 #import "CDTopologicalSortProtocol.h"
 
 @interface CDOCClass : CDOCProtocol <CDTopologicalSort>
-{
-    NSString *superClassName;
-    NSArray *ivars;
-
-    BOOL isExported;
-}
 
 @property (retain) NSString *superClassName;
 @property (retain) NSArray *ivars;

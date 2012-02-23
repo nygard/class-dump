@@ -23,6 +23,30 @@
 #import "CDSearchPathState.h"
 
 @implementation CDClassDump
+{
+    CDSearchPathState *searchPathState;
+    
+    BOOL shouldProcessRecursively;
+    BOOL shouldSortClasses; // And categories, protocols
+    BOOL shouldSortClassesByInheritance; // And categories, protocols
+    BOOL shouldSortMethods;
+    
+    BOOL shouldShowIvarOffsets;
+    BOOL shouldShowMethodAddresses;
+    BOOL shouldShowHeader;
+    
+    BOOL shouldMatchRegex;
+    regex_t compiledRegex;
+    
+    NSString *sdkRoot;
+    NSMutableArray *machOFiles;
+    NSMutableDictionary *machOFilesByID;
+    NSMutableArray *objcProcessors;
+    
+    CDTypeController *typeController;
+    
+    CDArch targetArch;
+}
 
 - (id)init;
 {

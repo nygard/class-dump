@@ -8,11 +8,6 @@
 @class CDRelocationInfo;
 
 @interface CDLCDynamicSymbolTable : CDLoadCommand
-{
-    struct dysymtab_command dysymtab;
-
-    NSArray *externalRelocationEntries;
-}
 
 - (void)loadSymbols;
 

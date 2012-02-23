@@ -6,6 +6,9 @@
 #import "CDLCPrebindChecksum.h"
 
 @implementation CDLCPrebindChecksum
+{
+    struct prebind_cksum_command prebindChecksumCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

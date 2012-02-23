@@ -8,10 +8,6 @@
 @class CDSymbolReferences;
 
 @interface CDMultiFileVisitor : CDTextClassDumpVisitor
-{
-    NSString *outputPath;
-    NSUInteger referenceIndex;
-}
 
 @property (retain) NSString *outputPath;
 

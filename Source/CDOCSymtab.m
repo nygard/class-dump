@@ -11,6 +11,10 @@
 #import "CDSymbolReferences.h"
 
 @implementation CDOCSymtab
+{
+    NSMutableArray *classes;
+    NSMutableArray *categories;
+}
 
 - (id)init;
 {

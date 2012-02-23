@@ -6,6 +6,9 @@
 #import "CDRelocationInfo.h"
 
 @implementation CDRelocationInfo
+{
+    struct relocation_info rinfo;
+}
 
 - (id)initWithInfo:(struct relocation_info)info;
 {

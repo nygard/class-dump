@@ -10,17 +10,6 @@
 @class CDOCMethod, CDOCProperty;
 
 @interface CDOCProtocol : NSObject
-{
-    NSString *name;
-    NSMutableArray *protocols;
-    NSMutableArray *classMethods;
-    NSMutableArray *instanceMethods;
-    NSMutableArray *optionalClassMethods;
-    NSMutableArray *optionalInstanceMethods;
-    NSMutableArray *properties;
-
-    NSMutableSet *adoptedProtocolNames;
-}
 
 - (id)init;
 
@@ -28,7 +17,8 @@
 
 @property (retain) NSString *name;
 
-- (NSArray *)protocols;
+@property (readonly) NSArray *protocols;
+
 - (void)addProtocol:(CDOCProtocol *)aProtocol;
 - (void)removeProtocol:(CDOCProtocol *)aProtocol;
 

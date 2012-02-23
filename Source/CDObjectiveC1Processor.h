@@ -8,9 +8,6 @@
 @class CDOCCategory, CDOCClass, CDOCProtocol, CDOCSymtab;
 
 @interface CDObjectiveC1Processor : CDObjectiveCProcessor
-{
-    NSMutableArray *modules;
-}
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 

@@ -5,11 +5,17 @@
 
 #import "CDSection32.h"
 
+#include <mach-o/loader.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDLCSegment32.h"
 
 @implementation CDSection32
+{
+    CDLCSegment32 *nonretained_segment;
+    
+    struct section section;
+}
 
 // Just to resolve multiple different definitions...
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
@@ -54,7 +60,7 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
-            section.addr, section.offset, section.size, section.size, segmentName, sectionName];
+            section.addr, section.offset, section.size, section.size, self.segmentName, self.sectionName];
 }
 
 #pragma mark -
@@ -83,9 +89,9 @@
 
 - (void)loadData;
 {
-    if (_flags.hasLoadedData == NO) {
-        data = [[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size];
-        _flags.hasLoadedData = YES;
+    if (self.hasLoadedData == NO) {
+        self.data = [[[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size] autorelease];
+        self.hasLoadedData = YES;
     }
 }
 

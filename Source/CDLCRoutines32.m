@@ -6,6 +6,9 @@
 #import "CDLCRoutines32.h"
 
 @implementation CDLCRoutines32
+{
+    struct routines_command routinesCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

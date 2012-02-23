@@ -6,8 +6,5 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCLinkeditData : CDLoadCommand
-{
-    struct linkedit_data_command linkeditDataCommand;
-}
 
 @end

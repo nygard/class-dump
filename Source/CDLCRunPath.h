@@ -6,10 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCRunPath : CDLoadCommand
-{
-    struct rpath_command rpathCommand;
-    NSString *path;
-}
 
 @property (readonly) NSString *path;
 @property (readonly) NSString *resolvedRunPath;

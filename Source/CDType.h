@@ -8,17 +8,6 @@
 @class CDSymbolReferences, CDTypeController, CDTypeFormatter, CDTypeName;
 
 @interface CDType : NSObject <NSCopying>
-{
-    int type;
-    NSArray *protocols;
-    CDType *subtype;
-    CDTypeName *typeName;
-    NSMutableArray *members;
-    NSString *bitfieldSize;
-    NSString *arraySize;
-
-    NSString *variableName;
-}
 
 - (id)init;
 - (id)initSimpleType:(int)aTypeCode;

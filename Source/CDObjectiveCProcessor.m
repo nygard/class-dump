@@ -18,6 +18,17 @@
 // Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
 
 @implementation CDObjectiveCProcessor
+{
+    CDMachOFile *machOFile;
+    
+    NSMutableArray *classes;
+    NSMutableDictionary *classesByAddress;
+    
+    NSMutableArray *categories;
+    
+    NSMutableDictionary *protocolsByName; // uniqued
+    NSMutableDictionary *protocolsByAddress; // non-uniqued
+}
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
@@ -95,6 +106,54 @@
     }
     
     return nil;
+}
+
+#pragma mark -
+
+- (void)addClass:(CDOCClass *)aClass withAddress:(uint64_t)address;
+{
+    [classes addObject:aClass];
+    [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedLongLong:address]];
+}
+
+- (CDOCClass *)classWithAddress:(uint64_t)address;
+{
+    return [classesByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:address]];
+}
+
+- (void)addClassesFromArray:(NSArray *)anArray;
+{
+    if (anArray != nil)
+        [classes addObjectsFromArray:anArray];
+}
+
+- (void)addCategoriesFromArray:(NSArray *)anArray;
+{
+    if (anArray != nil)
+        [categories addObjectsFromArray:anArray];
+}
+
+- (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
+{
+    NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
+    return [protocolsByAddress objectForKey:key];
+}
+
+- (void)setProtocol:(CDOCProtocol *)aProtocol withAddress:(uint64_t)address;
+{
+    NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
+    [protocolsByAddress setObject:aProtocol forKey:key];
+}
+
+- (CDOCProtocol *)protocolForName:(NSString *)name;
+{
+    return [protocolsByName objectForKey:name];
+}
+
+- (void)addCategory:(CDOCCategory *)category;
+{
+    if (category != nil)
+        [categories addObject:category];
 }
 
 #pragma mark - Processing

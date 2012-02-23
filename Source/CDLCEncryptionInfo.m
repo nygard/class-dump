@@ -8,6 +8,9 @@
 // This is used on iOS.
 
 @implementation CDLCEncryptionInfo
+{
+    struct encryption_info_command encryptionInfoCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

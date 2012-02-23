@@ -10,6 +10,11 @@
 #import "CDRelocationInfo.h"
 
 @implementation CDLCDynamicSymbolTable
+{
+    struct dysymtab_command dysymtab;
+    
+    NSArray *externalRelocationEntries;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -88,12 +93,12 @@
 {
     NSMutableArray *_externalRelocationEntries = [[NSMutableArray alloc] init];
     
-    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:dysymtab.extreloff];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile offset:dysymtab.extreloff];
 
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
     //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
 #if 0
-    [cursor setOffset:[nonretained_machOFile offset] + dysymtab.indirectsymoff];
+    [cursor setOffset:[self.machOFile offset] + dysymtab.indirectsymoff];
     for (uint32_t index = 0; index < dysymtab.nindirectsyms; index++) {
         // From loader.h: An indirect symbol table entry is simply a 32bit index into the symbol table to the symbol that the pointer or stub is referring to.
         uint32_t val = [cursor readInt32];

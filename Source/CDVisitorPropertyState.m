@@ -8,6 +8,10 @@
 #import "CDOCProperty.h"
 
 @implementation CDVisitorPropertyState
+{
+    NSMutableDictionary *propertiesByAccessor; // key: NSString (accessor), value: CDOCProperty
+    NSMutableDictionary *propertiesByName; // key: NSString (property name), value: CDOCProperty
+}
 
 - (id)initWithProperties:(NSArray *)properties;
 {

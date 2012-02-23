@@ -12,6 +12,14 @@
 #import "CDTypeController.h"
 
 @implementation CDOCIvar
+{
+    NSString *name;
+    NSString *type;
+    NSUInteger offset;
+    
+    BOOL hasParsedType;
+    CDType *parsedType;
+}
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 {

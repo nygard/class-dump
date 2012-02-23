@@ -11,6 +11,9 @@
 #import "CDVisitorPropertyState.h"
 
 @implementation CDVisitor
+{
+    CDClassDump *classDump;
+}
 
 - (id)init;
 {

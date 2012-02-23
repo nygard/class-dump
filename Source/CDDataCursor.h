@@ -6,10 +6,6 @@
 #import <Foundation/Foundation.h>
 
 @interface CDDataCursor : NSObject
-{
-    NSData *data;
-    NSUInteger offset;
-}
 
 - (id)initWithData:(NSData *)someData;
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
@@ -17,8 +13,8 @@
 - (NSData *)data;
 - (const void *)bytes;
 
-- (NSUInteger)offset;
-- (void)setOffset:(NSUInteger)newOffset;
+@property (nonatomic, assign) NSUInteger offset;
+
 - (void)advanceByLength:(NSUInteger)length;
 - (NSUInteger)remaining;
 

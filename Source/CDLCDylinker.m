@@ -6,6 +6,10 @@
 #import "CDLCDylinker.h"
 
 @implementation CDLCDylinker
+{
+    struct dylinker_command dylinkerCommand;
+    NSString *name;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
