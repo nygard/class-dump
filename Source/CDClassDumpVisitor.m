@@ -7,7 +7,6 @@
 
 #include <mach-o/arch.h>
 
-#import "NSArray-Extensions.h"
 #import "CDClassDump.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"

@@ -12,7 +12,6 @@
 #import "CDOCClass.h"
 #import "CDOCMethod.h"
 #import "CDOCIvar.h"
-#import "NSArray-Extensions.h"
 #import "CDLCSymbolTable.h"
 #import "CDOCCategory.h"
 #import "CDClassDump.h"

@@ -5,16 +5,16 @@
 
 #import <Foundation/Foundation.h>
 
-#define TK_EOS 0
-#define TK_NUMBER 257
-#define TK_IDENTIFIER 258
-#define T_NAMED_OBJECT 259
+#define TK_EOS           0
+#define TK_NUMBER        257
+#define TK_IDENTIFIER    258
+#define T_NAMED_OBJECT   259
 #define TK_QUOTED_STRING 260
 #define TK_TEMPLATE_TYPE TK_IDENTIFIER
 
 enum {
-    CDTypeLexerState_Normal = 0,
-    CDTypeLexerState_Identifier = 1,
+    CDTypeLexerState_Normal        = 0,
+    CDTypeLexerState_Identifier    = 1,
     CDTypeLexerState_TemplateTypes = 2,
 };
 typedef NSUInteger CDTypeLexerState;

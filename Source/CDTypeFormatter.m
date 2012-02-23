@@ -5,9 +5,6 @@
 
 #import "CDTypeFormatter.h"
 
-#import "NSError-CDExtensions.h"
-#import "NSScanner-Extensions.h"
-#import "NSString-Extensions.h"
 #import "CDMethodType.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"

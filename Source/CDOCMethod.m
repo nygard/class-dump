@@ -8,7 +8,6 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
-#import "NSError-CDExtensions.h"
 #import "CDTypeController.h"
 
 @implementation CDOCMethod

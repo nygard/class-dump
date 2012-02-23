@@ -8,7 +8,6 @@
 #import "CDClassDump.h"
 #import "CDMachOFile.h"
 #import "CDVisitor.h"
-#import "NSArray-Extensions.h"
 #import "CDLCSegment.h"
 #import "CDLCDynamicSymbolTable.h"
 #import "CDLCSymbolTable.h"

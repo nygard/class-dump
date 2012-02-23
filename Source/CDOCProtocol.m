@@ -5,8 +5,6 @@
 
 #import "CDOCProtocol.h"
 
-#import "NSArray-Extensions.h"
-#import "NSError-CDExtensions.h"
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDOCSymtab.h"

@@ -5,8 +5,6 @@
 
 #import "CDBalanceFormatter.h"
 
-#import "NSString-Extensions.h"
-
 static BOOL debug = NO;
 
 @implementation CDBalanceFormatter

@@ -5,7 +5,6 @@
 
 #import "CDFindMethodVisitor.h"
 
-#import "NSArray-Extensions.h"
 #import "CDClassDump.h"
 #import "CDObjectiveC1Processor.h"
 #import "CDMachOFile.h"

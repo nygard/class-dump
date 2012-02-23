@@ -5,7 +5,6 @@
 
 #import "CDOCProperty.h"
 
-#import "NSString-Extensions.h"
 #import "CDTypeParser.h"
 #import "CDTypeLexer.h"
 

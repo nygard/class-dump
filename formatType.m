@@ -10,7 +10,6 @@
 #include <stdlib.h>
 
 #import <Foundation/Foundation.h>
-#import "NSString-Extensions.h"
 
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"

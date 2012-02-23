@@ -5,9 +5,6 @@
 
 #import "CDStructureTable.h"
 
-#import "NSArray-Extensions.h"
-#import "NSError-CDExtensions.h"
-#import "NSString-Extensions.h"
 #import "CDClassDump.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"

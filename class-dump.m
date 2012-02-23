@@ -11,7 +11,6 @@
 #include <mach-o/arch.h>
 
 #import <Foundation/Foundation.h>
-#import "NSString-Extensions.h"
 
 #import "CDClassDump.h"
 #import "CDFindMethodVisitor.h"

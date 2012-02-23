@@ -5,8 +5,6 @@
 
 #import "CDLoadCommand.h"
 
-#import <CoreFoundation/CoreFoundation.h>
-
 @interface CDLCUUID : CDLoadCommand
 
 @property (readonly) NSString *uuidString;

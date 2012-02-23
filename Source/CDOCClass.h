@@ -4,6 +4,7 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDOCProtocol.h"
+
 #import "CDTopologicalSortProtocol.h"
 
 @interface CDOCClass : CDOCProtocol <CDTopologicalSort>

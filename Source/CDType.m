@@ -5,15 +5,12 @@
 
 #import "CDType.h"
 
-#import "NSArray-Extensions.h"
-#import "NSString-Extensions.h"
 #import "CDSymbolReferences.h"
 #import "CDTypeController.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
-#import "NSError-CDExtensions.h"
 
 static BOOL debugMerge = NO;
 

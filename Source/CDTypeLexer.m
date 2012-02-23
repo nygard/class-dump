@@ -5,16 +5,14 @@
 
 #import "CDTypeLexer.h"
 
-#import "NSScanner-Extensions.h"
-
 static BOOL debug = NO;
 
 static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 {
     switch (state) {
-      case CDTypeLexerState_Normal: return @"Normal";
-      case CDTypeLexerState_Identifier: return @"Identifier";
-      case CDTypeLexerState_TemplateTypes: return @"Template";
+        case CDTypeLexerState_Normal:        return @"Normal";
+        case CDTypeLexerState_Identifier:    return @"Identifier";
+        case CDTypeLexerState_TemplateTypes: return @"Template";
     }
 
     return @"Unknown";

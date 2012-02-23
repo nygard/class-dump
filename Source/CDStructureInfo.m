@@ -5,8 +5,6 @@
 
 #import "CDStructureInfo.h"
 
-#import "NSError-CDExtensions.h"
-#import "NSString-Extensions.h"
 #import "CDType.h"
 
 // If it's used in a method, then it should be declared at the top. (name or typedef)

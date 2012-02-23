@@ -5,16 +5,14 @@
 
 #import "CDTypeParser.h"
 
-#include <assert.h>
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h"
-#import "NSString-Extensions.h"
 
-NSString *CDExceptionName_SyntaxError = @"CDExceptionName_SyntaxError";
+NSString *CDExceptionName_SyntaxError         = @"CDExceptionName_SyntaxError";
 
-NSString *CDErrorDomain_TypeParser = @"CDErrorDomain_TypeParser";
+NSString *CDErrorDomain_TypeParser            = @"CDErrorDomain_TypeParser";
 
 NSString *CDErrorKey_Type                     = @"CDErrorKey_Type";
 NSString *CDErrorKey_RemainingString          = @"CDErrorKey_RemainingString";

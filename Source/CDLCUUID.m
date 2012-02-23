@@ -5,6 +5,7 @@
 
 #import "CDLCUUID.h"
 
+#import <CoreFoundation/CoreFoundation.h>
 #import "CDMachOFile.h"
 
 @implementation CDLCUUID

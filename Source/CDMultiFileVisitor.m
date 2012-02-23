@@ -5,7 +5,6 @@
 
 #import "CDMultiFileVisitor.h"
 
-#import "NSArray-Extensions.h"
 #import "CDClassDump.h"
 #import "CDClassFrameworkVisitor.h"
 #import "CDSymbolReferences.h"

@@ -8,7 +8,6 @@
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"
-#import "NSArray-Extensions.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
 
