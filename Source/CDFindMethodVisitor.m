@@ -13,7 +13,7 @@
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDOCMethod.h"
-#import "CDTypeController.h"
+//#import "CDTypeController.h"
 
 @interface CDFindMethodVisitor ()
 @property (nonatomic, retain) CDOCProtocol *context;

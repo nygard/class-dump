@@ -10,16 +10,12 @@
 #import "CDClassDump.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
-#import "CDOCProtocol.h"
 #import "CDLCDylib.h"
 #import "CDLCDylinker.h"
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDLCSegment.h"
 #import "CDLCVersionMinimum.h"
-#import "CDOCClass.h"
-#import "CDOCCategory.h"
-#import "CDSymbolReferences.h"
 #import "CDTypeController.h"
 
 @implementation CDClassDumpVisitor

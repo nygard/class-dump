@@ -7,7 +7,6 @@
 
 #import "CDOCClass.h"
 #import "CDObjectiveCProcessor.h"
-#import "CDMachOFile.h"
 
 // This builds up a dictionary mapping class names to a framework name.  It is used to generate individual imports when creating separate header files.
 

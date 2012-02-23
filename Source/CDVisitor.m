@@ -5,11 +5,6 @@
 
 #import "CDVisitor.h"
 
-#import "CDClassDump.h"
-#import "CDObjectiveC1Processor.h"
-#import "CDOCProperty.h"
-#import "CDVisitorPropertyState.h"
-
 @implementation CDVisitor
 {
     CDClassDump *classDump;

@@ -6,16 +6,11 @@
 #import "CDTextClassDumpVisitor.h"
 
 #import "CDClassDump.h"
-#import "CDObjectiveC1Processor.h"
-#import "CDMachOFile.h"
-#import "CDOCProtocol.h"
-#import "CDLCDylib.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSymbolReferences.h"
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
-#import "CDTypeFormatter.h"
 #import "CDTypeController.h"
 #import "CDVisitorPropertyState.h"
 
