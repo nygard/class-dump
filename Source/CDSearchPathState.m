@@ -48,17 +48,6 @@
 
 }
 
-- (NSString *)resolvePath:(NSString *)path;
-{
-    for (NSArray *group in searchPathStack) {
-        for (NSString *thisPath in group) {
-            NSLog(@"path %@", thisPath);
-        }
-    }
-
-    return path;
-}
-
 - (NSArray *)searchPaths;
 {
     NSMutableArray *result = [NSMutableArray array];
@@ -66,8 +55,7 @@
         [result addObjectsFromArray:group];
     }
 
-    return [NSArray arrayWithArray:result];
-    //return [[result copy] autorelease];
+    return [[result copy] autorelease];
 }
 
 @end

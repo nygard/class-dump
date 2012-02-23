@@ -12,7 +12,6 @@
 - (void)pushSearchPaths:(NSArray *)searchPaths;
 - (void)popSearchPaths;
 
-- (NSString *)resolvePath:(NSString *)path;
 - (NSArray *)searchPaths;
 
 @end
