@@ -71,7 +71,7 @@ typedef NSUInteger CDByteOrder;
 - (const void *)bytes;
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;
 
-- (NSString *)importBaseName;
+@property (nonatomic, readonly) NSString *importBaseName;
 
 @property (readonly) BOOL isEncrypted;
 @property (readonly) BOOL hasProtectedSegments;

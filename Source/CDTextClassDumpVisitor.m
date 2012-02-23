@@ -12,6 +12,7 @@
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
 #import "CDTypeController.h"
+#import "CDTypeFormatter.h"
 #import "CDVisitorPropertyState.h"
 
 // Add newlines after properties

@@ -5,6 +5,7 @@
 
 #import "CDClassFrameworkVisitor.h"
 
+#import "CDMachOFile.h"
 #import "CDOCClass.h"
 #import "CDObjectiveCProcessor.h"
 
@@ -18,8 +19,8 @@
 
 @implementation CDClassFrameworkVisitor
 {
-    NSMutableDictionary *frameworkNamesByClassName;     // NSString (class name)    -> NSString (framework name)
-    NSMutableDictionary *frameworkNamesByProtocolName;  // NSString (protocol name) -> NSString (framework name)
+    NSMutableDictionary *frameworkNamesByClassName;
+    NSMutableDictionary *frameworkNamesByProtocolName;
     NSString *frameworkName;
 }
 
@@ -47,7 +48,7 @@
 
 - (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 {
-    self.frameworkName = [processor.machOFile importBaseName];
+    self.frameworkName = processor.machOFile.importBaseName;
 }
 
 - (void)willVisitClass:(CDOCClass *)aClass;

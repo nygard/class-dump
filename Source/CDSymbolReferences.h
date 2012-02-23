@@ -7,27 +7,22 @@
 
 @interface CDSymbolReferences : NSObject
 
-- (NSString *)description;
+@property (retain) NSDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)
+@property (retain) NSDictionary *frameworkNamesByProtocolName; // NSString (protocol name) -> NSString (framework name)
 
-- (void)setFrameworkNamesByClassName:(NSDictionary *)newValue;
-- (void)setFrameworkNamesByProtocolName:(NSDictionary *)newValue;
+- (NSString *)frameworkForClassName:(NSString *)className;
+- (NSString *)frameworkForProtocolName:(NSString *)protocolName;
 
-- (NSString *)frameworkForClassName:(NSString *)aClassName;
-- (NSString *)frameworkForProtocolName:(NSString *)aProtocolName;
+- (void)addClassName:(NSString *)className;
+- (void)removeClassName:(NSString *)className;
 
-- (NSArray *)classes;
-- (void)addClassName:(NSString *)aClassName;
-- (void)removeClassName:(NSString *)aClassName;
-
-- (NSArray *)protocols;
-- (void)addProtocolName:(NSString *)aProtocolName;
+- (void)addProtocolName:(NSString *)protocolName;
 - (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
 
-- (void)_appendToString:(NSMutableString *)resultString;
-- (NSString *)referenceString;
+@property (nonatomic, readonly) NSString *referenceString;
 
 - (void)removeAllReferences;
-- (NSString *)importStringForClassName:(NSString *)aClassName;
-- (NSString *)importStringForProtocolName:(NSString *)aProtocolName;
+- (NSString *)importStringForClassName:(NSString *)className;
+- (NSString *)importStringForProtocolName:(NSString *)protocolName;
 
 @end

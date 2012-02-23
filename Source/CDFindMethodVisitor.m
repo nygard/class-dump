@@ -127,24 +127,24 @@
 
 - (void)visitClassMethod:(CDOCMethod *)method;
 {
-    NSRange range = [[method name] rangeOfString:searchString];
+    NSRange range = [method.name rangeOfString:searchString];
     if (range.length > 0) {
         [self showContextIfNecessary];
 
         [resultString appendString:@"+ "];
-        [method appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
+        [method appendToString:resultString typeController:self.classDump.typeController symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }
 
 - (void)visitInstanceMethod:(CDOCMethod *)method propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    NSRange range = [[method name] rangeOfString:searchString];
+    NSRange range = [method.name rangeOfString:searchString];
     if (range.length > 0) {
         [self showContextIfNecessary];
 
         [resultString appendString:@"- "];
-        [method appendToString:resultString typeController:[self.classDump typeController] symbolReferences:nil];
+        [method appendToString:resultString typeController:self.classDump.typeController symbolReferences:nil];
         [resultString appendString:@"\n"];
     }
 }

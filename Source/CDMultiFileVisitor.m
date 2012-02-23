@@ -8,6 +8,7 @@
 #import "CDClassDump.h"
 #import "CDClassFrameworkVisitor.h"
 #import "CDSymbolReferences.h"
+#import "CDOCCategory.h"
 #import "CDOCClass.h"
 #import "CDOCProtocol.h"
 #import "CDOCIvar.h"
@@ -59,7 +60,7 @@
     [self.classDump appendHeaderToString:self.resultString];
 
     [self.symbolReferences removeAllReferences];
-    NSString *str = [self.symbolReferences importStringForClassName:[aClass superClassName]];
+    NSString *str = [self.symbolReferences importStringForClassName:aClass.superClassName];
     if (str != nil) {
         [self.resultString appendString:str];
         [self.resultString appendString:@"\n"];
@@ -77,13 +78,13 @@
     [super didVisitClass:aClass];
 
     // Then insert the imports and write the file.
-    [self.symbolReferences removeClassName:[aClass name]];
-    [self.symbolReferences removeClassName:[aClass superClassName]];
-    NSString *referenceString = [self.symbolReferences referenceString];
+    [self.symbolReferences removeClassName:aClass.name];
+    [self.symbolReferences removeClassName:aClass.superClassName];
+    NSString *referenceString = self.symbolReferences.referenceString;
     if (referenceString != nil)
         [self.resultString insertString:referenceString atIndex:referenceIndex];
 
-    NSString *filename = [NSString stringWithFormat:@"%@.h", [aClass name]];
+    NSString *filename = [NSString stringWithFormat:@"%@.h", aClass.name];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
@@ -97,7 +98,7 @@
     [self.classDump appendHeaderToString:self.resultString];
 
     [self.symbolReferences removeAllReferences];
-    NSString *str = [self.symbolReferences importStringForClassName:[category className]];
+    NSString *str = [self.symbolReferences importStringForClassName:category.className];
     if (str != nil) {
         [self.resultString appendString:str];
         [self.resultString appendString:@"\n"];
@@ -114,12 +115,12 @@
     [super didVisitCategory:category];
 
     // Then insert the imports and write the file.
-    [self.symbolReferences removeClassName:[category className]];
-    NSString *referenceString = [self.symbolReferences referenceString];
+    [self.symbolReferences removeClassName:category.className];
+    NSString *referenceString = self.symbolReferences.referenceString;
     if (referenceString != nil)
         [self.resultString insertString:referenceString atIndex:referenceIndex];
 
-    NSString *filename = [NSString stringWithFormat:@"%@-%@.h", [category className], [category name]];
+    NSString *filename = [NSString stringWithFormat:@"%@-%@.h", category.className, category.name];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
@@ -144,11 +145,11 @@
     [super didVisitProtocol:protocol];
 
     // Then insert the imports and write the file.
-    NSString *referenceString = [self.symbolReferences referenceString];
+    NSString *referenceString = self.symbolReferences.referenceString;
     if (referenceString != nil)
         [self.resultString insertString:referenceString atIndex:referenceIndex];
 
-    NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", [protocol name]];
+    NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", protocol.name];
     if (outputPath != nil)
         filename = [outputPath stringByAppendingPathComponent:filename];
 
@@ -185,8 +186,8 @@
     CDClassFrameworkVisitor *visitor = [[CDClassFrameworkVisitor alloc] init];
     [visitor setClassDump:self.classDump];
     [self.classDump recursivelyVisit:visitor];
-    [self.symbolReferences setFrameworkNamesByClassName:[visitor frameworkNamesByClassName]];
-    [self.symbolReferences setFrameworkNamesByProtocolName:[visitor frameworkNamesByProtocolName]];
+    self.symbolReferences.frameworkNamesByClassName = [[visitor.frameworkNamesByClassName copy] autorelease];
+    self.symbolReferences.frameworkNamesByProtocolName = [[visitor.frameworkNamesByProtocolName copy] autorelease];
     [visitor release];
 }
 
