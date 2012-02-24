@@ -43,6 +43,8 @@ static BOOL debug = NO;
 - (id)initWithClassDump:(CDClassDump *)classDump;
 {
     if ((self = [super init])) {
+        nonretained_classDump = classDump;
+        
         ivarTypeFormatter = [[CDTypeFormatter alloc] init];
         ivarTypeFormatter.shouldExpand = NO;
         ivarTypeFormatter.shouldAutoExpand = YES;
@@ -74,8 +76,6 @@ static BOOL debug = NO;
         unionTable = [[CDStructureTable alloc] init];
         unionTable.anonymousBaseName = @"CDUnion_";
         unionTable.identifier = @"Unions";
-        
-        nonretained_classDump = classDump;
         
         //[structureTable debugName:@"_xmlSAXHandler"];
         //[structureTable debugName:@"UCKeyboardTypeHeader"];

@@ -28,17 +28,17 @@
 
 @property(retain) NSString *variableName;
 
-- (int)type;
+@property (nonatomic, readonly) int type;
 @property (readonly) BOOL isIDType;
 @property (readonly) BOOL isNamedObject;
 @property (readonly) BOOL isTemplateType;
 
-- (CDType *)subtype;
-- (CDTypeName *)typeName;
+@property (nonatomic, readonly) CDType *subtype;
+@property (nonatomic, readonly) CDTypeName *typeName;
 
-- (NSArray *)members;
+@property (nonatomic, readonly) NSArray *members;
 
-- (int)typeIgnoringModifiers;
+@property (nonatomic, readonly) int typeIgnoringModifiers;
 @property (nonatomic, readonly) NSUInteger structureDepth;
 
 - (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;

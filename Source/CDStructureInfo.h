@@ -23,7 +23,7 @@
 
 - (void)generateTypedefName:(NSString *)baseName;
 
-- (NSString *)name;
+@property (nonatomic, readonly) NSString *name;
 
 - (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
 - (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
