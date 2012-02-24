@@ -5,6 +5,9 @@
 
 #import "CDVisitor.h"
 
+// This limits the output to methods matching the search string.  Some context is included, so that you can see which class, category, or protocol
+// contains the method.
+
 @interface CDFindMethodVisitor : CDVisitor
 
 @property (retain) NSString *searchString;

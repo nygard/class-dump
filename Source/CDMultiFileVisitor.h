@@ -5,6 +5,8 @@
 
 #import "CDTextClassDumpVisitor.h"
 
+// This generates separate files for each class.  Files are created in the 'outputPath' directory.
+
 @interface CDMultiFileVisitor : CDTextClassDumpVisitor
 
 @property (retain) NSString *outputPath;

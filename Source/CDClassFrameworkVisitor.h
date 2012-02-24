@@ -5,6 +5,9 @@
 
 #import "CDVisitor.h"
 
+// This builds up a dictionary mapping class names to a framework names, and protocol names to framework names.
+// It is used by CDMultiFileVisitor to generate individual imports when creating separate header files.
+
 @interface CDClassFrameworkVisitor : CDVisitor
 
 @property (readonly) NSMutableDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)

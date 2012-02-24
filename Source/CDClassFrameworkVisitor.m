@@ -9,8 +9,6 @@
 #import "CDOCClass.h"
 #import "CDObjectiveCProcessor.h"
 
-// This builds up a dictionary mapping class names to a framework name.  It is used to generate individual imports when creating separate header files.
-
 @interface CDClassFrameworkVisitor ()
 @property (retain) NSString *frameworkName;
 @end
