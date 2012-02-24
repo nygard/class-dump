@@ -70,18 +70,14 @@
     [self.resultString appendFormat:@" *\n"];
     if (processor.garbageCollectionStatus != nil)
         [self.resultString appendFormat:@" *       Objective-C Garbage Collection: %@\n", processor.garbageCollectionStatus];
-    
-    if ([machOFile.dyldEnvironment count] > 0) {
-        BOOL first = YES;
-        for (CDLCDylinker *env in machOFile.dyldEnvironment) {
-            if (first) {
-                [self.resultString appendFormat:@" *       dyld environment: %@\n", env.name];
-                first = NO;
-            } else {
-                [self.resultString appendFormat:@" *                         %@\n", env.name];
-            }
+
+    [machOFile.dyldEnvironment enumerateObjectsUsingBlock:^(CDLCDylinker *env, NSUInteger index, BOOL *stop){
+        if (index == 0) {
+            [self.resultString appendFormat:@" *       dyld environment: %@\n", env.name];
+        } else {
+            [self.resultString appendFormat:@" *                         %@\n", env.name];
         }
-    }
+    }];
 
     for (CDLoadCommand *loadCommand in machOFile.loadCommands) {
         if ([loadCommand isKindOfClass:[CDLCRunPath class]]) {
@@ -106,21 +102,17 @@
         if (machOFile.canDecryptAllSegments) {
             [self.resultString appendString:@" *       This file has protected segments, decrypting.\n"];
         } else {
-            NSUInteger index = 0;
-
             [self.resultString appendString:@" *       This file has protected segments that can't be decrypted:\n"];
-            for (CDLoadCommand *loadCommand in machOFile.loadCommands) {
+            [machOFile.loadCommands enumerateObjectsUsingBlock:^(CDLoadCommand *loadCommand, NSUInteger index, BOOL *stop){
                 if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
                     CDLCSegment *segment = (CDLCSegment *)loadCommand;
-
+                    
                     if (segment.canDecrypt == NO) {
                         [self.resultString appendFormat:@" *           Load command %u, segment encryption: %@\n",
-                                      index, CDSegmentEncryptionTypeName(segment.encryptionType)];
+                         index, CDSegmentEncryptionTypeName(segment.encryptionType)];
                     }
                 }
-
-                index++;
-            }
+            }];
         }
     }
     [self.resultString appendString:@" */\n\n"];
