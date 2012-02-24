@@ -16,7 +16,7 @@ static BOOL debugMerge = NO;
 
 @implementation CDType
 {
-    int type;
+    int type; // TODO (2012-02-24): Rename to primitiveType or something
     NSArray *protocols;
     CDType *subtype;
     CDTypeName *typeName;

@@ -11,7 +11,6 @@
 
 - (id)initWithType:(CDType *)aType;
 
-- (NSString *)description;
 - (NSString *)shortDescription;
 
 @property (readonly) CDType *type;

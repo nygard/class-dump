@@ -28,6 +28,4 @@
 - (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
-- (NSString *)description;
-
 @end

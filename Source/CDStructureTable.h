@@ -28,7 +28,7 @@ typedef NSUInteger CDTableType;
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 - (void)phase1RegisterStructure:(CDType *)aStructure;
 - (void)finishPhase1;
-- (NSUInteger)phase1_maxDepth;
+@property (nonatomic, readonly) NSUInteger phase1_maxDepth;
 
 // Phase 2
 - (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;

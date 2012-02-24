@@ -12,6 +12,21 @@
 
 static BOOL debug = NO;
 
+@interface CDTypeController ()
+
+@property (readonly) CDClassDump *classDump;
+
+- (void)generateTypedefNames;
+- (void)generateMemberNames;
+
+- (void)startPhase1;
+- (void)startPhase2;
+- (void)startPhase3;
+
+@end
+
+#pragma mark -
+
 @implementation CDTypeController
 {
     CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
@@ -25,42 +40,42 @@ static BOOL debug = NO;
     CDStructureTable *unionTable;
 }
 
-- (id)initWithClassDump:(CDClassDump *)aClassDump;
+- (id)initWithClassDump:(CDClassDump *)classDump;
 {
     if ((self = [super init])) {
         ivarTypeFormatter = [[CDTypeFormatter alloc] init];
-        [ivarTypeFormatter setShouldExpand:NO];
-        [ivarTypeFormatter setShouldAutoExpand:YES];
-        [ivarTypeFormatter setBaseLevel:1];
-        [ivarTypeFormatter setTypeController:self];
+        ivarTypeFormatter.shouldExpand = NO;
+        ivarTypeFormatter.shouldAutoExpand = YES;
+        ivarTypeFormatter.baseLevel = 1;
+        ivarTypeFormatter.typeController = self;
         
         methodTypeFormatter = [[CDTypeFormatter alloc] init];
-        [methodTypeFormatter setShouldExpand:NO];
-        [methodTypeFormatter setShouldAutoExpand:NO];
-        [methodTypeFormatter setBaseLevel:0];
-        [methodTypeFormatter setTypeController:self];
+        methodTypeFormatter.shouldExpand = NO;
+        methodTypeFormatter.shouldAutoExpand = NO;
+        methodTypeFormatter.baseLevel = 0;
+        methodTypeFormatter.typeController = self;
         
         propertyTypeFormatter = [[CDTypeFormatter alloc] init];
-        [propertyTypeFormatter setShouldExpand:NO];
-        [propertyTypeFormatter setShouldAutoExpand:NO];
-        [propertyTypeFormatter setBaseLevel:0];
-        [propertyTypeFormatter setTypeController:self];
+        propertyTypeFormatter.shouldExpand = NO;
+        propertyTypeFormatter.shouldAutoExpand = NO;
+        propertyTypeFormatter.baseLevel = 0;
+        propertyTypeFormatter.typeController = self;
         
         structDeclarationTypeFormatter = [[CDTypeFormatter alloc] init];
-        [structDeclarationTypeFormatter setShouldExpand:YES]; // But don't expand named struct members...
-        [structDeclarationTypeFormatter setShouldAutoExpand:YES];
-        [structDeclarationTypeFormatter setBaseLevel:0];
-        [structDeclarationTypeFormatter setTypeController:self]; // But need to ignore some things?
+        structDeclarationTypeFormatter.shouldExpand = YES; // But don't expand named struct members...
+        structDeclarationTypeFormatter.shouldAutoExpand = YES;
+        structDeclarationTypeFormatter.baseLevel = 0;
+        structDeclarationTypeFormatter.typeController = self; // But need to ignore some things?
         
         structureTable = [[CDStructureTable alloc] init];
-        [structureTable setAnonymousBaseName:@"CDStruct_"];
-        [structureTable setIdentifier:@"Structs"];
+        structureTable.anonymousBaseName = @"CDStruct_";
+        structureTable.identifier = @"Structs";
         
         unionTable = [[CDStructureTable alloc] init];
-        [unionTable setAnonymousBaseName:@"CDUnion_"];
-        [unionTable setIdentifier:@"Unions"];
+        unionTable.anonymousBaseName = @"CDUnion_";
+        unionTable.identifier = @"Unions";
         
-        nonretained_classDump = aClassDump;
+        nonretained_classDump = classDump;
         
         //[structureTable debugName:@"_xmlSAXHandler"];
         //[structureTable debugName:@"UCKeyboardTypeHeader"];
@@ -92,26 +107,44 @@ static BOOL debug = NO;
 
 #pragma mark -
 
+@synthesize classDump = nonretained_classDump;
+
 @synthesize ivarTypeFormatter;
 @synthesize methodTypeFormatter;
 @synthesize propertyTypeFormatter;
 @synthesize structDeclarationTypeFormatter;
 
-- (CDType *)typeFormatter:(CDTypeFormatter *)aFormatter replacementForType:(CDType *)aType;
+#pragma mark -
+
+- (BOOL)shouldShowIvarOffsets;
+{
+    return self.classDump.shouldShowIvarOffsets;
+}
+
+- (BOOL)shouldShowMethodAddresses;
+{
+    return self.classDump.shouldShowMethodAddresses;
+}
+
+- (BOOL)targetArchUses64BitABI;
+{
+    return CDArchUses64BitABI(self.classDump.targetArch);
+}
+
+#pragma mark -
+
+- (CDType *)typeFormatter:(CDTypeFormatter *)typeFormatter replacementForType:(CDType *)type;
 {
 #if 0
-    if ([aType type] == '{')
-        return [structureTable replacementForType:aType];
-
-    if ([aType type] == '(')
-        return [unionTable replacementForType:aType];
+    if (type.type == '{') return [structureTable replacementForType:type];
+    if (type.type == '(') return [unionTable     replacementForType:type];
 #endif
     return nil;
 }
 
-- (NSString *)typeFormatter:(CDTypeFormatter *)aFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
+- (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 {
-    if (level == 0 && aFormatter == structDeclarationTypeFormatter)
+    if (level == 0 && typeFormatter == structDeclarationTypeFormatter)
         return nil;
 
     if ([self shouldExpandType:structType] == NO)
@@ -122,28 +155,24 @@ static BOOL debug = NO;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
-                    markName:@"Named Structures"];
-    [structureTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
-                    markName:@"Typedef'd Structures"];
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Structures"];
+    [structureTable appendTypedefsToString:resultString        formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Structures"];
 
-    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
-                markName:@"Named Unions"];
-    [unionTable appendTypedefsToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences
-                markName:@"Typedef'd Unions"];
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Unions"];
+    [unionTable appendTypedefsToString:resultString        formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Unions"];
 }
 
 // Call this before calling generateMemberNames.
 - (void)generateTypedefNames;
 {
     [structureTable generateTypedefNames];
-    [unionTable generateTypedefNames];
+    [unionTable     generateTypedefNames];
 }
 
 - (void)generateMemberNames;
 {
     [structureTable generateMemberNames];
-    [unionTable generateMemberNames];
+    [unionTable     generateMemberNames];
 }
 
 #pragma mark - Run phase 1+
@@ -159,17 +188,13 @@ static BOOL debug = NO;
 
     if (debug) {
         NSMutableString *str = [NSMutableString string];
-        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
-                        markName:@"Named Structures"];
-        [unionTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
-                    markName:@"Named Unions"];
+        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Named Structures"];
+        [unionTable     appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Named Unions"];
         [str writeToFile:@"/tmp/out.struct" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
 
         str = [NSMutableString string];
-        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
-                        markName:@"Typedef'd Structures"];
-        [unionTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil
-                    markName:@"Typedef'd Unions"];
+        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Typedef'd Structures"];
+        [unionTable     appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Typedef'd Unions"];
         [str writeToFile:@"/tmp/out.typedef" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
         //NSLog(@"str =\n%@", str);
     }
@@ -177,14 +202,14 @@ static BOOL debug = NO;
 
 #pragma mark - Phase 0
 
-- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase0RegisterStructure:(CDType *)structure usedInMethod:(BOOL)isUsedInMethod;
 {
-    if ([aStructure type] == '{') {
-        [structureTable phase0RegisterStructure:aStructure usedInMethod:isUsedInMethod];
-    } else if ([aStructure type] == '(') {
-        [unionTable phase0RegisterStructure:aStructure usedInMethod:isUsedInMethod];
+    if (structure.type == '{') {
+        [structureTable phase0RegisterStructure:structure usedInMethod:isUsedInMethod];
+    } else if (structure.type == '(') {
+        [unionTable     phase0RegisterStructure:structure usedInMethod:isUsedInMethod];
     } else {
-        NSLog(@"%s, unknown structure type: %d", __cmd, [aStructure type]);
+        NSLog(@"%s, unknown structure type: %d", __cmd, structure.type);
     }
 }
 
@@ -192,7 +217,7 @@ static BOOL debug = NO;
 {
     if (phase == 0) {
         [structureTable finishPhase0];
-        [unionTable finishPhase0];
+        [unionTable     finishPhase0];
     }
 }
 
@@ -205,21 +230,21 @@ static BOOL debug = NO;
     //NSLog(@" > %s", __cmd);
     // Structures and unions can be nested, so do phase 1 on each table before finishing the phase.
     [structureTable phase1WithTypeController:self];
-    [unionTable phase1WithTypeController:self];
+    [unionTable     phase1WithTypeController:self];
 
     [structureTable finishPhase1];
-    [unionTable finishPhase1];
+    [unionTable     finishPhase1];
     //NSLog(@"<  %s", __cmd);
 }
 
-- (void)phase1RegisterStructure:(CDType *)aStructure;
+- (void)phase1RegisterStructure:(CDType *)structure;
 {
-    if ([aStructure type] == '{') {
-        [structureTable phase1RegisterStructure:aStructure];
-    } else if ([aStructure type] == '(') {
-        [unionTable phase1RegisterStructure:aStructure];
+    if (structure.type == '{') {
+        [structureTable phase1RegisterStructure:structure];
+    } else if (structure.type == '(') {
+        [unionTable phase1RegisterStructure:structure];
     } else {
-        NSLog(@"%s, unknown structure type: %d", __cmd, [aStructure type]);
+        NSLog(@"%s, unknown structure type: %d", __cmd, structure.type);
     }
 }
 
@@ -227,27 +252,27 @@ static BOOL debug = NO;
 
 - (void)startPhase2;
 {
-    NSUInteger maxDepth = [structureTable phase1_maxDepth];
-    if (maxDepth < [unionTable phase1_maxDepth])
-        maxDepth = [unionTable phase1_maxDepth];
+    NSUInteger maxDepth = structureTable.phase1_maxDepth;
+    if (maxDepth < unionTable.phase1_maxDepth)
+        maxDepth = unionTable.phase1_maxDepth;
 
     if (debug) NSLog(@"max structure/union depth is: %lu", maxDepth);
 
     for (NSUInteger depth = 1; depth <= maxDepth; depth++) {
         [structureTable phase2AtDepth:depth typeController:self];
-        [unionTable phase2AtDepth:depth typeController:self];
+        [unionTable     phase2AtDepth:depth typeController:self];
     }
 
     //[structureTable logPhase2Info];
     [structureTable finishPhase2];
-    [unionTable finishPhase2];
+    [unionTable     finishPhase2];
 }
 
 - (void)startPhase3;
 {
     // do phase2 merge on all the types from phase 0
     [structureTable phase2ReplacementOnPhase0WithTypeController:self];
-    [unionTable phase2ReplacementOnPhase0WithTypeController:self];
+    [unionTable     phase2ReplacementOnPhase0WithTypeController:self];
 
     // Any info referenced by a method, or with >1 reference, gets typedef'd.
     // - Generate name hash based on full type string at this point
@@ -261,13 +286,13 @@ static BOOL debug = NO;
     //   - otherwise just merge them.
     // - end result should be CDStructureInfos with counts and method reference flags
     [structureTable buildPhase3Exceptions];
-    [unionTable buildPhase3Exceptions];
+    [unionTable     buildPhase3Exceptions];
 
     [structureTable phase3WithTypeController:self];
-    [unionTable phase3WithTypeController:self];
+    [unionTable     phase3WithTypeController:self];
 
     [structureTable finishPhase3];
-    [unionTable finishPhase3];
+    [unionTable     finishPhase3];
     //[structureTable logPhase3Info];
 
     // - All named structures (minus exceptions like struct _flags) get declared at the top level
@@ -282,76 +307,48 @@ static BOOL debug = NO;
     //NSLog(@"<  %s", __cmd);
 }
 
-- (BOOL)shouldShowName:(NSString *)name;
-{
-    return (nonretained_classDump.shouldMatchRegex == NO) || [nonretained_classDump regexMatchesString:name];
-}
-
-- (BOOL)shouldShowIvarOffsets;
-{
-    return nonretained_classDump.shouldShowIvarOffsets;
-}
-
-- (BOOL)shouldShowMethodAddresses;
-{
-    return nonretained_classDump.shouldShowMethodAddresses;
-}
-
-- (BOOL)targetArchUses64BitABI;
-{
-    return CDArchUses64BitABI(nonretained_classDump.targetArch);
-}
-
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 {
-    if ([type type] == '{')
-        return [structureTable phase2ReplacementForType:type];
-
-    if ([type type] == '(')
-        return [unionTable phase2ReplacementForType:type];
+    if (type.type == '{') return [structureTable phase2ReplacementForType:type];
+    if (type.type == '(') return [unionTable     phase2ReplacementForType:type];
 
     return nil;
 }
 
-- (void)phase3RegisterStructure:(CDType *)aStructure;
+- (void)phase3RegisterStructure:(CDType *)structure;
 {
     //NSLog(@"%s, type= %@", __cmd, [aStructure typeString]);
-    if ([aStructure type] == '{')
-        [structureTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
-
-    if ([aStructure type] == '(')
-        [unionTable phase3RegisterStructure:aStructure count:1 usedInMethod:NO typeController:self];
+    if (structure.type == '{') [structureTable phase3RegisterStructure:structure count:1 usedInMethod:NO typeController:self];
+    if (structure.type == '(') [unionTable     phase3RegisterStructure:structure count:1 usedInMethod:NO typeController:self];
 }
 
 - (CDType *)phase3ReplacementForType:(CDType *)type;
 {
-    if ([type type] == '{')
-        return [structureTable phase3ReplacementForType:type];
-
-    if ([type type] == '(')
-        return [unionTable phase3ReplacementForType:type];
+    if (type.type == '{') return [structureTable phase3ReplacementForType:type];
+    if (type.type == '(') return [unionTable     phase3ReplacementForType:type];
 
     return nil;
 }
 
+#pragma mark -
+
+- (BOOL)shouldShowName:(NSString *)name;
+{
+    return (self.classDump.shouldMatchRegex == NO) || [self.classDump regexMatchesString:name];
+}
+
 - (BOOL)shouldExpandType:(CDType *)type;
 {
-    if ([type type] == '{')
-        return [structureTable shouldExpandType:type];
-
-    if ([type type] == '(')
-        return [unionTable shouldExpandType:type];
+    if (type.type == '{') return [structureTable shouldExpandType:type];
+    if (type.type == '(') return [unionTable     shouldExpandType:type];
 
     return NO;
 }
 
 - (NSString *)typedefNameForType:(CDType *)type;
 {
-    if ([type type] == '{')
-        return [structureTable typedefNameForType:type];
-
-    if ([type type] == '(')
-        return [unionTable typedefNameForType:type];
+    if (type.type == '{') return [structureTable typedefNameForType:type];
+    if (type.type == '(') return [unionTable     typedefNameForType:type];
 
     return nil;
 }

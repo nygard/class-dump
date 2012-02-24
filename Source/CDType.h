@@ -39,16 +39,16 @@
 - (NSArray *)members;
 
 - (int)typeIgnoringModifiers;
-- (NSUInteger)structureDepth;
+@property (nonatomic, readonly) NSUInteger structureDepth;
 
 - (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (NSString *)formattedStringForSimpleType;
+@property (nonatomic, readonly) NSString *formattedStringForSimpleType;
 
-- (NSString *)typeString;
-- (NSString *)bareTypeString;
-- (NSString *)reallyBareTypeString;
-- (NSString *)keyTypeString;
+@property (nonatomic, readonly) NSString *typeString;
+@property (nonatomic, readonly) NSString *bareTypeString;
+@property (nonatomic, readonly) NSString *reallyBareTypeString;
+@property (nonatomic, readonly) NSString *keyTypeString;
 - (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 

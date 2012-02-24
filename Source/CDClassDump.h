@@ -21,8 +21,8 @@
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION
 #endif
 
-@class CDLCDylib, CDFile, CDMachOFile;
-@class CDSymbolReferences, CDType, CDTypeController, CDTypeFormatter;
+@class CDFile, CDMachOFile;
+@class CDTypeController;
 @class CDVisitor;
 @class CDSearchPathState;
 
