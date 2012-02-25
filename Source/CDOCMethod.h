@@ -9,10 +9,8 @@
 
 @interface CDOCMethod : NSObject <NSCopying>
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
-- (id)initWithName:(NSString *)aName type:(NSString *)aType;
-
-- (NSString *)description;
+- (id)initWithName:(NSString *)name type:(NSString *)type imp:(NSUInteger)imp;
+- (id)initWithName:(NSString *)name type:(NSString *)type;
 
 @property (readonly) NSString *name;
 @property (readonly) NSString *type;

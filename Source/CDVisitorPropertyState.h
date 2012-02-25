@@ -11,8 +11,6 @@
 
 - (id)initWithProperties:(NSArray *)properties;
 
-- (void)log;
-
 - (CDOCProperty *)propertyForAccessor:(NSString *)str;
 
 - (BOOL)hasUsedProperty:(CDOCProperty *)property;

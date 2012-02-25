@@ -5,11 +5,9 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDOCSymtab;
+@class CDOCSymtab;
 
 @interface CDOCModule : NSObject
-
-- (NSString *)description;
 
 @property (assign) uint32_t version;
 @property (retain) NSString *name;

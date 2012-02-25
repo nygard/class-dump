@@ -5,22 +5,17 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump, CDSymbolReferences, CDTypeController;
+@class CDSymbolReferences, CDTypeController;
 @class CDVisitor, CDVisitorPropertyState;
 @class CDOCMethod, CDOCProperty;
 
 @interface CDOCProtocol : NSObject
 
-- (id)init;
-
-- (NSString *)description;
-
 @property (retain) NSString *name;
 
 @property (readonly) NSArray *protocols;
-
-- (void)addProtocol:(CDOCProtocol *)aProtocol;
-- (void)removeProtocol:(CDOCProtocol *)aProtocol;
+- (void)addProtocol:(CDOCProtocol *)protocol;
+- (void)removeProtocol:(CDOCProtocol *)protocol;
 
 - (NSArray *)classMethods;
 - (void)addClassMethod:(CDOCMethod *)method;
@@ -42,13 +37,10 @@
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 
-@property (readonly) NSString *sortableName;
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
-- (void)visitMethods:(CDVisitor *)aVisitor propertyState:(CDVisitorPropertyState *)propertyState;
-- (void)visitProperties:(CDVisitor *)aVisitor;
+- (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 
 @end

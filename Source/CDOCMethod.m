@@ -83,10 +83,9 @@
 - (NSArray *)parsedMethodTypes;
 {
     if (hasParsedType == NO) {
-        CDTypeParser *parser;
         NSError *error = nil;
 
-        parser = [[CDTypeParser alloc] initWithType:type];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
         parsedMethodTypes = [[parser parseMethodType:&error] retain];
         if (parsedMethodTypes == nil)
             NSLog(@"Warning: Parsing method types failed, %@", name);
@@ -99,14 +98,12 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSString *formattedString;
-
-    formattedString = [[typeController methodTypeFormatter] formatMethodName:name type:type symbolReferences:symbolReferences];
+    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:name type:type symbolReferences:symbolReferences];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([typeController shouldShowMethodAddresses] && imp != 0) {
-            if ([typeController targetArchUses64BitABI])
+        if (typeController.shouldShowMethodAddresses && imp != 0) {
+            if (typeController.targetArchUses64BitABI)
                 [resultString appendFormat:@"\t// IMP=0x%016lx", imp];
             else
                 [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
@@ -119,7 +116,7 @@
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 {
-    return [name compare:[otherMethod name]];
+    return [name compare:otherMethod.name];
 }
 
 @end

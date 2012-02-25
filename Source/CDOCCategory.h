@@ -12,6 +12,6 @@
 @property (retain) NSString *className;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 
 @end

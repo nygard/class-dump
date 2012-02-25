@@ -5,12 +5,9 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDClassDump;
 @class CDOCCategory, CDOCClass;
 
 @interface CDOCSymtab : NSObject
-
-- (NSString *)description;
 
 @property (readonly) NSMutableArray *classes;
 - (void)addClass:(CDOCClass *)aClass;

@@ -9,15 +9,12 @@
 
 @interface CDOCIvar : NSObject
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
-
-- (NSString *)description;
+- (id)initWithName:(NSString *)name type:(NSString *)aType offset:(NSUInteger)offset;
 
 @property (readonly) NSString *name;
 @property (readonly) NSString *type;
 @property (readonly) NSUInteger offset;
 
-@property (assign) BOOL hasParsedType; // Private
 @property (readonly) CDType *parsedType;
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;

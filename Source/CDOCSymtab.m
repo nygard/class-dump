@@ -5,10 +5,8 @@
 
 #import "CDOCSymtab.h"
 
-#import "CDClassDump.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
-#import "CDSymbolReferences.h"
 
 @implementation CDOCSymtab
 {

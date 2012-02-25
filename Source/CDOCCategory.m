@@ -46,27 +46,24 @@
     return resultString;
 }
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    CDVisitorPropertyState *propertyState;
-
-    if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
         return;
 
-    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
-    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
 
-    [aVisitor willVisitCategory:self];
+    [visitor willVisitCategory:self];
 
     //[aVisitor willVisitPropertiesOfCategory:self];
     //[self visitProperties:aVisitor];
     //[aVisitor didVisitPropertiesOfCategory:self];
 
-    [self visitMethods:aVisitor propertyState:propertyState];
+    [self visitMethods:visitor propertyState:propertyState];
     // This can happen when... the accessors are implemented on the main class.  Odd case, but we should still emit the remaining properties.
     // Should mostly be dynamic properties
-    [aVisitor visitRemainingProperties:propertyState];
-    [aVisitor didVisitCategory:self];
+    [visitor visitRemainingProperties:propertyState];
+    [visitor didVisitCategory:self];
 
     [propertyState release];
 }

@@ -7,15 +7,21 @@
 
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
-#import "CDOCSymtab.h"
 #import "CDSymbolReferences.h"
-#import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDOCProperty.h"
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeController.h"
 #import "CDVisitorPropertyState.h"
+
+@interface CDOCProtocol ()
+@property (readonly) NSString *sortableName;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
+//- (void)visitProperties:(CDVisitor *)visitor;
+@end
+
+#pragma mark -
 
 @implementation CDOCProtocol
 {
@@ -76,18 +82,18 @@
 @synthesize protocols;
 
 // This assumes that the protocol name doesn't change after it's been added to this.
-- (void)addProtocol:(CDOCProtocol *)aProtocol;
+- (void)addProtocol:(CDOCProtocol *)protocol;
 {
-    if ([adoptedProtocolNames containsObject:[aProtocol name]] == NO) {
-        [protocols addObject:aProtocol];
-        [adoptedProtocolNames addObject:[aProtocol name]];
+    if ([adoptedProtocolNames containsObject:protocol.name] == NO) {
+        [protocols addObject:protocol];
+        [adoptedProtocolNames addObject:protocol.name];
     }
 }
 
-- (void)removeProtocol:(CDOCProtocol *)aProtocol;
+- (void)removeProtocol:(CDOCProtocol *)protocol;
 {
-    [adoptedProtocolNames removeObject:[aProtocol name]];
-    [protocols removeObject:aProtocol];
+    [adoptedProtocolNames removeObject:protocol.name];
+    [protocols removeObject:protocol];
 }
 
 - (NSArray *)classMethods;
@@ -144,18 +150,18 @@
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
-    [self registerTypesFromMethods:classMethods withObject:typeController phase:phase];
+    [self registerTypesFromMethods:classMethods    withObject:typeController phase:phase];
     [self registerTypesFromMethods:instanceMethods withObject:typeController phase:phase];
 
-    [self registerTypesFromMethods:optionalClassMethods withObject:typeController phase:phase];
+    [self registerTypesFromMethods:optionalClassMethods    withObject:typeController phase:phase];
     [self registerTypesFromMethods:optionalInstanceMethods withObject:typeController phase:phase];
 }
 
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
     for (CDOCMethod *method in methods) {
-        for (CDMethodType *methodType in [method parsedMethodTypes]) {
-            [[methodType type] phase:phase registerTypesWithObject:typeController usedInMethod:YES];
+        for (CDMethodType *methodType in method.parsedMethodTypes) {
+            [methodType.type phase:phase registerTypesWithObject:typeController usedInMethod:YES];
         }
     }
 }
@@ -169,7 +175,7 @@
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 {
-    return [[self sortableName] compare:[otherProtocol sortableName]];
+    return [self.sortableName compare:otherProtocol.sortableName];
 }
 
 #pragma mark -
@@ -185,70 +191,71 @@
     return resultString;
 }
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
         return;
 
-    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
-    CDVisitorPropertyState *propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
 
-    [aVisitor willVisitProtocol:self];
+    [visitor willVisitProtocol:self];
 
     //[aVisitor willVisitPropertiesOfProtocol:self];
     //[self visitProperties:aVisitor];
     //[aVisitor didVisitPropertiesOfProtocol:self];
 
-    [self visitMethods:aVisitor propertyState:propertyState];
+    [self visitMethods:visitor propertyState:propertyState];
 
     // @optional properties will generate optional instance methods, and we'll emit @property in the @optional section.
-    [aVisitor visitRemainingProperties:propertyState];
+    [visitor visitRemainingProperties:propertyState];
 
-    [aVisitor didVisitProtocol:self];
+    [visitor didVisitProtocol:self];
 
     [propertyState release];
 }
 
-- (void)visitMethods:(CDVisitor *)aVisitor propertyState:(CDVisitorPropertyState *)propertyState;
+- (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 {
     NSArray *methods = classMethods;
-    if ([[aVisitor classDump] shouldSortMethods])
+    if (visitor.classDump.shouldSortMethods)
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
-        [aVisitor visitClassMethod:method];
+        [visitor visitClassMethod:method];
 
     methods = instanceMethods;
-    if ([[aVisitor classDump] shouldSortMethods])
+    if (visitor.classDump.shouldSortMethods)
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
-        [aVisitor visitInstanceMethod:method propertyState:propertyState];
+        [visitor visitInstanceMethod:method propertyState:propertyState];
 
     if ([optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0) {
-        [aVisitor willVisitOptionalMethods];
+        [visitor willVisitOptionalMethods];
 
         methods = optionalClassMethods;
-        if ([[aVisitor classDump] shouldSortMethods])
+        if (visitor.classDump.shouldSortMethods)
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)
-            [aVisitor visitClassMethod:method];
+            [visitor visitClassMethod:method];
 
         methods = optionalInstanceMethods;
-        if ([[aVisitor classDump] shouldSortMethods])
+        if (visitor.classDump.shouldSortMethods)
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)
-            [aVisitor visitInstanceMethod:method propertyState:propertyState];
+            [visitor visitInstanceMethod:method propertyState:propertyState];
 
-        [aVisitor didVisitOptionalMethods];
+        [visitor didVisitOptionalMethods];
     }
 }
 
-- (void)visitProperties:(CDVisitor *)aVisitor;
+#if 0
+- (void)visitProperties:(CDVisitor *)visitor;
 {
     NSArray *array = properties;
-    if ([[aVisitor classDump] shouldSortMethods])
+    if (visitor.classDump.shouldSortMethods)
         array = [array sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCProperty *property in array)
-        [aVisitor visitProperty:property];
+        [visitor visitProperty:property];
 }
+#endif
 
 @end

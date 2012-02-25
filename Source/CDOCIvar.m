@@ -10,6 +10,12 @@
 #import "CDTypeParser.h"
 #import "CDTypeController.h"
 
+@interface CDOCIvar ()
+@property (assign) BOOL hasParsedType; // Private
+@end
+
+#pragma mark -
+
 @implementation CDOCIvar
 {
     NSString *name;

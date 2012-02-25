@@ -7,10 +7,16 @@
 
 #import "CDOCProperty.h"
 
+@interface CDVisitorPropertyState ()
+- (void)log;
+@end
+
+#pragma mark -
+
 @implementation CDVisitorPropertyState
 {
-    NSMutableDictionary *propertiesByAccessor; // key: NSString (accessor), value: CDOCProperty
-    NSMutableDictionary *propertiesByName; // key: NSString (property name), value: CDOCProperty
+    NSMutableDictionary *propertiesByAccessor; // NSString (accessor)       -> CDOCProperty
+    NSMutableDictionary *propertiesByName;     // NSString (property name)  -> CDOCProperty
 }
 
 - (id)initWithProperties:(NSArray *)properties;
@@ -23,7 +29,7 @@
             //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
             [propertiesByName setObject:property forKey:property.name];
             [propertiesByAccessor setObject:property forKey:property.getter];
-            if ([property isReadOnly] == NO)
+            if (property.isReadOnly == NO)
                 [propertiesByAccessor setObject:property forKey:property.setter];
         }
     }

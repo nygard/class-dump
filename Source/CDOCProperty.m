@@ -12,6 +12,12 @@
 
 static BOOL debug = NO;
 
+@interface CDOCProperty ()
+- (void)_parseAttributes;
+@end
+
+#pragma mark -
+
 @implementation CDOCProperty
 {
     NSString *name;
@@ -137,7 +143,7 @@ static BOOL debug = NO;
         CDTypeParser *parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
         type = [[parser parseType:&error] retain];
         if (type != nil) {
-            typeRange.length = [[[parser lexer] scanner] scanLocation];
+            typeRange.length = [parser.lexer.scanner scanLocation];
 
             NSString *str = [attributeString substringFromIndex:NSMaxRange(typeRange)];
 
