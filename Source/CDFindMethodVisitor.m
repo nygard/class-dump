@@ -16,7 +16,7 @@
 //#import "CDTypeController.h"
 
 @interface CDFindMethodVisitor ()
-@property (nonatomic, retain) CDOCProtocol *context;
+@property (nonatomic, strong) CDOCProtocol *context;
 - (void)showContextIfNecessary;
 - (void)writeResultToStandardOutput;
 @end
@@ -41,15 +41,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [searchString release];
-    [resultString release];
-    [context release];
-
-    [super dealloc];
 }
 
 #pragma mark -
@@ -161,9 +152,7 @@
 - (void)setContext:(CDOCProtocol *)newContext;
 {
     if (newContext != context) {
-        [context release];
-        context = [newContext retain];
-    
+        context = newContext;
         hasShownContext = NO;
     }
 }

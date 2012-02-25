@@ -38,8 +38,8 @@
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;
 {
     if ((self = [super init])) {
-        name = [aName retain];
-        type = [aType retain];
+        name = aName;
+        type = aType;
         imp = 0;
         
         hasParsedType = NO;
@@ -47,16 +47,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [name release];
-    [type release];
-
-    [parsedMethodTypes release];
-
-    [super dealloc];
 }
 
 #pragma mark - NSCopying
@@ -86,10 +76,9 @@
         NSError *error = nil;
 
         CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
-        parsedMethodTypes = [[parser parseMethodType:&error] retain];
+        parsedMethodTypes = [parser parseMethodType:&error];
         if (parsedMethodTypes == nil)
             NSLog(@"Warning: Parsing method types failed, %@", name);
-        [parser release];
         hasParsedType = YES;
     }
 

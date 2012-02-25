@@ -25,7 +25,7 @@ static BOOL debug = NO;
 
 @implementation CDTypeFormatter
 {
-    CDTypeController *nonretained_typeController;
+    __weak CDTypeController *nonretained_typeController;
     
     NSUInteger baseLevel;
     
@@ -120,12 +120,9 @@ static BOOL debug = NO;
 
     if (resultType == nil) {
         NSLog(@"Couldn't parse type: %@", [[error userInfo] objectForKey:CDErrorKey_LocalizedLongDescription]);
-        [parser release];
         //NSLog(@"<  %s", __cmd);
         return nil;
     }
-
-    [parser release];
 
     return [self formatVariable:name parsedType:resultType symbolReferences:symbolReferences];
 }
@@ -157,7 +154,6 @@ static BOOL debug = NO;
     NSArray *methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
         NSLog(@"Warning: Parsing method types failed, %@", methodName);
-    [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {
         return nil;
@@ -218,8 +214,6 @@ static BOOL debug = NO;
             }
         }
 
-        [scanner release];
-
         if (noMoreTypes) {
             NSLog(@" /* Error: Ran out of types for this method. */");
         }
@@ -236,7 +230,6 @@ static BOOL debug = NO;
     NSArray *methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
         NSLog(@"Warning: Parsing method types failed, %@", methodName);
-    [aParser release];
 
     if (methodTypes == nil || [methodTypes count] == 0) {
         return nil;
@@ -296,8 +289,6 @@ static BOOL debug = NO;
                 }
             }
         }
-
-        [scanner release];
 
         if (noMoreTypes) {
             [resultString appendString:@" /* Error: Ran out of types for this method. */"];

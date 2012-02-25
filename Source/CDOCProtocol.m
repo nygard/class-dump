@@ -53,21 +53,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-    [protocols release];
-    [classMethods release];
-    [instanceMethods release];
-    [optionalClassMethods release];
-    [optionalInstanceMethods release];
-    [properties release];
-
-    [adoptedProtocolNames release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;
@@ -94,6 +79,26 @@
 {
     [adoptedProtocolNames removeObject:protocol.name];
     [protocols removeObject:protocol];
+}
+
+- (NSArray *)protocolNames;
+{
+    NSMutableArray *names = [[NSMutableArray alloc] init];
+    [self.protocols enumerateObjectsUsingBlock:^(CDOCProtocol *protocol, NSUInteger index, BOOL *stop){
+        if (protocol.name != nil)
+            [names addObject:protocol.name];
+    }];
+    
+    return [names copy];
+}
+
+- (NSString *)protocolsString;
+{
+    NSArray *names = self.protocolNames;
+    if ([names count] == 0)
+        return @"";
+
+    return [names componentsJoinedByString:@", "];
 }
 
 - (NSArray *)classMethods;
@@ -186,7 +191,7 @@
 
     [resultString appendFormat:@"@protocol %@", name];
     if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [resultString appendFormat:@" <%@>", self.protocolsString];
 
     return resultString;
 }
@@ -210,8 +215,6 @@
     [visitor visitRemainingProperties:propertyState];
 
     [visitor didVisitProtocol:self];
-
-    [propertyState release];
 }
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;

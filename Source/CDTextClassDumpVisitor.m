@@ -14,6 +14,7 @@
 #import "CDTypeController.h"
 #import "CDTypeFormatter.h"
 #import "CDVisitorPropertyState.h"
+#import "CDOCIvar.h"
 
 // Add newlines after properties
 #define ADD_SPACE
@@ -42,14 +43,6 @@ static BOOL debug = NO;
     return self;
 }
 
-- (void)dealloc;
-{
-    [resultString release];
-    [symbolReferences release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (void)willVisitClass:(CDOCClass *)aClass;
@@ -63,8 +56,8 @@ static BOOL debug = NO;
 
     NSArray *protocols = aClass.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+        [resultString appendFormat:@" <%@>", aClass.protocolsString];
+        [symbolReferences addProtocolNamesFromArray:aClass.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -94,8 +87,8 @@ static BOOL debug = NO;
 
     NSArray *protocols = category.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+        [resultString appendFormat:@" <%@>", category.protocolsString];
+        [symbolReferences addProtocolNamesFromArray:category.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -112,8 +105,8 @@ static BOOL debug = NO;
 
     NSArray *protocols = protocol.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+        [resultString appendFormat:@" <%@>", protocol.protocolsString];
+        [symbolReferences addProtocolNamesFromArray:protocol.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -320,9 +313,6 @@ static BOOL debug = NO;
             [resultString appendFormat:@"// Original attribute string: %@\n\n", property.attributeString];
         }
     }
-    
-    [alist release];
-    [unknownAttrs release];
 }
 
 @end

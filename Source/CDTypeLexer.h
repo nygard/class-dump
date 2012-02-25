@@ -30,7 +30,7 @@ typedef NSUInteger CDTypeLexerState;
 @property (readonly) NSString *string;
 - (int)scanNextToken;
 
-@property (retain) NSString *lexText;
+@property (strong) NSString *lexText;
 
 @property (readonly) unichar peekChar;
 @property (readonly) NSString *remainingString;

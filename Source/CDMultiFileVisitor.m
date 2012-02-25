@@ -28,13 +28,6 @@
     NSUInteger referenceIndex;
 }
 
-- (void)dealloc;
-{
-    [outputPath release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (void)willBeginVisiting;
@@ -186,9 +179,8 @@
     CDClassFrameworkVisitor *visitor = [[CDClassFrameworkVisitor alloc] init];
     [visitor setClassDump:self.classDump];
     [self.classDump recursivelyVisit:visitor];
-    self.symbolReferences.frameworkNamesByClassName = [[visitor.frameworkNamesByClassName copy] autorelease];
-    self.symbolReferences.frameworkNamesByProtocolName = [[visitor.frameworkNamesByProtocolName copy] autorelease];
-    [visitor release];
+    self.symbolReferences.frameworkNamesByClassName = [visitor.frameworkNamesByClassName copy];
+    self.symbolReferences.frameworkNamesByProtocolName = [visitor.frameworkNamesByProtocolName copy];
 }
 
 - (void)generateStructureHeader;

@@ -16,7 +16,7 @@
 - (id)initWithObject:(id <CDTopologicalSort>)object;
 {
     if ((self = [super init])) {
-        sortableObject = [object retain];
+        sortableObject = object;
         dependancies = [[NSMutableSet alloc] init];
         color = CDNodeColor_White;
 
@@ -24,14 +24,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [sortableObject release];
-    [dependancies release];
-
-    [super dealloc];
 }
 
 #pragma mark -

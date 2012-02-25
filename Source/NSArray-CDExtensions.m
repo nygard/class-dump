@@ -12,19 +12,6 @@
     return [[self reverseObjectEnumerator] allObjects];
 }
 
-- (NSArray *)arrayByMappingSelector:(SEL)aSelector;
-{
-    NSMutableArray *newArray = [NSMutableArray array];
-    for (id object in self) {
-        id value = [object performSelector:aSelector];
-        if (value != nil)
-            [newArray addObject:value];
-        // TODO (2004-01-28): Or we could add NSNull.
-    }
-
-    return newArray;
-}
-
 @end
 
 @implementation NSArray (CDTopoSort)
@@ -40,7 +27,6 @@
         if ([nodesByName objectForKey:node.identifier] != nil)
             NSLog(@"Warning: Duplicate identifier (%@) in %s", node.identifier, __cmd);
         [nodesByName setObject:node forKey:node.identifier];
-        [node release];
     }
 
     NSMutableArray *sortedArray = [NSMutableArray array];
@@ -51,13 +37,13 @@
             [node topologicallySortNodes:nodesByName intoArray:sortedArray];
     }
 
-    [nodesByName release];
 
     return sortedArray;
 }
 
 @end
 
+#pragma mark -
 
 @implementation NSMutableArray (CDTopoSort)
 

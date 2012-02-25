@@ -144,12 +144,6 @@ static BOOL debug = NO;
     return self;
 }
 
-- (void)dealloc;
-{
-    [modules release];
-
-    [super dealloc];
-}
 
 #pragma mark -
 
@@ -200,11 +194,7 @@ static BOOL debug = NO;
 
         [self addClassesFromArray:[[module symtab] classes]];
         [self addCategoriesFromArray:[[module symtab] categories]];
-
-        [module release];
     }
-
-    [cursor release];
 }
 
 - (CDOCSymtab *)processSymtabAtAddress:(uint32_t)address;
@@ -225,7 +215,7 @@ static BOOL debug = NO;
     objcSymtab.cat_def_count = [cursor readInt16];
     //NSLog(@"[@ %08x]: %08x %08x %04x %04x", address, objcSymtab.sel_ref_cnt, objcSymtab.refs, objcSymtab.cls_def_count, objcSymtab.cat_def_count);
 
-    aSymtab = [[[CDOCSymtab alloc] init] autorelease];
+    aSymtab = [[CDOCSymtab alloc] init];
     
     for (unsigned int index = 0; index < objcSymtab.cls_def_count; index++) {
         uint32_t val = [cursor readInt32];
@@ -244,8 +234,6 @@ static BOOL debug = NO;
         if (aCategory != nil)
             [aSymtab addCategory:aCategory];
     }
-
-    [cursor release];
 
     return aSymtab;
 }
@@ -272,11 +260,10 @@ static BOOL debug = NO;
     //NSLog(@"className = %@", className);
     if (className == nil) {
         NSLog(@"Note: objcClass.name was %08x, returning nil.", objcClass.name);
-        [cursor release];
         return nil;
     }
 
-    CDOCClass *aClass = [[[CDOCClass alloc] init] autorelease];
+    CDOCClass *aClass = [[CDOCClass alloc] init];
     [aClass setName:className];
     [aClass setSuperClassName:[self.machOFile stringAtAddress:objcClass.super_class]];
     //NSLog(@"[aClass superClassName]: %@", [aClass superClassName]);
@@ -303,12 +290,10 @@ static BOOL debug = NO;
             if (type != nil) {
                 CDOCIvar *anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset];
                 [ivars addObject:anIvar];
-                [anIvar release];
             }
         }
 
         [aClass setIvars:[NSArray arrayWithArray:ivars]];
-        [ivars release];
     }
 
     // Process instance methods
@@ -350,15 +335,13 @@ static BOOL debug = NO;
     for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objcClass.protocols])
         [aClass addProtocol:protocol];
 
-    [cursor release];
-
     return aClass;
 }
 
 // Returns list of uniqued protocols.
 - (NSArray *)uniquedProtocolListAtAddress:(uint32_t)address;
 {
-    NSMutableArray *protocols = [[[NSMutableArray alloc] init] autorelease];;
+    NSMutableArray *protocols = [[NSMutableArray alloc] init];;
 
     if (address != 0) {
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
@@ -377,8 +360,6 @@ static BOOL debug = NO;
                     [protocols addObject:uniqueProtocol];
             }
         }
-
-        [cursor release];
     }
 
     return protocols;
@@ -421,15 +402,12 @@ static BOOL debug = NO;
             if (name != nil && type != nil) {
                 CDOCMethod *method = [[CDOCMethod alloc] initWithName:name type:type imp:objcMethod.imp];
                 [methods addObject:method];
-                [method release];
             } else {
                 if (name == nil) NSLog(@"Note: Method name was nil (%08x, %p)", objcMethod.name, name);
                 if (type == nil) NSLog(@"Note: Method type was nil (%08x, %p)", objcMethod.types, type);
             }
         }
     }
-
-    [cursor release];
 
     return [methods reversedArray];
 }
@@ -451,11 +429,10 @@ static BOOL debug = NO;
         NSString *name = [self.machOFile stringAtAddress:objcCategory.category_name];
         if (name == nil) {
             NSLog(@"Note: objcCategory.category_name was %08x, returning nil.", objcCategory.category_name);
-            [cursor release];
             return nil;
         }
 
-        aCategory = [[[CDOCCategory alloc] init] autorelease];
+        aCategory = [[CDOCCategory alloc] init];
         [aCategory setName:name];
         [aCategory setClassName:[self.machOFile stringAtAddress:objcCategory.class_name]];
 
@@ -467,8 +444,6 @@ static BOOL debug = NO;
 
         for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objcCategory.protocols])
             [aCategory addProtocol:protocol];
-
-        [cursor release];
     }
 
     return aCategory;
@@ -479,7 +454,7 @@ static BOOL debug = NO;
     CDOCProtocol *aProtocol = [self protocolWithAddress:address];
     if (aProtocol == nil) {
         //NSLog(@"Creating new protocol from address: 0x%08x", address);
-        aProtocol = [[[CDOCProtocol alloc] init] autorelease];
+        aProtocol = [[CDOCProtocol alloc] init];
         [self setProtocol:aProtocol withAddress:address];
 
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
@@ -523,8 +498,6 @@ static BOOL debug = NO;
             for (CDOCMethod *method in [self processMethodsAtAddress:v5 isFromProtocolDefinition:YES])
                 [aProtocol addClassMethod:method];
         }
-
-        [cursor release];
     } else {
         //NSLog(@"Found existing protocol at address: 0x%08x", address);
     }

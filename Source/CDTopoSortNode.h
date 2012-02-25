@@ -8,7 +8,7 @@
 
 enum {
     CDNodeColor_White = 0,
-    CDNodeColor_Gray = 1,
+    CDNodeColor_Gray  = 1,
     CDNodeColor_Black = 2,
 };
 typedef NSUInteger CDNodeColor;

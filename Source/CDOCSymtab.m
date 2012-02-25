@@ -24,14 +24,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [classes release];
-    [categories release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;

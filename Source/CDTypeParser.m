@@ -72,18 +72,9 @@ static NSString *CDTokenDescription(int token)
         
         lexer = [[CDTypeLexer alloc] initWithString:str];
         lookahead = 0;
-        
-        [str release];
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [lexer release];
-
-    [super dealloc];
 }
 
 #pragma mark -
@@ -201,7 +192,6 @@ static NSString *CDTokenDescription(int token)
 
         CDMethodType *aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
         [methodTypes addObject:aMethodType];
-        [aMethodType release];
     } while ([self isTokenInTypeStartSet:lookahead]);
 
     return methodTypes;
@@ -257,7 +247,6 @@ static NSString *CDTokenDescription(int token)
             type = [[CDType alloc] initSimpleType:'v'];
             // Safari on 10.5 has: "m_function"{?="__pfn"^"__delta"i}
             result = [[CDType alloc] initPointerType:type];
-            [type release];
         } else {
             type = [self _parseTypeInStruct:isInStruct];
             result = [[CDType alloc] initPointerType:type];
@@ -285,7 +274,6 @@ static NSString *CDTokenDescription(int token)
                 CDTypeName *typeName = [[CDTypeName alloc] init];
                 typeName.name = str;
                 result = [[CDType alloc] initIDType:typeName];
-                [typeName release];
             }
 
             [self match:TK_QUOTED_STRING];
@@ -331,7 +319,7 @@ static NSString *CDTokenDescription(int token)
         [NSException raise:CDExceptionName_SyntaxError format:@"expected (many things), got %@", CDTokenDescription(lookahead)];
     }
 
-    return [result autorelease];
+    return result;
 }
 
 // This seems to be used in method types -- no names
@@ -408,7 +396,7 @@ static NSString *CDTokenDescription(int token)
 
 - (CDTypeName *)parseTypeName;
 {
-    CDTypeName *typeName = [[[CDTypeName alloc] init] autorelease];
+    CDTypeName *typeName = [[CDTypeName alloc] init];
     [typeName setName:[self parseIdentifier]];
 
     if (lookahead == '<') {

@@ -20,7 +20,7 @@
 - (id)initPointerType:(CDType *)type;
 - (id)initModifier:(int)modifier type:(CDType *)type;
 
-@property(retain) NSString *variableName;
+@property (strong) NSString *variableName;
 
 @property (nonatomic, readonly) int type;
 @property (readonly) BOOL isIDType;
@@ -46,6 +46,7 @@
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
 
+@property (readonly) NSArray *memberVariableNames;
 - (void)generateMemberNames;
 
 // Phase 0

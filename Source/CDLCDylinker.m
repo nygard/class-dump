@@ -22,18 +22,11 @@
         NSUInteger length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
         //NSLog(@"expected length: %u", length);
         
-        name = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
         //NSLog(@"name: %@", name);
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [name release];
-
-    [super dealloc];
 }
 
 #pragma mark -

@@ -7,8 +7,8 @@
 
 @interface CDSymbolReferences : NSObject
 
-@property (retain) NSDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)
-@property (retain) NSDictionary *frameworkNamesByProtocolName; // NSString (protocol name) -> NSString (framework name)
+@property (strong) NSDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)
+@property (strong) NSDictionary *frameworkNamesByProtocolName; // NSString (protocol name) -> NSString (framework name)
 
 - (NSString *)frameworkForClassName:(NSString *)className;
 - (NSString *)frameworkForProtocolName:(NSString *)protocolName;

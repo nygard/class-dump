@@ -27,8 +27,6 @@
         
         //NSLog(@"(testing fat) magic: 0x%x", header.magic);
         if (header.magic != FAT_MAGIC) {
-            [cursor release];
-            [self release];
             return nil;
         }
         
@@ -40,24 +38,12 @@
             CDFatArch *arch = [[CDFatArch alloc] initWithDataCursor:cursor];
             [arch setFatFile:self];
             [_arches addObject:arch];
-            [arch release];
         }
         arches = [_arches copy];
-        [_arches release];
-        
-        [cursor release];
-        
         //NSLog(@"arches: %@", arches);
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [arches release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging

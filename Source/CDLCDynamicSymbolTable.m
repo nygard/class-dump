@@ -70,13 +70,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [externalRelocationEntries release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (uint32_t)cmd;
@@ -129,7 +122,6 @@
 
         CDRelocationInfo *ri = [[CDRelocationInfo alloc] initWithInfo:rinfo];
         [_externalRelocationEntries addObject:ri];
-        [ri release];
     }
 
     //NSLog(@"externalRelocationEntries: %@", externalRelocationEntries);
@@ -141,10 +133,8 @@
     // Actually, it really seems to be the offset from the vmaddr of the section indicated in the n_desc part of the nlist.
     // 0000000000000000 01 00 0500 0000000000000038 _OBJC_CLASS_$_NSObject
     // GET_LIBRARY_ORDINAL() from nlist.h for library.
-
-    [cursor release];
     
-    externalRelocationEntries = [_externalRelocationEntries copy]; [_externalRelocationEntries release];
+    externalRelocationEntries = [_externalRelocationEntries copy]; 
 }
 
 // Just search for externals.

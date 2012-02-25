@@ -23,15 +23,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-    [templateTypes release];
-    [suffix release];
-
-    [super dealloc];
-}
-
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone;
@@ -43,7 +34,6 @@
     for (CDTypeName *subtype in self.templateTypes) {
         CDTypeName *subcopy = [subtype copy];
         [copy.templateTypes addObject:subcopy];
-        [subcopy release];
     }
     
     return copy;

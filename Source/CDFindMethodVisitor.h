@@ -10,6 +10,6 @@
 
 @interface CDFindMethodVisitor : CDVisitor
 
-@property (retain) NSString *searchString;
+@property (strong) NSString *searchString;
 
 @end

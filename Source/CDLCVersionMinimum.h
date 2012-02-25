@@ -7,6 +7,6 @@
 
 @interface CDLCVersionMinimum : CDLoadCommand
 
-@property (readonly) NSString *minimumVersionString;
+@property (nonatomic, readonly) NSString *minimumVersionString;
 
 @end

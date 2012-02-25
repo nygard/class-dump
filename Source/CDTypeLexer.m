@@ -39,14 +39,6 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
     return self;
 }
 
-- (void)dealloc;
-{
-    [scanner release];
-    [lexText release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 @synthesize scanner;
@@ -164,11 +156,8 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
     NSString *identifier;
     if ([peekScanner scanIdentifierIntoString:&identifier]) {
-        [peekScanner release];
         return identifier;
     }
-
-    [peekScanner release];
 
     return nil;
 }

@@ -11,7 +11,6 @@
 @implementation CDLCPreboundDylib
 {
     struct prebound_dylib_command preboundDylibCommand;
-    NSString *name;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
@@ -35,13 +34,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (uint32_t)cmd;
@@ -53,7 +45,5 @@
 {
     return preboundDylibCommand.cmdsize;
 }
-
-@synthesize name;
 
 @end

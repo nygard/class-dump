@@ -7,9 +7,9 @@
 
 @interface CDTypeName : NSObject <NSCopying>
 
-@property (retain) NSString *name;
+@property (strong) NSString *name;
 @property (readonly) NSMutableArray *templateTypes;
-@property (retain) NSString *suffix;
+@property (strong) NSString *suffix;
 @property (readonly) BOOL isTemplateType;
 
 @end

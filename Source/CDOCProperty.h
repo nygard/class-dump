@@ -16,13 +16,13 @@
 @property (readonly) CDType *type;
 @property (readonly) NSArray *attributes;
 
-@property (retain) NSString *attributeStringAfterType;
+@property (strong) NSString *attributeStringAfterType;
 
 @property (readonly) NSString *defaultGetter;
 @property (readonly) NSString *defaultSetter;
 
-@property (retain) NSString *customGetter;
-@property (retain) NSString *customSetter;
+@property (strong) NSString *customGetter;
+@property (strong) NSString *customSetter;
 
 @property (readonly) NSString *getter;
 @property (readonly) NSString *setter;

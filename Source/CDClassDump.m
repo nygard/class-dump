@@ -69,19 +69,8 @@
 
 - (void)dealloc;
 {
-    [searchPathState release];
-    [sdkRoot release];
-
-    [machOFiles release];
-    [machOFilesByID release];
-    [objcProcessors release];
-
-    [typeController release];
-
     if (shouldMatchRegex)
         regfree(&compiledRegex);
-
-    [super dealloc];
 }
 
 #pragma mark -
@@ -217,7 +206,6 @@
             }
         }
         @catch (NSException *exception) {
-            [aMachOFile release];
             return NO;
         }
     }
@@ -233,7 +221,6 @@
         CDObjectiveCProcessor *aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
         [objcProcessors addObject:aProcessor];
-        [aProcessor release];
     }
 }
 
@@ -282,7 +269,6 @@
     if (aMachOFile == nil) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
         CDFile *aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:searchPathState];
-        [data release];
 
         if (aFile == nil || [self loadFile:aFile] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedID);

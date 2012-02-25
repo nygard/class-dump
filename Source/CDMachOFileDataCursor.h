@@ -15,7 +15,7 @@
 
 - (id)initWithSection:(CDSection *)section;
 
-@property (readonly) CDMachOFile *machOFile;
+@property (weak, readonly) CDMachOFile *machOFile;
 
 - (void)setAddress:(NSUInteger)address;
 
@@ -26,7 +26,7 @@
 
 - (uint32_t)peekInt32;
 
-// Read using the current byteOrder and ptrSize (from the nonretained_machOFile)
+// Read using the current byteOrder and ptrSize (from the machOFile)
 - (uint64_t)readPtr;
 
 @end

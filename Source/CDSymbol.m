@@ -14,19 +14,25 @@
 
 NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
+@interface CDSymbol ()
+@property (weak, readonly) CDMachOFile *machOFile;
+@end
+
+#pragma mark -
+
 @implementation CDSymbol
 {
     struct nlist_64 nlist;
     BOOL is32Bit;
     NSString *name;
-    CDMachOFile *nonretained_machOFile;
+    __weak CDMachOFile *nonretained_machOFile;
 }
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 {
     if ((self = [super init])) {
         is32Bit = YES;
-        name = [aName retain];
+        name = aName;
         nonretained_machOFile = aMachOFile;
         nlist.n_un.n_strx = 0; // We don't use it.
         nlist.n_type = nlist32.n_type;
@@ -42,7 +48,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 {
     if ((self = [super init])) {
         is32Bit = NO;
-        name = [aName retain];
+        name = aName;
         nonretained_machOFile = aMachOFile;
         nlist.n_un.n_strx = 0; // We don't use it.
         nlist.n_type = nlist64.n_type;
@@ -52,13 +58,6 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [name release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging
@@ -79,6 +78,8 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 #pragma mark -
 
+@synthesize machOFile = nonretained_machOFile;
+
 - (uint64_t)value;
 {
     return nlist.n_value;
@@ -88,10 +89,10 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (CDSection *)section
 {
-    // We might be tempted to do [[nonretained_machOFile segmentContainingAddress:nlist.n_value] sectionContainingAddress:nlist.n_value]
+    // We might be tempted to do [[self.machOFile segmentContainingAddress:nlist.n_value] sectionContainingAddress:nlist.n_value]
     // but this does not work for __mh_dylib_header for example (n_value == 0, but it is in the __TEXT,__text section)
     NSMutableArray *sections = [NSMutableArray array];
-    for (CDLCSegment *segment in [nonretained_machOFile segments]) {
+    for (CDLCSegment *segment in self.machOFile.segments) {
         for (CDSection *section in [segment sections])
             [sections addObject:section];
     }
@@ -107,7 +108,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 - (CDLCDylib *)dylibLoadCommand;
 {
     NSUInteger libraryOrdinal = GET_LIBRARY_ORDINAL(nlist.n_desc);
-    NSArray *dylibLoadCommands = [nonretained_machOFile dylibLoadCommands];
+    NSArray *dylibLoadCommands = self.machOFile.dylibLoadCommands;
 
     if (libraryOrdinal < [dylibLoadCommands count])
         return [dylibLoadCommands objectAtIndex:libraryOrdinal];

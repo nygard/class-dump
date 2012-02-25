@@ -21,20 +21,13 @@
         if (loadCommand.cmdsize > 8) {
             NSMutableData *_commandData = [[NSMutableData alloc] init];
             [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:_commandData];
-            commandData = [_commandData copy]; [_commandData release];
+            commandData = [_commandData copy]; 
         } else {
             commandData = nil;
         }
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [commandData release];
-
-    [super dealloc];
 }
 
 #pragma mark -

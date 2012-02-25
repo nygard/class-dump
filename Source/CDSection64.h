@@ -13,7 +13,7 @@
 
 - (NSString *)description;
 
-@property (readonly) CDLCSegment64 *segment;
+@property (weak, readonly) CDLCSegment64 *segment;
 
 - (void)loadData;
 

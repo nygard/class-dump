@@ -14,7 +14,7 @@ static BOOL debug = NO;
 
 @interface CDTypeController ()
 
-@property (readonly) CDClassDump *classDump;
+@property (weak, readonly) CDClassDump *classDump;
 
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
@@ -29,7 +29,7 @@ static BOOL debug = NO;
 
 @implementation CDTypeController
 {
-    CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
+    __weak CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
     
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
@@ -92,19 +92,6 @@ static BOOL debug = NO;
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [ivarTypeFormatter release];
-    [methodTypeFormatter release];
-    [propertyTypeFormatter release];
-    [structDeclarationTypeFormatter release];
-
-    [structureTable release];
-    [unionTable release];
-
-    [super dealloc];
 }
 
 #pragma mark -

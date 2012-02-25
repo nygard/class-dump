@@ -12,7 +12,7 @@
 
 @implementation CDSection32
 {
-    CDLCSegment32 *nonretained_segment;
+    __weak CDLCSegment32 *nonretained_segment;
     
     struct section section;
 }
@@ -43,13 +43,11 @@
         buf[16] = 0;
         str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
         [self setSegmentName:str];
-        [str release];
         
         memcpy(buf, section.sectname, 16);
         buf[16] = 0;
         str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
         [self setSectionName:str];
-        [str release];
     }
 
     return self;
@@ -90,7 +88,7 @@
 - (void)loadData;
 {
     if (self.hasLoadedData == NO) {
-        self.data = [[[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size] autorelease];
+        self.data = [[NSData alloc] initWithBytes:[[self.segment.machOFile machOData] bytes] + section.offset length:section.size];
         self.hasLoadedData = YES;
     }
 }

@@ -21,14 +21,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [executablePath release];
-    [searchPathStack release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 @synthesize executablePath;
@@ -55,7 +47,7 @@
         [result addObjectsFromArray:group];
     }
 
-    return [[result copy] autorelease];
+    return [result copy];
 }
 
 @end

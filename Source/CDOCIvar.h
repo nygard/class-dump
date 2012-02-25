@@ -15,7 +15,7 @@
 @property (readonly) NSString *type;
 @property (readonly) NSUInteger offset;
 
-@property (readonly) CDType *parsedType;
+@property (nonatomic, readonly) CDType *parsedType;
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 

@@ -7,6 +7,7 @@
 
 #import "CDTypeParser.h"
 #import "CDTypeLexer.h"
+#import "CDType.h"
 
 // http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
 
@@ -38,8 +39,8 @@ static BOOL debug = NO;
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 {
     if ((self = [super init])) {
-        name = [aName retain];
-        attributeString = [someAttributes retain];
+        name = aName;
+        attributeString = someAttributes;
         type = nil;
         attributes = [[NSMutableArray alloc] init];
         
@@ -55,20 +56,6 @@ static BOOL debug = NO;
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [name release];
-    [attributeString release];
-    [type release];
-    [attributes release];
-
-    [attributeStringAfterType release];
-    [customGetter release];
-    [customSetter release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging
@@ -141,7 +128,7 @@ static BOOL debug = NO;
 
         typeRange.location = [scanner scanLocation];
         CDTypeParser *parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
-        type = [[parser parseType:&error] retain];
+        type = [parser parseType:&error];
         if (type != nil) {
             typeRange.length = [parser.lexer.scanner scanLocation];
 
@@ -159,13 +146,9 @@ static BOOL debug = NO;
                 // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
             }
         }
-
-        [parser release];
     } else {
         if (debug) NSLog(@"Error: Property attributes should begin with the type ('T') attribute, property name: %@", name);
     }
-
-    [scanner release];
 
     for (NSString *attr in attributes) {
         if ([attr hasPrefix:@"R"])

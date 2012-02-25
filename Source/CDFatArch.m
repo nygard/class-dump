@@ -12,7 +12,7 @@
 
 @implementation CDFatArch
 {
-    CDFatFile *nonretained_fatFile;
+    __weak CDFatFile *nonretained_fatFile;
     
     struct fat_arch fatArch;
     
@@ -39,13 +39,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [machOFile release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging
@@ -112,7 +105,7 @@
 - (CDMachOFile *)machOFile;
 {
     if (machOFile == nil) {
-        machOFile = [[CDFile fileWithData:[nonretained_fatFile data] archOffset:fatArch.offset archSize:fatArch.size filename:[nonretained_fatFile filename] searchPathState:[nonretained_fatFile searchPathState]] retain];
+        machOFile = [CDFile fileWithData:self.fatFile.data archOffset:fatArch.offset archSize:fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
     }
 
     return machOFile;
@@ -120,7 +113,7 @@
 
 - (NSData *)machOData;
 {
-    return [[[NSData alloc] initWithBytes:[[nonretained_fatFile data] bytes] + fatArch.offset length:fatArch.size] autorelease];
+    return [[NSData alloc] initWithBytes:[[self.fatFile data] bytes] + fatArch.offset length:fatArch.size];
 }
 
 @end

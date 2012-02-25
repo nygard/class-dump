@@ -47,11 +47,11 @@ typedef NSUInteger CDByteOrder;
 @property (readonly) NSArray *dyldEnvironment;
 @property (readonly) NSArray *reExportedDylibs;
 
-@property (retain) CDLCSymbolTable *symbolTable;
-@property (retain) CDLCDynamicSymbolTable *dynamicSymbolTable;
-@property (retain) CDLCDyldInfo *dyldInfo;
-@property (retain) CDLCVersionMinimum *minVersionMacOSX;
-@property (retain) CDLCVersionMinimum *minVersionIOS;
+@property (strong) CDLCSymbolTable *symbolTable;
+@property (strong) CDLCDynamicSymbolTable *dynamicSymbolTable;
+@property (strong) CDLCDyldInfo *dyldInfo;
+@property (strong) CDLCVersionMinimum *minVersionMacOSX;
+@property (strong) CDLCVersionMinimum *minVersionIOS;
 
 - (BOOL)uses64BitABI;
 - (NSUInteger)ptrSize;
@@ -95,6 +95,6 @@ typedef NSUInteger CDByteOrder;
 
 @property (readonly) BOOL hasObjectiveC1Data;
 @property (readonly) BOOL hasObjectiveC2Data;
-@property (readonly) Class processorClass;
+@property (nonatomic, readonly) Class processorClass;
 
 @end

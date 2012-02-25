@@ -7,6 +7,4 @@
 
 @interface CDLCPreboundDylib : CDLoadCommand
 
-@property (readonly) NSString *name;
-
 @end

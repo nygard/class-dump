@@ -9,8 +9,8 @@
 
 @interface CDOCClass : CDOCProtocol <CDTopologicalSort>
 
-@property (retain) NSString *superClassName;
-@property (retain) NSArray *ivars;
+@property (strong) NSString *superClassName;
+@property (strong) NSArray *ivars;
 @property (assign) BOOL isExported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;

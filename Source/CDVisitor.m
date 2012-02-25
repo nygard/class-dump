@@ -5,16 +5,11 @@
 
 #import "CDVisitor.h"
 
+#import "CDClassDump.h"
+
 @implementation CDVisitor
 {
     CDClassDump *classDump;
-}
-
-- (void)dealloc;
-{
-    [classDump release];
-
-    [super dealloc];
 }
 
 #pragma mark -

@@ -15,11 +15,11 @@ typedef NSUInteger CDTableType;
 
 @interface CDStructureTable : NSObject
 
-@property (retain) NSString *identifier;
-@property (retain) NSString *anonymousBaseName;
+@property (strong) NSString *identifier;
+@property (strong) NSString *anonymousBaseName;
 @property (assign) BOOL shouldDebug;
 
-@property (assign) CDTypeController *typeController;
+@property (weak) CDTypeController *typeController;
 
 // Phase 0
 - (void)phase0RegisterStructure:(CDType *)structure usedInMethod:(BOOL)isUsedInMethod;

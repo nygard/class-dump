@@ -33,7 +33,7 @@
 
 @implementation CDLoadCommand
 {
-    CDMachOFile *nonretained_machOFile;
+    __weak CDMachOFile *nonretained_machOFile;
     NSUInteger commandOffset;
 }
 
@@ -92,7 +92,7 @@
 
     //NSLog(@"targetClass: %@", NSStringFromClass(targetClass));
 
-    return [[[targetClass alloc] initWithDataCursor:cursor] autorelease];
+    return [[targetClass alloc] initWithDataCursor:cursor];
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;

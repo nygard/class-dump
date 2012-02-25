@@ -10,7 +10,7 @@
 #import "CDObjectiveCProcessor.h"
 
 @interface CDClassFrameworkVisitor ()
-@property (retain) NSString *frameworkName;
+@property  NSString *frameworkName;
 @end
 
 #pragma mark -
@@ -31,15 +31,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [frameworkNamesByClassName release];
-    [frameworkNamesByProtocolName release];
-    [frameworkName release];
-
-    [super dealloc];
 }
 
 #pragma mark -

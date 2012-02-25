@@ -19,7 +19,7 @@
 - (void)addReferenceCount:(NSUInteger)count;
 
 @property (assign) BOOL isUsedInMethod;
-@property (retain) NSString *typedefName;
+@property (strong) NSString *typedefName;
 
 - (void)generateTypedefName:(NSString *)baseName;
 

@@ -16,13 +16,6 @@
     NSString *className;
 }
 
-- (void)dealloc;
-{
-    [className release];
-
-    [super dealloc];
-}
-
 #pragma mark - Superclass overrides
 
 - (NSString *)sortableName;
@@ -41,7 +34,7 @@
     [resultString appendFormat:@"@interface %@ (%@)", self.className, self.name];
 
     if ([self.protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [resultString appendFormat:@" <%@>", self.protocolsString];
 
     return resultString;
 }
@@ -64,8 +57,6 @@
     // Should mostly be dynamic properties
     [visitor visitRemainingProperties:propertyState];
     [visitor didVisitCategory:self];
-
-    [propertyState release];
 }
 
 #pragma mark - CDTopologicalSort protocol

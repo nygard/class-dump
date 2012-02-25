@@ -7,6 +7,7 @@
 
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
+#import "CDSearchPathState.h"
 
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
@@ -42,8 +43,6 @@ CDArch CDArchFromName(NSString *name)
             arch.cputype = CPU_TYPE_ANY;
             arch.cpusubtype = 0;
         }
-
-        [scanner release];
     } else {
         arch.cputype = archInfo->cputype;
         arch.cpusubtype = archInfo->cpusubtype;
@@ -78,10 +77,10 @@ BOOL CDArchUses64BitABI(CDArch arch)
     CDFatFile *aFatFile = nil;
 
     if (anOffset == 0)
-        aFatFile = [[[CDFatFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
+        aFatFile = [[CDFatFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState];
 
     if (aFatFile == nil) {
-        CDMachOFile *machOFile = [[[CDMachOFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState] autorelease];
+        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState];
         return machOFile;
     }
 
@@ -99,27 +98,17 @@ BOOL CDArchUses64BitABI(CDArch arch)
     if ((self = [super init])) {
         // Otherwise reading the magic number fails.
         if ([someData length] < 4) {
-            [self release];
             return nil;
         }
         
-        filename = [aFilename retain];
-        data = [someData retain];
+        filename = aFilename;
+        data = someData;
         archOffset = anOffset;
         archSize = aSize;
-        searchPathState = [aSearchPathState retain];
+        searchPathState = aSearchPathState;
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [filename release];
-    [data release];
-    [searchPathState release];
-
-    [super dealloc];
 }
 
 #pragma mark -

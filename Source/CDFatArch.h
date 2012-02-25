@@ -25,12 +25,12 @@
 
 @property (readonly) BOOL uses64BitABI;
 
-@property (assign) CDFatFile *fatFile;
+@property (weak) CDFatFile *fatFile;
 
 @property (readonly) CDArch arch;
-@property (readonly) NSString *archName;
+@property (nonatomic, readonly) NSString *archName;
 
-@property (readonly) CDMachOFile *machOFile;
-@property (readonly) NSData *machOData;
+@property (nonatomic, readonly) CDMachOFile *machOFile;
+@property (nonatomic, readonly) NSData *machOData;
 
 @end

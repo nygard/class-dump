@@ -19,7 +19,7 @@
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 {
     if ((self = [super init])) {
-        data = [someData retain];
+        data = someData;
         offset = anOffset;
     }
 
@@ -27,13 +27,6 @@
 }
 
 #pragma mark -
-
-- (void)dealloc;
-{
-    [data release];
-
-    [super dealloc];
-}
 
 - (NSData *)data;
 {
@@ -249,12 +242,12 @@
             strncpy(buf, [data bytes] + offset, length);
             buf[length] = 0;
 
-            str = [[[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:encoding] autorelease];
+            str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:encoding];
             offset += length;
             free(buf);
             return str;
         } else {
-            str = [[[NSString alloc] initWithBytes:[data bytes] + offset length:length encoding:encoding] autorelease];;
+            str = [[NSString alloc] initWithBytes:[data bytes] + offset length:length encoding:encoding];
             offset += length;
             return str;
         }
