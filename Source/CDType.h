@@ -10,21 +10,15 @@
 @interface CDType : NSObject <NSCopying>
 
 - (id)init;
-- (id)initSimpleType:(int)aTypeCode;
-- (id)initIDType:(CDTypeName *)aName;
-- (id)initIDTypeWithProtocols:(NSArray *)someProtocols;
-- (id)initStructType:(CDTypeName *)aName members:(NSArray *)someMembers;
-- (id)initUnionType:(CDTypeName *)aName members:(NSArray *)someMembers;
-- (id)initBitfieldType:(NSString *)aBitfieldSize;
-- (id)initArrayType:(CDType *)aType count:(NSString *)aCount;
-- (id)initPointerType:(CDType *)aType;
-- (id)initModifier:(int)aModifier type:(CDType *)aType;
-- (void)dealloc;
-
-- (id)copyWithZone:(NSZone *)zone;
-- (BOOL)isEqual:(CDType *)otherType;
-
-- (NSString *)description;
+- (id)initSimpleType:(int)typeCode;
+- (id)initIDType:(CDTypeName *)name;
+- (id)initIDTypeWithProtocols:(NSArray *)protocols;
+- (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
+- (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;
+- (id)initBitfieldType:(NSString *)bitfieldSize;
+- (id)initArrayType:(CDType *)type count:(NSString *)count;
+- (id)initPointerType:(CDType *)type;
+- (id)initModifier:(int)modifier type:(CDType *)type;
 
 @property(retain) NSString *variableName;
 
@@ -42,26 +36,20 @@
 @property (nonatomic, readonly) NSUInteger structureDepth;
 
 - (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
-@property (nonatomic, readonly) NSString *formattedStringForSimpleType;
 
 @property (nonatomic, readonly) NSString *typeString;
 @property (nonatomic, readonly) NSString *bareTypeString;
 @property (nonatomic, readonly) NSString *reallyBareTypeString;
 @property (nonatomic, readonly) NSString *keyTypeString;
-- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
-- (void)_recursivelyMergeWithType:(CDType *)otherType;
 
 - (void)generateMemberNames;
 
 // Phase 0
 - (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
-- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
 - (void)phase0RecursivelyFixStructureNames:(BOOL)flag;
 
 // Phase 1
@@ -69,10 +57,8 @@
 
 // Phase 2
 - (void)phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
-- (void)_phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
 
 // Phase 3
-- (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
 - (void)phase3RegisterMembersWithTypeController:(CDTypeController *)typeController;
 - (void)phase3MergeWithTypeController:(CDTypeController *)typeController;
 

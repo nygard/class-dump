@@ -8,7 +8,6 @@
 @interface CDBalanceFormatter : NSObject
 
 - (id)initWithString:(NSString *)str;
-- (void)dealloc;
 
 - (void)parse:(NSString *)open index:(NSUInteger)openIndex level:(NSUInteger)level;
 

@@ -14,6 +14,24 @@
 
 static BOOL debugMerge = NO;
 
+@interface CDType ()
+
+- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+
+@property (nonatomic, readonly) NSString *formattedStringForSimpleType;
+
+- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
+- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
+- (void)_recursivelyMergeWithType:(CDType *)otherType;
+
+- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
+- (void)_phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
+- (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
+
+@end
+
+#pragma mark -
+
 @implementation CDType
 {
     int type; // TODO (2012-02-24): Rename to primitiveType or something
@@ -173,7 +191,7 @@ static BOOL debugMerge = NO;
         NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@", str);
     [parser release];
     
-    NSParameterAssert([str isEqualToString:[copiedType typeString]]);
+    NSParameterAssert([str isEqualToString:copiedType.typeString]);
     
     [copiedType setVariableName:variableName];
     
@@ -185,7 +203,7 @@ static BOOL debugMerge = NO;
 // TODO (2009-08-26): Looks like this doesn't compare the variable name.
 - (BOOL)isEqual:(CDType *)otherType;
 {
-    return [[self typeString] isEqual:[otherType typeString]];
+    return [self.typeString isEqual:otherType.typeString];
 }
 
 #pragma mark - Debugging
@@ -217,7 +235,7 @@ static BOOL debugMerge = NO;
 
 - (BOOL)isTemplateType;
 {
-    return [typeName isTemplateType];
+    return typeName.isTemplateType;
 }
 
 - (CDType *)subtype;
@@ -242,8 +260,8 @@ static BOOL debugMerge = NO;
 
 - (int)typeIgnoringModifiers;
 {
-    if ([self isModifierType] && subtype != nil)
-        return [subtype typeIgnoringModifiers];
+    if (self.isModifierType && subtype != nil)
+        return subtype.typeIgnoringModifiers;
 
     return type;
 }
@@ -251,14 +269,14 @@ static BOOL debugMerge = NO;
 - (NSUInteger)structureDepth;
 {
     if (subtype != nil)
-        return [subtype structureDepth];
+        return subtype.structureDepth;
 
     if (type == '{' || type == '(') {
         NSUInteger maxDepth = 0;
 
         for (CDType *member in members) {
-            if (maxDepth < [member structureDepth])
-                maxDepth = [member structureDepth];
+            if (maxDepth < member.structureDepth)
+                maxDepth = member.structureDepth;
         }
 
         return maxDepth + 1;
@@ -281,7 +299,7 @@ static BOOL debugMerge = NO;
     switch (type) {
         case T_NAMED_OBJECT:
             assert(typeName != nil);
-            [symbolReferences addClassName:[typeName name]];
+            [symbolReferences addClassName:typeName.name];
             if (currentName == nil)
                 result = [NSString stringWithFormat:@"%@ *", typeName];
             else
@@ -334,11 +352,11 @@ static BOOL debugMerge = NO;
                 else
                     baseType = [NSString stringWithFormat:@"union %@", typeName];
                 
-                if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
-                    || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
+                if ((typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self] && [members count] > 0)
+                    || (level == 0 && typeFormatter.shouldExpand && [members count] > 0))
                     memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                     [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
-                                    [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
+                                    [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
                 else
                     memberString = @"";
                 
@@ -365,11 +383,11 @@ static BOOL debugMerge = NO;
                 else
                     baseType = [NSString stringWithFormat:@"struct %@", typeName];
                 
-                if (([typeFormatter shouldAutoExpand] && [[typeFormatter typeController] shouldExpandType:self] && [members count] > 0)
-                    || (level == 0 && [typeFormatter shouldExpand] && [members count] > 0))
+                if ((typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self] && [members count] > 0)
+                    || (level == 0 && typeFormatter.shouldExpand && [members count] > 0))
                     memberString = [NSString stringWithFormat:@" {\n%@%@}",
                                     [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
-                                    [NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
+                                    [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
                 else
                     memberString = @"";
                 
@@ -406,17 +424,17 @@ static BOOL debugMerge = NO;
                 if (currentName == nil)
                     result = [self formattedStringForSimpleType];
                 else
-                    result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
+                    result = [NSString stringWithFormat:@"%@ %@", self.formattedStringForSimpleType, currentName];
             } else
                 result = [NSString stringWithFormat:@"%@ %@",
-                          [self formattedStringForSimpleType], [subtype formattedString:currentName formatter:typeFormatter level:level symbolReferences:symbolReferences]];
+                          self.formattedStringForSimpleType, [subtype formattedString:currentName formatter:typeFormatter level:level symbolReferences:symbolReferences]];
             break;
             
         default:
             if (currentName == nil)
-                result = [self formattedStringForSimpleType];
+                result = self.formattedStringForSimpleType;
             else
-                result = [NSString stringWithFormat:@"%@ %@", [self formattedStringForSimpleType], currentName];
+                result = [NSString stringWithFormat:@"%@ %@", self.formattedStringForSimpleType, currentName];
             break;
     }
     
@@ -429,7 +447,7 @@ static BOOL debugMerge = NO;
     NSMutableString *str = [NSMutableString string];
 
     for (CDType *member in members) {
-        [str appendString:[NSString spacesIndentedToLevel:[typeFormatter baseLevel] + level spacesPerLevel:4]];
+        [str appendString:[NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
         [str appendString:[member formattedString:nil
                                   formatter:typeFormatter
                                   level:level
@@ -575,8 +593,8 @@ static BOOL debugMerge = NO;
     NSMutableString *str = [NSMutableString string];
 
     for (CDType *aMember in members) {
-        if ([aMember variableName] != nil && level > 0)
-            [str appendFormat:@"\"%@\"", [aMember variableName]];
+        if (aMember.variableName != nil && level > 0)
+            [str appendFormat:@"\"%@\"", aMember.variableName];
         [str appendString:[aMember _typeStringWithVariableNamesToLevel:level - 1 showObjectTypes:shouldShowObjectTypes]];
     }
 
@@ -585,38 +603,38 @@ static BOOL debugMerge = NO;
 
 - (BOOL)canMergeWithType:(CDType *)otherType;
 {
-    if ([self isIDType] && [otherType isNamedObject])
+    if (self.isIDType && otherType.isNamedObject)
         return YES;
 
-    if ([self isNamedObject] && [otherType isIDType]) {
+    if (self.isNamedObject && otherType.isIDType) {
         return YES;
     }
 
-    if ([self type] != [otherType type]) {
+    if (self.type != otherType.type) {
         if (debugMerge) {
             NSLog(@"--------------------");
-            NSLog(@"this: %@", [self typeString]);
-            NSLog(@"other: %@", [otherType typeString]);
-            NSLog(@"self isIDType? %u", [self isIDType]);
-            NSLog(@"self isNamedObject? %u", [self isNamedObject]);
-            NSLog(@"other isIDType? %u", [otherType isIDType]);
-            NSLog(@"other isNamedObject? %u", [otherType isNamedObject]);
+            NSLog(@"this: %@", self.typeString);
+            NSLog(@"other: %@", otherType.typeString);
+            NSLog(@"self isIDType? %u", self.isIDType);
+            NSLog(@"self isNamedObject? %u", self.isNamedObject);
+            NSLog(@"other isIDType? %u", otherType.isIDType);
+            NSLog(@"other isNamedObject? %u", otherType.isNamedObject);
         }
-        if (debugMerge) NSLog(@"%s, Can't merge because of type... %@ vs %@", __cmd, [self typeString], [otherType typeString]);
+        if (debugMerge) NSLog(@"%s, Can't merge because of type... %@ vs %@", __cmd, self.typeString, otherType.typeString);
         return NO;
     }
 
-    if (subtype != nil && [subtype canMergeWithType:[otherType subtype]] == NO) {
+    if (subtype != nil && [subtype canMergeWithType:otherType.subtype] == NO) {
         if (debugMerge) NSLog(@"%s, Can't merge subtype", __cmd);
         return NO;
     }
 
-    if (subtype == nil && [otherType subtype] != nil) {
+    if (subtype == nil && otherType.subtype != nil) {
         if (debugMerge) NSLog(@"%s, This subtype is nil, other isn't.", __cmd);
         return NO;
     }
 
-    NSArray *otherMembers = [otherType members];
+    NSArray *otherMembers = otherType.members;
     NSUInteger count = [members count];
     NSUInteger otherCount = [otherMembers count];
 
@@ -640,10 +658,10 @@ static BOOL debugMerge = NO;
             CDType *thisMember = [members objectAtIndex:index];
             CDType *otherMember = [otherMembers objectAtIndex:index];
 
-            CDTypeName *thisTypeName = [thisMember typeName];
-            CDTypeName *otherTypeName = [otherMember typeName];
-            NSString *thisVariableName = [thisMember variableName];
-            NSString *otherVariableName = [otherMember variableName];
+            CDTypeName *thisTypeName = thisMember.typeName;
+            CDTypeName *otherTypeName = otherMember.typeName;
+            NSString *thisVariableName = thisMember.variableName;
+            NSString *otherVariableName = otherMember.variableName;
 
             // It seems to be okay if one of them didn't have a name
             if (thisTypeName != nil && otherTypeName != nil && [thisTypeName isEqual:otherTypeName] == NO) {
@@ -670,9 +688,9 @@ static BOOL debugMerge = NO;
 // Recursively merges, not just the top level.
 - (void)mergeWithType:(CDType *)otherType;
 {
-    NSString *before = [self typeString];
+    NSString *before = self.typeString;
     [self _recursivelyMergeWithType:otherType];
-    NSString *after = [self typeString];
+    NSString *after = self.typeString;
     if (debugMerge) {
         NSLog(@"----------------------------------------");
         NSLog(@"%s", __cmd);
@@ -684,26 +702,26 @@ static BOOL debugMerge = NO;
 
 - (void)_recursivelyMergeWithType:(CDType *)otherType;
 {
-    if ([self isIDType] && [otherType isNamedObject]) {
+    if (self.isIDType && otherType.isNamedObject) {
         //NSLog(@"thisType: %@", [self typeString]);
         //NSLog(@"otherType: %@", [otherType typeString]);
         type = T_NAMED_OBJECT;
-        typeName = [[otherType typeName] copy];
+        typeName = [otherType.typeName copy];
         return;
     }
 
-    if ([self isNamedObject] && [otherType isIDType]) {
+    if (self.isNamedObject && otherType.isIDType) {
         return;
     }
 
-    if ([self type] != [otherType type]) {
+    if (self.type != otherType.type) {
         NSLog(@"Warning: Trying to merge different types in %s", __cmd);
         return;
     }
 
-    [subtype _recursivelyMergeWithType:[otherType subtype]];
+    [subtype _recursivelyMergeWithType:otherType.subtype];
 
-    NSArray *otherMembers = [otherType members];
+    NSArray *otherMembers = otherType.members;
     NSUInteger count = [members count];
     NSUInteger otherCount = [otherMembers count];
 
@@ -719,7 +737,7 @@ static BOOL debugMerge = NO;
     } else if (count != otherCount) {
         // Not so bad after all.  Even kind of common.  Consider _flags.
         NSLog(@"Warning: Types have different number of members.  This is bad. (%lu vs %lu)", count, otherCount);
-        NSLog(@"%@ vs %@", [self typeString], [otherType typeString]);
+        NSLog(@"%@ vs %@", self.typeString, otherType.typeString);
         return;
     }
 
@@ -728,10 +746,10 @@ static BOOL debugMerge = NO;
         CDType *thisMember = [members objectAtIndex:index];
         CDType *otherMember = [otherMembers objectAtIndex:index];
 
-        CDTypeName *thisTypeName = [thisMember typeName];
-        CDTypeName *otherTypeName = [otherMember typeName];
-        NSString *thisVariableName = [thisMember variableName];
-        NSString *otherVariableName = [otherMember variableName];
+        CDTypeName *thisTypeName = thisMember.typeName;
+        CDTypeName *otherTypeName = otherMember.typeName;
+        NSString *thisVariableName = thisMember.variableName;
+        NSString *otherVariableName = otherMember.variableName;
         //NSLog(@"%d: type: %@ vs %@", index, thisTypeName, otherTypeName);
         //NSLog(@"%d: vari: %@ vs %@", index, thisVariableName, otherVariableName);
 
@@ -759,17 +777,17 @@ static BOOL debugMerge = NO;
     if (type == '{' || type == '(') {
         NSSet *usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
 
-        unsigned int number = 1;
+        NSUInteger number = 1;
         for (CDType *aMember in members) {
             [aMember generateMemberNames];
 
             // Bitfields don't need a name.
-            if ([aMember variableName] == nil && [aMember type] != 'b') {
+            if (aMember.variableName == nil && aMember.type != 'b') {
                 NSString *name;
                 do {
-                    name = [NSString stringWithFormat:@"_field%u", number++];
+                    name = [NSString stringWithFormat:@"_field%lu", number++];
                 } while ([usedNames containsObject:name]);
-                [aMember setVariableName:name];
+                aMember.variableName = name;
             }
         }
 
@@ -805,9 +823,9 @@ static BOOL debugMerge = NO;
 {
     [subtype phase0RecursivelyFixStructureNames:flag];
 
-    if ([[typeName name] hasPrefix:@"$"]) {
-        if (flag) NSLog(@"%s, changing type name %@ to ?", __cmd, [typeName name]);
-        [typeName setName:@"?"];
+    if ([typeName.name hasPrefix:@"$"]) {
+        if (flag) NSLog(@"%s, changing type name %@ to ?", __cmd, typeName.name);
+        typeName.name = @"?";
     }
 
     for (CDType *member in members)
@@ -835,11 +853,9 @@ static BOOL debugMerge = NO;
 // This wraps the recursive method, optionally logging if anything changed.
 - (void)phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
 {
-    NSString *before, *after;
-
-    before = [self typeString];
+    NSString *before = self.typeString;
     [self _phase2MergeWithTypeController:typeController debug:phase2Debug];
-    after = [self typeString];
+    NSString *after = self.typeString;
     if (phase2Debug && [before isEqualToString:after] == NO) {
         NSLog(@"----------------------------------------");
         NSLog(@"%s, merge changed type", __cmd);
@@ -911,8 +927,8 @@ static BOOL debugMerge = NO;
                 if (0) {
                     // This can happen in AU Lab, that struct has no members...
                     NSLog(@"Found phase3 type, but can't merge with it.");
-                    NSLog(@"this: %@", [self typeString]);
-                    NSLog(@"that: %@", [phase3Type typeString]);
+                    NSLog(@"this: %@", self.typeString);
+                    NSLog(@"that: %@", phase3Type.typeString);
                 }
             }
         }

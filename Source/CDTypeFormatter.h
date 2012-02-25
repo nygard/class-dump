@@ -9,23 +9,17 @@
 
 @interface CDTypeFormatter : NSObject
 
+@property (assign) CDTypeController *typeController;
+
 @property (assign) NSUInteger baseLevel;
 @property (assign) BOOL shouldExpand;
 @property (assign) BOOL shouldAutoExpand;
 @property (assign) BOOL shouldShowLexing;
 
-@property (assign) CDTypeController *typeController;
-
-- (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
-- (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
-
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences; // Just used by CDOCIvar
 - (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
-
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 
-- (CDType *)replacementForType:(CDType *)aType;
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
 @end

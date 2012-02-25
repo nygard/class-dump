@@ -9,15 +9,15 @@
 
 @implementation CDMethodType
 {
-    CDType *type;
-    NSString *offset;
+    CDType *_type;
+    NSString *_offset;
 }
 
-- (id)initWithType:(CDType *)aType offset:(NSString *)anOffset;
+- (id)initWithType:(CDType *)type offset:(NSString *)offset;
 {
     if ((self = [super init])) {
-        type = [aType retain];
-        offset = [anOffset retain];
+        _type = [type retain];
+        _offset = [offset retain];
     }
 
     return self;
@@ -25,8 +25,8 @@
 
 - (void)dealloc;
 {
-    [type release];
-    [offset release];
+    [_type release];
+    [_offset release];
 
     [super dealloc];
 }
@@ -40,7 +40,7 @@
 
 #pragma mark -
 
-@synthesize type;
-@synthesize offset;
+@synthesize type = _type;
+@synthesize offset = _offset;
 
 @end

@@ -7,14 +7,6 @@
 
 @interface CDTypeName : NSObject <NSCopying>
 
-- (id)init;
-- (void)dealloc;
-
-- (id)copyWithZone:(NSZone *)zone;
-- (BOOL)isEqual:(id)otherObject;
-
-- (NSString *)description;
-
 @property (retain) NSString *name;
 @property (readonly) NSMutableArray *templateTypes;
 @property (retain) NSString *suffix;

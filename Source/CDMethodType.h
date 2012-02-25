@@ -9,9 +9,7 @@
 
 @interface CDMethodType : NSObject
 
-- (id)initWithType:(CDType *)aType offset:(NSString *)anOffset;
-
-- (NSString *)description;
+- (id)initWithType:(CDType *)type offset:(NSString *)offset;
 
 @property (readonly) CDType *type;
 @property (readonly) NSString *offset;

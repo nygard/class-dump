@@ -21,7 +21,7 @@ typedef NSUInteger CDTypeLexerState;
 
 @interface CDTypeLexer : NSObject
 
-- (id)initWithString:(NSString *)aString;
+- (id)initWithString:(NSString *)string;
 
 @property (readonly) NSScanner *scanner;
 @property (nonatomic, assign) CDTypeLexerState state;
