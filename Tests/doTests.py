@@ -46,12 +46,12 @@ TESTDIR_NEW = TESTDIR + "/new"
 TESTDIR_NEW_32 = TESTDIR + "/new32"
 TESTDIR_NEW_64 = TESTDIR + "/new64"
 
-OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-30e6db9b3c")
+OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-3.3.4")
 #OLD_CD = "/bin/echo"
-NEW_CD = os.path.expanduser("/Local/nygard/Products/Debug/class-dump")
+NEW_CD = os.path.expanduser("/Local/nygard/Debug/class-dump")
 
 # Must be a version that supports --list-arches
-ARCH_CD = os.path.expanduser("/Local/nygard/Products/Debug/class-dump")
+ARCH_CD = os.path.expanduser("/Local/nygard/Debug/class-dump")
 
 mac_frameworks = [
     "/System/Library/Frameworks/*.framework",
@@ -207,14 +207,14 @@ def main(argv):
                 command.extend(OLD_OPTS)
                 #print command
                 out = open("%s/%s-%s.txt" % (TESTDIR_OLD, base, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out).wait()
                 out.close()
 
                 command = [NEW_CD, "-s", "-t", path]
                 command.extend(NEW_OPTS)
                 #print command
                 out = open("%s/%s-%s.txt" % (TESTDIR_NEW, base, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out).wait()
                 out.close()
             else:
                 print arch
@@ -223,14 +223,14 @@ def main(argv):
                 command.extend(OLD_OPTS)
                 #print command
                 out = open("%s/%s-%s-%s.txt" % (TESTDIR_OLD, base, arch, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out).wait()
                 out.close()
 
                 command = [NEW_CD, "-s", "-t", "--arch", arch, path]
                 command.extend(NEW_OPTS)
                 #print command
                 out = open("%s/%s-%s-%s.txt" % (TESTDIR_NEW, base, arch, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out)
+                Popen(command, shell=False, stdout=out, stderr=out).wait()
                 out.close()
 
     print "Ended tests at", datetime.today().ctime()
