@@ -81,6 +81,26 @@
     [protocols removeObject:protocol];
 }
 
+- (NSArray *)protocolNames;
+{
+    NSMutableArray *names = [[NSMutableArray alloc] init];
+    [self.protocols enumerateObjectsUsingBlock:^(CDOCProtocol *protocol, NSUInteger index, BOOL *stop){
+        if (protocol.name != nil)
+            [names addObject:protocol.name];
+    }];
+    
+    return [names copy];
+}
+
+- (NSString *)protocolsString;
+{
+    NSArray *names = self.protocolNames;
+    if ([names count] == 0)
+        return @"";
+
+    return [names componentsJoinedByString:@", "];
+}
+
 - (NSArray *)classMethods;
 {
     return classMethods;
@@ -171,7 +191,7 @@
 
     [resultString appendFormat:@"@protocol %@", name];
     if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [resultString appendFormat:@" <%@>", self.protocolsString];
 
     return resultString;
 }

@@ -34,7 +34,7 @@
     [resultString appendFormat:@"@interface %@ (%@)", self.className, self.name];
 
     if ([self.protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [resultString appendFormat:@" <%@>", self.protocolsString];
 
     return resultString;
 }

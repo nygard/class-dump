@@ -758,10 +758,21 @@ static BOOL debugMerge = NO;
     }
 }
 
+- (NSArray *)memberVariableNames;
+{
+    NSMutableArray *names = [[NSMutableArray alloc] init];
+    [self.members enumerateObjectsUsingBlock:^(CDType *memberType, NSUInteger index, BOOL *stop){
+        if (memberType.variableName != nil)
+            [names addObject:memberType.variableName];
+    }];
+    
+    return [names copy];
+}
+
 - (void)generateMemberNames;
 {
     if (type == '{' || type == '(') {
-        NSSet *usedNames = [[NSSet alloc] initWithArray:[members arrayByMappingSelector:@selector(variableName)]];
+        NSSet *usedNames = [[NSSet alloc] initWithArray:self.memberVariableNames];
 
         NSUInteger number = 1;
         for (CDType *aMember in members) {

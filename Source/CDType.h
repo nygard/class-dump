@@ -46,6 +46,7 @@
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
 
+@property (readonly) NSArray *memberVariableNames;
 - (void)generateMemberNames;
 
 // Phase 0

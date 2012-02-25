@@ -56,8 +56,8 @@ static BOOL debug = NO;
 
     NSArray *protocols = aClass.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+        [resultString appendFormat:@" <%@>", aClass.protocolsString];
+        [symbolReferences addProtocolNamesFromArray:aClass.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -87,8 +87,8 @@ static BOOL debug = NO;
 
     NSArray *protocols = category.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+        [resultString appendFormat:@" <%@>", category.protocolsString];
+        [symbolReferences addProtocolNamesFromArray:category.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -105,8 +105,8 @@ static BOOL debug = NO;
 
     NSArray *protocols = protocol.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
-        [symbolReferences addProtocolNamesFromArray:[protocols arrayByMappingSelector:@selector(name)]];
+        [resultString appendFormat:@" <%@>", protocol.protocolsString];
+        [symbolReferences addProtocolNamesFromArray:protocol.protocolNames];
     }
 
     [resultString appendString:@"\n"];

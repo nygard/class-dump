@@ -66,7 +66,7 @@
         [resultString appendFormat:@" : %@", self.superClassName];
 
     if ([self.protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+        [resultString appendFormat:@" <%@>", self.protocolsString];
 
     return resultString;
 }

@@ -12,19 +12,6 @@
     return [[self reverseObjectEnumerator] allObjects];
 }
 
-- (NSArray *)arrayByMappingSelector:(SEL)aSelector;
-{
-    NSMutableArray *newArray = [NSMutableArray array];
-    for (id object in self) {
-        id value = [object performSelector:aSelector];
-        if (value != nil)
-            [newArray addObject:value];
-        // TODO (2004-01-28): Or we could add NSNull.
-    }
-
-    return newArray;
-}
-
 @end
 
 @implementation NSArray (CDTopoSort)
