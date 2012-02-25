@@ -55,10 +55,10 @@
 
 @property (readonly) CDTypeController *typeController;
 
-- (BOOL)loadFile:(CDFile *)aFile;
+- (BOOL)loadFile:(CDFile *)file;
 - (void)processObjectiveCData;
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
 

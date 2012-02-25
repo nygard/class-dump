@@ -298,7 +298,7 @@ int main(int argc, char *argv[])
             }
 #endif
 
-            [classDump setTargetArch:targetArch];
+            classDump.targetArch = targetArch;
             classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
             if ([classDump loadFile:file]) {

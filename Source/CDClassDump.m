@@ -188,10 +188,10 @@
 
 @synthesize typeController;
 
-- (BOOL)loadFile:(CDFile *)aFile;
+- (BOOL)loadFile:(CDFile *)file;
 {
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
-    CDMachOFile *aMachOFile = [aFile machOFileWithArch:targetArch];
+    CDMachOFile *aMachOFile = [file machOFileWithArch:targetArch];
     //NSLog(@"aMachOFile: %@", aMachOFile);
     if (aMachOFile == nil) {
         fprintf(stderr, "Error: file doesn't contain the specified arch.\n\n");
@@ -238,15 +238,15 @@
 }
 
 // This visits everything segment processors, classes, categories.  It skips over modules.  Need something to visit modules so we can generate separate headers.
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    [aVisitor willBeginVisiting];
+    [visitor willBeginVisiting];
 
     for (CDObjectiveCProcessor *processor in objcProcessors) {
-        [processor recursivelyVisit:aVisitor];
+        [processor recursivelyVisit:visitor];
     }
 
-    [aVisitor didEndVisiting];
+    [visitor didEndVisiting];
 }
 
 - (CDMachOFile *)machOFileWithID:(NSString *)anID;
