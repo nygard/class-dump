@@ -78,12 +78,12 @@ static NSString *CDDylibVersionString(uint32_t version)
 
 - (NSString *)formattedCurrentVersion;
 {
-    return CDDylibVersionString([self currentVersion]);
+    return CDDylibVersionString(self.currentVersion);
 }
 
 - (NSString *)formattedCompatibilityVersion;
 {
-    return CDDylibVersionString([self compatibilityVersion]);
+    return CDDylibVersionString(self.compatibilityVersion);
 }
 
 #if 0

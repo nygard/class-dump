@@ -62,7 +62,7 @@
     NSString *executablePathPrefix = @"@executable_path";
 
     if ([path hasPrefix:loaderPathPrefix]) {
-        NSString *loaderPath = [[[self machOFile] filename] stringByDeletingLastPathComponent];
+        NSString *loaderPath = [self.machOFile.filename stringByDeletingLastPathComponent];
         NSString *str = [[path stringByReplacingOccurrencesOfString:loaderPathPrefix withString:loaderPath] stringByStandardizingPath];
 
         return str;
@@ -70,7 +70,7 @@
 
     if ([path hasPrefix:executablePathPrefix]) {
         NSString *str = @"";
-        NSString *executablePath = [[[self machOFile] searchPathState] executablePath];
+        NSString *executablePath = self.machOFile.searchPathState.executablePath;
         if (executablePath)
             str = [[path stringByReplacingOccurrencesOfString:executablePathPrefix withString:executablePath] stringByStandardizingPath];
 

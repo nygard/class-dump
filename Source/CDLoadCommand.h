@@ -5,10 +5,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "CDMachOFileDataCursor.h"
-
+// Importing these here saves us from importing them in the implementation of every load command.
 #include <mach-o/loader.h>
 #include "dyld-info-compat.h"
+#import "CDMachOFileDataCursor.h"
 
 @class CDMachOFile;
 
@@ -18,7 +18,6 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 
-- (NSString *)description;
 - (NSString *)extraDescription;
 
 @property (readonly) CDMachOFile *machOFile;

@@ -12,8 +12,8 @@
 #define CDSegmentProtectedMagic_Blowfish 0x2e69cf40
 
 enum {
-    CDSegmentEncryptionType_None = 0,
-    CDSegmentEncryptionType_AES = 1, // Prior to 10.5 (AES)
+    CDSegmentEncryptionType_None     = 0,
+    CDSegmentEncryptionType_AES      = 1, // 10.5 and earlier (AES)
     CDSegmentEncryptionType_Blowfish = 2, // 10.6 (Blowfish)
     CDSegmentEncryptionType_Unknown
 };
@@ -40,7 +40,7 @@ extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 
 - (BOOL)containsAddress:(NSUInteger)address;
 - (CDSection *)sectionContainingAddress:(NSUInteger)address;
-- (CDSection *)sectionWithName:(NSString *)aName;
+- (CDSection *)sectionWithName:(NSString *)name;
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
 - (NSUInteger)segmentOffsetForAddress:(NSUInteger)address;
 

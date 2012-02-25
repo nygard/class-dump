@@ -109,7 +109,7 @@ static int64_t read_sleb128(const uint8_t **ptrptr, const uint8_t *end)
     return result;
 }
 
-static NSString *CDRebaseTypeString(uint8_t type)
+static NSString *CDRebaseTypeDescription(uint8_t type)
 {
     switch (type) {
         case REBASE_TYPE_POINTER:         return @"Pointer";
@@ -120,7 +120,7 @@ static NSString *CDRebaseTypeString(uint8_t type)
     return @"Unknown";
 }
 
-static NSString *CDBindTypeString(uint8_t type)
+static NSString *CDBindTypeDescription(uint8_t type)
 {
     switch (type) {
         case REBASE_TYPE_POINTER:         return @"Pointer";
@@ -130,6 +130,30 @@ static NSString *CDBindTypeString(uint8_t type)
 
     return @"Unknown";
 }
+
+@interface CDLCDyldInfo ()
+
+// Rebasing
+- (void)logRebaseInfo;
+- (void)rebaseAddress:(uint64_t)address type:(uint8_t)type;
+
+// Binding
+- (void)parseBindInfo;
+- (void)parseWeakBindInfo;
+- (void)logLazyBindInfo;
+
+- (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end isLazy:(BOOL)isLazy;
+
+- (void)bindAddress:(uint64_t)address type:(uint8_t)type symbolName:(const char *)symbolName flags:(uint8_t)flags
+             addend:(int64_t)addend libraryOrdinal:(int64_t)libraryOrdinal;
+
+// Exported symbols
+- (void)logExportedSymbols;
+- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint64_t)offset;
+
+@end
+
+#pragma mark -
 
 // Needs access to: list of segments
 
@@ -226,7 +250,7 @@ static NSString *CDBindTypeString(uint8_t type)
     BOOL isDone = NO;
     NSUInteger rebaseCount = 0;
 
-    NSArray *segments = [self.machOFile segments];
+    NSArray *segments = self.machOFile.segments;
     NSParameterAssert([segments count] > 0);
 
     uint64_t address = [[segments objectAtIndex:0] vmaddr];
@@ -450,7 +474,7 @@ static NSString *CDBindTypeString(uint8_t type)
                 break;
                 
             case BIND_OPCODE_SET_TYPE_IMM:
-                if (debugBindOps) NSLog(@"BIND_OPCODE: SET_TYPE_IMM,                   type = %u (%@)", immediate, CDBindTypeString(immediate));
+                if (debugBindOps) NSLog(@"BIND_OPCODE: SET_TYPE_IMM,                   type = %u (%@)", immediate, CDBindTypeDescription(immediate));
                 type = immediate;
                 break;
                 

@@ -9,22 +9,4 @@
 
 - (NSString *)symbolNameForAddress:(NSUInteger)address;
 
-// Rebasing
-- (void)logRebaseInfo;
-- (void)rebaseAddress:(uint64_t)address type:(uint8_t)type;
-
-// Binding
-- (void)parseBindInfo;
-- (void)parseWeakBindInfo;
-- (void)logLazyBindInfo;
-
-- (void)logBindOps:(const uint8_t *)start end:(const uint8_t *)end isLazy:(BOOL)isLazy;
-
-- (void)bindAddress:(uint64_t)address type:(uint8_t)type symbolName:(const char *)symbolName flags:(uint8_t)flags
-             addend:(int64_t)addend libraryOrdinal:(int64_t)libraryOrdinal;
-
-// Exported symbols
-- (void)logExportedSymbols;
-- (void)printSymbols:(const uint8_t *)start end:(const uint8_t *)end prefix:(NSString *)prefix offset:(uint64_t)offset;
-
 @end

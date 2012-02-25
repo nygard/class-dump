@@ -104,14 +104,14 @@
     [super appendToString:resultString verbose:isVerbose];
 #if 0
 
-    [resultString appendFormat:@"  segname %@\n", [self name]];
+    [resultString appendFormat:@"  segname %@\n",     [self name]];
     [resultString appendFormat:@"   vmaddr 0x%08x\n", segmentCommand.vmaddr];
     [resultString appendFormat:@"   vmsize 0x%08x\n", segmentCommand.vmsize];
-    [resultString appendFormat:@"  fileoff %d\n", segmentCommand.fileoff];
-    [resultString appendFormat:@" filesize %d\n", segmentCommand.filesize];
+    [resultString appendFormat:@"  fileoff %d\n",     segmentCommand.fileoff];
+    [resultString appendFormat:@" filesize %d\n",     segmentCommand.filesize];
     [resultString appendFormat:@"  maxprot 0x%08x\n", segmentCommand.maxprot];
     [resultString appendFormat:@" initprot 0x%08x\n", segmentCommand.initprot];
-    [resultString appendFormat:@"   nsects %d\n", segmentCommand.nsects];
+    [resultString appendFormat:@"   nsects %d\n",     segmentCommand.nsects];
 
     if (isVerbose)
         [resultString appendFormat:@"    flags %@\n", [self flagDescription]];
