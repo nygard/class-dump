@@ -11,7 +11,6 @@
 @implementation CDLCPreboundDylib
 {
     struct prebound_dylib_command preboundDylibCommand;
-    NSString *name;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
@@ -46,7 +45,5 @@
 {
     return preboundDylibCommand.cmdsize;
 }
-
-@synthesize name;
 
 @end
