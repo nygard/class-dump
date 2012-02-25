@@ -53,21 +53,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-    [protocols release];
-    [classMethods release];
-    [instanceMethods release];
-    [optionalClassMethods release];
-    [optionalInstanceMethods release];
-    [properties release];
-
-    [adoptedProtocolNames release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;
@@ -210,8 +195,6 @@
     [visitor visitRemainingProperties:propertyState];
 
     [visitor didVisitProtocol:self];
-
-    [propertyState release];
 }
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;

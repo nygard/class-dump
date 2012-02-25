@@ -25,18 +25,11 @@
         NSUInteger length = rpathCommand.cmdsize - sizeof(rpathCommand);
         //NSLog(@"expected length: %u", length);
         
-        path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        path = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
         //NSLog(@"path: %@", path);
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [path release];
-
-    [super dealloc];
 }
 
 #pragma mark -

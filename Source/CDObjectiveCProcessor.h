@@ -16,8 +16,8 @@
 @property (readonly) CDMachOFile *machOFile;
 @property (readonly) BOOL hasObjectiveCData;
 
-@property (readonly) CDSection *objcImageInfoSection;
-@property (readonly) NSString *garbageCollectionStatus;
+@property (nonatomic, readonly) CDSection *objcImageInfoSection;
+@property (nonatomic, readonly) NSString *garbageCollectionStatus;
 
 - (void)addClass:(CDOCClass *)aClass withAddress:(uint64_t)address;
 - (CDOCClass *)classWithAddress:(uint64_t)address;

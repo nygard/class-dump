@@ -26,14 +26,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-    [symtab release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;

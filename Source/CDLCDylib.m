@@ -33,18 +33,11 @@ static NSString *CDDylibVersionString(uint32_t version)
         NSUInteger length = dylibCommand.cmdsize - sizeof(dylibCommand);
         //NSLog(@"expected length: %u", length);
         
-        path = [[cursor readStringOfLength:length encoding:NSASCIIStringEncoding] retain];
+        path = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
         //NSLog(@"path: %@", path);
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [path release];
-
-    [super dealloc];
 }
 
 #pragma mark -

@@ -23,8 +23,8 @@ extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 
 @interface CDLCSegment : CDLoadCommand
 
-@property (retain) NSString *name;
-@property (retain) NSArray *sections;
+@property (strong) NSString *name;
+@property (strong) NSArray *sections;
 
 @property (readonly) NSUInteger vmaddr;
 @property (readonly) NSUInteger fileoff;

@@ -10,7 +10,7 @@
 
 @implementation CDMachOFileDataCursor
 {
-    CDMachOFile *nonretained_machOFile;
+    __weak CDMachOFile *nonretained_machOFile;
 }
 
 - (id)initWithFile:(CDMachOFile *)aMachOFile;

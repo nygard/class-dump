@@ -7,6 +7,7 @@
 
 @interface CDLCPreboundDylib : CDLoadCommand
 
+// TODO (2012-02-25): Where is this used?
 @property (readonly) NSString *name;
 
 @end

@@ -57,14 +57,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [symbols release];
-    [classSymbols release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)extraDescription;
@@ -135,9 +127,6 @@
 
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist32:nlist];
             [_symbols addObject:symbol];
-            [symbol release];
-
-            [str release];
         }
 
         //NSLog(@"Loaded %lu 32-bit symbols", [symbols count]);
@@ -166,19 +155,13 @@
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
                 [_classSymbols setObject:symbol forKey:className];
             }
-
-            [symbol release];
-
-            [str release];
         }
 
         //NSLog(@"Loaded %lu 64-bit symbols", [symbols count]);
     }
-
-    [cursor release];
     
-    symbols = [_symbols copy]; [_symbols release];
-    classSymbols = [_classSymbols copy]; [_classSymbols release];
+    symbols = [_symbols copy]; 
+    classSymbols = [_classSymbols copy]; 
 
     //NSLog(@"symbols: %@", symbols);
 }

@@ -69,68 +69,63 @@ void saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
     
     [mdata writeToFile:path atomically:NO];
     
-    [mdata release];
 }
 
 int main(int argc, char *argv[])
 {
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    @autoreleasepool {
+        struct option longopts[] = {
+            { NULL, 0, NULL, 0 },
+        };
 
-    struct option longopts[] = {
-        { NULL, 0, NULL, 0 },
-    };
-
-    if (argc == 1) {
-        print_usage();
-        exit(0);
-    }
-    
-    BOOL errorFlag = NO;
-    int ch;
-
-    while ( (ch = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
-        switch (ch) {
-            case '?':
-            default:
-                errorFlag = YES;
-                break;
+        if (argc == 1) {
+            print_usage();
+            exit(0);
         }
-    }
+        
+        BOOL errorFlag = NO;
+        int ch;
 
-    argc -= optind;
-    argv += optind;
-
-    if (errorFlag || argc < 2) {
-        print_usage();
-        exit(2);
-    }
-
-    {
-        NSString *inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
-        NSString *outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
-
-        NSLog(@"inputFile: %@", inputFile);
-        NSLog(@"outputFile: %@", outputFile);
-
-        NSData *inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
-
-        CDFile *file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
-        if (file == nil) {
-            fprintf(stderr, "deprotect: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [inputFile UTF8String]);
-            exit(1);
+        while ( (ch = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
+            switch (ch) {
+                case '?':
+                default:
+                    errorFlag = YES;
+                    break;
+            }
         }
 
-        if ([file isKindOfClass:[CDMachOFile class]]) {
-            NSLog(@"file: %@", file);
-            saveDeprotectedFileToPath((CDMachOFile *)file, outputFile);
-        } else {
-            NSLog(@"Can only deprotect thin mach-o files at this point.");
+        argc -= optind;
+        argv += optind;
+
+        if (errorFlag || argc < 2) {
+            print_usage();
+            exit(2);
         }
 
-        [inputData release];
-    }
+        {
+            NSString *inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
+            NSString *outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
 
-    [pool release];
+            NSLog(@"inputFile: %@", inputFile);
+            NSLog(@"outputFile: %@", outputFile);
+
+            NSData *inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
+
+            CDFile *file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
+            if (file == nil) {
+                fprintf(stderr, "deprotect: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [inputFile UTF8String]);
+                exit(1);
+            }
+
+            if ([file isKindOfClass:[CDMachOFile class]]) {
+                NSLog(@"file: %@", file);
+                saveDeprotectedFileToPath((CDMachOFile *)file, outputFile);
+            } else {
+                NSLog(@"Can only deprotect thin mach-o files at this point.");
+            }
+        }
+    }
 
     return 0;
 }

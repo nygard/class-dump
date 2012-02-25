@@ -8,7 +8,7 @@
 #include <mach-o/reloc.h>
 
 enum {
-    CDRelocationInfoSize_8Bit = 0,
+    CDRelocationInfoSize_8Bit  = 0,
     CDRelocationInfoSize_16Bit = 1,
     CDRelocationInfoSize_32Bit = 2,
     CDRelocationInfoSize_64Bit = 3,

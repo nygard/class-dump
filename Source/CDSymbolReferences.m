@@ -41,17 +41,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [frameworkNamesByClassName release];
-    [frameworkNamesByProtocolName release];
-
-    [classes release];
-    [protocols release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;
@@ -100,13 +89,13 @@
 
 - (NSString *)referenceString;
 {
-    NSMutableString *referenceString = [[[NSMutableString alloc] init] autorelease];
+    NSMutableString *referenceString = [[NSMutableString alloc] init];
     [self _appendToString:referenceString];
 
     if ([referenceString length] == 0)
         return nil;
 
-    return [[referenceString copy] autorelease];
+    return [referenceString copy];
 }
 
 - (void)removeAllReferences;

@@ -80,7 +80,7 @@ static BOOL debugMerge = NO;
     if ((self = [self init])) {
         if (aName != nil) {
             type = T_NAMED_OBJECT;
-            typeName = [aName retain];
+            typeName = aName;
         } else {
             type = '@';
         }
@@ -93,7 +93,7 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = '@';
-        protocols = [someProtocols retain];
+        protocols = someProtocols;
     }
 
     return self;
@@ -103,7 +103,7 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = '{';
-        typeName = [aName retain];
+        typeName = aName;
         members = [[NSMutableArray alloc] initWithArray:someMembers];
     }
 
@@ -114,7 +114,7 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = '(';
-        typeName = [aName retain];
+        typeName = aName;
         members = [[NSMutableArray alloc] initWithArray:someMembers];
     }
 
@@ -125,7 +125,7 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = 'b';
-        bitfieldSize = [aBitfieldSize retain];
+        bitfieldSize = aBitfieldSize;
     }
 
     return self;
@@ -135,8 +135,8 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = '[';
-        arraySize = [aCount retain];
-        subtype = [aType retain];
+        arraySize = aCount;
+        subtype = aType;
     }
 
     return self;
@@ -146,7 +146,7 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = '^';
-        subtype = [aType retain];
+        subtype = aType;
     }
 
     return self;
@@ -156,23 +156,10 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         type = aModifier;
-        subtype = [aType retain];
+        subtype = aType;
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [protocols release];
-    [subtype release];
-    [typeName release];
-    [members release];
-    [variableName release];
-    [bitfieldSize release];
-    [arraySize release];
-
-    [super dealloc];
 }
 
 #pragma mark - NSCopying
@@ -186,10 +173,9 @@ static BOOL debugMerge = NO;
     CDTypeParser *parser = [[CDTypeParser alloc] initWithType:str];
 
     NSError *error = nil;
-    CDType *copiedType = [[parser parseType:&error] retain];
+    CDType *copiedType = [parser parseType:&error];
     if (copiedType == nil)
         NSLog(@"Warning: Parsing type in -[CDType copyWithZone:] failed, %@", str);
-    [parser release];
     
     NSParameterAssert([str isEqualToString:copiedType.typeString]);
     
@@ -791,7 +777,6 @@ static BOOL debugMerge = NO;
             }
         }
 
-        [usedNames release];
 
     }
 

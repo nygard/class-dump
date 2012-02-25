@@ -16,7 +16,7 @@
 @property (retain) NSString *segmentName;
 @property (retain) NSString *sectionName;
 
-@property (nonatomic, retain) NSData *data;
+@property (nonatomic, strong) NSData *data;
 
 @property (assign) BOOL hasLoadedData;
 - (void)loadData;

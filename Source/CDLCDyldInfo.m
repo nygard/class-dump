@@ -204,13 +204,6 @@ static NSString *CDBindTypeDescription(uint8_t type)
     return self;
 }
 
-- (void)dealloc;
-{
-    [symbolNamesByAddress release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (void)machOFileDidReadLoadCommands:(CDMachOFile *)machOFile;
@@ -558,7 +551,6 @@ static NSString *CDBindTypeDescription(uint8_t type)
     NSNumber *key = [NSNumber numberWithUnsignedInteger:address]; // I don't think 32-bit will dump 64-bit stuff.
     NSString *str = [[NSString alloc] initWithUTF8String:symbolName];
     [symbolNamesByAddress setObject:str forKey:key];
-    [str release];
 }
 
 #pragma mark - Exported symbols

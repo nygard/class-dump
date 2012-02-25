@@ -43,14 +43,6 @@ static BOOL debug = NO;
     return self;
 }
 
-- (void)dealloc;
-{
-    [resultString release];
-    [symbolReferences release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (void)willVisitClass:(CDOCClass *)aClass;
@@ -321,9 +313,6 @@ static BOOL debug = NO;
             [resultString appendFormat:@"// Original attribute string: %@\n\n", property.attributeString];
         }
     }
-    
-    [alist release];
-    [unknownAttrs release];
 }
 
 @end

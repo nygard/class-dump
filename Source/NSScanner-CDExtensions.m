@@ -16,7 +16,7 @@
     static NSCharacterSet *otherCharacterSet = nil;
 
     if (otherCharacterSet == nil)
-        otherCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"$_:*"] retain];
+        otherCharacterSet = [NSCharacterSet characterSetWithCharactersInString:@"$_:*"];
 
     return otherCharacterSet;
 }
@@ -29,8 +29,6 @@
         NSMutableCharacterSet *set = [[NSCharacterSet letterCharacterSet] mutableCopy];
         [set formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
         identifierStartCharacterSet = [set copy];
-
-        [set release];
     }
 
     return identifierStartCharacterSet;
@@ -44,8 +42,6 @@
         NSMutableCharacterSet *set = [[NSCharacterSet alphanumericCharacterSet] mutableCopy];
         [set formUnionWithCharacterSet:[NSScanner cdOtherCharacterSet]];
         identifierCharacterSet = [set copy];
-
-        [set release];
     }
 
     return identifierCharacterSet;
@@ -56,7 +52,7 @@
     static NSCharacterSet *templateTypeCharacterSet = nil;
 
     if (templateTypeCharacterSet == nil)
-        templateTypeCharacterSet = [[[NSCharacterSet characterSetWithCharactersInString:@"<,>"] invertedSet] retain];
+        templateTypeCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"<,>"] invertedSet];
 
     return templateTypeCharacterSet;
 }

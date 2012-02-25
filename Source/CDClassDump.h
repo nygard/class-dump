@@ -42,7 +42,7 @@
 - (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
 - (BOOL)regexMatchesString:(NSString *)aString;
 
-@property (retain) NSString *sdkRoot;
+@property (strong) NSString *sdkRoot;
 
 @property (readonly) NSArray *machOFiles;
 @property (readonly) NSArray *objcProcessors;

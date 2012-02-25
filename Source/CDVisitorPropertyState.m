@@ -37,14 +37,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [propertiesByAccessor release];
-    [propertiesByName release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (void)log;

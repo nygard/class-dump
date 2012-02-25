@@ -35,13 +35,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 - (uint32_t)cmd;

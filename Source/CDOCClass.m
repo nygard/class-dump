@@ -35,14 +35,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [superClassName release];
-    [ivars release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;
@@ -101,8 +93,6 @@
     // Should mostly be dynamic properties
     [visitor visitRemainingProperties:propertyState];
     [visitor didVisitClass:self];
-
-    [propertyState release];
 }
 
 #pragma mark - CDTopologicalSort protocol

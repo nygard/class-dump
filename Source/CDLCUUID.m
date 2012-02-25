@@ -49,8 +49,6 @@
 - (void)dealloc;
 {
     CFRelease(uuid);
-
-    [super dealloc];
 }
 
 #pragma mark -
@@ -67,7 +65,7 @@
 
 - (NSString *)uuidString;
 {
-    return [NSMakeCollectable(CFUUIDCreateString(kCFAllocatorDefault, uuid)) autorelease];
+    return NSMakeCollectable(CFUUIDCreateString(kCFAllocatorDefault, uuid));
 }
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;

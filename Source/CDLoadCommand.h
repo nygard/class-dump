@@ -20,14 +20,14 @@
 
 - (NSString *)extraDescription;
 
-@property (readonly) CDMachOFile *machOFile;
+@property (weak, readonly) CDMachOFile *machOFile;
 @property (readonly) NSUInteger commandOffset;
 
 @property (readonly) uint32_t cmd;
 @property (readonly) uint32_t cmdsize;
 @property (readonly) BOOL mustUnderstandToExecute;
 
-@property (readonly) NSString *commandName;
+@property (nonatomic, readonly) NSString *commandName;
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 

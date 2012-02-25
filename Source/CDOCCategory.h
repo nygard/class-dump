@@ -9,7 +9,7 @@
 
 @interface CDOCCategory : CDOCProtocol <CDTopologicalSort>
 
-@property (retain) NSString *className;
+@property (strong) NSString *className;
 
 - (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
 - (void)recursivelyVisit:(CDVisitor *)visitor;

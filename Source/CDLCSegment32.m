@@ -35,16 +35,14 @@
             buf[16] = 0;
             NSString *str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
             [self setName:str];
-            [str release];
         }
 
         NSMutableArray *_sections = [[NSMutableArray alloc] init];
         for (NSUInteger index = 0; index < segmentCommand.nsects; index++) {
             CDSection32 *section = [[CDSection32 alloc] initWithDataCursor:cursor segment:self];
             [_sections addObject:section];
-            [section release];
         }
-        self.sections = [[_sections copy] autorelease]; [_sections release];
+        self.sections = [_sections copy]; 
     }
 
     return self;

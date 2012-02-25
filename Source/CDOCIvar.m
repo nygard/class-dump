@@ -30,8 +30,8 @@
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 {
     if ((self = [super init])) {
-        name = [aName retain];
-        type = [aType retain];
+        name = aName;
+        type = aType;
         offset = anOffset;
         
         hasParsedType = NO;
@@ -39,16 +39,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [name release];
-    [type release];
-
-    [parsedType release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging
@@ -72,10 +62,9 @@
         NSError *error = nil;
 
         CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
-        parsedType = [[parser parseType:&error] retain];
+        parsedType = [parser parseType:&error];
         if (parsedType == nil)
             NSLog(@"Warning: Parsing ivar type failed, %@", name);
-        [parser release];
 
         self.hasParsedType = YES;
     }

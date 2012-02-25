@@ -33,15 +33,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [segmentName release];
-    [sectionName release];
-    [data release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;

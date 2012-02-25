@@ -40,15 +40,6 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     return self;
 }
 
-- (void)dealloc;
-{
-    [name release];
-    [sections release];
-    [decryptedData release];
-
-    [super dealloc];
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;

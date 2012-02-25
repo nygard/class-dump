@@ -7,7 +7,7 @@
 
 @interface CDSearchPathState : NSObject
 
-@property (nonatomic, retain) NSString *executablePath;
+@property (nonatomic, strong) NSString *executablePath;
 
 - (void)pushSearchPaths:(NSArray *)searchPaths;
 - (void)popSearchPaths;

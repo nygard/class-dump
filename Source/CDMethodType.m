@@ -16,19 +16,11 @@
 - (id)initWithType:(CDType *)type offset:(NSString *)offset;
 {
     if ((self = [super init])) {
-        _type = [type retain];
-        _offset = [offset retain];
+        _type = type;
+        _offset = offset;
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [_type release];
-    [_offset release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging

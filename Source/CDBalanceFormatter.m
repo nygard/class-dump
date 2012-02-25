@@ -19,22 +19,12 @@ static BOOL debug = NO;
 {
     if ((self = [super init])) {
         scanner = [[NSScanner alloc] initWithString:str];
-        openCloseSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}<>()"] retain];
+        openCloseSet = [NSCharacterSet characterSetWithCharactersInString:@"{}<>()"];
         
         result = [[NSMutableString alloc] init];
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [scanner release];
-    [openCloseSet release];
-
-    [result release];
-
-    [super dealloc];
 }
 
 #pragma mark -
@@ -95,8 +85,6 @@ static BOOL debug = NO;
         if (foundClose)
             break;
     }
-
-    [pairs release];
 }
 
 - (NSString *)format;

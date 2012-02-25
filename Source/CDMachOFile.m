@@ -86,8 +86,6 @@ NSString *CDMagicNumberString(uint32_t magic)
         } else if (header.magic == MH_CIGAM || header.magic == MH_CIGAM_64) {
             byteOrder = CDByteOrder_LittleEndian;
         } else {
-            [cursor release];
-            [self release];
             return nil;
         }
         
@@ -102,8 +100,6 @@ NSString *CDMagicNumberString(uint32_t magic)
         if (_flags.uses64BitABI) {
             header.reserved = [cursor readBigInt32];
         }
-        
-        [cursor release];
         
         if (byteOrder == CDByteOrder_LittleEndian) {
             header.cputype = OSSwapInt32(header.cputype);
@@ -121,7 +117,6 @@ NSString *CDMagicNumberString(uint32_t magic)
         NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
         CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
         [self _readLoadCommands:fileCursor count:header.ncmds];
-        [fileCursor release];
     }
 
     return self;
@@ -154,33 +149,16 @@ NSString *CDMagicNumberString(uint32_t magic)
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
-    loadCommands = [_loadCommands copy]; [_loadCommands release];
-    dylibLoadCommands = [_dylibLoadCommands copy]; [_dylibLoadCommands release];
-    segments = [_segments copy]; [_segments release];
-    runPaths = [_runPaths copy]; [_runPaths release];
-    dyldEnvironment = [_dyldEnvironment copy]; [_dyldEnvironment release];
-    reExportedDylibs = [_reExportedDylibs copy]; [_reExportedDylibs release];
+    loadCommands = [_loadCommands copy]; 
+    dylibLoadCommands = [_dylibLoadCommands copy]; 
+    segments = [_segments copy]; 
+    runPaths = [_runPaths copy]; 
+    dyldEnvironment = [_dyldEnvironment copy]; 
+    reExportedDylibs = [_reExportedDylibs copy]; 
 
     for (CDLoadCommand *loadCommand in loadCommands) {
         [loadCommand machOFileDidReadLoadCommands:self];
     }
-}
-
-- (void)dealloc;
-{
-    [loadCommands release]; // These all reference data, so release them first...  Should they just retain data themselves?
-    [dylibLoadCommands release];
-    [segments release];
-    [symbolTable release];
-    [dynamicSymbolTable release];
-    [dyldInfo release];
-    [minVersionMacOSX release];
-    [minVersionIOS release];
-    [runPaths release];
-    [dyldEnvironment release];
-    [reExportedDylibs release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging
@@ -388,7 +366,7 @@ NSString *CDMagicNumberString(uint32_t magic)
             return nil;
 
         ptr = [d2 bytes] + d2Offset;
-        return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
+        return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
     }
 
     NSUInteger anOffset = self.archOffset + [self dataOffsetForAddress:address];
@@ -397,7 +375,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
     ptr = [self.data bytes] + anOffset;
 
-    return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
+    return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 }
 
 - (NSData *)machOData;

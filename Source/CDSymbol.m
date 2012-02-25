@@ -26,7 +26,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 {
     if ((self = [super init])) {
         is32Bit = YES;
-        name = [aName retain];
+        name = aName;
         nonretained_machOFile = aMachOFile;
         nlist.n_un.n_strx = 0; // We don't use it.
         nlist.n_type = nlist32.n_type;
@@ -42,7 +42,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 {
     if ((self = [super init])) {
         is32Bit = NO;
-        name = [aName retain];
+        name = aName;
         nonretained_machOFile = aMachOFile;
         nlist.n_un.n_strx = 0; // We don't use it.
         nlist.n_type = nlist64.n_type;
@@ -52,13 +52,6 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [name release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging

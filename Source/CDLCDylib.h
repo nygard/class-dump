@@ -12,7 +12,7 @@
 @property (readonly) uint32_t currentVersion;
 @property (readonly) uint32_t compatibilityVersion;
 
-@property (readonly) NSString *formattedCurrentVersion;
-@property (readonly) NSString *formattedCompatibilityVersion;
+@property (nonatomic, readonly) NSString *formattedCurrentVersion;
+@property (nonatomic, readonly) NSString *formattedCompatibilityVersion;
 
 @end

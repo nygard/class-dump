@@ -30,14 +30,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    [type release];
-    [typedefName release];
-
-    [super dealloc];
-}
-
 #pragma mark - NSCopying
 
 - (id)copyWithZone:(NSZone *)zone;

@@ -59,7 +59,7 @@ static BOOL debugAnonStructures = NO;
 
 @implementation CDStructureTable
 {
-    CDTypeController *nonretained_typeController;
+    __weak CDTypeController *nonretained_typeController;
     
     NSString *identifier;
     NSString *anonymousBaseName;
@@ -128,35 +128,6 @@ static BOOL debugAnonStructures = NO;
     return self;
 }
 
-- (void)dealloc;
-{
-    [identifier release];
-    [anonymousBaseName release];
-
-    [phase0_structureInfo release];
-
-    [phase1_structureInfo release];
-    [phase1_groupedByDepth release];
-
-    [phase2_namedStructureInfo release];
-    [phase2_anonStructureInfo release];
-    [phase2_nameExceptions release];
-    [phase2_anonExceptions release];
-
-    [phase3_namedStructureInfo release];
-    [phase3_anonStructureInfo release];
-    [phase3_nameExceptions release];
-    [phase3_anonExceptions release];
-
-    [phase3_exceptionalNames release];
-    [phase3_inMethodNameExceptions release];
-
-    [debugNames release];
-    [debugAnon release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 @synthesize typeController = nonretained_typeController;
@@ -175,7 +146,6 @@ static BOOL debugAnonStructures = NO;
         if (isUsedInMethod)
             info.isUsedInMethod = YES;
         [phase0_structureInfo setObject:info forKey:key];
-        [info release];
     } else {
         [info addReferenceCount:1];
         if (isUsedInMethod)
@@ -230,7 +200,6 @@ static BOOL debugAnonStructures = NO;
     if (info == nil) {
         info = [[CDStructureInfo alloc] initWithType:structure];
         [phase1_structureInfo setObject:info forKey:key];
-        [info release];
     }
 }
 
@@ -260,7 +229,6 @@ static BOOL debugAnonStructures = NO;
             group = [[NSMutableArray alloc] init];
             [group addObject:info];
             [phase1_groupedByDepth setObject:group forKey:key];
-            [group release];
         } else {
             [group addObject:info];
         }
@@ -310,7 +278,6 @@ static BOOL debugAnonStructures = NO;
                 group = [[NSMutableArray alloc] init];
                 [group addObject:info];
                 [anonDict setObject:group forKey:key];
-                [group release];
             } else {
                 [group addObject:info];
             }
@@ -320,7 +287,6 @@ static BOOL debugAnonStructures = NO;
                 group = [[NSMutableArray alloc] init];
                 [group addObject:info];
                 [nameDict setObject:group forKey:name];
-                [group release];
             } else {
                 [group addObject:info];
             }
@@ -379,8 +345,6 @@ static BOOL debugAnonStructures = NO;
             }
             [phase2_nameExceptions addObjectsFromArray:group];
         }
-
-        [combined release];
     }
 
     //NSLog(@"======================================================================");
@@ -432,8 +396,6 @@ static BOOL debugAnonStructures = NO;
             }
             [phase2_anonExceptions addObjectsFromArray:group];
         }
-
-        [combined release];
     }
 }
 
@@ -509,7 +471,6 @@ static BOOL debugAnonStructures = NO;
         newInfo.isUsedInMethod = NO;
         [phase3_nameExceptions setObject:newInfo forKey:newInfo.type.typeString];
         [phase3_exceptionalNames addObject:newInfo.name];
-        [newInfo release];
     }
 
     for (CDStructureInfo *info in phase2_anonExceptions) {
@@ -517,7 +478,6 @@ static BOOL debugAnonStructures = NO;
         newInfo.referenceCount = 0;
         newInfo.isUsedInMethod = NO;
         [phase3_anonExceptions setObject:newInfo forKey:newInfo.type.typeString];
-        [newInfo release];
     }
 
     //NSLog(@"phase3 name exceptions: %@", [[phase3_nameExceptions allKeys] componentsJoinedByString:@", "]);
@@ -565,7 +525,6 @@ static BOOL debugAnonStructures = NO;
                 if (isUsedInMethod)
                     info.isUsedInMethod = YES;
                 [phase3_anonStructureInfo setObject:info forKey:key];
-                [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
                 [structure phase3RegisterMembersWithTypeController:self.typeController];
@@ -601,7 +560,6 @@ static BOOL debugAnonStructures = NO;
                 if (isUsedInMethod)
                     info.isUsedInMethod = YES;
                 [phase3_namedStructureInfo setObject:info forKey:name];
-                [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
                 [structure phase3RegisterMembersWithTypeController:self.typeController];

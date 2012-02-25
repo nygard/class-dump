@@ -12,13 +12,6 @@
     CDClassDump *classDump;
 }
 
-- (void)dealloc;
-{
-    [classDump release];
-
-    [super dealloc];
-}
-
 #pragma mark -
 
 @synthesize classDump;

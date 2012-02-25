@@ -34,7 +34,7 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
     if ((self = [super init])) {
-        machOFile = [aMachOFile retain];
+        machOFile = aMachOFile;
         classes = [[NSMutableArray alloc] init];
         classesByAddress = [[NSMutableDictionary alloc] init];
         categories = [[NSMutableArray alloc] init];
@@ -43,18 +43,6 @@
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    [machOFile release];
-    [classes release];
-    [classesByAddress release];
-    [categories release];
-    [protocolsByName release];
-    [protocolsByAddress release];
-
-    [super dealloc];
 }
 
 #pragma mark - Debugging
@@ -93,8 +81,6 @@
         // v2 == 2 -> Supported
         // v2 == 6 -> Required
         //NSParameterAssert(v2 == 0 || v2 == 2 || v2 == 6);
-        
-        [cursor release];
         
         // See markgc.c in the objc4 project
         switch (v2 & 0x06) {
@@ -227,8 +213,6 @@
     for (id aClassOrCategory in classesAndCategories)
         [aClassOrCategory recursivelyVisit:aVisitor];
 
-    [classesAndCategories release];
-
     [aVisitor didVisitObjectiveCProcessor:self];
 }
 
@@ -244,7 +228,6 @@
             [p2 setName:[p1 name]];
             [protocolsByName setObject:p2 forKey:[p2 name]];
             // adopted protocols still not set, will want uniqued instances
-            [p2 release];
         } else {
         }
     }

@@ -9,6 +9,6 @@
 
 @interface CDMultiFileVisitor : CDTextClassDumpVisitor
 
-@property (retain) NSString *outputPath;
+@property (strong) NSString *outputPath;
 
 @end

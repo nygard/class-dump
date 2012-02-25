@@ -40,7 +40,6 @@
         if ([nodesByName objectForKey:node.identifier] != nil)
             NSLog(@"Warning: Duplicate identifier (%@) in %s", node.identifier, __cmd);
         [nodesByName setObject:node forKey:node.identifier];
-        [node release];
     }
 
     NSMutableArray *sortedArray = [NSMutableArray array];
@@ -51,13 +50,13 @@
             [node topologicallySortNodes:nodesByName intoArray:sortedArray];
     }
 
-    [nodesByName release];
 
     return sortedArray;
 }
 
 @end
 
+#pragma mark -
 
 @implementation NSMutableArray (CDTopoSort)
 
