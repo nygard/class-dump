@@ -65,7 +65,7 @@
 
 - (NSString *)uuidString;
 {
-    return NSMakeCollectable(CFUUIDCreateString(kCFAllocatorDefault, uuid));
+    return (__bridge_transfer NSString *)(CFUUIDCreateString(kCFAllocatorDefault, uuid));
 }
 
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;

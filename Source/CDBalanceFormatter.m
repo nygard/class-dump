@@ -36,8 +36,6 @@ static BOOL debug = NO;
     BOOL foundOpen = NO;
     BOOL foundClose = NO;
 
-    NSArray *pairs = [[NSArray alloc] initWithObjects:@"{}", @"<>", @"()", nil];
-
     while ([scanner isAtEnd] == NO) {
         NSString *pre;
 
