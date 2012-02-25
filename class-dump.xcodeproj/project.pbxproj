@@ -216,15 +216,15 @@
 		01EB825F13A590D9003EDE60 /* class-dump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "class-dump"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01EB826313A590D9003EDE60 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		01EB828213A5916D003EDE60 /* MachObjC-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MachObjC-Prefix.pch"; sourceTree = "<group>"; };
-		01EB828713A591A5003EDE60 /* NSArray-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; name = "NSArray-CDExtensions.h"; path = "Source/NSArray-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
+		01EB828713A591A5003EDE60 /* NSArray-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray-CDExtensions.h"; path = "Source/NSArray-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
 		01EB828813A591A5003EDE60 /* NSArray-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSArray-CDExtensions.m"; path = "Source/NSArray-CDExtensions.m"; sourceTree = SOURCE_ROOT; };
 		01EB828913A591A5003EDE60 /* NSData-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData-CDExtensions.h"; path = "Source/NSData-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
 		01EB828A13A591A5003EDE60 /* NSData-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData-CDExtensions.m"; path = "Source/NSData-CDExtensions.m"; sourceTree = SOURCE_ROOT; };
 		01EB828B13A591A5003EDE60 /* NSError-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSError-CDExtensions.h"; path = "Source/NSError-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
 		01EB828C13A591A5003EDE60 /* NSError-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSError-CDExtensions.m"; path = "Source/NSError-CDExtensions.m"; sourceTree = SOURCE_ROOT; };
-		01EB828D13A591A5003EDE60 /* NSScanner-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; name = "NSScanner-CDExtensions.h"; path = "Source/NSScanner-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
+		01EB828D13A591A5003EDE60 /* NSScanner-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSScanner-CDExtensions.h"; path = "Source/NSScanner-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
 		01EB828E13A591A5003EDE60 /* NSScanner-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSScanner-CDExtensions.m"; path = "Source/NSScanner-CDExtensions.m"; sourceTree = SOURCE_ROOT; };
-		01EB828F13A591A5003EDE60 /* NSString-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; name = "NSString-CDExtensions.h"; path = "Source/NSString-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
+		01EB828F13A591A5003EDE60 /* NSString-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString-CDExtensions.h"; path = "Source/NSString-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
 		01EB829013A591A5003EDE60 /* NSString-CDExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString-CDExtensions.m"; path = "Source/NSString-CDExtensions.m"; sourceTree = SOURCE_ROOT; };
 		01EB829613A591D7003EDE60 /* cd_objc2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = cd_objc2.h; path = Source/cd_objc2.h; sourceTree = SOURCE_ROOT; };
 		01EB829713A591D7003EDE60 /* CDBalanceFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDBalanceFormatter.h; path = Source/CDBalanceFormatter.h; sourceTree = SOURCE_ROOT; };
@@ -410,6 +410,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		011F1D6214F8EB9F00CF8AE2 /* Structure / Union handling */ = {
+			isa = PBXGroup;
+			children = (
+				01EB830513A591D8003EDE60 /* CDStructureTable.h */,
+				01EB830613A591D8003EDE60 /* CDStructureTable.m */,
+				01EB831213A591D8003EDE60 /* CDTypeController.h */,
+				01EB831313A591D8003EDE60 /* CDTypeController.m */,
+				01EB830313A591D8003EDE60 /* CDStructureInfo.h */,
+				01EB830413A591D8003EDE60 /* CDStructureInfo.m */,
+			);
+			name = "Structure / Union handling";
+			sourceTree = "<group>";
+		};
 		013D1EFE13A5A0F100BF0A67 /* deprotect */ = {
 			isa = PBXGroup;
 			children = (
@@ -503,12 +516,7 @@
 				01B02D4913A5B9090047BC53 /* Info.plist */,
 				01EB829913A591D7003EDE60 /* CDClassDump.h */,
 				01EB829A13A591D7003EDE60 /* CDClassDump.m */,
-				01EB830513A591D8003EDE60 /* CDStructureTable.h */,
-				01EB830613A591D8003EDE60 /* CDStructureTable.m */,
-				01EB831213A591D8003EDE60 /* CDTypeController.h */,
-				01EB831313A591D8003EDE60 /* CDTypeController.m */,
-				01EB830313A591D8003EDE60 /* CDStructureInfo.h */,
-				01EB830413A591D8003EDE60 /* CDStructureInfo.m */,
+				011F1D6214F8EB9F00CF8AE2 /* Structure / Union handling */,
 				01EB830913A591D8003EDE60 /* CDSymbolReferences.h */,
 				01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */,
 				01984AC013AA9EA900EABFF6 /* Visitors */,
