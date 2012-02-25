@@ -1,18 +1,20 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDOCCategory.h"
 
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
 #import "CDSymbolReferences.h"
-#import "NSArray-Extensions.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
 
 @implementation CDOCCategory
+{
+    NSString *className;
+}
 
 - (void)dealloc;
 {
@@ -38,33 +40,30 @@
 
     [resultString appendFormat:@"@interface %@ (%@)", self.className, self.name];
 
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+    if ([self.protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
     return resultString;
 }
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    CDVisitorPropertyState *propertyState;
-
-    if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
         return;
 
-    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
-    propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
 
-    [aVisitor willVisitCategory:self];
+    [visitor willVisitCategory:self];
 
     //[aVisitor willVisitPropertiesOfCategory:self];
     //[self visitProperties:aVisitor];
     //[aVisitor didVisitPropertiesOfCategory:self];
 
-    [self visitMethods:aVisitor propertyState:propertyState];
+    [self visitMethods:visitor propertyState:propertyState];
     // This can happen when... the accessors are implemented on the main class.  Odd case, but we should still emit the remaining properties.
     // Should mostly be dynamic properties
-    [aVisitor visitRemainingProperties:propertyState];
-    [aVisitor didVisitCategory:self];
+    [visitor visitRemainingProperties:propertyState];
+    [visitor didVisitCategory:self];
 
     [propertyState release];
 }

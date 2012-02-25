@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDSymbol.h"
 
@@ -15,6 +15,12 @@
 NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 @implementation CDSymbol
+{
+    struct nlist_64 nlist;
+    BOOL is32Bit;
+    NSString *name;
+    CDMachOFile *nonretained_machOFile;
+}
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 {

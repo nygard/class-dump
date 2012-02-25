@@ -1,31 +1,36 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDTypeLexer.h"
-
-#import "NSScanner-Extensions.h"
 
 static BOOL debug = NO;
 
 static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 {
     switch (state) {
-      case CDTypeLexerState_Normal: return @"Normal";
-      case CDTypeLexerState_Identifier: return @"Identifier";
-      case CDTypeLexerState_TemplateTypes: return @"Template";
+        case CDTypeLexerState_Normal:        return @"Normal";
+        case CDTypeLexerState_Identifier:    return @"Identifier";
+        case CDTypeLexerState_TemplateTypes: return @"Template";
     }
 
     return @"Unknown";
 }
 
 @implementation CDTypeLexer
+{
+    NSScanner *scanner;
+    CDTypeLexerState state;
+    NSString *lexText;
+    
+    BOOL shouldShowLexing;
+}
 
-- (id)initWithString:(NSString *)aString;
+- (id)initWithString:(NSString *)string;
 {
     if ((self = [super init])) {
-        scanner = [[NSScanner alloc] initWithString:aString];
+        scanner = [[NSScanner alloc] initWithString:string];
         [scanner setCharactersToBeSkipped:nil];
         state = CDTypeLexerState_Normal;
         shouldShowLexing = debug;
@@ -68,8 +73,7 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
     self.lexText = nil;
 
     if ([scanner isAtEnd]) {
-        if (shouldShowLexing)
-            NSLog(@"%s [state=%lu], token = TK_EOS", __cmd, state);
+        if (shouldShowLexing)                       NSLog(@"%s [state=%lu], token = TK_EOS", __cmd, state);
         return TK_EOS;
     }
 
@@ -77,41 +81,36 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         // Skip whitespace, scan '<', ',', '>'.  Everything else is lumped together as a string.
         [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
         if ([scanner scanString:@"<" intoString:NULL]) {
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, '<', '<');
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, '<', '<');
             return '<';
         }
 
         if ([scanner scanString:@">" intoString:NULL]) {
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, '>', '>');
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, '>', '>');
             return '>';
         }
 
         if ([scanner scanString:@"," intoString:NULL]) {
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, ',', ',');
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, ',', ',');
             return ',';
         }
 
         if ([scanner my_scanCharactersFromSet:[NSScanner cdTemplateTypeCharacterSet] intoString:&str]) {
             self.lexText = str;
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = TK_TEMPLATE_TYPE (%@)", __cmd, state, lexText);
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = TK_TEMPLATE_TYPE (%@)", __cmd, state, lexText);
             return TK_TEMPLATE_TYPE;
         }
 
         NSLog(@"Ooops, fell through in template types state.");
     } else if (state == CDTypeLexerState_Identifier) {
-        NSString *anIdentifier;
+        NSString *identifier;
 
         //NSLog(@"Scanning in identifier state.");
         [scanner setCharactersToBeSkipped:nil];
 
-        if ([scanner scanIdentifierIntoString:&anIdentifier]) {
-            self.lexText = anIdentifier;
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = TK_IDENTIFIER (%@)", __cmd, state, lexText);
+        if ([scanner scanIdentifierIntoString:&identifier]) {
+            self.lexText = identifier;
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = TK_IDENTIFIER (%@)", __cmd, state, lexText);
             state = CDTypeLexerState_Normal;
             return TK_IDENTIFIER;
         }
@@ -125,27 +124,23 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
                 self.lexText = @"";
 
             [scanner scanString:@"\"" intoString:NULL];
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = TK_QUOTED_STRING (%@)", __cmd, state, lexText);
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = TK_QUOTED_STRING (%@)", __cmd, state, lexText);
             return TK_QUOTED_STRING;
         }
 
         if ([scanner my_scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&str]) {
             self.lexText = str;
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = TK_NUMBER (%@)", __cmd, state, lexText);
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = TK_NUMBER (%@)", __cmd, state, lexText);
             return TK_NUMBER;
         }
 
         if ([scanner scanCharacter:&ch]) {
-            if (shouldShowLexing)
-                NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, ch, ch);
+            if (shouldShowLexing)                   NSLog(@"%s [state=%lu], token = %d '%c'", __cmd, state, ch, ch);
             return ch;
         }
     }
 
-    if (shouldShowLexing)
-        NSLog(@"%s [state=%lu], token = TK_EOS", __cmd, state);
+    if (shouldShowLexing)                           NSLog(@"%s [state=%lu], token = TK_EOS", __cmd, state);
 
     return TK_EOS;
 }
@@ -164,17 +159,16 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
 
 - (NSString *)peekIdentifier;
 {
+    NSScanner *peekScanner = [[NSScanner alloc] initWithString:[scanner string]];
+    [peekScanner setScanLocation:[scanner scanLocation]];
+
     NSString *identifier;
-
-    NSScanner *aScanner = [[NSScanner alloc] initWithString:[scanner string]];
-    [aScanner setScanLocation:[scanner scanLocation]];
-
-    if ([aScanner scanIdentifierIntoString:&identifier]) {
-        [aScanner release];
+    if ([peekScanner scanIdentifierIntoString:&identifier]) {
+        [peekScanner release];
         return identifier;
     }
 
-    [aScanner release];
+    [peekScanner release];
 
     return nil;
 }

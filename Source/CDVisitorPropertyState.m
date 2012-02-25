@@ -1,13 +1,23 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDVisitorPropertyState.h"
 
 #import "CDOCProperty.h"
 
+@interface CDVisitorPropertyState ()
+- (void)log;
+@end
+
+#pragma mark -
+
 @implementation CDVisitorPropertyState
+{
+    NSMutableDictionary *propertiesByAccessor; // NSString (accessor)       -> CDOCProperty
+    NSMutableDictionary *propertiesByName;     // NSString (property name)  -> CDOCProperty
+}
 
 - (id)initWithProperties:(NSArray *)properties;
 {
@@ -19,7 +29,7 @@
             //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
             [propertiesByName setObject:property forKey:property.name];
             [propertiesByAccessor setObject:property forKey:property.getter];
-            if ([property isReadOnly] == NO)
+            if (property.isReadOnly == NO)
                 [propertiesByAccessor setObject:property forKey:property.setter];
         }
     }

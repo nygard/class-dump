@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDMachOFile.h"
 
@@ -42,6 +42,26 @@ NSString *CDMagicNumberString(uint32_t magic)
 }
 
 @implementation CDMachOFile
+{
+    CDByteOrder byteOrder;
+    
+    NSArray *loadCommands;
+    NSArray *dylibLoadCommands;
+    NSArray *segments;
+    CDLCSymbolTable *symbolTable;
+    CDLCDynamicSymbolTable *dynamicSymbolTable;
+    CDLCDyldInfo *dyldInfo;
+    CDLCVersionMinimum *minVersionMacOSX;
+    CDLCVersionMinimum *minVersionIOS;
+    NSArray *runPaths;
+    NSArray *dyldEnvironment;
+    NSArray *reExportedDylibs;
+    struct mach_header_64 header; // 64-bit, also holding 32-bit
+    
+    struct {
+        unsigned int uses64BitABI:1;
+    } _flags;
+}
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
@@ -59,7 +79,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         dyldEnvironment = nil;
         reExportedDylibs = nil;
         
-        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:self.archOffset];
         header.magic = [cursor readBigInt32];
         if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
             byteOrder = CDByteOrder_BigEndian;
@@ -170,7 +190,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, archOffset: %p",
             NSStringFromClass([self class]), self,
             [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
-            filename, data, archOffset];
+            self.filename, self.data, self.archOffset];
 }
 
 #pragma mark -
@@ -371,18 +391,18 @@ NSString *CDMagicNumberString(uint32_t magic)
         return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
     }
 
-    NSUInteger anOffset = archOffset + [self dataOffsetForAddress:address];
+    NSUInteger anOffset = self.archOffset + [self dataOffsetForAddress:address];
     if (anOffset == 0)
         return nil;
 
-    ptr = [data bytes] + anOffset;
+    ptr = [self.data bytes] + anOffset;
 
     return [[[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding] autorelease];
 }
 
 - (NSData *)machOData;
 {
-    return [NSData dataWithBytesNoCopy:(void*)(archOffset + [data bytes]) length:archSize freeWhenDone:NO];
+    return [NSData dataWithBytesNoCopy:(void *)(self.archOffset + [self.data bytes]) length:self.archSize freeWhenDone:NO];
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
@@ -415,18 +435,18 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (const void *)bytes;
 {
-    return [data bytes];
+    return [self.data bytes];
 }
 
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;
 {
-    return [data bytes] + anOffset;
+    return [self.data bytes] + anOffset;
 }
 
 - (NSString *)importBaseName;
 {
     if ([self filetype] == MH_DYLIB) {
-        NSString *str = [filename lastPathComponent];
+        NSString *str = [self.filename lastPathComponent];
         if ([str hasPrefix:@"lib"])
             str = [[[str substringFromIndex:3] componentsSeparatedByString:@"."] objectAtIndex:0];
 

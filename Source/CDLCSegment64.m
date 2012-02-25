@@ -1,13 +1,16 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDLCSegment64.h"
 
 #import "CDSection64.h"
 
 @implementation CDLCSegment64
+{
+    struct segment_command_64 segmentCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -41,7 +44,7 @@
             [_sections addObject:section];
             [section release];
         }
-        sections = [_sections copy]; [_sections release];
+        self.sections = [[_sections copy] autorelease]; [_sections release];
     }
 
     return self;

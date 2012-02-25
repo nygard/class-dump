@@ -1,11 +1,15 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDSearchPathState.h"
 
 @implementation CDSearchPathState
+{
+    NSString *executablePath;
+    NSMutableArray *searchPathStack;
+}
 
 - (id)init;
 {
@@ -44,17 +48,6 @@
 
 }
 
-- (NSString *)resolvePath:(NSString *)aPath;
-{
-    for (NSArray *group in searchPathStack) {
-        for (NSString *path in group) {
-            NSLog(@"path %@", path);
-        }
-    }
-
-    return aPath;
-}
-
 - (NSArray *)searchPaths;
 {
     NSMutableArray *result = [NSMutableArray array];
@@ -62,8 +55,7 @@
         [result addObjectsFromArray:group];
     }
 
-    return [NSArray arrayWithArray:result];
-    //return [[result copy] autorelease];
+    return [[result copy] autorelease];
 }
 
 @end

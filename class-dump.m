@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #include <stdio.h>
 #include <libc.h>
@@ -11,7 +11,6 @@
 #include <mach-o/arch.h>
 
 #import <Foundation/Foundation.h>
-#import "NSString-Extensions.h"
 
 #import "CDClassDump.h"
 #import "CDFindMethodVisitor.h"
@@ -299,7 +298,7 @@ int main(int argc, char *argv[])
             }
 #endif
 
-            [classDump setTargetArch:targetArch];
+            classDump.targetArch = targetArch;
             classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
             if ([classDump loadFile:file]) {
@@ -315,7 +314,7 @@ int main(int argc, char *argv[])
                 if (shouldFind) {
                     CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                     visitor.classDump = classDump;
-                    visitor.findString = searchString;
+                    visitor.searchString = searchString;
                     [classDump recursivelyVisit:visitor];
                     [visitor release];
                 } else if (shouldGenerateSeparateHeaders) {

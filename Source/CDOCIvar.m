@@ -1,17 +1,30 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDOCIvar.h"
 
-#import "NSError-CDExtensions.h"
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 #import "CDTypeController.h"
 
+@interface CDOCIvar ()
+@property (assign) BOOL hasParsedType; // Private
+@end
+
+#pragma mark -
+
 @implementation CDOCIvar
+{
+    NSString *name;
+    NSString *type;
+    NSUInteger offset;
+    
+    BOOL hasParsedType;
+    CDType *parsedType;
+}
 
 - (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
 {

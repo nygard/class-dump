@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDLCSegment.h"
 
@@ -22,6 +22,12 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 }
 
 @implementation CDLCSegment
+{
+    NSString *name;
+    NSArray *sections;
+    
+    NSMutableData *decryptedData;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -114,7 +120,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             // First three pages aren't encrypted, so we can't tell.  Let's pretent it's something we can decrypt.
             return CDSegmentEncryptionType_AES;
         } else {
-            const void *src = [[nonretained_machOFile machOData] bytes] + self.fileoff + 3 * PAGE_SIZE;
+            const void *src = [[self.machOFile machOData] bytes] + self.fileoff + 3 * PAGE_SIZE;
 
             uint32_t magic = OSReadLittleInt32(src, 0);
             //NSLog(@"%s, magic= 0x%08x", __cmd, magic);
@@ -195,14 +201,14 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
     [super appendToString:resultString verbose:isVerbose];
 #if 0
-    [resultString appendFormat:@"  segname %@\n", self.name];
+    [resultString appendFormat:@"  segname %@\n",     self.name];
     [resultString appendFormat:@"   vmaddr 0x%08x\n", segmentCommand.vmaddr];
     [resultString appendFormat:@"   vmsize 0x%08x\n", segmentCommand.vmsize];
-    [resultString appendFormat:@"  fileoff %d\n", segmentCommand.fileoff];
-    [resultString appendFormat:@" filesize %d\n", segmentCommand.filesize];
+    [resultString appendFormat:@"  fileoff %d\n",     segmentCommand.fileoff];
+    [resultString appendFormat:@" filesize %d\n",     segmentCommand.filesize];
     [resultString appendFormat:@"  maxprot 0x%08x\n", segmentCommand.maxprot];
     [resultString appendFormat:@" initprot 0x%08x\n", segmentCommand.initprot];
-    [resultString appendFormat:@"   nsects %d\n", segmentCommand.nsects];
+    [resultString appendFormat:@"   nsects %d\n",     segmentCommand.nsects];
 
     if (isVerbose)
         [resultString appendFormat:@"    flags %@\n", [self flagDescription]];
@@ -214,12 +220,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
 - (void)writeSectionData;
 {
-    unsigned int index = 0;
-
-    for (CDSection *section in sections) {
+    [self.sections enumerateObjectsUsingBlock:^(CDSection *section, NSUInteger index, BOOL *stop){
         [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, section.sectionName] atomically:NO];
-        index++;
-    }
+    }];
 }
 
 - (NSData *)decryptedData;
@@ -232,7 +235,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         NSParameterAssert((self.filesize % PAGE_SIZE) == 0);
         decryptedData = [[NSMutableData alloc] initWithLength:self.filesize];
 
-        const void *src = [[nonretained_machOFile machOData] bytes] + self.fileoff;
+        const void *src = [[self.machOFile machOData] bytes] + self.fileoff;
         void *dest = [decryptedData mutableBytes];
 
         if (self.filesize <= PAGE_SIZE * 3) {

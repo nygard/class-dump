@@ -1,13 +1,10 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDTypeFormatter.h"
 
-#import "NSError-CDExtensions.h"
-#import "NSScanner-Extensions.h"
-#import "NSString-Extensions.h"
 #import "CDMethodType.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
@@ -17,7 +14,25 @@
 
 static BOOL debug = NO;
 
+@interface CDTypeFormatter ()
+- (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
+- (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
+- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (CDType *)replacementForType:(CDType *)type;
+@end
+
+#pragma mark -
+
 @implementation CDTypeFormatter
+{
+    CDTypeController *nonretained_typeController;
+    
+    NSUInteger baseLevel;
+    
+    BOOL shouldExpand; // But just top level struct, level == 0
+    BOOL shouldAutoExpand;
+    BOOL shouldShowLexing;
+}
 
 - (id)init;
 {
@@ -83,6 +98,7 @@ static BOOL debug = NO;
 
 // TODO (2004-01-28): See if we can pass in the actual CDType.
 // TODO (2009-07-09): Now that we have the other method, see if we can use it instead.
+// TODO (2012-02-25): Only CDOCIvar uses this method now.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
@@ -154,7 +170,7 @@ static BOOL debug = NO;
         BOOL noMoreTypes = NO;
 
         CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
-        NSString *specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+        NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
         if (specialCase != nil) {
             [typeDict setValue:specialCase forKey:@"return-type"];
         } else {
@@ -185,17 +201,16 @@ static BOOL debug = NO;
                     noMoreTypes = YES;
                 } else {
                     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
-                    NSString *typeString;
 
                     aMethodType = [methodTypes objectAtIndex:index];
-                    specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+                    specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [parameter setValue:specialCase forKey:@"type"];
                     } else {
-                        typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
                         [parameter setValue:typeString forKey:@"type"];
                     }
-                    //[parameter setValue:[NSString stringWithFormat:@"fp%@", [aMethodType offset]] forKey:@"name"];
+                    //[parameter setValue:[NSString stringWithFormat:@"fp%@", aMethodType.offset] forKey:@"name"];
                     [parameter setValue:[NSString stringWithFormat:@"arg%u", index-2] forKey:@"name"];
                     [parameterTypes addObject:parameter];
                     index++;
@@ -235,11 +250,11 @@ static BOOL debug = NO;
 
         CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
         [resultString appendString:@"("];
-        NSString *specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+        NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
         if (specialCase != nil) {
             [resultString appendString:specialCase];
         } else {
-            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            NSString *str = [aMethodType.type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
             if (str != nil)
                 [resultString appendFormat:@"%@", str];
         }
@@ -261,21 +276,19 @@ static BOOL debug = NO;
                 if (index >= count) {
                     noMoreTypes = YES;
                 } else {
-                    NSString *ch;
-                    
                     aMethodType = [methodTypes objectAtIndex:index];
-                    specialCase = [self _specialCaseVariable:nil type:[[aMethodType type] bareTypeString]];
+                    specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
-                        NSString *typeString = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
                         //if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     }
                     //[resultString appendFormat:@"fp%@", [aMethodType offset]];
                     [resultString appendFormat:@"arg%u", index-2];
 
-                    ch = [scanner peekCharacter];
+                    NSString *ch = [scanner peekCharacter];
                     // if next character is not ':' nor EOS then add space
                     if (ch != nil && [ch isEqual:@":"] == NO)
                         [resultString appendString:@" "];
@@ -295,9 +308,9 @@ static BOOL debug = NO;
 }
 
 // Called from CDType, which gets a formatter but not a type controller.
-- (CDType *)replacementForType:(CDType *)aType;
+- (CDType *)replacementForType:(CDType *)type;
 {
-    return [self.typeController typeFormatter:self replacementForType:aType];
+    return [self.typeController typeFormatter:self replacementForType:type];
 }
 
 // Called from CDType, which gets a formatter but not a type controller.

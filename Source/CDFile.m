@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDFile.h"
 
@@ -57,7 +57,16 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return (arch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
 }
 
+#pragma mark -
+
 @implementation CDFile
+{
+    NSString *filename;
+    NSData *data;
+    NSUInteger archOffset;
+    NSUInteger archSize;
+    CDSearchPathState *searchPathState;
+}
 
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
@@ -117,6 +126,8 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 @synthesize filename;
 @synthesize data;
+@synthesize archOffset;
+@synthesize archSize;
 @synthesize searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;

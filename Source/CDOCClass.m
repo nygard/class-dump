@@ -1,11 +1,10 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDOCClass.h"
 
-#import "NSArray-Extensions.h"
 #import "CDClassDump.h"
 #import "CDOCIvar.h"
 #import "CDOCMethod.h"
@@ -17,6 +16,12 @@
 #import "CDVisitorPropertyState.h"
 
 @implementation CDOCClass
+{
+    NSString *superClassName;
+    NSArray *ivars;
+    
+    BOOL isExported;
+}
 
 - (id)init;
 {
@@ -56,7 +61,7 @@
     [super registerTypesWithObject:typeController phase:phase];
 
     for (CDOCIvar *ivar in self.ivars) {
-        [[ivar parsedType] phase:phase registerTypesWithObject:typeController usedInMethod:NO];
+        [ivar.parsedType phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
 
@@ -68,35 +73,34 @@
     if (self.superClassName != nil)
         [resultString appendFormat:@" : %@", self.superClassName];
 
-    if ([protocols count] > 0)
-        [resultString appendFormat:@" <%@>", [[protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
+    if ([self.protocols count] > 0)
+        [resultString appendFormat:@" <%@>", [[self.protocols arrayByMappingSelector:@selector(name)] componentsJoinedByString:@", "]];
 
     return resultString;
 }
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    if ([[aVisitor classDump] shouldMatchRegex] && [[aVisitor classDump] regexMatchesString:[self name]] == NO)
+    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
         return;
 
-    // Wonderful.  Need to typecast because there's also -[NSHTTPCookie initWithProperties:] that takes a dictionary.
-    CDVisitorPropertyState *propertyState = [(CDVisitorPropertyState *)[CDVisitorPropertyState alloc] initWithProperties:[self properties]];
+    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
 
-    [aVisitor willVisitClass:self];
+    [visitor willVisitClass:self];
 
-    [aVisitor willVisitIvarsOfClass:self];
+    [visitor willVisitIvarsOfClass:self];
     for (CDOCIvar *ivar in ivars)
-        [aVisitor visitIvar:ivar];
-    [aVisitor didVisitIvarsOfClass:self];
+        [visitor visitIvar:ivar];
+    [visitor didVisitIvarsOfClass:self];
 
     //[aVisitor willVisitPropertiesOfClass:self];
     //[self visitProperties:aVisitor];
     //[aVisitor didVisitPropertiesOfClass:self];
 
-    [self visitMethods:aVisitor propertyState:propertyState];
+    [self visitMethods:visitor propertyState:propertyState];
     // Should mostly be dynamic properties
-    [aVisitor visitRemainingProperties:propertyState];
-    [aVisitor didVisitClass:self];
+    [visitor visitRemainingProperties:propertyState];
+    [visitor didVisitClass:self];
 
     [propertyState release];
 }

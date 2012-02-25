@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDFile.h"
 
@@ -22,26 +22,6 @@ typedef NSUInteger CDByteOrder;
 @end
 
 @interface CDMachOFile : CDFile
-{
-    CDByteOrder byteOrder;
-
-    NSArray *loadCommands;
-    NSArray *dylibLoadCommands;
-    NSArray *segments;
-    CDLCSymbolTable *symbolTable;
-    CDLCDynamicSymbolTable *dynamicSymbolTable;
-    CDLCDyldInfo *dyldInfo;
-    CDLCVersionMinimum *minVersionMacOSX;
-    CDLCVersionMinimum *minVersionIOS;
-    NSArray *runPaths;
-    NSArray *dyldEnvironment;
-    NSArray *reExportedDylibs;
-    struct mach_header_64 header; // 64-bit, also holding 32-bit
-
-    struct {
-        unsigned int uses64BitABI:1;
-    } _flags;
-}
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 
@@ -79,7 +59,7 @@ typedef NSUInteger CDByteOrder;
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
 
-- (CDLCDylib *)dylibIdentifier;
+@property (nonatomic, readonly) CDLCDylib *dylibIdentifier;
 
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
@@ -91,7 +71,7 @@ typedef NSUInteger CDByteOrder;
 - (const void *)bytes;
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;
 
-- (NSString *)importBaseName;
+@property (nonatomic, readonly) NSString *importBaseName;
 
 @property (readonly) BOOL isEncrypted;
 @property (readonly) BOOL hasProtectedSegments;
@@ -100,8 +80,8 @@ typedef NSUInteger CDByteOrder;
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
 
-- (NSString *)uuidString;
-- (NSString *)archName;
+@property (nonatomic, readonly) NSString *uuidString;
+@property (nonatomic, readonly) NSString *archName;
 
 - (Class)processorClass;
 - (void)logInfoForAddress:(NSUInteger)address;

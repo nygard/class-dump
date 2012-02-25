@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import <Foundation/Foundation.h>
 
@@ -9,24 +9,21 @@
 @class CDVisitorPropertyState;
 
 @interface CDVisitor : NSObject
-{
-    CDClassDump *classDump;
-}
 
 @property (retain) CDClassDump *classDump;
 
 - (void)willBeginVisiting;
 - (void)didEndVisiting;
 
-- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
-- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
-- (void)didVisitObjectiveCProcessor:(CDObjectiveCProcessor *)aProcessor;
+- (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
+- (void)visitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
+- (void)didVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor;
 
-- (void)willVisitProtocol:(CDOCProtocol *)aProtocol;
-- (void)didVisitProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitProtocol:(CDOCProtocol *)protocol;
+- (void)didVisitProtocol:(CDOCProtocol *)protocol;
 
-- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
-- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)aProtocol;
+- (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)protocol;
+- (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)protocol;
 
 - (void)willVisitOptionalMethods;
 - (void)didVisitOptionalMethods;
@@ -40,16 +37,16 @@
 - (void)willVisitPropertiesOfClass:(CDOCClass *)aClass;
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
 
-- (void)willVisitCategory:(CDOCCategory *)aCategory;
-- (void)didVisitCategory:(CDOCCategory *)aCategory;
+- (void)willVisitCategory:(CDOCCategory *)category;
+- (void)didVisitCategory:(CDOCCategory *)category;
 
-- (void)willVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
-- (void)didVisitPropertiesOfCategory:(CDOCCategory *)aCategory;
+- (void)willVisitPropertiesOfCategory:(CDOCCategory *)category;
+- (void)didVisitPropertiesOfCategory:(CDOCCategory *)category;
 
-- (void)visitClassMethod:(CDOCMethod *)aMethod;
-- (void)visitInstanceMethod:(CDOCMethod *)aMethod propertyState:(CDVisitorPropertyState *)propertyState;
-- (void)visitIvar:(CDOCIvar *)anIvar;
-- (void)visitProperty:(CDOCProperty *)aProperty;
+- (void)visitClassMethod:(CDOCMethod *)method;
+- (void)visitInstanceMethod:(CDOCMethod *)method propertyState:(CDVisitorPropertyState *)propertyState;
+- (void)visitIvar:(CDOCIvar *)ivar;
+- (void)visitProperty:(CDOCProperty *)property;
 
 - (void)visitRemainingProperties:(CDVisitorPropertyState *)propertyState;
 

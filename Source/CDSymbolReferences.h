@@ -1,40 +1,28 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import <Foundation/Foundation.h>
 
 @interface CDSymbolReferences : NSObject
-{
-    NSDictionary *frameworkNamesByClassName;
-    NSDictionary *frameworkNamesByProtocolName;
 
-    NSMutableSet *classes;
-    NSMutableSet *protocols;
-}
+@property (retain) NSDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)
+@property (retain) NSDictionary *frameworkNamesByProtocolName; // NSString (protocol name) -> NSString (framework name)
 
-- (NSString *)description;
+- (NSString *)frameworkForClassName:(NSString *)className;
+- (NSString *)frameworkForProtocolName:(NSString *)protocolName;
 
-- (void)setFrameworkNamesByClassName:(NSDictionary *)newValue;
-- (void)setFrameworkNamesByProtocolName:(NSDictionary *)newValue;
+- (void)addClassName:(NSString *)className;
+- (void)removeClassName:(NSString *)className;
 
-- (NSString *)frameworkForClassName:(NSString *)aClassName;
-- (NSString *)frameworkForProtocolName:(NSString *)aProtocolName;
-
-- (NSArray *)classes;
-- (void)addClassName:(NSString *)aClassName;
-- (void)removeClassName:(NSString *)aClassName;
-
-- (NSArray *)protocols;
-- (void)addProtocolName:(NSString *)aProtocolName;
+- (void)addProtocolName:(NSString *)protocolName;
 - (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
 
-- (void)_appendToString:(NSMutableString *)resultString;
-- (NSString *)referenceString;
+@property (nonatomic, readonly) NSString *referenceString;
 
 - (void)removeAllReferences;
-- (NSString *)importStringForClassName:(NSString *)aClassName;
-- (NSString *)importStringForProtocolName:(NSString *)aProtocolName;
+- (NSString *)importStringForClassName:(NSString *)className;
+- (NSString *)importStringForProtocolName:(NSString *)protocolName;
 
 @end

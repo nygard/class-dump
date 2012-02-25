@@ -1,20 +1,18 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDTypeParser.h"
 
-#include <assert.h>
 #import "CDMethodType.h"
 #import "CDType.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h"
-#import "NSString-Extensions.h"
 
-NSString *CDExceptionName_SyntaxError = @"CDExceptionName_SyntaxError";
+NSString *CDExceptionName_SyntaxError         = @"CDExceptionName_SyntaxError";
 
-NSString *CDErrorDomain_TypeParser = @"CDErrorDomain_TypeParser";
+NSString *CDErrorDomain_TypeParser            = @"CDErrorDomain_TypeParser";
 
 NSString *CDErrorKey_Type                     = @"CDErrorKey_Type";
 NSString *CDErrorKey_RemainingString          = @"CDErrorKey_RemainingString";
@@ -31,7 +29,39 @@ static NSString *CDTokenDescription(int token)
     return [NSString stringWithFormat:@"%d", token];
 }
 
+@interface CDTypeParser ()
+
+- (void)match:(int)token;
+- (void)match:(int)token enterState:(CDTypeLexerState)newState;
+- (void)error:(NSString *)errorString;
+
+- (NSArray *)_parseMethodType;
+- (CDType *)_parseType;
+- (CDType *)_parseTypeInStruct:(BOOL)isInStruct;
+
+- (NSArray *)parseUnionTypes;
+- (NSArray *)parseOptionalMembers;
+- (NSArray *)parseMemberList;
+- (CDType *)parseMember;
+
+- (CDTypeName *)parseTypeName;
+- (NSString *)parseIdentifier;
+- (NSString *)parseNumber;
+
+- (BOOL)isTokenInModifierSet:(int)aToken;
+- (BOOL)isTokenInSimpleTypeSet:(int)aToken;
+- (BOOL)isTokenInTypeSet:(int)aToken;
+- (BOOL)isTokenInTypeStartSet:(int)aToken;
+
+@end
+
+#pragma mark -
+
 @implementation CDTypeParser
+{
+    CDTypeLexer *lexer;
+    int lookahead;
+}
 
 - (id)initWithType:(NSString *)aType;
 {
@@ -72,15 +102,16 @@ static NSString *CDTokenDescription(int token)
         if (error != NULL) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             int code;
-            
-            [userInfo setObject:lexer.string forKey:CDErrorKey_Type];
-            [userInfo setObject:lexer.remainingString forKey:CDErrorKey_RemainingString];
-            [userInfo setObject:@"method" forKey:CDErrorKey_MethodOrVariable];
-            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], lexer.string, lexer.remainingString] forKey:CDErrorKey_LocalizedLongDescription];
+            NSString *localDesc = [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], lexer.string, lexer.remainingString];            
+
+            [userInfo setObject:lexer.string           forKey:CDErrorKey_Type];
+            [userInfo setObject:lexer.remainingString  forKey:CDErrorKey_RemainingString];
+            [userInfo setObject:@"method"              forKey:CDErrorKey_MethodOrVariable];
+            [userInfo setObject:localDesc              forKey:CDErrorKey_LocalizedLongDescription];
             
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
-                [userInfo setObject:@"Syntax Error" forKey:NSLocalizedDescriptionKey];
+                [userInfo setObject:@"Syntax Error"    forKey:NSLocalizedDescriptionKey];
                 [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
             } else {
                 code = CDTypeParserCode_Default;
@@ -107,15 +138,16 @@ static NSString *CDTokenDescription(int token)
         if (error != NULL) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
             int code;
+            NSString *localDesc = [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], lexer.string, lexer.remainingString];
             
-            [userInfo setObject:lexer.string forKey:CDErrorKey_Type];
-            [userInfo setObject:lexer.remainingString forKey:CDErrorKey_RemainingString];
-            [userInfo setObject:@"variable" forKey:CDErrorKey_MethodOrVariable];
-            [userInfo setObject:[NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], lexer.string, lexer.remainingString] forKey:CDErrorKey_LocalizedLongDescription];
+            [userInfo setObject:lexer.string           forKey:CDErrorKey_Type];
+            [userInfo setObject:lexer.remainingString  forKey:CDErrorKey_RemainingString];
+            [userInfo setObject:@"variable"            forKey:CDErrorKey_MethodOrVariable];
+            [userInfo setObject:localDesc              forKey:CDErrorKey_LocalizedLongDescription];
             
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
-                [userInfo setObject:@"Syntax Error" forKey:NSLocalizedDescriptionKey];
+                [userInfo setObject:@"Syntax Error"    forKey:NSLocalizedDescriptionKey];
                 [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
             } else {
                 code = CDTypeParserCode_Default;
@@ -130,11 +162,7 @@ static NSString *CDTokenDescription(int token)
     return result;
 }
 
-@end
-
-#pragma mark -
-
-@implementation CDTypeParser (Private)
+#pragma mark - Private methods
 
 - (void)match:(int)token;
 {
@@ -255,7 +283,7 @@ static NSString *CDTokenDescription(int token)
                 result = [[CDType alloc] initIDTypeWithProtocols:[str componentsSeparatedByString:@","]];
             } else {
                 CDTypeName *typeName = [[CDTypeName alloc] init];
-                [typeName setName:str];
+                typeName.name = str;
                 result = [[CDType alloc] initIDType:typeName];
                 [typeName release];
             }

@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import <Foundation/Foundation.h>
 
@@ -9,100 +9,71 @@
 
 enum {
     CDTableType_Structure = 0,
-    CDTableType_Union = 1,
+    CDTableType_Union     = 1,
 };
 typedef NSUInteger CDTableType;
 
 @interface CDStructureTable : NSObject
-{
-    NSString *identifier;
-    NSString *anonymousBaseName;
-
-    // Phase 0 - top level
-    NSMutableDictionary *phase0_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-
-    // Phase 1 - all substructures
-    NSMutableDictionary *phase1_structureInfo; // key: NSString (typeString), value: CDStructureInfo
-    NSUInteger phase1_maxDepth;
-    NSMutableDictionary *phase1_groupedByDepth; // key: NSNumber (structureDepth), value: NSMutableArray of CDStructureInfo
-
-    // Phase 2 - merging all structure bottom up
-    NSMutableDictionary *phase2_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase2_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
-    NSMutableArray *phase2_nameExceptions; // Of CDStructureInfo
-    NSMutableArray *phase2_anonExceptions; // Of CDStructureInfo
-
-    // Phase 3 - merged reference counts from updated phase0 types
-    NSMutableDictionary *phase3_namedStructureInfo; // key: NSString (name), value: CDStructureInfo
-    NSMutableDictionary *phase3_anonStructureInfo; // key: NSString (reallyBareTypeString), value: CDStructureInfo
-
-    NSMutableDictionary *phase3_nameExceptions; // key: NSString (typeString), value: CDStructureInfo
-    NSMutableDictionary *phase3_anonExceptions; // key: NSString (typeString), value: CDStructureInfo
-
-    NSMutableSet *phase3_exceptionalNames; // Of NSString
-    NSMutableSet *phase3_inMethodNameExceptions; // Of NSString
-
-    BOOL shouldDebug;
-
-    NSMutableSet *debugNames; // NSString (name)
-    NSMutableSet *debugAnon; // NSString (reallyBareTypeString)
-}
 
 @property (retain) NSString *identifier;
 @property (retain) NSString *anonymousBaseName;
 @property (assign) BOOL shouldDebug;
 
+@property (assign) CDTypeController *typeController;
+
 // Phase 0
-- (void)phase0RegisterStructure:(CDType *)aStructure usedInMethod:(BOOL)isUsedInMethod;
+- (void)phase0RegisterStructure:(CDType *)structure usedInMethod:(BOOL)isUsedInMethod;
 - (void)finishPhase0;
-- (void)logPhase0Info;
 
 // Phase 1
-- (void)phase1WithTypeController:(CDTypeController *)typeController;
-- (void)phase1RegisterStructure:(CDType *)aStructure;
+- (void)runPhase1;
+- (void)phase1RegisterStructure:(CDType *)structure;
 - (void)finishPhase1;
-- (NSUInteger)phase1_maxDepth;
+@property (nonatomic, readonly) NSUInteger phase1_maxDepth;
 
 // Phase 2
-- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
+- (void)runPhase2AtDepth:(NSUInteger)depth;
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 
 - (void)finishPhase2;
-- (void)logPhase2Info;
 
 // Phase 3
-- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+- (void)phase2ReplacementOnPhase0;
 
 - (void)buildPhase3Exceptions;
-- (void)phase3WithTypeController:(CDTypeController *)typeController;
-- (void)phase3RegisterStructure:(CDType *)aStructure
+- (void)runPhase3;
+- (void)phase3RegisterStructure:(CDType *)structure
                           count:(NSUInteger)referenceCount
-                   usedInMethod:(BOOL)isUsedInMethod
-                 typeController:(CDTypeController *)typeController;
+                   usedInMethod:(BOOL)isUsedInMethod;
 - (void)finishPhase3;
-- (void)logPhase3Info;
 - (CDType *)phase3ReplacementForType:(CDType *)type;
 
 // Other
 
-- (void)appendNamedStructuresToString:(NSMutableString *)resultString
-                            formatter:(CDTypeFormatter *)aTypeFormatter
-                     symbolReferences:(CDSymbolReferences *)symbolReferences
-                             markName:(NSString *)markName;
-
-- (void)appendTypedefsToString:(NSMutableString *)resultString
-                     formatter:(CDTypeFormatter *)aTypeFormatter
-              symbolReferences:(CDSymbolReferences *)symbolReferences
-                      markName:(NSString *)markName;
-
+// Called by CDTypeController prior to calling the next two methods.
 - (void)generateTypedefNames;
 - (void)generateMemberNames;
 
-- (BOOL)shouldExpandStructureInfo:(CDStructureInfo *)info;
+// Called by CDTypeController
+- (void)appendNamedStructuresToString:(NSMutableString *)resultString
+                            formatter:(CDTypeFormatter *)typeFormatter
+                     symbolReferences:(CDSymbolReferences *)symbolReferences
+                             markName:(NSString *)markName;
+
+// Called by CDTypeController
+- (void)appendTypedefsToString:(NSMutableString *)resultString
+                     formatter:(CDTypeFormatter *)typeFormatter
+              symbolReferences:(CDSymbolReferences *)symbolReferences
+                      markName:(NSString *)markName;
+
 - (BOOL)shouldExpandType:(CDType *)type;
 - (NSString *)typedefNameForType:(CDType *)type;
 
+// Debugging
 - (void)debugName:(NSString *)name;
 - (void)debugAnon:(NSString *)str;
+- (void)logPhase0Info;
+- (void)logPhase2Info;
+- (void)logPhase3Info;
 
 @end

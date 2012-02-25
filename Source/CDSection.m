@@ -1,15 +1,23 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDSection.h"
 
+#include <mach-o/loader.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDLCSegment32.h"
 
 @implementation CDSection
+{
+    NSString *segmentName;
+    NSString *sectionName;
+    
+    NSData *data;
+    BOOL hasLoadedData;
+}
 
 // Just to resolve multiple different definitions...
 - (id)init;
@@ -19,7 +27,7 @@
         sectionName = nil;
         
         data = nil;
-        _flags.hasLoadedData = NO;
+        hasLoadedData = NO;
     }
 
     return self;
@@ -48,12 +56,16 @@
 @synthesize segmentName;
 @synthesize sectionName;
 
+@synthesize data;
+
 - (NSData *)data;
 {
     [self loadData];
 
     return data;
 }
+
+@synthesize hasLoadedData;
 
 - (void)loadData;
 {
@@ -62,10 +74,9 @@
 
 - (void)unloadData;
 {
-    if (_flags.hasLoadedData) {
-        _flags.hasLoadedData = NO;
-        [data release];
-        data = nil;
+    if (self.hasLoadedData) {
+        self.hasLoadedData = NO;
+        self.data = nil;
     }
 }
 

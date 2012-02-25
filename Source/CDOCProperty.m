@@ -1,11 +1,10 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDOCProperty.h"
 
-#import "NSString-Extensions.h"
 #import "CDTypeParser.h"
 #import "CDTypeLexer.h"
 
@@ -13,7 +12,28 @@
 
 static BOOL debug = NO;
 
+@interface CDOCProperty ()
+- (void)_parseAttributes;
+@end
+
+#pragma mark -
+
 @implementation CDOCProperty
+{
+    NSString *name;
+    NSString *attributeString;
+    
+    CDType *type;
+    NSMutableArray *attributes;
+    
+    BOOL hasParsedAttributes;
+    NSString *attributeStringAfterType;
+    NSString *customGetter;
+    NSString *customSetter;
+    
+    BOOL isReadOnly;
+    BOOL isDynamic;
+}
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 {
@@ -123,7 +143,7 @@ static BOOL debug = NO;
         CDTypeParser *parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
         type = [[parser parseType:&error] retain];
         if (type != nil) {
-            typeRange.length = [[[parser lexer] scanner] scanLocation];
+            typeRange.length = [parser.lexer.scanner scanLocation];
 
             NSString *str = [attributeString substringFromIndex:NSMaxRange(typeRange)];
 

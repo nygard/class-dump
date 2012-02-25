@@ -1,20 +1,20 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDVisitor.h"
 
 @class CDSymbolReferences, CDType;
 
+// Has a mutable string for storing output, and method to write it to standard out.
+// symbol references are for... ?
+
 @interface CDTextClassDumpVisitor : CDVisitor
-{
-    NSMutableString *resultString;
-    CDSymbolReferences *symbolReferences;
-}
+
+@property (readonly) NSMutableString *resultString;
+@property (readonly) CDSymbolReferences *symbolReferences;
 
 - (void)writeResultToStandardOutput;
-
-- (void)_visitProperty:(CDOCProperty *)aProperty parsedType:(CDType *)parsedType attributes:(NSArray *)attrs;
 
 @end

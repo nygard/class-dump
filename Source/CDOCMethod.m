@@ -1,17 +1,24 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDOCMethod.h"
 
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
-#import "NSError-CDExtensions.h"
 #import "CDTypeController.h"
 
 @implementation CDOCMethod
+{
+    NSString *name;
+    NSString *type;
+    NSUInteger imp;
+    
+    BOOL hasParsedType;
+    NSArray *parsedMethodTypes;
+}
 
 - (id)init;
 {
@@ -76,10 +83,9 @@
 - (NSArray *)parsedMethodTypes;
 {
     if (hasParsedType == NO) {
-        CDTypeParser *parser;
         NSError *error = nil;
 
-        parser = [[CDTypeParser alloc] initWithType:type];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
         parsedMethodTypes = [[parser parseMethodType:&error] retain];
         if (parsedMethodTypes == nil)
             NSLog(@"Warning: Parsing method types failed, %@", name);
@@ -92,14 +98,12 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
 {
-    NSString *formattedString;
-
-    formattedString = [[typeController methodTypeFormatter] formatMethodName:name type:type symbolReferences:symbolReferences];
+    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:name type:type symbolReferences:symbolReferences];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if ([typeController shouldShowMethodAddresses] && imp != 0) {
-            if ([typeController targetArchUses64BitABI])
+        if (typeController.shouldShowMethodAddresses && imp != 0) {
+            if (typeController.targetArchUses64BitABI)
                 [resultString appendFormat:@"\t// IMP=0x%016lx", imp];
             else
                 [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
@@ -112,7 +116,7 @@
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 {
-    return [name compare:[otherMethod name]];
+    return [name compare:otherMethod.name];
 }
 
 @end

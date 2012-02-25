@@ -1,13 +1,16 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDLCSegment32.h"
 
 #import "CDSection32.h"
 
 @implementation CDLCSegment32
+{
+    struct segment_command segmentCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -41,7 +44,7 @@
             [_sections addObject:section];
             [section release];
         }
-        sections = [_sections copy]; [_sections release];
+        self.sections = [[_sections copy] autorelease]; [_sections release];
     }
 
     return self;
@@ -88,7 +91,7 @@
 {
     return [NSString stringWithFormat:@"vmaddr: 0x%08x - 0x%08x [0x%08x], offset: %d, flags: 0x%x (%@), nsects: %d, sections: %@",
                      segmentCommand.vmaddr, segmentCommand.vmaddr + segmentCommand.vmsize - 1, segmentCommand.vmsize, segmentCommand.fileoff,
-                     self.flags, [self flagDescription], segmentCommand.nsects, sections];
+                     self.flags, [self flagDescription], segmentCommand.nsects, self.sections];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;
@@ -101,14 +104,14 @@
     [super appendToString:resultString verbose:isVerbose];
 #if 0
 
-    [resultString appendFormat:@"  segname %@\n", [self name]];
+    [resultString appendFormat:@"  segname %@\n",     [self name]];
     [resultString appendFormat:@"   vmaddr 0x%08x\n", segmentCommand.vmaddr];
     [resultString appendFormat:@"   vmsize 0x%08x\n", segmentCommand.vmsize];
-    [resultString appendFormat:@"  fileoff %d\n", segmentCommand.fileoff];
-    [resultString appendFormat:@" filesize %d\n", segmentCommand.filesize];
+    [resultString appendFormat:@"  fileoff %d\n",     segmentCommand.fileoff];
+    [resultString appendFormat:@" filesize %d\n",     segmentCommand.filesize];
     [resultString appendFormat:@"  maxprot 0x%08x\n", segmentCommand.maxprot];
     [resultString appendFormat:@" initprot 0x%08x\n", segmentCommand.initprot];
-    [resultString appendFormat:@"   nsects %d\n", segmentCommand.nsects];
+    [resultString appendFormat:@"   nsects %d\n",     segmentCommand.nsects];
 
     if (isVerbose)
         [resultString appendFormat:@"    flags %@\n", [self flagDescription]];

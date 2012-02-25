@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDLCSymbolTable.h"
 
@@ -11,6 +11,19 @@
 #import "CDLCSegment.h"
 
 @implementation CDLCSymbolTable
+{
+    struct symtab_command symtabCommand;
+    
+    NSArray *symbols;
+    NSUInteger baseAddress;
+    
+    NSDictionary *classSymbols;
+    
+    struct {
+        unsigned int didFindBaseAddress:1;
+        unsigned int didWarnAboutUnfoundBaseAddress:1;
+    } flags;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -77,7 +90,7 @@
 
 - (void)loadSymbols;
 {
-    for (CDLoadCommand *loadCommand in [nonretained_machOFile loadCommands]) {
+    for (CDLoadCommand *loadCommand in [self.machOFile loadCommands]) {
         if ([loadCommand isKindOfClass:[CDLCSegment class]]) {
             CDLCSegment *segment = (CDLCSegment *)loadCommand;
 
@@ -93,14 +106,14 @@
     NSMutableArray *_symbols = [[NSMutableArray alloc] init];
     NSMutableDictionary *_classSymbols = [[NSMutableDictionary alloc] init];
 
-    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:nonretained_machOFile offset:symtabCommand.symoff];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile offset:symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    const char *strtab = [[nonretained_machOFile machOData] bytes] + symtabCommand.stroff;
+    const char *strtab = [[self.machOFile machOData] bytes] + symtabCommand.stroff;
 
-    if (![nonretained_machOFile uses64BitABI]) {
+    if (![self.machOFile uses64BitABI]) {
         //NSLog(@"32 bit...");
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  --------");
@@ -120,7 +133,7 @@
             const char *ptr = strtab + nlist.n_un.n_strx;
             NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
-            CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist32:nlist];
+            CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist32:nlist];
             [_symbols addObject:symbol];
             [symbol release];
 
@@ -146,7 +159,7 @@
             const char *ptr = strtab + nlist.n_un.n_strx;
             NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
-            CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:nonretained_machOFile nlist64:nlist];
+            CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist64:nlist];
             [_symbols addObject:symbol];
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value] != 0) {

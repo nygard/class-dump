@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDLCDylib.h"
 
@@ -14,6 +14,10 @@ static NSString *CDDylibVersionString(uint32_t version)
 }
 
 @implementation CDLCDylib
+{
+    struct dylib_command dylibCommand;
+    NSString *path;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
@@ -74,12 +78,12 @@ static NSString *CDDylibVersionString(uint32_t version)
 
 - (NSString *)formattedCurrentVersion;
 {
-    return CDDylibVersionString([self currentVersion]);
+    return CDDylibVersionString(self.currentVersion);
 }
 
 - (NSString *)formattedCompatibilityVersion;
 {
-    return CDDylibVersionString([self compatibilityVersion]);
+    return CDDylibVersionString(self.compatibilityVersion);
 }
 
 #if 0

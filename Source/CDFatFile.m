@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2011 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 #import "CDFatFile.h"
 
@@ -13,11 +13,14 @@
 #import "CDMachOFile.h"
 
 @implementation CDFatFile
+{
+    NSArray *arches;
+}
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
     if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState])) {
-        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:archOffset];
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:self.archOffset];
 
         struct fat_header header;
         header.magic = [cursor readBigInt32];
