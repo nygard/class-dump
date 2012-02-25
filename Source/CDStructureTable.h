@@ -19,6 +19,8 @@ typedef NSUInteger CDTableType;
 @property (retain) NSString *anonymousBaseName;
 @property (assign) BOOL shouldDebug;
 
+@property (assign) CDTypeController *typeController;
+
 // Phase 0
 - (void)phase0RegisterStructure:(CDType *)structure usedInMethod:(BOOL)isUsedInMethod;
 - (void)finishPhase0;

@@ -59,6 +59,8 @@ static BOOL debugAnonStructures = NO;
 
 @implementation CDStructureTable
 {
+    CDTypeController *nonretained_typeController;
+    
     NSString *identifier;
     NSString *anonymousBaseName;
     
@@ -157,6 +159,7 @@ static BOOL debugAnonStructures = NO;
 
 #pragma mark -
 
+@synthesize typeController = nonretained_typeController;
 @synthesize identifier;
 @synthesize anonymousBaseName;
 @synthesize shouldDebug;
@@ -214,6 +217,7 @@ static BOOL debugAnonStructures = NO;
 
 - (void)phase1WithTypeController:(CDTypeController *)typeController;
 {
+    NSParameterAssert(typeController == self.typeController);
     for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
         [info.type phase1RegisterStructuresWithObject:typeController];
     }
@@ -280,6 +284,7 @@ static BOOL debugAnonStructures = NO;
 
 - (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
 {
+    NSParameterAssert(typeController == self.typeController);
     //NSLog(@"[%@] %s, depth: %u", identifier, __cmd, depth);
     NSNumber *depthKey = [NSNumber numberWithUnsignedInteger:depth];
     NSArray *infos = [phase1_groupedByDepth objectForKey:depthKey];
@@ -479,6 +484,7 @@ static BOOL debugAnonStructures = NO;
 
 - (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
 {
+    NSParameterAssert(typeController == self.typeController);
     if (debug) {
         NSLog(@"======================================================================");
         NSLog(@"[%@]  > %s", identifier, __cmd);
@@ -524,6 +530,7 @@ static BOOL debugAnonStructures = NO;
 
 - (void)phase3WithTypeController:(CDTypeController *)typeController;
 {
+    NSParameterAssert(typeController == self.typeController);
     //NSLog(@"[%@]  > %s", identifier, __cmd);
 
     for (CDStructureInfo *info in [[phase0_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
@@ -538,6 +545,7 @@ static BOOL debugAnonStructures = NO;
                    usedInMethod:(BOOL)isUsedInMethod
                  typeController:(CDTypeController *)typeController;
 {
+    NSParameterAssert(typeController == self.typeController);
     //NSLog(@"[%@]  > %s", identifier, __cmd);
 
     NSString *name = [structure.typeName description];

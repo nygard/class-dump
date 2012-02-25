@@ -72,10 +72,12 @@ static BOOL debug = NO;
         structureTable = [[CDStructureTable alloc] init];
         structureTable.anonymousBaseName = @"CDStruct_";
         structureTable.identifier = @"Structs";
+        structureTable.typeController = self;
         
         unionTable = [[CDStructureTable alloc] init];
         unionTable.anonymousBaseName = @"CDUnion_";
         unionTable.identifier = @"Unions";
+        unionTable.typeController = self;
         
         //[structureTable debugName:@"_xmlSAXHandler"];
         //[structureTable debugName:@"UCKeyboardTypeHeader"];
