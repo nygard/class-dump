@@ -37,7 +37,7 @@ void saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
         if ([command isKindOfClass:[CDLCSegment class]]) {
             CDLCSegment *segment = (CDLCSegment *)command;
             
-            if ([segment isProtected]) {
+            if (segment.isProtected) {
                 NSRange range;
                 NSUInteger flagOffset;
                 
@@ -76,9 +76,6 @@ int main(int argc, char *argv[])
 {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
-    int ch;
-    BOOL errorFlag = NO;
-
     struct option longopts[] = {
         { NULL, 0, NULL, 0 },
     };
@@ -87,13 +84,16 @@ int main(int argc, char *argv[])
         print_usage();
         exit(0);
     }
+    
+    BOOL errorFlag = NO;
+    int ch;
 
     while ( (ch = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
         switch (ch) {
-          case '?':
-          default:
-              errorFlag = YES;
-              break;
+            case '?':
+            default:
+                errorFlag = YES;
+                break;
         }
     }
 
@@ -106,19 +106,15 @@ int main(int argc, char *argv[])
     }
 
     {
-        NSString *inputFile, *outputFile;
-        CDFile *file;
-        NSData *inputData;
-
-        inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
-        outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
+        NSString *inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
+        NSString *outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
 
         NSLog(@"inputFile: %@", inputFile);
         NSLog(@"outputFile: %@", outputFile);
 
-        inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
+        NSData *inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
 
-        file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
+        CDFile *file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
         if (file == nil) {
             fprintf(stderr, "deprotect: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [inputFile UTF8String]);
             exit(1);
@@ -126,7 +122,7 @@ int main(int argc, char *argv[])
 
         if ([file isKindOfClass:[CDMachOFile class]]) {
             NSLog(@"file: %@", file);
-            saveDeprotectedFileToPath((CDMachOFile*)file, outputFile);
+            saveDeprotectedFileToPath((CDMachOFile *)file, outputFile);
         } else {
             NSLog(@"Can only deprotect thin mach-o files at this point.");
         }

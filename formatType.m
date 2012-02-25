@@ -30,9 +30,9 @@ void print_usage(void)
 }
 
 enum {
-    CDFormatIvar = 0,
-    CDFormatMethod = 1,
-    CDFormatBalance = 2,
+    CDFormat_Ivar    = 0,
+    CDFormat_Method  = 1,
+    CDFormat_Balance = 2,
 };
 
 int main(int argc, char *argv[])
@@ -40,16 +40,14 @@ int main(int argc, char *argv[])
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 
     CDTypeFormatter *ivarTypeFormatter = [[CDTypeFormatter alloc] init];
-    [ivarTypeFormatter setShouldExpand:YES];
-    [ivarTypeFormatter setShouldAutoExpand:YES];
-    [ivarTypeFormatter setBaseLevel:0];
-    //[ivarTypeFormatter setDelegate:self];
+    ivarTypeFormatter.shouldExpand = YES;
+    ivarTypeFormatter.shouldAutoExpand = YES;
+    ivarTypeFormatter.baseLevel = 0;
 
     CDTypeFormatter *methodTypeFormatter = [[CDTypeFormatter alloc] init];
-    [methodTypeFormatter setShouldExpand:NO];
-    [methodTypeFormatter setShouldAutoExpand:NO];
-    [methodTypeFormatter setBaseLevel:0];
-    //[methodTypeFormatter setDelegate:self];
+    methodTypeFormatter.shouldExpand = NO;
+    methodTypeFormatter.shouldAutoExpand = NO;
+    methodTypeFormatter.baseLevel = 0;
 
     struct option longopts[] = {
         { "balance", no_argument, NULL, 'b' },
@@ -62,19 +60,19 @@ int main(int argc, char *argv[])
         exit(0);
     }
 
-    NSUInteger formatType = CDFormatIvar;
+    NSUInteger formatType = CDFormat_Ivar;
     
-    int ch;
     BOOL errorFlag = NO;
+    int ch;
 
     while ( (ch = getopt_long(argc, argv, "bm", longopts, NULL)) != -1) {
         switch (ch) {
             case 'b':
-                formatType = CDFormatBalance;
+                formatType = CDFormat_Balance;
                 break;
                 
             case 'm':
-                formatType = CDFormatMethod;
+                formatType = CDFormat_Method;
                 break;
                 
             case '?':
@@ -90,9 +88,9 @@ int main(int argc, char *argv[])
     }
 
     switch (formatType) {
-        case CDFormatIvar:    printf("Format as ivars\n"); break;
-        case CDFormatMethod:  printf("Format as methods\n"); break;
-        case CDFormatBalance: printf("Format as balance\n"); break;
+        case CDFormat_Ivar:    printf("Format as ivars\n"); break;
+        case CDFormat_Method:  printf("Format as methods\n"); break;
+        case CDFormat_Balance: printf("Format as balance\n"); break;
     }
 
     for (NSUInteger index = optind; index < argc; index++) {
@@ -126,15 +124,15 @@ int main(int argc, char *argv[])
                 type = line;
 
                 switch (formatType) {
-                    case CDFormatIvar:
+                    case CDFormat_Ivar:
                         str = [ivarTypeFormatter formatVariable:name type:type symbolReferences:nil];
                         break;
                         
-                    case CDFormatMethod:
+                    case CDFormat_Method:
                         str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
                         break;
                         
-                    case CDFormatBalance: {
+                    case CDFormat_Balance: {
                         CDBalanceFormatter *balance = [[CDBalanceFormatter alloc] initWithString:type];
                         str = [balance format];
                         [balance release];
