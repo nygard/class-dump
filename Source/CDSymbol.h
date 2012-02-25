@@ -16,8 +16,6 @@ extern NSString *const ObjCClassSymbolPrefix;
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
 
-- (NSString *)description;
-
 @property (readonly) uint64_t value;
 @property (readonly) NSString *name;
 @property (nonatomic, readonly) CDSection *section;

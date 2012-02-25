@@ -85,7 +85,7 @@
 - (void)loadData;
 {
     if (self.hasLoadedData == NO) {
-        self.data = [[NSData alloc] initWithBytes:[[[nonretained_segment machOFile] machOData] bytes] + section.offset length:section.size];
+        self.data = [[NSData alloc] initWithBytes:[[self.segment.machOFile machOData] bytes] + section.offset length:section.size];
         self.hasLoadedData = YES;
     }
 }

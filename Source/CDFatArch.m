@@ -105,7 +105,7 @@
 - (CDMachOFile *)machOFile;
 {
     if (machOFile == nil) {
-        machOFile = [CDFile fileWithData:[nonretained_fatFile data] archOffset:fatArch.offset archSize:fatArch.size filename:[nonretained_fatFile filename] searchPathState:[nonretained_fatFile searchPathState]];
+        machOFile = [CDFile fileWithData:self.fatFile.data archOffset:fatArch.offset archSize:fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
     }
 
     return machOFile;
@@ -113,7 +113,7 @@
 
 - (NSData *)machOData;
 {
-    return [[NSData alloc] initWithBytes:[[nonretained_fatFile data] bytes] + fatArch.offset length:fatArch.size];
+    return [[NSData alloc] initWithBytes:[[self.fatFile data] bytes] + fatArch.offset length:fatArch.size];
 }
 
 @end

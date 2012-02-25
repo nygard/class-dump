@@ -48,14 +48,11 @@
 
 #pragma mark -
 
-- (CDMachOFile *)machOFile;
-{
-    return nonretained_machOFile;
-}
+@synthesize machOFile = nonretained_machOFile;
 
 - (void)setAddress:(NSUInteger)address;
 {
-    NSUInteger dataOffset = [nonretained_machOFile dataOffsetForAddress:address];
+    NSUInteger dataOffset = [self.machOFile dataOffsetForAddress:address];
     [self setOffset:dataOffset];
 }
 
@@ -63,7 +60,7 @@
 
 - (uint16_t)readInt16;
 {
-    if (nonretained_machOFile.byteOrder == CDByteOrder_LittleEndian)
+    if (self.machOFile.byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt16];
 
     return [self readBigInt16];
@@ -71,7 +68,7 @@
 
 - (uint32_t)readInt32;
 {
-    if (nonretained_machOFile.byteOrder == CDByteOrder_LittleEndian)
+    if (self.machOFile.byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt32];
 
     return [self readBigInt32];
@@ -79,7 +76,7 @@
 
 - (uint64_t)readInt64;
 {
-    if (nonretained_machOFile.byteOrder == CDByteOrder_LittleEndian)
+    if (self.machOFile.byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt64];
 
     return [self readBigInt64];
@@ -96,7 +93,7 @@
 
 - (uint64_t)readPtr;
 {
-    switch ([nonretained_machOFile ptrSize]) {
+    switch ([self.machOFile ptrSize]) {
         case sizeof(uint32_t): return [self readInt32];
         case sizeof(uint64_t): return [self readInt64];
     }
