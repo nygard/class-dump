@@ -14,6 +14,7 @@
 #import "CDTypeController.h"
 #import "CDTypeFormatter.h"
 #import "CDVisitorPropertyState.h"
+#import "CDOCIvar.h"
 
 // Add newlines after properties
 #define ADD_SPACE

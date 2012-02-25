@@ -9,6 +9,7 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 #import "CDTypeController.h"
+#import "CDType.h"
 
 @interface CDOCIvar ()
 @property (assign) BOOL hasParsedType; // Private

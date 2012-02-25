@@ -6,6 +6,7 @@
 #import "CDStructureInfo.h"
 
 #import "CDType.h"
+#import "CDTypeName.h"
 
 // If it's used in a method, then it should be declared at the top. (name or typedef)
 

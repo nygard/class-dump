@@ -7,6 +7,7 @@
 
 #import "CDTypeParser.h"
 #import "CDTypeLexer.h"
+#import "CDType.h"
 
 // http://developer.apple.com/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
 

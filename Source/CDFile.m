@@ -7,6 +7,7 @@
 
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
+#import "CDSearchPathState.h"
 
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {

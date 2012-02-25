@@ -8,6 +8,7 @@
 #include <mach-o/loader.h>
 #import "CDMachOFileDataCursor.h"
 #import "CDMachOFile.h"
+#import "CDLCSegment64.h"
 
 @implementation CDSection64
 {

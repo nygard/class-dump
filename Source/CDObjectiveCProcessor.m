@@ -13,6 +13,8 @@
 #import "CDLCSymbolTable.h"
 #import "CDOCProtocol.h"
 #import "CDTypeController.h"
+#import "CDOCClass.h"
+#import "CDOCCategory.h"
 
 // Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
 

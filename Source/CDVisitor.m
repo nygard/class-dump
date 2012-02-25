@@ -5,6 +5,8 @@
 
 #import "CDVisitor.h"
 
+#import "CDClassDump.h"
+
 @implementation CDVisitor
 {
     CDClassDump *classDump;
