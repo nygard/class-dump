@@ -26,26 +26,25 @@ typedef NSUInteger CDTableType;
 - (void)finishPhase0;
 
 // Phase 1
-- (void)phase1WithTypeController:(CDTypeController *)typeController;
+- (void)runPhase1;
 - (void)phase1RegisterStructure:(CDType *)structure;
 - (void)finishPhase1;
 @property (nonatomic, readonly) NSUInteger phase1_maxDepth;
 
 // Phase 2
-- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
+- (void)runPhase2AtDepth:(NSUInteger)depth;
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 
 - (void)finishPhase2;
 
 // Phase 3
-- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+- (void)phase2ReplacementOnPhase0;
 
 - (void)buildPhase3Exceptions;
-- (void)phase3WithTypeController:(CDTypeController *)typeController;
+- (void)runPhase3;
 - (void)phase3RegisterStructure:(CDType *)structure
                           count:(NSUInteger)referenceCount
-                   usedInMethod:(BOOL)isUsedInMethod
-                 typeController:(CDTypeController *)typeController;
+                   usedInMethod:(BOOL)isUsedInMethod;
 - (void)finishPhase3;
 - (CDType *)phase3ReplacementForType:(CDType *)type;
 

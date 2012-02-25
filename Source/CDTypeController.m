@@ -231,8 +231,8 @@ static BOOL debug = NO;
 {
     //NSLog(@" > %s", __cmd);
     // Structures and unions can be nested, so do phase 1 on each table before finishing the phase.
-    [structureTable phase1WithTypeController:self];
-    [unionTable     phase1WithTypeController:self];
+    [structureTable runPhase1];
+    [unionTable     runPhase1];
 
     [structureTable finishPhase1];
     [unionTable     finishPhase1];
@@ -261,8 +261,8 @@ static BOOL debug = NO;
     if (debug) NSLog(@"max structure/union depth is: %lu", maxDepth);
 
     for (NSUInteger depth = 1; depth <= maxDepth; depth++) {
-        [structureTable phase2AtDepth:depth typeController:self];
-        [unionTable     phase2AtDepth:depth typeController:self];
+        [structureTable runPhase2AtDepth:depth];
+        [unionTable     runPhase2AtDepth:depth];
     }
 
     //[structureTable logPhase2Info];
@@ -273,8 +273,8 @@ static BOOL debug = NO;
 - (void)startPhase3;
 {
     // do phase2 merge on all the types from phase 0
-    [structureTable phase2ReplacementOnPhase0WithTypeController:self];
-    [unionTable     phase2ReplacementOnPhase0WithTypeController:self];
+    [structureTable phase2ReplacementOnPhase0];
+    [unionTable     phase2ReplacementOnPhase0];
 
     // Any info referenced by a method, or with >1 reference, gets typedef'd.
     // - Generate name hash based on full type string at this point
@@ -290,8 +290,8 @@ static BOOL debug = NO;
     [structureTable buildPhase3Exceptions];
     [unionTable     buildPhase3Exceptions];
 
-    [structureTable phase3WithTypeController:self];
-    [unionTable     phase3WithTypeController:self];
+    [structureTable runPhase3];
+    [unionTable     runPhase3];
 
     [structureTable finishPhase3];
     [unionTable     finishPhase3];
@@ -320,8 +320,8 @@ static BOOL debug = NO;
 - (void)phase3RegisterStructure:(CDType *)structure;
 {
     //NSLog(@"%s, type= %@", __cmd, [aStructure typeString]);
-    if (structure.type == '{') [structureTable phase3RegisterStructure:structure count:1 usedInMethod:NO typeController:self];
-    if (structure.type == '(') [unionTable     phase3RegisterStructure:structure count:1 usedInMethod:NO typeController:self];
+    if (structure.type == '{') [structureTable phase3RegisterStructure:structure count:1 usedInMethod:NO];
+    if (structure.type == '(') [unionTable     phase3RegisterStructure:structure count:1 usedInMethod:NO];
 }
 
 - (CDType *)phase3ReplacementForType:(CDType *)type;

@@ -215,11 +215,10 @@ static BOOL debugAnonStructures = NO;
 
 #pragma mark - Phase 1
 
-- (void)phase1WithTypeController:(CDTypeController *)typeController;
+- (void)runPhase1;
 {
-    NSParameterAssert(typeController == self.typeController);
     for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
-        [info.type phase1RegisterStructuresWithObject:typeController];
+        [info.type phase1RegisterStructuresWithObject:self.typeController];
     }
 }
 
@@ -282,9 +281,8 @@ static BOOL debugAnonStructures = NO;
 //   - recursively (bottom up) try to merge substructures into that type, to get names/full types
 // - merge all mergeable infos at that level
 
-- (void)phase2AtDepth:(NSUInteger)depth typeController:(CDTypeController *)typeController;
+- (void)runPhase2AtDepth:(NSUInteger)depth;
 {
-    NSParameterAssert(typeController == self.typeController);
     //NSLog(@"[%@] %s, depth: %u", identifier, __cmd, depth);
     NSNumber *depthKey = [NSNumber numberWithUnsignedInteger:depth];
     NSArray *infos = [phase1_groupedByDepth objectForKey:depthKey];
@@ -293,7 +291,7 @@ static BOOL debugAnonStructures = NO;
         // recursively (bottom up) try to merge substructures into that type, to get names/full types
         //NSLog(@"----------------------------------------");
         //NSLog(@"Trying phase2Merge with on %@", [[info type] typeString]);
-        [info.type phase2MergeWithTypeController:typeController debug:debug];
+        [info.type phase2MergeWithTypeController:self.typeController debug:debug];
     }
 
     // merge all mergeable infos at that level
@@ -482,16 +480,15 @@ static BOOL debugAnonStructures = NO;
 
 #pragma mark - Phase 3
 
-- (void)phase2ReplacementOnPhase0WithTypeController:(CDTypeController *)typeController;
+- (void)phase2ReplacementOnPhase0;
 {
-    NSParameterAssert(typeController == self.typeController);
     if (debug) {
         NSLog(@"======================================================================");
         NSLog(@"[%@]  > %s", identifier, __cmd);
     }
 
     for (CDStructureInfo *info in [phase0_structureInfo allValues]) {
-        [info.type phase2MergeWithTypeController:typeController debug:debug];
+        [info.type phase2MergeWithTypeController:self.typeController debug:debug];
     }
 
     if (debug) NSLog(@"[%@] <  %s", identifier, __cmd);
@@ -528,13 +525,12 @@ static BOOL debugAnonStructures = NO;
     //exit(99);
 }
 
-- (void)phase3WithTypeController:(CDTypeController *)typeController;
+- (void)runPhase3;
 {
-    NSParameterAssert(typeController == self.typeController);
     //NSLog(@"[%@]  > %s", identifier, __cmd);
 
     for (CDStructureInfo *info in [[phase0_structureInfo allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
-        [self phase3RegisterStructure:info.type count:info.referenceCount usedInMethod:info.isUsedInMethod typeController:typeController];
+        [self phase3RegisterStructure:info.type count:info.referenceCount usedInMethod:info.isUsedInMethod];
     }
 
     //NSLog(@"[%@] <  %s", identifier, __cmd);
@@ -543,9 +539,7 @@ static BOOL debugAnonStructures = NO;
 - (void)phase3RegisterStructure:(CDType *)structure
                           count:(NSUInteger)referenceCount
                    usedInMethod:(BOOL)isUsedInMethod
-                 typeController:(CDTypeController *)typeController;
 {
-    NSParameterAssert(typeController == self.typeController);
     //NSLog(@"[%@]  > %s", identifier, __cmd);
 
     NSString *name = [structure.typeName description];
@@ -561,7 +555,7 @@ static BOOL debugAnonStructures = NO;
 
             if (info.referenceCount == referenceCount) { // i.e. the first time we've encounter this struct
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [structure phase3RegisterMembersWithTypeController:typeController];
+                [structure phase3RegisterMembersWithTypeController:self.typeController];
             }
         } else {
             info = [phase3_anonStructureInfo objectForKey:key];
@@ -574,7 +568,7 @@ static BOOL debugAnonStructures = NO;
                 [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [structure phase3RegisterMembersWithTypeController:typeController];
+                [structure phase3RegisterMembersWithTypeController:self.typeController];
             } else {
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
@@ -595,7 +589,7 @@ static BOOL debugAnonStructures = NO;
 
                 if (info.referenceCount == referenceCount) { // i.e. the first time we've encounter this struct
                     // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                    [structure phase3RegisterMembersWithTypeController:typeController];
+                    [structure phase3RegisterMembersWithTypeController:self.typeController];
                 }
             }
         } else {
@@ -610,7 +604,7 @@ static BOOL debugAnonStructures = NO;
                 [info release];
 
                 // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                [structure phase3RegisterMembersWithTypeController:typeController];
+                [structure phase3RegisterMembersWithTypeController:self.typeController];
             } else {
                 if ([debugNames containsObject:name]) NSLog(@"[%@] %s, info before: %@", identifier, __cmd, [info shortDescription]);
                 // Handle the case where {foo} occurs before {foo=iii}
@@ -618,7 +612,7 @@ static BOOL debugAnonStructures = NO;
                     [info.type mergeWithType:structure];
 
                     // And then... add 1 reference for each substructure, stopping recursion when we've encountered a previous structure
-                    [structure phase3RegisterMembersWithTypeController:typeController];
+                    [structure phase3RegisterMembersWithTypeController:self.typeController];
                 }
                 [info addReferenceCount:referenceCount];
                 if (isUsedInMethod)
