@@ -10,7 +10,6 @@
 #import "CDLCDylib.h"
 #import "CDMachOFile.h"
 #import "CDObjectiveCProcessor.h"
-#import "CDStructureTable.h"
 #import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeFormatter.h"
