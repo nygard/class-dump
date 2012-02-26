@@ -60,13 +60,13 @@ void print_usage(void)
 int main(int argc, char *argv[])
 {
     @autoreleasepool {
-        BOOL shouldFind = NO;
-        NSString *searchString = nil;
+        NSString *searchString;
         BOOL shouldGenerateSeparateHeaders = NO;
         BOOL shouldListArches = NO;
         BOOL shouldPrintVersion = NO;
         CDArch targetArch;
         BOOL hasSpecifiedArch = NO;
+        NSString *outputPath;
 
         int ch;
         BOOL errorFlag = NO;
@@ -98,9 +98,6 @@ int main(int argc, char *argv[])
         }
 
         CDClassDump *classDump = [[CDClassDump alloc] init];
-        CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
-        multiFileVisitor.classDump = classDump;
-        classDump.typeController.delegate = multiFileVisitor;
 
         while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
             switch (ch) {
@@ -175,8 +172,6 @@ int main(int argc, char *argv[])
                 }
                     
                 case 'f': {
-                    shouldFind = YES;
-                    
                     searchString = [NSString stringWithUTF8String:optarg];
                     break;
                 }
@@ -190,7 +185,7 @@ int main(int argc, char *argv[])
                     break;
                     
                 case 'o':
-                    multiFileVisitor.outputPath = [NSString stringWithUTF8String:optarg];
+                    outputPath = [NSString stringWithUTF8String:optarg];
                     break;
                     
                 case 'r':
@@ -272,18 +267,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                     exit(1);
                 }
-#if 0
-                {
-                    CDFatFile *fat = file;
 
-                    NSArray *a1 = [fat arches];
-                    NSUInteger count = [a1 count];
-                    for (NSUInteger index = 0; index < count; index++)
-                        [[[a1 objectAtIndex:index] machOData] writeToFile:[NSString stringWithFormat:@"/tmp/arch-%u", index] atomically:NO];
-
-                    exit(99);
-                }
-#endif
                 if (hasSpecifiedArch == NO) {
                     if ([file bestMatchForLocalArch:&targetArch] == NO) {
                         fprintf(stderr, "Error: Couldn't get local architecture\n");
@@ -314,12 +298,16 @@ int main(int argc, char *argv[])
                     [classDump processObjectiveCData];
                     [classDump registerTypes];
 
-                    if (shouldFind) {
+                    if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                         visitor.classDump = classDump;
                         visitor.searchString = searchString;
                         [classDump recursivelyVisit:visitor];
                     } else if (shouldGenerateSeparateHeaders) {
+                        CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
+                        multiFileVisitor.classDump = classDump;
+                        classDump.typeController.delegate = multiFileVisitor;
+                        multiFileVisitor.outputPath = outputPath;
                         [classDump recursivelyVisit:multiFileVisitor];
                     } else {
                         CDClassDumpVisitor *visitor = [[CDClassDumpVisitor alloc] init];
