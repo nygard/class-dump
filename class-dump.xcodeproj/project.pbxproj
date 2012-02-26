@@ -364,7 +364,6 @@
 		01EB831E13A591D8003EDE60 /* CDVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitor.m; path = Source/CDVisitor.m; sourceTree = SOURCE_ROOT; };
 		01EB831F13A591D8003EDE60 /* CDVisitorPropertyState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVisitorPropertyState.h; path = Source/CDVisitorPropertyState.h; sourceTree = SOURCE_ROOT; };
 		01EB832013A591D8003EDE60 /* CDVisitorPropertyState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitorPropertyState.m; path = Source/CDVisitorPropertyState.m; sourceTree = SOURCE_ROOT; };
-		01EB836813A5933F003EDE60 /* dyld-info-compat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "dyld-info-compat.h"; path = "Source/dyld-info-compat.h"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -603,7 +602,6 @@
 		01EB836713A592A2003EDE60 /* Load Commands */ = {
 			isa = PBXGroup;
 			children = (
-				01EB836813A5933F003EDE60 /* dyld-info-compat.h */,
 				01EB82A913A591D7003EDE60 /* CDLCDyldInfo.h */,
 				01EB82AA13A591D7003EDE60 /* CDLCDyldInfo.m */,
 				01EB82AB13A591D7003EDE60 /* CDLCDylib.h */,

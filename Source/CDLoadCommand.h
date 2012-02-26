@@ -7,7 +7,6 @@
 
 // Importing these here saves us from importing them in the implementation of every load command.
 #include <mach-o/loader.h>
-#include "dyld-info-compat.h"
 #import "CDMachOFileDataCursor.h"
 
 @class CDMachOFile;
