@@ -422,6 +422,19 @@
 			name = "Structure / Union handling";
 			sourceTree = "<group>";
 		};
+		0134F49914FA7F2C001E34DF /* Multi-file generation */ = {
+			isa = PBXGroup;
+			children = (
+				01EB82E113A591D8003EDE60 /* CDMultiFileVisitor.h */,
+				01EB82E213A591D8003EDE60 /* CDMultiFileVisitor.m */,
+				01EB829D13A591D7003EDE60 /* CDClassFrameworkVisitor.h */,
+				01EB829E13A591D7003EDE60 /* CDClassFrameworkVisitor.m */,
+				01EB830913A591D8003EDE60 /* CDSymbolReferences.h */,
+				01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */,
+			);
+			name = "Multi-file generation";
+			sourceTree = "<group>";
+		};
 		013D1EFE13A5A0F100BF0A67 /* deprotect */ = {
 			isa = PBXGroup;
 			children = (
@@ -443,10 +456,7 @@
 				01EB82A813A591D7003EDE60 /* CDFindMethodVisitor.m */,
 				01EB831D13A591D8003EDE60 /* CDVisitor.h */,
 				01EB831E13A591D8003EDE60 /* CDVisitor.m */,
-				01EB829D13A591D7003EDE60 /* CDClassFrameworkVisitor.h */,
-				01EB829E13A591D7003EDE60 /* CDClassFrameworkVisitor.m */,
-				01EB82E113A591D8003EDE60 /* CDMultiFileVisitor.h */,
-				01EB82E213A591D8003EDE60 /* CDMultiFileVisitor.m */,
+				0134F49914FA7F2C001E34DF /* Multi-file generation */,
 				01EB830B13A591D8003EDE60 /* CDTextClassDumpVisitor.h */,
 				01EB830C13A591D8003EDE60 /* CDTextClassDumpVisitor.m */,
 			);
@@ -516,8 +526,6 @@
 				01EB829913A591D7003EDE60 /* CDClassDump.h */,
 				01EB829A13A591D7003EDE60 /* CDClassDump.m */,
 				011F1D6214F8EB9F00CF8AE2 /* Structure / Union handling */,
-				01EB830913A591D8003EDE60 /* CDSymbolReferences.h */,
-				01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */,
 				01984AC013AA9EA900EABFF6 /* Visitors */,
 				01EB82FB13A591D8003EDE60 /* CDSearchPathState.h */,
 				01EB82FC13A591D8003EDE60 /* CDSearchPathState.m */,
