@@ -18,6 +18,12 @@
 #import "CDTypeController.h"
 #import "CDSearchPathState.h"
 
+@interface CDClassDump ()
+- (CDMachOFile *)machOFileWithID:(NSString *)anID;
+@end
+
+#pragma mark -
+
 @implementation CDClassDump
 {
     CDSearchPathState *searchPathState;

@@ -57,8 +57,6 @@
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
-- (CDMachOFile *)machOFileWithID:(NSString *)anID;
-
 - (void)appendHeaderToString:(NSMutableString *)resultString;
 
 - (void)registerTypes;
