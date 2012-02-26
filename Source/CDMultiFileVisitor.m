@@ -16,6 +16,7 @@
 #import "CDSymbolReferences.h"
 
 @interface CDMultiFileVisitor ()
+@property (assign) NSUInteger referenceIndex;
 @property (readonly) CDSymbolReferences *symbolReferences;
 - (void)createOutputPathIfNecessary;
 - (void)buildClassFrameworks;
@@ -26,15 +27,15 @@
 
 @implementation CDMultiFileVisitor
 {
-    NSString *outputPath;
-    NSUInteger referenceIndex;
-    CDSymbolReferences *symbolReferences;
+    NSString *_outputPath;
+    NSUInteger _referenceIndex;
+    CDSymbolReferences *_symbolReferences;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        symbolReferences = [[CDSymbolReferences alloc] init];
+        _symbolReferences = [[CDSymbolReferences alloc] init];
     }
     
     return self;
@@ -71,7 +72,7 @@
         [self.resultString appendString:@"\n"];
     }
 
-    referenceIndex = [self.resultString length];
+    self.referenceIndex = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitClass:aClass];
@@ -89,11 +90,11 @@
     [self.symbolReferences removeClassName:aClass.superClassName];
     NSString *referenceString = self.symbolReferences.referenceString;
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
 
     NSString *filename = [NSString stringWithFormat:@"%@.h", aClass.name];
-    if (outputPath != nil)
-        filename = [outputPath stringByAppendingPathComponent:filename];
+    if (self.outputPath != nil)
+        filename = [self.outputPath stringByAppendingPathComponent:filename];
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
@@ -110,7 +111,7 @@
         [self.resultString appendString:str];
         [self.resultString appendString:@"\n"];
     }
-    referenceIndex = [self.resultString length];
+    self.referenceIndex = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitCategory:category];
@@ -127,11 +128,11 @@
     [self.symbolReferences removeClassName:category.className];
     NSString *referenceString = self.symbolReferences.referenceString;
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
 
     NSString *filename = [NSString stringWithFormat:@"%@-%@.h", category.className, category.name];
-    if (outputPath != nil)
-        filename = [outputPath stringByAppendingPathComponent:filename];
+    if (self.outputPath != nil)
+        filename = [self.outputPath stringByAppendingPathComponent:filename];
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
@@ -142,7 +143,7 @@
     [self.classDump appendHeaderToString:self.resultString];
 
     [self.symbolReferences removeAllReferences];
-    referenceIndex = [self.resultString length];
+    self.referenceIndex = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitProtocol:protocol];
@@ -158,41 +159,43 @@
     // Then insert the imports and write the file.
     NSString *referenceString = self.symbolReferences.referenceString;
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
 
     NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", protocol.name];
-    if (outputPath != nil)
-        filename = [outputPath stringByAppendingPathComponent:filename];
+    if (self.outputPath != nil)
+        filename = [self.outputPath stringByAppendingPathComponent:filename];
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
 #pragma mark -
 
-@synthesize outputPath;
+@synthesize outputPath = _outputPath;
 
 - (void)createOutputPathIfNecessary;
 {
-    if (outputPath != nil) {
+    if (self.outputPath != nil) {
         BOOL isDirectory;
         
         NSFileManager *fileManager = [NSFileManager defaultManager];
-        if ([fileManager fileExistsAtPath:outputPath isDirectory:&isDirectory] == NO) {
+        if ([fileManager fileExistsAtPath:self.outputPath isDirectory:&isDirectory] == NO) {
             NSError *error = nil;
-            BOOL result = [fileManager createDirectoryAtPath:outputPath withIntermediateDirectories:YES attributes:nil error:&error];
+            BOOL result = [fileManager createDirectoryAtPath:self.outputPath withIntermediateDirectories:YES attributes:nil error:&error];
             if (result == NO) {
-                NSLog(@"Error: Couldn't create output directory: %@", outputPath);
+                NSLog(@"Error: Couldn't create output directory: %@", self.outputPath);
                 NSLog(@"error: %@", error); // TODO: Test this
                 return;
             }
         } else if (isDirectory == NO) {
-            NSLog(@"Error: File exists at output path: %@", outputPath);
+            NSLog(@"Error: File exists at output path: %@", self.outputPath);
             return;
         }
     }
 }
 
-@synthesize symbolReferences;
+@synthesize referenceIndex = _referenceIndex;
+
+@synthesize symbolReferences = _symbolReferences;
 
 - (void)buildClassFrameworks;
 {
@@ -209,22 +212,22 @@
     [self.classDump appendHeaderToString:self.resultString];
     
     [self.symbolReferences removeAllReferences];
-    referenceIndex = [self.resultString length];
+    self.referenceIndex = [self.resultString length];
     
     [[self.classDump typeController] appendStructuresToString:self.resultString];
     
     NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
     
     NSString *filename = @"CDStructures.h";
-    if (outputPath != nil)
-        filename = [outputPath stringByAppendingPathComponent:filename];
+    if (self.outputPath != nil)
+        filename = [self.outputPath stringByAppendingPathComponent:filename];
     
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
-#pragma mark CDTypeControllerDelegate
+#pragma mark - CDTypeControllerDelegate
 
 - (void)typeController:(CDTypeController *)typeController didReferenceClassName:(NSString *)name;
 {

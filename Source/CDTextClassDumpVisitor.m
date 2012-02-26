@@ -28,13 +28,13 @@ static BOOL debug = NO;
 
 @implementation CDTextClassDumpVisitor
 {
-    NSMutableString *resultString;
+    NSMutableString *_resultString;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        resultString = [[NSMutableString alloc] init];
+        _resultString = [[NSMutableString alloc] init];
     }
 
     return self;
@@ -45,82 +45,82 @@ static BOOL debug = NO;
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
     if (aClass.isExported == NO)
-        [resultString appendString:@"// Not exported\n"];
+        [self.resultString appendString:@"// Not exported\n"];
 
-    [resultString appendFormat:@"@interface %@", aClass.name];
+    [self.resultString appendFormat:@"@interface %@", aClass.name];
     if (aClass.superClassName != nil)
-        [resultString appendFormat:@" : %@", aClass.superClassName];
+        [self.resultString appendFormat:@" : %@", aClass.superClassName];
 
     NSArray *protocols = aClass.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", aClass.protocolsString];
+        [self.resultString appendFormat:@" <%@>", aClass.protocolsString];
     }
 
-    [resultString appendString:@"\n"];
+    [self.resultString appendString:@"\n"];
 }
 
 - (void)didVisitClass:(CDOCClass *)aClass;
 {
     if (aClass.hasMethods)
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"\n"];
 
-    [resultString appendString:@"@end\n\n"];
+    [self.resultString appendString:@"@end\n\n"];
 }
 
 - (void)willVisitIvarsOfClass:(CDOCClass *)aClass;
 {
-    [resultString appendString:@"{\n"];
+    [self.resultString appendString:@"{\n"];
 }
 
 - (void)didVisitIvarsOfClass:(CDOCClass *)aClass;
 {
-    [resultString appendString:@"}\n\n"];
+    [self.resultString appendString:@"}\n\n"];
 }
 
 - (void)willVisitCategory:(CDOCCategory *)category;
 {
-    [resultString appendFormat:@"@interface %@ (%@)", category.className, category.name];
+    [self.resultString appendFormat:@"@interface %@ (%@)", category.className, category.name];
 
     NSArray *protocols = category.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", category.protocolsString];
+        [self.resultString appendFormat:@" <%@>", category.protocolsString];
     }
 
-    [resultString appendString:@"\n"];
+    [self.resultString appendString:@"\n"];
 }
 
 - (void)didVisitCategory:(CDOCCategory *)category;
 {
-    [resultString appendString:@"@end\n\n"];
+    [self.resultString appendString:@"@end\n\n"];
 }
 
 - (void)willVisitProtocol:(CDOCProtocol *)protocol;
 {
-    [resultString appendFormat:@"@protocol %@", protocol.name];
+    [self.resultString appendFormat:@"@protocol %@", protocol.name];
 
     NSArray *protocols = protocol.protocols;
     if ([protocols count] > 0) {
-        [resultString appendFormat:@" <%@>", protocol.protocolsString];
+        [self.resultString appendFormat:@" <%@>", protocol.protocolsString];
     }
 
-    [resultString appendString:@"\n"];
+    [self.resultString appendString:@"\n"];
 }
 
 - (void)willVisitOptionalMethods;
 {
-    [resultString appendString:@"\n@optional\n"];
+    [self.resultString appendString:@"\n@optional\n"];
 }
 
 - (void)didVisitProtocol:(CDOCProtocol *)protocol;
 {
-    [resultString appendString:@"@end\n\n"];
+    [self.resultString appendString:@"@end\n\n"];
 }
 
 - (void)visitClassMethod:(CDOCMethod *)method;
 {
-    [resultString appendString:@"+ "];
-    [method appendToString:resultString typeController:self.classDump.typeController];
-    [resultString appendString:@"\n"];
+    [self.resultString appendString:@"+ "];
+    [method appendToString:self.resultString typeController:self.classDump.typeController];
+    [self.resultString appendString:@"\n"];
 }
 
 - (void)visitInstanceMethod:(CDOCMethod *)method propertyState:(CDVisitorPropertyState *)propertyState;
@@ -128,9 +128,9 @@ static BOOL debug = NO;
     CDOCProperty *property = [propertyState propertyForAccessor:method.name];
     if (property == nil) {
         //NSLog(@"No property for method: %@", method.name);
-        [resultString appendString:@"- "];
-        [method appendToString:resultString typeController:self.classDump.typeController];
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"- "];
+        [method appendToString:self.resultString typeController:self.classDump.typeController];
+        [self.resultString appendString:@"\n"];
     } else {
         if ([propertyState hasUsedProperty:property] == NO) {
             //NSLog(@"Emitting property %@ triggered by method %@", property.name, method.name);
@@ -144,8 +144,8 @@ static BOOL debug = NO;
 
 - (void)visitIvar:(CDOCIvar *)ivar;
 {
-    [ivar appendToString:resultString typeController:self.classDump.typeController];
-    [resultString appendString:@"\n"];
+    [ivar appendToString:self.resultString typeController:self.classDump.typeController];
+    [self.resultString appendString:@"\n"];
 }
 
 - (void)visitProperty:(CDOCProperty *)property;
@@ -153,11 +153,11 @@ static BOOL debug = NO;
     CDType *parsedType = property.type;
     if (parsedType == nil) {
         if ([property.attributeString hasPrefix:@"T"]) {
-            [resultString appendFormat:@"// Error parsing type for property %@:\n", property.name];
-            [resultString appendFormat:@"// Property attributes: %@\n\n", property.attributeString];
+            [self.resultString appendFormat:@"// Error parsing type for property %@:\n", property.name];
+            [self.resultString appendFormat:@"// Property attributes: %@\n\n", property.attributeString];
         } else {
-            [resultString appendFormat:@"// Error: Property attributes should begin with the type ('T') attribute, property name: %@\n", property.name];
-            [resultString appendFormat:@"// Property attributes: %@\n\n", property.attributeString];
+            [self.resultString appendFormat:@"// Error: Property attributes should begin with the type ('T') attribute, property name: %@\n", property.name];
+            [self.resultString appendFormat:@"// Property attributes: %@\n\n", property.attributeString];
         }
     } else {
         [self _visitProperty:property parsedType:parsedType attributes:property.attributes];
@@ -168,7 +168,7 @@ static BOOL debug = NO;
 {
 #ifdef ADD_SPACE
     if ([aClass.properties count] > 0)
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"\n"];
 #endif
 }
 
@@ -176,7 +176,7 @@ static BOOL debug = NO;
 {
 #ifdef ADD_SPACE
     if ([category.properties count] > 0)
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"\n"];
 #endif
 }
 
@@ -184,7 +184,7 @@ static BOOL debug = NO;
 {
 #ifdef ADD_SPACE
     if ([category.properties count] > 0/* && [aCategory hasMethods]*/)
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"\n"];
 #endif
 }
 
@@ -192,7 +192,7 @@ static BOOL debug = NO;
 {
 #ifdef ADD_SPACE
     if ([protocol.properties count] > 0)
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"\n"];
 #endif
 }
 
@@ -200,7 +200,7 @@ static BOOL debug = NO;
 {
 #ifdef ADD_SPACE
     if ([protocol.properties count] > 0 /*&& [aProtocol hasMethods]*/)
-        [resultString appendString:@"\n"];
+        [self.resultString appendString:@"\n"];
 #endif
 }
 
@@ -209,8 +209,8 @@ static BOOL debug = NO;
     NSArray *remaining = propertyState.remainingProperties;
 
     if ([remaining count] > 0) {
-        [resultString appendString:@"\n"];
-        [resultString appendFormat:@"// Remaining properties\n"];
+        [self.resultString appendString:@"\n"];
+        [self.resultString appendFormat:@"// Remaining properties\n"];
         //NSLog(@"Warning: remaining undeclared property count: %u", [remaining count]);
         //NSLog(@"remaining: %@", remaining);
         for (CDOCProperty *property in remaining)
@@ -220,11 +220,11 @@ static BOOL debug = NO;
 
 #pragma mark -
 
-@synthesize resultString;
+@synthesize resultString = _resultString;
 
 - (void)writeResultToStandardOutput;
 {
-    NSData *data = [resultString dataUsingEncoding:NSUTF8StringEncoding];
+    NSData *data = [self.resultString dataUsingEncoding:NSUTF8StringEncoding];
     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
 }
 
@@ -276,34 +276,34 @@ static BOOL debug = NO;
     }
     
     if ([alist count] > 0) {
-        [resultString appendFormat:@"@property(%@) ", [alist componentsJoinedByString:@", "]];
+        [self.resultString appendFormat:@"@property(%@) ", [alist componentsJoinedByString:@", "]];
     } else {
-        [resultString appendString:@"@property "];
+        [self.resultString appendString:@"@property "];
     }
     
     if (isWeak)
-        [resultString appendString:@"__weak "];
+        [self.resultString appendString:@"__weak "];
     
     NSString *formattedString = [self.classDump.typeController.propertyTypeFormatter formatVariable:property.name parsedType:parsedType];
-    [resultString appendFormat:@"%@;", formattedString];
+    [self.resultString appendFormat:@"%@;", formattedString];
     
     if (isDynamic) {
-        [resultString appendFormat:@" // @dynamic %@;", property.name];
+        [self.resultString appendFormat:@" // @dynamic %@;", property.name];
     } else if (backingVar != nil) {
         if ([backingVar isEqualToString:property.name]) {
-            [resultString appendFormat:@" // @synthesize %@;", property.name];
+            [self.resultString appendFormat:@" // @synthesize %@;", property.name];
         } else {
-            [resultString appendFormat:@" // @synthesize %@=%@;", property.name, backingVar];
+            [self.resultString appendFormat:@" // @synthesize %@=%@;", property.name, backingVar];
         }
     }
     
-    [resultString appendString:@"\n"];
+    [self.resultString appendString:@"\n"];
     if ([unknownAttrs count] > 0) {
-        [resultString appendFormat:@"// Preceding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
+        [self.resultString appendFormat:@"// Preceding property had unknown attributes: %@\n", [unknownAttrs componentsJoinedByString:@","]];
         if ([property.attributeString length] > 80) {
-            [resultString appendFormat:@"// Original attribute string (following type): %@\n\n", property.attributeStringAfterType];
+            [self.resultString appendFormat:@"// Original attribute string (following type): %@\n\n", property.attributeStringAfterType];
         } else {
-            [resultString appendFormat:@"// Original attribute string: %@\n\n", property.attributeString];
+            [self.resultString appendFormat:@"// Original attribute string: %@\n\n", property.attributeString];
         }
     }
 }

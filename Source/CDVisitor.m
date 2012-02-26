@@ -9,12 +9,12 @@
 
 @implementation CDVisitor
 {
-    CDClassDump *classDump;
+    CDClassDump *_classDump;
 }
 
 #pragma mark -
 
-@synthesize classDump;
+@synthesize classDump = _classDump;
 
 - (void)willBeginVisiting;
 {

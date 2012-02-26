@@ -12,19 +12,19 @@
 
 @implementation CDStructureInfo
 {
-    CDType *type;
-    NSUInteger referenceCount;
-    BOOL isUsedInMethod;
-    NSString *typedefName;
+    CDType *_type;
+    NSUInteger _referenceCount;
+    BOOL _isUsedInMethod;
+    NSString *_typedefName;
 }
 
-- (id)initWithType:(CDType *)aType;
+- (id)initWithType:(CDType *)type;
 {
     if ((self = [super init])) {
-        type = [aType copy];
-        referenceCount = 1;
-        isUsedInMethod = NO;
-        typedefName = nil;
+        _type = [type copy];
+        _referenceCount = 1;
+        _isUsedInMethod = NO;
+        _typedefName = nil;
     }
 
     return self;
@@ -34,7 +34,7 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    CDStructureInfo *copy = [[CDStructureInfo alloc] initWithType:type]; // type gets copied
+    CDStructureInfo *copy = [[CDStructureInfo alloc] initWithType:self.type]; // type gets copied
     copy.referenceCount = self.referenceCount;
     copy.isUsedInMethod = self.isUsedInMethod;
     copy.typedefName = self.typedefName;
@@ -58,16 +58,16 @@
 
 #pragma mark -
 
-@synthesize type;
-@synthesize referenceCount;
+@synthesize type = _type;
+@synthesize referenceCount = _referenceCount;
 
 - (void)addReferenceCount:(NSUInteger)count;
 {
     self.referenceCount += count;
 }
 
-@synthesize isUsedInMethod;
-@synthesize typedefName;
+@synthesize isUsedInMethod = _isUsedInMethod;
+@synthesize typedefName = _typedefName;
 
 // Do this before generating member names.
 - (void)generateTypedefName:(NSString *)baseName;

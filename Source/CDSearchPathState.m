@@ -5,17 +5,23 @@
 
 #import "CDSearchPathState.h"
 
+@interface CDSearchPathState ()
+@property (readonly) NSMutableArray *searchPathStack;
+@end
+
+#pragma mark -
+
 @implementation CDSearchPathState
 {
-    NSString *executablePath;
-    NSMutableArray *searchPathStack;
+    NSString *_executablePath;
+    NSMutableArray *_searchPathStack;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        executablePath = nil;
-        searchPathStack = [[NSMutableArray alloc] init];
+        _executablePath = nil;
+        _searchPathStack = [[NSMutableArray alloc] init];
     }
 
     return self;
@@ -23,27 +29,27 @@
 
 #pragma mark -
 
-@synthesize executablePath;
+@synthesize executablePath = _executablePath;
+@synthesize searchPathStack = _searchPathStack;
 
 - (void)pushSearchPaths:(NSArray *)searchPaths;
 {
-    [searchPathStack addObject:searchPaths];
+    [self.searchPathStack addObject:searchPaths];
 }
 
 - (void)popSearchPaths;
 {
-    if ([searchPathStack count] > 0) {
-        [searchPathStack removeLastObject];
+    if ([self.searchPathStack count] > 0) {
+        [self.searchPathStack removeLastObject];
     } else {
         NSLog(@"Warning: Unbalanced popSearchPaths");
     }
-
 }
 
 - (NSArray *)searchPaths;
 {
     NSMutableArray *result = [NSMutableArray array];
-    for (NSArray *group in searchPathStack) {
+    for (NSArray *group in self.searchPathStack) {
         [result addObjectsFromArray:group];
     }
 

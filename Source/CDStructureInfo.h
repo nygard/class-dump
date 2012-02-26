@@ -9,7 +9,7 @@
 
 @interface CDStructureInfo : NSObject <NSCopying>
 
-- (id)initWithType:(CDType *)aType;
+- (id)initWithType:(CDType *)type;
 
 - (NSString *)shortDescription;
 

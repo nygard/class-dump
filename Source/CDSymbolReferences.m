@@ -23,19 +23,19 @@
 
 @implementation CDSymbolReferences
 {
-    NSMutableDictionary *frameworkNamesByClassName;
+    NSMutableDictionary *_frameworkNamesByClassName;
     
-    NSMutableSet *classes;
-    NSMutableSet *protocols;
+    NSMutableSet *_classes;
+    NSMutableSet *_protocols;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+        _frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
         
-        classes = [[NSMutableSet alloc] init];
-        protocols = [[NSMutableSet alloc] init];
+        _classes = [[NSMutableSet alloc] init];
+        _protocols = [[NSMutableSet alloc] init];
     }
 
     return self;
@@ -53,7 +53,7 @@
 
 #pragma mark -
 
-@synthesize frameworkNamesByClassName;
+@synthesize frameworkNamesByClassName = _frameworkNamesByClassName;
 
 - (void)addClassName:(NSString *)name referencedInFramework:(NSString *)framework;
 {
@@ -64,23 +64,23 @@
 
 - (NSString *)frameworkForClassName:(NSString *)className;
 {
-    return [frameworkNamesByClassName objectForKey:className];
+    return [self.frameworkNamesByClassName objectForKey:className];
 }
 
 - (void)addClassName:(NSString *)className;
 {
-    [classes addObject:className];
+    [self.classes addObject:className];
 }
 
 - (void)removeClassName:(NSString *)className;
 {
     if (className != nil)
-        [classes removeObject:className];
+        [self.classes removeObject:className];
 }
 
 - (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
 {
-    [protocols addObjectsFromArray:protocolNames];
+    [self.protocols addObjectsFromArray:protocolNames];
 }
 
 - (NSString *)referenceString;
@@ -96,8 +96,8 @@
 
 - (void)removeAllReferences;
 {
-    [classes removeAllObjects];
-    [protocols removeAllObjects];
+    [self.classes removeAllObjects];
+    [self.protocols removeAllObjects];
 }
 
 - (NSString *)importStringForClassName:(NSString *)className;
@@ -115,8 +115,8 @@
 
 #pragma mark -
 
-@synthesize classes;
-@synthesize protocols;
+@synthesize classes = _classes;
+@synthesize protocols = _protocols;
 
 - (NSArray *)classesSortedByName;
 {

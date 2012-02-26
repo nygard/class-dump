@@ -24,7 +24,7 @@
 @property (nonatomic, readonly) BOOL shouldShowMethodAddresses;
 @property (nonatomic, readonly) BOOL targetArchUses64BitABI;
 
-- (CDType *)typeFormatter:(CDTypeFormatter *)typeFormatter replacementForType:(CDType *)yype;
+- (CDType *)typeFormatter:(CDTypeFormatter *)typeFormatter replacementForType:(CDType *)type;
 - (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 - (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceClassName:(NSString *)name;
 
