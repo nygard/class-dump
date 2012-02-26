@@ -5,15 +5,12 @@
 
 #import "CDVisitor.h"
 
-@class CDSymbolReferences, CDType;
-
 // Has a mutable string for storing output, and method to write it to standard out.
 // symbol references are for... ?
 
 @interface CDTextClassDumpVisitor : CDVisitor
 
 @property (readonly) NSMutableString *resultString;
-@property (readonly) CDSymbolReferences *symbolReferences;
 
 - (void)writeResultToStandardOutput;
 

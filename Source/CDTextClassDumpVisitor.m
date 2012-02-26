@@ -8,7 +8,6 @@
 #import "CDClassDump.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
-#import "CDSymbolReferences.h"
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
 #import "CDTypeController.h"
@@ -30,14 +29,12 @@ static BOOL debug = NO;
 @implementation CDTextClassDumpVisitor
 {
     NSMutableString *resultString;
-    CDSymbolReferences *symbolReferences;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
         resultString = [[NSMutableString alloc] init];
-        symbolReferences = [[CDSymbolReferences alloc] init];
     }
 
     return self;
@@ -57,7 +54,6 @@ static BOOL debug = NO;
     NSArray *protocols = aClass.protocols;
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", aClass.protocolsString];
-        [symbolReferences addProtocolNamesFromArray:aClass.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -88,7 +84,6 @@ static BOOL debug = NO;
     NSArray *protocols = category.protocols;
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", category.protocolsString];
-        [symbolReferences addProtocolNamesFromArray:category.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -106,7 +101,6 @@ static BOOL debug = NO;
     NSArray *protocols = protocol.protocols;
     if ([protocols count] > 0) {
         [resultString appendFormat:@" <%@>", protocol.protocolsString];
-        [symbolReferences addProtocolNamesFromArray:protocol.protocolNames];
     }
 
     [resultString appendString:@"\n"];
@@ -227,7 +221,6 @@ static BOOL debug = NO;
 #pragma mark -
 
 @synthesize resultString;
-@synthesize symbolReferences;
 
 - (void)writeResultToStandardOutput;
 {

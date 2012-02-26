@@ -13,8 +13,10 @@
 #import "CDOCProtocol.h"
 #import "CDOCIvar.h"
 #import "CDTypeController.h"
+#import "CDSymbolReferences.h"
 
 @interface CDMultiFileVisitor ()
+@property (readonly) CDSymbolReferences *symbolReferences;
 - (void)createOutputPathIfNecessary;
 - (void)buildClassFrameworks;
 - (void)generateStructureHeader;
@@ -26,6 +28,16 @@
 {
     NSString *outputPath;
     NSUInteger referenceIndex;
+    CDSymbolReferences *symbolReferences;
+}
+
+- (id)init;
+{
+    if ((self = [super init])) {
+        symbolReferences = [[CDSymbolReferences alloc] init];
+    }
+    
+    return self;
 }
 
 #pragma mark -
@@ -63,6 +75,8 @@
 
     // And then generate the regular output
     [super willVisitClass:aClass];
+    
+    [self.symbolReferences addProtocolNamesFromArray:aClass.protocolNames];
 }
 
 - (void)didVisitClass:(CDOCClass *)aClass;
@@ -100,6 +114,8 @@
 
     // And then generate the regular output
     [super willVisitCategory:category];
+
+    [self.symbolReferences addProtocolNamesFromArray:category.protocolNames];
 }
 
 - (void)didVisitCategory:(CDOCCategory *)category;
@@ -130,6 +146,8 @@
 
     // And then generate the regular output
     [super willVisitProtocol:protocol];
+
+    [self.symbolReferences addProtocolNamesFromArray:protocol.protocolNames];
 }
 
 - (void)didVisitProtocol:(CDOCProtocol *)protocol;
@@ -173,6 +191,8 @@
         }
     }
 }
+
+@synthesize symbolReferences;
 
 - (void)buildClassFrameworks;
 {
