@@ -7,7 +7,6 @@
 
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
-#import "CDSymbolReferences.h"
 #import "CDVisitor.h"
 #import "CDOCProperty.h"
 #import "CDMethodType.h"
@@ -185,7 +184,7 @@
 
 #pragma mark -
 
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+- (NSString *)findTag;
 {
     NSMutableString *resultString = [NSMutableString string];
 

@@ -160,7 +160,7 @@
 - (void)showContextIfNecessary;
 {
     if (hasShownContext == NO) {
-        [resultString appendString:[self.context findTag:nil]];
+        [resultString appendString:[self.context findTag]];
         [resultString appendString:@"\n"];
         hasShownContext = YES;
     }

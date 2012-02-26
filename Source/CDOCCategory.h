@@ -5,13 +5,11 @@
 
 #import "CDOCProtocol.h"
 
-@class CDSymbolReferences;
-
 @interface CDOCCategory : CDOCProtocol <CDTopologicalSort>
 
 @property (strong) NSString *className;
 
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+- (NSString *)findTag;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
 @end

@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDSymbolReferences, CDTypeController;
+@class CDTypeController;
 @class CDVisitor, CDVisitorPropertyState;
 @class CDOCMethod, CDOCProperty;
 
@@ -41,7 +41,7 @@
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+- (NSString *)findTag;
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 

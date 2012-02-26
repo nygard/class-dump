@@ -13,7 +13,6 @@
 
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
-#import "CDSymbolReferences.h"
 #import "CDBalanceFormatter.h"
 
 void print_usage(void)

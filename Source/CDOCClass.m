@@ -8,7 +8,6 @@
 #import "CDClassDump.h"
 #import "CDOCIvar.h"
 #import "CDOCMethod.h"
-#import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeController.h"
 #import "CDTypeParser.h"
@@ -57,7 +56,7 @@
     }
 }
 
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+- (NSString *)findTag;
 {
     NSMutableString *resultString = [NSMutableString string];
 

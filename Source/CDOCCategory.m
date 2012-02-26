@@ -7,7 +7,6 @@
 
 #import "CDClassDump.h"
 #import "CDOCMethod.h"
-#import "CDSymbolReferences.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
 
@@ -27,7 +26,7 @@
 
 @synthesize className;
 
-- (NSString *)findTag:(CDSymbolReferences *)symbolReferences;
+- (NSString *)findTag;
 {
     NSMutableString *resultString = [NSMutableString string];
 
