@@ -6,7 +6,14 @@
 #import "CDVisitor.h"
 
 // This builds up a dictionary mapping class names to a framework names, and protocol names to framework names.
-// It is used by CDMultiFileVisitor to generate individual imports when creating separate header files.
+// It is only used by CDMultiFileVisitor to generate individual imports when creating separate header files.
+
+// Some protocols appear in multiple frameworks.  This just records the last framework that contained a reference, which
+// produces incorrect results.  For example, -r AppKit.framework, and Foundation.framework is processed before several
+// others, including Symbolication.
+
+// If we follow framework dependancies, the earliest reference to NSCopying is CoreFoundation, but NSCopying is really
+// defined in Foundation.
 
 @interface CDClassFrameworkVisitor : CDVisitor
 

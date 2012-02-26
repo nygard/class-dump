@@ -120,7 +120,7 @@
 - (NSString *)importStringForProtocolName:(NSString *)protocolName;
 {
     if (protocolName != nil) {
-        NSString *framework = [self frameworkForClassName:protocolName];
+        NSString *framework = [self frameworkForProtocolName:protocolName];
         if (framework == nil)
             return [NSString stringWithFormat:@"#import \"%@-Protocol.h\"\n", protocolName];
         else
