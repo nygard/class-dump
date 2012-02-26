@@ -5,8 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include <sys/types.h>
-#include <regex.h>
 #import "CDFile.h" // For CDArch
 
 #ifdef __LP64__
@@ -38,9 +36,8 @@
 @property (assign) BOOL shouldShowMethodAddresses;
 @property (assign) BOOL shouldShowHeader;
 
-@property (nonatomic, assign) BOOL shouldMatchRegex;
-- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
-- (BOOL)regexMatchesString:(NSString *)aString;
+@property (strong) NSRegularExpression *regularExpression;
+- (BOOL)shouldShowName:(NSString *)name;
 
 @property (strong) NSString *sdkRoot;
 

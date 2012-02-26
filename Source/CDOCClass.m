@@ -72,26 +72,25 @@
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
-        return;
-
-    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
-
-    [visitor willVisitClass:self];
-
-    [visitor willVisitIvarsOfClass:self];
-    for (CDOCIvar *ivar in ivars)
-        [visitor visitIvar:ivar];
-    [visitor didVisitIvarsOfClass:self];
-
-    //[aVisitor willVisitPropertiesOfClass:self];
-    //[self visitProperties:aVisitor];
-    //[aVisitor didVisitPropertiesOfClass:self];
-
-    [self visitMethods:visitor propertyState:propertyState];
-    // Should mostly be dynamic properties
-    [visitor visitRemainingProperties:propertyState];
-    [visitor didVisitClass:self];
+    if ([visitor.classDump shouldShowName:self.name]) {
+        CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
+        
+        [visitor willVisitClass:self];
+        
+        [visitor willVisitIvarsOfClass:self];
+        for (CDOCIvar *ivar in ivars)
+            [visitor visitIvar:ivar];
+        [visitor didVisitIvarsOfClass:self];
+        
+        //[aVisitor willVisitPropertiesOfClass:self];
+        //[self visitProperties:aVisitor];
+        //[aVisitor didVisitPropertiesOfClass:self];
+        
+        [self visitMethods:visitor propertyState:propertyState];
+        // Should mostly be dynamic properties
+        [visitor visitRemainingProperties:propertyState];
+        [visitor didVisitClass:self];
+    }
 }
 
 #pragma mark - CDTopologicalSort protocol

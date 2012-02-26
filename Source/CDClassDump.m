@@ -31,8 +31,7 @@
     BOOL shouldShowMethodAddresses;
     BOOL shouldShowHeader;
     
-    BOOL shouldMatchRegex;
-    regex_t compiledRegex;
+    NSRegularExpression *regularExpression;
     
     NSString *sdkRoot;
     NSMutableArray *machOFiles;
@@ -66,12 +65,6 @@
     return self;
 }
 
-- (void)dealloc;
-{
-    if (shouldMatchRegex)
-        regfree(&compiledRegex);
-}
-
 #pragma mark -
 
 @synthesize searchPathState;
@@ -83,59 +76,15 @@
 @synthesize shouldShowMethodAddresses;
 @synthesize shouldShowHeader;
 
-- (BOOL)shouldMatchRegex;
-{
-    return shouldMatchRegex;
-}
-
-- (void)setShouldMatchRegex:(BOOL)newFlag;
-{
-    if (shouldMatchRegex && newFlag == NO)
-        regfree(&compiledRegex);
-
-    shouldMatchRegex = newFlag;
-}
+@synthesize regularExpression;
 
 #pragma mark - Regular expression handling
 
-- (BOOL)setRegex:(char *)regexCString errorMessage:(NSString **)errorMessagePointer;
+- (BOOL)shouldShowName:(NSString *)name;
 {
-    if (self.shouldMatchRegex)
-        regfree(&compiledRegex);
-
-    int result = regcomp(&compiledRegex, regexCString, REG_EXTENDED);
-    if (result != 0) {
-        char regex_error_buffer[256];
-
-        if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0) {
-            if (errorMessagePointer != NULL) {
-                *errorMessagePointer = [NSString stringWithUTF8String:regex_error_buffer];
-            }
-        } else {
-            if (errorMessagePointer != NULL)
-                *errorMessagePointer = nil;
-        }
-
-        return NO;
-    }
-
-    self.shouldMatchRegex = YES;
-
-    return YES;
-}
-
-- (BOOL)regexMatchesString:(NSString *)aString;
-{
-    int result = regexec(&compiledRegex, [aString UTF8String], 0, NULL, 0);
-    if (result != 0) {
-        if (result != REG_NOMATCH) {
-            char regex_error_buffer[256];
-
-            if (regerror(result, &compiledRegex, regex_error_buffer, 256) > 0)
-                NSLog(@"Error with regex matching string, %@", [NSString stringWithUTF8String:regex_error_buffer]);
-        }
-
-        return NO;
+    if (self.regularExpression != nil) {
+        NSTextCheckingResult *firstMatch = [self.regularExpression firstMatchInString:name options:0 range:NSMakeRange(0, [name length])];
+        return firstMatch != nil;
     }
 
     return YES;

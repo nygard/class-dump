@@ -338,7 +338,7 @@ static BOOL debug = NO;
 
 - (BOOL)shouldShowName:(NSString *)name;
 {
-    return (self.classDump.shouldMatchRegex == NO) || [self.classDump regexMatchesString:name];
+    return [self.classDump shouldShowName:name];
 }
 
 - (BOOL)shouldExpandType:(CDType *)type;

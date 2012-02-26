@@ -40,22 +40,21 @@
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
-        return;
-
-    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
-
-    [visitor willVisitCategory:self];
-
-    //[aVisitor willVisitPropertiesOfCategory:self];
-    //[self visitProperties:aVisitor];
-    //[aVisitor didVisitPropertiesOfCategory:self];
-
-    [self visitMethods:visitor propertyState:propertyState];
-    // This can happen when... the accessors are implemented on the main class.  Odd case, but we should still emit the remaining properties.
-    // Should mostly be dynamic properties
-    [visitor visitRemainingProperties:propertyState];
-    [visitor didVisitCategory:self];
+    if ([visitor.classDump shouldShowName:self.name]) {
+        CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
+        
+        [visitor willVisitCategory:self];
+        
+        //[aVisitor willVisitPropertiesOfCategory:self];
+        //[self visitProperties:aVisitor];
+        //[aVisitor didVisitPropertiesOfCategory:self];
+        
+        [self visitMethods:visitor propertyState:propertyState];
+        // This can happen when... the accessors are implemented on the main class.  Odd case, but we should still emit the remaining properties.
+        // Should mostly be dynamic properties
+        [visitor visitRemainingProperties:propertyState];
+        [visitor didVisitCategory:self];
+    }
 }
 
 #pragma mark - CDTopologicalSort protocol

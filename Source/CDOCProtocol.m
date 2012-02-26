@@ -197,23 +197,22 @@
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    if (visitor.classDump.shouldMatchRegex && [visitor.classDump regexMatchesString:self.name] == NO)
-        return;
-
-    CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
-
-    [visitor willVisitProtocol:self];
-
-    //[aVisitor willVisitPropertiesOfProtocol:self];
-    //[self visitProperties:aVisitor];
-    //[aVisitor didVisitPropertiesOfProtocol:self];
-
-    [self visitMethods:visitor propertyState:propertyState];
-
-    // @optional properties will generate optional instance methods, and we'll emit @property in the @optional section.
-    [visitor visitRemainingProperties:propertyState];
-
-    [visitor didVisitProtocol:self];
+    if ([visitor.classDump shouldShowName:self.name]) {
+        CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
+        
+        [visitor willVisitProtocol:self];
+        
+        //[aVisitor willVisitPropertiesOfProtocol:self];
+        //[self visitProperties:aVisitor];
+        //[aVisitor didVisitPropertiesOfProtocol:self];
+        
+        [self visitMethods:visitor propertyState:propertyState];
+        
+        // @optional properties will generate optional instance methods, and we'll emit @property in the @optional section.
+        [visitor visitRemainingProperties:propertyState];
+        
+        [visitor didVisitProtocol:self];
+    }
 }
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;

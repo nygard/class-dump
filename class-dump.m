@@ -159,12 +159,17 @@ int main(int argc, char *argv[])
                     break;
                     
                 case 'C': {
-                    NSString *errorMessage;
-                    
-                    if ([classDump setRegex:optarg errorMessage:&errorMessage] == NO) {
-                        fprintf(stderr, "class-dump: Error with regex: '%s'\n\n", [errorMessage UTF8String]);
+                    NSError *error;
+                    NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithUTF8String:optarg]
+                                                                                                       options:0
+                                                                                                         error:&error];
+                    if (regularExpression != nil) {
+                        classDump.regularExpression = regularExpression;
+                    } else {
+                        fprintf(stderr, "class-dump: Error with regular expression: %s\n\n", [[error localizedFailureReason] UTF8String]);
                         errorFlag = YES;
                     }
+
                     // Last one wins now.
                     break;
                 }
