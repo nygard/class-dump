@@ -7,6 +7,8 @@
 
 @interface CDSymbolReferences ()
 
+@property (readonly) NSMutableDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)
+
 @property (readonly) NSMutableSet *classes;
 @property (readonly) NSMutableSet *protocols;
 
@@ -21,8 +23,7 @@
 
 @implementation CDSymbolReferences
 {
-    NSDictionary *frameworkNamesByClassName;
-    NSDictionary *frameworkNamesByProtocolName;
+    NSMutableDictionary *frameworkNamesByClassName;
     
     NSMutableSet *classes;
     NSMutableSet *protocols;
@@ -31,8 +32,7 @@
 - (id)init;
 {
     if ((self = [super init])) {
-        frameworkNamesByClassName = nil;
-        frameworkNamesByProtocolName = nil;
+        frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
         
         classes = [[NSMutableSet alloc] init];
         protocols = [[NSMutableSet alloc] init];
@@ -45,25 +45,26 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> frameworkNamesByClassName: %@, frameworkNamesByProtocolName: %@, classes: %@, protocols: %@",
+    return [NSString stringWithFormat:@"<%@:%p> frameworkNamesByClassName: %@, classes: %@, protocols: %@",
             NSStringFromClass([self class]), self,
-            self.frameworkNamesByClassName, self.frameworkNamesByProtocolName,
+            self.frameworkNamesByClassName,
             self.classesSortedByName, self.protocolsSortedByName];
 }
 
 #pragma mark -
 
 @synthesize frameworkNamesByClassName;
-@synthesize frameworkNamesByProtocolName;
+
+- (void)addClassName:(NSString *)name referencedInFramework:(NSString *)framework;
+{
+    if (name != nil && framework != nil) {
+        [self.frameworkNamesByClassName setObject:framework forKey:name];
+    }
+}
 
 - (NSString *)frameworkForClassName:(NSString *)className;
 {
     return [frameworkNamesByClassName objectForKey:className];
-}
-
-- (NSString *)frameworkForProtocolName:(NSString *)protocolName;
-{
-    return [frameworkNamesByProtocolName objectForKey:protocolName];
 }
 
 - (void)addClassName:(NSString *)className;
@@ -75,11 +76,6 @@
 {
     if (className != nil)
         [classes removeObject:className];
-}
-
-- (void)addProtocolName:(NSString *)protocolName;
-{
-    [protocols addObject:protocolName];
 }
 
 - (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
@@ -117,19 +113,6 @@
     return nil;
 }
 
-- (NSString *)importStringForProtocolName:(NSString *)protocolName;
-{
-    if (protocolName != nil) {
-        NSString *framework = [self frameworkForProtocolName:protocolName];
-        if (framework == nil)
-            return [NSString stringWithFormat:@"#import \"%@-Protocol.h\"\n", protocolName];
-        else
-            return [NSString stringWithFormat:@"#import <%@/%@-Protocol.h>\n", framework, protocolName];
-    }
-
-    return nil;
-}
-
 #pragma mark -
 
 @synthesize classes;
@@ -147,18 +130,12 @@
 
 - (void)_appendToString:(NSMutableString *)resultString;
 {
-    NSArray *names = self.protocolsSortedByName;
-    for (NSString *name in names) {
-        NSString *str = [self importStringForProtocolName:name];
-        if (str != nil)
-            [resultString appendString:str];
+    if ([self.protocols count] > 0) {
+        [resultString appendFormat:@"@protocol %@;\n\n", [self.protocolsSortedByName componentsJoinedByString:@", "]];
     }
-    if ([names count] > 0)
-        [resultString appendString:@"\n"];
     
-    names = self.classesSortedByName;
-    if ([names count] > 0) {
-        [resultString appendFormat:@"@class %@;\n\n", [names componentsJoinedByString:@", "]];
+    if ([self.classes count] > 0) {
+        [resultString appendFormat:@"@class %@;\n\n", [self.classesSortedByName componentsJoinedByString:@", "]];
     }
 }
 

@@ -177,10 +177,10 @@
 - (void)buildClassFrameworks;
 {
     CDClassFrameworkVisitor *visitor = [[CDClassFrameworkVisitor alloc] init];
-    [visitor setClassDump:self.classDump];
+    visitor.classDump = self.classDump;
+    visitor.symbolReferences = self.symbolReferences;
+    
     [self.classDump recursivelyVisit:visitor];
-    self.symbolReferences.frameworkNamesByClassName = [visitor.frameworkNamesByClassName copy];
-    self.symbolReferences.frameworkNamesByProtocolName = [visitor.frameworkNamesByProtocolName copy];
 }
 
 - (void)generateStructureHeader;

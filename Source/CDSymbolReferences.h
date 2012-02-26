@@ -5,24 +5,28 @@
 
 #import <Foundation/Foundation.h>
 
+// 1. Record which frameworks reference classes.
+// 2. Provide the appropriate framework name for a class, to be used to generate #imports -- i.e. #import <Foundation/NSArray.h>
+
 @interface CDSymbolReferences : NSObject
 
-@property (strong) NSDictionary *frameworkNamesByClassName;    // NSString (class name)    -> NSString (framework name)
-@property (strong) NSDictionary *frameworkNamesByProtocolName; // NSString (protocol name) -> NSString (framework name)
+// Build up the data.  Used by CDClassFrameworkVisitor.
+- (void)addClassName:(NSString *)name referencedInFramework:(NSString *)framework;
 
 - (NSString *)frameworkForClassName:(NSString *)className;
-- (NSString *)frameworkForProtocolName:(NSString *)protocolName;
+
+
+
+
 
 - (void)addClassName:(NSString *)className;
 - (void)removeClassName:(NSString *)className;
 
-- (void)addProtocolName:(NSString *)protocolName;
 - (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
 
 @property (nonatomic, readonly) NSString *referenceString;
 
 - (void)removeAllReferences;
 - (NSString *)importStringForClassName:(NSString *)className;
-- (NSString *)importStringForProtocolName:(NSString *)protocolName;
 
 @end
