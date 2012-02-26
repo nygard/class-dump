@@ -5,9 +5,11 @@
 
 #import "CDTextClassDumpVisitor.h"
 
+#import "CDTypeController.h" // For CDTypeControllerDelegate protocol
+
 // This generates separate files for each class.  Files are created in the 'outputPath' directory.
 
-@interface CDMultiFileVisitor : CDTextClassDumpVisitor
+@interface CDMultiFileVisitor : CDTextClassDumpVisitor <CDTypeControllerDelegate>
 
 @property (strong) NSString *outputPath;
 

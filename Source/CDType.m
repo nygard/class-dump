@@ -285,7 +285,7 @@ static BOOL debugMerge = NO;
     switch (type) {
         case T_NAMED_OBJECT:
             assert(typeName != nil);
-            [symbolReferences addClassName:typeName.name];
+            [typeFormatter formattingDidReferenceClassName:typeName.name];
             if (currentName == nil)
                 result = [NSString stringWithFormat:@"%@ *", typeName];
             else

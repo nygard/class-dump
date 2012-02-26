@@ -5,11 +5,15 @@
 
 #import <Foundation/Foundation.h>
 
+@protocol CDTypeControllerDelegate;
+
 @class CDClassDump, CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
 
 @interface CDTypeController : NSObject
 
 - (id)initWithClassDump:(CDClassDump *)classDump;
+
+@property (weak) id <CDTypeControllerDelegate> delegate;
 
 @property (readonly) CDTypeFormatter *ivarTypeFormatter;
 @property (readonly) CDTypeFormatter *methodTypeFormatter;
@@ -22,6 +26,7 @@
 
 - (CDType *)typeFormatter:(CDTypeFormatter *)typeFormatter replacementForType:(CDType *)yype;
 - (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
+- (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceClassName:(NSString *)name;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 
@@ -45,4 +50,11 @@
 - (BOOL)shouldExpandType:(CDType *)type;
 - (NSString *)typedefNameForType:(CDType *)type;
 
+@end
+
+#pragma mark -
+
+@protocol CDTypeControllerDelegate <NSObject>
+@optional
+- (void)typeController:(CDTypeController *)typeController didReferenceClassName:(NSString *)name;
 @end

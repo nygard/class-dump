@@ -100,6 +100,7 @@ int main(int argc, char *argv[])
         CDClassDump *classDump = [[CDClassDump alloc] init];
         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
         multiFileVisitor.classDump = classDump;
+        classDump.typeController.delegate = multiFileVisitor;
 
         while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
             switch (ch) {

@@ -22,4 +22,6 @@
 
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 
+- (void)formattingDidReferenceClassName:(NSString *)name;
+
 @end

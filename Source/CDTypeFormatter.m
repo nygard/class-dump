@@ -310,4 +310,9 @@ static BOOL debug = NO;
     return [self.typeController typeFormatter:self typedefNameForStruct:structType level:level];
 }
 
+- (void)formattingDidReferenceClassName:(NSString *)name;
+{
+    [self.typeController typeFormatter:self didReferenceClassName:name];
+}
+
 @end

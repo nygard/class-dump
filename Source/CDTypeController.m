@@ -30,6 +30,7 @@ static BOOL debug = NO;
 @implementation CDTypeController
 {
     __weak CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
+    __weak id <CDTypeControllerDelegate> nonretained_delegate;
     
     CDTypeFormatter *ivarTypeFormatter;
     CDTypeFormatter *methodTypeFormatter;
@@ -97,6 +98,7 @@ static BOOL debug = NO;
 #pragma mark -
 
 @synthesize classDump = nonretained_classDump;
+@synthesize delegate = nonretained_delegate;
 
 @synthesize ivarTypeFormatter;
 @synthesize methodTypeFormatter;
@@ -141,6 +143,14 @@ static BOOL debug = NO;
 
     return nil;
 }
+
+- (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceClassName:(NSString *)name;
+{
+    if ([self.delegate respondsToSelector:@selector(typeController:didReferenceClassName:)])
+        [self.delegate typeController:self didReferenceClassName:name];
+}
+
+#pragma mark -
 
 - (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
 {

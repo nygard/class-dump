@@ -204,4 +204,11 @@
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
+#pragma mark CDTypeControllerDelegate
+
+- (void)typeController:(CDTypeController *)typeController didReferenceClassName:(NSString *)name;
+{
+    [self.symbolReferences addClassName:name];
+}
+
 @end
