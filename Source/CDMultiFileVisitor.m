@@ -191,7 +191,7 @@
     [self.symbolReferences removeAllReferences];
     referenceIndex = [self.resultString length];
     
-    [[self.classDump typeController] appendStructuresToString:self.resultString symbolReferences:self.symbolReferences];
+    [[self.classDump typeController] appendStructuresToString:self.resultString];
     
     NSString *referenceString = [self.symbolReferences referenceString];
     if (referenceString != nil)

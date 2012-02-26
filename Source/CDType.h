@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDSymbolReferences, CDTypeController, CDTypeFormatter, CDTypeName;
+@class CDTypeController, CDTypeFormatter, CDTypeName;
 
 @interface CDType : NSObject <NSCopying>
 
@@ -35,7 +35,7 @@
 @property (nonatomic, readonly) int typeIgnoringModifiers;
 @property (nonatomic, readonly) NSUInteger structureDepth;
 
-- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level;
 
 @property (nonatomic, readonly) NSString *typeString;
 @property (nonatomic, readonly) NSString *bareTypeString;

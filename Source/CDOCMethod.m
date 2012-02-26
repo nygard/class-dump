@@ -85,9 +85,9 @@
     return parsedMethodTypes;
 }
 
-- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:name type:type symbolReferences:symbolReferences];
+    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:name type:type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

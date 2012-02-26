@@ -5,7 +5,6 @@
 
 #import "CDType.h"
 
-#import "CDSymbolReferences.h"
 #import "CDTypeController.h"
 #import "CDTypeName.h"
 #import "CDTypeLexer.h" // For T_NAMED_OBJECT
@@ -16,7 +15,7 @@ static BOOL debugMerge = NO;
 
 @interface CDType ()
 
-- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter;
 
 @property (nonatomic, readonly) NSString *formattedStringForSimpleType;
 
@@ -271,7 +270,7 @@ static BOOL debugMerge = NO;
     return 0;
 }
 
-- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level;
 {
     NSString *result, *currentName;
     NSString *baseType, *memberString;
@@ -320,7 +319,7 @@ static BOOL debugMerge = NO;
             else
                 result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
             
-            result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
+            result = [subtype formattedString:result formatter:typeFormatter level:level];
             break;
             
         case '(':
@@ -341,7 +340,7 @@ static BOOL debugMerge = NO;
                 if ((typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self] && [members count] > 0)
                     || (level == 0 && typeFormatter.shouldExpand && [members count] > 0))
                     memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
+                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
                                     [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
                 else
                     memberString = @"";
@@ -372,7 +371,7 @@ static BOOL debugMerge = NO;
                 if ((typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self] && [members count] > 0)
                     || (level == 0 && typeFormatter.shouldExpand && [members count] > 0))
                     memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter symbolReferences:symbolReferences],
+                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
                                     [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
                 else
                     memberString = @"";
@@ -395,7 +394,7 @@ static BOOL debugMerge = NO;
             if (subtype != nil && [subtype type] == '[')
                 result = [NSString stringWithFormat:@"(%@)", result];
             
-            result = [subtype formattedString:result formatter:typeFormatter level:level symbolReferences:symbolReferences];
+            result = [subtype formattedString:result formatter:typeFormatter level:level];
             break;
             
         case 'j':
@@ -413,7 +412,7 @@ static BOOL debugMerge = NO;
                     result = [NSString stringWithFormat:@"%@ %@", self.formattedStringForSimpleType, currentName];
             } else
                 result = [NSString stringWithFormat:@"%@ %@",
-                          self.formattedStringForSimpleType, [subtype formattedString:currentName formatter:typeFormatter level:level symbolReferences:symbolReferences]];
+                          self.formattedStringForSimpleType, [subtype formattedString:currentName formatter:typeFormatter level:level]];
             break;
             
         default:
@@ -427,7 +426,7 @@ static BOOL debugMerge = NO;
     return result;
 }
 
-- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter;
 {
     NSParameterAssert(type == '{' || type == '(');
     NSMutableString *str = [NSMutableString string];
@@ -436,8 +435,7 @@ static BOOL debugMerge = NO;
         [str appendString:[NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
         [str appendString:[member formattedString:nil
                                   formatter:typeFormatter
-                                  level:level
-                                  symbolReferences:symbolReferences]];
+                                  level:level]];
         [str appendString:@";\n"];
     }
 

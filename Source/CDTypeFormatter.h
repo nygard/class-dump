@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CDSymbolReferences, CDType, CDTypeController;
+@class CDType, CDTypeController;
 
 @interface CDTypeFormatter : NSObject
 
@@ -16,9 +16,9 @@
 @property (assign) BOOL shouldAutoExpand;
 @property (assign) BOOL shouldShowLexing;
 
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences; // Just used by CDOCIvar
-- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
-- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type; // Just used by CDOCIvar
+- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
+- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 

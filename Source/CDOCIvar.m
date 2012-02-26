@@ -72,9 +72,9 @@
     return parsedType;
 }
 
-- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type symbolReferences:symbolReferences];
+    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

@@ -125,7 +125,7 @@ static BOOL debug = NO;
 - (void)visitClassMethod:(CDOCMethod *)method;
 {
     [resultString appendString:@"+ "];
-    [method appendToString:resultString typeController:self.classDump.typeController symbolReferences:symbolReferences];
+    [method appendToString:resultString typeController:self.classDump.typeController];
     [resultString appendString:@"\n"];
 }
 
@@ -135,7 +135,7 @@ static BOOL debug = NO;
     if (property == nil) {
         //NSLog(@"No property for method: %@", method.name);
         [resultString appendString:@"- "];
-        [method appendToString:resultString typeController:self.classDump.typeController symbolReferences:symbolReferences];
+        [method appendToString:resultString typeController:self.classDump.typeController];
         [resultString appendString:@"\n"];
     } else {
         if ([propertyState hasUsedProperty:property] == NO) {
@@ -150,7 +150,7 @@ static BOOL debug = NO;
 
 - (void)visitIvar:(CDOCIvar *)ivar;
 {
-    [ivar appendToString:resultString typeController:self.classDump.typeController symbolReferences:symbolReferences];
+    [ivar appendToString:resultString typeController:self.classDump.typeController];
     [resultString appendString:@"\n"];
 }
 
@@ -291,7 +291,7 @@ static BOOL debug = NO;
     if (isWeak)
         [resultString appendString:@"__weak "];
     
-    NSString *formattedString = [self.classDump.typeController.propertyTypeFormatter formatVariable:property.name parsedType:parsedType symbolReferences:symbolReferences];
+    NSString *formattedString = [self.classDump.typeController.propertyTypeFormatter formatVariable:property.name parsedType:parsedType];
     [resultString appendFormat:@"%@;", formattedString];
     
     if (isDynamic) {

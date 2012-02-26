@@ -124,11 +124,11 @@ int main(int argc, char *argv[])
 
                     switch (formatType) {
                         case CDFormat_Ivar:
-                            str = [ivarTypeFormatter formatVariable:name type:type symbolReferences:nil];
+                            str = [ivarTypeFormatter formatVariable:name type:type];
                             break;
                             
                         case CDFormat_Method:
-                            str = [methodTypeFormatter formatMethodName:name type:type symbolReferences:nil];
+                            str = [methodTypeFormatter formatMethodName:name type:type];
                             break;
                             
                         case CDFormat_Balance: {

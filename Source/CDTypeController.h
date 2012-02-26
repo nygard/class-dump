@@ -7,7 +7,7 @@
 
 @protocol CDTypeControllerDelegate;
 
-@class CDClassDump, CDStructureTable, CDSymbolReferences, CDType, CDTypeFormatter;
+@class CDClassDump, CDStructureTable, CDType, CDTypeFormatter;
 
 @interface CDTypeController : NSObject
 
@@ -28,7 +28,7 @@
 - (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 - (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceClassName:(NSString *)name;
 
-- (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendStructuresToString:(NSMutableString *)resultString;
 
 // Phase 0 - initiated from -[CDClassDump registerTypes]
 - (void)phase0RegisterStructure:(CDType *)structure usedInMethod:(BOOL)isUsedInMethod;

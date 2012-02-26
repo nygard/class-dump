@@ -152,13 +152,13 @@ static BOOL debug = NO;
 
 #pragma mark -
 
-- (void)appendStructuresToString:(NSMutableString *)resultString symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (void)appendStructuresToString:(NSMutableString *)resultString;
 {
-    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Structures"];
-    [structureTable appendTypedefsToString:resultString        formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Structures"];
+    [structureTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter markName:@"Named Structures"];
+    [structureTable appendTypedefsToString:resultString        formatter:structDeclarationTypeFormatter markName:@"Typedef'd Structures"];
 
-    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Named Unions"];
-    [unionTable appendTypedefsToString:resultString        formatter:structDeclarationTypeFormatter symbolReferences:symbolReferences markName:@"Typedef'd Unions"];
+    [unionTable appendNamedStructuresToString:resultString formatter:structDeclarationTypeFormatter markName:@"Named Unions"];
+    [unionTable appendTypedefsToString:resultString        formatter:structDeclarationTypeFormatter markName:@"Typedef'd Unions"];
 }
 
 // Call this before calling generateMemberNames.
@@ -187,13 +187,13 @@ static BOOL debug = NO;
 
     if (debug) {
         NSMutableString *str = [NSMutableString string];
-        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Named Structures"];
-        [unionTable     appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Named Unions"];
+        [structureTable appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter markName:@"Named Structures"];
+        [unionTable     appendNamedStructuresToString:str formatter:structDeclarationTypeFormatter markName:@"Named Unions"];
         [str writeToFile:@"/tmp/out.struct" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
 
         str = [NSMutableString string];
-        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Typedef'd Structures"];
-        [unionTable     appendTypedefsToString:str formatter:structDeclarationTypeFormatter symbolReferences:nil markName:@"Typedef'd Unions"];
+        [structureTable appendTypedefsToString:str formatter:structDeclarationTypeFormatter markName:@"Typedef'd Structures"];
+        [unionTable     appendTypedefsToString:str formatter:structDeclarationTypeFormatter markName:@"Typedef'd Unions"];
         [str writeToFile:@"/tmp/out.typedef" atomically:NO encoding:NSUTF8StringEncoding error:NULL];
         //NSLog(@"str =\n%@", str);
     }

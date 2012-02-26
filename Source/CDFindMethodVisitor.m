@@ -123,7 +123,7 @@
         [self showContextIfNecessary];
 
         [resultString appendString:@"+ "];
-        [method appendToString:resultString typeController:self.classDump.typeController symbolReferences:nil];
+        [method appendToString:resultString typeController:self.classDump.typeController];
         [resultString appendString:@"\n"];
     }
 }
@@ -135,7 +135,7 @@
         [self showContextIfNecessary];
 
         [resultString appendString:@"- "];
-        [method appendToString:resultString typeController:self.classDump.typeController symbolReferences:nil];
+        [method appendToString:resultString typeController:self.classDump.typeController];
         [resultString appendString:@"\n"];
     }
 }

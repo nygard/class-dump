@@ -6,7 +6,6 @@
 #import "CDTypeFormatter.h"
 
 #import "CDMethodType.h"
-#import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeLexer.h"
 #import "CDTypeParser.h"
@@ -17,7 +16,7 @@ static BOOL debug = NO;
 @interface CDTypeFormatter ()
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 - (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type;
 - (CDType *)replacementForType:(CDType *)type;
 @end
 
@@ -99,7 +98,7 @@ static BOOL debug = NO;
 // TODO (2004-01-28): See if we can pass in the actual CDType.
 // TODO (2009-07-09): Now that we have the other method, see if we can use it instead.
 // TODO (2012-02-25): Only CDOCIvar uses this method now.
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
 {
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
     NSString *specialCase = [self _specialCaseVariable:name type:type];
@@ -124,10 +123,10 @@ static BOOL debug = NO;
         return nil;
     }
 
-    return [self formatVariable:name parsedType:resultType symbolReferences:symbolReferences];
+    return [self formatVariable:name parsedType:resultType];
 }
 
-- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
 {
     NSMutableString *resultString = [NSMutableString string];
 
@@ -140,13 +139,13 @@ static BOOL debug = NO;
         [type setVariableName:name];
         [type phase0RecursivelyFixStructureNames:NO]; // Nuke the $_ names
         [type phase3MergeWithTypeController:self.typeController];
-        [resultString appendString:[type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences]];
+        [resultString appendString:[type formattedString:nil formatter:self level:0]];
     }
 
     return resultString;
 }
 
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type;
 {
     CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
 
@@ -170,7 +169,7 @@ static BOOL debug = NO;
         if (specialCase != nil) {
             [typeDict setValue:specialCase forKey:@"return-type"];
         } else {
-            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0];
             if (str != nil)
                 [typeDict setValue:str forKey:@"return-type"];
         }
@@ -203,7 +202,7 @@ static BOOL debug = NO;
                     if (specialCase != nil) {
                         [parameter setValue:specialCase forKey:@"type"];
                     } else {
-                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0];
                         [parameter setValue:typeString forKey:@"type"];
                     }
                     //[parameter setValue:[NSString stringWithFormat:@"fp%@", aMethodType.offset] forKey:@"name"];
@@ -222,7 +221,7 @@ static BOOL debug = NO;
     return typeDict;
 }
 
-- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type symbolReferences:(CDSymbolReferences *)symbolReferences;
+- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 {
     CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
 
@@ -247,7 +246,7 @@ static BOOL debug = NO;
         if (specialCase != nil) {
             [resultString appendString:specialCase];
         } else {
-            NSString *str = [aMethodType.type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+            NSString *str = [aMethodType.type formattedString:nil formatter:self level:0];
             if (str != nil)
                 [resultString appendFormat:@"%@", str];
         }
@@ -274,7 +273,7 @@ static BOOL debug = NO;
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
-                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0 symbolReferences:symbolReferences];
+                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0];
                         //if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     }

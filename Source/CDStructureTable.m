@@ -6,7 +6,6 @@
 #import "CDStructureTable.h"
 
 #import "CDClassDump.h"
-#import "CDSymbolReferences.h"
 #import "CDType.h"
 #import "CDTypeController.h"
 #import "CDTypeFormatter.h"
@@ -685,7 +684,6 @@ static BOOL debugAnonStructures = NO;
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
                             formatter:(CDTypeFormatter *)typeFormatter
-                     symbolReferences:(CDSymbolReferences *)symbolReferences
                              markName:(NSString *)markName;
 {
     BOOL hasAddedMark = NO;
@@ -706,7 +704,7 @@ static BOOL debugAnonStructures = NO;
                     [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
                     [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
                 }
-                NSString *formattedString = [typeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
+                NSString *formattedString = [typeFormatter formatVariable:nil parsedType:type];
                 if (formattedString != nil) {
                     [resultString appendString:formattedString];
                     [resultString appendString:@";\n\n"];
@@ -735,7 +733,7 @@ static BOOL debugAnonStructures = NO;
                     [resultString appendFormat:@"// depth: %u, ref count: %u, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
                     //[resultString appendFormat:@"// typedefName: %@\n", [info typedefName]];
                 }
-                NSString *formattedString = [typeFormatter formatVariable:nil parsedType:type symbolReferences:symbolReferences];
+                NSString *formattedString = [typeFormatter formatVariable:nil parsedType:type];
                 if (formattedString != nil) {
                     [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];
                 }
@@ -755,7 +753,6 @@ static BOOL debugAnonStructures = NO;
 
 - (void)appendTypedefsToString:(NSMutableString *)resultString
                      formatter:(CDTypeFormatter *)typeFormatter
-              symbolReferences:(CDSymbolReferences *)symbolReferences
                       markName:(NSString *)markName;
 {
     BOOL hasAddedMark = NO;
@@ -775,7 +772,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
-            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type symbolReferences:symbolReferences];
+            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
             if (formattedString != nil) {
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];
             }
@@ -801,7 +798,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
-            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type symbolReferences:symbolReferences];
+            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
             if (formattedString != nil) {
                 //[resultString appendFormat:@"%@;\n\n", formattedString];
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];
@@ -828,7 +825,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
-            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type symbolReferences:symbolReferences];
+            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
             if (formattedString != nil) {
                 //[resultString appendFormat:@"%@;\n\n", formattedString];
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];

@@ -29,7 +29,7 @@
     [self.classDump appendHeaderToString:self.resultString];
 
     if (self.classDump.hasObjectiveCRuntimeInfo) {
-        [self.classDump.typeController appendStructuresToString:self.resultString symbolReferences:nil];
+        [self.classDump.typeController appendStructuresToString:self.resultString];
     }
 }
 
