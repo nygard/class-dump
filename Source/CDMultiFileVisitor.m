@@ -14,36 +14,32 @@
 #import "CDTypeController.h"
 
 @interface CDMultiFileVisitor ()
-@property (assign) NSUInteger referenceIndex;
 
 // NSString (class name) -> NSString (framework name)
 @property (strong) NSDictionary *frameworkNamesByClassName;
+- (NSString *)importStringForClassName:(NSString *)className;
+
+// Location in output string to insert the protocol imports and forward class declarations.
+// We don't know what classes and protocols will be referenced until the rest of the output is generated.
+@property (assign) NSUInteger referenceLocation;
+
+// Class and protocol references
+@property (readonly) NSMutableSet *referencedClassNames;
+@property (readonly) NSMutableSet *referencedProtocolNames;
+
+@property (nonatomic, readonly) NSArray *referencedClassNamesSortedByName;
+@property (nonatomic, readonly) NSArray *referencedProtocolNamesSortedByName;
+
+- (void)addReferenceToClassName:(NSString *)className;
+- (void)removeReferenceToClassName:(NSString *)className;
+- (void)addReferencesToProtocolNamesInArray:(NSArray *)protocolNames;
+- (void)removeAllClassNameProtocolNameReferences;
+
+@property (nonatomic, readonly) NSString *referenceString;
 
 - (void)createOutputPathIfNecessary;
 - (void)buildClassFrameworks;
 - (void)generateStructureHeader;
-
-// Formerly CDSymbolReferences
-
-@property (readonly) NSMutableSet *classes;
-@property (readonly) NSMutableSet *protocols;
-
-@property (nonatomic, readonly) NSArray *classesSortedByName;
-@property (nonatomic, readonly) NSArray *protocolsSortedByName;
-
-- (void)_appendToString:(NSMutableString *)resultString;
-
-
-
-- (void)addClassName:(NSString *)className;
-- (void)removeClassName:(NSString *)className;
-
-- (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
-
-@property (nonatomic, readonly) NSString *referenceString;
-
-- (void)removeAllReferences;
-- (NSString *)importStringForClassName:(NSString *)className;
 
 @end
 
@@ -52,18 +48,18 @@
 @implementation CDMultiFileVisitor
 {
     NSString *_outputPath;
-    NSUInteger _referenceIndex;
     
     NSDictionary *_frameworkNamesByClassName;
-    NSMutableSet *_classes;
-    NSMutableSet *_protocols;
+    NSMutableSet *_referencedClassNames;
+    NSMutableSet *_referencedProtocolNames;
+    NSUInteger _referenceLocation;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        _classes = [[NSMutableSet alloc] init];
-        _protocols = [[NSMutableSet alloc] init];
+        _referencedClassNames = [[NSMutableSet alloc] init];
+        _referencedProtocolNames = [[NSMutableSet alloc] init];
     }
     
     return self;
@@ -93,19 +89,19 @@
     [self.resultString setString:@""];
     [self.classDump appendHeaderToString:self.resultString];
 
-    [self removeAllReferences];
+    [self removeAllClassNameProtocolNameReferences];
     NSString *str = [self importStringForClassName:aClass.superClassName];
     if (str != nil) {
         [self.resultString appendString:str];
         [self.resultString appendString:@"\n"];
     }
 
-    self.referenceIndex = [self.resultString length];
+    self.referenceLocation = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitClass:aClass];
     
-    [self addProtocolNamesFromArray:aClass.protocolNames];
+    [self addReferencesToProtocolNamesInArray:aClass.protocolNames];
 }
 
 - (void)didVisitClass:(CDOCClass *)aClass;
@@ -114,11 +110,11 @@
     [super didVisitClass:aClass];
 
     // Then insert the imports and write the file.
-    [self removeClassName:aClass.name];
-    [self removeClassName:aClass.superClassName];
+    [self removeReferenceToClassName:aClass.name];
+    [self removeReferenceToClassName:aClass.superClassName];
     NSString *referenceString = self.referenceString;
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceLocation];
 
     NSString *filename = [NSString stringWithFormat:@"%@.h", aClass.name];
     if (self.outputPath != nil)
@@ -133,18 +129,18 @@
     [self.resultString setString:@""];
     [self.classDump appendHeaderToString:self.resultString];
 
-    [self removeAllReferences];
+    [self removeAllClassNameProtocolNameReferences];
     NSString *str = [self importStringForClassName:category.className];
     if (str != nil) {
         [self.resultString appendString:str];
         [self.resultString appendString:@"\n"];
     }
-    self.referenceIndex = [self.resultString length];
+    self.referenceLocation = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitCategory:category];
 
-    [self addProtocolNamesFromArray:category.protocolNames];
+    [self addReferencesToProtocolNamesInArray:category.protocolNames];
 }
 
 - (void)didVisitCategory:(CDOCCategory *)category;
@@ -153,10 +149,10 @@
     [super didVisitCategory:category];
 
     // Then insert the imports and write the file.
-    [self removeClassName:category.className];
+    [self removeReferenceToClassName:category.className];
     NSString *referenceString = self.referenceString;
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceLocation];
 
     NSString *filename = [NSString stringWithFormat:@"%@-%@.h", category.className, category.name];
     if (self.outputPath != nil)
@@ -170,13 +166,13 @@
     [self.resultString setString:@""];
     [self.classDump appendHeaderToString:self.resultString];
 
-    [self removeAllReferences];
-    self.referenceIndex = [self.resultString length];
+    [self removeAllClassNameProtocolNameReferences];
+    self.referenceLocation = [self.resultString length];
 
     // And then generate the regular output
     [super willVisitProtocol:protocol];
 
-    [self addProtocolNamesFromArray:protocol.protocolNames];
+    [self addReferencesToProtocolNamesInArray:protocol.protocolNames];
 }
 
 - (void)didVisitProtocol:(CDOCProtocol *)protocol;
@@ -187,13 +183,79 @@
     // Then insert the imports and write the file.
     NSString *referenceString = self.referenceString;
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceLocation];
 
     NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", protocol.name];
     if (self.outputPath != nil)
         filename = [self.outputPath stringByAppendingPathComponent:filename];
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
+}
+
+#pragma mark - CDTypeControllerDelegate
+
+- (void)typeController:(CDTypeController *)typeController didReferenceClassName:(NSString *)name;
+{
+    [self addReferenceToClassName:name];
+}
+
+#pragma mark -
+
+@synthesize frameworkNamesByClassName = _frameworkNamesByClassName;
+
+- (NSString *)frameworkForClassName:(NSString *)className;
+{
+    return [self.frameworkNamesByClassName objectForKey:className];
+}
+
+- (NSString *)importStringForClassName:(NSString *)className;
+{
+    if (className != nil) {
+        NSString *framework = [self frameworkForClassName:className];
+        if (framework == nil)
+            return [NSString stringWithFormat:@"#import \"%@.h\"\n", className];
+        else
+            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, className];
+    }
+    
+    return nil;
+}
+
+#pragma mark - Class and Protocol name tracking
+
+@synthesize referencedClassNames = _referencedClassNames;
+@synthesize referencedProtocolNames = _referencedProtocolNames;
+
+- (NSArray *)referencedClassNamesSortedByName;
+{
+    return [[self.referencedClassNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (NSArray *)referencedProtocolNamesSortedByName;
+{
+    return [[self.referencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (void)addReferenceToClassName:(NSString *)className;
+{
+    [self.referencedClassNames addObject:className];
+}
+
+- (void)removeReferenceToClassName:(NSString *)className;
+{
+    if (className != nil)
+        [self.referencedClassNames removeObject:className];
+}
+
+- (void)addReferencesToProtocolNamesInArray:(NSArray *)protocolNames;
+{
+    [self.referencedProtocolNames addObjectsFromArray:protocolNames];
+}
+
+- (void)removeAllClassNameProtocolNameReferences;
+{
+    [self.referencedClassNames removeAllObjects];
+    [self.referencedProtocolNames removeAllObjects];
 }
 
 #pragma mark -
@@ -221,13 +283,29 @@
     }
 }
 
-@synthesize referenceIndex = _referenceIndex;
+#pragma mark -
 
-@synthesize frameworkNamesByClassName = _frameworkNamesByClassName;
+@synthesize referenceLocation = _referenceLocation;
 
-- (NSString *)frameworkForClassName:(NSString *)className;
+// - imports for each referenced protocol
+// - forward declarations for each referenced class
+
+- (NSString *)referenceString;
 {
-    return [self.frameworkNamesByClassName objectForKey:className];
+    NSMutableString *referenceString = [[NSMutableString alloc] init];
+    
+    if ([self.referencedProtocolNames count] > 0) {
+        [referenceString appendFormat:@"@protocol %@;\n\n", [self.referencedProtocolNamesSortedByName componentsJoinedByString:@", "]];
+    }
+    
+    if ([self.referencedClassNames count] > 0) {
+        [referenceString appendFormat:@"@class %@;\n\n", [self.referencedClassNamesSortedByName componentsJoinedByString:@", "]];
+    }
+    
+    if ([referenceString length] == 0)
+        return nil;
+    
+    return [referenceString copy];
 }
 
 #pragma mark -
@@ -246,14 +324,14 @@
     [self.resultString setString:@""];
     [self.classDump appendHeaderToString:self.resultString];
     
-    [self removeAllReferences];
-    self.referenceIndex = [self.resultString length];
+    [self removeAllClassNameProtocolNameReferences];
+    self.referenceLocation = [self.resultString length];
     
     [[self.classDump typeController] appendStructuresToString:self.resultString];
     
     NSString *referenceString = [self referenceString];
     if (referenceString != nil)
-        [self.resultString insertString:referenceString atIndex:self.referenceIndex];
+        [self.resultString insertString:referenceString atIndex:self.referenceLocation];
     
     NSString *filename = @"CDStructures.h";
     if (self.outputPath != nil)
@@ -261,87 +339,5 @@
     
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
-
-#pragma mark - CDTypeControllerDelegate
-
-- (void)typeController:(CDTypeController *)typeController didReferenceClassName:(NSString *)name;
-{
-    [self addClassName:name];
-}
-
-#pragma mark - Formerly CDSymbolReferences
-
-- (void)addClassName:(NSString *)className;
-{
-    [self.classes addObject:className];
-}
-
-- (void)removeClassName:(NSString *)className;
-{
-    if (className != nil)
-        [self.classes removeObject:className];
-}
-
-- (void)addProtocolNamesFromArray:(NSArray *)protocolNames;
-{
-    [self.protocols addObjectsFromArray:protocolNames];
-}
-
-- (NSString *)referenceString;
-{
-    NSMutableString *referenceString = [[NSMutableString alloc] init];
-    [self _appendToString:referenceString];
-    
-    if ([referenceString length] == 0)
-        return nil;
-    
-    return [referenceString copy];
-}
-
-- (void)removeAllReferences;
-{
-    [self.classes removeAllObjects];
-    [self.protocols removeAllObjects];
-}
-
-- (NSString *)importStringForClassName:(NSString *)className;
-{
-    if (className != nil) {
-        NSString *framework = [self frameworkForClassName:className];
-        if (framework == nil)
-            return [NSString stringWithFormat:@"#import \"%@.h\"\n", className];
-        else
-            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, className];
-    }
-    
-    return nil;
-}
-
-#pragma mark -
-
-@synthesize classes = _classes;
-@synthesize protocols = _protocols;
-
-- (NSArray *)classesSortedByName;
-{
-    return [[self.classes allObjects] sortedArrayUsingSelector:@selector(compare:)];
-}
-
-- (NSArray *)protocolsSortedByName;
-{
-    return [[self.protocols allObjects] sortedArrayUsingSelector:@selector(compare:)];
-}
-
-- (void)_appendToString:(NSMutableString *)resultString;
-{
-    if ([self.protocols count] > 0) {
-        [resultString appendFormat:@"@protocol %@;\n\n", [self.protocolsSortedByName componentsJoinedByString:@", "]];
-    }
-    
-    if ([self.classes count] > 0) {
-        [resultString appendFormat:@"@class %@;\n\n", [self.classesSortedByName componentsJoinedByString:@", "]];
-    }
-}
-
 
 @end
