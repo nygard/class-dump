@@ -315,9 +315,15 @@
 - (NSString *)referenceString;
 {
     NSMutableString *referenceString = [[NSMutableString alloc] init];
-    
+
     if ([self.referencedProtocolNames count] > 0) {
-        [referenceString appendFormat:@"@protocol %@;\n\n", [self.referencedProtocolNamesSortedByName componentsJoinedByString:@", "]];
+        for (NSString *name in self.referencedProtocolNamesSortedByName) {
+            NSString *str = [self importStringForProtocolName:name];
+            if (str != nil)
+                [referenceString appendString:str];
+        }
+
+        [referenceString appendString:@"\n"];
     }
     
     if ([self.referencedClassNames count] > 0) {
