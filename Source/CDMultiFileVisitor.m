@@ -17,6 +17,9 @@
 
 // NSString (class name) -> NSString (framework name)
 @property (strong) NSDictionary *frameworkNamesByClassName;
+- (NSString *)frameworkForClassName:(NSString *)name;
+- (NSString *)frameworkForProtocolName:(NSString *)name;
+
 - (NSString *)importStringForClassName:(NSString *)className;
 
 // Location in output string to insert the protocol imports and forward class declarations.
@@ -203,19 +206,38 @@
 
 @synthesize frameworkNamesByClassName = _frameworkNamesByClassName;
 
-- (NSString *)frameworkForClassName:(NSString *)className;
+- (NSString *)frameworkForClassName:(NSString *)name;
 {
-    return [self.frameworkNamesByClassName objectForKey:className];
+    return [self.frameworkNamesByClassName objectForKey:name];
 }
 
-- (NSString *)importStringForClassName:(NSString *)className;
+- (NSString *)frameworkForProtocolName:(NSString *)name;
 {
-    if (className != nil) {
-        NSString *framework = [self frameworkForClassName:className];
+    // TODO (2012-02-28): Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
+    return nil;
+}
+
+- (NSString *)importStringForClassName:(NSString *)name;
+{
+    if (name != nil) {
+        NSString *framework = [self frameworkForClassName:name];
         if (framework == nil)
-            return [NSString stringWithFormat:@"#import \"%@.h\"\n", className];
+            return [NSString stringWithFormat:@"#import \"%@.h\"\n", name];
         else
-            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, className];
+            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, name];
+    }
+    
+    return nil;
+}
+
+- (NSString *)importStringForProtocolName:(NSString *)name;
+{
+    if (name != nil) {
+        NSString *framework = [self frameworkForProtocolName:name];
+        if (framework == nil)
+            return [NSString stringWithFormat:@"#import \"%@.h\"\n", name];
+        else
+            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, name];
     }
     
     return nil;
