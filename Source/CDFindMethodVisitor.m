@@ -164,7 +164,7 @@
 - (void)showContextIfNecessary;
 {
     if (self.hasShownContext == NO) {
-        [self.resultString appendString:[self.context findTag]];
+        [self.resultString appendString:[self.context methodSearchContext]];
         [self.resultString appendString:@"\n"];
         self.hasShownContext = YES;
     }

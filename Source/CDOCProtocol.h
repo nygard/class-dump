@@ -41,7 +41,7 @@
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
-- (NSString *)findTag;
+- (NSString *)methodSearchContext;
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 

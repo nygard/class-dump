@@ -15,7 +15,7 @@
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 
-- (NSString *)findTag;
+- (NSString *)methodSearchContext;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
 @end

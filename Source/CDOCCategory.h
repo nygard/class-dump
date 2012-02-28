@@ -9,7 +9,7 @@
 
 @property (strong) NSString *className;
 
-- (NSString *)findTag;
+- (NSString *)methodSearchContext;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
 @end

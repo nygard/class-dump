@@ -56,7 +56,7 @@
     }
 }
 
-- (NSString *)findTag;
+- (NSString *)methodSearchContext;
 {
     NSMutableString *resultString = [NSMutableString string];
 
