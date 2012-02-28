@@ -17,10 +17,9 @@
 
 // But it turns out that we can just use forward references for protocols.
 
-@class CDSymbolReferences;
-
 @interface CDClassFrameworkVisitor : CDVisitor
 
-@property (strong) CDSymbolReferences *symbolReferences;
+// NSString (class name) -> NSString (framework name)
+@property (readonly) NSDictionary *frameworkNamesByClassName;  
 
 @end

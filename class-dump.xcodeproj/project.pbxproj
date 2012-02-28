@@ -101,7 +101,6 @@
 		01B02D2113A5B4D70047BC53 /* CDStructureTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830613A591D8003EDE60 /* CDStructureTable.m */; };
 		01B02D2213A5B4D70047BC53 /* CDTypeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB831313A591D8003EDE60 /* CDTypeController.m */; };
 		01B02D2313A5B4D70047BC53 /* CDStructureInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830413A591D8003EDE60 /* CDStructureInfo.m */; };
-		01B02D2413A5B4D70047BC53 /* CDSymbolReferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */; };
 		01B02D2513A5B4D70047BC53 /* CDClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB829C13A591D7003EDE60 /* CDClassDumpVisitor.m */; };
 		01B02D2613A5B4D70047BC53 /* CDFindMethodVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82A813A591D7003EDE60 /* CDFindMethodVisitor.m */; };
 		01B02D2713A5B4D70047BC53 /* CDVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB831E13A591D8003EDE60 /* CDVisitor.m */; };
@@ -341,8 +340,6 @@
 		01EB830613A591D8003EDE60 /* CDStructureTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDStructureTable.m; path = Source/CDStructureTable.m; sourceTree = SOURCE_ROOT; };
 		01EB830713A591D8003EDE60 /* CDSymbol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDSymbol.h; path = Source/CDSymbol.h; sourceTree = SOURCE_ROOT; };
 		01EB830813A591D8003EDE60 /* CDSymbol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDSymbol.m; path = Source/CDSymbol.m; sourceTree = SOURCE_ROOT; };
-		01EB830913A591D8003EDE60 /* CDSymbolReferences.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDSymbolReferences.h; path = Source/CDSymbolReferences.h; sourceTree = SOURCE_ROOT; };
-		01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDSymbolReferences.m; path = Source/CDSymbolReferences.m; sourceTree = SOURCE_ROOT; };
 		01EB830B13A591D8003EDE60 /* CDTextClassDumpVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDTextClassDumpVisitor.h; path = Source/CDTextClassDumpVisitor.h; sourceTree = SOURCE_ROOT; };
 		01EB830C13A591D8003EDE60 /* CDTextClassDumpVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDTextClassDumpVisitor.m; path = Source/CDTextClassDumpVisitor.m; sourceTree = SOURCE_ROOT; };
 		01EB830D13A591D8003EDE60 /* CDTopologicalSortProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDTopologicalSortProtocol.h; path = Source/CDTopologicalSortProtocol.h; sourceTree = SOURCE_ROOT; };
@@ -429,8 +426,6 @@
 				01EB82E213A591D8003EDE60 /* CDMultiFileVisitor.m */,
 				01EB829D13A591D7003EDE60 /* CDClassFrameworkVisitor.h */,
 				01EB829E13A591D7003EDE60 /* CDClassFrameworkVisitor.m */,
-				01EB830913A591D8003EDE60 /* CDSymbolReferences.h */,
-				01EB830A13A591D8003EDE60 /* CDSymbolReferences.m */,
 			);
 			name = "Multi-file generation";
 			sourceTree = "<group>";
@@ -921,7 +916,6 @@
 				01B02D2113A5B4D70047BC53 /* CDStructureTable.m in Sources */,
 				01B02D2213A5B4D70047BC53 /* CDTypeController.m in Sources */,
 				01B02D2313A5B4D70047BC53 /* CDStructureInfo.m in Sources */,
-				01B02D2413A5B4D70047BC53 /* CDSymbolReferences.m in Sources */,
 				01B02D2513A5B4D70047BC53 /* CDClassDumpVisitor.m in Sources */,
 				01B02D2613A5B4D70047BC53 /* CDFindMethodVisitor.m in Sources */,
 				01B02D2713A5B4D70047BC53 /* CDVisitor.m in Sources */,

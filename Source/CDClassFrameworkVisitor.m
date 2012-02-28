@@ -8,18 +8,27 @@
 #import "CDMachOFile.h"
 #import "CDOCClass.h"
 #import "CDObjectiveCProcessor.h"
-#import "CDSymbolReferences.h"
 
 @interface CDClassFrameworkVisitor ()
-@property  NSString *frameworkName;
+- (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
+@property (strong) NSString *frameworkName;
 @end
 
 #pragma mark -
 
 @implementation CDClassFrameworkVisitor
 {
-    CDSymbolReferences *_symbolReferences;
+    NSMutableDictionary *_frameworkNamesByClassName;
     NSString *_frameworkName;
+}
+
+- (id)init;
+{
+    if ((self = [super init])) {
+        _frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+    }
+    
+    return self;
 }
 
 #pragma mark -
@@ -31,12 +40,22 @@
 
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
-    [self.symbolReferences addClassName:aClass.name referencedInFramework:self.frameworkName];
+    [self addClassName:aClass.name referencedInFramework:self.frameworkName];
 }
 
 #pragma mark -
 
-@synthesize symbolReferences = _symbolReferences;
 @synthesize frameworkName = _frameworkName;
+
+- (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
+{
+    if (name != nil && frameworkName != nil)
+        [_frameworkNamesByClassName setObject:frameworkName forKey:name];
+}
+
+- (NSDictionary *)frameworkNamesByClassName;
+{
+    return [_frameworkNamesByClassName copy];
+}
 
 @end
