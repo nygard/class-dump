@@ -8,12 +8,14 @@
 #include <unistd.h>
 #include <getopt.h>
 #include <stdlib.h>
+#include <sysexits.h>
 
 #import <Foundation/Foundation.h>
 #import "NSString-Extensions.h"
 
 #import "CDClassDump.h"
 #import "CDMachOFile.h"
+#import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDLCSegment.h"
 #import "CDLCSegment64.h"
@@ -25,52 +27,60 @@ void print_usage(void)
             "Usage: deprotect [options] <input file> <output file>\n"
             "\n"
             "  where options are:\n"
-            "        (none)\n"
+            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64)\n"
             ,
             CLASS_DUMP_VERSION
        );
 }
 
-void saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
+BOOL saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
 {
-    NSMutableData *mdata = [[NSMutableData alloc] initWithData:file.data];
+    BOOL hasProtectedSegments = NO;
+    NSMutableData *mdata = [[NSMutableData alloc] initWithData:file.machOData];
     for (CDLoadCommand *command in file.loadCommands) {
         if ([command isKindOfClass:[CDLCSegment class]]) {
             CDLCSegment *segment = (CDLCSegment *)command;
             
             if ([segment isProtected]) {
-                NSRange range;
+                hasProtectedSegments = YES;
+                NSRange segmentRange = NSMakeRange([segment fileoff], [segment filesize]);
                 NSUInteger flagOffset;
                 
-                NSLog(@"segment is protected: %@", segment);
-                range.location = [segment fileoff];
-                range.length = [segment filesize];
-                
                 NSData *decryptedData = [segment decryptedData];
-                NSCParameterAssert([decryptedData length] == range.length);
+                NSCParameterAssert([decryptedData length] == segmentRange.length);
                 
-                [mdata replaceBytesInRange:range withBytes:[decryptedData bytes]];
+                [mdata replaceBytesInRange:segmentRange withBytes:[decryptedData bytes]];
                 if ([segment isKindOfClass:[CDLCSegment64 class]]) {
                     flagOffset = [segment commandOffset] + offsetof(struct segment_command_64, flags);
                 } else {
                     flagOffset = [segment commandOffset] + offsetof(struct segment_command, flags);
                 }
                 
-                // TODO (2009-07-10): Needs to be endian-neutral
-                uint32_t flags = OSReadLittleInt32([mdata mutableBytes], flagOffset);
-                NSLog(@"old flags: %08x", flags);
-                NSLog(@"segment flags: %08x", [segment flags]);
+                CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:file offset:flagOffset];
+                uint32_t flags = [cursor readInt32];
+                [cursor release];
+                if (flags != [segment flags]) {
+                    fprintf(stderr, "Internal Error: flags (0x%x) does not match segment flags (0x%x).\n", flags, [segment flags]);
+                    exit(EX_SOFTWARE);
+                }
                 flags &= ~SG_PROTECTED_VERSION_1;
-                NSLog(@"new flags: %08x", flags);
                 
-                OSWriteLittleInt32([mdata mutableBytes], flagOffset, flags);
+                if (file.byteOrder == CDByteOrder_BigEndian) {
+                    OSWriteBigInt32([mdata mutableBytes], flagOffset, flags);
+                } else {
+                    OSWriteLittleInt32([mdata mutableBytes], flagOffset, flags);
+                }
             }
         }
     }
     
-    [mdata writeToFile:path atomically:NO];
+    if (hasProtectedSegments) {
+        [mdata writeToFile:path atomically:NO];
+    }
     
     [mdata release];
+    
+    return hasProtectedSegments;
 }
 
 int main(int argc, char *argv[])
@@ -79,22 +89,33 @@ int main(int argc, char *argv[])
 
     int ch;
     BOOL errorFlag = NO;
+    CDArch targetArch = {CPU_TYPE_ANY, CPU_TYPE_ANY};
 
     struct option longopts[] = {
-        { NULL, 0, NULL, 0 },
+        { "arch", required_argument, NULL, 'a' },
+        { NULL,   0,                 NULL, 0 },
     };
 
     if (argc == 1) {
         print_usage();
-        exit(0);
+        exit(EX_OK);
     }
 
-    while ( (ch = getopt_long(argc, argv, "", longopts, NULL)) != -1) {
+    while ( (ch = getopt_long(argc, argv, "a:", longopts, NULL)) != -1) {
         switch (ch) {
-          case '?':
-          default:
-              errorFlag = YES;
-              break;
+            case 'a': {
+                NSString *name = [NSString stringWithUTF8String:optarg];
+                targetArch = CDArchFromName(name);
+                if (targetArch.cputype == CPU_TYPE_ANY) {
+                    fprintf(stderr, "Error: Unknown arch %s\n\n", optarg);
+                    errorFlag = YES;
+                }
+                break;
+            }
+            case '?':
+            default:
+                errorFlag = YES;
+                break;
         }
     }
 
@@ -103,39 +124,53 @@ int main(int argc, char *argv[])
 
     if (errorFlag || argc < 2) {
         print_usage();
-        exit(2);
+        exit(EX_USAGE);
     }
 
     {
-        NSString *inputFile, *outputFile;
-        CDFile *file;
-        NSData *inputData;
+        NSString *inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
+        NSString *outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
 
-        inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
-        outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
+        NSData *inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
 
-        NSLog(@"inputFile: %@", inputFile);
-        NSLog(@"outputFile: %@", outputFile);
-
-        inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
-
-        file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
+        CDFile *file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
         if (file == nil) {
-            fprintf(stderr, "deprotect: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [inputFile UTF8String]);
-            exit(1);
+            fprintf(stderr, "Error: input file is neither a Mach-O file nor a fat archive.\n");
+            exit(EX_DATAERR);
         }
 
+        CDMachOFile *thinFile = nil;
         if ([file isKindOfClass:[CDMachOFile class]]) {
-            NSLog(@"file: %@", file);
-            saveDeprotectedFileToPath((CDMachOFile*)file, outputFile);
+            thinFile = (CDMachOFile*)file;
+        } else if ([file isKindOfClass:[CDFatFile class]]) {
+            if (targetArch.cputype == CPU_TYPE_ANY) {
+                if ([file bestMatchForLocalArch:&targetArch] == NO) {
+                    fprintf(stderr, "Internal Error: Couldn't get local architecture.\n");
+                    exit(EX_SOFTWARE);
+                }
+            }
+            thinFile = [(CDFatFile*)file machOFileWithArch:targetArch];
+            if (!thinFile) {
+                const NXArchInfo *arhcInfo = NXGetArchInfoFromCpuType(targetArch.cputype, targetArch.cpusubtype);
+                fprintf(stderr, "Error: input file does not contain the '%s' arch.\n", arhcInfo->name);
+                exit(EX_DATAERR);
+            }
         } else {
-            NSLog(@"Can only deprotect thin mach-o files at this point.");
+            fprintf(stderr, "Internal Error: file is neither a CDFatFile nor a CDMachOFile instance.\n");
+            exit(EX_SOFTWARE);
+        }
+        
+        BOOL hasProtectedSegments = saveDeprotectedFileToPath(thinFile, outputFile);
+        if (!hasProtectedSegments) {
+            const NXArchInfo *arhcInfo = NXGetArchInfoFromCpuType(targetArch.cputype, targetArch.cpusubtype);
+            fprintf(stderr, "Error: input file (%s arch) is not protected.\n", arhcInfo->name);
+            exit(EX_DATAERR);
         }
 
         [inputData release];
     }
 
-    [pool release];
+    [pool drain];
 
     return 0;
 }
