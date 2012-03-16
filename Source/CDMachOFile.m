@@ -601,6 +601,11 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (BOOL)hasObjectiveC2Data;
 {
     // http://twitter.com/gparker/status/17962955683
+    // Oxced: What's the best way to determine the ObjC ABI version of a file?  otool tests if cputype is ARM, but that's not accurate with iOS 4 simulator
+    // gparker: @0xced Old ABI has an __OBJC segment. New ABI has a __DATA,__objc_info section.
+    // 0xced: @gparker I was hoping for a flag, but that will do it, thanks.
+    // 0xced: @gparker Did you mean __DATA,__objc_imageinfo instead of __DATA,__objc_info ?
+    // gparker: @0xced Yes, it's __DATA,__objc_imageinfo.
     return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] != nil;
 }
 
