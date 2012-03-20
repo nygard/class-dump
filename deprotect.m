@@ -113,6 +113,9 @@ int main(int argc, char *argv[])
                     break;
             }
         }
+        
+        argc -= optind;
+        argv += optind;
 
         if (errorFlag || argc < 2) {
             print_usage();
