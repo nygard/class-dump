@@ -67,6 +67,7 @@ int main(int argc, char *argv[])
         CDArch targetArch;
         BOOL hasSpecifiedArch = NO;
         NSString *outputPath;
+        NSString *cacheName = nil;
 
         int ch;
         BOOL errorFlag = NO;
@@ -89,6 +90,7 @@ int main(int argc, char *argv[])
             { "sdk-ios",                 required_argument, NULL, CD_OPT_SDK_IOS },
             { "sdk-mac",                 required_argument, NULL, CD_OPT_SDK_MAC },
             { "sdk-root",                required_argument, NULL, CD_OPT_SDK_ROOT },
+            { "cache",                   required_argument, NULL, 'c' },
             { NULL,                      0,                 NULL, 0 },
         };
 
@@ -99,7 +101,7 @@ int main(int argc, char *argv[])
 
         CDClassDump *classDump = [[CDClassDump alloc] init];
 
-        while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsStc:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -168,6 +170,11 @@ int main(int argc, char *argv[])
                     }
 
                     // Last one wins now.
+                    break;
+                }
+                    
+                case 'c': {
+                    cacheName = [NSString stringWithUTF8String:optarg];
                     break;
                 }
                     
@@ -262,7 +269,14 @@ int main(int argc, char *argv[])
                 }
 
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
-                CDFile *file = [CDFile fileWithData:data filename:executablePath searchPathState:classDump.searchPathState];
+                CDFile *file;
+                
+                if(cacheName) {
+                    file = [CDFile fileWithData:data archOffset:0 archSize:[data length] filename:cacheName searchPathState:classDump.searchPathState isCache:YES];
+                } else {
+                    file = [CDFile fileWithData:data filename:executablePath searchPathState:classDump.searchPathState];
+                }
+                
                 if (file == nil) {
                     fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                     exit(1);

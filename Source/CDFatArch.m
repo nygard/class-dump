@@ -105,7 +105,7 @@
 - (CDMachOFile *)machOFile;
 {
     if (machOFile == nil) {
-        machOFile = [CDFile fileWithData:self.fatFile.data archOffset:fatArch.offset archSize:fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
+        machOFile = [CDFile fileWithData:self.fatFile.data archOffset:fatArch.offset archSize:fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState isCache:NO];
     }
 
     return machOFile;

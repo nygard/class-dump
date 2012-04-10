@@ -26,15 +26,16 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 
 // Returns CDFatFile or CDMachOFile.
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
-+ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState isCache:(BOOL)aIsCache;
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState isCache:(BOOL)aIsCache;
 
 @property (readonly) NSString *filename;
 @property (readonly) NSData *data;
 @property (readonly) NSUInteger archOffset;
 @property (readonly) NSUInteger archSize;
 @property (readonly) CDSearchPathState *searchPathState;
+@property (readonly) BOOL isCache;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;

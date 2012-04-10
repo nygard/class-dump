@@ -23,7 +23,7 @@ typedef NSUInteger CDByteOrder;
 
 @interface CDMachOFile : CDFile
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState isCache:(BOOL)aIsCache;
 
 - (NSString *)description;
 
@@ -92,6 +92,10 @@ typedef NSUInteger CDByteOrder;
 // Checks compressed dyld info on 10.6 or later.
 - (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
 - (NSString *)externalClassNameForAddress2:(NSUInteger)address;
+
+- (BOOL) _loadCacheInfo;
+- (NSUInteger) _cacheAddressForImage:(NSString *)fileName;
+- (NSUInteger) _cacheOffsetForAddress:(NSUInteger)address;
 
 @property (readonly) BOOL hasObjectiveC1Data;
 @property (readonly) BOOL hasObjectiveC2Data;
