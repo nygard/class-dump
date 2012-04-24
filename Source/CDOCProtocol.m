@@ -56,7 +56,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> name: %@, protocols: %d, class methods: %d, instance methods: %d",
+    return [NSString stringWithFormat:@"<%@:%p> name: %@, protocols: %ld, class methods: %ld, instance methods: %ld",
             NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
 }
 

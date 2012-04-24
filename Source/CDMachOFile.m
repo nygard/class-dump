@@ -169,7 +169,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %d, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, archOffset: %p",
+    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %ld, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, archOffset: %lu",
             NSStringFromClass([self class]), self,
             [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags], _flags.uses64BitABI,
             self.filename, self.data, self.archOffset];
@@ -477,7 +477,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSMutableString *resultString = [NSMutableString string];
     NSUInteger count = [loadCommands count];
     for (NSUInteger index = 0; index < count; index++) {
-        [resultString appendFormat:@"Load command %u\n", index];
+        [resultString appendFormat:@"Load command %lu\n", index];
         CDLoadCommand *loadCommand = [loadCommands objectAtIndex:index];
         [loadCommand appendToString:resultString verbose:isVerbose];
         [resultString appendString:@"\n"];
@@ -493,11 +493,11 @@ NSString *CDMagicNumberString(uint32_t magic)
     [resultString appendString:@"      magic cputype cpusubtype   filetype ncmds sizeofcmds      flags\n"];
     // Grr, %11@ doesn't work.
     if (isVerbose)
-        [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5u %10u %@\n",
+        [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5lu %10u %@\n",
                       CDMagicNumberString([self magic]), [self archName], [self cpusubtype],
                       [self filetypeDescription], [loadCommands count], 0, [self flagDescription]];
     else
-        [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5u %10u 0x%08x\n",
+        [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5lu %10u 0x%08x\n",
                       [self magic], [self cputype], [self cpusubtype], [self filetype], [loadCommands count], 0, [self flags]];
     [resultString appendString:@"\n"];
 

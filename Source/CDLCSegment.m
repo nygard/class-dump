@@ -212,7 +212,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 - (void)writeSectionData;
 {
     [self.sections enumerateObjectsUsingBlock:^(CDSection *section, NSUInteger index, BOOL *stop){
-        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, section.sectionName] atomically:NO];
+        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02ld-%@", index, section.sectionName] atomically:NO];
     }];
 }
 

@@ -57,7 +57,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s', addr: %016lx, size: %016lx",
+    return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s', addr: %016llx, size: %016llx",
             NSStringFromClass([self class]), self,
             self.segmentName, [self.sectionName UTF8String],
             section.addr, section.size];

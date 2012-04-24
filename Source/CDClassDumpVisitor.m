@@ -64,7 +64,7 @@
     }
     
     if (machOFile.sourceVersion != nil)
-        [resultString appendFormat:@" *       Source version: %@\n", machOFile.sourceVersion.sourceVersionString];
+        [self.resultString appendFormat:@" *       Source version: %@\n", machOFile.sourceVersion.sourceVersionString];
 
     if (machOFile.minVersionMacOSX != nil) {
         [self.resultString appendFormat:@" *       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];
@@ -116,7 +116,7 @@
                     CDLCSegment *segment = (CDLCSegment *)loadCommand;
                     
                     if (segment.canDecrypt == NO) {
-                        [self.resultString appendFormat:@" *           Load command %u, segment encryption: %@\n",
+                        [self.resultString appendFormat:@" *           Load command %lu, segment encryption: %@\n",
                          index, CDSegmentEncryptionTypeName(segment.encryptionType)];
                     }
                 }

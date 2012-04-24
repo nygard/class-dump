@@ -50,7 +50,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%p] CDFatFile with %u arches", self, [arches count]];
+    return [NSString stringWithFormat:@"[%p] CDFatFile with %lu arches", self, [arches count]];
 }
 
 #pragma mark -

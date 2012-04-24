@@ -66,7 +66,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"%@ (%u) depends on %@", self.identifier, self.color, self.dependancyDescription];
+    return [NSString stringWithFormat:@"%@ (%lu) depends on %@", self.identifier, self.color, self.dependancyDescription];
 }
 
 #pragma mark - Sorting

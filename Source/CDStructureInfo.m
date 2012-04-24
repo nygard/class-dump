@@ -46,14 +46,14 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, type: %p",
+    return [NSString stringWithFormat:@"<%@:%p> depth: %lu, refcount: %lu, isUsedInMethod: %u, type: %p",
             NSStringFromClass([self class]), self,
             self.type.structureDepth, self.referenceCount, self.isUsedInMethod, self.type];
 }
 
 - (NSString *)shortDescription;
 {
-    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", self.type.structureDepth, self.referenceCount, self.isUsedInMethod, self.type.bareTypeString, self.type.typeString];
+    return [NSString stringWithFormat:@"%lu %lu m?%u %@ %@", self.type.structureDepth, self.referenceCount, self.isUsedInMethod, self.type.bareTypeString, self.type.typeString];
 }
 
 #pragma mark -

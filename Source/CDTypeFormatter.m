@@ -50,7 +50,7 @@ static BOOL debug = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %u, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
+    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %lu, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
             NSStringFromClass([self class]), self,
             baseLevel, self.shouldExpand, self.shouldAutoExpand, self.shouldShowLexing, self.typeController];
 }
@@ -206,7 +206,7 @@ static BOOL debug = NO;
                         [parameter setValue:typeString forKey:@"type"];
                     }
                     //[parameter setValue:[NSString stringWithFormat:@"fp%@", aMethodType.offset] forKey:@"name"];
-                    [parameter setValue:[NSString stringWithFormat:@"arg%u", index-2] forKey:@"name"];
+                    [parameter setValue:[NSString stringWithFormat:@"arg%lu", index-2] forKey:@"name"];
                     [parameterTypes addObject:parameter];
                     index++;
                 }
@@ -278,7 +278,7 @@ static BOOL debug = NO;
                         [resultString appendFormat:@"(%@)", typeString];
                     }
                     //[resultString appendFormat:@"fp%@", [aMethodType offset]];
-                    [resultString appendFormat:@"arg%u", index-2];
+                    [resultString appendFormat:@"arg%lu", index-2];
 
                     NSString *ch = [scanner peekCharacter];
                     // if next character is not ':' nor EOS then add space

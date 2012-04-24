@@ -79,7 +79,7 @@
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
         if ([typeController shouldShowIvarOffsets]) {
-            [resultString appendFormat:@"\t// %1$d = 0x%1$x", offset];
+            [resultString appendFormat:@"\t// %1$ld = 0x%1$lx", offset];
         }
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
