@@ -235,9 +235,9 @@
     if (name != nil) {
         NSString *framework = [self frameworkForProtocolName:name];
         if (framework == nil)
-            return [NSString stringWithFormat:@"#import \"%@.h\"\n", name];
+            return [NSString stringWithFormat:@"#import \"%@-Protocol.h\"\n", name];
         else
-            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, name];
+            return [NSString stringWithFormat:@"#import <%@/%@-Protocol.h>\n", framework, name];
     }
     
     return nil;
