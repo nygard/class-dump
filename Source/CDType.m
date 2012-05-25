@@ -184,6 +184,24 @@ static BOOL debugMerge = NO;
     return self;
 }
 
+- (id)initFunctionPointerType
+{
+    if ((self = [self init])) {
+        _primitiveType = T_FUNCTION_POINTER_TYPE;
+    }
+
+    return self;
+}
+
+- (id)initBlockType
+{
+    if ((self = [self init])) {
+        _primitiveType = T_BLOCK_TYPE;
+    }
+
+    return self;
+}
+
 - (id)initModifier:(int)modifier type:(CDType *)type;
 {
     if ((self = [self init])) {
@@ -411,6 +429,20 @@ static BOOL debugMerge = NO;
                 result = [NSString stringWithFormat:@"(%@)", result];
             
             result = [self.subtype formattedString:result formatter:typeFormatter level:level];
+            break;
+            
+        case T_FUNCTION_POINTER_TYPE:
+            if (currentName == nil)
+                result = @"void(*)()";
+            else
+                result = [NSString stringWithFormat:@"void(*%@)()", currentName];
+            break;
+            
+        case T_BLOCK_TYPE:
+            if (currentName == nil)
+                result = @"void(^)()";
+            else
+                result = [NSString stringWithFormat:@"void(^%@)()", currentName];
             break;
             
         case 'j':

@@ -16,6 +16,8 @@
 - (id)initBitfieldType:(NSString *)bitfieldSize;
 - (id)initArrayType:(CDType *)type count:(NSString *)count;
 - (id)initPointerType:(CDType *)type;
+- (id)initFunctionPointerType;
+- (id)initBlockType;
 - (id)initModifier:(int)modifier type:(CDType *)type;
 
 @property (strong) NSString *variableName;
