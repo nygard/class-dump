@@ -127,6 +127,11 @@
 
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist32:nlist];
             [_symbols addObject:symbol];
+
+            if ([str hasPrefix:ObjCClassSymbolPrefix] && symbol.value != 0) {
+                NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
+                [_classSymbols setObject:symbol forKey:className];
+            }
         }
 
         //NSLog(@"Loaded %lu 32-bit symbols", [symbols count]);
@@ -151,7 +156,7 @@
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist64:nlist];
             [_symbols addObject:symbol];
 
-            if ([str hasPrefix:ObjCClassSymbolPrefix] && [symbol value] != 0) {
+            if ([str hasPrefix:ObjCClassSymbolPrefix] && symbol.value != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
                 [_classSymbols setObject:symbol forKey:className];
             }
