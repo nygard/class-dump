@@ -10,6 +10,7 @@
 #import "CDOCCategory.h"
 #import "CDOCMethod.h"
 #import "CDOCProperty.h"
+#import "CDType.h"
 #import "CDTypeController.h"
 #import "CDTypeFormatter.h"
 #import "CDVisitorPropertyState.h"
@@ -283,6 +284,10 @@ static BOOL debug = NO;
     
     if (isWeak)
         [self.resultString appendString:@"__weak "];
+    
+    if ([alist containsObject:@"retain"] || [alist containsObject:@"copy"])
+        if (!parsedType.isGarbageCollectedType)
+            [self.resultString appendString:@"__attribute__((NSObject)) "];
     
     NSString *formattedString = [self.classDump.typeController.propertyTypeFormatter formatVariable:property.name parsedType:parsedType];
     [self.resultString appendFormat:@"%@;", formattedString];
