@@ -609,6 +609,14 @@ static BOOL debugMerge = NO;
             result = [NSString stringWithFormat:@"%c%@", self.primitiveType, [self.subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             
+        case T_FUNCTION_POINTER_TYPE:
+            result = @"^?";
+            break;
+            
+        case T_BLOCK_TYPE:
+            result = @"@?";
+            break;
+            
         default:
             result = [NSString stringWithFormat:@"%c", self.primitiveType];
             break;
