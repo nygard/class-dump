@@ -18,7 +18,12 @@
         versionMinCommand.cmd = [cursor readInt32];
         versionMinCommand.cmdsize = [cursor readInt32];
         versionMinCommand.version = [cursor readInt32];
+#ifdef LC_SOURCE_VERSION /* which is defined only in OS X 10.8 */
+        /* The name of this field is new in OS X 10.8. */
+        versionMinCommand.sdk = [cursor readInt32];
+#else
         versionMinCommand.reserved = [cursor readInt32];
+#endif
     }
 
     return self;
