@@ -45,7 +45,7 @@ static BOOL debug = NO;
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
     if (aClass.isExported == NO)
-        [self.resultString appendString:@"// Not exported\n"];
+        [self.resultString appendString:@"__attribute__((visibility(\"hidden\")))\n"];
 
     [self.resultString appendFormat:@"@interface %@", aClass.name];
     if (aClass.superClassName != nil)
