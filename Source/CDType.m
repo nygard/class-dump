@@ -241,6 +241,12 @@ static BOOL debugMerge = NO;
     return typeName.isTemplateType;
 }
 
+- (BOOL)isGarbageCollectedType;
+{
+    return self.isIDType || self.isNamedObject ||
+           self.type == '#' || self.type == T_BLOCK_TYPE;
+}
+
 - (CDType *)subtype;
 {
     return subtype;

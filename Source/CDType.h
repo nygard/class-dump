@@ -28,6 +28,7 @@
 @property (readonly) BOOL isIDType;
 @property (readonly) BOOL isNamedObject;
 @property (readonly) BOOL isTemplateType;
+@property (readonly) BOOL isGarbageCollectedType;
 
 @property (nonatomic, readonly) CDType *subtype;
 @property (nonatomic, readonly) CDTypeName *typeName;
