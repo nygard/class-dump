@@ -247,6 +247,9 @@ static NSString *CDTokenDescription(int token)
             type = [[CDType alloc] initSimpleType:'v'];
             // Safari on 10.5 has: "m_function"{?="__pfn"^"__delta"i}
             result = [[CDType alloc] initPointerType:type];
+        } else if (lookahead == '?') {
+            [self match:'?'];
+            result = [[CDType alloc] initFunctionPointerType];
         } else {
             type = [self _parseTypeInStruct:isInStruct];
             result = [[CDType alloc] initPointerType:type];
@@ -277,6 +280,9 @@ static NSString *CDTokenDescription(int token)
             }
 
             [self match:TK_QUOTED_STRING];
+        } else if (lookahead == '?') {
+            [self match:'?'];
+            result = [[CDType alloc] initBlockType];
         } else {
             result = [[CDType alloc] initIDType:nil];
         }
