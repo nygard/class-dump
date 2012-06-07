@@ -825,6 +825,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %u, ref: %u, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
+            typeFormatter.shouldExpand = NO;
             NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
             if (formattedString != nil) {
                 //[resultString appendFormat:@"%@;\n\n", formattedString];
