@@ -22,6 +22,8 @@
 - (id)initBlockType;
 - (id)initModifier:(int)modifier type:(CDType *)type;
 
+- (void)setUnderlyingType:(NSUInteger)underlyingWidth;
+
 @property (strong) NSString *variableName;
 
 @property (nonatomic, readonly) int type;
@@ -29,6 +31,7 @@
 @property (readonly) BOOL isNamedObject;
 @property (readonly) BOOL isTemplateType;
 @property (readonly) BOOL isGarbageCollectedType;
+@property (readonly) BOOL isBitfieldType;
 
 @property (nonatomic, readonly) CDType *subtype;
 @property (nonatomic, readonly) CDTypeName *typeName;
