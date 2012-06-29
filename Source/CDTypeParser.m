@@ -256,8 +256,8 @@ static NSString *CDTokenDescription(int token)
         }
     } else if (lookahead == 'b') { // bitfield
         [self match:'b'];
-        NSString *number = [self parseNumber];
-        result = [[CDType alloc] initBitfieldType:number];
+        int width = [[self parseNumber] intValue];
+        result = [[CDType alloc] initBitfieldType:width];
     } else if (lookahead == '@') { // id
         [self match:'@'];
 #if 0
@@ -311,11 +311,11 @@ static NSString *CDTokenDescription(int token)
         }
     } else if (lookahead == '[') { // array
         [self match:'['];
-        NSString *number = [self parseNumber];
+        int elements = [[self parseNumber] intValue];
         CDType *type = [self _parseType];
         [self match:']'];
 
-        result = [[CDType alloc] initArrayType:type count:number];
+        result = [[CDType alloc] initArrayType:type count:elements];
     } else if ([self isTokenInSimpleTypeSet:lookahead]) { // simple type
         int simpleType = lookahead;
         [self match:simpleType];

@@ -15,8 +15,8 @@
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 - (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
 - (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;
-- (id)initBitfieldType:(NSString *)bitfieldSize;
-- (id)initArrayType:(CDType *)type count:(NSString *)count;
+- (id)initBitfieldType:(int)bitfieldSize;
+- (id)initArrayType:(CDType *)type count:(int)count;
 - (id)initPointerType:(CDType *)type;
 - (id)initFunctionPointerType;
 - (id)initBlockType;

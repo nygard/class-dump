@@ -38,9 +38,9 @@ static BOOL debugMerge = NO;
     CDType *subtype;
     CDTypeName *typeName;
     NSMutableArray *members;
-    NSString *bitfieldSize;
-    NSUInteger widthOfUnderlyingType;
-    NSString *arraySize;
+    int bitfieldSize;
+    int widthOfUnderlyingType;
+    int arraySize;
     
     NSString *variableName;
 }
@@ -54,8 +54,9 @@ static BOOL debugMerge = NO;
         typeName = nil;
         members = nil;
         variableName = nil;
-        bitfieldSize = nil;
-        arraySize = nil;
+        bitfieldSize = -1;
+        widthOfUnderlyingType = -1;
+        arraySize = -1;
     }
 
     return self;
@@ -121,7 +122,7 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initBitfieldType:(NSString *)aBitfieldSize;
+- (id)initBitfieldType:(int)aBitfieldSize;
 {
     if ((self = [self init])) {
         type = 'b';
@@ -132,7 +133,7 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initArrayType:(CDType *)aType count:(NSString *)aCount;
+- (id)initArrayType:(CDType *)aType count:(int)aCount;
 {
     if ((self = [self init])) {
         type = '[';
@@ -181,7 +182,7 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (void)setUnderlyingType:(NSUInteger)aWidth;
+- (void)setUnderlyingType:(int)aWidth;
 {
     assert(type == 'b');
     widthOfUnderlyingType = aWidth;
@@ -222,7 +223,7 @@ static BOOL debugMerge = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %@, arraySize: %@, members: %@, variableName: %@",
+    return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %d, arraySize: %d, members: %@, variableName: %@",
             NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
 }
 
@@ -353,7 +354,7 @@ static BOOL debugMerge = NO;
                     /* This path is reachable in ObjC 1.0, where ivars don't
                      * specify their sizes. It's also reachable if the bitfield
                      * is a member of a C struct. */
-                    if ([bitfieldSize intValue] > 32) {
+                    if (bitfieldSize > 32) {
                         result = @"unsigned long long ";
                     } else {
                         result = @"unsigned int ";
@@ -363,15 +364,15 @@ static BOOL debugMerge = NO;
             if (currentName != nil) {
                 result = [result stringByAppendingString:currentName];
             }
-            result = [NSString stringWithFormat:@"%@:%@", result, bitfieldSize];
+            result = [NSString stringWithFormat:@"%@:%d", result, bitfieldSize];
             break;
         }
             
         case '[':
             if (currentName == nil)
-                result = [NSString stringWithFormat:@"[%@]", arraySize];
+                result = [NSString stringWithFormat:@"[%d]", arraySize];
             else
-                result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
+                result = [NSString stringWithFormat:@"%@[%d]", currentName, arraySize];
             
             result = [subtype formattedString:result formatter:typeFormatter level:level];
             break;
@@ -589,11 +590,11 @@ static BOOL debugMerge = NO;
             break;
             
         case 'b':
-            result = [NSString stringWithFormat:@"b%@", bitfieldSize];
+            result = [NSString stringWithFormat:@"b%d", bitfieldSize];
             break;
             
         case '[':
-            result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            result = [NSString stringWithFormat:@"[%d%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             
         case '(':
