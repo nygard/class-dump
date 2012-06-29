@@ -53,7 +53,7 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    return [[CDOCMethod alloc] initWithName:name type:type imp:imp];
+    return [[CDOCMethod allocWithZone:zone] initWithName:name type:type imp:imp];
 }
 
 #pragma mark - Debugging

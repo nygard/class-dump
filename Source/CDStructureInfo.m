@@ -34,7 +34,7 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    CDStructureInfo *copy = [[CDStructureInfo alloc] initWithType:self.type]; // type gets copied
+    CDStructureInfo *copy = [[CDStructureInfo allocWithZone:zone] initWithType:self.type]; // type gets copied
     copy.referenceCount = self.referenceCount;
     copy.isUsedInMethod = self.isUsedInMethod;
     copy.typedefName = self.typedefName;

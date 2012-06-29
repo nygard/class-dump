@@ -27,12 +27,12 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    CDTypeName *copy = [[CDTypeName alloc] init];
+    CDTypeName *copy = [[CDTypeName allocWithZone:zone] init];
     copy.name = self.name;
     copy.suffix = self.suffix;
     
     for (CDTypeName *subtype in self.templateTypes) {
-        CDTypeName *subcopy = [subtype copy];
+        CDTypeName *subcopy = [subtype copyWithZone:zone];
         [copy.templateTypes addObject:subcopy];
     }
     
