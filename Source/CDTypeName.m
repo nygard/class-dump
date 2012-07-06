@@ -5,6 +5,8 @@
 
 #import "CDTypeName.h"
 
+BOOL global_shouldMangleTemplateTypes = NO;
+
 @implementation CDTypeName
 {
     NSString *name;
@@ -53,13 +55,27 @@
 
 - (NSString *)description;
 {
-    if ([self.templateTypes count] == 0)
-        return name;
-    
+    if ([self.name isEqualToString:@"?"]) {
+        return @"?";
+    }
+
+    NSMutableString *result = [NSMutableString string];
+
+    [result setString:self.name];
+    if ([self.templateTypes count] != 0)
+        [result appendFormat:@"<%@>", [self.templateTypes componentsJoinedByString:@", "]];
     if (self.suffix != nil)
-        return [NSString stringWithFormat:@"%@<%@>%@", self.name, [self.templateTypes componentsJoinedByString:@", "], self.suffix];
+        [result appendFormat:@"%@", self.suffix];
     
-    return [NSString stringWithFormat:@"%@<%@>", self.name, [self.templateTypes componentsJoinedByString:@", "]];
+    if (global_shouldMangleTemplateTypes) {
+        NSString *legitCharacters = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                     "abcdefghijklmnopqrstuvwxyz" "0123456789";
+
+        NSCharacterSet *illegitCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:legitCharacters] invertedSet];
+        return [[result componentsSeparatedByCharactersInSet:illegitCharacterSet] componentsJoinedByString:@"_"];
+    } else {
+        return [result description];
+    }
 }
 
 #pragma mark -
