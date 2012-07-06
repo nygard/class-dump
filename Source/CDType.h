@@ -70,3 +70,5 @@
 - (void)phase3MergeWithTypeController:(CDTypeController *)typeController;
 
 @end
+
+extern BOOL global_shouldMangleTemplateTypes;
