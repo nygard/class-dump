@@ -38,8 +38,9 @@ static BOOL debugMerge = NO;
     CDType *subtype;
     CDTypeName *typeName;
     NSMutableArray *members;
-    NSString *bitfieldSize;
-    NSString *arraySize;
+    int bitfieldSize;
+    int widthOfUnderlyingType;
+    int arraySize;
     
     NSString *variableName;
 }
@@ -53,8 +54,9 @@ static BOOL debugMerge = NO;
         typeName = nil;
         members = nil;
         variableName = nil;
-        bitfieldSize = nil;
-        arraySize = nil;
+        bitfieldSize = -1;
+        widthOfUnderlyingType = -1;
+        arraySize = -1;
     }
 
     return self;
@@ -120,17 +122,18 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initBitfieldType:(NSString *)aBitfieldSize;
+- (id)initBitfieldType:(int)aBitfieldSize;
 {
     if ((self = [self init])) {
         type = 'b';
         bitfieldSize = aBitfieldSize;
+        widthOfUnderlyingType = 0;  /* to be set later */
     }
 
     return self;
 }
 
-- (id)initArrayType:(CDType *)aType count:(NSString *)aCount;
+- (id)initArrayType:(CDType *)aType count:(int)aCount;
 {
     if ((self = [self init])) {
         type = '[';
@@ -179,6 +182,12 @@ static BOOL debugMerge = NO;
     return self;
 }
 
+- (void)setUnderlyingType:(int)aWidth;
+{
+    assert(type == 'b');
+    widthOfUnderlyingType = aWidth;
+}
+
 #pragma mark - NSCopying
 
 // An easy deep copy.
@@ -197,6 +206,7 @@ static BOOL debugMerge = NO;
     NSParameterAssert([str isEqualToString:copiedType.typeString]);
     
     [copiedType setVariableName:variableName];
+    copiedType->widthOfUnderlyingType = widthOfUnderlyingType;
     
     return copiedType;
 }
@@ -213,7 +223,7 @@ static BOOL debugMerge = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %@, arraySize: %@, members: %@, variableName: %@",
+    return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %d, arraySize: %d, members: %@, variableName: %@",
             NSStringFromClass([self class]), type, type, typeName, subtype, bitfieldSize, arraySize, members, variableName];
 }
 
@@ -245,6 +255,11 @@ static BOOL debugMerge = NO;
 {
     return self.isIDType || self.isNamedObject ||
            self.type == '#' || self.type == T_BLOCK_TYPE;
+}
+
+- (BOOL)isBitfieldType;
+{
+    return self.type == 'b';
 }
 
 - (CDType *)subtype;
@@ -328,19 +343,35 @@ static BOOL debugMerge = NO;
             }
             break;
             
-        case 'b':
-            if (currentName == nil) {
-                // This actually compiles!
-                result = [NSString stringWithFormat:@"unsigned int :%@", bitfieldSize];
-            } else
-                result = [NSString stringWithFormat:@"unsigned int %@:%@", currentName, bitfieldSize];
+        case 'b': {
+            switch (widthOfUnderlyingType) {
+                case 1: result = @"unsigned char "; break;
+                case 2: result = @"unsigned short "; break;
+                case 4: result = @"unsigned int "; break;
+                case 8: result = @"unsigned long long "; break;
+                default:
+                    /* This path is reachable in ObjC 1.0, where ivars don't
+                     * specify their sizes. It's also reachable if the bitfield
+                     * is a member of a C struct. */
+                    if (bitfieldSize > 32) {
+                        result = @"unsigned long long ";
+                    } else {
+                        result = @"unsigned int ";
+                    }
+                    break;
+            }
+            if (currentName != nil) {
+                result = [result stringByAppendingString:currentName];
+            }
+            result = [NSString stringWithFormat:@"%@:%d", result, bitfieldSize];
             break;
+        }
             
         case '[':
             if (currentName == nil)
-                result = [NSString stringWithFormat:@"[%@]", arraySize];
+                result = [NSString stringWithFormat:@"[%d]", arraySize];
             else
-                result = [NSString stringWithFormat:@"%@[%@]", currentName, arraySize];
+                result = [NSString stringWithFormat:@"%@[%d]", currentName, arraySize];
             
             result = [subtype formattedString:result formatter:typeFormatter level:level];
             break;
@@ -533,11 +564,11 @@ static BOOL debugMerge = NO;
             break;
             
         case 'b':
-            result = [NSString stringWithFormat:@"b%@", bitfieldSize];
+            result = [NSString stringWithFormat:@"b%d", bitfieldSize];
             break;
             
         case '[':
-            result = [NSString stringWithFormat:@"[%@%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            result = [NSString stringWithFormat:@"[%d%@]", arraySize, [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             
         case '(':

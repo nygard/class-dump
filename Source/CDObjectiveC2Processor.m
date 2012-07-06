@@ -411,7 +411,7 @@
                 NSString *name = [self.machOFile stringAtAddress:objc2Ivar.name];
                 NSString *type = [self.machOFile stringAtAddress:objc2Ivar.type];
                 
-                CDOCIvar *ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset];
+                CDOCIvar *ivar = [[CDOCIvar alloc] initWithName:name type:type offset:objc2Ivar.offset alignment:objc2Ivar.alignment size:objc2Ivar.size];
                 [ivars addObject:ivar];
             } else {
                 //NSLog(@"%016lx %016lx %016lx  %08x %08x", objc2Ivar.offset, objc2Ivar.name, objc2Ivar.type, objc2Ivar.alignment, objc2Ivar.size);

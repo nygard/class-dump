@@ -9,11 +9,13 @@
 
 @interface CDOCIvar : NSObject
 
-- (id)initWithName:(NSString *)name type:(NSString *)aType offset:(NSUInteger)offset;
+- (id)initWithName:(NSString *)name type:(NSString *)aType offset:(NSUInteger)offset alignment:(NSUInteger)alignment size:(NSUInteger)size;
 
 @property (readonly) NSString *name;
 @property (readonly) NSString *type;
 @property (readonly) NSUInteger offset;
+@property (readonly) NSUInteger alignment;
+@property (readonly) NSUInteger size;
 
 @property (nonatomic, readonly) CDType *parsedType;
 

@@ -15,12 +15,14 @@
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 - (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
 - (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;
-- (id)initBitfieldType:(NSString *)bitfieldSize;
-- (id)initArrayType:(CDType *)type count:(NSString *)count;
+- (id)initBitfieldType:(int)bitfieldSize;
+- (id)initArrayType:(CDType *)type count:(int)count;
 - (id)initPointerType:(CDType *)type;
 - (id)initFunctionPointerType;
 - (id)initBlockType;
 - (id)initModifier:(int)modifier type:(CDType *)type;
+
+- (void)setUnderlyingType:(NSUInteger)underlyingWidth;
 
 @property (strong) NSString *variableName;
 
@@ -29,6 +31,7 @@
 @property (readonly) BOOL isNamedObject;
 @property (readonly) BOOL isTemplateType;
 @property (readonly) BOOL isGarbageCollectedType;
+@property (readonly) BOOL isBitfieldType;
 
 @property (nonatomic, readonly) CDType *subtype;
 @property (nonatomic, readonly) CDTypeName *typeName;

@@ -288,7 +288,7 @@ static BOOL debug = NO;
             // bitfields don't need names.
             // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
             if (type != nil) {
-                CDOCIvar *anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset];
+                CDOCIvar *anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset alignment:0 size:0];
                 [ivars addObject:anIvar];
             }
         }

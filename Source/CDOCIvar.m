@@ -22,17 +22,21 @@
     NSString *name;
     NSString *type;
     NSUInteger offset;
+    NSUInteger alignment;
+    NSUInteger size;
     
     BOOL hasParsedType;
     CDType *parsedType;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
+- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset alignment:(NSUInteger)anAlignment size:(NSUInteger)aSize;
 {
     if ((self = [super init])) {
         name = aName;
         type = aType;
         offset = anOffset;
+        alignment = anAlignment;
+        size = aSize;
         
         hasParsedType = NO;
         parsedType = nil;
@@ -54,6 +58,8 @@
 @synthesize name;
 @synthesize type;
 @synthesize offset;
+@synthesize alignment;
+@synthesize size;
 @synthesize hasParsedType;
 
 - (CDType *)parsedType;
@@ -66,6 +72,10 @@
         if (parsedType == nil)
             NSLog(@"Warning: Parsing ivar type failed, %@", name);
 
+        if (parsedType.isBitfieldType) {
+            [parsedType setUnderlyingType:size];
+        }
+
         self.hasParsedType = YES;
     }
 
@@ -74,7 +84,7 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type];
+    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:name parsedType:[self parsedType]];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
