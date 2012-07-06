@@ -13,3 +13,5 @@
 @property (readonly) BOOL isTemplateType;
 
 @end
+
+extern BOOL global_shouldMangleTemplateTypes;

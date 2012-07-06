@@ -22,6 +22,8 @@
 #import "CDFatArch.h"
 #import "CDSearchPathState.h"
 
+extern BOOL global_shouldMangleTemplateTypes;
+
 void print_usage(void)
 {
     fprintf(stderr,
@@ -45,6 +47,7 @@ void print_usage(void)
             "        --sdk-ios      specify iOS SDK version (will look in /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
             "        --sdk-mac      specify Mac OS X version (will look in /Developer/SDKs/MacOSX<version>.sdk\n"
             "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
+            "        --mangle-template-types  mangle non-alnum characters in type names\n"
             ,
             CLASS_DUMP_VERSION
        );
@@ -56,6 +59,7 @@ void print_usage(void)
 #define CD_OPT_SDK_IOS     4
 #define CD_OPT_SDK_MAC     5
 #define CD_OPT_SDK_ROOT    6
+#define CD_OPT_MANGLE_TEMPLATE_TYPES  7
 
 int main(int argc, char *argv[])
 {
@@ -89,6 +93,7 @@ int main(int argc, char *argv[])
             { "sdk-ios",                 required_argument, NULL, CD_OPT_SDK_IOS },
             { "sdk-mac",                 required_argument, NULL, CD_OPT_SDK_MAC },
             { "sdk-root",                required_argument, NULL, CD_OPT_SDK_ROOT },
+            { "mangle-template-types",   no_argument,       NULL, CD_OPT_MANGLE_TEMPLATE_TYPES },
             { NULL,                      0,                 NULL, 0 },
         };
 
@@ -144,6 +149,11 @@ int main(int argc, char *argv[])
                     //NSLog(@"root: %@", root);
                     classDump.sdkRoot = root;
                     
+                    break;
+                }
+                
+                case CD_OPT_MANGLE_TEMPLATE_TYPES: {
+                    global_shouldMangleTemplateTypes = YES;
                     break;
                 }
                     
