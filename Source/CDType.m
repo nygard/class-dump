@@ -297,7 +297,6 @@ static BOOL debugMerge = NO;
 - (NSString *)formattedString:(NSString *)previousName formatter:(CDTypeFormatter *)typeFormatter level:(NSUInteger)level;
 {
     NSString *result, *currentName;
-    NSString *baseType, *memberString;
 
     assert(variableName == nil || previousName == nil);
     if (variableName != nil)
@@ -346,61 +345,36 @@ static BOOL debugMerge = NO;
             result = [subtype formattedString:result formatter:typeFormatter level:level];
             break;
             
-        case '(':
-            baseType = nil;
-            /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-                NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
-                if (typedefName != nil) {
-                    baseType = typedefName;
-                }
-            }
-            
-            if (baseType == nil) {
-                if (typeName == nil || [@"?" isEqual:[typeName description]])
-                    baseType = @"union";
-                else
-                    baseType = [NSString stringWithFormat:@"union %@", typeName];
-                
-                if ((typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self] && [members count] > 0)
-                    || (level == 0 && typeFormatter.shouldExpand && [members count] > 0))
-                    memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
-                                    [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
-                else
-                    memberString = @"";
-                
-                baseType = [baseType stringByAppendingString:memberString];
-            }
-            
-            if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
-                result = baseType;
-            else
-                result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
-            break;
-            
         case '{':
-            baseType = nil;
-            /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-                NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
-                if (typedefName != nil) {
-                    baseType = typedefName;
-                }
-            }
+        case '(': {
+            NSString *struct_or_union = (type == '{' ? @"struct" : @"union");
+            NSString *baseType = [typeFormatter typedefNameForStruct:self level:level];
+
             if (baseType == nil) {
-                if (typeName == nil || [@"?" isEqual:[typeName description]])
-                    baseType = @"struct";
-                else
-                    baseType = [NSString stringWithFormat:@"struct %@", typeName];
+                BOOL print_members = NO;
+
+                if (typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self]) {
+                    /* In these cases, "members" may be empty to indicate that
+                     * this type is already defined and must not be repeated. */
+                    print_members = ([members count] > 0);
+                } else if (level == 0 && typeFormatter.shouldExpand) {
+                    print_members = ([members count] > 0);
+                }
+
+                if (typeName == nil || [@"?" isEqual:[typeName description]]) {
+                    /* If the type has no name, we MUST print its members. */
+                    baseType = struct_or_union;
+                    print_members = YES;
+                } else {
+                    baseType = [NSString stringWithFormat:@"%@ %@", struct_or_union, typeName];
+                }
                 
-                if ((typeFormatter.shouldAutoExpand && [typeFormatter.typeController shouldExpandType:self] && [members count] > 0)
-                    || (level == 0 && typeFormatter.shouldExpand && [members count] > 0))
-                    memberString = [NSString stringWithFormat:@" {\n%@%@}",
-                                    [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
-                                    [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
-                else
-                    memberString = @"";
-                
-                baseType = [baseType stringByAppendingString:memberString];
+                if (print_members) {
+                    NSString *memberString = [NSString stringWithFormat:@" {\n%@%@}",
+                        [self formattedStringForMembersAtLevel:level + 1 formatter:typeFormatter],
+                        [NSString spacesIndentedToLevel:typeFormatter.baseLevel + level spacesPerLevel:4]];
+                    baseType = [baseType stringByAppendingString:memberString];
+                }
             }
             
             if (currentName == nil /*|| [currentName hasPrefix:@"?"]*/) // Not sure about this
@@ -408,7 +382,7 @@ static BOOL debugMerge = NO;
             else
                 result = [NSString stringWithFormat:@"%@ %@", baseType, currentName];
             break;
-            
+        }
         case '^':
             if (currentName == nil)
                 result = @"*";
