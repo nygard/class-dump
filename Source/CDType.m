@@ -11,6 +11,8 @@
 #import "CDTypeFormatter.h"
 #import "CDTypeParser.h"
 
+BOOL global_shouldMangleTemplateTypes = NO;
+
 static BOOL debugMerge = NO;
 
 @interface CDType ()
@@ -349,6 +351,18 @@ static BOOL debugMerge = NO;
         case '(': {
             NSString *struct_or_union = (type == '{' ? @"struct" : @"union");
             NSString *baseType = [typeFormatter typedefNameForStruct:self level:level];
+            NSString *type_name = [self.typeName description];
+            
+            if ([@"?" isEqual:type_name])
+                type_name = nil;
+
+            if (global_shouldMangleTemplateTypes && (type_name != nil)) {
+                NSString *legitCharacters = @"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                             "abcdefghijklmnopqrstuvwxyz" "0123456789";
+
+                NSCharacterSet *illegitCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:legitCharacters] invertedSet];
+                type_name = [[type_name componentsSeparatedByCharactersInSet:illegitCharacterSet] componentsJoinedByString:@"_"];
+            }
 
             if (baseType == nil) {
                 BOOL print_members = NO;
@@ -361,12 +375,12 @@ static BOOL debugMerge = NO;
                     print_members = ([members count] > 0);
                 }
 
-                if (typeName == nil || [@"?" isEqual:[typeName description]]) {
+                if (type_name == nil) {
                     /* If the type has no name, we MUST print its members. */
                     baseType = struct_or_union;
                     print_members = YES;
                 } else {
-                    baseType = [NSString stringWithFormat:@"%@ %@", struct_or_union, typeName];
+                    baseType = [NSString stringWithFormat:@"%@ %@", struct_or_union, type_name];
                 }
                 
                 if (print_members) {
