@@ -28,8 +28,6 @@ typedef NSUInteger CDNodeColor;
 
 @property (assign) CDNodeColor color;
 
-- (NSString *)description;
-
 - (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)otherNode;
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
 

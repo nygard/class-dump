@@ -19,8 +19,6 @@ typedef NSUInteger CDRelocationSize;
 
 - (id)initWithInfo:(struct relocation_info)info;
 
-- (NSString *)description;
-
 @property (nonatomic, readonly) NSUInteger offset;
 @property (nonatomic, readonly) CDRelocationSize size;
 @property (nonatomic, readonly) uint32_t symbolnum;

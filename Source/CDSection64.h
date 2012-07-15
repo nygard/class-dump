@@ -11,8 +11,6 @@
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
 
-- (NSString *)description;
-
 @property (weak, readonly) CDLCSegment64 *segment;
 
 - (void)loadData;

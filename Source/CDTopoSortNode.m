@@ -26,6 +26,13 @@
     return self;
 }
 
+#pragma mark - Debugging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"%@ (%lu) depends on %@", self.identifier, self.color, self.dependancyDescription];
+}
+
 #pragma mark -
 
 - (NSString *)identifier;
@@ -61,13 +68,6 @@
 }
 
 @synthesize color;
-
-#pragma mark - Debugging
-
-- (NSString *)description;
-{
-    return [NSString stringWithFormat:@"%@ (%lu) depends on %@", self.identifier, self.color, self.dependancyDescription];
-}
 
 #pragma mark - Sorting
 

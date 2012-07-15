@@ -14,8 +14,6 @@
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 
-- (NSString *)description;
-
 @property (nonatomic, readonly) cpu_type_t cpuType;
 @property (nonatomic, readonly) cpu_type_t maskedCPUType;
 @property (nonatomic, readonly) cpu_subtype_t cpuSubtype;

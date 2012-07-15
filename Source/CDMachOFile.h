@@ -25,8 +25,6 @@ typedef NSUInteger CDByteOrder;
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 
-- (NSString *)description;
-
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
 @property (nonatomic, readonly) CDByteOrder byteOrder;

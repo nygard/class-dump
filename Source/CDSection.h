@@ -11,8 +11,6 @@
 
 - (id)init;
 
-- (NSString *)description;
-
 @property (retain) NSString *segmentName;
 @property (retain) NSString *sectionName;
 
