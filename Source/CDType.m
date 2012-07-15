@@ -186,9 +186,14 @@ static BOOL debugMerge = NO;
 #pragma mark -
 
 // TODO (2009-08-26): Looks like this doesn't compare the variable name.
-- (BOOL)isEqual:(CDType *)otherType;
+- (BOOL)isEqual:(id)object;
 {
-    return [self.typeString isEqual:otherType.typeString];
+    if ([object isKindOfClass:[self class]]) {
+        CDType *otherType = object;
+        return [self.typeString isEqual:otherType.typeString];
+    }
+    
+    return NO;
 }
 
 #pragma mark - Debugging
