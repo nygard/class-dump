@@ -160,6 +160,7 @@
             }
         }
         @catch (NSException *exception) {
+            NSLog(@"Caught exception: %@", exception);
             return NO;
         }
     }
