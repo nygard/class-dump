@@ -1107,6 +1107,14 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-fdiagnostics-show-option",
+					"-Wno-semicolon-before-method-body",
+					"-Wno-c11-extensions",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-overriding-method-mismatch",
+					"-Weverything",
+				);
 			};
 			name = Debug;
 		};
@@ -1128,6 +1136,14 @@
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-fdiagnostics-show-option",
+					"-Wno-semicolon-before-method-body",
+					"-Wno-c11-extensions",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-overriding-method-mismatch",
+					"-Weverything",
+				);
 			};
 			name = Release;
 		};
