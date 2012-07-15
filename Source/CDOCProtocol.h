@@ -16,8 +16,8 @@
 @property (readonly) NSArray *protocols;
 - (void)addProtocol:(CDOCProtocol *)protocol;
 - (void)removeProtocol:(CDOCProtocol *)protocol;
-@property (readonly) NSArray *protocolNames;
-@property (readonly) NSString *protocolsString;
+@property (nonatomic, readonly) NSArray *protocolNames;
+@property (nonatomic, readonly) NSString *protocolsString;
 
 - (NSArray *)classMethods;
 - (void)addClassMethod:(CDOCMethod *)method;

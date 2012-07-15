@@ -14,7 +14,7 @@
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 
 @property (readonly) CDMachOFile *machOFile;
-@property (readonly) BOOL hasObjectiveCData;
+@property (nonatomic, readonly) BOOL hasObjectiveCData;
 
 @property (nonatomic, readonly) CDSection *objcImageInfoSection;
 @property (nonatomic, readonly) NSString *garbageCollectionStatus;

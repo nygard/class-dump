@@ -17,14 +17,14 @@ typedef NSUInteger CDNodeColor;
 
 - (id)initWithObject:(id <CDTopologicalSort>)object;
 
-@property (readonly) NSString *identifier;
+@property (nonatomic, readonly) NSString *identifier;
 @property (readonly) id <CDTopologicalSort> sortableObject;
 
 - (NSArray *)dependancies;
 - (void)addDependancy:(NSString *)identifier;
 - (void)removeDependancy:(NSString *)identifier;
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
-@property (readonly) NSString *dependancyDescription;
+@property (nonatomic, readonly) NSString *dependancyDescription;
 
 @property (assign) CDNodeColor color;
 

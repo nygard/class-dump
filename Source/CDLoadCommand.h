@@ -22,9 +22,9 @@
 @property (weak, readonly) CDMachOFile *machOFile;
 @property (readonly) NSUInteger commandOffset;
 
-@property (readonly) uint32_t cmd;
-@property (readonly) uint32_t cmdsize;
-@property (readonly) BOOL mustUnderstandToExecute;
+@property (nonatomic, readonly) uint32_t cmd;
+@property (nonatomic, readonly) uint32_t cmdsize;
+@property (nonatomic, readonly) BOOL mustUnderstandToExecute;
 
 @property (nonatomic, readonly) NSString *commandName;
 

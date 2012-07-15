@@ -29,16 +29,16 @@ typedef NSUInteger CDByteOrder;
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
-@property (readonly) CDByteOrder byteOrder;
+@property (nonatomic, readonly) CDByteOrder byteOrder;
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
-@property (readonly) uint32_t magic;
-@property (readonly) cpu_type_t cputype;
-@property (readonly) cpu_subtype_t cpusubtype;
-@property (readonly) cpu_type_t cputypePlusArchBits;
-@property (readonly) uint32_t filetype;
-@property (readonly) uint32_t flags;
+@property (nonatomic, readonly) uint32_t magic;
+@property (nonatomic, readonly) cpu_type_t cputype;
+@property (nonatomic, readonly) cpu_subtype_t cpusubtype;
+@property (nonatomic, readonly) cpu_type_t cputypePlusArchBits;
+@property (nonatomic, readonly) uint32_t filetype;
+@property (nonatomic, readonly) uint32_t flags;
 
 @property (readonly) NSArray *loadCommands;
 @property (readonly) NSArray *dylibLoadCommands;
@@ -74,9 +74,9 @@ typedef NSUInteger CDByteOrder;
 
 @property (nonatomic, readonly) NSString *importBaseName;
 
-@property (readonly) BOOL isEncrypted;
-@property (readonly) BOOL hasProtectedSegments;
-@property (readonly) BOOL canDecryptAllSegments;
+@property (nonatomic, readonly) BOOL isEncrypted;
+@property (nonatomic, readonly) BOOL hasProtectedSegments;
+@property (nonatomic, readonly) BOOL canDecryptAllSegments;
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
@@ -94,8 +94,8 @@ typedef NSUInteger CDByteOrder;
 - (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
 - (NSString *)externalClassNameForAddress2:(NSUInteger)address;
 
-@property (readonly) BOOL hasObjectiveC1Data;
-@property (readonly) BOOL hasObjectiveC2Data;
+@property (nonatomic, readonly) BOOL hasObjectiveC1Data;
+@property (nonatomic, readonly) BOOL hasObjectiveC2Data;
 @property (nonatomic, readonly) Class processorClass;
 
 @end

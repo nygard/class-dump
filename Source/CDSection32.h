@@ -12,6 +12,6 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
 
 @property (weak, readonly) CDLCSegment32 *segment;
-@property (readonly) uint32_t offset;
+@property (nonatomic, readonly) uint32_t offset;
 
 @end

@@ -11,12 +11,12 @@
 
 - (void)loadSymbols;
 
-@property (readonly) uint32_t symoff;
-@property (readonly) uint32_t nsyms;
-@property (readonly) uint32_t stroff;
-@property (readonly) uint32_t strsize;
+@property (nonatomic, readonly) uint32_t symoff;
+@property (nonatomic, readonly) uint32_t nsyms;
+@property (nonatomic, readonly) uint32_t stroff;
+@property (nonatomic, readonly) uint32_t strsize;
 
-@property (readonly) NSUInteger baseAddress;
+@property (nonatomic, readonly) NSUInteger baseAddress;
 @property (nonatomic, readonly) NSArray *symbols;
 
 - (CDSymbol *)symbolForClass:(NSString *)className;

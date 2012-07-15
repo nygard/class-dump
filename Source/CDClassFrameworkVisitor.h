@@ -20,6 +20,6 @@
 @interface CDClassFrameworkVisitor : CDVisitor
 
 // NSString (class name) -> NSString (framework name)
-@property (readonly) NSDictionary *frameworkNamesByClassName;  
+@property (nonatomic, readonly) NSDictionary *frameworkNamesByClassName;  
 
 @end

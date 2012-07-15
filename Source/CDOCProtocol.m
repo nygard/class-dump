@@ -15,7 +15,7 @@
 #import "CDVisitorPropertyState.h"
 
 @interface CDOCProtocol ()
-@property (readonly) NSString *sortableName;
+@property (nonatomic, readonly) NSString *sortableName;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 //- (void)visitProperties:(CDVisitor *)visitor;
 @end

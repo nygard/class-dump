@@ -46,9 +46,9 @@
 
 @property (assign) CDArch targetArch;
 
-@property (readonly) BOOL containsObjectiveCData;
-@property (readonly) BOOL hasEncryptedFiles;
-@property (readonly) BOOL hasObjectiveCRuntimeInfo;
+@property (nonatomic, readonly) BOOL containsObjectiveCData;
+@property (nonatomic, readonly) BOOL hasEncryptedFiles;
+@property (nonatomic, readonly) BOOL hasObjectiveCRuntimeInfo;
 
 @property (readonly) CDTypeController *typeController;
 

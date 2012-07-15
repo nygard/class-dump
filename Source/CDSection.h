@@ -22,8 +22,8 @@
 - (void)loadData;
 - (void)unloadData;
 
-@property (readonly) NSUInteger addr;
-@property (readonly) NSUInteger size;
+@property (nonatomic, readonly) NSUInteger addr;
+@property (nonatomic, readonly) NSUInteger size;
 
 - (CDMachOFile *)machOFile;
 

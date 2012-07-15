@@ -10,6 +10,6 @@
     struct source_version_command sourceVersionCommand;
 }
 
-@property (readonly) NSString *sourceVersionString;
+@property (nonatomic, readonly) NSString *sourceVersionString;
 
 @end

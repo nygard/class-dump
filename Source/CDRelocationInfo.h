@@ -21,9 +21,9 @@ typedef NSUInteger CDRelocationSize;
 
 - (NSString *)description;
 
-@property (readonly) NSUInteger offset;
-@property (readonly) CDRelocationSize size;
-@property (readonly) uint32_t symbolnum;
-@property (readonly) BOOL isExtern;
+@property (nonatomic, readonly) NSUInteger offset;
+@property (nonatomic, readonly) CDRelocationSize size;
+@property (nonatomic, readonly) uint32_t symbolnum;
+@property (nonatomic, readonly) BOOL isExtern;
 
 @end

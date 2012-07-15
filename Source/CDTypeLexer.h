@@ -27,13 +27,13 @@ typedef NSUInteger CDTypeLexerState;
 @property (nonatomic, assign) CDTypeLexerState state;
 @property (assign) BOOL shouldShowLexing;
 
-@property (readonly) NSString *string;
+@property (nonatomic, readonly) NSString *string;
 - (int)scanNextToken;
 
 @property (strong) NSString *lexText;
 
-@property (readonly) unichar peekChar;
-@property (readonly) NSString *remainingString;
-@property (readonly) NSString *peekIdentifier;
+@property (nonatomic, readonly) unichar peekChar;
+@property (nonatomic, readonly) NSString *remainingString;
+@property (nonatomic, readonly) NSString *peekIdentifier;
 
 @end
