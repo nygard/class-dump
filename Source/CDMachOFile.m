@@ -62,6 +62,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     
     struct {
         unsigned int uses64BitABI:1;
+        unsigned int _unused:31;
     } _flags;
 }
 

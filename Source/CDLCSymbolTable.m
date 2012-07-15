@@ -22,6 +22,7 @@
     struct {
         unsigned int didFindBaseAddress:1;
         unsigned int didWarnAboutUnfoundBaseAddress:1;
+        unsigned int _unused:30;
     } flags;
 }
 
