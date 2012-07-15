@@ -114,7 +114,7 @@ NSString *CDMagicNumberString(uint32_t magic)
             header.reserved = OSSwapInt32(header.reserved);
         }
         
-        NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype }), @"Header magic should match cpu arch");
+        NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = header.cputype, .cpusubtype = header.cpusubtype }), @"Header magic should match cpu arch", nil);
         header.cputype &= ~CPU_ARCH_MASK;
         
         NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);

@@ -44,7 +44,7 @@ static uint64_t read_uleb128(const uint8_t **ptrptr, const uint8_t *end)
 
     //NSLog(@"read_uleb128()");
     do {
-        NSCAssert(ptr != end, @"Malformed uleb128");
+        NSCAssert(ptr != end, @"Malformed uleb128", nil);
 
         //NSLog(@"byte: %02x", *ptr);
         uint64_t slice = *ptr & 0x7f;
@@ -88,7 +88,7 @@ static int64_t read_sleb128(const uint8_t **ptrptr, const uint8_t *end)
 
     //NSLog(@"read_sleb128()");
     do {
-        NSCAssert(ptr != end, @"Malformed sleb128");
+        NSCAssert(ptr != end, @"Malformed sleb128", nil);
 
         byte = *ptr++;
         //NSLog(@"%02x", byte);
