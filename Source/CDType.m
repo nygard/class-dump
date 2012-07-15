@@ -536,7 +536,6 @@ static BOOL debugMerge = NO;
             } else {
                 return [NSString stringWithFormat:@"(%@=%@)", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             }
-            break;
             
         case '{':
             if (typeName == nil) {
@@ -546,7 +545,6 @@ static BOOL debugMerge = NO;
             } else {
                 return [NSString stringWithFormat:@"{%@=%@}", typeName, [self _typeStringForMembersWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             }
-            break;
             
         case '^':
             result = [NSString stringWithFormat:@"^%@", [subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
@@ -918,12 +916,12 @@ static BOOL debugMerge = NO;
             if ([members count] > 0 && [self canMergeWithType:phase3Type]) {
                 [self mergeWithType:phase3Type];
             } else {
-                if (0) {
-                    // This can happen in AU Lab, that struct has no members...
-                    NSLog(@"Found phase3 type, but can't merge with it.");
-                    NSLog(@"this: %@", self.typeString);
-                    NSLog(@"that: %@", phase3Type.typeString);
-                }
+#if 0
+                // This can happen in AU Lab, that struct has no members...
+                NSLog(@"Found phase3 type, but can't merge with it.");
+                NSLog(@"this: %@", self.typeString);
+                NSLog(@"that: %@", phase3Type.typeString);
+#endif
             }
         }
     }
