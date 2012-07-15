@@ -64,9 +64,14 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSString *)description;
 {
-    NSString *valueFormat = [NSString stringWithFormat:@"%%0%ullx", is32Bit ? 8 : 16];
-    NSString *valuePad = is32Bit ? @"        " : @"                ";
-    NSString *valueString = self.isUndefined ? valuePad : [NSString stringWithFormat:valueFormat, self.value];
+    NSString *valueString;
+
+    if (self.isUndefined) {
+        valueString = [@" " stringByPaddingToLength:(is32Bit ? 8 : 16) withString:@" " startingAtIndex:0];
+    } else {
+        valueString = [NSString stringWithFormat:(is32Bit ? @"%08llx" : @"%016llx"), self.value];
+    }
+    
     //NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
     //NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
 
