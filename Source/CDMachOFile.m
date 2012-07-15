@@ -29,6 +29,36 @@
 #import "CDRelocationInfo.h"
 #import "CDSearchPathState.h"
 
+struct dyld_cache_header
+{
+	char		magic[16];				// e.g. "dyld_v0     ppc"
+	uint32_t	mappingOffset;			// file offset to first dyld_cache_mapping_info
+	uint32_t	mappingCount;			// number of dyld_cache_mapping_info entries
+	uint32_t	imagesOffset;			// file offset to first dyld_cache_image_info
+	uint32_t	imagesCount;			// number of dyld_cache_image_info entries
+	uint64_t	dyldBaseAddress;		// base address of dyld when cache was built
+	uint64_t	codeSignatureOffset;	// file offset in of code signature blob
+	uint64_t	codeSignatureSize;		// size of code signature blob (zero means to end of file)
+};
+
+struct dyld_cache_mapping_info {
+	uint64_t	address;
+	uint64_t	size;
+	uint64_t	fileOffset;
+	uint32_t	maxProt;
+	uint32_t	initProt;
+};
+
+struct dyld_cache_image_info
+{
+	uint64_t	address;
+	uint64_t	modTime;
+	uint64_t	inode;
+	uint32_t	pathFileOffset;
+	uint32_t	pad;
+};
+
+
 NSString *CDMagicNumberString(uint32_t magic)
 {
     switch (magic) {
@@ -61,11 +91,15 @@ NSString *CDMagicNumberString(uint32_t magic)
     struct {
         unsigned int uses64BitABI:1;
     } _flags;
+    
+    struct dyld_cache_header cacheHeader;
+    struct dyld_cache_mapping_info *cacheMappingInfo;
+    struct dyld_cache_image_info *cacheImageInfo;
 }
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState isCache:(BOOL)aIsCache;
 {
-    if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState])) {
+    if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState isCache:aIsCache])) {
         byteOrder = CDByteOrder_LittleEndian;
         loadCommands = nil;
         dylibLoadCommands = nil;
@@ -79,7 +113,27 @@ NSString *CDMagicNumberString(uint32_t magic)
         dyldEnvironment = nil;
         reExportedDylibs = nil;
         
-        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:self.archOffset];
+        if(self.isCache) {
+            if(![self _loadCacheInfo])
+                return nil;
+        }
+        
+        NSUInteger magicOffset;
+        
+        if(self.isCache) {
+            NSUInteger address = [self _cacheAddressForImage:aFilename];
+            if(address == 0)
+            {
+                NSLog(@"Could not find %@ in cache!", aFilename);
+                return nil;
+            }
+            
+            magicOffset = [self _cacheOffsetForAddress:address];
+        } else {
+            magicOffset = self.archOffset;
+        }
+        
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:magicOffset];
         header.magic = [cursor readBigInt32];
         if (header.magic == MH_MAGIC || header.magic == MH_MAGIC_64) {
             byteOrder = CDByteOrder_BigEndian;
@@ -115,11 +169,72 @@ NSString *CDMagicNumberString(uint32_t magic)
         header.cputype &= ~CPU_ARCH_MASK;
         
         NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
+        if(self.isCache)
+            headerOffset += magicOffset;
         CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
         [self _readLoadCommands:fileCursor count:header.ncmds];
     }
 
     return self;
+}
+
+- (BOOL) _loadCacheInfo
+{
+    CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:[self data] offset:0];
+    [cursor readBytesOfLength:sizeof(cacheHeader.magic) intoBuffer:cacheHeader.magic];
+    if(memcmp(cacheHeader.magic, "dyld_v1   armv7", sizeof("dyld_v1   armv7")) != 0)
+        return NO;
+    
+    cacheHeader.mappingOffset = [cursor readLittleInt32];
+    cacheHeader.mappingCount = [cursor readLittleInt32];
+    cacheHeader.imagesOffset = [cursor readLittleInt32];
+    cacheHeader.imagesCount = [cursor readLittleInt32];
+    cacheHeader.dyldBaseAddress = [cursor readLittleInt64];
+    cacheHeader.codeSignatureOffset = [cursor readLittleInt64];
+    cacheHeader.codeSignatureSize = [cursor readLittleInt64];
+    
+    CDDataCursor *mappingCursor = [[CDDataCursor alloc] initWithData:[self data] offset:cacheHeader.mappingOffset];
+    cacheMappingInfo = (struct dyld_cache_mapping_info*) malloc(sizeof(struct dyld_cache_mapping_info) * cacheHeader.mappingCount);
+    for(int i = 0; i < cacheHeader.mappingCount; ++i) {
+        cacheMappingInfo[i].address = [mappingCursor readLittleInt64];
+        cacheMappingInfo[i].size = [mappingCursor readLittleInt64];
+        cacheMappingInfo[i].fileOffset = [mappingCursor readLittleInt64];
+        cacheMappingInfo[i].maxProt = [mappingCursor readLittleInt32];
+        cacheMappingInfo[i].initProt = [mappingCursor readLittleInt32];
+    }
+    
+    CDDataCursor *imageCursor = [[CDDataCursor alloc] initWithData:[self data] offset:cacheHeader.imagesOffset];
+    cacheImageInfo = (struct dyld_cache_image_info*) malloc(sizeof(struct dyld_cache_image_info) * cacheHeader.imagesCount);
+    for(int i = 0; i < cacheHeader.imagesCount; ++i) {
+        cacheImageInfo[i].address = [imageCursor readLittleInt64];
+        cacheImageInfo[i].modTime = [imageCursor readLittleInt64];
+        cacheImageInfo[i].inode = [imageCursor readLittleInt64];
+        cacheImageInfo[i].pathFileOffset = [imageCursor readLittleInt32];
+        cacheImageInfo[i].pad = [imageCursor readLittleInt32];
+    }
+    
+    return YES;
+}
+
+- (NSUInteger) _cacheAddressForImage:(NSString *)fileName
+{
+    for(int i = 0; i < cacheHeader.imagesCount; ++i) {
+        if(strcmp(((char*)[[self data] bytes]) + cacheImageInfo[i].pathFileOffset, [fileName UTF8String]) == 0) {
+            return cacheImageInfo[i].address;
+        }
+    }
+    
+    return 0;
+}
+
+- (NSUInteger) _cacheOffsetForAddress:(NSUInteger)address
+{
+    for(int i = 0; i < cacheHeader.mappingCount; ++i) {
+        if(cacheMappingInfo[i].address <= address && address < (cacheMappingInfo[i].address + cacheMappingInfo[i].size))
+            return cacheMappingInfo[i].fileOffset + (address - cacheMappingInfo[i].address);
+    }
+    
+    return 0;
 }
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
@@ -352,24 +467,32 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (address == 0)
         return nil;
 
-    CDLCSegment *segment = [self segmentContainingAddress:address];
-    if (segment == nil) {
-        NSLog(@"Error: Cannot find offset for address 0x%08lx in stringAtAddress:", address);
-        exit(5);
-        return nil;
-    }
-
-    if ([segment isProtected]) {
-        NSData *d2 = [segment decryptedData];
-        NSUInteger d2Offset = [segment segmentOffsetForAddress:address];
-        if (d2Offset == 0)
+    NSUInteger anOffset;
+    
+    if(self.isCache) {
+        // dylibs in the dyld shared cache sometimes reference things not technically "mapped in" by the mach-o, so it's counterproductive to try to map an address to a specific segment/section.
+        anOffset = [self _cacheOffsetForAddress:address];
+    } else {
+        CDLCSegment *segment = [self segmentContainingAddress:address];
+        if (segment == nil) {
+            NSLog(@"Error: Cannot find offset for address 0x%08lx in stringAtAddress:", address);
+            exit(5);
             return nil;
+        }
 
-        ptr = [d2 bytes] + d2Offset;
-        return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+        if ([segment isProtected]) {
+            NSData *d2 = [segment decryptedData];
+            NSUInteger d2Offset = [segment segmentOffsetForAddress:address];
+            if (d2Offset == 0)
+                return nil;
+
+            ptr = [d2 bytes] + d2Offset;
+            return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+        }
+
+        anOffset = self.archOffset + [self dataOffsetForAddress:address];
     }
 
-    NSUInteger anOffset = self.archOffset + [self dataOffsetForAddress:address];
     if (anOffset == 0)
         return nil;
 
@@ -384,13 +507,17 @@ NSString *CDMagicNumberString(uint32_t magic)
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
-{
+{    
     if (address == 0)
         return 0;
 
+    // dylibs in the dyld shared cache sometimes reference things not technically "mapped in" by the mach-o, so it's counterproductive to try to map an address to a specific segment/section.
+    if(self.isCache)
+        return [self _cacheOffsetForAddress:address];
+
     CDLCSegment *segment = [self segmentContainingAddress:address];
     if (segment == nil) {
-        NSLog(@"Error: Cannot find offset for address 0x%08lx in dataOffsetForAddress:", address);
+        NSLog(@"Error: Cannot find offset for address 0x%08lx in dataOffsetForAddress: %@", address, [NSThread callStackSymbols]);
         exit(5);
     }
 
@@ -615,6 +742,15 @@ NSString *CDMagicNumberString(uint32_t magic)
         return [CDObjectiveC2Processor class];
     
     return [CDObjectiveC1Processor class];
+}
+
+- (void) dealloc
+{
+    if(cacheImageInfo)
+        free(cacheImageInfo);
+    
+    if(cacheMappingInfo)
+        free(cacheMappingInfo);
 }
 
 @end

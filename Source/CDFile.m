@@ -65,14 +65,15 @@ BOOL CDArchUses64BitABI(CDArch arch)
     NSUInteger archOffset;
     NSUInteger archSize;
     CDSearchPathState *searchPathState;
+    BOOL isCache;
 }
 
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
 {
-    return [self fileWithData:someData archOffset:0 archSize:[someData length] filename:aFilename searchPathState:aSearchPathState];
+    return [self fileWithData:someData archOffset:0 archSize:[someData length] filename:aFilename searchPathState:aSearchPathState isCache:NO];
 }
 
-+ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState isCache:(BOOL)aIsCache;
 {
     CDFatFile *aFatFile = nil;
 
@@ -80,7 +81,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
         aFatFile = [[CDFatFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState];
 
     if (aFatFile == nil) {
-        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState];
+        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState isCache:aIsCache];
         return machOFile;
     }
 
@@ -93,7 +94,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return nil;
 }
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState isCache:(BOOL)aIsCache;
 {
     if ((self = [super init])) {
         // Otherwise reading the magic number fails.
@@ -106,6 +107,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
         archOffset = anOffset;
         archSize = aSize;
         searchPathState = aSearchPathState;
+        isCache = aIsCache;
     }
 
     return self;
@@ -118,6 +120,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
 @synthesize archOffset;
 @synthesize archSize;
 @synthesize searchPathState;
+@synthesize isCache;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
