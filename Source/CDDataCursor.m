@@ -68,7 +68,7 @@
 {
     const uint8_t *ptr;
 
-    ptr = [data bytes] + offset;
+    ptr = (uint8_t *)[data bytes] + offset;
     offset += 1;
 
     return *ptr;
@@ -197,7 +197,7 @@
 - (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
 {
     if (offset + length <= [data length]) {
-        [targetData appendBytes:[data bytes] + offset length:length];
+        [targetData appendBytes:(uint8_t *)[data bytes] + offset length:length];
         offset += length;
     } else {
         [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
@@ -207,7 +207,7 @@
 - (void)readBytesOfLength:(NSUInteger)length intoBuffer:(void *)buf;
 {
     if (offset + length <= [data length]) {
-        memcpy(buf, [data bytes] + offset, length);
+        memcpy(buf, (uint8_t *)[data bytes] + offset, length);
         offset += length;
     } else {
         [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];
@@ -221,7 +221,7 @@
 
 - (NSString *)readCString;
 {
-    return [self readStringOfLength:strlen([data bytes] + offset) encoding:NSASCIIStringEncoding];
+    return [self readStringOfLength:strlen((const char *)[data bytes] + offset) encoding:NSASCIIStringEncoding];
 }
 
 - (NSString *)readStringOfLength:(NSUInteger)length encoding:(NSStringEncoding)encoding;
@@ -239,7 +239,7 @@
                 return nil;
             }
 
-            strncpy(buf, [data bytes] + offset, length);
+            strncpy(buf, (const char *)[data bytes] + offset, length);
             buf[length] = 0;
 
             str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:encoding];
@@ -247,7 +247,7 @@
             free(buf);
             return str;
         } else {
-            str = [[NSString alloc] initWithBytes:[data bytes] + offset length:length encoding:encoding];
+            str = [[NSString alloc] initWithBytes:(uint8_t *)[data bytes] + offset length:length encoding:encoding];
             offset += length;
             return str;
         }

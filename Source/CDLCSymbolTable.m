@@ -103,7 +103,7 @@
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    const char *strtab = [[self.machOFile machOData] bytes] + symtabCommand.stroff;
+    const char *strtab = (char *)[[self.machOFile machOData] bytes] + symtabCommand.stroff;
 
     if (![self.machOFile uses64BitABI]) {
         //NSLog(@"32 bit...");

@@ -370,7 +370,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         if (d2Offset == 0)
             return nil;
 
-        ptr = [d2 bytes] + d2Offset;
+        ptr = (uint8_t *)[d2 bytes] + d2Offset;
         return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
     }
 
@@ -378,14 +378,14 @@ NSString *CDMagicNumberString(uint32_t magic)
     if (anOffset == 0)
         return nil;
 
-    ptr = [self.data bytes] + anOffset;
+    ptr = (uint8_t *)[self.data bytes] + anOffset;
 
     return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 }
 
 - (NSData *)machOData;
 {
-    return [NSData dataWithBytesNoCopy:(void *)(self.archOffset + [self.data bytes]) length:self.archSize freeWhenDone:NO];
+    return [NSData dataWithBytesNoCopy:(void *)((uint8_t *)[self.data bytes] + self.archOffset) length:self.archSize freeWhenDone:NO];
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
@@ -423,7 +423,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (const void *)bytesAtOffset:(NSUInteger)anOffset;
 {
-    return [self.data bytes] + anOffset;
+    return (uint8_t *)[self.data bytes] + anOffset;
 }
 
 - (NSString *)importBaseName;

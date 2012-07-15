@@ -113,7 +113,7 @@
 
 - (NSData *)machOData;
 {
-    return [[NSData alloc] initWithBytes:[[self.fatFile data] bytes] + fatArch.offset length:fatArch.size];
+    return [[NSData alloc] initWithBytes:(uint8_t *)[[self.fatFile data] bytes] + fatArch.offset length:fatArch.size];
 }
 
 @end
