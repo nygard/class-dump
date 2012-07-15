@@ -1113,6 +1113,7 @@
 					"-Wno-c11-extensions",
 					"-Wno-readonly-setter-attrs",
 					"-Wno-overriding-method-mismatch",
+					"-Wno-unused-macros",
 					"-Weverything",
 				);
 			};
@@ -1142,6 +1143,7 @@
 					"-Wno-c11-extensions",
 					"-Wno-readonly-setter-attrs",
 					"-Wno-overriding-method-mismatch",
+					"-Wno-unused-macros",
 					"-Weverything",
 				);
 			};
