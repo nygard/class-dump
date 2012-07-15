@@ -242,6 +242,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             src += PAGE_SIZE * 3;
             dest += PAGE_SIZE * 3;
             NSUInteger count = (self.filesize / PAGE_SIZE) - 3;
+            
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
             uint32_t magic = OSReadLittleInt32(src, 0);
             if (magic == CDSegmentProtectedMagic_None) {
@@ -285,6 +288,8 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
                 NSLog(@"Unknown encryption type: 0x%08x", magic);
                 exit(99);
             }
+            
+#pragma clang diagnostic pop
         }
     }
     //NSLog(@"decryptedData: %p", decryptedData);
