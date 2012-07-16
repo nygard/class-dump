@@ -7,13 +7,13 @@
 
 @implementation CDRelocationInfo
 {
-    struct relocation_info rinfo;
+    struct relocation_info _rinfo;
 }
 
 - (id)initWithInfo:(struct relocation_info)info;
 {
     if ((self = [super init])) {
-        rinfo = info;
+        _rinfo = info;
     }
 
     return self;
@@ -25,29 +25,29 @@
 {
     return [NSString stringWithFormat:@"<%@:%p> addr/off: %08x, sym #: %5u, pcrel? %u, len: %u, extern? %u, type: %x",
             NSStringFromClass([self class]), self,
-            rinfo.r_address, rinfo.r_symbolnum, rinfo.r_pcrel, rinfo.r_length, rinfo.r_extern, rinfo.r_type];
+            _rinfo.r_address, _rinfo.r_symbolnum, _rinfo.r_pcrel, _rinfo.r_length, _rinfo.r_extern, _rinfo.r_type];
 }
 
 #pragma mark -
 
 - (NSUInteger)offset;
 {
-    return rinfo.r_address;
+    return _rinfo.r_address;
 }
 
 - (CDRelocationSize)size;
 {
-    return rinfo.r_length;
+    return _rinfo.r_length;
 }
 
 - (uint32_t)symbolnum;
 {
-    return rinfo.r_symbolnum;
+    return _rinfo.r_symbolnum;
 }
 
 - (BOOL)isExtern;
 {
-    return rinfo.r_extern == 1;
+    return _rinfo.r_extern == 1;
 }
 
 @end

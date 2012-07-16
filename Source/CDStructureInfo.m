@@ -58,16 +58,10 @@
 
 #pragma mark -
 
-@synthesize type = _type;
-@synthesize referenceCount = _referenceCount;
-
 - (void)addReferenceCount:(NSUInteger)count;
 {
     self.referenceCount += count;
 }
-
-@synthesize isUsedInMethod = _isUsedInMethod;
-@synthesize typedefName = _typedefName;
 
 // Do this before generating member names.
 - (void)generateTypedefName:(NSString *)baseName;

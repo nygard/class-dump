@@ -20,26 +20,26 @@
 
 @implementation CDObjectiveCProcessor
 {
-    CDMachOFile *machOFile;
+    CDMachOFile *_machOFile;
     
-    NSMutableArray *classes;
-    NSMutableDictionary *classesByAddress;
+    NSMutableArray *_classes;
+    NSMutableDictionary *_classesByAddress;
     
-    NSMutableArray *categories;
+    NSMutableArray *_categories;
     
-    NSMutableDictionary *protocolsByName; // uniqued
-    NSMutableDictionary *protocolsByAddress; // non-uniqued
+    NSMutableDictionary *_protocolsByName; // uniqued
+    NSMutableDictionary *_protocolsByAddress; // non-uniqued
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
     if ((self = [super init])) {
-        machOFile = aMachOFile;
-        classes = [[NSMutableArray alloc] init];
-        classesByAddress = [[NSMutableDictionary alloc] init];
-        categories = [[NSMutableArray alloc] init];
-        protocolsByName = [[NSMutableDictionary alloc] init];
-        protocolsByAddress = [[NSMutableDictionary alloc] init];
+        _machOFile = aMachOFile;
+        _classes = [[NSMutableArray alloc] init];
+        _classesByAddress = [[NSMutableDictionary alloc] init];
+        _categories = [[NSMutableArray alloc] init];
+        _protocolsByName = [[NSMutableDictionary alloc] init];
+        _protocolsByAddress = [[NSMutableDictionary alloc] init];
     }
 
     return self;
@@ -51,16 +51,14 @@
 {
     return [NSString stringWithFormat:@"<%@:%p> machOFile: %@",
             NSStringFromClass([self class]), self,
-            machOFile.filename];
+            self.machOFile.filename];
 }
 
 #pragma mark -
 
-@synthesize machOFile;
-
 - (BOOL)hasObjectiveCData;
 {
-    return machOFile.hasObjectiveC1Data || machOFile.hasObjectiveC2Data;
+    return self.machOFile.hasObjectiveC1Data || self.machOFile.hasObjectiveC2Data;
 }
 
 - (CDSection *)objcImageInfoSection;
@@ -99,57 +97,57 @@
 
 - (void)addClass:(CDOCClass *)aClass withAddress:(uint64_t)address;
 {
-    [classes addObject:aClass];
-    [classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedLongLong:address]];
+    [_classes addObject:aClass];
+    [_classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedLongLong:address]];
 }
 
 - (CDOCClass *)classWithAddress:(uint64_t)address;
 {
-    return [classesByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:address]];
+    return [_classesByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:address]];
 }
 
 - (void)addClassesFromArray:(NSArray *)anArray;
 {
     if (anArray != nil)
-        [classes addObjectsFromArray:anArray];
+        [_classes addObjectsFromArray:anArray];
 }
 
 - (void)addCategoriesFromArray:(NSArray *)anArray;
 {
     if (anArray != nil)
-        [categories addObjectsFromArray:anArray];
+        [_categories addObjectsFromArray:anArray];
 }
 
 - (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
 {
     NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    return [protocolsByAddress objectForKey:key];
+    return [_protocolsByAddress objectForKey:key];
 }
 
 - (void)setProtocol:(CDOCProtocol *)aProtocol withAddress:(uint64_t)address;
 {
     NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    [protocolsByAddress setObject:aProtocol forKey:key];
+    [_protocolsByAddress setObject:aProtocol forKey:key];
 }
 
 - (CDOCProtocol *)protocolForName:(NSString *)name;
 {
-    return [protocolsByName objectForKey:name];
+    return [_protocolsByName objectForKey:name];
 }
 
 - (void)addCategory:(CDOCCategory *)category;
 {
     if (category != nil)
-        [categories addObject:category];
+        [_categories addObject:category];
 }
 
 #pragma mark - Processing
 
 - (void)process;
 {
-    if (machOFile.isEncrypted == NO && machOFile.canDecryptAllSegments) {
-        [machOFile.symbolTable loadSymbols];
-        [machOFile.dynamicSymbolTable loadSymbols];
+    if (self.machOFile.isEncrypted == NO && self.machOFile.canDecryptAllSegments) {
+        [self.machOFile.symbolTable loadSymbols];
+        [self.machOFile.dynamicSymbolTable loadSymbols];
 
         [self loadProtocols];
 
@@ -177,32 +175,32 @@
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
-    for (CDOCClass *aClass in classes)
+    for (CDOCClass *aClass in _classes)
         [aClass registerTypesWithObject:typeController phase:phase];
 
-    for (CDOCCategory *category in categories)
+    for (CDOCCategory *category in _categories)
         [category registerTypesWithObject:typeController phase:phase];
 
-    for (NSString *name in [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)])
-        [[protocolsByName objectForKey:name] registerTypesWithObject:typeController phase:phase];
+    for (NSString *name in [[_protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)])
+        [[_protocolsByName objectForKey:name] registerTypesWithObject:typeController phase:phase];
 }
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
 {
     NSMutableArray *classesAndCategories = [[NSMutableArray alloc] init];
-    [classesAndCategories addObjectsFromArray:classes];
-    [classesAndCategories addObjectsFromArray:categories];
+    [classesAndCategories addObjectsFromArray:_classes];
+    [classesAndCategories addObjectsFromArray:_categories];
 
     // TODO: Sort protocols by dependency
     // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
-    NSArray *protocolNames = [[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
+    NSArray *protocolNames = [[_protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
     [aVisitor willVisitObjectiveCProcessor:self];
     [aVisitor visitObjectiveCProcessor:self];
 
     for (NSString *protocolName in protocolNames) {
-        [[protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
+        [[_protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
     }
 
     if ([[aVisitor classDump] shouldSortClassesByInheritance]) {
@@ -220,13 +218,13 @@
 {
     // Now unique the protocols by name and store in protocolsByName
 
-    for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1 = [protocolsByAddress objectForKey:key];
-        CDOCProtocol *p2 = [protocolsByName objectForKey:[p1 name]];
+    for (NSNumber *key in [[_protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDOCProtocol *p1 = [_protocolsByAddress objectForKey:key];
+        CDOCProtocol *p2 = [_protocolsByName objectForKey:[p1 name]];
         if (p2 == nil) {
             p2 = [[CDOCProtocol alloc] init];
             [p2 setName:[p1 name]];
-            [protocolsByName setObject:p2 forKey:[p2 name]];
+            [_protocolsByName setObject:p2 forKey:[p2 name]];
             // adopted protocols still not set, will want uniqued instances
         } else {
         }
@@ -235,11 +233,11 @@
     //NSLog(@"uniqued protocol names: %@", [[[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@", "]);
 
     // And finally fill in adopted protocols, instance and class methods.  And properties.
-    for (NSNumber *key in [[protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1 = [protocolsByAddress objectForKey:key];
-        CDOCProtocol *uniqueProtocol = [protocolsByName objectForKey:[p1 name]];
+    for (NSNumber *key in [[_protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
+        CDOCProtocol *p1 = [_protocolsByAddress objectForKey:key];
+        CDOCProtocol *uniqueProtocol = [_protocolsByName objectForKey:[p1 name]];
         for (CDOCProtocol *p2 in [p1 protocols])
-            [uniqueProtocol addProtocol:[protocolsByName objectForKey:[p2 name]]];
+            [uniqueProtocol addProtocol:[_protocolsByName objectForKey:[p2 name]]];
 
         if ([[uniqueProtocol classMethods] count] == 0) {
             for (CDOCMethod *method in [p1 classMethods])

@@ -8,6 +8,8 @@
 #import "CDMachOFile.h"
 
 @implementation CDLCDataInCode
+{
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {

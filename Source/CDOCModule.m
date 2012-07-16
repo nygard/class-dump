@@ -10,17 +10,17 @@
 
 @implementation CDOCModule
 {
-    uint32_t version;
-    NSString *name;
-    CDOCSymtab *symtab;
+    uint32_t _version;
+    NSString *_name;
+    CDOCSymtab *_symtab;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        version = 0;
-        name = nil;
-        symtab = nil;
+        _version = 0;
+        _name = nil;
+        _symtab = nil;
     }
 
     return self;
@@ -34,10 +34,6 @@
 }
 
 #pragma mark -
-
-@synthesize version;
-@synthesize name;
-@synthesize symtab;
 
 - (NSString *)formattedString;
 {

@@ -12,22 +12,22 @@
 
 @implementation CDSection
 {
-    NSString *segmentName;
-    NSString *sectionName;
+    NSString *_segmentName;
+    NSString *_sectionName;
     
-    NSData *data;
-    BOOL hasLoadedData;
+    NSData *_data;
+    BOOL _hasLoadedData;
 }
 
 // Just to resolve multiple different definitions...
 - (id)init;
 {
     if ((self = [super init])) {
-        segmentName = nil;
-        sectionName = nil;
+        _segmentName = nil;
+        _sectionName = nil;
         
-        data = nil;
-        hasLoadedData = NO;
+        _data = nil;
+        _hasLoadedData = NO;
     }
 
     return self;
@@ -39,24 +39,17 @@
 {
     return [NSString stringWithFormat:@"<%@:%p> segment; '%@', section: '%-16s'",
             NSStringFromClass([self class]), self,
-            segmentName, [sectionName UTF8String]];
+            self.segmentName, [self.sectionName UTF8String]];
 }
 
 #pragma mark -
-
-@synthesize segmentName;
-@synthesize sectionName;
-
-@synthesize data;
 
 - (NSData *)data;
 {
     [self loadData];
 
-    return data;
+    return _data;
 }
-
-@synthesize hasLoadedData;
 
 - (void)loadData;
 {

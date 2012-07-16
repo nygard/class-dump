@@ -9,16 +9,16 @@
 
 @implementation CDLCTwoLevelHints
 {
-    struct twolevel_hints_command hintsCommand;
+    struct twolevel_hints_command _hintsCommand;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        hintsCommand.cmd = [cursor readInt32];
-        hintsCommand.cmdsize = [cursor readInt32];
-        hintsCommand.offset = [cursor readInt32];
-        hintsCommand.nhints = [cursor readInt32];
+        _hintsCommand.cmd = [cursor readInt32];
+        _hintsCommand.cmdsize = [cursor readInt32];
+        _hintsCommand.offset = [cursor readInt32];
+        _hintsCommand.nhints = [cursor readInt32];
     }
 
     return self;
@@ -28,12 +28,12 @@
 
 - (uint32_t)cmd;
 {
-    return hintsCommand.cmd;
+    return _hintsCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return hintsCommand.cmdsize;
+    return _hintsCommand.cmdsize;
 }
 
 @end

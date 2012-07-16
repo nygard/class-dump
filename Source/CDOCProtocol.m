@@ -24,29 +24,29 @@
 
 @implementation CDOCProtocol
 {
-    NSString *name;
-    NSMutableArray *protocols;
-    NSMutableArray *classMethods;
-    NSMutableArray *instanceMethods;
-    NSMutableArray *optionalClassMethods;
-    NSMutableArray *optionalInstanceMethods;
-    NSMutableArray *properties;
+    NSString *_name;
+    NSMutableArray *_protocols;
+    NSMutableArray *_classMethods;
+    NSMutableArray *_instanceMethods;
+    NSMutableArray *_optionalClassMethods;
+    NSMutableArray *_optionalInstanceMethods;
+    NSMutableArray *_properties;
     
-    NSMutableSet *adoptedProtocolNames;
+    NSMutableSet *_adoptedProtocolNames;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        name = nil;
-        protocols = [[NSMutableArray alloc] init];
-        classMethods = [[NSMutableArray alloc] init];
-        instanceMethods = [[NSMutableArray alloc] init];
-        optionalClassMethods = [[NSMutableArray alloc] init];
-        optionalInstanceMethods = [[NSMutableArray alloc] init];
-        properties = [[NSMutableArray alloc] init];
+        _name = nil;
+        _protocols = [[NSMutableArray alloc] init];
+        _classMethods = [[NSMutableArray alloc] init];
+        _instanceMethods = [[NSMutableArray alloc] init];
+        _optionalClassMethods = [[NSMutableArray alloc] init];
+        _optionalInstanceMethods = [[NSMutableArray alloc] init];
+        _properties = [[NSMutableArray alloc] init];
         
-        adoptedProtocolNames = [[NSMutableSet alloc] init];
+        _adoptedProtocolNames = [[NSMutableSet alloc] init];
     }
 
     return self;
@@ -57,27 +57,24 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@:%p> name: %@, protocols: %ld, class methods: %ld, instance methods: %ld",
-            NSStringFromClass([self class]), self, name, [protocols count], [classMethods count], [instanceMethods count]];
+            NSStringFromClass([self class]), self, self.name, [self.protocols count], [self.classMethods count], [self.instanceMethods count]];
 }
 
 #pragma mark -
 
-@synthesize name;
-@synthesize protocols;
-
 // This assumes that the protocol name doesn't change after it's been added to this.
 - (void)addProtocol:(CDOCProtocol *)protocol;
 {
-    if ([adoptedProtocolNames containsObject:protocol.name] == NO) {
-        [protocols addObject:protocol];
-        [adoptedProtocolNames addObject:protocol.name];
+    if ([_adoptedProtocolNames containsObject:protocol.name] == NO) {
+        [_protocols addObject:protocol];
+        [_adoptedProtocolNames addObject:protocol.name];
     }
 }
 
 - (void)removeProtocol:(CDOCProtocol *)protocol;
 {
-    [adoptedProtocolNames removeObject:protocol.name];
-    [protocols removeObject:protocol];
+    [_adoptedProtocolNames removeObject:protocol.name];
+    [_protocols removeObject:protocol];
 }
 
 - (NSArray *)protocolNames;
@@ -100,65 +97,43 @@
     return [names componentsJoinedByString:@", "];
 }
 
-- (NSArray *)classMethods;
-{
-    return classMethods;
-}
-
 - (void)addClassMethod:(CDOCMethod *)method;
 {
-    [classMethods addObject:method];
-}
-
-- (NSArray *)instanceMethods;
-{
-    return instanceMethods;
+    [_classMethods addObject:method];
 }
 
 - (void)addInstanceMethod:(CDOCMethod *)method;
 {
-    [instanceMethods addObject:method];
-}
-
-- (NSArray *)optionalClassMethods;
-{
-    return optionalClassMethods;
+    [_instanceMethods addObject:method];
 }
 
 - (void)addOptionalClassMethod:(CDOCMethod *)method;
 {
-    [optionalClassMethods addObject:method];
-}
-
-- (NSArray *)optionalInstanceMethods;
-{
-    return optionalInstanceMethods;
+    [_optionalClassMethods addObject:method];
 }
 
 - (void)addOptionalInstanceMethod:(CDOCMethod *)method;
 {
-    [optionalInstanceMethods addObject:method];
+    [_optionalInstanceMethods addObject:method];
 }
-
-@synthesize properties;
 
 - (void)addProperty:(CDOCProperty *)property;
 {
-    [properties addObject:property];
+    [_properties addObject:property];
 }
 
 - (BOOL)hasMethods;
 {
-    return [classMethods count] > 0 || [instanceMethods count] > 0 || [optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0;
+    return [self.classMethods count] > 0 || [self.instanceMethods count] > 0 || [self.optionalClassMethods count] > 0 || [self.optionalInstanceMethods count] > 0;
 }
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
-    [self registerTypesFromMethods:classMethods    withObject:typeController phase:phase];
-    [self registerTypesFromMethods:instanceMethods withObject:typeController phase:phase];
+    [self registerTypesFromMethods:self.classMethods    withObject:typeController phase:phase];
+    [self registerTypesFromMethods:self.instanceMethods withObject:typeController phase:phase];
 
-    [self registerTypesFromMethods:optionalClassMethods    withObject:typeController phase:phase];
-    [self registerTypesFromMethods:optionalInstanceMethods withObject:typeController phase:phase];
+    [self registerTypesFromMethods:self.optionalClassMethods    withObject:typeController phase:phase];
+    [self registerTypesFromMethods:self.optionalInstanceMethods withObject:typeController phase:phase];
 }
 
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
@@ -174,7 +149,7 @@
 
 - (NSString *)sortableName;
 {
-    return name;
+    return self.name;
 }
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
@@ -188,8 +163,8 @@
 {
     NSMutableString *resultString = [NSMutableString string];
 
-    [resultString appendFormat:@"@protocol %@", name];
-    if ([protocols count] > 0)
+    [resultString appendFormat:@"@protocol %@", self.name];
+    if ([self.protocols count] > 0)
         [resultString appendFormat:@" <%@>", self.protocolsString];
 
     return resultString;
@@ -217,28 +192,28 @@
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 {
-    NSArray *methods = classMethods;
+    NSArray *methods = self.classMethods;
     if (visitor.classDump.shouldSortMethods)
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
         [visitor visitClassMethod:method];
 
-    methods = instanceMethods;
+    methods = self.instanceMethods;
     if (visitor.classDump.shouldSortMethods)
         methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
     for (CDOCMethod *method in methods)
         [visitor visitInstanceMethod:method propertyState:propertyState];
 
-    if ([optionalClassMethods count] > 0 || [optionalInstanceMethods count] > 0) {
+    if ([self.optionalClassMethods count] > 0 || [self.optionalInstanceMethods count] > 0) {
         [visitor willVisitOptionalMethods];
 
-        methods = optionalClassMethods;
+        methods = self.optionalClassMethods;
         if (visitor.classDump.shouldSortMethods)
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)
             [visitor visitClassMethod:method];
 
-        methods = optionalInstanceMethods;
+        methods = self.optionalInstanceMethods;
         if (visitor.classDump.shouldSortMethods)
             methods = [methods sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
         for (CDOCMethod *method in methods)

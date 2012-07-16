@@ -22,23 +22,23 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 @implementation CDSymbol
 {
-    struct nlist_64 nlist;
-    BOOL is32Bit;
-    NSString *name;
+    struct nlist_64 _nlist;
+    BOOL _is32Bit;
+    NSString *_name;
     __weak CDMachOFile *nonretained_machOFile;
 }
 
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
 {
     if ((self = [super init])) {
-        is32Bit = YES;
-        name = aName;
+        _is32Bit = YES;
+        _name = aName;
         nonretained_machOFile = aMachOFile;
-        nlist.n_un.n_strx = 0; // We don't use it.
-        nlist.n_type = nlist32.n_type;
-        nlist.n_sect = nlist32.n_sect;
-        nlist.n_desc = nlist32.n_desc;
-        nlist.n_value = nlist32.n_value;
+        _nlist.n_un.n_strx = 0; // We don't use it.
+        _nlist.n_type = nlist32.n_type;
+        _nlist.n_sect = nlist32.n_sect;
+        _nlist.n_desc = nlist32.n_desc;
+        _nlist.n_value = nlist32.n_value;
     }
 
     return self;
@@ -47,14 +47,14 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 - (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
 {
     if ((self = [super init])) {
-        is32Bit = NO;
-        name = aName;
+        _is32Bit = NO;
+        _name = aName;
         nonretained_machOFile = aMachOFile;
-        nlist.n_un.n_strx = 0; // We don't use it.
-        nlist.n_type = nlist64.n_type;
-        nlist.n_sect = nlist64.n_sect;
-        nlist.n_desc = nlist64.n_desc;
-        nlist.n_value = nlist64.n_value;
+        _nlist.n_un.n_strx = 0; // We don't use it.
+        _nlist.n_type = nlist64.n_type;
+        _nlist.n_sect = nlist64.n_sect;
+        _nlist.n_desc = nlist64.n_desc;
+        _nlist.n_value = nlist64.n_value;
     }
 
     return self;
@@ -67,15 +67,15 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     NSString *valueString;
 
     if (self.isUndefined) {
-        valueString = [@" " stringByPaddingToLength:(is32Bit ? 8 : 16) withString:@" " startingAtIndex:0];
+        valueString = [@" " stringByPaddingToLength:(_is32Bit ? 8 : 16) withString:@" " startingAtIndex:0];
     } else {
-        valueString = [NSString stringWithFormat:(is32Bit ? @"%08llx" : @"%016llx"), self.value];
+        valueString = [NSString stringWithFormat:(_is32Bit ? @"%08llx" : @"%016llx"), self.value];
     }
     
     //NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
     //NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
 
-    return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], name];
+    return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], self.name];
 
     //return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
     //return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"], nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
@@ -87,10 +87,8 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (uint64_t)value;
 {
-    return nlist.n_value;
+    return _nlist.n_value;
 }
-
-@synthesize name;
 
 - (CDSection *)section
 {
@@ -103,7 +101,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     }
 
     // n_sect is 1-indexed (NO_SECT == 0)
-    NSUInteger sectionIndex = nlist.n_sect - 1;
+    NSUInteger sectionIndex = _nlist.n_sect - 1;
     if (sectionIndex < [sections count])
         return [sections objectAtIndex:sectionIndex];
     else
@@ -112,7 +110,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (CDLCDylib *)dylibLoadCommand;
 {
-    NSUInteger libraryOrdinal = GET_LIBRARY_ORDINAL(nlist.n_desc);
+    NSUInteger libraryOrdinal = GET_LIBRARY_ORDINAL(_nlist.n_desc);
     NSArray *dylibLoadCommands = self.machOFile.dylibLoadCommands;
 
     if (libraryOrdinal < [dylibLoadCommands count])
@@ -123,22 +121,22 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (BOOL)isExternal;
 {
-    return (nlist.n_type & N_EXT) == N_EXT;
+    return (_nlist.n_type & N_EXT) == N_EXT;
 }
 
 - (BOOL)isPrivateExternal;
 {
-    return (nlist.n_type & N_PEXT) == N_PEXT;
+    return (_nlist.n_type & N_PEXT) == N_PEXT;
 }
 
 - (NSUInteger)stab;
 {
-    return nlist.n_type & N_STAB;
+    return _nlist.n_type & N_STAB;
 }
 
 - (NSUInteger)type;
 {
-    return nlist.n_type & N_TYPE;
+    return _nlist.n_type & N_TYPE;
 }
 
 - (BOOL)isUndefined;
@@ -168,7 +166,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (BOOL)isCommon;
 {
-    return self.isUndefined && self.isExternal && nlist.n_value != 0;
+    return self.isUndefined && self.isExternal && _nlist.n_value != 0;
 }
 
 - (BOOL)isInTextSection;
@@ -191,7 +189,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSUInteger)referenceType;
 {
-    return (nlist.n_desc & REFERENCE_TYPE);
+    return (_nlist.n_desc & REFERENCE_TYPE);
 }
 
 - (NSString *)referenceTypeName

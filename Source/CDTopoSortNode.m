@@ -7,20 +7,20 @@
 
 @implementation CDTopoSortNode
 {
-    id <CDTopologicalSort> sortableObject;
+    id <CDTopologicalSort> _sortableObject;
     
-    NSMutableSet *dependancies;
-    CDNodeColor color;
+    NSMutableSet *_dependancies;
+    CDNodeColor _color;
 }
 
 - (id)initWithObject:(id <CDTopologicalSort>)object;
 {
     if ((self = [super init])) {
-        sortableObject = object;
-        dependancies = [[NSMutableSet alloc] init];
-        color = CDNodeColor_White;
+        _sortableObject = object;
+        _dependancies = [[NSMutableSet alloc] init];
+        _color = CDNodeColor_White;
 
-        [self addDependanciesFromArray:[sortableObject dependancies]];
+        [self addDependanciesFromArray:[_sortableObject dependancies]];
     }
 
     return self;
@@ -37,37 +37,33 @@
 
 - (NSString *)identifier;
 {
-    return [sortableObject identifier];
+    return self.sortableObject.identifier;
 }
-
-@synthesize sortableObject;
 
 - (NSArray *)dependancies;
 {
-    return [dependancies allObjects];
+    return [_dependancies allObjects];
 }
 
 - (void)addDependancy:(NSString *)identifier;
 {
-    [dependancies addObject:identifier];
+    [_dependancies addObject:identifier];
 }
 
 - (void)removeDependancy:(NSString *)identifier;
 {
-    [dependancies removeObject:identifier];
+    [_dependancies removeObject:identifier];
 }
 
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
 {
-    [dependancies addObjectsFromArray:identifiers];
+    [_dependancies addObjectsFromArray:identifiers];
 }
 
 - (NSString *)dependancyDescription;
 {
-    return [[dependancies allObjects] componentsJoinedByString:@", "];
+    return [[_dependancies allObjects] componentsJoinedByString:@", "];
 }
-
-@synthesize color;
 
 #pragma mark - Sorting
 
@@ -82,10 +78,10 @@
 
     for (NSString *identifier in dependantIdentifiers) {
         CDTopoSortNode *node = [nodesByIdentifier objectForKey:identifier];
-        if ([node color] == CDNodeColor_White) {
-            [node setColor:CDNodeColor_Gray];
+        if (node.color == CDNodeColor_White) {
+            node.color = CDNodeColor_Gray;
             [node topologicallySortNodes:nodesByIdentifier intoArray:sortedArray];
-        } else if ([node color] == CDNodeColor_Gray) {
+        } else if (node.color == CDNodeColor_Gray) {
             NSLog(@"Warning: Possible circular reference? %@ -> %@", self.identifier, node.identifier);
         }
     }

@@ -27,7 +27,7 @@ typedef NSUInteger CDByteOrder;
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
-@property (nonatomic, readonly) CDByteOrder byteOrder;
+@property (readonly) CDByteOrder byteOrder;
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 

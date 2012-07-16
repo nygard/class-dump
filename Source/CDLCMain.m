@@ -6,14 +6,17 @@
 #import "CDLCMain.h"
 
 @implementation CDLCMain
+{
+    struct entry_point_command _entryPointCommand;
+}
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        entryPointCommand.cmd = [cursor readInt32];
-        entryPointCommand.cmdsize = [cursor readInt32];
-        entryPointCommand.entryoff = [cursor readInt64];
-        entryPointCommand.stacksize = [cursor readInt64];
+        _entryPointCommand.cmd = [cursor readInt32];
+        _entryPointCommand.cmdsize = [cursor readInt32];
+        _entryPointCommand.entryoff = [cursor readInt64];
+        _entryPointCommand.stacksize = [cursor readInt64];
     }
 
     return self;
@@ -23,12 +26,12 @@
 
 - (uint32_t)cmd;
 {
-    return entryPointCommand.cmd;
+    return _entryPointCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return entryPointCommand.cmdsize;
+    return _entryPointCommand.cmdsize;
 }
 
 @end

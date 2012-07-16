@@ -9,16 +9,16 @@
 
 @implementation CDLCVersionMinimum
 {
-    struct version_min_command versionMinCommand;
+    struct version_min_command _versionMinCommand;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        versionMinCommand.cmd = [cursor readInt32];
-        versionMinCommand.cmdsize = [cursor readInt32];
-        versionMinCommand.version = [cursor readInt32];
-        versionMinCommand.sdk = [cursor readInt32];
+        _versionMinCommand.cmd = [cursor readInt32];
+        _versionMinCommand.cmdsize = [cursor readInt32];
+        _versionMinCommand.version = [cursor readInt32];
+        _versionMinCommand.sdk = [cursor readInt32];
     }
 
     return self;
@@ -28,28 +28,28 @@
 
 - (uint32_t)cmd;
 {
-    return versionMinCommand.cmd;
+    return _versionMinCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return versionMinCommand.cmdsize;
+    return _versionMinCommand.cmdsize;
 }
 
 - (NSString *)minimumVersionString;
 {
-    uint32_t x = (versionMinCommand.version >> 16);
-    uint32_t y = (versionMinCommand.version >> 8) & 0xff;
-    uint32_t z = versionMinCommand.version & 0xff;
+    uint32_t x = (_versionMinCommand.version >> 16);
+    uint32_t y = (_versionMinCommand.version >> 8) & 0xff;
+    uint32_t z = _versionMinCommand.version & 0xff;
 
     return [NSString stringWithFormat:@"%u.%u.%u", x, y, z];
 }
 
 - (NSString *)SDKVersionString;
 {
-    uint32_t x = (versionMinCommand.sdk >> 16);
-    uint32_t y = (versionMinCommand.sdk >> 8) & 0xff;
-    uint32_t z = versionMinCommand.sdk & 0xff;
+    uint32_t x = (_versionMinCommand.sdk >> 16);
+    uint32_t y = (_versionMinCommand.sdk >> 8) & 0xff;
+    uint32_t z = _versionMinCommand.sdk & 0xff;
     
     return [NSString stringWithFormat:@"%u.%u.%u", x, y, z];
 }

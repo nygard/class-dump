@@ -19,19 +19,19 @@
 @property (nonatomic, readonly) NSArray *protocolNames;
 @property (nonatomic, readonly) NSString *protocolsString;
 
-- (NSArray *)classMethods;
+@property (nonatomic, readonly) NSArray *classMethods; // TODO: NSArray vs. NSMutableArray
 - (void)addClassMethod:(CDOCMethod *)method;
 
-- (NSArray *)instanceMethods;
+@property (nonatomic, readonly) NSArray *instanceMethods;
 - (void)addInstanceMethod:(CDOCMethod *)method;
 
-- (NSArray *)optionalClassMethods;
+@property (nonatomic, readonly) NSArray *optionalClassMethods;
 - (void)addOptionalClassMethod:(CDOCMethod *)method;
 
-- (NSArray *)optionalInstanceMethods;
+@property (nonatomic, readonly) NSArray *optionalInstanceMethods;
 - (void)addOptionalInstanceMethod:(CDOCMethod *)method;
 
-@property (readonly) NSArray *properties;
+@property (nonatomic, readonly) NSArray *properties;
 - (void)addProperty:(CDOCProperty *)property;
 
 @property (nonatomic, readonly) BOOL hasMethods;

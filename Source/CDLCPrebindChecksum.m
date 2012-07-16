@@ -7,15 +7,15 @@
 
 @implementation CDLCPrebindChecksum
 {
-    struct prebind_cksum_command prebindChecksumCommand;
+    struct prebind_cksum_command _prebindChecksumCommand;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        prebindChecksumCommand.cmd = [cursor readInt32];
-        prebindChecksumCommand.cmdsize = [cursor readInt32];
-        prebindChecksumCommand.cksum = [cursor readInt32];
+        _prebindChecksumCommand.cmd = [cursor readInt32];
+        _prebindChecksumCommand.cmdsize = [cursor readInt32];
+        _prebindChecksumCommand.cksum = [cursor readInt32];
     }
 
     return self;
@@ -25,17 +25,17 @@
 
 - (uint32_t)cmd;
 {
-    return prebindChecksumCommand.cmd;
+    return _prebindChecksumCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return prebindChecksumCommand.cmdsize;
+    return _prebindChecksumCommand.cmdsize;
 }
 
 - (uint32_t)cksum;
 {
-    return prebindChecksumCommand.cksum;
+    return _prebindChecksumCommand.cksum;
 }
 
 @end

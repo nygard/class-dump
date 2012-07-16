@@ -10,7 +10,7 @@
 - (id)initWithData:(NSData *)someData;
 - (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
 
-- (NSData *)data;
+@property (readonly) NSData *data;
 - (const void *)bytes;
 
 @property (nonatomic, assign) NSUInteger offset;

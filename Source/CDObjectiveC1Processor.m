@@ -132,13 +132,13 @@ static BOOL debug = NO;
 
 @implementation CDObjectiveC1Processor
 {
-    NSMutableArray *modules;
+    NSMutableArray *_modules;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
 {
     if ((self = [super initWithMachOFile:aMachOFile])) {
-        modules = [[NSMutableArray alloc] init];
+        _modules = [[NSMutableArray alloc] init];
     }
 
     return self;
@@ -156,9 +156,7 @@ static BOOL debug = NO;
     }
 }
 
-//
-// Formerly private
-//
+#pragma mark - Formerly private
 
 - (void)processModules;
 {
@@ -190,7 +188,7 @@ static BOOL debug = NO;
         [module setVersion:objcModule.version];
         [module setName:[self.machOFile stringAtAddress:objcModule.name]];
         [module setSymtab:[self processSymtabAtAddress:objcModule.symtab]];
-        [modules addObject:module];
+        [_modules addObject:module];
 
         [self addClassesFromArray:[[module symtab] classes]];
         [self addCategoriesFromArray:[[module symtab] categories]];

@@ -6,8 +6,5 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCMain : CDLoadCommand
-{
-    struct entry_point_command entryPointCommand;
-}
 
 @end

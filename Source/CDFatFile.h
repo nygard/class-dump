@@ -14,7 +14,7 @@
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
-- (NSArray *)arches;
-- (NSArray *)archNames;
+@property (readonly) NSArray *arches;
+@property (nonatomic, readonly) NSArray *archNames;
 
 @end

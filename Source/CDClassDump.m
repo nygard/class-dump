@@ -26,63 +26,50 @@
 
 @implementation CDClassDump
 {
-    CDSearchPathState *searchPathState;
+    CDSearchPathState *_searchPathState;
     
-    BOOL shouldProcessRecursively;
-    BOOL shouldSortClasses; // And categories, protocols
-    BOOL shouldSortClassesByInheritance; // And categories, protocols
-    BOOL shouldSortMethods;
+    BOOL _shouldProcessRecursively;
+    BOOL _shouldSortClasses; // And categories, protocols
+    BOOL _shouldSortClassesByInheritance; // And categories, protocols
+    BOOL _shouldSortMethods;
     
-    BOOL shouldShowIvarOffsets;
-    BOOL shouldShowMethodAddresses;
-    BOOL shouldShowHeader;
+    BOOL _shouldShowIvarOffsets;
+    BOOL _shouldShowMethodAddresses;
+    BOOL _shouldShowHeader;
     
-    NSRegularExpression *regularExpression;
+    NSRegularExpression *_regularExpression;
     
-    NSString *sdkRoot;
-    NSMutableArray *machOFiles;
-    NSMutableDictionary *machOFilesByID;
-    NSMutableArray *objcProcessors;
+    NSString *_sdkRoot;
+    NSMutableArray *_machOFiles;
+    NSMutableDictionary *_machOFilesByID;
+    NSMutableArray *_objcProcessors;
     
-    CDTypeController *typeController;
+    CDTypeController *_typeController;
     
-    CDArch targetArch;
+    CDArch _targetArch;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        searchPathState = [[CDSearchPathState alloc] init];
-        sdkRoot = nil;
+        _searchPathState = [[CDSearchPathState alloc] init];
+        _sdkRoot = nil;
         
-        machOFiles = [[NSMutableArray alloc] init];
-        machOFilesByID = [[NSMutableDictionary alloc] init];
-        objcProcessors = [[NSMutableArray alloc] init];
+        _machOFiles = [[NSMutableArray alloc] init];
+        _machOFilesByID = [[NSMutableDictionary alloc] init];
+        _objcProcessors = [[NSMutableArray alloc] init];
         
-        typeController = [[CDTypeController alloc] initWithClassDump:self];
+        _typeController = [[CDTypeController alloc] initWithClassDump:self];
         
         // These can be ppc, ppc7400, ppc64, i386, x86_64
-        targetArch.cputype = CPU_TYPE_ANY;
-        targetArch.cpusubtype = 0;
+        _targetArch.cputype = CPU_TYPE_ANY;
+        _targetArch.cpusubtype = 0;
         
-        shouldShowHeader = YES;
+        _shouldShowHeader = YES;
     }
 
     return self;
 }
-
-#pragma mark -
-
-@synthesize searchPathState;
-@synthesize shouldProcessRecursively;
-@synthesize shouldSortClasses;
-@synthesize shouldSortClassesByInheritance;
-@synthesize shouldSortMethods;
-@synthesize shouldShowIvarOffsets;
-@synthesize shouldShowMethodAddresses;
-@synthesize shouldShowHeader;
-
-@synthesize regularExpression;
 
 #pragma mark - Regular expression handling
 
@@ -98,14 +85,9 @@
 
 #pragma mark -
 
-@synthesize sdkRoot;
-@synthesize machOFiles;
-@synthesize objcProcessors;
-@synthesize targetArch;
-
 - (BOOL)containsObjectiveCData;
 {
-    for (CDObjectiveCProcessor *processor in objcProcessors) {
+    for (CDObjectiveCProcessor *processor in self.objcProcessors) {
         if ([processor hasObjectiveCData])
             return YES;
     }
@@ -115,7 +97,7 @@
 
 - (BOOL)hasEncryptedFiles;
 {
-    for (CDMachOFile *machOFile in machOFiles) {
+    for (CDMachOFile *machOFile in self.machOFiles) {
         if ([machOFile isEncrypted]) {
             return YES;
         }
@@ -129,12 +111,10 @@
     return self.containsObjectiveCData || self.hasEncryptedFiles;
 }
 
-@synthesize typeController;
-
 - (BOOL)loadFile:(CDFile *)file;
 {
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
-    CDMachOFile *aMachOFile = [file machOFileWithArch:targetArch];
+    CDMachOFile *aMachOFile = [file machOFileWithArch:_targetArch];
     //NSLog(@"aMachOFile: %@", aMachOFile);
     if (aMachOFile == nil) {
         fprintf(stderr, "Error: file doesn't contain the specified arch.\n\n");
@@ -143,8 +123,8 @@
 
     // Set before processing recursively.  This was getting caught on CoreUI on 10.6
     assert([aMachOFile filename] != nil);
-    [machOFiles addObject:aMachOFile];
-    [machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
+    [_machOFiles addObject:aMachOFile];
+    [_machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
 
     if ([self shouldProcessRecursively]) {
         @try {
@@ -152,9 +132,9 @@
                 if ([loadCommand isKindOfClass:[CDLCDylib class]]) {
                     CDLCDylib *aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB) {
-                        [searchPathState pushSearchPaths:[aMachOFile runPaths]];
+                        [self.searchPathState pushSearchPaths:[aMachOFile runPaths]];
                         [self machOFileWithID:[aDylibCommand path]]; // Loads as a side effect
-                        [searchPathState popSearchPaths];
+                        [self.searchPathState popSearchPaths];
                     }
                 }
             }
@@ -172,10 +152,10 @@
 
 - (void)processObjectiveCData;
 {
-    for (CDMachOFile *machOFile in machOFiles) {
+    for (CDMachOFile *machOFile in self.machOFiles) {
         CDObjectiveCProcessor *aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
         [aProcessor process];
-        [objcProcessors addObject:aProcessor];
+        [_objcProcessors addObject:aProcessor];
     }
 }
 
@@ -184,7 +164,7 @@
 {
     [visitor willBeginVisiting];
 
-    for (CDObjectiveCProcessor *processor in objcProcessors) {
+    for (CDObjectiveCProcessor *processor in self.objcProcessors) {
         [processor recursivelyVisit:visitor];
     }
 
@@ -198,10 +178,10 @@
     NSString *rpathPrefix = @"@rpath";
 
     if ([anID hasPrefix:executablePathPrefix]) {
-        adjustedID = [anID stringByReplacingOccurrencesOfString:executablePathPrefix withString:searchPathState.executablePath];
+        adjustedID = [anID stringByReplacingOccurrencesOfString:executablePathPrefix withString:self.searchPathState.executablePath];
     } else if ([anID hasPrefix:rpathPrefix]) {
         //NSLog(@"Searching for %@ through run paths: %@", anID, [searchPathState searchPaths]);
-        for (NSString *searchPath in [searchPathState searchPaths]) {
+        for (NSString *searchPath in [self.searchPathState searchPaths]) {
             NSString *str = [anID stringByReplacingOccurrencesOfString:rpathPrefix withString:searchPath];
             //NSLog(@"trying %@", str);
             if ([[NSFileManager defaultManager] fileExistsAtPath:str]) {
@@ -214,21 +194,21 @@
             adjustedID = anID;
             //NSLog(@"Did not find it.");
         }
-    } else if (sdkRoot != nil) {
-        adjustedID = [sdkRoot stringByAppendingPathComponent:anID];
+    } else if (self.sdkRoot != nil) {
+        adjustedID = [self.sdkRoot stringByAppendingPathComponent:anID];
     } else {
         adjustedID = anID;
     }
 
-    CDMachOFile *aMachOFile = [machOFilesByID objectForKey:adjustedID];
+    CDMachOFile *aMachOFile = [_machOFilesByID objectForKey:adjustedID];
     if (aMachOFile == nil) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
-        CDFile *aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:searchPathState];
+        CDFile *aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:self.searchPathState];
 
         if (aFile == nil || [self loadFile:aFile] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedID);
 
-        aMachOFile = [machOFilesByID objectForKey:adjustedID];
+        aMachOFile = [_machOFilesByID objectForKey:adjustedID];
         if (aMachOFile == nil) {
             NSLog(@"Warning: Couldn't load MachOFile with ID: %@, adjustedID: %@", anID, adjustedID);
         }
@@ -258,25 +238,25 @@
 
 - (void)registerTypes;
 {
-    for (CDObjectiveCProcessor *processor in objcProcessors) {
-        [processor registerTypesWithObject:typeController phase:0];
+    for (CDObjectiveCProcessor *processor in self.objcProcessors) {
+        [processor registerTypesWithObject:self.typeController phase:0];
     }
-    [typeController endPhase:0];
+    [self.typeController endPhase:0];
 
-    [typeController workSomeMagic];
+    [self.typeController workSomeMagic];
 }
 
 - (void)showHeader;
 {
-    if ([machOFiles count] > 0) {
-        [[[machOFiles lastObject] headerString:YES] print];
+    if ([self.machOFiles count] > 0) {
+        [[[self.machOFiles lastObject] headerString:YES] print];
     }
 }
 
 - (void)showLoadCommands;
 {
-    if ([machOFiles count] > 0) {
-        [[[machOFiles lastObject] loadCommandString:YES] print];
+    if ([self.machOFiles count] > 0) {
+        [[[self.machOFiles lastObject] loadCommandString:YES] print];
     }
 }
 

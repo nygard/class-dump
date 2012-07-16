@@ -14,7 +14,7 @@
 
 @implementation CDFatFile
 {
-    NSArray *arches;
+    NSArray *_arches;
 }
 
 - (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
@@ -30,17 +30,17 @@
             return nil;
         }
         
-        NSMutableArray *_arches = [[NSMutableArray alloc] init];
+        NSMutableArray *arches = [[NSMutableArray alloc] init];
         
         header.nfat_arch = [cursor readBigInt32];
         //NSLog(@"nfat_arch: %u", header.nfat_arch);
         for (unsigned int index = 0; index < header.nfat_arch; index++) {
             CDFatArch *arch = [[CDFatArch alloc] initWithDataCursor:cursor];
             [arch setFatFile:self];
-            [_arches addObject:arch];
+            [arches addObject:arch];
         }
-        arches = [_arches copy];
-        //NSLog(@"arches: %@", arches);
+        _arches = [arches copy];
+        //NSLog(@"arches: %@", _arches);
     }
 
     return self;
@@ -50,7 +50,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%p] CDFatFile with %lu arches", self, [arches count]];
+    return [NSString stringWithFormat:@"[%p] CDFatFile with %lu arches", self, [self.arches count]];
 }
 
 #pragma mark -
@@ -76,13 +76,13 @@
         return NO;
 
     if (archPtr == NULL)
-        return [arches count] > 0;
+        return [self.arches count] > 0;
 
     cpu_type_t targetType = archInfo->cputype & ~CPU_ARCH_MASK;
 
 #ifdef __LP64__
     // This architecture, 64 bit
-    for (CDFatArch *fatArch in arches) {
+    for (CDFatArch *fatArch in self.arches) {
         if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI]) {
             *archPtr = [fatArch arch];
             return YES;
@@ -91,7 +91,7 @@
 #endif
 
     // This architecture, 32 bit
-    for (CDFatArch *fatArch in arches) {
+    for (CDFatArch *fatArch in self.arches) {
         if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO) {
             *archPtr = [fatArch arch];
             return YES;
@@ -100,7 +100,7 @@
 
 #ifdef __LP64__
     // Any architecture, 64 bit
-    for (CDFatArch *fatArch in arches) {
+    for (CDFatArch *fatArch in self.arches) {
         if ([fatArch uses64BitABI]) {
             *archPtr = [fatArch arch];
             return YES;
@@ -109,7 +109,7 @@
 #endif
 
     // Any architecture, 32 bit
-    for (CDFatArch *fatArch in arches) {
+    for (CDFatArch *fatArch in self.arches) {
         if ([fatArch uses64BitABI] == NO) {
             *archPtr = [fatArch arch];
             return YES;
@@ -117,8 +117,8 @@
     }
 
     // Any architecture
-    if ([arches count] > 0) {
-        *archPtr = [[arches objectAtIndex:0] arch];
+    if ([self.arches count] > 0) {
+        *archPtr = [[self.arches objectAtIndex:0] arch];
         return YES;
     }
 
@@ -127,7 +127,7 @@
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)cdarch;
 {
-    for (CDFatArch *arch in arches) {
+    for (CDFatArch *arch in self.arches) {
         if ([arch cpuType] == cdarch.cputype)
             return [arch machOFile];
     }
@@ -135,15 +135,10 @@
     return nil;
 }
 
-- (NSArray *)arches;
-{
-    return arches;
-}
-
 - (NSArray *)archNames;
 {
     NSMutableArray *archNames = [NSMutableArray array];
-    for (CDFatArch *arch in arches)
+    for (CDFatArch *arch in self.arches)
         [archNames addObject:[arch archName]];
 
     return archNames;

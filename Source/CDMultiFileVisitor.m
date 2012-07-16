@@ -204,8 +204,6 @@
 
 #pragma mark -
 
-@synthesize frameworkNamesByClassName = _frameworkNamesByClassName;
-
 - (NSString *)frameworkForClassName:(NSString *)name;
 {
     return [self.frameworkNamesByClassName objectForKey:name];
@@ -245,9 +243,6 @@
 
 #pragma mark - Class and Protocol name tracking
 
-@synthesize referencedClassNames = _referencedClassNames;
-@synthesize referencedProtocolNames = _referencedProtocolNames;
-
 - (NSArray *)referencedClassNamesSortedByName;
 {
     return [[self.referencedClassNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
@@ -282,8 +277,6 @@
 
 #pragma mark -
 
-@synthesize outputPath = _outputPath;
-
 - (void)createOutputPathIfNecessary;
 {
     if (self.outputPath != nil) {
@@ -306,8 +299,6 @@
 }
 
 #pragma mark -
-
-@synthesize referenceLocation = _referenceLocation;
 
 // - imports for each referenced protocol
 // - forward declarations for each referenced class

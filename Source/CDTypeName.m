@@ -7,17 +7,17 @@
 
 @implementation CDTypeName
 {
-    NSString *name;
-    NSMutableArray *templateTypes;
-    NSString *suffix;
+    NSString *_name;
+    NSMutableArray *_templateTypes;
+    NSString *_suffix;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        name = nil;
-        templateTypes = [[NSMutableArray alloc] init];
-        suffix = nil;
+        _name = nil;
+        _templateTypes = [[NSMutableArray alloc] init];
+        _suffix = nil;
     }
 
     return self;
@@ -54,7 +54,7 @@
 - (NSString *)description;
 {
     if ([self.templateTypes count] == 0)
-        return name;
+        return self.name;
     
     if (self.suffix != nil)
         return [NSString stringWithFormat:@"%@<%@>%@", self.name, [self.templateTypes componentsJoinedByString:@", "], self.suffix];
@@ -63,10 +63,6 @@
 }
 
 #pragma mark -
-
-@synthesize name;
-@synthesize templateTypes;
-@synthesize suffix;
 
 - (BOOL)isTemplateType;
 {

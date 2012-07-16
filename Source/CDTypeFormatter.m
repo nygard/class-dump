@@ -26,21 +26,21 @@ static BOOL debug = NO;
 {
     __weak CDTypeController *nonretained_typeController;
     
-    NSUInteger baseLevel;
+    NSUInteger _baseLevel;
     
-    BOOL shouldExpand; // But just top level struct, level == 0
-    BOOL shouldAutoExpand;
-    BOOL shouldShowLexing;
+    BOOL _shouldExpand; // But just top level struct, level == 0
+    BOOL _shouldAutoExpand;
+    BOOL _shouldShowLexing;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
         nonretained_typeController = nil;
-        baseLevel = 0;
-        shouldExpand = NO;
-        shouldAutoExpand = NO;
-        shouldShowLexing = debug;
+        _baseLevel = 0;
+        _shouldExpand = NO;
+        _shouldAutoExpand = NO;
+        _shouldShowLexing = debug;
     }
 
     return self;
@@ -52,17 +52,12 @@ static BOOL debug = NO;
 {
     return [NSString stringWithFormat:@"<%@:%p> baseLevel: %lu, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
             NSStringFromClass([self class]), self,
-            baseLevel, self.shouldExpand, self.shouldAutoExpand, self.shouldShowLexing, self.typeController];
+            self.baseLevel, self.shouldExpand, self.shouldAutoExpand, self.shouldShowLexing, self.typeController];
 }
 
 #pragma mark -
 
 @synthesize typeController = nonretained_typeController;
-
-@synthesize baseLevel;
-@synthesize shouldExpand;
-@synthesize shouldAutoExpand;
-@synthesize shouldShowLexing;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 {

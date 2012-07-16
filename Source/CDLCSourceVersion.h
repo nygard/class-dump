@@ -6,9 +6,6 @@
 #import "CDLoadCommand.h"
 
 @interface CDLCSourceVersion : CDLoadCommand
-{
-    struct source_version_command sourceVersionCommand;
-}
 
 @property (nonatomic, readonly) NSString *sourceVersionString;
 

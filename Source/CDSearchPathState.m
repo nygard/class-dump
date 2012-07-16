@@ -29,9 +29,6 @@
 
 #pragma mark -
 
-@synthesize executablePath = _executablePath;
-@synthesize searchPathStack = _searchPathStack;
-
 - (void)pushSearchPaths:(NSArray *)searchPaths;
 {
     [self.searchPathStack addObject:searchPaths];

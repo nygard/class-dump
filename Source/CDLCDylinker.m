@@ -7,22 +7,22 @@
 
 @implementation CDLCDylinker
 {
-    struct dylinker_command dylinkerCommand;
-    NSString *name;
+    struct dylinker_command _dylinkerCommand;
+    NSString *_name;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        dylinkerCommand.cmd = [cursor readInt32];
-        dylinkerCommand.cmdsize = [cursor readInt32];
+        _dylinkerCommand.cmd = [cursor readInt32];
+        _dylinkerCommand.cmdsize = [cursor readInt32];
 
-        dylinkerCommand.name.offset = [cursor readInt32];
+        _dylinkerCommand.name.offset = [cursor readInt32];
         
-        NSUInteger length = dylinkerCommand.cmdsize - sizeof(dylinkerCommand);
+        NSUInteger length = _dylinkerCommand.cmdsize - sizeof(_dylinkerCommand);
         //NSLog(@"expected length: %u", length);
         
-        name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
+        _name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
         //NSLog(@"name: %@", name);
     }
 
@@ -33,14 +33,12 @@
 
 - (uint32_t)cmd;
 {
-    return dylinkerCommand.cmd;
+    return _dylinkerCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return dylinkerCommand.cmdsize;
+    return _dylinkerCommand.cmdsize;
 }
-
-@synthesize name;
 
 @end

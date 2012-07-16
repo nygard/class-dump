@@ -32,7 +32,4 @@
 
 #pragma mark -
 
-@synthesize type = _type;
-@synthesize offset = _offset;
-
 @end

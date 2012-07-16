@@ -10,15 +10,15 @@
 
 @implementation CDOCSymtab
 {
-    NSMutableArray *classes;
-    NSMutableArray *categories;
+    NSMutableArray *_classes;
+    NSMutableArray *_categories;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        classes = [[NSMutableArray alloc] init];
-        categories = [[NSMutableArray alloc] init];
+        _classes = [[NSMutableArray alloc] init];
+        _categories = [[NSMutableArray alloc] init];
     }
 
     return self;
@@ -33,14 +33,10 @@
 
 #pragma mark -
 
-@synthesize classes;
-
 - (void)addClass:(CDOCClass *)aClass;
 {
     [self.classes addObject:aClass];
 }
-
-@synthesize categories;
 
 - (void)addCategory:(CDOCCategory *)aCategory;
 {

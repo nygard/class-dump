@@ -14,9 +14,9 @@
 {
     __weak CDFatFile *nonretained_fatFile;
     
-    struct fat_arch fatArch;
+    struct fat_arch _fatArch;
     
-    CDMachOFile *machOFile; // Lazily create this.
+    CDMachOFile *_machOFile; // Lazily create this.
 }
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
@@ -24,18 +24,18 @@
     if ((self = [super init])) {
         nonretained_fatFile = nil;
         
-        fatArch.cputype = [cursor readBigInt32];
-        fatArch.cpusubtype = [cursor readBigInt32];
-        fatArch.offset = [cursor readBigInt32];
-        fatArch.size = [cursor readBigInt32];
-        fatArch.align = [cursor readBigInt32];
+        _fatArch.cputype = [cursor readBigInt32];
+        _fatArch.cpusubtype = [cursor readBigInt32];
+        _fatArch.offset = [cursor readBigInt32];
+        _fatArch.size = [cursor readBigInt32];
+        _fatArch.align = [cursor readBigInt32];
         
 #if 0
         NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
               [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
 #endif
         
-        machOFile = nil;
+        _machOFile = nil;
     }
 
     return self;
@@ -46,52 +46,52 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
-            [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.offset, fatArch.size, fatArch.size,
-            fatArch.align, 1 << fatArch.align, [self archName]];
+            [self uses64BitABI], _fatArch.cputype, _fatArch.cpusubtype, _fatArch.offset, _fatArch.offset, _fatArch.size, _fatArch.size,
+            _fatArch.align, 1 << _fatArch.align, self.archName];
 }
 
 #pragma mark -
 
 - (cpu_type_t)cpuType;
 {
-    return fatArch.cputype;
+    return _fatArch.cputype;
 }
 
 - (cpu_type_t)maskedCPUType;
 {
-    return fatArch.cputype & ~CPU_ARCH_MASK;
+    return _fatArch.cputype & ~CPU_ARCH_MASK;
 }
 
 - (cpu_subtype_t)cpuSubtype;
 {
-    return fatArch.cpusubtype;
+    return _fatArch.cpusubtype;
 }
 
 - (uint32_t)offset;
 {
-    return fatArch.offset;
+    return _fatArch.offset;
 }
 
 - (uint32_t)size;
 {
-    return fatArch.size;
+    return _fatArch.size;
 }
 
 - (uint32_t)align;
 {
-    return fatArch.align;
+    return _fatArch.align;
 }
 
 - (BOOL)uses64BitABI;
 {
-    return CDArchUses64BitABI((CDArch){ .cputype = fatArch.cputype, .cpusubtype = fatArch.cpusubtype });
+    return CDArchUses64BitABI((CDArch){ .cputype = _fatArch.cputype, .cpusubtype = _fatArch.cpusubtype });
 }
 
 @synthesize fatFile = nonretained_fatFile;
 
 - (CDArch)arch;
 {
-    CDArch arch = { fatArch.cputype, fatArch.cpusubtype };
+    CDArch arch = { _fatArch.cputype, _fatArch.cpusubtype };
 
     return arch;
 }
@@ -99,21 +99,21 @@
 // Must not return nil.
 - (NSString *)archName;
 {
-    return CDNameForCPUType(fatArch.cputype, fatArch.cpusubtype);
+    return CDNameForCPUType(_fatArch.cputype, _fatArch.cpusubtype);
 }
 
 - (CDMachOFile *)machOFile;
 {
-    if (machOFile == nil) {
-        machOFile = [CDFile fileWithData:self.fatFile.data archOffset:fatArch.offset archSize:fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
+    if (_machOFile == nil) {
+        _machOFile = [CDFile fileWithData:self.fatFile.data archOffset:_fatArch.offset archSize:_fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
     }
 
-    return machOFile;
+    return _machOFile;
 }
 
 - (NSData *)machOData;
 {
-    return [[NSData alloc] initWithBytes:(uint8_t *)[[self.fatFile data] bytes] + fatArch.offset length:fatArch.size];
+    return [[NSData alloc] initWithBytes:(uint8_t *)[[self.fatFile data] bytes] + _fatArch.offset length:_fatArch.size];
 }
 
 @end

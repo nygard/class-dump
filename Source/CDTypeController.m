@@ -102,14 +102,6 @@ static BOOL debug = NO;
 @synthesize classDump = nonretained_classDump;
 @synthesize delegate = nonretained_delegate;
 
-@synthesize structureTable = _structureTable;
-@synthesize unionTable = _unionTable;
-
-@synthesize ivarTypeFormatter = _ivarTypeFormatter;
-@synthesize methodTypeFormatter = _methodTypeFormatter;
-@synthesize propertyTypeFormatter = _propertyTypeFormatter;
-@synthesize structDeclarationTypeFormatter = _structDeclarationTypeFormatter;
-
 #pragma mark -
 
 - (BOOL)shouldShowIvarOffsets;

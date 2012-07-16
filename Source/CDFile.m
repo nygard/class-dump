@@ -60,11 +60,11 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 @implementation CDFile
 {
-    NSString *filename;
-    NSData *data;
-    NSUInteger archOffset;
-    NSUInteger archSize;
-    CDSearchPathState *searchPathState;
+    NSString *_filename;
+    NSData *_data;
+    NSUInteger _archOffset;
+    NSUInteger _archSize;
+    CDSearchPathState *_searchPathState;
 }
 
 + (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
@@ -101,23 +101,17 @@ BOOL CDArchUses64BitABI(CDArch arch)
             return nil;
         }
         
-        filename = aFilename;
-        data = someData;
-        archOffset = anOffset;
-        archSize = aSize;
-        searchPathState = aSearchPathState;
+        _filename = aFilename;
+        _data = someData;
+        _archOffset = anOffset;
+        _archSize = aSize;
+        _searchPathState = aSearchPathState;
     }
 
     return self;
 }
 
 #pragma mark -
-
-@synthesize filename;
-@synthesize data;
-@synthesize archOffset;
-@synthesize archSize;
-@synthesize searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {

@@ -6,7 +6,5 @@
 #import "CDLCLinkeditData.h"
 
 @interface CDLCDataInCode : CDLCLinkeditData
-{
-}
 
 @end

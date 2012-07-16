@@ -21,36 +21,36 @@ static BOOL debug = NO;
 
 @implementation CDOCProperty
 {
-    NSString *name;
-    NSString *attributeString;
+    NSString *_name;
+    NSString *_attributeString;
     
-    CDType *type;
-    NSMutableArray *attributes;
+    CDType *_type;
+    NSMutableArray *_attributes;
     
-    BOOL hasParsedAttributes;
-    NSString *attributeStringAfterType;
-    NSString *customGetter;
-    NSString *customSetter;
+    BOOL _hasParsedAttributes;
+    NSString *_attributeStringAfterType;
+    NSString *_customGetter;
+    NSString *_customSetter;
     
-    BOOL isReadOnly;
-    BOOL isDynamic;
+    BOOL _isReadOnly;
+    BOOL _isDynamic;
 }
 
 - (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
 {
     if ((self = [super init])) {
-        name = aName;
-        attributeString = someAttributes;
-        type = nil;
-        attributes = [[NSMutableArray alloc] init];
+        _name = aName;
+        _attributeString = someAttributes;
+        _type = nil;
+        _attributes = [[NSMutableArray alloc] init];
         
-        hasParsedAttributes = NO;
-        attributeStringAfterType = nil;
-        customGetter = nil;
-        customSetter = nil;
+        _hasParsedAttributes = NO;
+        _attributeStringAfterType = nil;
+        _customGetter = nil;
+        _customSetter = nil;
         
-        isReadOnly = NO;
-        isDynamic = NO;
+        _isReadOnly = NO;
+        _isDynamic = NO;
         
         [self _parseAttributes];
     }
@@ -64,16 +64,10 @@ static BOOL debug = NO;
 {
     return [NSString stringWithFormat:@"<%@:%p> name: %@, attributeString: %@",
             NSStringFromClass([self class]), self,
-            name, attributeString];
+            self.name, self.attributeString];
 }
 
 #pragma mark -
-
-@synthesize name;
-@synthesize attributeString;
-@synthesize type;
-@synthesize attributes;
-@synthesize attributeStringAfterType;
 
 - (NSString *)defaultGetter;
 {
@@ -84,9 +78,6 @@ static BOOL debug = NO;
 {
     return [NSString stringWithFormat:@"set%@:", [self.name capitalizeFirstCharacter]];
 }
-
-@synthesize customGetter;
-@synthesize customSetter;
 
 - (NSString *)getter;
 {
@@ -103,9 +94,6 @@ static BOOL debug = NO;
 
     return self.defaultSetter;
 }
-
-@synthesize isReadOnly;
-@synthesize isDynamic;
 
 #pragma mark - Sorting
 
@@ -128,11 +116,11 @@ static BOOL debug = NO;
 
         typeRange.location = [scanner scanLocation];
         CDTypeParser *parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
-        type = [parser parseType:&error];
-        if (type != nil) {
+        _type = [parser parseType:&error];
+        if (_type != nil) {
             typeRange.length = [parser.lexer.scanner scanLocation];
 
-            NSString *str = [attributeString substringFromIndex:NSMaxRange(typeRange)];
+            NSString *str = [self.attributeString substringFromIndex:NSMaxRange(typeRange)];
 
             // Filter out so we don't get an empty string as an attribute.
             if ([str hasPrefix:@","])
@@ -140,28 +128,28 @@ static BOOL debug = NO;
 
             self.attributeStringAfterType = str;
             if ([self.attributeStringAfterType length] > 0) {
-                [attributes addObjectsFromArray:[self.attributeStringAfterType componentsSeparatedByString:@","]];
+                [_attributes addObjectsFromArray:[self.attributeStringAfterType componentsSeparatedByString:@","]];
             } else {
                 // For a simple case like "Ti", we'd get the empty string.
                 // Then, using componentsSeparatedByString:, since it has no separator we'd get back an array containing the (empty) string
             }
         }
     } else {
-        if (debug) NSLog(@"Error: Property attributes should begin with the type ('T') attribute, property name: %@", name);
+        if (debug) NSLog(@"Error: Property attributes should begin with the type ('T') attribute, property name: %@", self.name);
     }
 
-    for (NSString *attr in attributes) {
+    for (NSString *attr in _attributes) {
         if ([attr hasPrefix:@"R"])
-            isReadOnly = YES;
+            _isReadOnly = YES;
         else if ([attr hasPrefix:@"D"])
-            isDynamic = YES;
+            _isDynamic = YES;
         else if ([attr hasPrefix:@"G"])
             self.customGetter = [attr substringFromIndex:1];
         else if ([attr hasPrefix:@"S"])
             self.customSetter = [attr substringFromIndex:1];
     }
 
-    hasParsedAttributes = YES;
+    _hasParsedAttributes = YES;
     // And then if parsedType is nil, we know we couldn't parse the type.
 }
 

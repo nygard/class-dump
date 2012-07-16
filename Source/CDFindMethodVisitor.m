@@ -148,11 +148,6 @@
 
 #pragma mark -
 
-@synthesize searchString = _searchString;
-@synthesize resultString = _resultString;
-@synthesize context = _context;
-@synthesize hasShownContext = _hasShownContext;
-
 - (void)setContext:(CDOCProtocol *)newContext;
 {
     if (newContext != _context) {

@@ -1087,6 +1087,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1114,6 +1115,7 @@
 					"-Wno-readonly-setter-attrs",
 					"-Wno-overriding-method-mismatch",
 					"-Wno-unused-macros",
+					"-Wno-objc-missing-property-synthesis",
 					"-Weverything",
 				);
 			};
@@ -1124,6 +1126,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
 				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1144,6 +1147,7 @@
 					"-Wno-readonly-setter-attrs",
 					"-Wno-overriding-method-mismatch",
 					"-Wno-unused-macros",
+					"-Wno-objc-missing-property-synthesis",
 					"-Weverything",
 				);
 			};

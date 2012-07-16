@@ -45,8 +45,6 @@
 
 #pragma mark -
 
-@synthesize frameworkName = _frameworkName;
-
 - (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 {
     if (name != nil && frameworkName != nil)

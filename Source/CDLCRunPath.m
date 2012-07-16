@@ -10,23 +10,23 @@
 
 @implementation CDLCRunPath
 {
-    struct rpath_command rpathCommand;
-    NSString *path;
+    struct rpath_command _rpathCommand;
+    NSString *_path;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        rpathCommand.cmd = [cursor readInt32];
-        rpathCommand.cmdsize = [cursor readInt32];
+        _rpathCommand.cmd = [cursor readInt32];
+        _rpathCommand.cmdsize = [cursor readInt32];
         
-        rpathCommand.path.offset = [cursor readInt32];
+        _rpathCommand.path.offset = [cursor readInt32];
         
-        NSUInteger length = rpathCommand.cmdsize - sizeof(rpathCommand);
+        NSUInteger length = _rpathCommand.cmdsize - sizeof(_rpathCommand);
         //NSLog(@"expected length: %u", length);
         
-        path = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
-        //NSLog(@"path: %@", path);
+        _path = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
+        //NSLog(@"path: %@", _path);
     }
 
     return self;
@@ -36,17 +36,12 @@
 
 - (uint32_t)cmd;
 {
-    return rpathCommand.cmd;
+    return _rpathCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return rpathCommand.cmdsize;
-}
-
-- (NSString *)path;
-{
-    return path;
+    return _rpathCommand.cmdsize;
 }
 
 - (NSString *)resolvedRunPath;
@@ -54,23 +49,23 @@
     NSString *loaderPathPrefix = @"@loader_path";
     NSString *executablePathPrefix = @"@executable_path";
 
-    if ([path hasPrefix:loaderPathPrefix]) {
+    if ([self.path hasPrefix:loaderPathPrefix]) {
         NSString *loaderPath = [self.machOFile.filename stringByDeletingLastPathComponent];
-        NSString *str = [[path stringByReplacingOccurrencesOfString:loaderPathPrefix withString:loaderPath] stringByStandardizingPath];
+        NSString *str = [[self.path stringByReplacingOccurrencesOfString:loaderPathPrefix withString:loaderPath] stringByStandardizingPath];
 
         return str;
     }
 
-    if ([path hasPrefix:executablePathPrefix]) {
+    if ([self.path hasPrefix:executablePathPrefix]) {
         NSString *str = @"";
         NSString *executablePath = self.machOFile.searchPathState.executablePath;
         if (executablePath)
-            str = [[path stringByReplacingOccurrencesOfString:executablePathPrefix withString:executablePath] stringByStandardizingPath];
+            str = [[self.path stringByReplacingOccurrencesOfString:executablePathPrefix withString:executablePath] stringByStandardizingPath];
 
         return str;
     }
 
-    return path;
+    return self.path;
 }
 
 @end

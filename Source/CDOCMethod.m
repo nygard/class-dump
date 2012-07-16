@@ -12,12 +12,12 @@
 
 @implementation CDOCMethod
 {
-    NSString *name;
-    NSString *type;
-    NSUInteger imp;
+    NSString *_name;
+    NSString *_type;
+    NSUInteger _imp;
     
-    BOOL hasParsedType;
-    NSArray *parsedMethodTypes;
+    BOOL _hasParsedType;
+    NSArray *_parsedMethodTypes;
 }
 
 - (id)init;
@@ -38,12 +38,12 @@
 - (id)initWithName:(NSString *)aName type:(NSString *)aType;
 {
     if ((self = [super init])) {
-        name = aName;
-        type = aType;
-        imp = 0;
+        _name = aName;
+        _type = aType;
+        _imp = 0;
         
-        hasParsedType = NO;
-        parsedMethodTypes = nil;
+        _hasParsedType = NO;
+        _parsedMethodTypes = nil;
     }
 
     return self;
@@ -53,7 +53,7 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    return [[CDOCMethod alloc] initWithName:name type:type imp:imp];
+    return [[CDOCMethod alloc] initWithName:self.name type:self.type imp:self.imp];
 }
 
 #pragma mark - Debugging
@@ -61,51 +61,47 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%016lx",
-            NSStringFromClass([self class]), name, type, imp];
+            NSStringFromClass([self class]), self.name, self.type, self.imp];
 }
 
 #pragma mark -
 
-@synthesize name;
-@synthesize type;
-@synthesize imp;
-
 - (NSArray *)parsedMethodTypes;
 {
-    if (hasParsedType == NO) {
+    if (_hasParsedType == NO) {
         NSError *error = nil;
 
-        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
-        parsedMethodTypes = [parser parseMethodType:&error];
-        if (parsedMethodTypes == nil)
-            NSLog(@"Warning: Parsing method types failed, %@", name);
-        hasParsedType = YES;
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:self.type];
+        _parsedMethodTypes = [parser parseMethodType:&error];
+        if (_parsedMethodTypes == nil)
+            NSLog(@"Warning: Parsing method types failed, %@", self.name);
+        _hasParsedType = YES;
     }
 
-    return parsedMethodTypes;
+    return _parsedMethodTypes;
 }
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:name type:type];
+    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:self.name type:self.type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if (typeController.shouldShowMethodAddresses && imp != 0) {
+        if (typeController.shouldShowMethodAddresses && self.imp != 0) {
             if (typeController.targetArchUses64BitABI)
-                [resultString appendFormat:@"\t// IMP=0x%016lx", imp];
+                [resultString appendFormat:@"\t// IMP=0x%016lx", self.imp];
             else
-                [resultString appendFormat:@"\t// IMP=0x%08lx", imp];
+                [resultString appendFormat:@"\t// IMP=0x%08lx", self.imp];
         }
     } else
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
+        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.type, self.name];
 }
 
 #pragma mark - Sorting
 
 - (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
 {
-    return [name compare:otherMethod.name];
+    return [self.name compare:otherMethod.name];
 }
 
 @end

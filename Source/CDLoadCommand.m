@@ -38,7 +38,7 @@
 @implementation CDLoadCommand
 {
     __weak CDMachOFile *nonretained_machOFile;
-    NSUInteger commandOffset;
+    NSUInteger _commandOffset;
 }
 
 + (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
@@ -107,7 +107,7 @@
 {
     if ((self = [super init])) {
         nonretained_machOFile = [cursor machOFile];
-        commandOffset = [cursor offset];
+        _commandOffset = [cursor offset];
     }
 
     return self;
@@ -130,7 +130,6 @@
 #pragma mark -
 
 @synthesize machOFile = nonretained_machOFile;
-@synthesize commandOffset;
 
 - (uint32_t)cmd;
 {
