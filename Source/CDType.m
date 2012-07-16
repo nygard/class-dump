@@ -14,19 +14,7 @@
 static BOOL debugMerge = NO;
 
 @interface CDType ()
-
-- (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter;
-
 @property (nonatomic, readonly) NSString *formattedStringForSimpleType;
-
-- (NSString *)_typeStringWithVariableNamesToLevel:(NSUInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
-- (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
-- (void)_recursivelyMergeWithType:(CDType *)otherType;
-
-- (void)phase0RegisterStructuresWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
-- (void)_phase2MergeWithTypeController:(CDTypeController *)typeController debug:(BOOL)phase2Debug;
-- (void)phase3RegisterWithTypeController:(CDTypeController *)typeController;
-
 @end
 
 #pragma mark -

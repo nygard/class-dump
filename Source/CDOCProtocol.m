@@ -16,8 +16,6 @@
 
 @interface CDOCProtocol ()
 @property (nonatomic, readonly) NSString *sortableName;
-- (void)recursivelyVisit:(CDVisitor *)visitor;
-//- (void)visitProperties:(CDVisitor *)visitor;
 @end
 
 #pragma mark -

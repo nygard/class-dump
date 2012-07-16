@@ -51,7 +51,6 @@ static BOOL debugNamedStructures = NO;
 static BOOL debugAnonStructures = NO;
 
 @interface CDStructureTable ()
-- (BOOL)shouldExpandStructureInfo:(CDStructureInfo *)info;
 @end
 
 #pragma mark -

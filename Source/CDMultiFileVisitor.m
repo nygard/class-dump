@@ -17,10 +17,6 @@
 
 // NSString (class name) -> NSString (framework name)
 @property (strong) NSDictionary *frameworkNamesByClassName;
-- (NSString *)frameworkForClassName:(NSString *)name;
-- (NSString *)frameworkForProtocolName:(NSString *)name;
-
-- (NSString *)importStringForClassName:(NSString *)className;
 
 // Location in output string to insert the protocol imports and forward class declarations.
 // We don't know what classes and protocols will be referenced until the rest of the output is generated.
@@ -33,16 +29,7 @@
 @property (nonatomic, readonly) NSArray *referencedClassNamesSortedByName;
 @property (nonatomic, readonly) NSArray *referencedProtocolNamesSortedByName;
 
-- (void)addReferenceToClassName:(NSString *)className;
-- (void)removeReferenceToClassName:(NSString *)className;
-- (void)addReferencesToProtocolNamesInArray:(NSArray *)protocolNames;
-- (void)removeAllClassNameProtocolNameReferences;
-
 @property (nonatomic, readonly) NSString *referenceString;
-
-- (void)createOutputPathIfNecessary;
-- (void)buildClassFrameworks;
-- (void)generateStructureHeader;
 
 @end
 

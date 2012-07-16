@@ -10,7 +10,6 @@
 #import "CDObjectiveCProcessor.h"
 
 @interface CDClassFrameworkVisitor ()
-- (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 @property (strong) NSString *frameworkName;
 @end
 

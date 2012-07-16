@@ -14,7 +14,6 @@
 static BOOL debug = NO;
 
 @interface CDOCProperty ()
-- (void)_parseAttributes;
 @end
 
 #pragma mark -

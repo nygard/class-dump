@@ -19,8 +19,6 @@
 @property (readonly) NSMutableString *resultString;
 @property (nonatomic, strong) CDOCProtocol *context;
 @property (assign) BOOL hasShownContext;
-- (void)showContextIfNecessary;
-- (void)writeResultToStandardOutput;
 @end
 
 #pragma mark -

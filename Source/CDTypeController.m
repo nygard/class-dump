@@ -13,18 +13,9 @@
 static BOOL debug = NO;
 
 @interface CDTypeController ()
-
 @property (weak, readonly) CDClassDump *classDump;
 @property (readonly) CDStructureTable *structureTable;
 @property (readonly) CDStructureTable *unionTable;
-
-- (void)generateTypedefNames;
-- (void)generateMemberNames;
-
-- (void)startPhase1;
-- (void)startPhase2;
-- (void)startPhase3;
-
 @end
 
 #pragma mark -

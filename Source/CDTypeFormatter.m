@@ -14,10 +14,6 @@
 static BOOL debug = NO;
 
 @interface CDTypeFormatter ()
-- (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
-- (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type;
-- (CDType *)replacementForType:(CDType *)type;
 @end
 
 #pragma mark -

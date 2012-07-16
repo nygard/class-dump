@@ -14,6 +14,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation NSArray (CDTopoSort)
 
 - (NSArray *)topologicallySortedArray;

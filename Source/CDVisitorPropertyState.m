@@ -8,7 +8,6 @@
 #import "CDOCProperty.h"
 
 @interface CDVisitorPropertyState ()
-- (void)log;
 @end
 
 #pragma mark -

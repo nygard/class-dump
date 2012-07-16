@@ -19,7 +19,6 @@
 #import "CDSearchPathState.h"
 
 @interface CDClassDump ()
-- (CDMachOFile *)machOFileWithID:(NSString *)anID;
 @end
 
 #pragma mark -

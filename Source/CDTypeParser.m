@@ -30,29 +30,6 @@ static NSString *CDTokenDescription(int token)
 }
 
 @interface CDTypeParser ()
-
-- (void)match:(int)token;
-- (void)match:(int)token enterState:(CDTypeLexerState)newState;
-- (void)error:(NSString *)errorString;
-
-- (NSArray *)_parseMethodType;
-- (CDType *)_parseType;
-- (CDType *)_parseTypeInStruct:(BOOL)isInStruct;
-
-- (NSArray *)parseUnionTypes;
-- (NSArray *)parseOptionalMembers;
-- (NSArray *)parseMemberList;
-- (CDType *)parseMember;
-
-- (CDTypeName *)parseTypeName;
-- (NSString *)parseIdentifier;
-- (NSString *)parseNumber;
-
-- (BOOL)isTokenInModifierSet:(int)aToken;
-- (BOOL)isTokenInSimpleTypeSet:(int)aToken;
-- (BOOL)isTokenInTypeSet:(int)aToken;
-- (BOOL)isTokenInTypeStartSet:(int)aToken;
-
 @end
 
 #pragma mark -
