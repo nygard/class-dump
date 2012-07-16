@@ -8,11 +8,10 @@
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 #include <mach-o/loader.h>
 
-enum {
+typedef enum : NSUInteger {
     CDByteOrder_LittleEndian = 0,
     CDByteOrder_BigEndian = 1,
-};
-typedef NSUInteger CDByteOrder;
+} CDByteOrder;
 
 @class CDLCSegment, CDMachOFileDataCursor;
 @class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;

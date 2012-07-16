@@ -28,11 +28,11 @@ void print_usage(void)
        );
 }
 
-enum {
+typedef enum : NSUInteger {
     CDFormat_Ivar    = 0,
     CDFormat_Method  = 1,
     CDFormat_Balance = 2,
-};
+} CDFormatType;
 
 int main(int argc, char *argv[])
 {

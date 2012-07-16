@@ -7,11 +7,10 @@
 
 @class CDClassDump, CDType, CDStructureInfo, CDTypeController, CDTypeFormatter;
 
-enum {
+typedef enum : NSUInteger {
     CDTableType_Structure = 0,
     CDTableType_Union     = 1,
-};
-typedef NSUInteger CDTableType;
+} CDTableType;
 
 @interface CDStructureTable : NSObject
 

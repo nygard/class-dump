@@ -14,8 +14,6 @@ static NSString *CDTypeLexerStateName(CDTypeLexerState state)
         case CDTypeLexerState_Identifier:    return @"Identifier";
         case CDTypeLexerState_TemplateTypes: return @"Template";
     }
-
-    return @"Unknown";
 }
 
 @implementation CDTypeLexer

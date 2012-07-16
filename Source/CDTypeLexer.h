@@ -12,12 +12,11 @@
 #define TK_QUOTED_STRING 260
 #define TK_TEMPLATE_TYPE TK_IDENTIFIER
 
-enum {
+typedef enum : NSUInteger {
     CDTypeLexerState_Normal        = 0,
     CDTypeLexerState_Identifier    = 1,
     CDTypeLexerState_TemplateTypes = 2,
-};
-typedef NSUInteger CDTypeLexerState;
+} CDTypeLexerState;
 
 @interface CDTypeLexer : NSObject
 

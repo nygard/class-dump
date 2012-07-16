@@ -16,9 +16,8 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         case CDSegmentEncryptionType_None:     return @"None";
         case CDSegmentEncryptionType_AES:      return @"Protected Segment Type 1 (prior to 10.6)";
         case CDSegmentEncryptionType_Blowfish: return @"Protected Segment Type 2 (10.6)";
+        case CDSegmentEncryptionType_Unknown:  return @"Unknown";
     }
-
-    return @"Unknown";
 }
 
 @implementation CDLCSegment

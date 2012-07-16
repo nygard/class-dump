@@ -6,12 +6,11 @@
 #import <Foundation/Foundation.h>
 #import "CDTopologicalSortProtocol.h"
 
-enum {
+typedef enum : NSUInteger {
     CDNodeColor_White = 0,
     CDNodeColor_Gray  = 1,
     CDNodeColor_Black = 2,
-};
-typedef NSUInteger CDNodeColor;
+} CDNodeColor;
 
 @interface CDTopoSortNode : NSObject
 

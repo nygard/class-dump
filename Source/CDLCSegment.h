@@ -11,13 +11,12 @@
 #define CDSegmentProtectedMagic_AES      0xc2286295
 #define CDSegmentProtectedMagic_Blowfish 0x2e69cf40
 
-enum {
+typedef enum : NSUInteger {
     CDSegmentEncryptionType_None     = 0,
     CDSegmentEncryptionType_AES      = 1, // 10.5 and earlier (AES)
     CDSegmentEncryptionType_Blowfish = 2, // 10.6 (Blowfish)
     CDSegmentEncryptionType_Unknown
-};
-typedef NSUInteger CDSegmentEncryptionType;
+} CDSegmentEncryptionType;
 
 extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 
