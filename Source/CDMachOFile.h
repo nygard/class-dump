@@ -34,7 +34,6 @@ typedef NSUInteger CDByteOrder;
 @property (nonatomic, readonly) uint32_t magic;
 @property (nonatomic, readonly) cpu_type_t cputype;
 @property (nonatomic, readonly) cpu_subtype_t cpusubtype;
-@property (nonatomic, readonly) cpu_type_t cputypePlusArchBits;
 @property (nonatomic, readonly) uint32_t filetype;
 @property (nonatomic, readonly) uint32_t flags;
 

@@ -116,7 +116,6 @@ NSString *CDMagicNumberString(uint32_t magic)
         }
         
         NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _header.cputype, .cpusubtype = _header.cpusubtype }), @"Header magic should match cpu arch", nil);
-        _header.cputype &= ~CPU_ARCH_MASK;
         
         NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
         CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
@@ -180,7 +179,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
-    if ([self cputype] == arch.cputype)
+    if (([self cputype] & ~CPU_ARCH_MASK) == arch.cputype)
         return self;
 
     return nil;
@@ -199,15 +198,6 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (cpu_subtype_t)cpusubtype;
 {
     return _header.cpusubtype;
-}
-
-// Well... only the arch bits it knows about.
-- (cpu_type_t)cputypePlusArchBits;
-{
-    if ([self uses64BitABI])
-        return [self cputype] | CPU_ARCH_ABI64;
-
-    return [self cputype];
 }
 
 - (uint32_t)filetype;
@@ -235,7 +225,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
     if (archPtr != NULL) {
-        archPtr->cputype = _header.cputype;
+        archPtr->cputype = _header.cputype & ~CPU_ARCH_MASK;
         archPtr->cpusubtype = _header.cpusubtype;
     }
 

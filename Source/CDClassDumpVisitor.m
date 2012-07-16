@@ -50,7 +50,7 @@
     [self.resultString appendFormat:@" * File: %@\n", machOFile.filename];
     [self.resultString appendFormat:@" * UUID: %@\n", machOFile.uuidString];
 
-    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(machOFile.cputypePlusArchBits, machOFile.cpusubtype);
+    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(machOFile.cputype, machOFile.cpusubtype);
     if (archInfo == NULL)
         [self.resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", machOFile.cputype, machOFile.cpusubtype];
     else
