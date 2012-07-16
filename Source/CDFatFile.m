@@ -80,7 +80,6 @@
 
     cpu_type_t targetType = archInfo->cputype & ~CPU_ARCH_MASK;
 
-#ifdef __LP64__
     // This architecture, 64 bit
     for (CDFatArch *fatArch in self.arches) {
         if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI]) {
@@ -88,7 +87,6 @@
             return YES;
         }
     }
-#endif
 
     // This architecture, 32 bit
     for (CDFatArch *fatArch in self.arches) {
@@ -98,7 +96,6 @@
         }
     }
 
-#ifdef __LP64__
     // Any architecture, 64 bit
     for (CDFatArch *fatArch in self.arches) {
         if ([fatArch uses64BitABI]) {
@@ -106,7 +103,6 @@
             return YES;
         }
     }
-#endif
 
     // Any architecture, 32 bit
     for (CDFatArch *fatArch in self.arches) {
