@@ -9,7 +9,7 @@
 
 @interface CDObjectiveC1Processor : CDObjectiveCProcessor
 
-- (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithMachOFile:(CDMachOFile *)machOFile;
 
 - (void)process;
 

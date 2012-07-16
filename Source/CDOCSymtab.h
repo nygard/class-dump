@@ -13,6 +13,6 @@
 - (void)addClass:(CDOCClass *)aClass;
 
 @property (readonly) NSMutableArray *categories;
-- (void)addCategory:(CDOCCategory *)aCategory;
+- (void)addCategory:(CDOCCategory *)category;
 
 @end

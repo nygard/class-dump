@@ -11,16 +11,16 @@
     NSUInteger _offset;
 }
 
-- (id)initWithData:(NSData *)someData;
+- (id)initWithData:(NSData *)data;
 {
-    return [self initWithData:someData offset:0];
+    return [self initWithData:data offset:0];
 }
 
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)data offset:(NSUInteger)offset;
 {
     if ((self = [super init])) {
-        _data = someData;
-        _offset = anOffset;
+        _data = data;
+        _offset = offset;
     }
 
     return self;
@@ -184,10 +184,10 @@
     return dval;
 }
 
-- (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
+- (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)data;
 {
     if (self.offset + length <= [self.data length]) {
-        [targetData appendBytes:(uint8_t *)[self.data bytes] + self.offset length:length];
+        [data appendBytes:(uint8_t *)[self.data bytes] + self.offset length:length];
         self.offset += length;
     } else {
         [NSException raise:NSRangeException format:@"Trying to read past end in %s", __cmd];

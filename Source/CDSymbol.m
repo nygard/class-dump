@@ -28,12 +28,12 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     __weak CDMachOFile *nonretained_machOFile;
 }
 
-- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
+- (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist32:(struct nlist)nlist32;
 {
     if ((self = [super init])) {
         _is32Bit = YES;
-        _name = aName;
-        nonretained_machOFile = aMachOFile;
+        _name = name;
+        nonretained_machOFile = machOFile;
         _nlist.n_un.n_strx = 0; // We don't use it.
         _nlist.n_type = nlist32.n_type;
         _nlist.n_sect = nlist32.n_sect;
@@ -44,12 +44,12 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     return self;
 }
 
-- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
+- (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist64:(struct nlist_64)nlist64;
 {
     if ((self = [super init])) {
         _is32Bit = NO;
-        _name = aName;
-        nonretained_machOFile = aMachOFile;
+        _name = name;
+        nonretained_machOFile = machOFile;
         _nlist.n_un.n_strx = 0; // We don't use it.
         _nlist.n_type = nlist64.n_type;
         _nlist.n_sect = nlist64.n_sect;

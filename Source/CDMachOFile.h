@@ -18,12 +18,12 @@ typedef NSUInteger CDByteOrder;
 @class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
 @protocol CDMachOFileDelegate
-- (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDLCDylib *)aDylibCommand;
+- (void)machOFile:(CDMachOFile *)machOFile loadDylib:(CDLCDylib *)dylibCommand;
 @end
 
 @interface CDMachOFile : CDFile
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
@@ -68,7 +68,7 @@ typedef NSUInteger CDByteOrder;
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
 
 - (const void *)bytes;
-- (const void *)bytesAtOffset:(NSUInteger)anOffset;
+- (const void *)bytesAtOffset:(NSUInteger)offset;
 
 @property (nonatomic, readonly) NSString *importBaseName;
 

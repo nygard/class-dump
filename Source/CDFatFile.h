@@ -9,7 +9,7 @@
 
 @interface CDFatFile : CDFile
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;

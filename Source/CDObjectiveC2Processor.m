@@ -305,7 +305,6 @@
 // This just gets the methods.
 - (NSArray *)loadMethodsOfMetaClassAtAddress:(uint64_t)address;
 {
-    
     if (address == 0)
         return nil;
     

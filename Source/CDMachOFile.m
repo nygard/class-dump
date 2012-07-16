@@ -66,9 +66,9 @@ NSString *CDMagicNumberString(uint32_t magic)
     } _flags;
 }
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    if ((self = [super initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState])) {
+    if ((self = [super initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState])) {
         _byteOrder = CDByteOrder_LittleEndian;
         _loadCommands = nil;
         _dylibLoadCommands = nil;
@@ -83,7 +83,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         _dyldEnvironment = nil;
         _reExportedDylibs = nil;
         
-        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:someData offset:self.archOffset];
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data offset:self.archOffset];
         _header.magic = [cursor readBigInt32];
         if (_header.magic == MH_MAGIC || _header.magic == MH_MAGIC_64) {
             _byteOrder = CDByteOrder_BigEndian;
@@ -327,9 +327,9 @@ NSString *CDMagicNumberString(uint32_t magic)
     return nil;
 }
 
-- (void)showWarning:(NSString *)aWarning;
+- (void)showWarning:(NSString *)warning;
 {
-    NSLog(@"Warning: %@", aWarning);
+    NSLog(@"Warning: %@", warning);
 }
 
 - (NSString *)stringAtAddress:(NSUInteger)address;
@@ -403,9 +403,9 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [self.data bytes];
 }
 
-- (const void *)bytesAtOffset:(NSUInteger)anOffset;
+- (const void *)bytesAtOffset:(NSUInteger)offset;
 {
-    return (uint8_t *)[self.data bytes] + anOffset;
+    return (uint8_t *)[self.data bytes] + offset;
 }
 
 - (NSString *)importBaseName;

@@ -17,10 +17,10 @@
     struct section_64 _section;
 }
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)segment;
 {
     if ((self = [super init])) {
-        nonretained_segment = aSegment;
+        nonretained_segment = segment;
         
         [cursor readBytesOfLength:16 intoBuffer:_section.sectname];
         [cursor readBytesOfLength:16 intoBuffer:_section.segname];

@@ -18,10 +18,10 @@
 }
 
 // Just to resolve multiple different definitions...
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)segment;
 {
     if ((self = [super init])) {
-        nonretained_segment = aSegment;
+        nonretained_segment = segment;
         
         [cursor readBytesOfLength:16 intoBuffer:_section.sectname];
         [cursor readBytesOfLength:16 intoBuffer:_section.segname];

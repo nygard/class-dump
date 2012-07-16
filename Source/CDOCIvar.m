@@ -27,12 +27,12 @@
     CDType *_parsedType;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
+- (id)initWithName:(NSString *)name type:(NSString *)type offset:(NSUInteger)offset;
 {
     if ((self = [super init])) {
-        _name = aName;
-        _type = aType;
-        _offset = anOffset;
+        _name = name;
+        _type = type;
+        _offset = offset;
         
         _hasParsedType = NO;
         _parsedType = nil;

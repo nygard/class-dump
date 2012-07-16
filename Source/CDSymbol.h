@@ -13,8 +13,8 @@ extern NSString *const ObjCClassSymbolPrefix;
 
 @interface CDSymbol : NSObject
 
-- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
-- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
+- (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist32:(struct nlist)nlist32;
+- (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist64:(struct nlist_64)nlist64;
 
 @property (nonatomic, readonly) uint64_t value;
 @property (readonly) NSString *name;

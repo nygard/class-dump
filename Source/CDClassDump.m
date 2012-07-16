@@ -40,7 +40,7 @@
     
     NSString *_sdkRoot;
     NSMutableArray *_machOFiles;
-    NSMutableDictionary *_machOFilesByID;
+    NSMutableDictionary *_machOFilesByName;
     NSMutableArray *_objcProcessors;
     
     CDTypeController *_typeController;
@@ -55,7 +55,7 @@
         _sdkRoot = nil;
         
         _machOFiles = [[NSMutableArray alloc] init];
-        _machOFilesByID = [[NSMutableDictionary alloc] init];
+        _machOFilesByName = [[NSMutableDictionary alloc] init];
         _objcProcessors = [[NSMutableArray alloc] init];
         
         _typeController = [[CDTypeController alloc] initWithClassDump:self];
@@ -123,7 +123,7 @@
     // Set before processing recursively.  This was getting caught on CoreUI on 10.6
     assert([aMachOFile filename] != nil);
     [_machOFiles addObject:aMachOFile];
-    _machOFilesByID[aMachOFile.filename] = aMachOFile;
+    _machOFilesByName[aMachOFile.filename] = aMachOFile;
 
     if ([self shouldProcessRecursively]) {
         @try {
@@ -132,7 +132,7 @@
                     CDLCDylib *aDylibCommand = (CDLCDylib *)loadCommand;
                     if ([aDylibCommand cmd] == LC_LOAD_DYLIB) {
                         [self.searchPathState pushSearchPaths:[aMachOFile runPaths]];
-                        [self machOFileWithID:[aDylibCommand path]]; // Loads as a side effect
+                        [self machOFileWithName:[aDylibCommand path]]; // Loads as a side effect
                         [self.searchPathState popSearchPaths];
                     }
                 }
@@ -170,50 +170,50 @@
     [visitor didEndVisiting];
 }
 
-- (CDMachOFile *)machOFileWithID:(NSString *)anID;
+- (CDMachOFile *)machOFileWithName:(NSString *)name;
 {
-    NSString *adjustedID = nil;
+    NSString *adjustedName = nil;
     NSString *executablePathPrefix = @"@executable_path";
     NSString *rpathPrefix = @"@rpath";
 
-    if ([anID hasPrefix:executablePathPrefix]) {
-        adjustedID = [anID stringByReplacingOccurrencesOfString:executablePathPrefix withString:self.searchPathState.executablePath];
-    } else if ([anID hasPrefix:rpathPrefix]) {
+    if ([name hasPrefix:executablePathPrefix]) {
+        adjustedName = [name stringByReplacingOccurrencesOfString:executablePathPrefix withString:self.searchPathState.executablePath];
+    } else if ([name hasPrefix:rpathPrefix]) {
         //NSLog(@"Searching for %@ through run paths: %@", anID, [searchPathState searchPaths]);
         for (NSString *searchPath in [self.searchPathState searchPaths]) {
-            NSString *str = [anID stringByReplacingOccurrencesOfString:rpathPrefix withString:searchPath];
+            NSString *str = [name stringByReplacingOccurrencesOfString:rpathPrefix withString:searchPath];
             //NSLog(@"trying %@", str);
             if ([[NSFileManager defaultManager] fileExistsAtPath:str]) {
-                adjustedID = str;
+                adjustedName = str;
                 //NSLog(@"Found it!");
                 break;
             }
         }
-        if (adjustedID == nil) {
-            adjustedID = anID;
+        if (adjustedName == nil) {
+            adjustedName = name;
             //NSLog(@"Did not find it.");
         }
     } else if (self.sdkRoot != nil) {
-        adjustedID = [self.sdkRoot stringByAppendingPathComponent:anID];
+        adjustedName = [self.sdkRoot stringByAppendingPathComponent:name];
     } else {
-        adjustedID = anID;
+        adjustedName = name;
     }
 
-    CDMachOFile *aMachOFile = _machOFilesByID[adjustedID];
-    if (aMachOFile == nil) {
-        NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
-        CDFile *aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:self.searchPathState];
+    CDMachOFile *machOFile = _machOFilesByName[adjustedName];
+    if (machOFile == nil) {
+        NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedName];
+        CDFile *aFile = [CDFile fileWithData:data filename:adjustedName searchPathState:self.searchPathState];
 
         if (aFile == nil || [self loadFile:aFile] == NO)
-            NSLog(@"Warning: Failed to load: %@", adjustedID);
+            NSLog(@"Warning: Failed to load: %@", adjustedName);
 
-        aMachOFile = _machOFilesByID[adjustedID];
-        if (aMachOFile == nil) {
-            NSLog(@"Warning: Couldn't load MachOFile with ID: %@, adjustedID: %@", anID, adjustedID);
+        machOFile = _machOFilesByName[adjustedName];
+        if (machOFile == nil) {
+            NSLog(@"Warning: Couldn't load MachOFile with ID: %@, adjustedID: %@", name, adjustedName);
         }
     }
 
-    return aMachOFile;
+    return machOFile;
 }
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;

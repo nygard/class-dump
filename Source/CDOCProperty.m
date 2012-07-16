@@ -35,11 +35,11 @@ static BOOL debug = NO;
     BOOL _isDynamic;
 }
 
-- (id)initWithName:(NSString *)aName attributes:(NSString *)someAttributes;
+- (id)initWithName:(NSString *)name attributes:(NSString *)attributes;
 {
     if ((self = [super init])) {
-        _name = aName;
-        _attributeString = someAttributes;
+        _name = name;
+        _attributeString = attributes;
         _type = nil;
         _attributes = [[NSMutableArray alloc] init];
         

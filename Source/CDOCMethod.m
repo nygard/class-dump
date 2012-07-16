@@ -26,20 +26,20 @@
     return nil;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType imp:(NSUInteger)anImp;
+- (id)initWithName:(NSString *)name type:(NSString *)type imp:(NSUInteger)imp;
 {
-    if ((self = [self initWithName:aName type:aType])) {
-        [self setImp:anImp];
+    if ((self = [self initWithName:name type:type])) {
+        [self setImp:imp];
     }
 
     return self;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType;
+- (id)initWithName:(NSString *)name type:(NSString *)type;
 {
     if ((self = [super init])) {
-        _name = aName;
-        _type = aType;
+        _name = name;
+        _type = type;
         _imp = 0;
         
         _hasParsedType = NO;

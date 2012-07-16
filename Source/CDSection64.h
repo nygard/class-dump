@@ -9,7 +9,7 @@
 
 @interface CDSection64 : CDSection
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment64 *)segment;
 
 @property (weak, readonly) CDLCSegment64 *segment;
 

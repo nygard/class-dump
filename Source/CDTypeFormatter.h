@@ -18,7 +18,7 @@
 
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type; // Just used by CDOCIvar
 - (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
-- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
+- (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
 
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 

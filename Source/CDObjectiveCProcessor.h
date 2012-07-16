@@ -11,7 +11,7 @@
 
 @interface CDObjectiveCProcessor : NSObject
 
-- (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithMachOFile:(CDMachOFile *)machOFile;
 
 @property (readonly) CDMachOFile *machOFile;
 @property (nonatomic, readonly) BOOL hasObjectiveCData;
@@ -22,8 +22,8 @@
 - (void)addClass:(CDOCClass *)aClass withAddress:(uint64_t)address;
 - (CDOCClass *)classWithAddress:(uint64_t)address;
 
-- (void)addClassesFromArray:(NSArray *)anArray;
-- (void)addCategoriesFromArray:(NSArray *)anArray;
+- (void)addClassesFromArray:(NSArray *)array;
+- (void)addCategoriesFromArray:(NSArray *)array;
 
 - (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
 - (void)setProtocol:(CDOCProtocol *)aProtocol withAddress:(uint64_t)address;
@@ -38,7 +38,7 @@
 - (void)loadCategories;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 
 - (void)createUniquedProtocols;
 

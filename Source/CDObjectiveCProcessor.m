@@ -31,10 +31,10 @@
     NSMutableDictionary *_protocolsByAddress; // non-uniqued
 }
 
-- (id)initWithMachOFile:(CDMachOFile *)aMachOFile;
+- (id)initWithMachOFile:(CDMachOFile *)machOFile;
 {
     if ((self = [super init])) {
-        _machOFile = aMachOFile;
+        _machOFile = machOFile;
         _classes = [[NSMutableArray alloc] init];
         _classesByAddress = [[NSMutableDictionary alloc] init];
         _categories = [[NSMutableArray alloc] init];
@@ -106,16 +106,16 @@
     return [_classesByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:address]];
 }
 
-- (void)addClassesFromArray:(NSArray *)anArray;
+- (void)addClassesFromArray:(NSArray *)array;
 {
-    if (anArray != nil)
-        [_classes addObjectsFromArray:anArray];
+    if (array != nil)
+        [_classes addObjectsFromArray:array];
 }
 
-- (void)addCategoriesFromArray:(NSArray *)anArray;
+- (void)addCategoriesFromArray:(NSArray *)array;
 {
-    if (anArray != nil)
-        [_categories addObjectsFromArray:anArray];
+    if (array != nil)
+        [_categories addObjectsFromArray:array];
 }
 
 - (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
@@ -124,10 +124,10 @@
     return _protocolsByAddress[key];
 }
 
-- (void)setProtocol:(CDOCProtocol *)aProtocol withAddress:(uint64_t)address;
+- (void)setProtocol:(CDOCProtocol *)protocol withAddress:(uint64_t)address;
 {
     NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    _protocolsByAddress[key] = aProtocol;
+    _protocolsByAddress[key] = protocol;
 }
 
 - (CDOCProtocol *)protocolForName:(NSString *)name;
@@ -185,7 +185,7 @@
         [_protocolsByName[name] registerTypesWithObject:typeController phase:phase];
 }
 
-- (void)recursivelyVisit:(CDVisitor *)aVisitor;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 {
     NSMutableArray *classesAndCategories = [[NSMutableArray alloc] init];
     [classesAndCategories addObjectsFromArray:_classes];
@@ -196,22 +196,22 @@
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
     NSArray *protocolNames = [[_protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
 
-    [aVisitor willVisitObjectiveCProcessor:self];
-    [aVisitor visitObjectiveCProcessor:self];
+    [visitor willVisitObjectiveCProcessor:self];
+    [visitor visitObjectiveCProcessor:self];
 
     for (NSString *protocolName in protocolNames) {
-        [_protocolsByName[protocolName] recursivelyVisit:aVisitor];
+        [_protocolsByName[protocolName] recursivelyVisit:visitor];
     }
 
-    if ([[aVisitor classDump] shouldSortClassesByInheritance]) {
+    if ([[visitor classDump] shouldSortClassesByInheritance]) {
         [classesAndCategories sortTopologically];
-    } else if ([[aVisitor classDump] shouldSortClasses])
+    } else if ([[visitor classDump] shouldSortClasses])
         [classesAndCategories sortUsingSelector:@selector(ascendingCompareByName:)];
 
     for (id aClassOrCategory in classesAndCategories)
-        [aClassOrCategory recursivelyVisit:aVisitor];
+        [aClassOrCategory recursivelyVisit:visitor];
 
-    [aVisitor didVisitObjectiveCProcessor:self];
+    [visitor didVisitObjectiveCProcessor:self];
 }
 
 - (void)createUniquedProtocols;

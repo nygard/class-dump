@@ -9,7 +9,7 @@
 
 @interface CDSection32 : CDSection
 
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)segment;
 
 @property (weak, readonly) CDLCSegment32 *segment;
 @property (nonatomic, readonly) uint32_t offset;

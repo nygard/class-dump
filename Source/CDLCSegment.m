@@ -165,10 +165,10 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     return nil;
 }
 
-- (CDSection *)sectionWithName:(NSString *)aName;
+- (CDSection *)sectionWithName:(NSString *)name;
 {
     for (CDSection *section in self.sections) {
-        if ([[section sectionName] isEqual:aName])
+        if ([[section sectionName] isEqual:name])
             return section;
     }
 

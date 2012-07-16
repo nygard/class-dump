@@ -40,12 +40,12 @@ static NSString *CDTokenDescription(int token)
     int lookahead;
 }
 
-- (id)initWithType:(NSString *)aType;
+- (id)initWithType:(NSString *)type;
 {
     if ((self = [super init])) {
         // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
-        NSMutableString *str = [aType mutableCopy];
-        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [aType length])];
+        NSMutableString *str = [type mutableCopy];
+        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [type length])];
         
         _lexer = [[CDTypeLexer alloc] initWithString:str];
         lookahead = 0;
@@ -427,79 +427,79 @@ static NSString *CDTokenDescription(int token)
     return nil;
 }
 
-- (BOOL)isTokenInModifierSet:(int)aToken;
+- (BOOL)isTokenInModifierSet:(int)token;
 {
-    if (aToken == 'j'
-        || aToken == 'r'
-        || aToken == 'n'
-        || aToken == 'N'
-        || aToken == 'o'
-        || aToken == 'O'
-        || aToken == 'R'
-        || aToken == 'V')
+    if (token == 'j'
+        || token == 'r'
+        || token == 'n'
+        || token == 'N'
+        || token == 'o'
+        || token == 'O'
+        || token == 'R'
+        || token == 'V')
         return YES;
 
     return NO;
 }
 
-- (BOOL)isTokenInSimpleTypeSet:(int)aToken;
+- (BOOL)isTokenInSimpleTypeSet:(int)token;
 {
-    if (aToken == 'c'
-        || aToken == 'i'
-        || aToken == 's'
-        || aToken == 'l'
-        || aToken == 'q'
-        || aToken == 'C'
-        || aToken == 'I'
-        || aToken == 'S'
-        || aToken == 'L'
-        || aToken == 'Q'
-        || aToken == 'f'
-        || aToken == 'd'
-        || aToken == 'D'
-        || aToken == 'B'
-        || aToken == 'v'
-        || aToken == '*'
-        || aToken == '#'
-        || aToken == ':'
-        || aToken == '%'
-        || aToken == '?')
+    if (token == 'c'
+        || token == 'i'
+        || token == 's'
+        || token == 'l'
+        || token == 'q'
+        || token == 'C'
+        || token == 'I'
+        || token == 'S'
+        || token == 'L'
+        || token == 'Q'
+        || token == 'f'
+        || token == 'd'
+        || token == 'D'
+        || token == 'B'
+        || token == 'v'
+        || token == '*'
+        || token == '#'
+        || token == ':'
+        || token == '%'
+        || token == '?')
         return YES;
 
     return NO;
 }
 
-- (BOOL)isTokenInTypeSet:(int)aToken;
+- (BOOL)isTokenInTypeSet:(int)token;
 {
-    if ([self isTokenInModifierSet:aToken]
-        || [self isTokenInSimpleTypeSet:aToken]
-        || aToken == '^'
-        || aToken == 'b'
-        || aToken == '@'
-        || aToken == '{'
-        || aToken == '('
-        || aToken == '[')
+    if ([self isTokenInModifierSet:token]
+        || [self isTokenInSimpleTypeSet:token]
+        || token == '^'
+        || token == 'b'
+        || token == '@'
+        || token == '{'
+        || token == '('
+        || token == '[')
         return YES;
 
     return NO;
 }
 
-- (BOOL)isTokenInTypeStartSet:(int)aToken;
+- (BOOL)isTokenInTypeStartSet:(int)token;
 {
-    if (aToken == 'r'
-        || aToken == 'n'
-        || aToken == 'N'
-        || aToken == 'o'
-        || aToken == 'O'
-        || aToken == 'R'
-        || aToken == 'V'
-        || aToken == '^'
-        || aToken == 'b'
-        || aToken == '@'
-        || aToken == '{'
-        || aToken == '('
-        || aToken == '['
-        || [self isTokenInSimpleTypeSet:aToken])
+    if (token == 'r'
+        || token == 'n'
+        || token == 'N'
+        || token == 'o'
+        || token == 'O'
+        || token == 'R'
+        || token == 'V'
+        || token == '^'
+        || token == 'b'
+        || token == '@'
+        || token == '{'
+        || token == '('
+        || token == '['
+        || [self isTokenInSimpleTypeSet:token])
         return YES;
 
     return NO;

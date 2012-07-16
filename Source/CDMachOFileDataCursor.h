@@ -9,9 +9,9 @@
 
 @interface CDMachOFileDataCursor : CDDataCursor
 
-- (id)initWithFile:(CDMachOFile *)aMachOFile;
-- (id)initWithFile:(CDMachOFile *)aMachOFile offset:(NSUInteger)anOffset;
-- (id)initWithFile:(CDMachOFile *)aMachOFile address:(NSUInteger)anAddress;
+- (id)initWithFile:(CDMachOFile *)machOFile;
+- (id)initWithFile:(CDMachOFile *)machOFile offset:(NSUInteger)offset;
+- (id)initWithFile:(CDMachOFile *)machOFile address:(NSUInteger)address;
 
 - (id)initWithSection:(CDSection *)section;
 

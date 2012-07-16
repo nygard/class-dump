@@ -9,8 +9,6 @@
 
 @interface CDSection : NSObject
 
-- (id)init;
-
 @property (retain) NSString *segmentName;
 @property (retain) NSString *sectionName;
 

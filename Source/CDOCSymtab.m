@@ -38,9 +38,9 @@
     [self.classes addObject:aClass];
 }
 
-- (void)addCategory:(CDOCCategory *)aCategory;
+- (void)addCategory:(CDOCCategory *)category;
 {
-    [self.categories addObject:aCategory];
+    [self.categories addObject:category];
 }
 
 @end

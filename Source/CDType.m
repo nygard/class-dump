@@ -48,26 +48,26 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initSimpleType:(int)aTypeCode;
+- (id)initSimpleType:(int)type;
 {
     if ((self = [self init])) {
-        if (aTypeCode == '*') {
+        if (type == '*') {
             _type = '^';
             _subtype = [[CDType alloc] initSimpleType:'c'];
         } else {
-            _type = aTypeCode;
+            _type = type;
         }
     }
 
     return self;
 }
 
-- (id)initIDType:(CDTypeName *)aName;
+- (id)initIDType:(CDTypeName *)name;
 {
     if ((self = [self init])) {
-        if (aName != nil) {
+        if (name != nil) {
             _type = T_NAMED_OBJECT;
-            _typeName = aName;
+            _typeName = name;
         } else {
             _type = '@';
         }
@@ -76,74 +76,74 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initIDTypeWithProtocols:(NSArray *)someProtocols;
+- (id)initIDTypeWithProtocols:(NSArray *)protocols;
 {
     if ((self = [self init])) {
         _type = '@';
-        _protocols = someProtocols;
+        _protocols = protocols;
     }
 
     return self;
 }
 
-- (id)initStructType:(CDTypeName *)aName members:(NSArray *)someMembers;
+- (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
 {
     if ((self = [self init])) {
         _type = '{';
-        _typeName = aName;
-        _members = [[NSMutableArray alloc] initWithArray:someMembers];
+        _typeName = name;
+        _members = [[NSMutableArray alloc] initWithArray:members];
     }
 
     return self;
 }
 
-- (id)initUnionType:(CDTypeName *)aName members:(NSArray *)someMembers;
+- (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;
 {
     if ((self = [self init])) {
         _type = '(';
-        _typeName = aName;
-        _members = [[NSMutableArray alloc] initWithArray:someMembers];
+        _typeName = name;
+        _members = [[NSMutableArray alloc] initWithArray:members];
     }
 
     return self;
 }
 
-- (id)initBitfieldType:(NSString *)aBitfieldSize;
+- (id)initBitfieldType:(NSString *)bitfieldSize;
 {
     if ((self = [self init])) {
         _type = 'b';
-        _bitfieldSize = aBitfieldSize;
+        _bitfieldSize = bitfieldSize;
     }
 
     return self;
 }
 
-- (id)initArrayType:(CDType *)aType count:(NSString *)aCount;
+- (id)initArrayType:(CDType *)type count:(NSString *)count;
 {
     if ((self = [self init])) {
         _type = '[';
-        _arraySize = aCount;
-        _subtype = aType;
+        _arraySize = count;
+        _subtype = type;
     }
 
     return self;
 }
 
-- (id)initPointerType:(CDType *)aType;
+- (id)initPointerType:(CDType *)type;
 {
     if ((self = [self init])) {
         _type = '^';
-        _subtype = aType;
+        _subtype = type;
     }
 
     return self;
 }
 
-- (id)initModifier:(int)aModifier type:(CDType *)aType;
+- (id)initModifier:(int)modifier type:(CDType *)type;
 {
     if ((self = [self init])) {
-        _type = aModifier;
-        _subtype = aType;
+        _type = modifier;
+        _subtype = type;
     }
 
     return self;

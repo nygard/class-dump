@@ -136,14 +136,14 @@ static BOOL debug = NO;
     return resultString;
 }
 
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type;
+- (NSDictionary *)formattedTypesForMethodName:(NSString *)name type:(NSString *)type;
 {
     CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
 
     NSError *error = nil;
     NSArray *methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@", methodName);
+        NSLog(@"Warning: Parsing method types failed, %@", name);
 
     if (methodTypes == nil || [methodTypes count] == 0) {
         return nil;
@@ -155,12 +155,12 @@ static BOOL debug = NO;
         NSUInteger index = 0;
         BOOL noMoreTypes = NO;
 
-        CDMethodType *aMethodType = methodTypes[index];
-        NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
+        CDMethodType *methodType = methodTypes[index];
+        NSString *specialCase = [self _specialCaseVariable:nil type:methodType.type.bareTypeString];
         if (specialCase != nil) {
             [typeDict setValue:specialCase forKey:@"return-type"];
         } else {
-            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0];
+            NSString *str = [[methodType type] formattedString:nil formatter:self level:0];
             if (str != nil)
                 [typeDict setValue:str forKey:@"return-type"];
         }
@@ -170,7 +170,7 @@ static BOOL debug = NO;
         NSMutableArray *parameterTypes = [NSMutableArray array];
         [typeDict setValue:parameterTypes forKey:@"parametertypes"];
 
-        NSScanner *scanner = [[NSScanner alloc] initWithString:methodName];
+        NSScanner *scanner = [[NSScanner alloc] initWithString:name];
         while ([scanner isAtEnd] == NO) {
             NSString *str;
 
@@ -188,12 +188,12 @@ static BOOL debug = NO;
                 } else {
                     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
 
-                    aMethodType = methodTypes[index];
-                    specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
+                    methodType = methodTypes[index];
+                    specialCase = [self _specialCaseVariable:nil type:methodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [parameter setValue:specialCase forKey:@"type"];
                     } else {
-                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0];
+                        NSString *typeString = [methodType.type formattedString:nil formatter:self level:0];
                         [parameter setValue:typeString forKey:@"type"];
                     }
                     //[parameter setValue:[NSString stringWithFormat:@"fp%@", aMethodType.offset] forKey:@"name"];
