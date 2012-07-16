@@ -5,7 +5,7 @@ from subprocess import *
 import glob
 import os
 import sys
-import getopt
+import argparse
 
 # xcodebuild -showsdks
 
@@ -119,26 +119,15 @@ def printUsage():
     print
 
 def main(argv):
-    try:
-        opts, args = getopt.getopt(argv, "", ["dev-root=", "sdk-root=", "ios"])
-    except getopt.GetoptError:
-        printUsage()
-        sys.exit(2)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--ios", action="store_true", help="Test iOS targets")
+    parser.add_argument("--sdk-root", help="Specify the SDK root, either the full path for just the version (i.e. 6.0)")
+    parser.add_argument("--dev-root", help="Specify the developer tools root (i.e. /Developer, /Applications/Xcode.app)")
+    args = parser.parse_args()
+    print args
 
-    shouldTestIOs = False
-    sdk_root = None
-    dev_root = "/Developer"
-
-    for opt, arg in opts:
-        if opt in ("--ios",):
-            shouldTestIOs = True
-        if opt in ("--sdk-root",):
-            sdk_root = arg
-        if opt in ("--dev-root",):
-            dev_root = arg
-
-    sdk_root = resolve_sdk_root_alias(sdk_root, dev_root)
-    #print "Resolved sdk_root:", sdk_root
+    sdk_root = resolve_sdk_root_alias(args.sdk_root, args.dev_root)
+    print "Resolved sdk_root:", sdk_root
 
     print "Starting tests at", datetime.today().ctime()
     print
@@ -146,7 +135,7 @@ def main(argv):
     print "New class-dump:", " ".join(Popen("ls -al " + NEW_CD, shell=True, stdout=PIPE).stdout.readlines()),
     print
 
-    if shouldTestIOs:
+    if args.ios:
         print "Testing on iOS targets"
         print
         print "sdk_root:", sdk_root
