@@ -2,6 +2,7 @@
 
 from datetime import *
 from subprocess import *
+import subprocess
 import glob
 import os
 import sys
@@ -53,36 +54,54 @@ NEW_CD = os.path.expanduser("/Local/nygard/Debug/class-dump")
 # Must be a version that supports --list-arches
 ARCH_CD = os.path.expanduser("/Local/nygard/Debug/class-dump")
 
-mac_frameworks = [
-    "/System/Library/Frameworks/*.framework",
-    "/System/Library/PrivateFrameworks/*.framework",
-    "/Developer/Library/Frameworks/*.framework",
-    "/Developer/Library/PrivateFrameworks/*.framework",
-]
 
-mac_apps = [
-    "/Applications/*.app",
-    "/Applications/*/*.app",
-    "/Applications/Utilities/*.app",
-    "/Developer/Applications/*.app",
-    "/Developer/Applications/*/*.app",
-    "~/Applications/*.app",
-    "/System/Library/CoreServices/*.app",
-]
+try:
+    developer_root = subprocess.check_output(["xcode-select", "--print-path"]).rstrip()
+except:
+    developer_root = None
+print "Developer root:", developer_root
 
-mac_bundles = [
-    "/System/Library/CoreServices/*.bundle",
-]
+def mac_frameworks(xcode_path=None):
+    paths = [
+        "/System/Library/Frameworks/*.framework",
+        "/System/Library/PrivateFrameworks/*.framework",
+        ]
+    if developer_root:
+        paths.extend([
+            developer_root + "/Library/Frameworks/*.framework",
+            developer_root + "/Library/PrivateFrameworks/*.framework",
+            developer_root + "/../Frameworks/*.framework",
+            developer_root + "/../OtherFrameworks/*.framework",
+            ])
+    return [os.path.normpath(path) for path in paths]
+
+def mac_apps(xcode_path=None):
+    paths = [
+        "/Applications/*.app",
+        "/Applications/*/*.app",
+        "/Applications/Utilities/*.app",
+        os.path.normpath("~/Applications/*.app"),
+        "/System/Library/CoreServices/*.app",
+        ]
+    if developer_root:
+        paths.extend([
+            developer_root + "/../Applications/*.app",
+            ])
+    return [os.path.normpath(path) for path in paths]
+
+def mac_bundles(xcode_path=None):
+    paths = [
+        "/System/Library/CoreServices/*.bundle",
+        ]
+    if developer_root:
+        paths.extend([
+            developer_root + "/../Plugins/*.ideplugin",
+            ])
+    return [os.path.normpath(path) for path in paths]
 
 #mac_testapps = [
 #    "/Volumes/BigData/TestApplications/*.app",
 #]
-
-def resolve_sdk_root_alias(sdk_root="4.3", dev_root="/Developer"):
-    """ Resolves SDK root alias into full path.  Can also specify dev_root to handle multiple dev tool installations."""
-    if sdk_root in ("3.2", "4.0", "4.1", "4.2", "4.3", "5.0" ):
-        return dev_root + "/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS" + sdk_root + ".sdk"
-    return sdk_root
 
 def build_ios_paths(sdk_root):
     iphone_frameworks = [
@@ -112,22 +131,27 @@ def mkdir_ignore(dir):
     except OSError as e:
         pass
 
-def printUsage():
-    print "doTests.py [--ios] [--sdk-root <path, 4.1, 4.0 or 3.2>] [--dev-root <path>]"
-    print
-    print "    doTests.py --ios --sdk-root 5.0 --dev-root /Xcode42"
-    print
-
 def main(argv):
     parser = argparse.ArgumentParser()
+    parser.add_argument("--show-sdks", action="store_true", help="Lists all available SDKs that Xcode knows about (calls xcodebuild -showsdks)")
+    parser.add_argument("--sdk", help="Specify an SDK to use to resolve frameworks")
     parser.add_argument("--ios", action="store_true", help="Test iOS targets")
-    parser.add_argument("--sdk-root", help="Specify the SDK root, either the full path for just the version (i.e. 6.0)")
-    parser.add_argument("--dev-root", help="Specify the developer tools root (i.e. /Developer, /Applications/Xcode.app)")
     args = parser.parse_args()
     print args
 
-    sdk_root = resolve_sdk_root_alias(args.sdk_root, args.dev_root)
-    print "Resolved sdk_root:", sdk_root
+    if args.show_sdks:
+        subprocess.call(["xcodebuild", "-showsdks"])
+        sys.exit(0)
+
+
+    sdk_root = None
+    if args.sdk:
+        sdk_root = subprocess.check_output(["xcodebuild", "-version", "-sdk", args.sdk, "Path"])
+    else:
+        if args.ios:
+            sdk_root = subprocess.check_output(["xcodebuild", "-version", "-sdk", "iphoneos", "Path"])
+
+    #print "sdk_root:", sdk_root
 
     print "Starting tests at", datetime.today().ctime()
     print
@@ -150,7 +174,7 @@ def main(argv):
         print "sdk_root:", sdk_root
         if sdk_root:
             print "Ignoring --sdk-root for macosx testing"
-        sdict = dict(apps=mac_apps, frameworks=mac_frameworks, bundles=mac_bundles)
+        sdict = dict(apps=mac_apps(), frameworks=mac_frameworks(), bundles=mac_bundles())
         print_path_dict(sdict)
         print
         OLD_OPTS = []
