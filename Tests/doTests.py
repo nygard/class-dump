@@ -208,12 +208,12 @@ def main(argv):
     all.extend(bundles)
 
     for path in all:
+        dirname = os.path.dirname(path)
         (base, ext) = os.path.splitext(os.path.basename(path))
         ext = ext.lstrip(".")
-        print base, ext
         proc = Popen([ARCH_CD, "--list-arches", path], shell=False, stdout=PIPE)
         arches = proc.stdout.readline().rstrip().split(" ")
-        print arches
+        print "%-10s %-20s %-40s %s" % (ext, arches, base, dirname)
         proc.stdout.readlines()
         arch_procs = []
         for arch in arches:
@@ -232,8 +232,6 @@ def main(argv):
                 proc = Popen(command, shell=False, stdout=out, stderr=out)
                 arch_procs.append( (proc, out) )
             else:
-                print arch
-
                 command = [OLD_CD, "-s", "-t", "--arch", arch, path]
                 command.extend(OLD_OPTS)
                 #print command
