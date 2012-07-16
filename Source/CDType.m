@@ -620,8 +620,8 @@ static BOOL debugMerge = NO;
     // count == 0 is ok: we just have a name in that case.
     if (count == otherCount) {
         for (NSUInteger index = 0; index < count; index++) { // Oooh
-            CDType *thisMember = [self.members objectAtIndex:index];
-            CDType *otherMember = [otherMembers objectAtIndex:index];
+            CDType *thisMember = self.members[index];
+            CDType *otherMember = otherMembers[index];
 
             CDTypeName *thisTypeName = thisMember.typeName;
             CDTypeName *otherTypeName = otherMember.typeName;
@@ -708,8 +708,8 @@ static BOOL debugMerge = NO;
 
     //NSLog(@"****************************************");
     for (NSUInteger index = 0; index < count; index++) {
-        CDType *thisMember = [self.members objectAtIndex:index];
-        CDType *otherMember = [otherMembers objectAtIndex:index];
+        CDType *thisMember = self.members[index];
+        CDType *otherMember = otherMembers[index];
 
         CDTypeName *thisTypeName = thisMember.typeName;
         CDTypeName *otherTypeName = otherMember.typeName;

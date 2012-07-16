@@ -71,14 +71,8 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     } else {
         valueString = [NSString stringWithFormat:(_is32Bit ? @"%08llx" : @"%016llx"), self.value];
     }
-    
-    //NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
-    //NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
 
     return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], self.name];
-
-    //return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
-    //return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"], nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
 }
 
 #pragma mark -
@@ -103,7 +97,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     // n_sect is 1-indexed (NO_SECT == 0)
     NSUInteger sectionIndex = _nlist.n_sect - 1;
     if (sectionIndex < [sections count])
-        return [sections objectAtIndex:sectionIndex];
+        return sections[sectionIndex];
     else
         return nil;
 }
@@ -114,7 +108,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     NSArray *dylibLoadCommands = self.machOFile.dylibLoadCommands;
 
     if (libraryOrdinal < [dylibLoadCommands count])
-        return [dylibLoadCommands objectAtIndex:libraryOrdinal];
+        return dylibLoadCommands[libraryOrdinal];
     else
         return nil;
 }

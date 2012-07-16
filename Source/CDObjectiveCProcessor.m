@@ -121,18 +121,18 @@
 - (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
 {
     NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    return [_protocolsByAddress objectForKey:key];
+    return _protocolsByAddress[key];
 }
 
 - (void)setProtocol:(CDOCProtocol *)aProtocol withAddress:(uint64_t)address;
 {
     NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    [_protocolsByAddress setObject:aProtocol forKey:key];
+    _protocolsByAddress[key] = aProtocol;
 }
 
 - (CDOCProtocol *)protocolForName:(NSString *)name;
 {
-    return [_protocolsByName objectForKey:name];
+    return _protocolsByName[name];
 }
 
 - (void)addCategory:(CDOCCategory *)category;
@@ -182,7 +182,7 @@
         [category registerTypesWithObject:typeController phase:phase];
 
     for (NSString *name in [[_protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)])
-        [[_protocolsByName objectForKey:name] registerTypesWithObject:typeController phase:phase];
+        [_protocolsByName[name] registerTypesWithObject:typeController phase:phase];
 }
 
 - (void)recursivelyVisit:(CDVisitor *)aVisitor;
@@ -200,7 +200,7 @@
     [aVisitor visitObjectiveCProcessor:self];
 
     for (NSString *protocolName in protocolNames) {
-        [[_protocolsByName objectForKey:protocolName] recursivelyVisit:aVisitor];
+        [_protocolsByName[protocolName] recursivelyVisit:aVisitor];
     }
 
     if ([[aVisitor classDump] shouldSortClassesByInheritance]) {
@@ -219,12 +219,12 @@
     // Now unique the protocols by name and store in protocolsByName
 
     for (NSNumber *key in [[_protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1 = [_protocolsByAddress objectForKey:key];
-        CDOCProtocol *p2 = [_protocolsByName objectForKey:[p1 name]];
+        CDOCProtocol *p1 = _protocolsByAddress[key];
+        CDOCProtocol *p2 = _protocolsByName[p1.name];
         if (p2 == nil) {
             p2 = [[CDOCProtocol alloc] init];
             [p2 setName:[p1 name]];
-            [_protocolsByName setObject:p2 forKey:[p2 name]];
+            _protocolsByName[p2.name] = p2;
             // adopted protocols still not set, will want uniqued instances
         } else {
         }
@@ -234,10 +234,10 @@
 
     // And finally fill in adopted protocols, instance and class methods.  And properties.
     for (NSNumber *key in [[_protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1 = [_protocolsByAddress objectForKey:key];
-        CDOCProtocol *uniqueProtocol = [_protocolsByName objectForKey:[p1 name]];
+        CDOCProtocol *p1 = _protocolsByAddress[key];
+        CDOCProtocol *uniqueProtocol = _protocolsByName[p1.name];
         for (CDOCProtocol *p2 in [p1 protocols])
-            [uniqueProtocol addProtocol:[_protocolsByName objectForKey:[p2 name]]];
+            [uniqueProtocol addProtocol:_protocolsByName[p2.name]];
 
         if ([[uniqueProtocol classMethods] count] == 0) {
             for (CDOCMethod *method in [p1 classMethods])

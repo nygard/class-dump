@@ -131,7 +131,7 @@
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && symbol.value != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
-                [classSymbols setObject:symbol forKey:className];
+                classSymbols[className] = symbol;
             }
         }
 
@@ -159,7 +159,7 @@
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && symbol.value != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
-                [classSymbols setObject:symbol forKey:className];
+                classSymbols[className] = symbol;
             }
         }
 
@@ -204,7 +204,7 @@
 
 - (CDSymbol *)symbolForClass:(NSString *)className;
 {
-    return [_classSymbols objectForKey:className];
+    return _classSymbols[className];
 }
 
 @end

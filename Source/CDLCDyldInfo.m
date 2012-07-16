@@ -246,7 +246,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
     NSArray *segments = self.machOFile.segments;
     NSParameterAssert([segments count] > 0);
 
-    uint64_t address = [[segments objectAtIndex:0] vmaddr];
+    uint64_t address = [segments[0] vmaddr];
     uint8_t type = 0;
 
     NSLog(@"----------------------------------------------------------------------");
@@ -277,7 +277,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
                 
                 //NSLog(@"REBASE_OPCODE: SET_SEGMENT_AND_OFFSET_ULEB,        segment index: %u, offset: %016lx", immediate, val);
                 NSParameterAssert(immediate < [segments count]);
-                address = [[segments objectAtIndex:immediate] vmaddr] + val;
+                address = [segments[immediate] vmaddr] + val;
                 //NSLog(@"    address: %016lx", address);
                 break;
             }
@@ -415,7 +415,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
     NSArray *segments = [self.machOFile segments];
     NSParameterAssert([segments count] > 0);
 
-    uint64_t address = [[segments objectAtIndex:0] vmaddr];
+    uint64_t address = [segments[0] vmaddr];
 
     const uint8_t *ptr = start;
     while ((ptr < end) && isDone == NO) {
@@ -480,7 +480,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
                 segmentIndex = immediate;
                 uint64_t val = read_uleb128(&ptr, end);
                 if (debugBindOps) NSLog(@"BIND_OPCODE: SET_SEGMENT_AND_OFFSET_ULEB,    segmentIndex: %u, offset: 0x%016llx", segmentIndex, val);
-                address = [[segments objectAtIndex:segmentIndex] vmaddr] + val;
+                address = [segments[segmentIndex] vmaddr] + val;
                 if (debugBindOps) NSLog(@"    address = 0x%016llx", address);
                 break;
             }
@@ -550,7 +550,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
 
     NSNumber *key = [NSNumber numberWithUnsignedInteger:address]; // I don't think 32-bit will dump 64-bit stuff.
     NSString *str = [[NSString alloc] initWithUTF8String:symbolName];
-    [_symbolNamesByAddress setObject:str forKey:key];
+    _symbolNamesByAddress[key] = str;
 }
 
 #pragma mark - Exported symbols

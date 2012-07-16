@@ -27,10 +27,10 @@
         
         for (CDOCProperty *property in properties) {
             //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
-            [_propertiesByName setObject:property forKey:property.name];
-            [_propertiesByAccessor setObject:property forKey:property.getter];
+            _propertiesByName[property.name] = property;
+            _propertiesByAccessor[property.getter] = property;
             if (property.isReadOnly == NO)
-                [_propertiesByAccessor setObject:property forKey:property.setter];
+                _propertiesByAccessor[property.setter] = property;
         }
     }
 
@@ -49,12 +49,12 @@
 
 - (CDOCProperty *)propertyForAccessor:(NSString *)str;
 {
-    return [_propertiesByAccessor objectForKey:str];
+    return _propertiesByAccessor[str];
 }
 
 - (BOOL)hasUsedProperty:(CDOCProperty *)property;
 {
-    return [_propertiesByName objectForKey:property.name] == nil;
+    return _propertiesByName[property.name] == nil;
 }
 
 - (void)useProperty:(CDOCProperty *)property;

@@ -118,7 +118,7 @@
 
     // Any architecture
     if ([self.arches count] > 0) {
-        *archPtr = [[self.arches objectAtIndex:0] arch];
+        *archPtr = [self.arches[0] arch];
         return YES;
     }
 

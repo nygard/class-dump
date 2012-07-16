@@ -48,7 +48,7 @@
 - (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 {
     if (name != nil && frameworkName != nil)
-        [_frameworkNamesByClassName setObject:frameworkName forKey:name];
+        _frameworkNamesByClassName[name] = frameworkName;
 }
 
 - (NSDictionary *)frameworkNamesByClassName;

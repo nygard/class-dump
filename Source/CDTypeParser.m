@@ -93,18 +93,18 @@ static NSString *CDTokenDescription(int token)
             int code;
             NSString *localDesc = [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], self.lexer.string, self.lexer.remainingString];            
 
-            [userInfo setObject:self.lexer.string           forKey:CDErrorKey_Type];
-            [userInfo setObject:self.lexer.remainingString  forKey:CDErrorKey_RemainingString];
-            [userInfo setObject:@"method"              forKey:CDErrorKey_MethodOrVariable];
-            [userInfo setObject:localDesc              forKey:CDErrorKey_LocalizedLongDescription];
+            userInfo[CDErrorKey_Type]                     = self.lexer.string;
+            userInfo[CDErrorKey_RemainingString]          = self.lexer.remainingString;
+            userInfo[CDErrorKey_MethodOrVariable]         = @"method";
+            userInfo[CDErrorKey_LocalizedLongDescription] = localDesc;
             
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
-                [userInfo setObject:@"Syntax Error"    forKey:NSLocalizedDescriptionKey];
-                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+                userInfo[NSLocalizedDescriptionKey]        = @"Syntax Error";
+                userInfo[NSLocalizedFailureReasonErrorKey] = [exception reason];
             } else {
                 code = CDTypeParserCode_Default;
-                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+                userInfo[NSLocalizedFailureReasonErrorKey] = [exception reason];
             }
             *error = [NSError errorWithDomain:CDErrorDomain_TypeParser code:code userInfo:userInfo];
         }
@@ -129,18 +129,18 @@ static NSString *CDTokenDescription(int token)
             int code;
             NSString *localDesc = [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], self.lexer.string, self.lexer.remainingString];
             
-            [userInfo setObject:self.lexer.string           forKey:CDErrorKey_Type];
-            [userInfo setObject:self.lexer.remainingString  forKey:CDErrorKey_RemainingString];
-            [userInfo setObject:@"variable"            forKey:CDErrorKey_MethodOrVariable];
-            [userInfo setObject:localDesc              forKey:CDErrorKey_LocalizedLongDescription];
+            userInfo[CDErrorKey_Type]                     = self.lexer.string;
+            userInfo[CDErrorKey_RemainingString]          = self.lexer.remainingString;
+            userInfo[CDErrorKey_MethodOrVariable]         = @"variable";
+            userInfo[CDErrorKey_LocalizedLongDescription] = localDesc;
             
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
-                [userInfo setObject:@"Syntax Error"    forKey:NSLocalizedDescriptionKey];
-                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+                userInfo[NSLocalizedDescriptionKey]        = @"Syntax Error";
+                userInfo[NSLocalizedFailureReasonErrorKey] = [exception reason];
             } else {
                 code = CDTypeParserCode_Default;
-                [userInfo setObject:[exception reason] forKey:NSLocalizedFailureReasonErrorKey];
+                userInfo[NSLocalizedFailureReasonErrorKey] = [exception reason];
             }
             *error = [NSError errorWithDomain:CDErrorDomain_TypeParser code:code userInfo:userInfo];
         }

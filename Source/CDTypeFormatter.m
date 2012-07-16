@@ -159,7 +159,7 @@ static BOOL debug = NO;
         NSUInteger index = 0;
         BOOL noMoreTypes = NO;
 
-        CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
+        CDMethodType *aMethodType = methodTypes[index];
         NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
         if (specialCase != nil) {
             [typeDict setValue:specialCase forKey:@"return-type"];
@@ -184,7 +184,7 @@ static BOOL debug = NO;
 //				int unnamedCount, unnamedIndex;
 //				unnamedCount = [str length];
 //				for (unnamedIndex = 0; unnamedIndex < unnamedCount; unnamedIndex++)
-//					[parameterTypes addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"type", @"", @"name", nil]];
+//					[parameterTypes addObject:@{ @"type": @"", @"name": @""}];
             }
             if ([scanner scanString:@":" intoString:NULL]) {
                 if (index >= count) {
@@ -192,7 +192,7 @@ static BOOL debug = NO;
                 } else {
                     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
 
-                    aMethodType = [methodTypes objectAtIndex:index];
+                    aMethodType = methodTypes[index];
                     specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [parameter setValue:specialCase forKey:@"type"];
@@ -235,7 +235,7 @@ static BOOL debug = NO;
         NSUInteger index = 0;
         BOOL noMoreTypes = NO;
 
-        CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
+        CDMethodType *aMethodType = methodTypes[index];
         [resultString appendString:@"("];
         NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
         if (specialCase != nil) {
@@ -263,7 +263,7 @@ static BOOL debug = NO;
                 if (index >= count) {
                     noMoreTypes = YES;
                 } else {
-                    aMethodType = [methodTypes objectAtIndex:index];
+                    aMethodType = methodTypes[index];
                     specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];

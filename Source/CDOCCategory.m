@@ -65,9 +65,9 @@
 - (NSArray *)dependancies;
 {
     if (self.className == nil)
-        return [NSArray array];
+        return @[];
 
-    return [NSArray arrayWithObject:self.className];
+    return @[self.className];
 }
 
 @end

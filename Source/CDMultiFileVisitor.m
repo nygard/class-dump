@@ -206,7 +206,7 @@
 
 - (NSString *)frameworkForClassName:(NSString *)name;
 {
-    return [self.frameworkNamesByClassName objectForKey:name];
+    return self.frameworkNamesByClassName[name];
 }
 
 - (NSString *)frameworkForProtocolName:(NSString *)name;

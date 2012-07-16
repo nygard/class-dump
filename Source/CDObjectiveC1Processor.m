@@ -371,7 +371,7 @@ static BOOL debug = NO;
 - (NSArray *)processMethodsAtAddress:(uint32_t)address isFromProtocolDefinition:(BOOL)isFromProtocolDefinition;
 {
     if (address == 0)
-        return [NSArray array];
+        return @[];
 
     NSMutableArray *methods = [NSMutableArray array];
 

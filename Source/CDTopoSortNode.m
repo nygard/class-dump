@@ -77,7 +77,7 @@
     NSArray *dependantIdentifiers = [self dependancies];
 
     for (NSString *identifier in dependantIdentifiers) {
-        CDTopoSortNode *node = [nodesByIdentifier objectForKey:identifier];
+        CDTopoSortNode *node = nodesByIdentifier[identifier];
         if (node.color == CDNodeColor_White) {
             node.color = CDNodeColor_Gray;
             [node topologicallySortNodes:nodesByIdentifier intoArray:sortedArray];

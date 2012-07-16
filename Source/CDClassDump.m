@@ -124,7 +124,7 @@
     // Set before processing recursively.  This was getting caught on CoreUI on 10.6
     assert([aMachOFile filename] != nil);
     [_machOFiles addObject:aMachOFile];
-    [_machOFilesByID setObject:aMachOFile forKey:[aMachOFile filename]];
+    _machOFilesByID[aMachOFile.filename] = aMachOFile;
 
     if ([self shouldProcessRecursively]) {
         @try {
@@ -200,7 +200,7 @@
         adjustedID = anID;
     }
 
-    CDMachOFile *aMachOFile = [_machOFilesByID objectForKey:adjustedID];
+    CDMachOFile *aMachOFile = _machOFilesByID[adjustedID];
     if (aMachOFile == nil) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedID];
         CDFile *aFile = [CDFile fileWithData:data filename:adjustedID searchPathState:self.searchPathState];
@@ -208,7 +208,7 @@
         if (aFile == nil || [self loadFile:aFile] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedID);
 
-        aMachOFile = [_machOFilesByID objectForKey:adjustedID];
+        aMachOFile = _machOFilesByID[adjustedID];
         if (aMachOFile == nil) {
             NSLog(@"Warning: Couldn't load MachOFile with ID: %@, adjustedID: %@", anID, adjustedID);
         }

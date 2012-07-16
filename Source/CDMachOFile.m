@@ -412,8 +412,10 @@ NSString *CDMagicNumberString(uint32_t magic)
 {
     if ([self filetype] == MH_DYLIB) {
         NSString *str = [self.filename lastPathComponent];
-        if ([str hasPrefix:@"lib"])
-            str = [[[str substringFromIndex:3] componentsSeparatedByString:@"."] objectAtIndex:0];
+        if ([str hasPrefix:@"lib"]) {
+            NSArray *components = [[str substringFromIndex:3] componentsSeparatedByString:@"."];
+            str = components[0];
+        }
 
         return str;
     }
@@ -460,7 +462,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSUInteger count = [_loadCommands count];
     for (NSUInteger index = 0; index < count; index++) {
         [resultString appendFormat:@"Load command %lu\n", index];
-        CDLoadCommand *loadCommand = [_loadCommands objectAtIndex:index];
+        CDLoadCommand *loadCommand = _loadCommands[index];
         [loadCommand appendToString:resultString verbose:isVerbose];
         [resultString appendString:@"\n"];
     }

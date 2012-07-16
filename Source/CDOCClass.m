@@ -99,9 +99,9 @@
 - (NSArray *)dependancies;
 {
     if (self.superClassName == nil)
-        return [NSArray array];
+        return @[];
 
-    return [NSArray arrayWithObject:self.superClassName];
+    return @[self.superClassName];
 }
 
 @end
