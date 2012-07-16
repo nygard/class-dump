@@ -222,15 +222,15 @@ def main(argv):
                 command.extend(OLD_OPTS)
                 #print command
                 out = open("%s/%s-%s.txt" % (TESTDIR_OLD, base, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out).wait()
-                out.close()
+                proc = Popen(command, shell=False, stdout=out, stderr=out)
+                arch_procs.append( (proc, out) )
 
                 command = [NEW_CD, "-s", "-t", path]
                 command.extend(NEW_OPTS)
                 #print command
                 out = open("%s/%s-%s.txt" % (TESTDIR_NEW, base, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out).wait()
-                out.close()
+                proc = Popen(command, shell=False, stdout=out, stderr=out)
+                arch_procs.append( (proc, out) )
             else:
                 print arch
 
@@ -238,15 +238,20 @@ def main(argv):
                 command.extend(OLD_OPTS)
                 #print command
                 out = open("%s/%s-%s-%s.txt" % (TESTDIR_OLD, base, arch, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out).wait()
-                out.close()
+                proc = Popen(command, shell=False, stdout=out, stderr=out)
+                arch_procs.append( (proc, out) )
 
                 command = [NEW_CD, "-s", "-t", "--arch", arch, path]
                 command.extend(NEW_OPTS)
                 #print command
                 out = open("%s/%s-%s-%s.txt" % (TESTDIR_NEW, base, arch, ext), "w");
-                Popen(command, shell=False, stdout=out, stderr=out).wait()
-                out.close()
+                proc = Popen(command, shell=False, stdout=out, stderr=out)
+                arch_procs.append( (proc, out) )
+
+        for proc, out in arch_procs:
+            #print proc, out
+            proc.wait()
+            out.close
 
     print "Ended tests at", datetime.today().ctime()
     Popen("opendiff %s %s" % (TESTDIR_OLD, TESTDIR_NEW), shell=True)
