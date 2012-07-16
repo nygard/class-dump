@@ -7,6 +7,7 @@ import glob
 import os
 import sys
 import argparse
+import shlex
 
 # xcodebuild -showsdks
 
@@ -56,7 +57,7 @@ ARCH_CD = os.path.expanduser("/Local/nygard/Debug/class-dump")
 
 
 try:
-    developer_root = subprocess.check_output(["xcode-select", "--print-path"]).rstrip()
+    developer_root = subprocess.check_output(shlex.split("xcode-select --print-path")).rstrip()
 except:
     developer_root = None
 print "Developer root:", developer_root
@@ -140,16 +141,16 @@ def main(argv):
     print args
 
     if args.show_sdks:
-        subprocess.call(["xcodebuild", "-showsdks"])
+        subprocess.call(shlex.split("xcodebuild  -showsdks"))
         sys.exit(0)
 
 
     sdk_root = None
     if args.sdk:
-        sdk_root = subprocess.check_output(["xcodebuild", "-version", "-sdk", args.sdk, "Path"])
+        sdk_root = subprocess.check_output(shlex.split("xcodebuild -version -sdk %s Path" % args.sdk))
     else:
         if args.ios:
-            sdk_root = subprocess.check_output(["xcodebuild", "-version", "-sdk", "iphoneos", "Path"])
+            sdk_root = subprocess.check_output(shlex.split("xcodebuild -version -sdk iphoneos Path"))
 
     #print "sdk_root:", sdk_root
 
@@ -214,6 +215,7 @@ def main(argv):
         arches = proc.stdout.readline().rstrip().split(" ")
         print arches
         proc.stdout.readlines()
+        arch_procs = []
         for arch in arches:
             if arch == "none":
                 command = [OLD_CD, "-s", "-t", path]
