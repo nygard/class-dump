@@ -25,7 +25,7 @@ extern NSString *const ObjCClassSymbolPrefix;
 @property (nonatomic, readonly) BOOL isPrivateExternal;
 @property (nonatomic, readonly) NSUInteger stab;
 @property (nonatomic, readonly) NSUInteger type;
-@property (nonatomic, readonly) BOOL isUndefined;
+@property (nonatomic, readonly) BOOL isDefined;
 @property (nonatomic, readonly) BOOL isAbsolute;
 @property (nonatomic, readonly) BOOL isInSection;
 @property (nonatomic, readonly) BOOL isPrebound;

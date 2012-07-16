@@ -66,10 +66,10 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 {
     NSString *valueString;
 
-    if (self.isUndefined) {
-        valueString = [@" " stringByPaddingToLength:(_is32Bit ? 8 : 16) withString:@" " startingAtIndex:0];
-    } else {
+    if (self.isDefined) {
         valueString = [NSString stringWithFormat:(_is32Bit ? @"%08llx" : @"%016llx"), self.value];
+    } else {
+        valueString = [@" " stringByPaddingToLength:(_is32Bit ? 8 : 16) withString:@" " startingAtIndex:0];
     }
 
     return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], self.name];
@@ -133,9 +133,9 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     return _nlist.n_type & N_TYPE;
 }
 
-- (BOOL)isUndefined;
+- (BOOL)isDefined;
 {
-    return self.type == N_UNDF;
+    return self.type != N_UNDF;
 }
 
 - (BOOL)isAbsolute;
@@ -160,7 +160,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (BOOL)isCommon;
 {
-    return self.isUndefined && self.isExternal && _nlist.n_value != 0;
+    return !self.isDefined && self.isExternal && _nlist.n_value != 0;
 }
 
 - (BOOL)isInTextSection;
@@ -222,7 +222,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
         c = @"-";
     else if (self.isCommon)
         c = @"c";
-    else if (self.isUndefined || self.isPrebound)
+    else if (!self.isDefined || self.isPrebound)
         c =  @"u";
     else if (self.isAbsolute)
         c =  @"a";
@@ -250,7 +250,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
     if (self.isCommon)
         c = @"common";
-    else if (self.isUndefined)
+    else if (!self.isDefined)
         c =  @"undefined";
     else if (self.isPrebound)
         c =  @"prebound";
