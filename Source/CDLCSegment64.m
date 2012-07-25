@@ -9,36 +9,36 @@
 
 @implementation CDLCSegment64
 {
-    struct segment_command_64 segmentCommand;
+    struct segment_command_64 _segmentCommand;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        segmentCommand.cmd = [cursor readInt32];
-        segmentCommand.cmdsize = [cursor readInt32];
+        _segmentCommand.cmd = [cursor readInt32];
+        _segmentCommand.cmdsize = [cursor readInt32];
         
-        [cursor readBytesOfLength:16 intoBuffer:segmentCommand.segname];
-        segmentCommand.vmaddr = [cursor readInt64];
-        segmentCommand.vmsize = [cursor readInt64];
-        segmentCommand.fileoff = [cursor readInt64];
-        segmentCommand.filesize = [cursor readInt64];
-        segmentCommand.maxprot = [cursor readInt32];
-        segmentCommand.initprot = [cursor readInt32];
-        segmentCommand.nsects = [cursor readInt32];
-        segmentCommand.flags = [cursor readInt32];
+        [cursor readBytesOfLength:16 intoBuffer:_segmentCommand.segname];
+        _segmentCommand.vmaddr = [cursor readInt64];
+        _segmentCommand.vmsize = [cursor readInt64];
+        _segmentCommand.fileoff = [cursor readInt64];
+        _segmentCommand.filesize = [cursor readInt64];
+        _segmentCommand.maxprot = [cursor readInt32];
+        _segmentCommand.initprot = [cursor readInt32];
+        _segmentCommand.nsects = [cursor readInt32];
+        _segmentCommand.flags = [cursor readInt32];
         
         {
             char buf[17];
             
-            memcpy(buf, segmentCommand.segname, 16);
+            memcpy(buf, _segmentCommand.segname, 16);
             buf[16] = 0;
             NSString *str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
             [self setName:str];
         }
 
         NSMutableArray *_sections = [[NSMutableArray alloc] init];
-        for (NSUInteger index = 0; index < segmentCommand.nsects; index++) {
+        for (NSUInteger index = 0; index < _segmentCommand.nsects; index++) {
             CDSection64 *section = [[CDSection64 alloc] initWithDataCursor:cursor segment:self];
             [_sections addObject:section];
         }
@@ -52,42 +52,42 @@
 
 - (uint32_t)cmd;
 {
-    return segmentCommand.cmd;
+    return _segmentCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return segmentCommand.cmdsize;
+    return _segmentCommand.cmdsize;
 }
 
 - (NSUInteger)vmaddr;
 {
-    return segmentCommand.vmaddr;
+    return _segmentCommand.vmaddr;
 }
 
 - (NSUInteger)fileoff;
 {
-    return segmentCommand.fileoff;
+    return _segmentCommand.fileoff;
 }
 
 - (NSUInteger)filesize;
 {
-    return segmentCommand.filesize;
+    return _segmentCommand.filesize;
 }
 
 - (vm_prot_t)initprot;
 {
-    return segmentCommand.initprot;
+    return _segmentCommand.initprot;
 }
 
 - (uint32_t)flags;
 {
-    return segmentCommand.flags;
+    return _segmentCommand.flags;
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;
 {
-    return (address >= segmentCommand.vmaddr) && (address < segmentCommand.vmaddr + segmentCommand.vmsize);
+    return (address >= _segmentCommand.vmaddr) && (address < _segmentCommand.vmaddr + _segmentCommand.vmsize);
 }
 
 - (NSString *)extraDescription;

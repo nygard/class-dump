@@ -7,10 +7,10 @@
 
 @interface CDDataCursor : NSObject
 
-- (id)initWithData:(NSData *)someData;
-- (id)initWithData:(NSData *)someData offset:(NSUInteger)anOffset;
+- (id)initWithData:(NSData *)data;
+- (id)initWithData:(NSData *)data offset:(NSUInteger)offset;
 
-- (NSData *)data;
+@property (readonly) NSData *data;
 - (const void *)bytes;
 
 @property (nonatomic, assign) NSUInteger offset;
@@ -34,7 +34,7 @@
 - (double)readLittleFloat64;
 //- (double)readBigFloat64;
 
-- (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)targetData;
+- (void)appendBytesOfLength:(NSUInteger)length intoData:(NSMutableData *)data;
 - (void)readBytesOfLength:(NSUInteger)length intoBuffer:(void *)buf;
 - (BOOL)isAtEnd;
 

@@ -12,29 +12,30 @@
 
 @implementation CDLCSymbolTable
 {
-    struct symtab_command symtabCommand;
+    struct symtab_command _symtabCommand;
     
-    NSArray *symbols;
-    NSUInteger baseAddress;
+    NSArray *_symbols;
+    NSUInteger _baseAddress;
     
-    NSDictionary *classSymbols;
+    NSDictionary *_classSymbols;
     
     struct {
         unsigned int didFindBaseAddress:1;
         unsigned int didWarnAboutUnfoundBaseAddress:1;
-    } flags;
+        unsigned int _unused:30;
+    } _flags;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        symtabCommand.cmd = [cursor readInt32];
-        symtabCommand.cmdsize = [cursor readInt32];
+        _symtabCommand.cmd = [cursor readInt32];
+        _symtabCommand.cmdsize = [cursor readInt32];
         
-        symtabCommand.symoff = [cursor readInt32];
-        symtabCommand.nsyms = [cursor readInt32];
-        symtabCommand.stroff = [cursor readInt32];
-        symtabCommand.strsize = [cursor readInt32];
+        _symtabCommand.symoff = [cursor readInt32];
+        _symtabCommand.nsyms = [cursor readInt32];
+        _symtabCommand.stroff = [cursor readInt32];
+        _symtabCommand.strsize = [cursor readInt32];
         
         // symoff is at the start of the first section (__pointers) of the __IMPORT segment
         // stroff falls within the __LINKEDIT segment
@@ -45,13 +46,13 @@
         NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
 #endif
         
-        symbols = nil;
-        baseAddress = 0;
+        _symbols = nil;
+        _baseAddress = 0;
         
-        classSymbols = nil;
+        _classSymbols = nil;
         
-        flags.didFindBaseAddress = NO;
-        flags.didWarnAboutUnfoundBaseAddress = NO;
+        _flags.didFindBaseAddress = NO;
+        _flags.didWarnAboutUnfoundBaseAddress = NO;
     }
 
     return self;
@@ -62,20 +63,20 @@
 - (NSString *)extraDescription;
 {
     return [NSString stringWithFormat:@"symoff: 0x%08x (%u), nsyms: 0x%08x (%u), stroff: 0x%08x (%u), strsize: 0x%08x (%u)",
-            symtabCommand.symoff, symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.nsyms,
-            symtabCommand.stroff, symtabCommand.stroff, symtabCommand.strsize, symtabCommand.strsize];
+            _symtabCommand.symoff, _symtabCommand.symoff, _symtabCommand.nsyms, _symtabCommand.nsyms,
+            _symtabCommand.stroff, _symtabCommand.stroff, _symtabCommand.strsize, _symtabCommand.strsize];
 }
 
 #pragma mark -
 
 - (uint32_t)cmd;
 {
-    return symtabCommand.cmd;
+    return _symtabCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return symtabCommand.cmdsize;
+    return _symtabCommand.cmdsize;
 }
 
 #define CD_VM_PROT_RW (VM_PROT_READ|VM_PROT_WRITE)
@@ -88,28 +89,28 @@
 
             if (([segment initprot] & CD_VM_PROT_RW) == CD_VM_PROT_RW) {
                 //NSLog(@"segment... initprot = %08x, addr= %016lx *** r/w", [segment initprot], [segment vmaddr]);
-                baseAddress = [segment vmaddr];
-                flags.didFindBaseAddress = YES;
+                _baseAddress = [segment vmaddr];
+                _flags.didFindBaseAddress = YES;
                 break;
             }
         }
     }
     
-    NSMutableArray *_symbols = [[NSMutableArray alloc] init];
-    NSMutableDictionary *_classSymbols = [[NSMutableDictionary alloc] init];
+    NSMutableArray *symbols = [[NSMutableArray alloc] init];
+    NSMutableDictionary *classSymbols = [[NSMutableDictionary alloc] init];
 
-    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile offset:symtabCommand.symoff];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile offset:_symtabCommand.symoff];
     //NSLog(@"offset= %lu", [cursor offset]);
     //NSLog(@"stroff=  %lu", symtabCommand.stroff);
     //NSLog(@"strsize= %lu", symtabCommand.strsize);
 
-    const char *strtab = [[self.machOFile machOData] bytes] + symtabCommand.stroff;
+    const char *strtab = (char *)[[self.machOFile machOData] bytes] + _symtabCommand.stroff;
 
     if (![self.machOFile uses64BitABI]) {
         //NSLog(@"32 bit...");
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  --------");
-        for (uint32_t index = 0; index < symtabCommand.nsyms; index++) {
+        for (uint32_t index = 0; index < _symtabCommand.nsyms; index++) {
             struct nlist nlist;
 
             nlist.n_un.n_strx = [cursor readInt32];
@@ -126,11 +127,11 @@
             NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist32:nlist];
-            [_symbols addObject:symbol];
+            [symbols addObject:symbol];
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && symbol.value != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
-                [_classSymbols setObject:symbol forKey:className];
+                classSymbols[className] = symbol;
             }
         }
 
@@ -138,7 +139,7 @@
     } else {
         //NSLog(@"       str table index  type  sect  desc  value");
         //NSLog(@"       ---------------  ----  ----  ----  ----------------");
-        for (uint32_t index = 0; index < symtabCommand.nsyms; index++) {
+        for (uint32_t index = 0; index < _symtabCommand.nsyms; index++) {
             struct nlist_64 nlist;
 
             nlist.n_un.n_strx = [cursor readInt32];
@@ -154,61 +155,56 @@
             NSString *str = [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
 
             CDSymbol *symbol = [[CDSymbol alloc] initWithName:str machOFile:self.machOFile nlist64:nlist];
-            [_symbols addObject:symbol];
+            [symbols addObject:symbol];
 
             if ([str hasPrefix:ObjCClassSymbolPrefix] && symbol.value != 0) {
                 NSString *className = [str substringFromIndex:[ObjCClassSymbolPrefix length]];
-                [_classSymbols setObject:symbol forKey:className];
+                classSymbols[className] = symbol;
             }
         }
 
         //NSLog(@"Loaded %lu 64-bit symbols", [symbols count]);
     }
     
-    symbols = [_symbols copy]; 
-    classSymbols = [_classSymbols copy]; 
+    _symbols = [symbols copy];
+    _classSymbols = [classSymbols copy];
 
-    //NSLog(@"symbols: %@", symbols);
+    //NSLog(@"symbols: %@", _symbols);
 }
 
 - (uint32_t)symoff;
 {
-    return symtabCommand.symoff;
+    return _symtabCommand.symoff;
 }
 
 - (uint32_t)nsyms;
 {
-    return symtabCommand.nsyms;
+    return _symtabCommand.nsyms;
 }
 
 - (uint32_t)stroff;
 {
-    return symtabCommand.stroff;
+    return _symtabCommand.stroff;
 }
 
 - (uint32_t)strsize;
 {
-    return symtabCommand.strsize;
+    return _symtabCommand.strsize;
 }
 
 - (NSUInteger)baseAddress;
 {
-    if (flags.didFindBaseAddress == NO && flags.didWarnAboutUnfoundBaseAddress == NO) {
+    if (_flags.didFindBaseAddress == NO && _flags.didWarnAboutUnfoundBaseAddress == NO) {
         fprintf(stderr, "Warning: Couldn't find first read/write segment for base address of relocation entries.\n");
-        flags.didWarnAboutUnfoundBaseAddress = YES;
+        _flags.didWarnAboutUnfoundBaseAddress = YES;
     }
 
-    return baseAddress;
-}
-
-- (NSArray *)symbols;
-{
-    return symbols;
+    return _baseAddress;
 }
 
 - (CDSymbol *)symbolForClass:(NSString *)className;
 {
-    return [classSymbols objectForKey:className];
+    return _classSymbols[className];
 }
 
 @end

@@ -14,37 +14,37 @@
 {
     __weak CDLCSegment32 *nonretained_segment;
     
-    struct section section;
+    struct section _section;
 }
 
 // Just to resolve multiple different definitions...
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)aSegment;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)segment;
 {
     if ((self = [super init])) {
-        nonretained_segment = aSegment;
+        nonretained_segment = segment;
         
-        [cursor readBytesOfLength:16 intoBuffer:section.sectname];
-        [cursor readBytesOfLength:16 intoBuffer:section.segname];
-        section.addr = [cursor readInt32];
-        section.size = [cursor readInt32];
-        section.offset = [cursor readInt32];
-        section.align = [cursor readInt32];
-        section.reloff = [cursor readInt32];
-        section.nreloc = [cursor readInt32];
-        section.flags = [cursor readInt32];
-        section.reserved1 = [cursor readInt32];
-        section.reserved2 = [cursor readInt32];
+        [cursor readBytesOfLength:16 intoBuffer:_section.sectname];
+        [cursor readBytesOfLength:16 intoBuffer:_section.segname];
+        _section.addr = [cursor readInt32];
+        _section.size = [cursor readInt32];
+        _section.offset = [cursor readInt32];
+        _section.align = [cursor readInt32];
+        _section.reloff = [cursor readInt32];
+        _section.nreloc = [cursor readInt32];
+        _section.flags = [cursor readInt32];
+        _section.reserved1 = [cursor readInt32];
+        _section.reserved2 = [cursor readInt32];
         
         // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
         char buf[17];
         NSString *str;
         
-        memcpy(buf, section.segname, 16);
+        memcpy(buf, _section.segname, 16);
         buf[16] = 0;
         str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
         [self setSegmentName:str];
         
-        memcpy(buf, section.sectname, 16);
+        memcpy(buf, _section.sectname, 16);
         buf[16] = 0;
         str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
         [self setSectionName:str];
@@ -58,7 +58,7 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"addr: 0x%08x, offset: %8d, size: %8d [0x%8x], segment; '%@', section: '%@'",
-            section.addr, section.offset, section.size, section.size, self.segmentName, self.sectionName];
+            _section.addr, _section.offset, _section.size, _section.size, self.segmentName, self.sectionName];
 }
 
 #pragma mark -
@@ -72,36 +72,36 @@
 
 - (NSUInteger)addr;
 {
-    return section.addr;
+    return _section.addr;
 }
 
 - (NSUInteger)size;
 {
-    return section.size;
+    return _section.size;
 }
 
 - (uint32_t)offset;
 {
-    return section.offset;
+    return _section.offset;
 }
 
 - (void)loadData;
 {
     if (self.hasLoadedData == NO) {
-        self.data = [[NSData alloc] initWithBytes:[[self.segment.machOFile machOData] bytes] + section.offset length:section.size];
+        self.data = [[NSData alloc] initWithBytes:(uint8_t *)[[self.segment.machOFile machOData] bytes] + _section.offset length:_section.size];
         self.hasLoadedData = YES;
     }
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;
 {
-    return (address >= section.addr) && (address < section.addr + section.size);
+    return (address >= _section.addr) && (address < _section.addr + _section.size);
 }
 
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
 {
     NSParameterAssert([self containsAddress:address]);
-    return section.offset + address - section.addr;
+    return _section.offset + address - _section.addr;
 }
 
 @end

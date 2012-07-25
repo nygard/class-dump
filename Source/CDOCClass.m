@@ -16,19 +16,19 @@
 
 @implementation CDOCClass
 {
-    NSString *superClassName;
-    NSArray *ivars;
+    NSString *_superClassName;
+    NSArray *_ivars;
     
-    BOOL isExported;
+    BOOL _isExported;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        superClassName = nil;
-        ivars = nil;
+        _superClassName = nil;
+        _ivars = nil;
         
-        isExported = YES;
+        _isExported = YES;
     }
 
     return self;
@@ -42,10 +42,6 @@
 }
 
 #pragma mark -
-
-@synthesize superClassName;
-@synthesize ivars;
-@synthesize isExported;
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {
@@ -78,7 +74,7 @@
         [visitor willVisitClass:self];
         
         [visitor willVisitIvarsOfClass:self];
-        for (CDOCIvar *ivar in ivars)
+        for (CDOCIvar *ivar in self.ivars)
             [visitor visitIvar:ivar];
         [visitor didVisitIvarsOfClass:self];
         
@@ -103,9 +99,9 @@
 - (NSArray *)dependancies;
 {
     if (self.superClassName == nil)
-        return [NSArray array];
+        return @[];
 
-    return [NSArray arrayWithObject:self.superClassName];
+    return @[self.superClassName];
 }
 
 @end

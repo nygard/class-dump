@@ -6,29 +6,26 @@
 #import <Foundation/Foundation.h>
 #import "CDTopologicalSortProtocol.h"
 
-enum {
+typedef enum : NSUInteger {
     CDNodeColor_White = 0,
     CDNodeColor_Gray  = 1,
     CDNodeColor_Black = 2,
-};
-typedef NSUInteger CDNodeColor;
+} CDNodeColor;
 
 @interface CDTopoSortNode : NSObject
 
 - (id)initWithObject:(id <CDTopologicalSort>)object;
 
-@property (readonly) NSString *identifier;
+@property (nonatomic, readonly) NSString *identifier;
 @property (readonly) id <CDTopologicalSort> sortableObject;
 
 - (NSArray *)dependancies;
 - (void)addDependancy:(NSString *)identifier;
 - (void)removeDependancy:(NSString *)identifier;
 - (void)addDependanciesFromArray:(NSArray *)identifiers;
-@property (readonly) NSString *dependancyDescription;
+@property (nonatomic, readonly) NSString *dependancyDescription;
 
 @property (assign) CDNodeColor color;
-
-- (NSString *)description;
 
 - (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)otherNode;
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;

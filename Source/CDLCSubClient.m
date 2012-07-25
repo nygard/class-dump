@@ -7,24 +7,24 @@
 
 @implementation CDLCSubClient
 {
-    struct sub_client_command command;
-    NSString *name;
+    struct sub_client_command _command;
+    NSString *_name;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        command.cmd = [cursor readInt32];
-        command.cmdsize = [cursor readInt32];
+        _command.cmd = [cursor readInt32];
+        _command.cmdsize = [cursor readInt32];
         
         uint32_t strOffset = [cursor readInt32];
         NSParameterAssert(strOffset == 12);
         
-        NSUInteger length = command.cmdsize - sizeof(command);
+        NSUInteger length = _command.cmdsize - sizeof(_command);
         //NSLog(@"expected length: %u", length);
         
-        name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
-        //NSLog(@"name: %@", name);
+        _name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
+        //NSLog(@"name: %@", _name);
     }
 
     return self;
@@ -34,14 +34,12 @@
 
 - (uint32_t)cmd;
 {
-    return command.cmd;
+    return _command.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return command.cmdsize;
+    return _command.cmdsize;
 }
-
-@synthesize name;
 
 @end

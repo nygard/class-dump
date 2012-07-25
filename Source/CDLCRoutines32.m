@@ -7,23 +7,23 @@
 
 @implementation CDLCRoutines32
 {
-    struct routines_command routinesCommand;
+    struct routines_command _routinesCommand;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        routinesCommand.cmd = [cursor readInt32];
-        routinesCommand.cmdsize = [cursor readInt32];
+        _routinesCommand.cmd = [cursor readInt32];
+        _routinesCommand.cmdsize = [cursor readInt32];
         
-        routinesCommand.init_address = [cursor readInt32];
-        routinesCommand.init_module = [cursor readInt32];
-        routinesCommand.reserved1 = [cursor readInt32];
-        routinesCommand.reserved2 = [cursor readInt32];
-        routinesCommand.reserved3 = [cursor readInt32];
-        routinesCommand.reserved4 = [cursor readInt32];
-        routinesCommand.reserved5 = [cursor readInt32];
-        routinesCommand.reserved6 = [cursor readInt32];
+        _routinesCommand.init_address = [cursor readInt32];
+        _routinesCommand.init_module = [cursor readInt32];
+        _routinesCommand.reserved1 = [cursor readInt32];
+        _routinesCommand.reserved2 = [cursor readInt32];
+        _routinesCommand.reserved3 = [cursor readInt32];
+        _routinesCommand.reserved4 = [cursor readInt32];
+        _routinesCommand.reserved5 = [cursor readInt32];
+        _routinesCommand.reserved6 = [cursor readInt32];
     }
 
     return self;
@@ -33,12 +33,12 @@
 
 - (uint32_t)cmd;
 {
-    return routinesCommand.cmd;
+    return _routinesCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return routinesCommand.cmdsize;
+    return _routinesCommand.cmdsize;
 }
 
 @end

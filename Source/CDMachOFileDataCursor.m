@@ -13,25 +13,26 @@
     __weak CDMachOFile *nonretained_machOFile;
 }
 
-- (id)initWithFile:(CDMachOFile *)aMachOFile;
+- (id)initWithFile:(CDMachOFile *)machOFile;
 {
-    return [self initWithFile:aMachOFile offset:0];
+    return [self initWithFile:machOFile offset:0];
 }
 
-- (id)initWithFile:(CDMachOFile *)aMachOFile offset:(NSUInteger)anOffset;
+- (id)initWithFile:(CDMachOFile *)machOFile offset:(NSUInteger)offset;
 {
-    if ((self = [super initWithData:[aMachOFile machOData]])) {
-        nonretained_machOFile = aMachOFile;
-        [self setOffset:anOffset];
+    if ((self = [super initWithData:[machOFile machOData]])) {
+        nonretained_machOFile = machOFile;
+        [self setOffset:offset];
     }
 
     return self;
 }
-- (id)initWithFile:(CDMachOFile *)aMachOFile address:(NSUInteger)anAddress;
+
+- (id)initWithFile:(CDMachOFile *)machOFile address:(NSUInteger)address;
 {
-    if ((self = [super initWithData:[aMachOFile machOData]])) {
-        nonretained_machOFile = aMachOFile;
-        [self setAddress:anAddress];
+    if ((self = [super initWithData:[machOFile machOData]])) {
+        nonretained_machOFile = machOFile;
+        [self setAddress:address];
     }
 
     return self;

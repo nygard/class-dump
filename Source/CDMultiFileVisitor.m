@@ -17,10 +17,6 @@
 
 // NSString (class name) -> NSString (framework name)
 @property (strong) NSDictionary *frameworkNamesByClassName;
-- (NSString *)frameworkForClassName:(NSString *)name;
-- (NSString *)frameworkForProtocolName:(NSString *)name;
-
-- (NSString *)importStringForClassName:(NSString *)className;
 
 // Location in output string to insert the protocol imports and forward class declarations.
 // We don't know what classes and protocols will be referenced until the rest of the output is generated.
@@ -33,16 +29,7 @@
 @property (nonatomic, readonly) NSArray *referencedClassNamesSortedByName;
 @property (nonatomic, readonly) NSArray *referencedProtocolNamesSortedByName;
 
-- (void)addReferenceToClassName:(NSString *)className;
-- (void)removeReferenceToClassName:(NSString *)className;
-- (void)addReferencesToProtocolNamesInArray:(NSArray *)protocolNames;
-- (void)removeAllClassNameProtocolNameReferences;
-
 @property (nonatomic, readonly) NSString *referenceString;
-
-- (void)createOutputPathIfNecessary;
-- (void)buildClassFrameworks;
-- (void)generateStructureHeader;
 
 @end
 
@@ -204,11 +191,9 @@
 
 #pragma mark -
 
-@synthesize frameworkNamesByClassName = _frameworkNamesByClassName;
-
 - (NSString *)frameworkForClassName:(NSString *)name;
 {
-    return [self.frameworkNamesByClassName objectForKey:name];
+    return self.frameworkNamesByClassName[name];
 }
 
 - (NSString *)frameworkForProtocolName:(NSString *)name;
@@ -245,9 +230,6 @@
 
 #pragma mark - Class and Protocol name tracking
 
-@synthesize referencedClassNames = _referencedClassNames;
-@synthesize referencedProtocolNames = _referencedProtocolNames;
-
 - (NSArray *)referencedClassNamesSortedByName;
 {
     return [[self.referencedClassNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
@@ -282,8 +264,6 @@
 
 #pragma mark -
 
-@synthesize outputPath = _outputPath;
-
 - (void)createOutputPathIfNecessary;
 {
     if (self.outputPath != nil) {
@@ -306,8 +286,6 @@
 }
 
 #pragma mark -
-
-@synthesize referenceLocation = _referenceLocation;
 
 // - imports for each referenced protocol
 // - forward declarations for each referenced class

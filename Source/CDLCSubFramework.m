@@ -8,7 +8,7 @@
 @implementation CDLCSubFramework
 {
     struct sub_framework_command command;
-    NSString *name;
+    NSString *_name;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
@@ -23,8 +23,8 @@
         NSUInteger length = command.cmdsize - sizeof(command);
         //NSLog(@"expected length: %u", length);
         
-        name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
-        //NSLog(@"name: %@", name);
+        _name = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
+        //NSLog(@"name: %@", _name);
     }
 
     return self;
@@ -41,7 +41,5 @@
 {
     return command.cmdsize;
 }
-
-@synthesize name;
 
 @end

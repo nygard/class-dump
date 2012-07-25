@@ -7,6 +7,6 @@
 
 // A rather clunky way to avoid warnings in CDTopoSortNode.m regarding -retain not implemented by protocols
 @protocol CDTopologicalSort <NSObject>
-- (NSString *)identifier;
-- (NSArray *)dependancies;
+@property (nonatomic, readonly) NSString *identifier;
+@property (nonatomic, readonly) NSArray *dependancies;
 @end

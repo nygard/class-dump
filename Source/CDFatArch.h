@@ -14,20 +14,18 @@
 
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 
-- (NSString *)description;
+@property (nonatomic, readonly) cpu_type_t cpuType;
+@property (nonatomic, readonly) cpu_type_t maskedCPUType;
+@property (nonatomic, readonly) cpu_subtype_t cpuSubtype;
+@property (nonatomic, readonly) uint32_t offset;
+@property (nonatomic, readonly) uint32_t size;
+@property (nonatomic, readonly) uint32_t align;
 
-@property (readonly) cpu_type_t cpuType;
-@property (readonly) cpu_type_t maskedCPUType;
-@property (readonly) cpu_subtype_t cpuSubtype;
-@property (readonly) uint32_t offset;
-@property (readonly) uint32_t size;
-@property (readonly) uint32_t align;
-
-@property (readonly) BOOL uses64BitABI;
+@property (nonatomic, readonly) BOOL uses64BitABI;
 
 @property (weak) CDFatFile *fatFile;
 
-@property (readonly) CDArch arch;
+@property (nonatomic, readonly) CDArch arch;
 @property (nonatomic, readonly) NSString *archName;
 
 @property (nonatomic, readonly) CDMachOFile *machOFile;

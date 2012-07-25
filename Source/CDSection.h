@@ -9,10 +9,6 @@
 
 @interface CDSection : NSObject
 
-- (id)init;
-
-- (NSString *)description;
-
 @property (retain) NSString *segmentName;
 @property (retain) NSString *sectionName;
 
@@ -22,8 +18,8 @@
 - (void)loadData;
 - (void)unloadData;
 
-@property (readonly) NSUInteger addr;
-@property (readonly) NSUInteger size;
+@property (nonatomic, readonly) NSUInteger addr;
+@property (nonatomic, readonly) NSUInteger size;
 
 - (CDMachOFile *)machOFile;
 

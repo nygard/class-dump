@@ -9,7 +9,7 @@
 
 @interface CDOCIvar : NSObject
 
-- (id)initWithName:(NSString *)name type:(NSString *)aType offset:(NSUInteger)offset;
+- (id)initWithName:(NSString *)name type:(NSString *)type offset:(NSUInteger)offset;
 
 @property (readonly) NSString *name;
 @property (readonly) NSString *type;

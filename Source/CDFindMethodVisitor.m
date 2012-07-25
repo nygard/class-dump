@@ -19,8 +19,6 @@
 @property (readonly) NSMutableString *resultString;
 @property (nonatomic, strong) CDOCProtocol *context;
 @property (assign) BOOL hasShownContext;
-- (void)showContextIfNecessary;
-- (void)writeResultToStandardOutput;
 @end
 
 #pragma mark -
@@ -147,11 +145,6 @@
 }
 
 #pragma mark -
-
-@synthesize searchString = _searchString;
-@synthesize resultString = _resultString;
-@synthesize context = _context;
-@synthesize hasShownContext = _hasShownContext;
 
 - (void)setContext:(CDOCProtocol *)newContext;
 {

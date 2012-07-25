@@ -15,6 +15,7 @@
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDLCSegment.h"
+#import "CDLCSourceVersion.h"
 #import "CDLCVersionMinimum.h"
 #import "CDTypeController.h"
 
@@ -49,7 +50,7 @@
     [self.resultString appendFormat:@" * File: %@\n", machOFile.filename];
     [self.resultString appendFormat:@" * UUID: %@\n", machOFile.uuidString];
 
-    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(machOFile.cputypePlusArchBits, machOFile.cpusubtype);
+    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(machOFile.cputype, machOFile.cpusubtype);
     if (archInfo == NULL)
         [self.resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", machOFile.cputype, machOFile.cpusubtype];
     else
@@ -61,11 +62,18 @@
             [self.resultString appendFormat:@" *       Current version: %@, Compatibility version: %@\n",
              identifier.formattedCurrentVersion, identifier.formattedCompatibilityVersion];
     }
+    
+    if (machOFile.sourceVersion != nil)
+        [self.resultString appendFormat:@" *       Source version: %@\n", machOFile.sourceVersion.sourceVersionString];
 
-    if (machOFile.minVersionMacOSX != nil) 
+    if (machOFile.minVersionMacOSX != nil) {
         [self.resultString appendFormat:@" *       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];
-    if (machOFile.minVersionIOS != nil) 
+        [self.resultString appendFormat:@" *       SDK version: %@\n", machOFile.minVersionMacOSX.SDKVersionString];
+    }
+    if (machOFile.minVersionIOS != nil) {
         [self.resultString appendFormat:@" *       Minimum iOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
+        [self.resultString appendFormat:@" *       SDK version: %@\n", machOFile.minVersionIOS.SDKVersionString];
+    }
 
     [self.resultString appendFormat:@" *\n"];
     if (processor.garbageCollectionStatus != nil)
@@ -108,7 +116,7 @@
                     CDLCSegment *segment = (CDLCSegment *)loadCommand;
                     
                     if (segment.canDecrypt == NO) {
-                        [self.resultString appendFormat:@" *           Load command %u, segment encryption: %@\n",
+                        [self.resultString appendFormat:@" *           Load command %lu, segment encryption: %@\n",
                          index, CDSegmentEncryptionTypeName(segment.encryptionType)];
                     }
                 }

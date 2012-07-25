@@ -12,7 +12,7 @@
 
 @implementation CDOCCategory
 {
-    NSString *className;
+    NSString *_className;
 }
 
 #pragma mark - Superclass overrides
@@ -23,8 +23,6 @@
 }
 
 #pragma mark -
-
-@synthesize className;
 
 - (NSString *)methodSearchContext;
 {
@@ -67,9 +65,9 @@
 - (NSArray *)dependancies;
 {
     if (self.className == nil)
-        return [NSArray array];
+        return @[];
 
-    return [NSArray arrayWithObject:self.className];
+    return @[self.className];
 }
 
 @end

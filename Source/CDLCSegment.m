@@ -16,25 +16,24 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         case CDSegmentEncryptionType_None:     return @"None";
         case CDSegmentEncryptionType_AES:      return @"Protected Segment Type 1 (prior to 10.6)";
         case CDSegmentEncryptionType_Blowfish: return @"Protected Segment Type 2 (10.6)";
+        case CDSegmentEncryptionType_Unknown:  return @"Unknown";
     }
-
-    return @"Unknown";
 }
 
 @implementation CDLCSegment
 {
-    NSString *name;
-    NSArray *sections;
+    NSString *_name;
+    NSArray *_sections;
     
-    NSMutableData *decryptedData;
+    NSMutableData *_decryptedData;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        name = nil;
-        sections = nil;
-        decryptedData = nil;
+        _name = nil;
+        _sections = nil;
+        _decryptedData = nil;
     }
 
     return self;
@@ -49,12 +48,12 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     if (extra == nil) {
         return [NSString stringWithFormat:@"<%@:%p> name: %@",
                 NSStringFromClass([self class]), self,
-                name];
+                self.name];
     }
     
     return [NSString stringWithFormat:@"<%@:%p> name: %@, %@",
             NSStringFromClass([self class]), self,
-            name, extra];
+            self.name, extra];
 }
 
 - (NSString *)extraDescription;
@@ -64,9 +63,6 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 }
 
 #pragma mark -
-
-@synthesize name;
-@synthesize sections;
 
 - (NSUInteger)vmaddr;
 {
@@ -111,7 +107,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             // First three pages aren't encrypted, so we can't tell.  Let's pretent it's something we can decrypt.
             return CDSegmentEncryptionType_AES;
         } else {
-            const void *src = [[self.machOFile machOData] bytes] + self.fileoff + 3 * PAGE_SIZE;
+            const void *src = (uint8_t *)[[self.machOFile machOData] bytes] + self.fileoff + 3 * PAGE_SIZE;
 
             uint32_t magic = OSReadLittleInt32(src, 0);
             //NSLog(@"%s, magic= 0x%08x", __cmd, magic);
@@ -160,7 +156,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
 - (CDSection *)sectionContainingAddress:(NSUInteger)address;
 {
-    for (CDSection *section in sections) {
+    for (CDSection *section in self.sections) {
         if ([section containsAddress:address])
             return section;
     }
@@ -168,10 +164,10 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     return nil;
 }
 
-- (CDSection *)sectionWithName:(NSString *)aName;
+- (CDSection *)sectionWithName:(NSString *)name;
 {
-    for (CDSection *section in sections) {
-        if ([[section sectionName] isEqual:aName])
+    for (CDSection *section in self.sections) {
+        if ([[section sectionName] isEqual:name])
             return section;
     }
 
@@ -212,7 +208,7 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 - (void)writeSectionData;
 {
     [self.sections enumerateObjectsUsingBlock:^(CDSection *section, NSUInteger index, BOOL *stop){
-        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02d-%@", index, section.sectionName] atomically:NO];
+        [[section data] writeToFile:[NSString stringWithFormat:@"/tmp/%02ld-%@", index, section.sectionName] atomically:NO];
     }];
 }
 
@@ -221,13 +217,13 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     if (self.isProtected == NO)
         return nil;
 
-    if (decryptedData == nil) {
+    if (_decryptedData == nil) {
         //NSLog(@"filesize: %08x, pagesize: %04x", [self filesize], PAGE_SIZE);
         NSParameterAssert((self.filesize % PAGE_SIZE) == 0);
-        decryptedData = [[NSMutableData alloc] initWithLength:self.filesize];
+        _decryptedData = [[NSMutableData alloc] initWithLength:self.filesize];
 
-        const void *src = [[self.machOFile machOData] bytes] + self.fileoff;
-        void *dest = [decryptedData mutableBytes];
+        const uint8_t *src = (uint8_t *)[[self.machOFile machOData] bytes] + self.fileoff;
+        uint8_t *dest = [_decryptedData mutableBytes];
 
         if (self.filesize <= PAGE_SIZE * 3) {
             memcpy(dest, src, [self filesize]);
@@ -242,6 +238,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
             src += PAGE_SIZE * 3;
             dest += PAGE_SIZE * 3;
             NSUInteger count = (self.filesize / PAGE_SIZE) - 3;
+            
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
             uint32_t magic = OSReadLittleInt32(src, 0);
             if (magic == CDSegmentProtectedMagic_None) {
@@ -285,11 +284,12 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
                 NSLog(@"Unknown encryption type: 0x%08x", magic);
                 exit(99);
             }
+            
+#pragma clang diagnostic pop
         }
     }
-    //NSLog(@"decryptedData: %p", decryptedData);
 
-    return decryptedData;
+    return _decryptedData;
 }
 
 @end

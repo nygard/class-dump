@@ -14,8 +14,6 @@
 
 #pragma mark -
 
-@synthesize classDump = _classDump;
-
 - (void)willBeginVisiting;
 {
 }

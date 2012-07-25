@@ -7,23 +7,20 @@
 
 #include <mach-o/reloc.h>
 
-enum {
+typedef enum : NSUInteger {
     CDRelocationInfoSize_8Bit  = 0,
     CDRelocationInfoSize_16Bit = 1,
     CDRelocationInfoSize_32Bit = 2,
     CDRelocationInfoSize_64Bit = 3,
-};
-typedef NSUInteger CDRelocationSize;
+} CDRelocationSize;
 
 @interface CDRelocationInfo : NSObject
 
 - (id)initWithInfo:(struct relocation_info)info;
 
-- (NSString *)description;
-
-@property (readonly) NSUInteger offset;
-@property (readonly) CDRelocationSize size;
-@property (readonly) uint32_t symbolnum;
-@property (readonly) BOOL isExtern;
+@property (nonatomic, readonly) NSUInteger offset;
+@property (nonatomic, readonly) CDRelocationSize size;
+@property (nonatomic, readonly) uint32_t symbolnum;
+@property (nonatomic, readonly) BOOL isExtern;
 
 @end

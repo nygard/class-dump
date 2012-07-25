@@ -18,14 +18,14 @@
 
 @property (strong) NSString *attributeStringAfterType;
 
-@property (readonly) NSString *defaultGetter;
-@property (readonly) NSString *defaultSetter;
+@property (nonatomic, readonly) NSString *defaultGetter;
+@property (nonatomic, readonly) NSString *defaultSetter;
 
 @property (strong) NSString *customGetter;
 @property (strong) NSString *customSetter;
 
-@property (readonly) NSString *getter;
-@property (readonly) NSString *setter;
+@property (nonatomic, readonly) NSString *getter;
+@property (nonatomic, readonly) NSString *setter;
 
 @property (readonly) BOOL isReadOnly;
 @property (readonly) BOOL isDynamic;

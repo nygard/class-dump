@@ -22,39 +22,39 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 @implementation CDSymbol
 {
-    struct nlist_64 nlist;
-    BOOL is32Bit;
-    NSString *name;
+    struct nlist_64 _nlist;
+    BOOL _is32Bit;
+    NSString *_name;
     __weak CDMachOFile *nonretained_machOFile;
 }
 
-- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist32:(struct nlist)nlist32;
+- (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist32:(struct nlist)nlist32;
 {
     if ((self = [super init])) {
-        is32Bit = YES;
-        name = aName;
-        nonretained_machOFile = aMachOFile;
-        nlist.n_un.n_strx = 0; // We don't use it.
-        nlist.n_type = nlist32.n_type;
-        nlist.n_sect = nlist32.n_sect;
-        nlist.n_desc = nlist32.n_desc;
-        nlist.n_value = nlist32.n_value;
+        _is32Bit = YES;
+        _name = name;
+        nonretained_machOFile = machOFile;
+        _nlist.n_un.n_strx = 0; // We don't use it.
+        _nlist.n_type = nlist32.n_type;
+        _nlist.n_sect = nlist32.n_sect;
+        _nlist.n_desc = nlist32.n_desc;
+        _nlist.n_value = nlist32.n_value;
     }
 
     return self;
 }
 
-- (id)initWithName:(NSString *)aName machOFile:(CDMachOFile *)aMachOFile nlist64:(struct nlist_64)nlist64;
+- (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist64:(struct nlist_64)nlist64;
 {
     if ((self = [super init])) {
-        is32Bit = NO;
-        name = aName;
-        nonretained_machOFile = aMachOFile;
-        nlist.n_un.n_strx = 0; // We don't use it.
-        nlist.n_type = nlist64.n_type;
-        nlist.n_sect = nlist64.n_sect;
-        nlist.n_desc = nlist64.n_desc;
-        nlist.n_value = nlist64.n_value;
+        _is32Bit = NO;
+        _name = name;
+        nonretained_machOFile = machOFile;
+        _nlist.n_un.n_strx = 0; // We don't use it.
+        _nlist.n_type = nlist64.n_type;
+        _nlist.n_sect = nlist64.n_sect;
+        _nlist.n_desc = nlist64.n_desc;
+        _nlist.n_value = nlist64.n_value;
     }
 
     return self;
@@ -64,16 +64,15 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSString *)description;
 {
-    NSString *valueFormat = [NSString stringWithFormat:@"%%0%ullx", is32Bit ? 8 : 16];
-    NSString *valuePad = is32Bit ? @"        " : @"                ";
-    NSString *valueString = self.isUndefined ? valuePad : [NSString stringWithFormat:valueFormat, self.value];
-    //NSString *dylibName = [[[self.dylibLoadCommand.path lastPathComponent] componentsSeparatedByString:@"."] objectAtIndex:0];
-    //NSString *fromString = self.isUndefined ? [NSString stringWithFormat:@" (from %@)", dylibName] : @"";
+    NSString *valueString;
 
-    return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], name];
+    if (self.isDefined) {
+        valueString = [NSString stringWithFormat:(_is32Bit ? @"%08llx" : @"%016llx"), self.value];
+    } else {
+        valueString = [@" " stringByPaddingToLength:(_is32Bit ? 8 : 16) withString:@" " startingAtIndex:0];
+    }
 
-    //return [NSString stringWithFormat:@"%@ (%@) %@ %@%@", valueString, [self longTypeDescription], [self isExternal] ? @"external" : @"non-external", name, fromString];
-    //return [NSString stringWithFormat:[valueFormat stringByAppendingString:@" %02x %02x %04x - %@"], nlist.n_value, nlist.n_type, nlist.n_sect, nlist.n_desc, name];
+    return [NSString stringWithFormat:@"%@ %@ %@", valueString, [self shortTypeDescription], self.name];
 }
 
 #pragma mark -
@@ -82,10 +81,8 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (uint64_t)value;
 {
-    return nlist.n_value;
+    return _nlist.n_value;
 }
-
-@synthesize name;
 
 - (CDSection *)section
 {
@@ -98,47 +95,47 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     }
 
     // n_sect is 1-indexed (NO_SECT == 0)
-    NSUInteger sectionIndex = nlist.n_sect - 1;
+    NSUInteger sectionIndex = _nlist.n_sect - 1;
     if (sectionIndex < [sections count])
-        return [sections objectAtIndex:sectionIndex];
+        return sections[sectionIndex];
     else
         return nil;
 }
 
 - (CDLCDylib *)dylibLoadCommand;
 {
-    NSUInteger libraryOrdinal = GET_LIBRARY_ORDINAL(nlist.n_desc);
+    NSUInteger libraryOrdinal = GET_LIBRARY_ORDINAL(_nlist.n_desc);
     NSArray *dylibLoadCommands = self.machOFile.dylibLoadCommands;
 
     if (libraryOrdinal < [dylibLoadCommands count])
-        return [dylibLoadCommands objectAtIndex:libraryOrdinal];
+        return dylibLoadCommands[libraryOrdinal];
     else
         return nil;
 }
 
 - (BOOL)isExternal;
 {
-    return (nlist.n_type & N_EXT) == N_EXT;
+    return (_nlist.n_type & N_EXT) == N_EXT;
 }
 
 - (BOOL)isPrivateExternal;
 {
-    return (nlist.n_type & N_PEXT) == N_PEXT;
+    return (_nlist.n_type & N_PEXT) == N_PEXT;
 }
 
 - (NSUInteger)stab;
 {
-    return nlist.n_type & N_STAB;
+    return _nlist.n_type & N_STAB;
 }
 
 - (NSUInteger)type;
 {
-    return nlist.n_type & N_TYPE;
+    return _nlist.n_type & N_TYPE;
 }
 
-- (BOOL)isUndefined;
+- (BOOL)isDefined;
 {
-    return self.type == N_UNDF;
+    return self.type != N_UNDF;
 }
 
 - (BOOL)isAbsolute;
@@ -163,7 +160,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (BOOL)isCommon;
 {
-    return self.isUndefined && self.isExternal && nlist.n_value != 0;
+    return !self.isDefined && self.isExternal && _nlist.n_value != 0;
 }
 
 - (BOOL)isInTextSection;
@@ -186,7 +183,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSUInteger)referenceType;
 {
-    return (nlist.n_desc & REFERENCE_TYPE);
+    return (_nlist.n_desc & REFERENCE_TYPE);
 }
 
 - (NSString *)referenceTypeName
@@ -225,7 +222,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
         c = @"-";
     else if (self.isCommon)
         c = @"c";
-    else if (self.isUndefined || self.isPrebound)
+    else if (!self.isDefined || self.isPrebound)
         c =  @"u";
     else if (self.isAbsolute)
         c =  @"a";
@@ -253,7 +250,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
     if (self.isCommon)
         c = @"common";
-    else if (self.isUndefined)
+    else if (!self.isDefined)
         c =  @"undefined";
     else if (self.isPrebound)
         c =  @"prebound";

@@ -7,10 +7,10 @@
 
 @interface CDLCEncryptionInfo : CDLoadCommand
 
-@property (readonly) uint32_t cryptoff;
-@property (readonly) uint32_t cryptsize;
-@property (readonly) uint32_t cryptid;
+@property (nonatomic, readonly) uint32_t cryptoff;
+@property (nonatomic, readonly) uint32_t cryptsize;
+@property (nonatomic, readonly) uint32_t cryptid;
 
-@property (readonly) BOOL isEncrypted;
+@property (nonatomic, readonly) BOOL isEncrypted;
 
 @end

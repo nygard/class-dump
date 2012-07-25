@@ -10,6 +10,6 @@
 @property (strong) NSString *name;
 @property (readonly) NSMutableArray *templateTypes;
 @property (strong) NSString *suffix;
-@property (readonly) BOOL isTemplateType;
+@property (nonatomic, readonly) BOOL isTemplateType;
 
 @end

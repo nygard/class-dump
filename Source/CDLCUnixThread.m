@@ -9,23 +9,23 @@
 
 @implementation CDLCUnixThread
 {
-    struct load_command loadCommand;
+    struct load_command _loadCommand;
     
-    NSData *commandData;
+    NSData *_commandData;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        loadCommand.cmd = [cursor readInt32];
-        loadCommand.cmdsize = [cursor readInt32];
+        _loadCommand.cmd = [cursor readInt32];
+        _loadCommand.cmdsize = [cursor readInt32];
         
-        if (loadCommand.cmdsize > 8) {
-            NSMutableData *_commandData = [[NSMutableData alloc] init];
-            [cursor appendBytesOfLength:loadCommand.cmdsize - 8 intoData:_commandData];
-            commandData = [_commandData copy]; 
+        if (_loadCommand.cmdsize > 8) {
+            NSMutableData *commandData = [[NSMutableData alloc] init];
+            [cursor appendBytesOfLength:_loadCommand.cmdsize - 8 intoData:commandData];
+            _commandData = [commandData copy];
         } else {
-            commandData = nil;
+            _commandData = nil;
         }
     }
 
@@ -36,12 +36,12 @@
 
 - (uint32_t)cmd;
 {
-    return loadCommand.cmd;
+    return _loadCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return loadCommand.cmdsize;
+    return _loadCommand.cmdsize;
 }
 
 @end

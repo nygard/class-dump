@@ -9,18 +9,18 @@
 
 @implementation CDLCEncryptionInfo
 {
-    struct encryption_info_command encryptionInfoCommand;
+    struct encryption_info_command _encryptionInfoCommand;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        encryptionInfoCommand.cmd = [cursor readInt32];
-        encryptionInfoCommand.cmdsize = [cursor readInt32];
+        _encryptionInfoCommand.cmd = [cursor readInt32];
+        _encryptionInfoCommand.cmdsize = [cursor readInt32];
         
-        encryptionInfoCommand.cryptoff = [cursor readInt32];
-        encryptionInfoCommand.cryptsize = [cursor readInt32];
-        encryptionInfoCommand.cryptid = [cursor readInt32];
+        _encryptionInfoCommand.cryptoff = [cursor readInt32];
+        _encryptionInfoCommand.cryptsize = [cursor readInt32];
+        _encryptionInfoCommand.cryptid = [cursor readInt32];
     }
 
     return self;
@@ -30,32 +30,32 @@
 
 - (uint32_t)cmd;
 {
-    return encryptionInfoCommand.cmd;
+    return _encryptionInfoCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return encryptionInfoCommand.cmdsize;
+    return _encryptionInfoCommand.cmdsize;
 }
 
 - (uint32_t)cryptoff;
 {
-    return encryptionInfoCommand.cryptoff;
+    return _encryptionInfoCommand.cryptoff;
 }
 
 - (uint32_t)cryptsize;
 {
-    return encryptionInfoCommand.cryptsize;
+    return _encryptionInfoCommand.cryptsize;
 }
 
 - (uint32_t)cryptid;
 {
-    return encryptionInfoCommand.cryptid;
+    return _encryptionInfoCommand.cryptid;
 }
 
 - (BOOL)isEncrypted;
 {
-    return encryptionInfoCommand.cryptid != 0;
+    return _encryptionInfoCommand.cryptid != 0;
 }
 
 @end

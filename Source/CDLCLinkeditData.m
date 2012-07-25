@@ -5,19 +5,22 @@
 
 #import "CDLCLinkeditData.h"
 
+#import "CDMachOFile.h"
+
 @implementation CDLCLinkeditData
 {
-    struct linkedit_data_command linkeditDataCommand;
+    struct linkedit_data_command _linkeditDataCommand;
+    NSData *_linkeditData;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        linkeditDataCommand.cmd = [cursor readInt32];
-        linkeditDataCommand.cmdsize = [cursor readInt32];
+        _linkeditDataCommand.cmd = [cursor readInt32];
+        _linkeditDataCommand.cmdsize = [cursor readInt32];
         
-        linkeditDataCommand.dataoff = [cursor readInt32];
-        linkeditDataCommand.datasize = [cursor readInt32];
+        _linkeditDataCommand.dataoff = [cursor readInt32];
+        _linkeditDataCommand.datasize = [cursor readInt32];
     }
 
     return self;
@@ -27,12 +30,21 @@
 
 - (uint32_t)cmd;
 {
-    return linkeditDataCommand.cmd;
+    return _linkeditDataCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return linkeditDataCommand.cmdsize;
+    return _linkeditDataCommand.cmdsize;
+}
+
+- (NSData *)linkeditData;
+{
+    if (_linkeditData == NULL) {
+        _linkeditData = [[NSData alloc] initWithBytes:[self.machOFile bytesAtOffset:_linkeditDataCommand.dataoff] length:_linkeditDataCommand.datasize];
+    }
+    
+    return _linkeditData;
 }
 
 @end

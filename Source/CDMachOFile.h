@@ -8,24 +8,21 @@
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 #include <mach-o/loader.h>
 
-enum {
+typedef enum : NSUInteger {
     CDByteOrder_LittleEndian = 0,
     CDByteOrder_BigEndian = 1,
-};
-typedef NSUInteger CDByteOrder;
+} CDByteOrder;
 
 @class CDLCSegment, CDMachOFileDataCursor;
-@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum;
+@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
 @protocol CDMachOFileDelegate
-- (void)machOFile:(CDMachOFile *)aMachOFile loadDylib:(CDLCDylib *)aDylibCommand;
+- (void)machOFile:(CDMachOFile *)machOFile loadDylib:(CDLCDylib *)dylibCommand;
 @end
 
 @interface CDMachOFile : CDFile
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
-
-- (NSString *)description;
+- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 
@@ -33,12 +30,11 @@ typedef NSUInteger CDByteOrder;
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
-@property (readonly) uint32_t magic;
-@property (readonly) cpu_type_t cputype;
-@property (readonly) cpu_subtype_t cpusubtype;
-@property (readonly) cpu_type_t cputypePlusArchBits;
-@property (readonly) uint32_t filetype;
-@property (readonly) uint32_t flags;
+@property (nonatomic, readonly) uint32_t magic;
+@property (nonatomic, readonly) cpu_type_t cputype;
+@property (nonatomic, readonly) cpu_subtype_t cpusubtype;
+@property (nonatomic, readonly) uint32_t filetype;
+@property (nonatomic, readonly) uint32_t flags;
 
 @property (readonly) NSArray *loadCommands;
 @property (readonly) NSArray *dylibLoadCommands;
@@ -52,6 +48,7 @@ typedef NSUInteger CDByteOrder;
 @property (strong) CDLCDyldInfo *dyldInfo;
 @property (strong) CDLCVersionMinimum *minVersionMacOSX;
 @property (strong) CDLCVersionMinimum *minVersionIOS;
+@property (strong) CDLCSourceVersion *sourceVersion;
 
 - (BOOL)uses64BitABI;
 - (NSUInteger)ptrSize;
@@ -69,13 +66,13 @@ typedef NSUInteger CDByteOrder;
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
 
 - (const void *)bytes;
-- (const void *)bytesAtOffset:(NSUInteger)anOffset;
+- (const void *)bytesAtOffset:(NSUInteger)offset;
 
 @property (nonatomic, readonly) NSString *importBaseName;
 
-@property (readonly) BOOL isEncrypted;
-@property (readonly) BOOL hasProtectedSegments;
-@property (readonly) BOOL canDecryptAllSegments;
+@property (nonatomic, readonly) BOOL isEncrypted;
+@property (nonatomic, readonly) BOOL hasProtectedSegments;
+@property (nonatomic, readonly) BOOL canDecryptAllSegments;
 
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
@@ -93,8 +90,8 @@ typedef NSUInteger CDByteOrder;
 - (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
 - (NSString *)externalClassNameForAddress2:(NSUInteger)address;
 
-@property (readonly) BOOL hasObjectiveC1Data;
-@property (readonly) BOOL hasObjectiveC2Data;
+@property (nonatomic, readonly) BOOL hasObjectiveC1Data;
+@property (nonatomic, readonly) BOOL hasObjectiveC2Data;
 @property (nonatomic, readonly) Class processorClass;
 
 @end

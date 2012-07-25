@@ -14,6 +14,8 @@
 
 @end
 
+#pragma mark -
+
 @implementation NSArray (CDTopoSort)
 
 - (NSArray *)topologicallySortedArray;
@@ -24,9 +26,9 @@
         CDTopoSortNode *node = [[CDTopoSortNode alloc] initWithObject:anObject];
         [node addDependanciesFromArray:[anObject dependancies]];
 
-        if ([nodesByName objectForKey:node.identifier] != nil)
+        if (nodesByName[node.identifier] != nil)
             NSLog(@"Warning: Duplicate identifier (%@) in %s", node.identifier, __cmd);
-        [nodesByName setObject:node forKey:node.identifier];
+        nodesByName[node.identifier] = node;
     }
 
     NSMutableArray *sortedArray = [NSMutableArray array];

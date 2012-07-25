@@ -8,9 +8,9 @@
 @interface CDLCDylib : CDLoadCommand
 
 @property (readonly) NSString *path;
-@property (readonly) uint32_t timestamp;
-@property (readonly) uint32_t currentVersion;
-@property (readonly) uint32_t compatibilityVersion;
+@property (nonatomic, readonly) uint32_t timestamp;
+@property (nonatomic, readonly) uint32_t currentVersion;
+@property (nonatomic, readonly) uint32_t compatibilityVersion;
 
 @property (nonatomic, readonly) NSString *formattedCurrentVersion;
 @property (nonatomic, readonly) NSString *formattedCompatibilityVersion;

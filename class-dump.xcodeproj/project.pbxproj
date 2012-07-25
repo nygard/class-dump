@@ -92,6 +92,12 @@
 		013D1F5A13A5AF6500BF0A67 /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
 		0168C98713E4AB3200926EC3 /* CDLCFunctionStarts.h in Headers */ = {isa = PBXBuildFile; fileRef = 0168C98513E4AB3200926EC3 /* CDLCFunctionStarts.h */; };
 		0168C98813E4AB3200926EC3 /* CDLCFunctionStarts.m in Sources */ = {isa = PBXBuildFile; fileRef = 0168C98613E4AB3200926EC3 /* CDLCFunctionStarts.m */; };
+		0179B9E614F2025E00EC98F7 /* CDLCMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0179B9E414F2025E00EC98F7 /* CDLCMain.h */; };
+		0179B9E714F2025E00EC98F7 /* CDLCMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 0179B9E514F2025E00EC98F7 /* CDLCMain.m */; };
+		0179B9EB14F204AA00EC98F7 /* CDLCSourceVersion.h in Headers */ = {isa = PBXBuildFile; fileRef = 0179B9E914F204AA00EC98F7 /* CDLCSourceVersion.h */; };
+		0179B9EC14F204AA00EC98F7 /* CDLCSourceVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 0179B9EA14F204AA00EC98F7 /* CDLCSourceVersion.m */; };
+		0179B9F714F20E9800EC98F7 /* CDLCDataInCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 0179B9F514F20E9800EC98F7 /* CDLCDataInCode.h */; };
+		0179B9F814F20E9800EC98F7 /* CDLCDataInCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0179B9F614F20E9800EC98F7 /* CDLCDataInCode.m */; };
 		018BFD4214F65DB600190F07 /* CDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 018BFD4114F65DB600190F07 /* CDExtensions.h */; };
 		01B02D0113A5B0DC0047BC53 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		01B02D0E13A5B0FB0047BC53 /* formatType.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B02D0D13A5B0FB0047BC53 /* formatType.m */; };
@@ -204,6 +210,12 @@
 		013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0168C98513E4AB3200926EC3 /* CDLCFunctionStarts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCFunctionStarts.h; path = Source/CDLCFunctionStarts.h; sourceTree = "<group>"; };
 		0168C98613E4AB3200926EC3 /* CDLCFunctionStarts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCFunctionStarts.m; path = Source/CDLCFunctionStarts.m; sourceTree = "<group>"; };
+		0179B9E414F2025E00EC98F7 /* CDLCMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCMain.h; path = Source/CDLCMain.h; sourceTree = "<group>"; };
+		0179B9E514F2025E00EC98F7 /* CDLCMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCMain.m; path = Source/CDLCMain.m; sourceTree = "<group>"; };
+		0179B9E914F204AA00EC98F7 /* CDLCSourceVersion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCSourceVersion.h; path = Source/CDLCSourceVersion.h; sourceTree = "<group>"; };
+		0179B9EA14F204AA00EC98F7 /* CDLCSourceVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCSourceVersion.m; path = Source/CDLCSourceVersion.m; sourceTree = "<group>"; };
+		0179B9F514F20E9800EC98F7 /* CDLCDataInCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCDataInCode.h; path = Source/CDLCDataInCode.h; sourceTree = "<group>"; };
+		0179B9F614F20E9800EC98F7 /* CDLCDataInCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCDataInCode.m; path = Source/CDLCDataInCode.m; sourceTree = "<group>"; };
 		018BFD4114F65DB600190F07 /* CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDExtensions.h; path = Source/CDExtensions.h; sourceTree = "<group>"; };
 		01B02CFF13A5B0DC0047BC53 /* formatType */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = formatType; sourceTree = BUILT_PRODUCTS_DIR; };
 		01B02D0D13A5B0FB0047BC53 /* formatType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = formatType.m; sourceTree = SOURCE_ROOT; };
@@ -657,6 +669,12 @@
 				01EB82D813A591D8003EDE60 /* CDLCVersionMinimum.m */,
 				01EB82D913A591D8003EDE60 /* CDLoadCommand.h */,
 				01EB82DA13A591D8003EDE60 /* CDLoadCommand.m */,
+				0179B9E414F2025E00EC98F7 /* CDLCMain.h */,
+				0179B9E514F2025E00EC98F7 /* CDLCMain.m */,
+				0179B9F514F20E9800EC98F7 /* CDLCDataInCode.h */,
+				0179B9F614F20E9800EC98F7 /* CDLCDataInCode.m */,
+				0179B9E914F204AA00EC98F7 /* CDLCSourceVersion.h */,
+				0179B9EA14F204AA00EC98F7 /* CDLCSourceVersion.m */,
 			);
 			name = "Load Commands";
 			sourceTree = "<group>";
@@ -716,6 +734,9 @@
 			files = (
 				0168C98713E4AB3200926EC3 /* CDLCFunctionStarts.h in Headers */,
 				018BFD4214F65DB600190F07 /* CDExtensions.h in Headers */,
+				0179B9E614F2025E00EC98F7 /* CDLCMain.h in Headers */,
+				0179B9EB14F204AA00EC98F7 /* CDLCSourceVersion.h in Headers */,
+				0179B9F714F20E9800EC98F7 /* CDLCDataInCode.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -799,7 +820,7 @@
 		01EB825613A590D9003EDE60 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0440;
 			};
 			buildConfigurationList = 01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "class-dump" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -897,6 +918,9 @@
 				013D1F5413A5AEA100BF0A67 /* CDTypeName.m in Sources */,
 				013D1F5513A5AEA100BF0A67 /* CDTypeParser.m in Sources */,
 				0168C98813E4AB3200926EC3 /* CDLCFunctionStarts.m in Sources */,
+				0179B9E714F2025E00EC98F7 /* CDLCMain.m in Sources */,
+				0179B9EC14F204AA00EC98F7 /* CDLCSourceVersion.m in Sources */,
+				0179B9F814F20E9800EC98F7 /* CDLCDataInCode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1063,6 +1087,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1082,6 +1108,16 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-fdiagnostics-show-option",
+					"-Wno-semicolon-before-method-body",
+					"-Wno-c11-extensions",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-overriding-method-mismatch",
+					"-Wno-unused-macros",
+					"-Wno-objc-missing-property-synthesis",
+					"-Weverything",
+				);
 			};
 			name = Debug;
 		};
@@ -1090,6 +1126,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
+				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1102,6 +1140,16 @@
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = macosx;
+				WARNING_CFLAGS = (
+					"-fdiagnostics-show-option",
+					"-Wno-semicolon-before-method-body",
+					"-Wno-c11-extensions",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-overriding-method-mismatch",
+					"-Wno-unused-macros",
+					"-Wno-objc-missing-property-synthesis",
+					"-Weverything",
+				);
 			};
 			name = Release;
 		};

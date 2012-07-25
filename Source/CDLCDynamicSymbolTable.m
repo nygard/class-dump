@@ -11,35 +11,35 @@
 
 @implementation CDLCDynamicSymbolTable
 {
-    struct dysymtab_command dysymtab;
+    struct dysymtab_command _dysymtab;
     
-    NSArray *externalRelocationEntries;
+    NSArray *_externalRelocationEntries;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        dysymtab.cmd = [cursor readInt32];
-        dysymtab.cmdsize = [cursor readInt32];
+        _dysymtab.cmd = [cursor readInt32];
+        _dysymtab.cmdsize = [cursor readInt32];
         
-        dysymtab.ilocalsym = [cursor readInt32];
-        dysymtab.nlocalsym = [cursor readInt32];
-        dysymtab.iextdefsym = [cursor readInt32];
-        dysymtab.nextdefsym = [cursor readInt32];
-        dysymtab.iundefsym = [cursor readInt32];
-        dysymtab.nundefsym = [cursor readInt32];
-        dysymtab.tocoff = [cursor readInt32];
-        dysymtab.ntoc = [cursor readInt32];
-        dysymtab.modtaboff = [cursor readInt32];
-        dysymtab.nmodtab = [cursor readInt32];
-        dysymtab.extrefsymoff = [cursor readInt32];
-        dysymtab.nextrefsyms = [cursor readInt32];
-        dysymtab.indirectsymoff = [cursor readInt32];
-        dysymtab.nindirectsyms = [cursor readInt32];
-        dysymtab.extreloff = [cursor readInt32];
-        dysymtab.nextrel = [cursor readInt32];
-        dysymtab.locreloff = [cursor readInt32];
-        dysymtab.nlocrel = [cursor readInt32];
+        _dysymtab.ilocalsym = [cursor readInt32];
+        _dysymtab.nlocalsym = [cursor readInt32];
+        _dysymtab.iextdefsym = [cursor readInt32];
+        _dysymtab.nextdefsym = [cursor readInt32];
+        _dysymtab.iundefsym = [cursor readInt32];
+        _dysymtab.nundefsym = [cursor readInt32];
+        _dysymtab.tocoff = [cursor readInt32];
+        _dysymtab.ntoc = [cursor readInt32];
+        _dysymtab.modtaboff = [cursor readInt32];
+        _dysymtab.nmodtab = [cursor readInt32];
+        _dysymtab.extrefsymoff = [cursor readInt32];
+        _dysymtab.nextrefsyms = [cursor readInt32];
+        _dysymtab.indirectsymoff = [cursor readInt32];
+        _dysymtab.nindirectsyms = [cursor readInt32];
+        _dysymtab.extreloff = [cursor readInt32];
+        _dysymtab.nextrel = [cursor readInt32];
+        _dysymtab.locreloff = [cursor readInt32];
+        _dysymtab.nlocrel = [cursor readInt32];
 #if 0
         NSLog(@"ilocalsym:      0x%08x  %d", dysymtab.ilocalsym, dysymtab.ilocalsym);
         NSLog(@"nlocalsym:      0x%08x  %d", dysymtab.nlocalsym, dysymtab.nlocalsym);
@@ -64,7 +64,7 @@
         NSLog(@"nlocrel:        0x%08x  %d", dysymtab.nlocrel, dysymtab.nlocrel);
 #endif
         
-        externalRelocationEntries = [[NSMutableArray alloc] init];
+        _externalRelocationEntries = [[NSMutableArray alloc] init];
     }
 
     return self;
@@ -74,19 +74,19 @@
 
 - (uint32_t)cmd;
 {
-    return dysymtab.cmd;
+    return _dysymtab.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return dysymtab.cmdsize;
+    return _dysymtab.cmdsize;
 }
 
 - (void)loadSymbols;
 {
-    NSMutableArray *_externalRelocationEntries = [[NSMutableArray alloc] init];
+    NSMutableArray *externalRelocationEntries = [[NSMutableArray alloc] init];
     
-    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile offset:dysymtab.extreloff];
+    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile offset:_dysymtab.extreloff];
 
     //NSLog(@"indirectsymoff: %lu", dysymtab.indirectsymoff);
     //NSLog(@"nindirectsyms:  %lu", dysymtab.nindirectsyms);
@@ -104,7 +104,7 @@
 
     //NSLog(@"     address   val       symbolnum  pcrel  len  ext  type");
     //NSLog(@"---  --------  --------  ---------  -----  ---  ---  ----");
-    for (uint32_t index = 0; index < dysymtab.nextrel; index++) {
+    for (uint32_t index = 0; index < _dysymtab.nextrel; index++) {
         struct relocation_info rinfo;
 
         rinfo.r_address = [cursor readInt32];
@@ -121,7 +121,7 @@
 #endif
 
         CDRelocationInfo *ri = [[CDRelocationInfo alloc] initWithInfo:rinfo];
-        [_externalRelocationEntries addObject:ri];
+        [externalRelocationEntries addObject:ri];
     }
 
     //NSLog(@"externalRelocationEntries: %@", externalRelocationEntries);
@@ -134,13 +134,13 @@
     // 0000000000000000 01 00 0500 0000000000000038 _OBJC_CLASS_$_NSObject
     // GET_LIBRARY_ORDINAL() from nlist.h for library.
     
-    externalRelocationEntries = [_externalRelocationEntries copy]; 
+    _externalRelocationEntries = [externalRelocationEntries copy];
 }
 
 // Just search for externals.
 - (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
 {
-    for (CDRelocationInfo *info in externalRelocationEntries) {
+    for (CDRelocationInfo *info in _externalRelocationEntries) {
         if (info.isExtern && info.offset == offset) {
             return info;
         }

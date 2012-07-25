@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0430"
+   LastUpgradeVersion = "0440"
    version = "1.8">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -10,7 +10,7 @@
             ActionType = "Xcode.IDEStandardExecutionActionsCore.ExecutionActionType.ShellScriptAction">
             <ActionContent
                title = "Run Script"
-               scriptText = "#env &gt; /tmp/env-cd&#10;mkdir -p /Local/$USER/$CONFIGURATION&#10;cp -f $TARGET_BUILD_DIR/$PRODUCT_NAME /Local/$USER/$CONFIGURATION&#10;">
+               scriptText = "#env &gt; /tmp/env-cd&#10;mkdir -p /Local/$USER/$CONFIGURATION&#10;rm -f /Local/$USER/$CONFIGURATION/$PRODUCT_NAME&#10;ln -s $TARGET_BUILD_DIR/$PRODUCT_NAME /Local/$USER/$CONFIGURATION&#10;">
                <EnvironmentBuildable>
                   <BuildableReference
                      BuildableIdentifier = "primary"
@@ -59,7 +59,7 @@
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
-      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.GDB"
+      selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       displayScaleIsEnabled = "NO"
       displayScale = "1.00"
       launchStyle = "0"
@@ -84,6 +84,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/System/Library/Frameworks/Foundation.framework"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Applications/Automator.app"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

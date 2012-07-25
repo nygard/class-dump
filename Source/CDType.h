@@ -10,7 +10,7 @@
 @interface CDType : NSObject <NSCopying>
 
 - (id)init;
-- (id)initSimpleType:(int)typeCode;
+- (id)initSimpleType:(int)type;
 - (id)initIDType:(CDTypeName *)name;
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 - (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
@@ -23,9 +23,9 @@
 @property (strong) NSString *variableName;
 
 @property (nonatomic, readonly) int type;
-@property (readonly) BOOL isIDType;
-@property (readonly) BOOL isNamedObject;
-@property (readonly) BOOL isTemplateType;
+@property (nonatomic, readonly) BOOL isIDType;
+@property (nonatomic, readonly) BOOL isNamedObject;
+@property (nonatomic, readonly) BOOL isTemplateType;
 
 @property (nonatomic, readonly) CDType *subtype;
 @property (nonatomic, readonly) CDTypeName *typeName;
@@ -46,7 +46,7 @@
 - (BOOL)canMergeWithType:(CDType *)otherType;
 - (void)mergeWithType:(CDType *)otherType;
 
-@property (readonly) NSArray *memberVariableNames;
+@property (nonatomic, readonly) NSArray *memberVariableNames;
 - (void)generateMemberNames;
 
 // Phase 0

@@ -7,6 +7,6 @@
 
 @interface CDLCPrebindChecksum : CDLoadCommand
 
-@property (readonly) uint32_t cksum;
+@property (nonatomic, readonly) uint32_t cksum;
 
 @end

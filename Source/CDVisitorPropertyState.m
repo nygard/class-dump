@@ -8,29 +8,28 @@
 #import "CDOCProperty.h"
 
 @interface CDVisitorPropertyState ()
-- (void)log;
 @end
 
 #pragma mark -
 
 @implementation CDVisitorPropertyState
 {
-    NSMutableDictionary *propertiesByAccessor; // NSString (accessor)       -> CDOCProperty
-    NSMutableDictionary *propertiesByName;     // NSString (property name)  -> CDOCProperty
+    NSMutableDictionary *_propertiesByAccessor; // NSString (accessor)       -> CDOCProperty
+    NSMutableDictionary *_propertiesByName;     // NSString (property name)  -> CDOCProperty
 }
 
 - (id)initWithProperties:(NSArray *)properties;
 {
     if ((self = [super init])) {
-        propertiesByAccessor = [[NSMutableDictionary alloc] init];
-        propertiesByName = [[NSMutableDictionary alloc] init];
+        _propertiesByAccessor = [[NSMutableDictionary alloc] init];
+        _propertiesByName = [[NSMutableDictionary alloc] init];
         
         for (CDOCProperty *property in properties) {
             //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
-            [propertiesByName setObject:property forKey:property.name];
-            [propertiesByAccessor setObject:property forKey:property.getter];
+            _propertiesByName[property.name] = property;
+            _propertiesByAccessor[property.getter] = property;
             if (property.isReadOnly == NO)
-                [propertiesByAccessor setObject:property forKey:property.setter];
+                _propertiesByAccessor[property.setter] = property;
         }
     }
 
@@ -41,30 +40,30 @@
 
 - (void)log;
 {
-    NSLog(@"propertiesByAccessor: %@", propertiesByAccessor);
-    NSLog(@"propertiesByName: %@", propertiesByName);
+    NSLog(@"propertiesByAccessor: %@", _propertiesByAccessor);
+    NSLog(@"propertiesByName: %@", _propertiesByName);
 }
 
 #pragma mark -
 
 - (CDOCProperty *)propertyForAccessor:(NSString *)str;
 {
-    return [propertiesByAccessor objectForKey:str];
+    return _propertiesByAccessor[str];
 }
 
 - (BOOL)hasUsedProperty:(CDOCProperty *)property;
 {
-    return [propertiesByName objectForKey:property.name] == nil;
+    return _propertiesByName[property.name] == nil;
 }
 
 - (void)useProperty:(CDOCProperty *)property;
 {
-    [propertiesByName removeObjectForKey:property.name];
+    [_propertiesByName removeObjectForKey:property.name];
 }
 
 - (NSArray *)remainingProperties;
 {
-    return [[propertiesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
+    return [[_propertiesByName allValues] sortedArrayUsingSelector:@selector(ascendingCompareByName:)];
 }
 
 @end

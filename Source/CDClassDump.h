@@ -7,11 +7,7 @@
 
 #import "CDFile.h" // For CDArch
 
-#ifdef __LP64__
 #define CLASS_DUMP_BASE_VERSION "3.3.4 (64 bit)"
-#else
-#define CLASS_DUMP_BASE_VERSION "3.3.4 (32 bit)"
-#endif
 
 #ifdef DEBUG
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION " (Debug version compiled " __DATE__ " " __TIME__ ")"
@@ -46,9 +42,9 @@
 
 @property (assign) CDArch targetArch;
 
-@property (readonly) BOOL containsObjectiveCData;
-@property (readonly) BOOL hasEncryptedFiles;
-@property (readonly) BOOL hasObjectiveCRuntimeInfo;
+@property (nonatomic, readonly) BOOL containsObjectiveCData;
+@property (nonatomic, readonly) BOOL hasEncryptedFiles;
+@property (nonatomic, readonly) BOOL hasObjectiveCRuntimeInfo;
 
 @property (readonly) CDTypeController *typeController;
 

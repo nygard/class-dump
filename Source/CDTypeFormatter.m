@@ -14,10 +14,6 @@
 static BOOL debug = NO;
 
 @interface CDTypeFormatter ()
-- (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
-- (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type;
-- (CDType *)replacementForType:(CDType *)type;
 @end
 
 #pragma mark -
@@ -26,21 +22,21 @@ static BOOL debug = NO;
 {
     __weak CDTypeController *nonretained_typeController;
     
-    NSUInteger baseLevel;
+    NSUInteger _baseLevel;
     
-    BOOL shouldExpand; // But just top level struct, level == 0
-    BOOL shouldAutoExpand;
-    BOOL shouldShowLexing;
+    BOOL _shouldExpand; // But just top level struct, level == 0
+    BOOL _shouldAutoExpand;
+    BOOL _shouldShowLexing;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
         nonretained_typeController = nil;
-        baseLevel = 0;
-        shouldExpand = NO;
-        shouldAutoExpand = NO;
-        shouldShowLexing = debug;
+        _baseLevel = 0;
+        _shouldExpand = NO;
+        _shouldAutoExpand = NO;
+        _shouldShowLexing = debug;
     }
 
     return self;
@@ -50,19 +46,14 @@ static BOOL debug = NO;
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %u, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
+    return [NSString stringWithFormat:@"<%@:%p> baseLevel: %lu, shouldExpand: %u, shouldAutoExpand: %u, shouldShowLexing: %u, tc: %p",
             NSStringFromClass([self class]), self,
-            baseLevel, self.shouldExpand, self.shouldAutoExpand, self.shouldShowLexing, self.typeController];
+            self.baseLevel, self.shouldExpand, self.shouldAutoExpand, self.shouldShowLexing, self.typeController];
 }
 
 #pragma mark -
 
 @synthesize typeController = nonretained_typeController;
-
-@synthesize baseLevel;
-@synthesize shouldExpand;
-@synthesize shouldAutoExpand;
-@synthesize shouldShowLexing;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 {
@@ -145,14 +136,14 @@ static BOOL debug = NO;
     return resultString;
 }
 
-- (NSDictionary *)formattedTypesForMethodName:(NSString *)methodName type:(NSString *)type;
+- (NSDictionary *)formattedTypesForMethodName:(NSString *)name type:(NSString *)type;
 {
     CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
 
     NSError *error = nil;
     NSArray *methodTypes = [aParser parseMethodType:&error];
     if (methodTypes == nil)
-        NSLog(@"Warning: Parsing method types failed, %@", methodName);
+        NSLog(@"Warning: Parsing method types failed, %@", name);
 
     if (methodTypes == nil || [methodTypes count] == 0) {
         return nil;
@@ -164,12 +155,12 @@ static BOOL debug = NO;
         NSUInteger index = 0;
         BOOL noMoreTypes = NO;
 
-        CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
-        NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
+        CDMethodType *methodType = methodTypes[index];
+        NSString *specialCase = [self _specialCaseVariable:nil type:methodType.type.bareTypeString];
         if (specialCase != nil) {
             [typeDict setValue:specialCase forKey:@"return-type"];
         } else {
-            NSString *str = [[aMethodType type] formattedString:nil formatter:self level:0];
+            NSString *str = [[methodType type] formattedString:nil formatter:self level:0];
             if (str != nil)
                 [typeDict setValue:str forKey:@"return-type"];
         }
@@ -179,7 +170,7 @@ static BOOL debug = NO;
         NSMutableArray *parameterTypes = [NSMutableArray array];
         [typeDict setValue:parameterTypes forKey:@"parametertypes"];
 
-        NSScanner *scanner = [[NSScanner alloc] initWithString:methodName];
+        NSScanner *scanner = [[NSScanner alloc] initWithString:name];
         while ([scanner isAtEnd] == NO) {
             NSString *str;
 
@@ -189,7 +180,7 @@ static BOOL debug = NO;
 //				int unnamedCount, unnamedIndex;
 //				unnamedCount = [str length];
 //				for (unnamedIndex = 0; unnamedIndex < unnamedCount; unnamedIndex++)
-//					[parameterTypes addObject:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"type", @"", @"name", nil]];
+//					[parameterTypes addObject:@{ @"type": @"", @"name": @""}];
             }
             if ([scanner scanString:@":" intoString:NULL]) {
                 if (index >= count) {
@@ -197,16 +188,16 @@ static BOOL debug = NO;
                 } else {
                     NSMutableDictionary *parameter = [NSMutableDictionary dictionary];
 
-                    aMethodType = [methodTypes objectAtIndex:index];
-                    specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
+                    methodType = methodTypes[index];
+                    specialCase = [self _specialCaseVariable:nil type:methodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [parameter setValue:specialCase forKey:@"type"];
                     } else {
-                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0];
+                        NSString *typeString = [methodType.type formattedString:nil formatter:self level:0];
                         [parameter setValue:typeString forKey:@"type"];
                     }
                     //[parameter setValue:[NSString stringWithFormat:@"fp%@", aMethodType.offset] forKey:@"name"];
-                    [parameter setValue:[NSString stringWithFormat:@"arg%u", index-2] forKey:@"name"];
+                    [parameter setValue:[NSString stringWithFormat:@"arg%lu", index-2] forKey:@"name"];
                     [parameterTypes addObject:parameter];
                     index++;
                 }
@@ -240,7 +231,7 @@ static BOOL debug = NO;
         NSUInteger index = 0;
         BOOL noMoreTypes = NO;
 
-        CDMethodType *aMethodType = [methodTypes objectAtIndex:index];
+        CDMethodType *aMethodType = methodTypes[index];
         [resultString appendString:@"("];
         NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
         if (specialCase != nil) {
@@ -268,7 +259,7 @@ static BOOL debug = NO;
                 if (index >= count) {
                     noMoreTypes = YES;
                 } else {
-                    aMethodType = [methodTypes objectAtIndex:index];
+                    aMethodType = methodTypes[index];
                     specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
@@ -278,7 +269,7 @@ static BOOL debug = NO;
                         [resultString appendFormat:@"(%@)", typeString];
                     }
                     //[resultString appendFormat:@"fp%@", [aMethodType offset]];
-                    [resultString appendFormat:@"arg%u", index-2];
+                    [resultString appendFormat:@"arg%lu", index-2];
 
                     NSString *ch = [scanner peekCharacter];
                     // if next character is not ':' nor EOS then add space

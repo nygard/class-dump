@@ -31,10 +31,14 @@
 #import "CDLCVersionMinimum.h"
 #import "CDMachOFile.h"
 
+#import "CDLCMain.h"
+#import "CDLCDataInCode.h"
+#import "CDLCSourceVersion.h"
+
 @implementation CDLoadCommand
 {
     __weak CDMachOFile *nonretained_machOFile;
-    NSUInteger commandOffset;
+    NSUInteger _commandOffset;
 }
 
 + (id)loadCommandWithDataCursor:(CDMachOFileDataCursor *)cursor;
@@ -85,6 +89,10 @@
         case LC_VERSION_MIN_IPHONEOS:  targetClass = [CDLCVersionMinimum class]; break;
         case LC_FUNCTION_STARTS:       targetClass = [CDLCFunctionStarts class]; break;
         case LC_DYLD_ENVIRONMENT:      targetClass = [CDLCDylinker class]; break;
+        case LC_MAIN:                  targetClass = [CDLCMain class]; break;
+        case LC_DATA_IN_CODE:          targetClass = [CDLCDataInCode class]; break;
+        case LC_SOURCE_VERSION:        targetClass = [CDLCSourceVersion class]; break;
+        case LC_DYLIB_CODE_SIGN_DRS:   targetClass = [CDLCLinkeditData class]; break; // Designated Requirements
             
         default:
             NSLog(@"Unknown load command: 0x%08x", val);
@@ -99,7 +107,7 @@
 {
     if ((self = [super init])) {
         nonretained_machOFile = [cursor machOFile];
-        commandOffset = [cursor offset];
+        _commandOffset = [cursor offset];
     }
 
     return self;
@@ -122,7 +130,6 @@
 #pragma mark -
 
 @synthesize machOFile = nonretained_machOFile;
-@synthesize commandOffset;
 
 - (uint32_t)cmd;
 {

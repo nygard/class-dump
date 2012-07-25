@@ -15,25 +15,25 @@ static NSString *CDDylibVersionString(uint32_t version)
 
 @implementation CDLCDylib
 {
-    struct dylib_command dylibCommand;
-    NSString *path;
+    struct dylib_command _dylibCommand;
+    NSString *_path;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        dylibCommand.cmd = [cursor readInt32];
-        dylibCommand.cmdsize = [cursor readInt32];
+        _dylibCommand.cmd = [cursor readInt32];
+        _dylibCommand.cmdsize = [cursor readInt32];
         
-        dylibCommand.dylib.name.offset = [cursor readInt32];
-        dylibCommand.dylib.timestamp = [cursor readInt32];
-        dylibCommand.dylib.current_version = [cursor readInt32];
-        dylibCommand.dylib.compatibility_version = [cursor readInt32];
+        _dylibCommand.dylib.name.offset = [cursor readInt32];
+        _dylibCommand.dylib.timestamp = [cursor readInt32];
+        _dylibCommand.dylib.current_version = [cursor readInt32];
+        _dylibCommand.dylib.compatibility_version = [cursor readInt32];
         
-        NSUInteger length = dylibCommand.cmdsize - sizeof(dylibCommand);
+        NSUInteger length = _dylibCommand.cmdsize - sizeof(_dylibCommand);
         //NSLog(@"expected length: %u", length);
         
-        path = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
+        _path = [cursor readStringOfLength:length encoding:NSASCIIStringEncoding];
         //NSLog(@"path: %@", path);
     }
 
@@ -44,29 +44,27 @@ static NSString *CDDylibVersionString(uint32_t version)
 
 - (uint32_t)cmd;
 {
-    return dylibCommand.cmd;
+    return _dylibCommand.cmd;
 }
 
 - (uint32_t)cmdsize;
 {
-    return dylibCommand.cmdsize;
+    return _dylibCommand.cmdsize;
 }
-
-@synthesize path;
 
 - (uint32_t)timestamp;
 {
-    return dylibCommand.dylib.timestamp;
+    return _dylibCommand.dylib.timestamp;
 }
 
 - (uint32_t)currentVersion;
 {
-    return dylibCommand.dylib.current_version;
+    return _dylibCommand.dylib.current_version;
 }
 
 - (uint32_t)compatibilityVersion;
 {
-    return dylibCommand.dylib.compatibility_version;
+    return _dylibCommand.dylib.compatibility_version;
 }
 
 - (NSString *)formattedCurrentVersion;

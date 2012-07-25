@@ -11,13 +11,12 @@
 #define CDSegmentProtectedMagic_AES      0xc2286295
 #define CDSegmentProtectedMagic_Blowfish 0x2e69cf40
 
-enum {
+typedef enum : NSUInteger {
     CDSegmentEncryptionType_None     = 0,
     CDSegmentEncryptionType_AES      = 1, // 10.5 and earlier (AES)
     CDSegmentEncryptionType_Blowfish = 2, // 10.6 (Blowfish)
     CDSegmentEncryptionType_Unknown
-};
-typedef NSUInteger CDSegmentEncryptionType;
+} CDSegmentEncryptionType;
 
 extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 
@@ -26,15 +25,15 @@ extern NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type);
 @property (strong) NSString *name;
 @property (strong) NSArray *sections;
 
-@property (readonly) NSUInteger vmaddr;
-@property (readonly) NSUInteger fileoff;
-@property (readonly) NSUInteger filesize;
-@property (readonly) vm_prot_t initprot;
-@property (readonly) uint32_t flags;
-@property (readonly) BOOL isProtected;
+@property (nonatomic, readonly) NSUInteger vmaddr;
+@property (nonatomic, readonly) NSUInteger fileoff;
+@property (nonatomic, readonly) NSUInteger filesize;
+@property (nonatomic, readonly) vm_prot_t initprot;
+@property (nonatomic, readonly) uint32_t flags;
+@property (nonatomic, readonly) BOOL isProtected;
 
-@property (readonly) CDSegmentEncryptionType encryptionType;
-@property (readonly) BOOL canDecrypt;
+@property (nonatomic, readonly) CDSegmentEncryptionType encryptionType;
+@property (nonatomic, readonly) BOOL canDecrypt;
 
 - (NSString *)flagDescription;
 

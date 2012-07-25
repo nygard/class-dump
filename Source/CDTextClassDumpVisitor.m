@@ -21,7 +21,6 @@
 static BOOL debug = NO;
 
 @interface CDTextClassDumpVisitor ()
-- (void)_visitProperty:(CDOCProperty *)property parsedType:(CDType *)parsedType attributes:(NSArray *)attrs;
 @end
 
 #pragma mark -

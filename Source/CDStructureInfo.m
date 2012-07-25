@@ -46,28 +46,22 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> depth: %u, refcount: %u, isUsedInMethod: %u, type: %p",
+    return [NSString stringWithFormat:@"<%@:%p> depth: %lu, refcount: %lu, isUsedInMethod: %u, type: %p",
             NSStringFromClass([self class]), self,
             self.type.structureDepth, self.referenceCount, self.isUsedInMethod, self.type];
 }
 
 - (NSString *)shortDescription;
 {
-    return [NSString stringWithFormat:@"%u %u m?%u %@ %@", self.type.structureDepth, self.referenceCount, self.isUsedInMethod, self.type.bareTypeString, self.type.typeString];
+    return [NSString stringWithFormat:@"%lu %lu m?%u %@ %@", self.type.structureDepth, self.referenceCount, self.isUsedInMethod, self.type.bareTypeString, self.type.typeString];
 }
 
 #pragma mark -
-
-@synthesize type = _type;
-@synthesize referenceCount = _referenceCount;
 
 - (void)addReferenceCount:(NSUInteger)count;
 {
     self.referenceCount += count;
 }
-
-@synthesize isUsedInMethod = _isUsedInMethod;
-@synthesize typedefName = _typedefName;
 
 // Do this before generating member names.
 - (void)generateTypedefName:(NSString *)baseName;

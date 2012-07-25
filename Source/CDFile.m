@@ -60,31 +60,31 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 @implementation CDFile
 {
-    NSString *filename;
-    NSData *data;
-    NSUInteger archOffset;
-    NSUInteger archSize;
-    CDSearchPathState *searchPathState;
+    NSString *_filename;
+    NSData *_data;
+    NSUInteger _archOffset;
+    NSUInteger _archSize;
+    CDSearchPathState *_searchPathState;
 }
 
-+ (id)fileWithData:(NSData *)someData filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    return [self fileWithData:someData archOffset:0 archSize:[someData length] filename:aFilename searchPathState:aSearchPathState];
+    return [self fileWithData:data archOffset:0 archSize:[data length] filename:filename searchPathState:searchPathState];
 }
 
-+ (id)fileWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
++ (id)fileWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    CDFatFile *aFatFile = nil;
+    CDFatFile *fatFile = nil;
 
-    if (anOffset == 0)
-        aFatFile = [[CDFatFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState];
+    if (offset == 0)
+        fatFile = [[CDFatFile alloc] initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState];
 
-    if (aFatFile == nil) {
-        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:someData archOffset:anOffset archSize:aSize filename:aFilename searchPathState:aSearchPathState];
+    if (fatFile == nil) {
+        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState];
         return machOFile;
     }
 
-    return aFatFile;
+    return fatFile;
 }
 
 - (id)init;
@@ -93,31 +93,25 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return nil;
 }
 
-- (id)initWithData:(NSData *)someData archOffset:(NSUInteger)anOffset archSize:(NSUInteger)aSize filename:(NSString *)aFilename searchPathState:(CDSearchPathState *)aSearchPathState;
+- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
     if ((self = [super init])) {
         // Otherwise reading the magic number fails.
-        if ([someData length] < 4) {
+        if ([data length] < 4) {
             return nil;
         }
         
-        filename = aFilename;
-        data = someData;
-        archOffset = anOffset;
-        archSize = aSize;
-        searchPathState = aSearchPathState;
+        _filename = filename;
+        _data = data;
+        _archOffset = offset;
+        _archSize = size;
+        _searchPathState = searchPathState;
     }
 
     return self;
 }
 
 #pragma mark -
-
-@synthesize filename;
-@synthesize data;
-@synthesize archOffset;
-@synthesize archSize;
-@synthesize searchPathState;
 
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {

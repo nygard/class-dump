@@ -10,7 +10,6 @@
 #import "CDObjectiveCProcessor.h"
 
 @interface CDClassFrameworkVisitor ()
-- (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 @property (strong) NSString *frameworkName;
 @end
 
@@ -45,12 +44,10 @@
 
 #pragma mark -
 
-@synthesize frameworkName = _frameworkName;
-
 - (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 {
     if (name != nil && frameworkName != nil)
-        [_frameworkNamesByClassName setObject:frameworkName forKey:name];
+        _frameworkNamesByClassName[name] = frameworkName;
 }
 
 - (NSDictionary *)frameworkNamesByClassName;

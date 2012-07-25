@@ -278,13 +278,6 @@ int main(int argc, char *argv[])
                     //NSLog(@"chosen arch is: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
                 }
 
-#ifndef __LP64__
-                if (CDArchUses64BitABI(targetArch)) {
-                    fprintf(stderr, "Error: Can't dump 64-bit files with 32-bit version of class-dump\n");
-                    exit(1);
-                }
-#endif
-
                 classDump.targetArch = targetArch;
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 

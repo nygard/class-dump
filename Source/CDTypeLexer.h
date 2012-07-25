@@ -12,12 +12,11 @@
 #define TK_QUOTED_STRING 260
 #define TK_TEMPLATE_TYPE TK_IDENTIFIER
 
-enum {
+typedef enum : NSUInteger {
     CDTypeLexerState_Normal        = 0,
     CDTypeLexerState_Identifier    = 1,
     CDTypeLexerState_TemplateTypes = 2,
-};
-typedef NSUInteger CDTypeLexerState;
+} CDTypeLexerState;
 
 @interface CDTypeLexer : NSObject
 
@@ -27,13 +26,13 @@ typedef NSUInteger CDTypeLexerState;
 @property (nonatomic, assign) CDTypeLexerState state;
 @property (assign) BOOL shouldShowLexing;
 
-@property (readonly) NSString *string;
+@property (nonatomic, readonly) NSString *string;
 - (int)scanNextToken;
 
 @property (strong) NSString *lexText;
 
-@property (readonly) unichar peekChar;
-@property (readonly) NSString *remainingString;
-@property (readonly) NSString *peekIdentifier;
+@property (nonatomic, readonly) unichar peekChar;
+@property (nonatomic, readonly) NSString *remainingString;
+@property (nonatomic, readonly) NSString *peekIdentifier;
 
 @end

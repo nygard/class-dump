@@ -13,18 +13,9 @@
 static BOOL debug = NO;
 
 @interface CDTypeController ()
-
 @property (weak, readonly) CDClassDump *classDump;
 @property (readonly) CDStructureTable *structureTable;
 @property (readonly) CDStructureTable *unionTable;
-
-- (void)generateTypedefNames;
-- (void)generateMemberNames;
-
-- (void)startPhase1;
-- (void)startPhase2;
-- (void)startPhase3;
-
 @end
 
 #pragma mark -
@@ -101,14 +92,6 @@ static BOOL debug = NO;
 
 @synthesize classDump = nonretained_classDump;
 @synthesize delegate = nonretained_delegate;
-
-@synthesize structureTable = _structureTable;
-@synthesize unionTable = _unionTable;
-
-@synthesize ivarTypeFormatter = _ivarTypeFormatter;
-@synthesize methodTypeFormatter = _methodTypeFormatter;
-@synthesize propertyTypeFormatter = _propertyTypeFormatter;
-@synthesize structDeclarationTypeFormatter = _structDeclarationTypeFormatter;
 
 #pragma mark -
 

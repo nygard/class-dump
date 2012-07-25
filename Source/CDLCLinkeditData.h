@@ -7,4 +7,6 @@
 
 @interface CDLCLinkeditData : CDLoadCommand
 
+@property (nonatomic, readonly) NSData *linkeditData;
+
 @end

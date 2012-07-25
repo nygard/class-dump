@@ -19,23 +19,23 @@
 
 @implementation CDOCIvar
 {
-    NSString *name;
-    NSString *type;
-    NSUInteger offset;
+    NSString *_name;
+    NSString *_type;
+    NSUInteger _offset;
     
-    BOOL hasParsedType;
-    CDType *parsedType;
+    BOOL _hasParsedType;
+    CDType *_parsedType;
 }
 
-- (id)initWithName:(NSString *)aName type:(NSString *)aType offset:(NSUInteger)anOffset;
+- (id)initWithName:(NSString *)name type:(NSString *)type offset:(NSUInteger)offset;
 {
     if ((self = [super init])) {
-        name = aName;
-        type = aType;
-        offset = anOffset;
+        _name = name;
+        _type = type;
+        _offset = offset;
         
-        hasParsedType = NO;
-        parsedType = nil;
+        _hasParsedType = NO;
+        _parsedType = nil;
     }
 
     return self;
@@ -51,38 +51,33 @@
 
 #pragma mark -
 
-@synthesize name;
-@synthesize type;
-@synthesize offset;
-@synthesize hasParsedType;
-
 - (CDType *)parsedType;
 {
     if (self.hasParsedType == NO) {
         NSError *error = nil;
 
-        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
-        parsedType = [parser parseType:&error];
-        if (parsedType == nil)
-            NSLog(@"Warning: Parsing ivar type failed, %@", name);
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:self.type];
+        _parsedType = [parser parseType:&error];
+        if (_parsedType == nil)
+            NSLog(@"Warning: Parsing ivar type failed, %@", self.name);
 
         self.hasParsedType = YES;
     }
 
-    return parsedType;
+    return _parsedType;
 }
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:name type:type];
+    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:self.type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
         if ([typeController shouldShowIvarOffsets]) {
-            [resultString appendFormat:@"\t// %1$d = 0x%1$x", offset];
+            [resultString appendFormat:@"\t// %1$ld = 0x%1$lx", self.offset];
         }
     } else
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", type, name];
+        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.type, self.name];
 }
 
 @end
