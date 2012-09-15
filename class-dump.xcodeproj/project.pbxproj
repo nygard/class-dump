@@ -1132,6 +1132,17 @@
 				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"-fdiagnostics-show-option",
+					"-Weverything",
+					"-Wno-semicolon-before-method-body",
+					"-Wno-c11-extensions",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-overriding-method-mismatch",
+					"-Wno-unused-macros",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-pedantic",
+				);
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
@@ -1152,6 +1163,17 @@
 				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = (
+					"-fdiagnostics-show-option",
+					"-Weverything",
+					"-Wno-semicolon-before-method-body",
+					"-Wno-c11-extensions",
+					"-Wno-readonly-setter-attrs",
+					"-Wno-overriding-method-mismatch",
+					"-Wno-unused-macros",
+					"-Wno-objc-missing-property-synthesis",
+					"-Wno-pedantic",
+				);
 				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
@@ -1277,13 +1299,13 @@
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-fdiagnostics-show-option",
+					"-Weverything",
 					"-Wno-semicolon-before-method-body",
 					"-Wno-c11-extensions",
 					"-Wno-readonly-setter-attrs",
 					"-Wno-overriding-method-mismatch",
 					"-Wno-unused-macros",
 					"-Wno-objc-missing-property-synthesis",
-					"-Weverything",
 				);
 			};
 			name = Debug;
@@ -1308,13 +1330,13 @@
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-fdiagnostics-show-option",
+					"-Weverything",
 					"-Wno-semicolon-before-method-body",
 					"-Wno-c11-extensions",
 					"-Wno-readonly-setter-attrs",
 					"-Wno-overriding-method-mismatch",
 					"-Wno-unused-macros",
 					"-Wno-objc-missing-property-synthesis",
-					"-Weverything",
 				);
 			};
 			name = Release;
