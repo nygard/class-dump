@@ -15,6 +15,7 @@
 #import "CDTypeController.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
+#import "CDSection.h"
 
 // Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
 
@@ -70,6 +71,10 @@
 - (NSString *)garbageCollectionStatus;
 {
     if (self.objcImageInfoSection != nil) {
+        // The SDK frameworks (i.e. within Xcode, not in /System) have empty sections.
+        if (self.objcImageInfoSection.size < 8)
+            return @"Unknown";
+
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:self.objcImageInfoSection];
         
         [cursor readInt32];
