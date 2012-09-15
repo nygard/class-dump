@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
             case CDFormat_Balance: printf("Format as balance\n"); break;
         }
 
-        for (NSUInteger index = optind; index < argc; index++) {
+        for (NSUInteger index = optind; index < (NSUInteger)argc; index++) {
 
             NSString *arg = [NSString stringWithFileSystemRepresentation:argv[index]];
             printf("======================================================================\n");
