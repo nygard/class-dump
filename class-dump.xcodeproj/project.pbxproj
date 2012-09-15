@@ -30,6 +30,7 @@
 		011E48981604EFAE00722F8D /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
 		011E48991604EFBD00722F8D /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		011E489A1604EFCF00722F8D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
+		011E489D160522A100722F8D /* TestCDArchFromName.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E489C160522A100722F8D /* TestCDArchFromName.m */; };
 		013D1EFD13A5A0F100BF0A67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		013D1F1913A5AEA100BF0A67 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830F13A591D8003EDE60 /* CDTopoSortNode.m */; };
 		013D1F1A13A5AEA100BF0A67 /* NSArray-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB828813A591A5003EDE60 /* NSArray-CDExtensions.m */; };
@@ -221,6 +222,8 @@
 		011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestCDNameForCPUType.h; sourceTree = "<group>"; };
 		011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestCDNameForCPUType.m; sourceTree = "<group>"; };
 		011E48501604DF3700722F8D /* UnitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UnitTests-Prefix.pch"; sourceTree = "<group>"; };
+		011E489B160522A100722F8D /* TestCDArchFromName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCDArchFromName.h; sourceTree = "<group>"; };
+		011E489C160522A100722F8D /* TestCDArchFromName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCDArchFromName.m; sourceTree = "<group>"; };
 		013D1EFB13A5A0F100BF0A67 /* deprotect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = deprotect; sourceTree = BUILT_PRODUCTS_DIR; };
 		013D1F0913A5A11100BF0A67 /* deprotect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = deprotect.m; sourceTree = SOURCE_ROOT; };
 		013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
@@ -461,6 +464,8 @@
 			children = (
 				011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */,
 				011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */,
+				011E489B160522A100722F8D /* TestCDArchFromName.h */,
+				011E489C160522A100722F8D /* TestCDArchFromName.m */,
 				011E48481604DF3700722F8D /* Supporting Files */,
 			);
 			path = UnitTests;
@@ -958,6 +963,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				011E484F1604DF3700722F8D /* TestCDNameForCPUType.m in Sources */,
+				011E489D160522A100722F8D /* TestCDArchFromName.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

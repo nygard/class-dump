@@ -33,7 +33,7 @@ CDArch CDArchFromName(NSString *name)
 {
     CDArch arch;
 
-    arch.cputype = CPU_TYPE_ANY;
+    arch.cputype    = CPU_TYPE_ANY;
     arch.cpusubtype = 0;
 
     if (name == nil)
@@ -41,21 +41,25 @@ CDArch CDArchFromName(NSString *name)
 
     const NXArchInfo *archInfo = NXGetArchInfoFromName([name UTF8String]);
     if (archInfo == NULL) {
-        NSScanner *scanner;
-        NSString *ignore;
-
-        scanner = [[NSScanner alloc] initWithString:name];
-        if ([scanner scanHexInt:(uint32_t *)&arch.cputype]
-            && [scanner scanString:@":" intoString:&ignore]
-            && [scanner scanHexInt:(uint32_t *)&arch.cpusubtype]) {
-            // Great!
-            //NSLog(@"scanned 0x%08x : 0x%08x from '%@'", arch.cputype, arch.cpusubtype, name);
+        if ([name isEqualToString:@"armv7s"]) { // Not recognized in 10.8.0
+            arch.cputype    = CPU_TYPE_ARM;
+            arch.cpusubtype = 11;
         } else {
-            arch.cputype = CPU_TYPE_ANY;
-            arch.cpusubtype = 0;
+            NSString *ignore;
+            
+            NSScanner *scanner = [[NSScanner alloc] initWithString:name];
+            if ([scanner scanHexInt:(uint32_t *)&arch.cputype]
+                && [scanner scanString:@":" intoString:&ignore]
+                && [scanner scanHexInt:(uint32_t *)&arch.cpusubtype]) {
+                // Great!
+                //NSLog(@"scanned 0x%08x : 0x%08x from '%@'", arch.cputype, arch.cpusubtype, name);
+            } else {
+                arch.cputype    = CPU_TYPE_ANY;
+                arch.cpusubtype = 0;
+            }
         }
     } else {
-        arch.cputype = archInfo->cputype;
+        arch.cputype    = archInfo->cputype;
         arch.cpusubtype = archInfo->cpusubtype;
     }
 
