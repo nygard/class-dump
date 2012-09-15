@@ -25,9 +25,11 @@
 
 /* Begin PBXBuildFile section */
 		011E48401604DF3700722F8D /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 011E483F1604DF3700722F8D /* SenTestingKit.framework */; };
-		011E48421604DF3700722F8D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 011E48411604DF3700722F8D /* Cocoa.framework */; };
 		011E484C1604DF3700722F8D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 011E484A1604DF3700722F8D /* InfoPlist.strings */; };
 		011E484F1604DF3700722F8D /* TestCDNameForCPUType.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */; };
+		011E48981604EFAE00722F8D /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
+		011E48991604EFBD00722F8D /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
+		011E489A1604EFCF00722F8D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		013D1EFD13A5A0F100BF0A67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		013D1F1913A5AEA100BF0A67 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830F13A591D8003EDE60 /* CDTopoSortNode.m */; };
 		013D1F1A13A5AEA100BF0A67 /* NSArray-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB828813A591A5003EDE60 /* NSArray-CDExtensions.m */; };
@@ -395,8 +397,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				011E48981604EFAE00722F8D /* libMachObjC.a in Frameworks */,
+				011E48991604EFBD00722F8D /* libcrypto.dylib in Frameworks */,
+				011E489A1604EFCF00722F8D /* Foundation.framework in Frameworks */,
 				011E48401604DF3700722F8D /* SenTestingKit.framework in Frameworks */,
-				011E48421604DF3700722F8D /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

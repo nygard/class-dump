@@ -5,6 +5,8 @@
 
 #import "TestCDNameForCPUType.h"
 
+#import "CDFile.h"
+
 @implementation TestCDNameForCPUType
 
 - (void)setUp;
@@ -21,9 +23,9 @@
     [super tearDown];
 }
 
-- (void)testExample;
+- (void)testArmv7s;
 {
-    STFail(@"Unit tests are not implemented yet in UnitTests", NULL);
+    STAssertEqualObjects(CDNameForCPUType(CPU_TYPE_ARM, 11), @"armv7s", @"The name for ARM subtype 11 should be 'armv7s'");
 }
 
 @end
