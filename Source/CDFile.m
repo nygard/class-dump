@@ -12,10 +12,21 @@
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
-    if (archInfo == NULL)
-        return [NSString stringWithFormat:@"0x%x:0x%x", cputype, cpusubtype];
+    if (archInfo != NULL)
+        return [NSString stringWithUTF8String:archInfo->name];
 
-    return [NSString stringWithUTF8String:archInfo->name];
+    // Special cases until the built-in function recognizes these.
+    switch (cputype) {
+        case CPU_TYPE_ARM: {
+            switch (cpusubtype) {
+                case 11: return @"armv7s"; // Not recognized in 10.8.0
+                default: break;
+            }
+        }
+        default: break;
+    }
+
+    return [NSString stringWithFormat:@"0x%x:0x%x", cputype, cpusubtype];
 }
 
 CDArch CDArchFromName(NSString *name)
