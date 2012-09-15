@@ -27,7 +27,7 @@
 		011E48401604DF3700722F8D /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 011E483F1604DF3700722F8D /* SenTestingKit.framework */; };
 		011E48421604DF3700722F8D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 011E48411604DF3700722F8D /* Cocoa.framework */; };
 		011E484C1604DF3700722F8D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 011E484A1604DF3700722F8D /* InfoPlist.strings */; };
-		011E484F1604DF3700722F8D /* UnitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E484E1604DF3700722F8D /* UnitTests.m */; };
+		011E484F1604DF3700722F8D /* TestCDNameForCPUType.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */; };
 		013D1EFD13A5A0F100BF0A67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		013D1F1913A5AEA100BF0A67 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830F13A591D8003EDE60 /* CDTopoSortNode.m */; };
 		013D1F1A13A5AEA100BF0A67 /* NSArray-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB828813A591A5003EDE60 /* NSArray-CDExtensions.m */; };
@@ -216,8 +216,8 @@
 		011E48461604DF3700722F8D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		011E48491604DF3700722F8D /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
 		011E484B1604DF3700722F8D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		011E484D1604DF3700722F8D /* UnitTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnitTests.h; sourceTree = "<group>"; };
-		011E484E1604DF3700722F8D /* UnitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UnitTests.m; sourceTree = "<group>"; };
+		011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestCDNameForCPUType.h; sourceTree = "<group>"; };
+		011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestCDNameForCPUType.m; sourceTree = "<group>"; };
 		011E48501604DF3700722F8D /* UnitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UnitTests-Prefix.pch"; sourceTree = "<group>"; };
 		013D1EFB13A5A0F100BF0A67 /* deprotect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = deprotect; sourceTree = BUILT_PRODUCTS_DIR; };
 		013D1F0913A5A11100BF0A67 /* deprotect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = deprotect.m; sourceTree = SOURCE_ROOT; };
@@ -455,8 +455,8 @@
 		011E48471604DF3700722F8D /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
-				011E484D1604DF3700722F8D /* UnitTests.h */,
-				011E484E1604DF3700722F8D /* UnitTests.m */,
+				011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */,
+				011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */,
 				011E48481604DF3700722F8D /* Supporting Files */,
 			);
 			path = UnitTests;
@@ -953,7 +953,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				011E484F1604DF3700722F8D /* UnitTests.m in Sources */,
+				011E484F1604DF3700722F8D /* TestCDNameForCPUType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1383,6 +1383,7 @@
 				011E48521604DF3700722F8D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		013D1F0713A5A0F200BF0A67 /* Build configuration list for PBXNativeTarget "deprotect" */ = {
 			isa = XCConfigurationList;
