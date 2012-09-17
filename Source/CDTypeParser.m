@@ -165,8 +165,8 @@ static NSString *CDTokenDescription(int token)
         CDType *type = [self _parseType];
         NSString *number = [self parseNumber];
 
-        CDMethodType *aMethodType = [[CDMethodType alloc] initWithType:type offset:number];
-        [methodTypes addObject:aMethodType];
+        CDMethodType *methodType = [[CDMethodType alloc] initWithType:type offset:number];
+        [methodTypes addObject:methodType];
     } while ([self isTokenInTypeStartSet:lookahead]);
 
     return methodTypes;
@@ -303,9 +303,9 @@ static NSString *CDTokenDescription(int token)
     NSMutableArray *members = [NSMutableArray array];
 
     while ([self isTokenInTypeSet:lookahead]) {
-        CDType *aType = [self _parseType];
-        //[aType setVariableName:@"___"];
-        [members addObject:aType];
+        CDType *type = [self _parseType];
+        //type.variableName = @"___";
+        [members addObject:type];
     }
 
     return members;
@@ -359,7 +359,7 @@ static NSString *CDTokenDescription(int token)
 
         //NSLog(@"got identifier: %@", identifier);
         result = [self _parseTypeInStruct:YES];
-        [result setVariableName:identifier];
+        result.variableName = identifier;
         //NSLog(@"And parsed struct type.");
     } else {
         result = [self _parseTypeInStruct:YES];

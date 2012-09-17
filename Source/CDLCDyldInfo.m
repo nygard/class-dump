@@ -149,19 +149,19 @@ static NSString *CDBindTypeDescription(uint8_t type)
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _dyldInfoCommand.cmd = [cursor readInt32];
+        _dyldInfoCommand.cmd     = [cursor readInt32];
         _dyldInfoCommand.cmdsize = [cursor readInt32];
         
-        _dyldInfoCommand.rebase_off = [cursor readInt32];
-        _dyldInfoCommand.rebase_size = [cursor readInt32];
-        _dyldInfoCommand.bind_off = [cursor readInt32];
-        _dyldInfoCommand.bind_size = [cursor readInt32];
-        _dyldInfoCommand.weak_bind_off = [cursor readInt32];
+        _dyldInfoCommand.rebase_off     = [cursor readInt32];
+        _dyldInfoCommand.rebase_size    = [cursor readInt32];
+        _dyldInfoCommand.bind_off       = [cursor readInt32];
+        _dyldInfoCommand.bind_size      = [cursor readInt32];
+        _dyldInfoCommand.weak_bind_off  = [cursor readInt32];
         _dyldInfoCommand.weak_bind_size = [cursor readInt32];
-        _dyldInfoCommand.lazy_bind_off = [cursor readInt32];
+        _dyldInfoCommand.lazy_bind_off  = [cursor readInt32];
         _dyldInfoCommand.lazy_bind_size = [cursor readInt32];
-        _dyldInfoCommand.export_off = [cursor readInt32];
-        _dyldInfoCommand.export_size = [cursor readInt32];
+        _dyldInfoCommand.export_off     = [cursor readInt32];
+        _dyldInfoCommand.export_size    = [cursor readInt32];
         
 #if 0
         NSLog(@"       cmdsize: %08x", _dyldInfoCommand.cmdsize);

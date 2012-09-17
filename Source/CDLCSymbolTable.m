@@ -29,12 +29,12 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _symtabCommand.cmd = [cursor readInt32];
+        _symtabCommand.cmd     = [cursor readInt32];
         _symtabCommand.cmdsize = [cursor readInt32];
         
-        _symtabCommand.symoff = [cursor readInt32];
-        _symtabCommand.nsyms = [cursor readInt32];
-        _symtabCommand.stroff = [cursor readInt32];
+        _symtabCommand.symoff  = [cursor readInt32];
+        _symtabCommand.nsyms   = [cursor readInt32];
+        _symtabCommand.stroff  = [cursor readInt32];
         _symtabCommand.strsize = [cursor readInt32];
         
         // symoff is at the start of the first section (__pointers) of the __IMPORT segment
@@ -43,7 +43,7 @@
         NSLog(@"symtab: %08x %08x  %08x %08x %08x %08x",
               symtabCommand.cmd, symtabCommand.cmdsize,
               symtabCommand.symoff, symtabCommand.nsyms, symtabCommand.stroff, symtabCommand.strsize);
-        NSLog(@"data offset for stroff: %lu", [aMachOFile dataOffsetForAddress:symtabCommand.stroff]);
+        NSLog(@"data offset for stroff: %lu", [cursor.machOFile dataOffsetForAddress:symtabCommand.stroff]);
 #endif
         
         _symbols = nil;
@@ -114,10 +114,10 @@
             struct nlist nlist;
 
             nlist.n_un.n_strx = [cursor readInt32];
-            nlist.n_type = [cursor readByte];
-            nlist.n_sect = [cursor readByte];
-            nlist.n_desc = [cursor readInt16];
-            nlist.n_value = [cursor readInt32];
+            nlist.n_type      = [cursor readByte];
+            nlist.n_sect      = [cursor readByte];
+            nlist.n_desc      = [cursor readInt16];
+            nlist.n_value     = [cursor readInt32];
 #if 0
             NSLog(@"%5u: %08x           %02x    %02x  %04x  %08x - %s",
                   index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);
@@ -143,10 +143,10 @@
             struct nlist_64 nlist;
 
             nlist.n_un.n_strx = [cursor readInt32];
-            nlist.n_type = [cursor readByte];
-            nlist.n_sect = [cursor readByte];
-            nlist.n_desc = [cursor readInt16];
-            nlist.n_value = [cursor readInt64];
+            nlist.n_type      = [cursor readByte];
+            nlist.n_sect      = [cursor readByte];
+            nlist.n_desc      = [cursor readInt16];
+            nlist.n_value     = [cursor readInt64];
 #if 0
             NSLog(@"%5u: %08x           %02x    %02x  %04x  %016x - %s",
                   index, nlist.n_un.n_strx, nlist.n_type, nlist.n_sect, nlist.n_desc, nlist.n_value, strtab + nlist.n_un.n_strx);

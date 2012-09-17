@@ -166,7 +166,7 @@ static BOOL debugMerge = NO;
     
     NSParameterAssert([str isEqualToString:copiedType.typeString]);
     
-    [copiedType setVariableName:self.variableName];
+    copiedType.variableName = self.variableName;
     
     return copiedType;
 }
@@ -545,10 +545,10 @@ static BOOL debugMerge = NO;
     NSParameterAssert(self.type == '{' || self.type == '(');
     NSMutableString *str = [NSMutableString string];
 
-    for (CDType *aMember in self.members) {
-        if (aMember.variableName != nil && level > 0)
-            [str appendFormat:@"\"%@\"", aMember.variableName];
-        [str appendString:[aMember _typeStringWithVariableNamesToLevel:level - 1 showObjectTypes:shouldShowObjectTypes]];
+    for (CDType *member in self.members) {
+        if (member.variableName != nil && level > 0)
+            [str appendFormat:@"\"%@\"", member.variableName];
+        [str appendString:[member _typeStringWithVariableNamesToLevel:level - 1 showObjectTypes:shouldShowObjectTypes]];
     }
 
     return str;
@@ -716,7 +716,7 @@ static BOOL debugMerge = NO;
 
         if (otherVariableName != nil) {
             if (thisVariableName == nil)
-                [thisMember setVariableName:otherVariableName];
+                thisMember.variableName = otherVariableName;
             else if ([thisVariableName isEqual:otherVariableName] == NO)
                 NSLog(@"Warning: Different variable names for same member...");
         }
@@ -742,20 +742,18 @@ static BOOL debugMerge = NO;
         NSSet *usedNames = [[NSSet alloc] initWithArray:self.memberVariableNames];
 
         NSUInteger number = 1;
-        for (CDType *aMember in self.members) {
-            [aMember generateMemberNames];
+        for (CDType *member in self.members) {
+            [member generateMemberNames];
 
             // Bitfields don't need a name.
-            if (aMember.variableName == nil && aMember.type != 'b') {
+            if (member.variableName == nil && member.type != 'b') {
                 NSString *name;
                 do {
                     name = [NSString stringWithFormat:@"_field%lu", number++];
                 } while ([usedNames containsObject:name]);
-                aMember.variableName = name;
+                member.variableName = name;
             }
         }
-
-
     }
 
     [self.subtype generateMemberNames];

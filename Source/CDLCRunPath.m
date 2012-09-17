@@ -17,7 +17,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _rpathCommand.cmd = [cursor readInt32];
+        _rpathCommand.cmd     = [cursor readInt32];
         _rpathCommand.cmdsize = [cursor readInt32];
         
         _rpathCommand.path.offset = [cursor readInt32];

@@ -113,26 +113,26 @@
 - (BOOL)loadFile:(CDFile *)file;
 {
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
-    CDMachOFile *aMachOFile = [file machOFileWithArch:_targetArch];
-    //NSLog(@"aMachOFile: %@", aMachOFile);
-    if (aMachOFile == nil) {
+    CDMachOFile *machOFile = [file machOFileWithArch:_targetArch];
+    //NSLog(@"machOFile: %@", machOFile);
+    if (machOFile == nil) {
         fprintf(stderr, "Error: file doesn't contain the specified arch.\n\n");
         return NO;
     }
 
     // Set before processing recursively.  This was getting caught on CoreUI on 10.6
-    assert([aMachOFile filename] != nil);
-    [_machOFiles addObject:aMachOFile];
-    _machOFilesByName[aMachOFile.filename] = aMachOFile;
+    assert([machOFile filename] != nil);
+    [_machOFiles addObject:machOFile];
+    _machOFilesByName[machOFile.filename] = machOFile;
 
     if ([self shouldProcessRecursively]) {
         @try {
-            for (CDLoadCommand *loadCommand in [aMachOFile loadCommands]) {
+            for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
                 if ([loadCommand isKindOfClass:[CDLCDylib class]]) {
-                    CDLCDylib *aDylibCommand = (CDLCDylib *)loadCommand;
-                    if ([aDylibCommand cmd] == LC_LOAD_DYLIB) {
-                        [self.searchPathState pushSearchPaths:[aMachOFile runPaths]];
-                        [self machOFileWithName:[aDylibCommand path]]; // Loads as a side effect
+                    CDLCDylib *dylibCommand = (CDLCDylib *)loadCommand;
+                    if ([dylibCommand cmd] == LC_LOAD_DYLIB) {
+                        [self.searchPathState pushSearchPaths:[machOFile runPaths]];
+                        [self machOFileWithName:[dylibCommand path]]; // Loads as a side effect
                         [self.searchPathState popSearchPaths];
                     }
                 }
@@ -152,9 +152,9 @@
 - (void)processObjectiveCData;
 {
     for (CDMachOFile *machOFile in self.machOFiles) {
-        CDObjectiveCProcessor *aProcessor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
-        [aProcessor process];
-        [_objcProcessors addObject:aProcessor];
+        CDObjectiveCProcessor *processor = [[[machOFile processorClass] alloc] initWithMachOFile:machOFile];
+        [processor process];
+        [_objcProcessors addObject:processor];
     }
 }
 
@@ -202,9 +202,9 @@
     CDMachOFile *machOFile = _machOFilesByName[adjustedName];
     if (machOFile == nil) {
         NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedName];
-        CDFile *aFile = [CDFile fileWithData:data filename:adjustedName searchPathState:self.searchPathState];
+        CDFile *file = [CDFile fileWithData:data filename:adjustedName searchPathState:self.searchPathState];
 
-        if (aFile == nil || [self loadFile:aFile] == NO)
+        if (file == nil || [self loadFile:file] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedName);
 
         machOFile = _machOFilesByName[adjustedName];

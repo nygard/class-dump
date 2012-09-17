@@ -13,9 +13,9 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _prebindChecksumCommand.cmd = [cursor readInt32];
+        _prebindChecksumCommand.cmd     = [cursor readInt32];
         _prebindChecksumCommand.cmdsize = [cursor readInt32];
-        _prebindChecksumCommand.cksum = [cursor readInt32];
+        _prebindChecksumCommand.cksum   = [cursor readInt32];
     }
 
     return self;

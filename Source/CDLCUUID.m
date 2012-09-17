@@ -18,7 +18,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _uuidCommand.cmd = [cursor readInt32];
+        _uuidCommand.cmd     = [cursor readInt32];
         _uuidCommand.cmdsize = [cursor readInt32];
         for (NSUInteger index = 0; index < 16; index++) {
             _uuidCommand.uuid[index] = [cursor readByte];

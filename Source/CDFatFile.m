@@ -36,7 +36,7 @@
         //NSLog(@"nfat_arch: %u", header.nfat_arch);
         for (unsigned int index = 0; index < header.nfat_arch; index++) {
             CDFatArch *arch = [[CDFatArch alloc] initWithDataCursor:cursor];
-            [arch setFatFile:self];
+            arch.fatFile = self;
             [arches addObject:arch];
         }
         _arches = [arches copy];
@@ -82,32 +82,32 @@
 
     // This architecture, 64 bit
     for (CDFatArch *fatArch in self.arches) {
-        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI]) {
-            *archPtr = [fatArch arch];
+        if (fatArch.maskedCPUType == targetType && fatArch.uses64BitABI) {
+            *archPtr = fatArch.arch;
             return YES;
         }
     }
 
     // This architecture, 32 bit
     for (CDFatArch *fatArch in self.arches) {
-        if ([fatArch maskedCPUType] == targetType && [fatArch uses64BitABI] == NO) {
-            *archPtr = [fatArch arch];
+        if (fatArch.maskedCPUType == targetType && fatArch.uses64BitABI == NO) {
+            *archPtr = fatArch.arch;
             return YES;
         }
     }
 
     // Any architecture, 64 bit
     for (CDFatArch *fatArch in self.arches) {
-        if ([fatArch uses64BitABI]) {
-            *archPtr = [fatArch arch];
+        if (fatArch.uses64BitABI) {
+            *archPtr = fatArch.arch;
             return YES;
         }
     }
 
     // Any architecture, 32 bit
     for (CDFatArch *fatArch in self.arches) {
-        if ([fatArch uses64BitABI] == NO) {
-            *archPtr = [fatArch arch];
+        if (fatArch.uses64BitABI == NO) {
+            *archPtr = fatArch.arch;
             return YES;
         }
     }
@@ -124,8 +124,8 @@
 - (CDMachOFile *)machOFileWithArch:(CDArch)cdarch;
 {
     for (CDFatArch *arch in self.arches) {
-        if ([arch cpuType] == cdarch.cputype)
-            return [arch machOFile];
+        if (arch.cpuType == cdarch.cputype)
+            return arch.machOFile;
     }
 
     return nil;
@@ -135,7 +135,7 @@
 {
     NSMutableArray *archNames = [NSMutableArray array];
     for (CDFatArch *arch in self.arches)
-        [archNames addObject:[arch archName]];
+        [archNames addObject:arch.archName];
 
     return archNames;
 }

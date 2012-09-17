@@ -116,10 +116,10 @@ BOOL CDArchUses64BitABI(CDArch arch)
             return nil;
         }
         
-        _filename = filename;
-        _data = data;
-        _archOffset = offset;
-        _archSize = size;
+        _filename        = filename;
+        _data            = data;
+        _archOffset      = offset;
+        _archSize        = size;
         _searchPathState = searchPathState;
     }
 

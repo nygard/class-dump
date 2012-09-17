@@ -15,10 +15,10 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _hintsCommand.cmd = [cursor readInt32];
+        _hintsCommand.cmd     = [cursor readInt32];
         _hintsCommand.cmdsize = [cursor readInt32];
-        _hintsCommand.offset = [cursor readInt32];
-        _hintsCommand.nhints = [cursor readInt32];
+        _hintsCommand.offset  = [cursor readInt32];
+        _hintsCommand.nhints  = [cursor readInt32];
     }
 
     return self;
