@@ -28,8 +28,6 @@ typedef enum : NSUInteger {
 
 @property (readonly) CDByteOrder byteOrder;
 
-- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
-
 @property (nonatomic, readonly) uint32_t magic;
 @property (nonatomic, readonly) cpu_type_t cputype;
 @property (nonatomic, readonly) cpu_subtype_t cpusubtype;

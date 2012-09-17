@@ -11,9 +11,6 @@
 
 - (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
-- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
-
 @property (readonly) NSArray *arches;
 @property (nonatomic, readonly) NSArray *archNames;
 
