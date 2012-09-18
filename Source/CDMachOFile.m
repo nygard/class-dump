@@ -72,6 +72,15 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     BOOL _uses64BitABI;
 }
 
+- (id)init;
+{
+    if ((self = [super init])) {
+        _byteOrder = CDByteOrder_LittleEndian;
+    }
+    
+    return self;
+}
+
 - (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
     if ((self = [super initWithData:data filename:filename searchPathState:searchPathState])) {

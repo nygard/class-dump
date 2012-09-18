@@ -25,8 +25,8 @@ typedef enum : NSUInteger {
 @property (readonly) CDByteOrder byteOrder;
 
 @property (readonly) uint32_t magic;
-@property (readonly) cpu_type_t cputype;
-@property (readonly) cpu_subtype_t cpusubtype;
+@property (assign) cpu_type_t cputype;
+@property (assign) cpu_subtype_t cpusubtype;
 @property (readonly) uint32_t filetype;
 @property (readonly) uint32_t flags;
 
