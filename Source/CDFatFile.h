@@ -9,7 +9,9 @@
 
 @interface CDFatFile : CDFile
 
-@property (readonly) NSArray *arches;
+@property (readonly) NSMutableArray *arches;
 @property (nonatomic, readonly) NSArray *archNames;
+
+- (void)addArchitecture:(CDFatArch *)fatArch;
 
 @end

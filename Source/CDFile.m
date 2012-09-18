@@ -98,12 +98,6 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return machOFile;
 }
 
-- (id)init;
-{
-    [NSException raise:@"RejectUnusedImplementation" format:@"-initWithData: is the designated initializer"];
-    return nil;
-}
-
 - (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
     if ((self = [super init])) {

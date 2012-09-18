@@ -14,7 +14,16 @@
 
 @implementation CDFatFile
 {
-    NSArray *_arches;
+    NSMutableArray *_arches;
+}
+
+- (id)init;
+{
+    if ((self = [super init])) {
+        _arches = [[NSMutableArray alloc] init];
+    }
+    
+    return self;
 }
 
 - (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
@@ -30,17 +39,15 @@
             return nil;
         }
         
-        NSMutableArray *arches = [[NSMutableArray alloc] init];
+        _arches = [[NSMutableArray alloc] init];
         
         header.nfat_arch = [cursor readBigInt32];
         //NSLog(@"nfat_arch: %u", header.nfat_arch);
         for (NSUInteger index = 0; index < header.nfat_arch; index++) {
             CDFatArch *arch = [[CDFatArch alloc] initWithDataCursor:cursor];
             arch.fatFile = self;
-            [arches addObject:arch];
+            [_arches addObject:arch];
         }
-        _arches = [arches copy];
-        //NSLog(@"arches: %@", _arches);
     }
 
     return self;
@@ -131,6 +138,14 @@
         [archNames addObject:arch.archName];
 
     return archNames;
+}
+
+#pragma mark -
+
+- (void)addArchitecture:(CDFatArch *)fatArch;
+{
+    fatArch.fatFile = self;
+    [self.arches addObject:fatArch];
 }
 
 @end
