@@ -61,40 +61,15 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%u (%x), arch name: %@",
-            self.uses64BitABI, _cpuType, _cpuSubtype, _offset, _offset, _size, _size,
-            _align, 1 << _align, self.archName];
+            self.uses64BitABI, self.cpuType, self.cpuSubtype, self.offset, self.offset, self.size, self.size,
+            self.align, 1 << self.align, self.archName];
 }
 
 #pragma mark -
 
-- (cpu_type_t)cpuType;
-{
-    return _cpuType;
-}
-
 - (cpu_type_t)maskedCPUType;
 {
     return self.cpuType & ~CPU_ARCH_MASK;
-}
-
-- (cpu_subtype_t)cpuSubtype;
-{
-    return _cpuSubtype;
-}
-
-- (uint32_t)offset;
-{
-    return _offset;
-}
-
-- (uint32_t)size;
-{
-    return _size;
-}
-
-- (uint32_t)align;
-{
-    return _align;
 }
 
 - (BOOL)uses64BitABI;

@@ -15,13 +15,13 @@
 - (id)initWithMachOFile:(CDMachOFile *)machOFile;
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 
-@property (nonatomic, readonly) cpu_type_t cpuType;
-@property (nonatomic, readonly) cpu_type_t maskedCPUType;
-@property (nonatomic, readonly) cpu_subtype_t cpuSubtype;
-@property (nonatomic, readonly) uint32_t offset;
-@property (nonatomic, readonly) uint32_t size;
-@property (nonatomic, readonly) uint32_t align;
+@property (readonly) cpu_type_t cpuType;
+@property (readonly) cpu_subtype_t cpuSubtype;
+@property (readonly) uint32_t offset;
+@property (readonly) uint32_t size;
+@property (readonly) uint32_t align;
 
+@property (nonatomic, readonly) cpu_type_t maskedCPUType;
 @property (nonatomic, readonly) BOOL uses64BitABI;
 
 @property (weak) CDFatFile *fatFile;
