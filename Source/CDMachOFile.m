@@ -70,18 +70,6 @@ NSString *CDMagicNumberString(uint32_t magic)
 {
     if ((self = [super initWithData:data filename:filename searchPathState:searchPathState])) {
         _byteOrder = CDByteOrder_LittleEndian;
-        _loadCommands = nil;
-        _dylibLoadCommands = nil;
-        _segments = nil;
-        _symbolTable = nil;
-        _dynamicSymbolTable = nil;
-        _dyldInfo = nil;
-        _minVersionMacOSX = nil;
-        _minVersionIOS = nil;
-        _sourceVersion = nil;
-        _runPaths = nil;
-        _dyldEnvironment = nil;
-        _reExportedDylibs = nil;
         
         CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data];
         _header.magic = [cursor readBigInt32];

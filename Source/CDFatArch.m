@@ -22,8 +22,6 @@
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 {
     if ((self = [super init])) {
-        nonretained_fatFile = nil;
-        
         _fatArch.cputype    = [cursor readBigInt32];
         _fatArch.cpusubtype = [cursor readBigInt32];
         _fatArch.offset     = [cursor readBigInt32];
