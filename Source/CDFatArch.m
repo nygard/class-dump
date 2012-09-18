@@ -19,6 +19,22 @@
     CDMachOFile *_machOFile; // Lazily create this.
 }
 
+- (id)initWithMachOFile:(CDMachOFile *)machOFile;
+{
+    if ((self = [super init])) {
+        _machOFile = machOFile;
+        NSParameterAssert([machOFile.data length] < 0x100000000);
+        
+        _fatArch.cputype    = _machOFile.cputype;
+        _fatArch.cpusubtype = _machOFile.cpusubtype;
+        _fatArch.offset     = 0; // Would be filled in when this is written to disk
+        _fatArch.size       = (uint32_t)[_machOFile.data length];
+        _fatArch.align      = 12; // 2**12 = 4096 (0x1000)
+    }
+    
+    return self;
+}
+
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 {
     if ((self = [super init])) {
@@ -77,7 +93,7 @@
 
 - (BOOL)uses64BitABI;
 {
-    return CDArchUses64BitABI((CDArch){ .cputype = _fatArch.cputype, .cpusubtype = _fatArch.cpusubtype });
+    return CDArchUses64BitABI(self.arch);
 }
 
 @synthesize fatFile = nonretained_fatFile;

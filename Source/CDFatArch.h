@@ -12,6 +12,7 @@
 
 @interface CDFatArch : NSObject
 
+- (id)initWithMachOFile:(CDMachOFile *)machOFile;
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 
 @property (nonatomic, readonly) cpu_type_t cpuType;
