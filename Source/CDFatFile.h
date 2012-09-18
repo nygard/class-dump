@@ -9,8 +9,6 @@
 
 @interface CDFatFile : CDFile
 
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-
 @property (readonly) NSArray *arches;
 @property (nonatomic, readonly) NSArray *archNames;
 

@@ -33,10 +33,10 @@
 NSString *CDMagicNumberString(uint32_t magic)
 {
     switch (magic) {
-      case MH_MAGIC:    return @"MH_MAGIC";
-      case MH_CIGAM:    return @"MH_CIGAM";
-      case MH_MAGIC_64: return @"MH_MAGIC_64";
-      case MH_CIGAM_64: return @"MH_CIGAM_64";
+        case MH_MAGIC:    return @"MH_MAGIC";
+        case MH_CIGAM:    return @"MH_CIGAM";
+        case MH_MAGIC_64: return @"MH_MAGIC_64";
+        case MH_CIGAM_64: return @"MH_CIGAM_64";
     }
 
     return [NSString stringWithFormat:@"0x%08x", magic];
@@ -95,24 +95,24 @@ NSString *CDMagicNumberString(uint32_t magic)
         
         _flags.uses64BitABI = (_header.magic == MH_MAGIC_64) || (_header.magic == MH_CIGAM_64);
         
-        _header.cputype = [cursor readBigInt32];
+        _header.cputype    = [cursor readBigInt32];
         _header.cpusubtype = [cursor readBigInt32];
-        _header.filetype = [cursor readBigInt32];
-        _header.ncmds = [cursor readBigInt32];
+        _header.filetype   = [cursor readBigInt32];
+        _header.ncmds      = [cursor readBigInt32];
         _header.sizeofcmds = [cursor readBigInt32];
-        _header.flags = [cursor readBigInt32];
+        _header.flags      = [cursor readBigInt32];
         if (_flags.uses64BitABI) {
             _header.reserved = [cursor readBigInt32];
         }
         
         if (_byteOrder == CDByteOrder_LittleEndian) {
-            _header.cputype = OSSwapInt32(_header.cputype);
+            _header.cputype    = OSSwapInt32(_header.cputype);
             _header.cpusubtype = OSSwapInt32(_header.cpusubtype);
-            _header.filetype = OSSwapInt32(_header.filetype);
-            _header.ncmds = OSSwapInt32(_header.ncmds);
+            _header.filetype   = OSSwapInt32(_header.filetype);
+            _header.ncmds      = OSSwapInt32(_header.ncmds);
             _header.sizeofcmds = OSSwapInt32(_header.sizeofcmds);
-            _header.flags = OSSwapInt32(_header.flags);
-            _header.reserved = OSSwapInt32(_header.reserved);
+            _header.flags      = OSSwapInt32(_header.flags);
+            _header.reserved   = OSSwapInt32(_header.reserved);
         }
         
         NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _header.cputype, .cpusubtype = _header.cpusubtype }), @"Header magic should match cpu arch", nil);
@@ -225,7 +225,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
 {
     if (archPtr != NULL) {
-        archPtr->cputype = _header.cputype & ~CPU_ARCH_MASK;
+        archPtr->cputype    = _header.cputype & ~CPU_ARCH_MASK;
         archPtr->cpusubtype = _header.cpusubtype;
     }
 

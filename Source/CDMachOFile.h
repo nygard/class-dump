@@ -22,10 +22,6 @@ typedef enum : NSUInteger {
 
 @interface CDMachOFile : CDFile
 
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-
-- (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
-
 @property (readonly) CDByteOrder byteOrder;
 
 @property (nonatomic, readonly) uint32_t magic;
