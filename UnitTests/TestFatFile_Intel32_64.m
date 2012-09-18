@@ -7,12 +7,15 @@
 
 #import "CDFatArch.h"
 #import "CDFatFile.h"
+#import "CDMachOFile.h"
 
 @implementation TestFatFile_Intel32_64
 {
     CDFatFile *_intel_32_64;
     CDFatArch *_arch_i386;
     CDFatArch *_arch_x86_64;
+    CDMachOFile *_macho_i386;
+    CDMachOFile *_macho_x86_64;
 }
 
 - (void)setUp;
@@ -21,24 +24,30 @@
     
     // Set-up code here.
     _intel_32_64 = [[CDFatFile alloc] init];
+    
+    _macho_i386 = [[CDMachOFile alloc] init];
+    _macho_i386.cputype    = CPU_TYPE_X86;
+    _macho_i386.cpusubtype = CPU_SUBTYPE_386;
 
-    _arch_i386 = [[CDFatArch alloc] initWithMachOFile:nil];
-    _arch_i386.cputype    = CPU_TYPE_X86;
-    _arch_i386.cpusubtype = CPU_SUBTYPE_386;
+    _arch_i386 = [[CDFatArch alloc] initWithMachOFile:_macho_i386];
     [_intel_32_64 addArchitecture:_arch_i386];
 
-    _arch_x86_64 = [[CDFatArch alloc] initWithMachOFile:nil];
-    _arch_x86_64.cputype    = CPU_TYPE_X86_64;
-    _arch_x86_64.cpusubtype = CPU_SUBTYPE_386;
+    _macho_x86_64 = [[CDMachOFile alloc] init];
+    _macho_x86_64.cputype    = CPU_TYPE_X86_64;
+    _macho_x86_64.cpusubtype = CPU_SUBTYPE_386;
+
+    _arch_x86_64 = [[CDFatArch alloc] initWithMachOFile:_macho_x86_64];
     [_intel_32_64 addArchitecture:_arch_x86_64];
 }
 
 - (void)tearDown;
 {
     // Tear-down code here.
-    _intel_32_64 = nil;
-    _arch_i386   = nil;
-    _arch_x86_64 = nil;
+    _intel_32_64  = nil;
+    _arch_i386    = nil;
+    _arch_x86_64  = nil;
+    _macho_i386   = nil;
+    _macho_x86_64 = nil;
     
     [super tearDown];
 }
