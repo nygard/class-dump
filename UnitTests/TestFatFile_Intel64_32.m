@@ -11,6 +11,8 @@
 @implementation TestFatFile_Intel64_32
 {
     CDFatFile *_intel_64_32;
+    CDFatArch *_arch_i386;
+    CDFatArch *_arch_x86_64;
 }
 
 - (void)setUp;
@@ -19,24 +21,24 @@
     
     // Set-up code here.
     _intel_64_32 = [[CDFatFile alloc] init];
-    {
-        CDFatArch *fatArch = [[CDFatArch alloc] initWithMachOFile:nil];
-        fatArch.cpuType    = CPU_TYPE_X86_64;
-        fatArch.cpuSubtype = CPU_SUBTYPE_386;
-        [_intel_64_32 addArchitecture:fatArch];
-    }
-    {
-        CDFatArch *fatArch = [[CDFatArch alloc] initWithMachOFile:nil];
-        fatArch.cpuType    = CPU_TYPE_X86;
-        fatArch.cpuSubtype = CPU_SUBTYPE_386;
-        [_intel_64_32 addArchitecture:fatArch];
-    }
+
+    _arch_x86_64 = [[CDFatArch alloc] initWithMachOFile:nil];
+    _arch_x86_64.cpuType    = CPU_TYPE_X86_64;
+    _arch_x86_64.cpuSubtype = CPU_SUBTYPE_386;
+    [_intel_64_32 addArchitecture:_arch_x86_64];
+    
+    _arch_i386 = [[CDFatArch alloc] initWithMachOFile:nil];
+    _arch_i386.cpuType    = CPU_TYPE_X86;
+    _arch_i386.cpuSubtype = CPU_SUBTYPE_386;
+    [_intel_64_32 addArchitecture:_arch_i386];
 }
 
 - (void)tearDown;
 {
     // Tear-down code here.
     _intel_64_32 = nil;
+    _arch_i386   = nil;
+    _arch_x86_64 = nil;
     
     [super tearDown];
 }
