@@ -28,12 +28,7 @@
         _fatArch.size       = [cursor readBigInt32];
         _fatArch.align      = [cursor readBigInt32];
         
-#if 0
-        NSLog(@"type: 64 bit? %d, 0x%x, subtype: 0x%x, offset: 0x%x, size: 0x%x, align: 0x%x",
-              [self uses64BitABI], fatArch.cputype, fatArch.cpusubtype, fatArch.offset, fatArch.size, fatArch.align);
-#endif
-        
-        _machOFile = nil;
+        //NSLog(@"self: %@", self);
     }
 
     return self;
@@ -43,7 +38,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%d (%d), arch name: %@",
+    return [NSString stringWithFormat:@"64 bit ABI? %d, cputype: 0x%08x, cpusubtype: 0x%08x, offset: 0x%08x (%8u), size: 0x%08x (%8u), align: 2^%u (%x), arch name: %@",
             self.uses64BitABI, _fatArch.cputype, _fatArch.cpusubtype, _fatArch.offset, _fatArch.offset, _fatArch.size, _fatArch.size,
             _fatArch.align, 1 << _fatArch.align, self.archName];
 }
@@ -108,11 +103,6 @@
     }
 
     return _machOFile;
-}
-
-- (NSData *)machOData;
-{
-    return [[NSData alloc] initWithBytes:(uint8_t *)[[self.fatFile data] bytes] + _fatArch.offset length:_fatArch.size];
 }
 
 @end

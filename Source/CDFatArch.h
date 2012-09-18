@@ -29,6 +29,5 @@
 @property (nonatomic, readonly) NSString *archName;
 
 @property (nonatomic, readonly) CDMachOFile *machOFile;
-@property (nonatomic, readonly) NSData *machOData;
 
 @end
