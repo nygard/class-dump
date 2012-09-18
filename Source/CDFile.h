@@ -5,10 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include <mach-o/arch.h>
-#include <mach-o/loader.h>
-#include <mach-o/fat.h>
-#include <mach-o/swap.h>
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 
 typedef struct {

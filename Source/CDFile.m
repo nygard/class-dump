@@ -5,6 +5,7 @@
 
 #import "CDFile.h"
 
+#include <mach-o/arch.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDSearchPathState.h"
