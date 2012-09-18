@@ -30,7 +30,7 @@
 #import "CDSearchPathState.h"
 #import "CDLCSourceVersion.h"
 
-NSString *CDMagicNumberString(uint32_t magic)
+static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 {
     switch (magic) {
         case MH_MAGIC:    return @"MH_MAGIC";
@@ -430,7 +430,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     // Grr, %11@ doesn't work.
     if (isVerbose)
         [resultString appendFormat:@"%11@ %7@ %10u   %8@ %5lu %10u %@\n",
-                      CDMagicNumberString([self magic]), [self archName], [self cpusubtype],
+                      CDMachOFileMagicNumberDescription([self magic]), [self archName], [self cpusubtype],
                       [self filetypeDescription], [_loadCommands count], 0, [self flagDescription]];
     else
         [resultString appendFormat:@" 0x%08x %7u %10u   %8u %5lu %10u 0x%08x\n",
