@@ -232,7 +232,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
 
     NSLog(@"----------------------------------------------------------------------");
     NSLog(@"rebase_off: %u, rebase_size: %u", _dyldInfoCommand.rebase_off, _dyldInfoCommand.rebase_size);
-    const uint8_t *start = (uint8_t *)[[self.machOFile machOData] bytes] + _dyldInfoCommand.rebase_off;
+    const uint8_t *start = (uint8_t *)[self.machOFile.data bytes] + _dyldInfoCommand.rebase_off;
     const uint8_t *end = start + _dyldInfoCommand.rebase_size;
 
     NSLog(@"address: %016llx", address);
@@ -352,7 +352,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"bind_off: %u, bind_size: %u", _dyldInfoCommand.bind_off, _dyldInfoCommand.bind_size);
     }
-    const uint8_t *start = (uint8_t *)[[self.machOFile machOData] bytes] + _dyldInfoCommand.bind_off;
+    const uint8_t *start = (uint8_t *)[self.machOFile.data bytes] + _dyldInfoCommand.bind_off;
     const uint8_t *end = start + _dyldInfoCommand.bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
@@ -364,7 +364,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"weak_bind_off: %u, weak_bind_size: %u", _dyldInfoCommand.weak_bind_off, _dyldInfoCommand.weak_bind_size);
     }
-    const uint8_t *start = (uint8_t *)[[self.machOFile machOData] bytes] + _dyldInfoCommand.weak_bind_off;
+    const uint8_t *start = (uint8_t *)[self.machOFile.data bytes] + _dyldInfoCommand.weak_bind_off;
     const uint8_t *end = start + _dyldInfoCommand.weak_bind_size;
 
     [self logBindOps:start end:end isLazy:NO];
@@ -376,7 +376,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
         NSLog(@"----------------------------------------------------------------------");
         NSLog(@"lazy_bind_off: %u, lazy_bind_size: %u", _dyldInfoCommand.lazy_bind_off, _dyldInfoCommand.lazy_bind_size);
     }
-    const uint8_t *start = (uint8_t *)[[self.machOFile machOData] bytes] + _dyldInfoCommand.lazy_bind_off;
+    const uint8_t *start = (uint8_t *)[self.machOFile.data bytes] + _dyldInfoCommand.lazy_bind_off;
     const uint8_t *end = start + _dyldInfoCommand.lazy_bind_size;
 
     [self logBindOps:start end:end isLazy:YES];
@@ -544,7 +544,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
         NSLog(@"hexdump -Cv -s %u -n %u", _dyldInfoCommand.export_off, _dyldInfoCommand.export_size);
     }
 
-    const uint8_t *start = (uint8_t *)[[self.machOFile machOData] bytes] + _dyldInfoCommand.export_off;
+    const uint8_t *start = (uint8_t *)[self.machOFile.data bytes] + _dyldInfoCommand.export_off;
     const uint8_t *end = start + _dyldInfoCommand.export_size;
 
     NSLog(@"         Type Flags Offset           Name");

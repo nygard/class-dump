@@ -83,8 +83,6 @@ BOOL CDArchUses64BitABI(CDArch arch)
 {
     NSString *_filename;
     NSData *_data;
-    NSUInteger _archOffset;
-    NSUInteger _archSize;
     CDSearchPathState *_searchPathState;
 }
 
@@ -116,8 +114,6 @@ BOOL CDArchUses64BitABI(CDArch arch)
         
         _filename        = filename;
         _data            = data;
-        _archOffset      = 0;
-        _archSize        = [_data length];
         _searchPathState = searchPathState;
     }
 

@@ -171,10 +171,10 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %ld, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p, archOffset: %lu",
+    return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %ld, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p",
             NSStringFromClass([self class]), self,
             [self magic], [self cputype], [self cpusubtype], [self filetype], [_loadCommands count], 0, [self flags], _flags.uses64BitABI,
-            self.filename, self.data, self.archOffset];
+            self.filename, self.data];
 }
 
 #pragma mark -
@@ -348,18 +348,13 @@ NSString *CDMagicNumberString(uint32_t magic)
         return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
     }
 
-    NSUInteger anOffset = self.archOffset + [self dataOffsetForAddress:address];
-    if (anOffset == 0)
+    NSUInteger offset = [self dataOffsetForAddress:address];
+    if (offset == 0)
         return nil;
 
-    ptr = (uint8_t *)[self.data bytes] + anOffset;
+    ptr = (uint8_t *)[self.data bytes] + offset;
 
     return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
-}
-
-- (NSData *)machOData;
-{
-    return [NSData dataWithBytesNoCopy:(void *)((uint8_t *)[self.data bytes] + self.archOffset) length:self.archSize freeWhenDone:NO];
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;

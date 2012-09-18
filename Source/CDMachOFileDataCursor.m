@@ -20,7 +20,7 @@
 
 - (id)initWithFile:(CDMachOFile *)machOFile offset:(NSUInteger)offset;
 {
-    if ((self = [super initWithData:[machOFile machOData]])) {
+    if ((self = [super initWithData:machOFile.data])) {
         nonretained_machOFile = machOFile;
         [self setOffset:offset];
     }
@@ -30,7 +30,7 @@
 
 - (id)initWithFile:(CDMachOFile *)machOFile address:(NSUInteger)address;
 {
-    if ((self = [super initWithData:[machOFile machOData]])) {
+    if ((self = [super initWithData:machOFile.data])) {
         nonretained_machOFile = machOFile;
         [self setAddress:address];
     }

@@ -36,7 +36,7 @@ void print_usage(void)
 BOOL saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
 {
     BOOL hasProtectedSegments = NO;
-    NSMutableData *mdata = [[NSMutableData alloc] initWithData:file.machOData];
+    NSMutableData *mdata = [[NSMutableData alloc] initWithData:file.data];
     for (CDLoadCommand *command in file.loadCommands) {
         if ([command isKindOfClass:[CDLCSegment class]]) {
             CDLCSegment *segment = (CDLCSegment *)command;
