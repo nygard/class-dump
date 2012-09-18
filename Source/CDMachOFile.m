@@ -58,7 +58,16 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSArray *_runPaths;
     NSArray *_dyldEnvironment;
     NSArray *_reExportedDylibs;
-    struct mach_header_64 _header; // 64-bit, also holding 32-bit
+
+    // The parts of struct mach_header_64 pulled out so that our property accessors can be synthesized.
+	uint32_t _magic;
+	cpu_type_t _cputype;
+	cpu_subtype_t _cpusubtype;
+	uint32_t _filetype;
+	uint32_t _ncmds;
+	uint32_t _sizeofcmds;
+	uint32_t _flags;
+	uint32_t _reserved;
     
     BOOL _uses64BitABI;
 }
@@ -69,44 +78,44 @@ NSString *CDMagicNumberString(uint32_t magic)
         _byteOrder = CDByteOrder_LittleEndian;
         
         CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data];
-        _header.magic = [cursor readBigInt32];
-        if (_header.magic == MH_MAGIC || _header.magic == MH_MAGIC_64) {
+        _magic = [cursor readBigInt32];
+        if (_magic == MH_MAGIC || _magic == MH_MAGIC_64) {
             _byteOrder = CDByteOrder_BigEndian;
-        } else if (_header.magic == MH_CIGAM || _header.magic == MH_CIGAM_64) {
+        } else if (_magic == MH_CIGAM || _magic == MH_CIGAM_64) {
             _byteOrder = CDByteOrder_LittleEndian;
         } else {
             return nil;
         }
         
-        _uses64BitABI = (_header.magic == MH_MAGIC_64) || (_header.magic == MH_CIGAM_64);
+        _uses64BitABI = (_magic == MH_MAGIC_64) || (_magic == MH_CIGAM_64);
         
         if (_byteOrder == CDByteOrder_LittleEndian) {
-            _header.cputype    = [cursor readLittleInt32];
-            _header.cpusubtype = [cursor readLittleInt32];
-            _header.filetype   = [cursor readLittleInt32];
-            _header.ncmds      = [cursor readLittleInt32];
-            _header.sizeofcmds = [cursor readLittleInt32];
-            _header.flags      = [cursor readLittleInt32];
+            _cputype    = [cursor readLittleInt32];
+            _cpusubtype = [cursor readLittleInt32];
+            _filetype   = [cursor readLittleInt32];
+            _ncmds      = [cursor readLittleInt32];
+            _sizeofcmds = [cursor readLittleInt32];
+            _flags      = [cursor readLittleInt32];
             if (_uses64BitABI) {
-                _header.reserved = [cursor readLittleInt32];
+                _reserved = [cursor readLittleInt32];
             }
         } else {
-            _header.cputype    = [cursor readBigInt32];
-            _header.cpusubtype = [cursor readBigInt32];
-            _header.filetype   = [cursor readBigInt32];
-            _header.ncmds      = [cursor readBigInt32];
-            _header.sizeofcmds = [cursor readBigInt32];
-            _header.flags      = [cursor readBigInt32];
+            _cputype    = [cursor readBigInt32];
+            _cpusubtype = [cursor readBigInt32];
+            _filetype   = [cursor readBigInt32];
+            _ncmds      = [cursor readBigInt32];
+            _sizeofcmds = [cursor readBigInt32];
+            _flags      = [cursor readBigInt32];
             if (_uses64BitABI) {
-                _header.reserved = [cursor readBigInt32];
+                _reserved = [cursor readBigInt32];
             }
         }
         
-        NSAssert(_uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _header.cputype, .cpusubtype = _header.cpusubtype }), @"Header magic should match cpu arch", nil);
+        NSAssert(_uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _cputype, .cpusubtype = _cpusubtype }), @"Header magic should match cpu arch", nil);
         
         NSUInteger headerOffset = _uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
         CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
-        [self _readLoadCommands:fileCursor count:_header.ncmds];
+        [self _readLoadCommands:fileCursor count:_ncmds];
     }
 
     return self;
@@ -166,35 +175,10 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
-    if (([self cputype] & ~CPU_ARCH_MASK) == arch.cputype)
+    if ((self.cputype & ~CPU_ARCH_MASK) == arch.cputype)
         return self;
 
     return nil;
-}
-
-- (uint32_t)magic;
-{
-    return _header.magic;
-}
-
-- (cpu_type_t)cputype;
-{
-    return _header.cputype;
-}
-
-- (cpu_subtype_t)cpusubtype;
-{
-    return _header.cpusubtype;
-}
-
-- (uint32_t)filetype;
-{
-    return _header.filetype;
-}
-
-- (uint32_t)flags;
-{
-    return _header.flags;
 }
 
 #pragma mark -
@@ -208,8 +192,8 @@ NSString *CDMagicNumberString(uint32_t magic)
 - (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
 {
     if (ioArchPtr != NULL) {
-        ioArchPtr->cputype    = _header.cputype;
-        ioArchPtr->cpusubtype = _header.cpusubtype;
+        ioArchPtr->cputype    = self.cputype;
+        ioArchPtr->cpusubtype = self.cpusubtype;
     }
 
     return YES;

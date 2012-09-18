@@ -24,11 +24,11 @@ typedef enum : NSUInteger {
 
 @property (readonly) CDByteOrder byteOrder;
 
-@property (nonatomic, readonly) uint32_t magic;
-@property (nonatomic, readonly) cpu_type_t cputype;
-@property (nonatomic, readonly) cpu_subtype_t cpusubtype;
-@property (nonatomic, readonly) uint32_t filetype;
-@property (nonatomic, readonly) uint32_t flags;
+@property (readonly) uint32_t magic;
+@property (readonly) cpu_type_t cputype;
+@property (readonly) cpu_subtype_t cpusubtype;
+@property (readonly) uint32_t filetype;
+@property (readonly) uint32_t flags;
 
 @property (readonly) NSArray *loadCommands;
 @property (readonly) NSArray *dylibLoadCommands;
