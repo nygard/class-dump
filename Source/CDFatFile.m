@@ -34,7 +34,7 @@
         
         header.nfat_arch = [cursor readBigInt32];
         //NSLog(@"nfat_arch: %u", header.nfat_arch);
-        for (unsigned int index = 0; index < header.nfat_arch; index++) {
+        for (NSUInteger index = 0; index < header.nfat_arch; index++) {
             CDFatArch *arch = [[CDFatArch alloc] initWithDataCursor:cursor];
             arch.fatFile = self;
             [arches addObject:arch];
@@ -50,7 +50,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%p] CDFatFile with %lu arches", self, [self.arches count]];
+    return [NSString stringWithFormat:@"<%@:%p> %lu arches", NSStringFromClass([self class]), self, [self.arches count]];
 }
 
 #pragma mark -
