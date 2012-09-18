@@ -60,10 +60,7 @@ NSString *CDMagicNumberString(uint32_t magic)
     NSArray *_reExportedDylibs;
     struct mach_header_64 _header; // 64-bit, also holding 32-bit
     
-    struct {
-        unsigned int uses64BitABI:1;
-        unsigned int _unused:31;
-    } _flags;
+    BOOL _uses64BitABI;
 }
 
 - (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
@@ -81,7 +78,7 @@ NSString *CDMagicNumberString(uint32_t magic)
             return nil;
         }
         
-        _flags.uses64BitABI = (_header.magic == MH_MAGIC_64) || (_header.magic == MH_CIGAM_64);
+        _uses64BitABI = (_header.magic == MH_MAGIC_64) || (_header.magic == MH_CIGAM_64);
         
         if (_byteOrder == CDByteOrder_LittleEndian) {
             _header.cputype    = [cursor readLittleInt32];
@@ -90,7 +87,7 @@ NSString *CDMagicNumberString(uint32_t magic)
             _header.ncmds      = [cursor readLittleInt32];
             _header.sizeofcmds = [cursor readLittleInt32];
             _header.flags      = [cursor readLittleInt32];
-            if (_flags.uses64BitABI) {
+            if (_uses64BitABI) {
                 _header.reserved = [cursor readLittleInt32];
             }
         } else {
@@ -100,14 +97,14 @@ NSString *CDMagicNumberString(uint32_t magic)
             _header.ncmds      = [cursor readBigInt32];
             _header.sizeofcmds = [cursor readBigInt32];
             _header.flags      = [cursor readBigInt32];
-            if (_flags.uses64BitABI) {
+            if (_uses64BitABI) {
                 _header.reserved = [cursor readBigInt32];
             }
         }
         
-        NSAssert(_flags.uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _header.cputype, .cpusubtype = _header.cpusubtype }), @"Header magic should match cpu arch", nil);
+        NSAssert(_uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _header.cputype, .cpusubtype = _header.cpusubtype }), @"Header magic should match cpu arch", nil);
         
-        NSUInteger headerOffset = _flags.uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
+        NSUInteger headerOffset = _uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
         CDMachOFileDataCursor *fileCursor = [[CDMachOFileDataCursor alloc] initWithFile:self offset:headerOffset];
         [self _readLoadCommands:fileCursor count:_header.ncmds];
     }
@@ -161,7 +158,7 @@ NSString *CDMagicNumberString(uint32_t magic)
 {
     return [NSString stringWithFormat:@"<%@:%p> magic: 0x%08x, cputype: %x, cpusubtype: %x, filetype: %d, ncmds: %ld, sizeofcmds: %d, flags: 0x%x, uses64BitABI? %d, filename: %@, data: %p",
             NSStringFromClass([self class]), self,
-            [self magic], [self cputype], [self cpusubtype], [self filetype], [_loadCommands count], 0, [self flags], _flags.uses64BitABI,
+            [self magic], [self cputype], [self cpusubtype], [self filetype], [_loadCommands count], 0, [self flags], self.uses64BitABI,
             self.filename, self.data];
 }
 
@@ -202,14 +199,9 @@ NSString *CDMagicNumberString(uint32_t magic)
 
 #pragma mark -
 
-- (BOOL)uses64BitABI;
-{
-    return _flags.uses64BitABI;
-}
-
 - (NSUInteger)ptrSize;
 {
-    return [self uses64BitABI] ? sizeof(uint64_t) : sizeof(uint32_t);
+    return self.uses64BitABI ? sizeof(uint64_t) : sizeof(uint32_t);
 }
              
 // We only have one architecture, so it is by default the best match.  

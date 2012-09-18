@@ -44,7 +44,7 @@ typedef enum : NSUInteger {
 @property (strong) CDLCVersionMinimum *minVersionIOS;
 @property (strong) CDLCSourceVersion *sourceVersion;
 
-- (BOOL)uses64BitABI;
+@property (readonly) BOOL uses64BitABI;
 - (NSUInteger)ptrSize;
 
 - (NSString *)filetypeDescription;
