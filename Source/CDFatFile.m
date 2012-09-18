@@ -17,10 +17,10 @@
     NSArray *_arches;
 }
 
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+- (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    if ((self = [super initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState])) {
-        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data offset:self.archOffset];
+    if ((self = [super initWithData:data filename:filename searchPathState:searchPathState])) {
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data];
 
         struct fat_header header;
         header.magic = [cursor readBigInt32];

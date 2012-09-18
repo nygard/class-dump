@@ -230,8 +230,7 @@ int main(int argc, char *argv[])
                 } else {
                     CDSearchPathState *searchPathState = [[CDSearchPathState alloc] init];
                     searchPathState.executablePath = executablePath;
-                    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
-                    id macho = [CDFile fileWithData:data filename:executablePath searchPathState:searchPathState];
+                    id macho = [CDFile fileWithContentsOfFile:executablePath searchPathState:searchPathState];
                     if (macho == nil) {
                         printf("none\n");
                     } else {
@@ -247,7 +246,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [arg fileSystemRepresentation]);
                     exit(1);
                 }
-
+#if 0
                 NSData *data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
                 if (data == nil) {
                     NSFileManager *defaultManager = [NSFileManager defaultManager];
@@ -260,9 +259,9 @@ int main(int argc, char *argv[])
 
                     exit(1);
                 }
-
+#endif
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
-                CDFile *file = [CDFile fileWithData:data filename:executablePath searchPathState:classDump.searchPathState];
+                CDFile *file = [CDFile fileWithContentsOfFile:executablePath searchPathState:classDump.searchPathState];
                 if (file == nil) {
                     fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                     exit(1);

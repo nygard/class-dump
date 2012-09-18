@@ -201,8 +201,7 @@
 
     CDMachOFile *machOFile = _machOFilesByName[adjustedName];
     if (machOFile == nil) {
-        NSData *data = [[NSData alloc] initWithContentsOfMappedFile:adjustedName];
-        CDFile *file = [CDFile fileWithData:data filename:adjustedName searchPathState:self.searchPathState];
+        CDFile *file = [CDFile fileWithContentsOfFile:adjustedName searchPathState:self.searchPathState];
 
         if (file == nil || [self loadFile:file] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedName);

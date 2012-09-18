@@ -105,7 +105,8 @@
 - (CDMachOFile *)machOFile;
 {
     if (_machOFile == nil) {
-        _machOFile = [CDFile fileWithData:self.fatFile.data archOffset:_fatArch.offset archSize:_fatArch.size filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
+        NSData *data = [NSData dataWithBytesNoCopy:((uint8_t *)[self.fatFile.data bytes] + self.offset) length:self.size freeWhenDone:NO];
+        _machOFile = [[CDMachOFile alloc] initWithData:data filename:self.fatFile.filename searchPathState:self.fatFile.searchPathState];
     }
 
     return _machOFile;

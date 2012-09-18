@@ -74,6 +74,11 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 #pragma mark -
 
+@interface CDFile ()
+@end
+
+#pragma mark -
+
 @implementation CDFile
 {
     NSString *_filename;
@@ -83,24 +88,16 @@ BOOL CDArchUses64BitABI(CDArch arch)
     CDSearchPathState *_searchPathState;
 }
 
-+ (id)fileWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+// Returns CDFatFile or CDMachOFile
++ (id)fileWithContentsOfFile:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    return [self fileWithData:data archOffset:0 archSize:[data length] filename:filename searchPathState:searchPathState];
-}
-
-+ (id)fileWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-{
-    CDFatFile *fatFile = nil;
-
-    if (offset == 0)
-        fatFile = [[CDFatFile alloc] initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState];
-
-    if (fatFile == nil) {
-        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState];
-        return machOFile;
-    }
-
-    return fatFile;
+    NSData *data = [NSData dataWithContentsOfMappedFile:filename];
+    CDFatFile *fatFile = [[CDFatFile alloc] initWithData:data filename:filename searchPathState:searchPathState];
+    if (fatFile != nil)
+        return fatFile;
+    
+    CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:data filename:filename searchPathState:searchPathState];
+    return machOFile;
 }
 
 - (id)init;
@@ -109,7 +106,7 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return nil;
 }
 
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+- (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
     if ((self = [super init])) {
         // Otherwise reading the magic number fails.
@@ -119,8 +116,8 @@ BOOL CDArchUses64BitABI(CDArch arch)
         
         _filename        = filename;
         _data            = data;
-        _archOffset      = offset;
-        _archSize        = size;
+        _archOffset      = 0;
+        _archSize        = [_data length];
         _searchPathState = searchPathState;
     }
 

@@ -9,6 +9,7 @@
 #include <getopt.h>
 #include <stdlib.h>
 #include <sysexits.h>
+#include <mach-o/arch.h>
 
 #import <Foundation/Foundation.h>
 
@@ -126,9 +127,7 @@ int main(int argc, char *argv[])
             NSString *inputFile = [NSString stringWithFileSystemRepresentation:argv[0]];
             NSString *outputFile = [NSString stringWithFileSystemRepresentation:argv[1]];
             
-            NSData *inputData = [[NSData alloc] initWithContentsOfMappedFile:inputFile];
-            
-            CDFile *file = [CDFile fileWithData:inputData filename:inputFile searchPathState:nil];
+            CDFile *file = [CDFile fileWithContentsOfFile:inputFile searchPathState:nil];
             if (file == nil) {
                 fprintf(stderr, "Error: input file is neither a Mach-O file nor a fat archive.\n");
                 exit(EX_DATAERR);

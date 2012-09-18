@@ -66,9 +66,9 @@ NSString *CDMagicNumberString(uint32_t magic)
     } _flags;
 }
 
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+- (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    if ((self = [super initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState])) {
+    if ((self = [super initWithData:data filename:filename searchPathState:searchPathState])) {
         _byteOrder = CDByteOrder_LittleEndian;
         _loadCommands = nil;
         _dylibLoadCommands = nil;
@@ -83,7 +83,7 @@ NSString *CDMagicNumberString(uint32_t magic)
         _dyldEnvironment = nil;
         _reExportedDylibs = nil;
         
-        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data offset:self.archOffset];
+        CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data];
         _header.magic = [cursor readBigInt32];
         if (_header.magic == MH_MAGIC || _header.magic == MH_MAGIC_64) {
             _byteOrder = CDByteOrder_BigEndian;
@@ -155,12 +155,12 @@ NSString *CDMagicNumberString(uint32_t magic)
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
-    _loadCommands = [loadCommands copy];
+    _loadCommands      = [loadCommands copy];
     _dylibLoadCommands = [dylibLoadCommands copy];
-    _segments = [segments copy];
-    _runPaths = [runPaths copy];
-    _dyldEnvironment = [dyldEnvironment copy];
-    _reExportedDylibs = [reExportedDylibs copy];
+    _segments          = [segments copy];
+    _runPaths          = [runPaths copy];
+    _dyldEnvironment   = [dyldEnvironment copy];
+    _reExportedDylibs  = [reExportedDylibs copy];
 
     for (CDLoadCommand *loadCommand in _loadCommands) {
         [loadCommand machOFileDidReadLoadCommands:self];
