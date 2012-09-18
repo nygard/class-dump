@@ -212,11 +212,12 @@ NSString *CDMagicNumberString(uint32_t magic)
     return [self uses64BitABI] ? sizeof(uint64_t) : sizeof(uint32_t);
 }
              
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
+// We only have one architecture, so it is by default the best match.  
+- (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
 {
-    if (archPtr != NULL) {
-        archPtr->cputype    = _header.cputype & ~CPU_ARCH_MASK;
-        archPtr->cpusubtype = _header.cpusubtype;
+    if (ioArchPtr != NULL) {
+        ioArchPtr->cputype    = _header.cputype;
+        ioArchPtr->cpusubtype = _header.cpusubtype;
     }
 
     return YES;

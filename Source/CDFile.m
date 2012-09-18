@@ -122,14 +122,29 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 #pragma mark -
 
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
-{
-    if (archPtr != NULL) {
-        archPtr->cputype = CPU_TYPE_ANY;
-        archPtr->cpusubtype = 0;
-    }
+// Return YES on success.  If oArchPtr is not NULL, return the best match.
+// Return NO on failure, oArchPtr is untouched.
 
-    return YES;
+- (BOOL)bestMatchForLocalArch:(CDArch *)oArchPtr;
+{
+    const NXArchInfo *archInfo = NXGetLocalArchInfo();
+    if (archInfo == NULL)
+        return NO;
+    
+    CDArch arch = { archInfo->cputype, archInfo->cpusubtype };
+    
+    if ([self bestMatchForArch:&arch]) {
+        if (oArchPtr != NULL)
+            *oArchPtr = arch;
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
+{
+    return NO;
 }
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;

@@ -29,7 +29,8 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 @property (readonly) NSData *data;
 @property (readonly) CDSearchPathState *searchPathState;
 
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
+- (BOOL)bestMatchForLocalArch:(CDArch *)oArchPtr;
+- (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
 @end

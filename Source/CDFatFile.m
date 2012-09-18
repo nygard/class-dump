@@ -69,29 +69,22 @@
 // In either case, we can ignore the cpu subtype
 
 // Returns YES on success, NO on failure.
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
+- (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
 {
-    const NXArchInfo *archInfo = NXGetLocalArchInfo();
-    if (archInfo == NULL)
-        return NO;
+    cpu_type_t targetType = ioArchPtr->cputype & ~CPU_ARCH_MASK;
 
-    if (archPtr == NULL)
-        return [self.arches count] > 0;
-
-    cpu_type_t targetType = archInfo->cputype & ~CPU_ARCH_MASK;
-
-    // This architecture, 64 bit
+    // Target architecture, 64 bit
     for (CDFatArch *fatArch in self.arches) {
         if (fatArch.maskedCPUType == targetType && fatArch.uses64BitABI) {
-            *archPtr = fatArch.arch;
+            if (ioArchPtr != NULL) *ioArchPtr = fatArch.arch;
             return YES;
         }
     }
 
-    // This architecture, 32 bit
+    // Target architecture, 32 bit
     for (CDFatArch *fatArch in self.arches) {
         if (fatArch.maskedCPUType == targetType && fatArch.uses64BitABI == NO) {
-            *archPtr = fatArch.arch;
+            if (ioArchPtr != NULL) *ioArchPtr = fatArch.arch;
             return YES;
         }
     }
@@ -99,7 +92,7 @@
     // Any architecture, 64 bit
     for (CDFatArch *fatArch in self.arches) {
         if (fatArch.uses64BitABI) {
-            *archPtr = fatArch.arch;
+            if (ioArchPtr != NULL) *ioArchPtr = fatArch.arch;
             return YES;
         }
     }
@@ -107,14 +100,14 @@
     // Any architecture, 32 bit
     for (CDFatArch *fatArch in self.arches) {
         if (fatArch.uses64BitABI == NO) {
-            *archPtr = fatArch.arch;
+            if (ioArchPtr != NULL) *ioArchPtr = fatArch.arch;
             return YES;
         }
     }
 
     // Any architecture
     if ([self.arches count] > 0) {
-        *archPtr = [self.arches[0] arch];
+        if (ioArchPtr != NULL) *ioArchPtr = [self.arches[0] arch];
         return YES;
     }
 
