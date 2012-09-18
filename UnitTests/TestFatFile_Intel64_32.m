@@ -23,13 +23,13 @@
     _intel_64_32 = [[CDFatFile alloc] init];
 
     _arch_x86_64 = [[CDFatArch alloc] initWithMachOFile:nil];
-    _arch_x86_64.cpuType    = CPU_TYPE_X86_64;
-    _arch_x86_64.cpuSubtype = CPU_SUBTYPE_386;
+    _arch_x86_64.cputype    = CPU_TYPE_X86_64;
+    _arch_x86_64.cpusubtype = CPU_SUBTYPE_386;
     [_intel_64_32 addArchitecture:_arch_x86_64];
     
     _arch_i386 = [[CDFatArch alloc] initWithMachOFile:nil];
-    _arch_i386.cpuType    = CPU_TYPE_X86;
-    _arch_i386.cpuSubtype = CPU_SUBTYPE_386;
+    _arch_i386.cputype    = CPU_TYPE_X86;
+    _arch_i386.cpusubtype = CPU_SUBTYPE_386;
     [_intel_64_32 addArchitecture:_arch_i386];
 }
 

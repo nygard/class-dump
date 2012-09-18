@@ -15,8 +15,8 @@
 - (id)initWithMachOFile:(CDMachOFile *)machOFile;
 - (id)initWithDataCursor:(CDDataCursor *)cursor;
 
-@property (assign) cpu_type_t cpuType;
-@property (assign) cpu_subtype_t cpuSubtype;
+@property (assign) cpu_type_t cputype;
+@property (assign) cpu_subtype_t cpusubtype;
 @property (assign) uint32_t offset;
 @property (assign) uint32_t size;
 @property (assign) uint32_t align;
