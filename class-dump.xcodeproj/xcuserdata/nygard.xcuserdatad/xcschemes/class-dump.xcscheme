@@ -46,6 +46,16 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "011E483D1604DF3700722F8D"
+               BuildableName = "UnitTests.octest"
+               BlueprintName = "UnitTests"
+               ReferencedContainer = "container:class-dump.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
