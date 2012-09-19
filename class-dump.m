@@ -246,24 +246,22 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [arg fileSystemRepresentation]);
                     exit(1);
                 }
-#if 0
-                NSData *data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
-                if (data == nil) {
-                    NSFileManager *defaultManager = [NSFileManager defaultManager];
 
+                classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
+                CDFile *file = [CDFile fileWithContentsOfFile:executablePath searchPathState:classDump.searchPathState];
+                if (file == nil) {
+                    NSFileManager *defaultManager = [NSFileManager defaultManager];
+                    
                     if ([defaultManager fileExistsAtPath:executablePath]) {
-                        fprintf(stderr, "class-dump: Input file (%s) is not readable (check read rights).\n", [executablePath UTF8String]);
+                        if ([defaultManager isReadableFileAtPath:executablePath]) {
+                            fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
+                        } else {
+                            fprintf(stderr, "class-dump: Input file (%s) is not readable (check read rights).\n", [executablePath UTF8String]);
+                        }
                     } else {
                         fprintf(stderr, "class-dump: Input file (%s) does not exist.\n", [executablePath UTF8String]);
                     }
 
-                    exit(1);
-                }
-#endif
-                classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
-                CDFile *file = [CDFile fileWithContentsOfFile:executablePath searchPathState:classDump.searchPathState];
-                if (file == nil) {
-                    fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                     exit(1);
                 }
 
