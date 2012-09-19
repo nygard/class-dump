@@ -14,7 +14,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _dylinkerCommand.cmd = [cursor readInt32];
+        _dylinkerCommand.cmd     = [cursor readInt32];
         _dylinkerCommand.cmdsize = [cursor readInt32];
 
         _dylinkerCommand.name.offset = [cursor readInt32];

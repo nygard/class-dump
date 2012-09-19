@@ -48,7 +48,7 @@
 
 @property (readonly) CDTypeController *typeController;
 
-- (BOOL)loadFile:(CDFile *)file;
+- (BOOL)loadFile:(CDFile *)file error:(NSError **)error;
 - (void)processObjectiveCData;
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
@@ -61,3 +61,8 @@
 - (void)showLoadCommands;
 
 @end
+
+extern NSString *CDErrorDomain_ClassDump;
+extern NSString *CDErrorKey_Exception;
+
+

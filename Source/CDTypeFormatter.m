@@ -127,7 +127,7 @@ static BOOL debug = NO;
         [resultString appendString:specialCase];
     } else {
         // TODO (2009-08-26): Ideally, just formatting a type shouldn't change it.  These changes should be done before, but this is handy.
-        [type setVariableName:name];
+        type.variableName = name;
         [type phase0RecursivelyFixStructureNames:NO]; // Nuke the $_ names
         [type phase3MergeWithTypeController:self.typeController];
         [resultString appendString:[type formattedString:nil formatter:self level:0]];
@@ -138,10 +138,10 @@ static BOOL debug = NO;
 
 - (NSDictionary *)formattedTypesForMethodName:(NSString *)name type:(NSString *)type;
 {
-    CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
 
     NSError *error = nil;
-    NSArray *methodTypes = [aParser parseMethodType:&error];
+    NSArray *methodTypes = [parser parseMethodType:&error];
     if (methodTypes == nil)
         NSLog(@"Warning: Parsing method types failed, %@", name);
 
@@ -196,7 +196,7 @@ static BOOL debug = NO;
                         NSString *typeString = [methodType.type formattedString:nil formatter:self level:0];
                         [parameter setValue:typeString forKey:@"type"];
                     }
-                    //[parameter setValue:[NSString stringWithFormat:@"fp%@", aMethodType.offset] forKey:@"name"];
+                    //[parameter setValue:[NSString stringWithFormat:@"fp%@", methodType.offset] forKey:@"name"];
                     [parameter setValue:[NSString stringWithFormat:@"arg%lu", index-2] forKey:@"name"];
                     [parameterTypes addObject:parameter];
                     index++;
@@ -214,10 +214,10 @@ static BOOL debug = NO;
 
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 {
-    CDTypeParser *aParser = [[CDTypeParser alloc] initWithType:type];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
 
     NSError *error = nil;
-    NSArray *methodTypes = [aParser parseMethodType:&error];
+    NSArray *methodTypes = [parser parseMethodType:&error];
     if (methodTypes == nil)
         NSLog(@"Warning: Parsing method types failed, %@", methodName);
 
@@ -231,13 +231,13 @@ static BOOL debug = NO;
         NSUInteger index = 0;
         BOOL noMoreTypes = NO;
 
-        CDMethodType *aMethodType = methodTypes[index];
+        CDMethodType *methodType = methodTypes[index];
         [resultString appendString:@"("];
-        NSString *specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
+        NSString *specialCase = [self _specialCaseVariable:nil type:methodType.type.bareTypeString];
         if (specialCase != nil) {
             [resultString appendString:specialCase];
         } else {
-            NSString *str = [aMethodType.type formattedString:nil formatter:self level:0];
+            NSString *str = [methodType.type formattedString:nil formatter:self level:0];
             if (str != nil)
                 [resultString appendFormat:@"%@", str];
         }
@@ -259,12 +259,12 @@ static BOOL debug = NO;
                 if (index >= count) {
                     noMoreTypes = YES;
                 } else {
-                    aMethodType = methodTypes[index];
-                    specialCase = [self _specialCaseVariable:nil type:aMethodType.type.bareTypeString];
+                    methodType = methodTypes[index];
+                    specialCase = [self _specialCaseVariable:nil type:methodType.type.bareTypeString];
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
-                        NSString *typeString = [aMethodType.type formattedString:nil formatter:self level:0];
+                        NSString *typeString = [methodType.type formattedString:nil formatter:self level:0];
                         //if ([[aMethodType type] isIDType] == NO)
                         [resultString appendFormat:@"(%@)", typeString];
                     }

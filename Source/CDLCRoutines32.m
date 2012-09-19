@@ -13,17 +13,17 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _routinesCommand.cmd = [cursor readInt32];
+        _routinesCommand.cmd     = [cursor readInt32];
         _routinesCommand.cmdsize = [cursor readInt32];
         
         _routinesCommand.init_address = [cursor readInt32];
-        _routinesCommand.init_module = [cursor readInt32];
-        _routinesCommand.reserved1 = [cursor readInt32];
-        _routinesCommand.reserved2 = [cursor readInt32];
-        _routinesCommand.reserved3 = [cursor readInt32];
-        _routinesCommand.reserved4 = [cursor readInt32];
-        _routinesCommand.reserved5 = [cursor readInt32];
-        _routinesCommand.reserved6 = [cursor readInt32];
+        _routinesCommand.init_module  = [cursor readInt32];
+        _routinesCommand.reserved1    = [cursor readInt32];
+        _routinesCommand.reserved2    = [cursor readInt32];
+        _routinesCommand.reserved3    = [cursor readInt32];
+        _routinesCommand.reserved4    = [cursor readInt32];
+        _routinesCommand.reserved5    = [cursor readInt32];
+        _routinesCommand.reserved6    = [cursor readInt32];
     }
 
     return self;

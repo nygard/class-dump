@@ -22,19 +22,13 @@ typedef enum : NSUInteger {
 
 @interface CDMachOFile : CDFile
 
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-
-- (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
-
 @property (readonly) CDByteOrder byteOrder;
 
-- (CDMachOFile *)machOFileWithArch:(CDArch)arch;
-
-@property (nonatomic, readonly) uint32_t magic;
-@property (nonatomic, readonly) cpu_type_t cputype;
-@property (nonatomic, readonly) cpu_subtype_t cpusubtype;
-@property (nonatomic, readonly) uint32_t filetype;
-@property (nonatomic, readonly) uint32_t flags;
+@property (readonly) uint32_t magic;
+@property (assign) cpu_type_t cputype;
+@property (assign) cpu_subtype_t cpusubtype;
+@property (readonly) uint32_t filetype;
+@property (readonly) uint32_t flags;
 
 @property (readonly) NSArray *loadCommands;
 @property (readonly) NSArray *dylibLoadCommands;
@@ -50,7 +44,7 @@ typedef enum : NSUInteger {
 @property (strong) CDLCVersionMinimum *minVersionIOS;
 @property (strong) CDLCSourceVersion *sourceVersion;
 
-- (BOOL)uses64BitABI;
+@property (readonly) BOOL uses64BitABI;
 - (NSUInteger)ptrSize;
 
 - (NSString *)filetypeDescription;
@@ -62,7 +56,6 @@ typedef enum : NSUInteger {
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
 - (NSString *)stringAtAddress:(NSUInteger)address;
 
-- (NSData *)machOData;
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
 
 - (const void *)bytes;

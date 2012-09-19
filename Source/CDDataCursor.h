@@ -8,7 +8,6 @@
 @interface CDDataCursor : NSObject
 
 - (id)initWithData:(NSData *)data;
-- (id)initWithData:(NSData *)data offset:(NSUInteger)offset;
 
 @property (readonly) NSData *data;
 - (const void *)bytes;

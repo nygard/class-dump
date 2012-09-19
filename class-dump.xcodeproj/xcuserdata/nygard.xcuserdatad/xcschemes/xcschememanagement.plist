@@ -9,7 +9,7 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>6</integer>
+			<integer>5</integer>
 		</dict>
 		<key>MachObjC.xcscheme</key>
 		<dict>
@@ -39,6 +39,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>011E483D1604DF3700722F8D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>012FF1890CDB886C00F31E61</key>
 		<dict>
 			<key>primary</key>

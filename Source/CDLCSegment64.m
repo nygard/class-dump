@@ -15,18 +15,18 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _segmentCommand.cmd = [cursor readInt32];
+        _segmentCommand.cmd     = [cursor readInt32];
         _segmentCommand.cmdsize = [cursor readInt32];
         
         [cursor readBytesOfLength:16 intoBuffer:_segmentCommand.segname];
-        _segmentCommand.vmaddr = [cursor readInt64];
-        _segmentCommand.vmsize = [cursor readInt64];
-        _segmentCommand.fileoff = [cursor readInt64];
+        _segmentCommand.vmaddr   = [cursor readInt64];
+        _segmentCommand.vmsize   = [cursor readInt64];
+        _segmentCommand.fileoff  = [cursor readInt64];
         _segmentCommand.filesize = [cursor readInt64];
-        _segmentCommand.maxprot = [cursor readInt32];
+        _segmentCommand.maxprot  = [cursor readInt32];
         _segmentCommand.initprot = [cursor readInt32];
-        _segmentCommand.nsects = [cursor readInt32];
-        _segmentCommand.flags = [cursor readInt32];
+        _segmentCommand.nsects   = [cursor readInt32];
+        _segmentCommand.flags    = [cursor readInt32];
         
         {
             char buf[17];
