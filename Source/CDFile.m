@@ -69,7 +69,7 @@ CDArch CDArchFromName(NSString *name)
 
 BOOL CDArchUses64BitABI(CDArch arch)
 {
-    return (arch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+    return (arch.cputype & CPU_ARCH_ABI64) == CPU_ARCH_ABI64;
 }
 
 BOOL CDArchUses64BitLibraries(CDArch arch)
