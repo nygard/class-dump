@@ -146,4 +146,9 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return nil;
 }
 
+- (NSString *)architectureNameDescription;
+{
+    return nil;
+}
+
 @end

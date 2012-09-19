@@ -140,6 +140,11 @@
     return archNames;
 }
 
+- (NSString *)architectureNameDescription;
+{
+    return [self.archNames componentsJoinedByString:@", "];
+}
+
 #pragma mark -
 
 - (void)addArchitecture:(CDFatArch *)fatArch;

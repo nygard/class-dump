@@ -33,4 +33,6 @@ extern BOOL CDArchUses64BitABI(CDArch arch);
 - (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 
+@property (nonatomic, readonly) NSString *architectureNameDescription;
+
 @end

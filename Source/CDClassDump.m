@@ -116,7 +116,8 @@
     CDMachOFile *machOFile = [file machOFileWithArch:_targetArch];
     //NSLog(@"machOFile: %@", machOFile);
     if (machOFile == nil) {
-        fprintf(stderr, "Error: file doesn't contain the specified arch.\n\n");
+        NSString *str = [NSString stringWithFormat:@"Error: File doesn't contain the specified architecture (%@).  Available architectures are %@.", CDNameForCPUType(_targetArch.cputype, _targetArch.cpusubtype), file.architectureNameDescription];
+        fprintf(stderr, "%s\n\n", [str UTF8String]);
         return NO;
     }
 

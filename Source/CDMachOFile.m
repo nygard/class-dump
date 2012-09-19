@@ -567,4 +567,9 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     return [CDObjectiveC1Processor class];
 }
 
+- (NSString *)architectureNameDescription;
+{
+    return self.archName;
+}
+
 @end
