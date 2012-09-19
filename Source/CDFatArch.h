@@ -22,7 +22,9 @@
 @property (assign) uint32_t align;
 
 @property (nonatomic, readonly) cpu_type_t maskedCPUType;
+@property (nonatomic, readonly) cpu_subtype_t maskedCPUSubtype;
 @property (nonatomic, readonly) BOOL uses64BitABI;
+@property (nonatomic, readonly) BOOL uses64BitLibraries;
 
 @property (weak) CDFatFile *fatFile;
 

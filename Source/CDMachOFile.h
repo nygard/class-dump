@@ -30,6 +30,9 @@ typedef enum : NSUInteger {
 @property (readonly) uint32_t filetype;
 @property (readonly) uint32_t flags;
 
+@property (nonatomic, readonly) cpu_type_t maskedCPUType;
+@property (nonatomic, readonly) cpu_subtype_t maskedCPUSubtype;
+
 @property (readonly) NSArray *loadCommands;
 @property (readonly) NSArray *dylibLoadCommands;
 @property (readonly) NSArray *segments;

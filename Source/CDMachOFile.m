@@ -184,13 +184,23 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
-    if (self.cputype == arch.cputype && self.cpusubtype == arch.cpusubtype)
+    if (self.cputype == arch.cputype && self.maskedCPUSubtype == (arch.cpusubtype & ~CPU_SUBTYPE_MASK))
         return self;
 
     return nil;
 }
 
 #pragma mark -
+
+- (cpu_type_t)maskedCPUType;
+{
+    return self.cputype & ~CPU_ARCH_MASK;
+}
+
+- (cpu_subtype_t)maskedCPUSubtype;
+{
+    return self.cpusubtype & ~CPU_SUBTYPE_MASK;
+}
 
 - (NSUInteger)ptrSize;
 {

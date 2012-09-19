@@ -52,4 +52,9 @@
     STAssertEqualObjects(CDNameForCPUType(CPU_TYPE_X86_64, CPU_SUBTYPE_386), @"x86_64", @"The name for X86_64 subtype CPU_SUBTYPE_386 should be 'x86_64'");
 }
 
+- (void)test_x86_64_lib64;
+{
+    STAssertEqualObjects(CDNameForCPUType(CPU_TYPE_X86_64, CPU_SUBTYPE_386|CPU_SUBTYPE_LIB64), @"x86_64", @"The name for X86_64 subtype CPU_SUBTYPE_386 with capability bits should be 'x86_64'");
+}
+
 @end

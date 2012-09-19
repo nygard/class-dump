@@ -72,6 +72,11 @@ BOOL CDArchUses64BitABI(CDArch arch)
     return (arch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
 }
 
+BOOL CDArchUses64BitLibraries(CDArch arch)
+{
+    return (arch.cpusubtype & CPU_SUBTYPE_LIB64) == CPU_SUBTYPE_LIB64;
+}
+
 #pragma mark -
 
 @interface CDFile ()

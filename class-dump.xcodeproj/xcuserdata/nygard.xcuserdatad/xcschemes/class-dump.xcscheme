@@ -94,10 +94,14 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Users/nygard/Library/Developer/Xcode/DerivedData/NewApp5-eblpfarcajqhnmfwnhncmpmhsjog/Build/Products/Debug-iphoneos/NewApp5.app/NewApp5"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "--arch armv7s"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Applications/Utilities/Grab.app --arch x86_64"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument

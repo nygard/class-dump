@@ -71,9 +71,19 @@
     return self.cputype & ~CPU_ARCH_MASK;
 }
 
+- (cpu_subtype_t)maskedCPUSubtype;
+{
+    return self.cpusubtype & ~CPU_SUBTYPE_MASK;
+}
+
 - (BOOL)uses64BitABI;
 {
     return CDArchUses64BitABI(self.arch);
+}
+
+- (BOOL)uses64BitLibraries;
+{
+    return CDArchUses64BitLibraries(self.arch);
 }
 
 @synthesize fatFile = nonretained_fatFile;

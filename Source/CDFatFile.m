@@ -124,7 +124,7 @@
 - (CDMachOFile *)machOFileWithArch:(CDArch)cdarch;
 {
     for (CDFatArch *arch in self.arches) {
-        if (arch.cputype == cdarch.cputype && arch.cpusubtype == cdarch.cpusubtype)
+        if (arch.cputype == cdarch.cputype && arch.maskedCPUSubtype == (cdarch.cpusubtype & ~CPU_SUBTYPE_MASK))
             return arch.machOFile;
     }
 

@@ -14,9 +14,10 @@ typedef struct {
 
 @class CDMachOFile, CDSearchPathState;
 
-extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
-extern CDArch CDArchFromName(NSString *name);
-extern BOOL CDArchUses64BitABI(CDArch arch);
+NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
+CDArch CDArchFromName(NSString *name);
+BOOL CDArchUses64BitABI(CDArch arch);
+BOOL CDArchUses64BitLibraries(CDArch arch);
 
 @interface CDFile : NSObject
 
