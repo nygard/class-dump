@@ -49,12 +49,7 @@
     [self.resultString appendString:@"/*\n"];
     [self.resultString appendFormat:@" * File: %@\n", machOFile.filename];
     [self.resultString appendFormat:@" * UUID: %@\n", machOFile.uuidString];
-
-    const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(machOFile.cputype, machOFile.cpusubtype);
-    if (archInfo == NULL)
-        [self.resultString appendFormat:@" * Arch: cputype: 0x%x, cpusubtype: 0x%x\n", machOFile.cputype, machOFile.cpusubtype];
-    else
-        [self.resultString appendFormat:@" * Arch: %s (%s)\n", archInfo->description, archInfo->name];
+    [self.resultString appendFormat:@" * Arch: %@\n", CDNameForCPUType(machOFile.cputype, machOFile.cpusubtype)];
 
     if (machOFile.filetype == MH_DYLIB) {
         CDLCDylib *identifier = machOFile.dylibIdentifier;
