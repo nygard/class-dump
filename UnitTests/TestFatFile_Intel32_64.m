@@ -11,7 +11,7 @@
 
 @implementation TestFatFile_Intel32_64
 {
-    CDFatFile *_intel_32_64;
+    CDFatFile *_fatFile;
     CDFatArch *_arch_i386;
     CDFatArch *_arch_x86_64;
     CDMachOFile *_macho_i386;
@@ -23,27 +23,27 @@
     [super setUp];
     
     // Set-up code here.
-    _intel_32_64 = [[CDFatFile alloc] init];
+    _fatFile = [[CDFatFile alloc] init];
     
     _macho_i386 = [[CDMachOFile alloc] init];
     _macho_i386.cputype    = CPU_TYPE_X86;
     _macho_i386.cpusubtype = CPU_SUBTYPE_386;
 
     _arch_i386 = [[CDFatArch alloc] initWithMachOFile:_macho_i386];
-    [_intel_32_64 addArchitecture:_arch_i386];
+    [_fatFile addArchitecture:_arch_i386];
 
     _macho_x86_64 = [[CDMachOFile alloc] init];
     _macho_x86_64.cputype    = CPU_TYPE_X86_64;
     _macho_x86_64.cpusubtype = CPU_SUBTYPE_386;
 
     _arch_x86_64 = [[CDFatArch alloc] initWithMachOFile:_macho_x86_64];
-    [_intel_32_64 addArchitecture:_arch_x86_64];
+    [_fatFile addArchitecture:_arch_x86_64];
 }
 
 - (void)tearDown;
 {
     // Tear-down code here.
-    _intel_32_64  = nil;
+    _fatFile  = nil;
     _arch_i386    = nil;
     _arch_x86_64  = nil;
     _macho_i386   = nil;
@@ -58,7 +58,7 @@
 {
     CDArch arch = { CPU_TYPE_X86_64, CPU_SUBTYPE_386 };
     
-    BOOL result = [_intel_32_64 bestMatchForArch:&arch];
+    BOOL result = [_fatFile bestMatchForArch:&arch];
     STAssertTrue(result,                             @"Didn't find a best match for x86_64");
     STAssertTrue(arch.cputype == CPU_TYPE_X86_64,    @"Best match cputype should be CPU_TYPE_X86_64");
     STAssertTrue(arch.cpusubtype == CPU_SUBTYPE_386, @"Best match cpusubtype should be CPU_SUBTYPE_386");
@@ -76,5 +76,21 @@
     STAssertTrue(arch.cpusubtype == CPU_SUBTYPE_386, @"Best match cpusubtype should be CPU_SUBTYPE_386");
 }
 #endif
+
+- (void)test_machOFileWithArch_x86_64;
+{
+    CDArch arch = { CPU_TYPE_X86_64, CPU_SUBTYPE_386 };
+    CDMachOFile *machOFile = [_fatFile machOFileWithArch:arch];
+    STAssertNotNil(machOFile, @"The Mach-O file shouldn't be nil", NULL);
+    STAssertEquals(machOFile, _macho_x86_64, @"Didn't find correct Mach-O file");
+}
+
+- (void)test_machOFileWithArch_i386;
+{
+    CDArch arch = { CPU_TYPE_X86, CPU_SUBTYPE_386 };
+    CDMachOFile *machOFile = [_fatFile machOFileWithArch:arch];
+    STAssertNotNil(machOFile, @"The Mach-O file shouldn't be nil");
+    STAssertEquals(machOFile, _macho_i386, @"Didn't find correct Mach-O file");
+}
 
 @end
