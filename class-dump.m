@@ -256,7 +256,7 @@ int main(int argc, char *argv[])
                         if ([defaultManager isReadableFileAtPath:executablePath]) {
                             fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                         } else {
-                            fprintf(stderr, "class-dump: Input file (%s) is not readable (check read rights).\n", [executablePath UTF8String]);
+                            fprintf(stderr, "class-dump: Input file (%s) is not readable (check read permissions).\n", [executablePath UTF8String]);
                         }
                     } else {
                         fprintf(stderr, "class-dump: Input file (%s) does not exist.\n", [executablePath UTF8String]);
