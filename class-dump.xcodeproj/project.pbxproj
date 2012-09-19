@@ -109,6 +109,7 @@
 		0179B9F814F20E9800EC98F7 /* CDLCDataInCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0179B9F614F20E9800EC98F7 /* CDLCDataInCode.m */; };
 		018BFD4214F65DB600190F07 /* CDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 018BFD4114F65DB600190F07 /* CDExtensions.h */; };
 		019358DD160A1D2E00C4021F /* TestFatFile_armv7_v7s.m in Sources */ = {isa = PBXBuildFile; fileRef = 019358DC160A1D2E00C4021F /* TestFatFile_armv7_v7s.m */; };
+		019358FA160A3EB200C4021F /* TestThinFile_Intel64.m in Sources */ = {isa = PBXBuildFile; fileRef = 019358F9160A3EB200C4021F /* TestThinFile_Intel64.m */; };
 		01B02D0113A5B0DC0047BC53 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		01B02D0E13A5B0FB0047BC53 /* formatType.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B02D0D13A5B0FB0047BC53 /* formatType.m */; };
 		01B02D1113A5B1460047BC53 /* class-dump.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B02D1013A5B1460047BC53 /* class-dump.m */; };
@@ -246,6 +247,8 @@
 		018BFD4114F65DB600190F07 /* CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDExtensions.h; path = Source/CDExtensions.h; sourceTree = "<group>"; };
 		019358DB160A1D2E00C4021F /* TestFatFile_armv7_v7s.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFatFile_armv7_v7s.h; sourceTree = "<group>"; };
 		019358DC160A1D2E00C4021F /* TestFatFile_armv7_v7s.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_armv7_v7s.m; sourceTree = "<group>"; };
+		019358F8160A3EB200C4021F /* TestThinFile_Intel64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestThinFile_Intel64.h; sourceTree = "<group>"; };
+		019358F9160A3EB200C4021F /* TestThinFile_Intel64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestThinFile_Intel64.m; sourceTree = "<group>"; };
 		01B02CFF13A5B0DC0047BC53 /* formatType */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = formatType; sourceTree = BUILT_PRODUCTS_DIR; };
 		01B02D0D13A5B0FB0047BC53 /* formatType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = formatType.m; sourceTree = SOURCE_ROOT; };
 		01B02D0F13A5B1220047BC53 /* formatType-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "formatType-Prefix.pch"; sourceTree = SOURCE_ROOT; };
@@ -481,6 +484,8 @@
 				011E48F71608EF9F00722F8D /* TestFatFile_Intel64_32.m */,
 				019358DB160A1D2E00C4021F /* TestFatFile_armv7_v7s.h */,
 				019358DC160A1D2E00C4021F /* TestFatFile_armv7_v7s.m */,
+				019358F8160A3EB200C4021F /* TestThinFile_Intel64.h */,
+				019358F9160A3EB200C4021F /* TestThinFile_Intel64.m */,
 				011E48481604DF3700722F8D /* Supporting Files */,
 			);
 			path = UnitTests;
@@ -982,6 +987,7 @@
 				011E48F41608EA5B00722F8D /* TestFatFile_Intel32_64.m in Sources */,
 				011E48F81608EF9F00722F8D /* TestFatFile_Intel64_32.m in Sources */,
 				019358DD160A1D2E00C4021F /* TestFatFile_armv7_v7s.m in Sources */,
+				019358FA160A3EB200C4021F /* TestThinFile_Intel64.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
