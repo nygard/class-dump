@@ -184,7 +184,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
 {
-    if ((self.cputype & ~CPU_ARCH_MASK) == arch.cputype)
+    if (self.cputype == arch.cputype && self.cpusubtype == arch.cpusubtype)
         return self;
 
     return nil;
