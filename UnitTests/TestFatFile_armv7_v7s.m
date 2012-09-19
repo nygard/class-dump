@@ -58,7 +58,7 @@
 {
     CDArch arch = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7 };
     CDMachOFile *machOFile = [_fatFile machOFileWithArch:arch];
-    STAssertNotNil(machOFile, @"The Mach-O file shouldn't be nil", NULL);
+    STAssertNotNil(machOFile,            @"The Mach-O file shouldn't be nil", NULL);
     STAssertEquals(machOFile, _macho_v7, @"Didn't find correct Mach-O file");
 }
 
@@ -66,7 +66,7 @@
 {
     CDArch arch = { CPU_TYPE_ARM, 11 };
     CDMachOFile *machOFile = [_fatFile machOFileWithArch:arch];
-    STAssertNotNil(machOFile, @"The Mach-O file shouldn't be nil");
+    STAssertNotNil(machOFile,             @"The Mach-O file shouldn't be nil");
     STAssertEquals(machOFile, _macho_v7s, @"Didn't find correct Mach-O file");
 }
 
