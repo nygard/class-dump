@@ -14,7 +14,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        command.cmd = [cursor readInt32];
+        command.cmd     = [cursor readInt32];
         command.cmdsize = [cursor readInt32];
         
         uint32_t strOffset = [cursor readInt32];

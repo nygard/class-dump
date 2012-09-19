@@ -25,29 +25,26 @@
         
         [cursor readBytesOfLength:16 intoBuffer:_section.sectname];
         [cursor readBytesOfLength:16 intoBuffer:_section.segname];
-        _section.addr = [cursor readInt32];
-        _section.size = [cursor readInt32];
-        _section.offset = [cursor readInt32];
-        _section.align = [cursor readInt32];
-        _section.reloff = [cursor readInt32];
-        _section.nreloc = [cursor readInt32];
-        _section.flags = [cursor readInt32];
+        _section.addr      = [cursor readInt32];
+        _section.size      = [cursor readInt32];
+        _section.offset    = [cursor readInt32];
+        _section.align     = [cursor readInt32];
+        _section.reloff    = [cursor readInt32];
+        _section.nreloc    = [cursor readInt32];
+        _section.flags     = [cursor readInt32];
         _section.reserved1 = [cursor readInt32];
         _section.reserved2 = [cursor readInt32];
         
         // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
         char buf[17];
-        NSString *str;
         
         memcpy(buf, _section.segname, 16);
         buf[16] = 0;
-        str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-        [self setSegmentName:str];
+        self.segmentName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
         
         memcpy(buf, _section.sectname, 16);
         buf[16] = 0;
-        str = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-        [self setSectionName:str];
+        self.sectionName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
     }
 
     return self;
@@ -88,7 +85,7 @@
 - (void)loadData;
 {
     if (self.hasLoadedData == NO) {
-        self.data = [[NSData alloc] initWithBytes:(uint8_t *)[[self.segment.machOFile machOData] bytes] + _section.offset length:_section.size];
+        self.data = [[NSData alloc] initWithBytes:(uint8_t *)[self.segment.machOFile.data bytes] + _section.offset length:_section.size];
         self.hasLoadedData = YES;
     }
 }

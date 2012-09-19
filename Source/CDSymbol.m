@@ -35,10 +35,10 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
         _name = name;
         nonretained_machOFile = machOFile;
         _nlist.n_un.n_strx = 0; // We don't use it.
-        _nlist.n_type = nlist32.n_type;
-        _nlist.n_sect = nlist32.n_sect;
-        _nlist.n_desc = nlist32.n_desc;
-        _nlist.n_value = nlist32.n_value;
+        _nlist.n_type      = nlist32.n_type;
+        _nlist.n_sect      = nlist32.n_sect;
+        _nlist.n_desc      = nlist32.n_desc;
+        _nlist.n_value     = nlist32.n_value;
     }
 
     return self;
@@ -51,10 +51,10 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
         _name = name;
         nonretained_machOFile = machOFile;
         _nlist.n_un.n_strx = 0; // We don't use it.
-        _nlist.n_type = nlist64.n_type;
-        _nlist.n_sect = nlist64.n_sect;
-        _nlist.n_desc = nlist64.n_desc;
-        _nlist.n_value = nlist64.n_value;
+        _nlist.n_type      = nlist64.n_type;
+        _nlist.n_sect      = nlist64.n_sect;
+        _nlist.n_desc      = nlist64.n_desc;
+        _nlist.n_value     = nlist64.n_value;
     }
 
     return self;

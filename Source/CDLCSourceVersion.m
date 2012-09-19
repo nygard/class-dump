@@ -15,7 +15,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _sourceVersionCommand.cmd = [cursor readInt32];
+        _sourceVersionCommand.cmd     = [cursor readInt32];
         _sourceVersionCommand.cmdsize = [cursor readInt32];
         _sourceVersionCommand.version = [cursor readInt64];
     }

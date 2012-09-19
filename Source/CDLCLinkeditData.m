@@ -16,10 +16,10 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _linkeditDataCommand.cmd = [cursor readInt32];
+        _linkeditDataCommand.cmd     = [cursor readInt32];
         _linkeditDataCommand.cmdsize = [cursor readInt32];
         
-        _linkeditDataCommand.dataoff = [cursor readInt32];
+        _linkeditDataCommand.dataoff  = [cursor readInt32];
         _linkeditDataCommand.datasize = [cursor readInt32];
     }
 

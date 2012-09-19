@@ -230,8 +230,7 @@ int main(int argc, char *argv[])
                 } else {
                     CDSearchPathState *searchPathState = [[CDSearchPathState alloc] init];
                     searchPathState.executablePath = executablePath;
-                    NSData *data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
-                    id macho = [CDFile fileWithData:data filename:executablePath searchPathState:searchPathState];
+                    id macho = [CDFile fileWithContentsOfFile:executablePath searchPathState:searchPathState];
                     if (macho == nil) {
                         printf("none\n");
                     } else {
@@ -248,23 +247,21 @@ int main(int argc, char *argv[])
                     exit(1);
                 }
 
-                NSData *data = [[NSData alloc] initWithContentsOfMappedFile:executablePath];
-                if (data == nil) {
+                classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
+                CDFile *file = [CDFile fileWithContentsOfFile:executablePath searchPathState:classDump.searchPathState];
+                if (file == nil) {
                     NSFileManager *defaultManager = [NSFileManager defaultManager];
-
+                    
                     if ([defaultManager fileExistsAtPath:executablePath]) {
-                        fprintf(stderr, "class-dump: Input file (%s) is not readable (check read rights).\n", [executablePath UTF8String]);
+                        if ([defaultManager isReadableFileAtPath:executablePath]) {
+                            fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
+                        } else {
+                            fprintf(stderr, "class-dump: Input file (%s) is not readable (check read permissions).\n", [executablePath UTF8String]);
+                        }
                     } else {
                         fprintf(stderr, "class-dump: Input file (%s) does not exist.\n", [executablePath UTF8String]);
                     }
 
-                    exit(1);
-                }
-
-                classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
-                CDFile *file = [CDFile fileWithData:data filename:executablePath searchPathState:classDump.searchPathState];
-                if (file == nil) {
-                    fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
                     exit(1);
                 }
 
@@ -281,16 +278,14 @@ int main(int argc, char *argv[])
                 classDump.targetArch = targetArch;
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
-                if ([classDump loadFile:file]) {
-#if 0
-                    [classDump showHeader];
-                    [classDump showLoadCommands];
-                    exit(5);
-#endif
-
+                NSError *error;
+                if (![classDump loadFile:file error:&error]) {
+                    fprintf(stderr, "Error: %s\n", [[error localizedFailureReason] UTF8String]);
+                    exit(1);
+                } else {
                     [classDump processObjectiveCData];
                     [classDump registerTypes];
-
+                    
                     if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                         visitor.classDump = classDump;

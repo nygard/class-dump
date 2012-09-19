@@ -19,20 +19,6 @@
     BOOL _hasLoadedData;
 }
 
-// Just to resolve multiple different definitions...
-- (id)init;
-{
-    if ((self = [super init])) {
-        _segmentName = nil;
-        _sectionName = nil;
-        
-        _data = nil;
-        _hasLoadedData = NO;
-    }
-
-    return self;
-}
-
 #pragma mark - Debugging
 
 - (NSString *)description;

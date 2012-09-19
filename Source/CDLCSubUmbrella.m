@@ -14,7 +14,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _command.cmd = [cursor readInt32];
+        _command.cmd     = [cursor readInt32];
         _command.cmdsize = [cursor readInt32];
         
         NSUInteger length = _command.cmdsize - sizeof(_command);

@@ -284,7 +284,7 @@
         
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
-        NSParameterAssert(listHeader.entsize == [self.machOFile uses64BitABI] ? 16 : 8);
+        NSParameterAssert(listHeader.entsize == ([self.machOFile uses64BitABI] ? 16 : 8));
         
         for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_property objc2Property;
@@ -359,7 +359,7 @@
         
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
-        NSParameterAssert(listHeader.entsize == [self.machOFile uses64BitABI] ? 24 : 12);
+        NSParameterAssert(listHeader.entsize == ([self.machOFile uses64BitABI] ? 24 : 12));
         
         for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_method objc2Method;
@@ -395,7 +395,7 @@
         
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
-        NSParameterAssert(listHeader.entsize == [self.machOFile uses64BitABI] ? 32 : 20);
+        NSParameterAssert(listHeader.entsize == ([self.machOFile uses64BitABI] ? 32 : 20));
         
         for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_ivar objc2Ivar;

@@ -5,10 +5,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include <mach-o/arch.h>
-#include <mach-o/loader.h>
-#include <mach-o/fat.h>
-#include <mach-o/swap.h>
 #include <mach/machine.h> // For cpu_type_t, cpu_subtype_t
 
 typedef struct {
@@ -18,24 +14,26 @@ typedef struct {
 
 @class CDMachOFile, CDSearchPathState;
 
-extern NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
-extern CDArch CDArchFromName(NSString *name);
-extern BOOL CDArchUses64BitABI(CDArch arch);
+NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype);
+CDArch CDArchFromName(NSString *name);
+BOOL CDArchUses64BitABI(CDArch arch);
+BOOL CDArchUses64BitLibraries(CDArch arch);
 
 @interface CDFile : NSObject
 
-// Returns CDFatFile or CDMachOFile.
-+ (id)fileWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-+ (id)fileWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+// Returns CDFatFile or CDMachOFile
++ (id)fileWithContentsOfFile:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+
+- (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 
 @property (readonly) NSString *filename;
 @property (readonly) NSData *data;
-@property (readonly) NSUInteger archOffset;
-@property (readonly) NSUInteger archSize;
 @property (readonly) CDSearchPathState *searchPathState;
 
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
+- (BOOL)bestMatchForLocalArch:(CDArch *)oArchPtr;
+- (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
+
+@property (nonatomic, readonly) NSString *architectureNameDescription;
 
 @end

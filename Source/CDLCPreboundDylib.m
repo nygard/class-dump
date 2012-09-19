@@ -17,12 +17,12 @@
 {
     if ((self = [super initWithDataCursor:cursor])) {
         //NSLog(@"current offset: %u", [cursor offset]);
-        _preboundDylibCommand.cmd = [cursor readInt32];
+        _preboundDylibCommand.cmd     = [cursor readInt32];
         _preboundDylibCommand.cmdsize = [cursor readInt32];
         //NSLog(@"cmdsize: %u", preboundDylibCommand.cmdsize);
         
-        _preboundDylibCommand.name.offset = [cursor readInt32];
-        _preboundDylibCommand.nmodules = [cursor readInt32];
+        _preboundDylibCommand.name.offset           = [cursor readInt32];
+        _preboundDylibCommand.nmodules              = [cursor readInt32];
         _preboundDylibCommand.linked_modules.offset = [cursor readInt32];
         
         if (_preboundDylibCommand.cmdsize > 20) {

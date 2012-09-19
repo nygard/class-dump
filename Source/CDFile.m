@@ -5,6 +5,7 @@
 
 #import "CDFile.h"
 
+#include <mach-o/arch.h>
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
 #import "CDSearchPathState.h"
@@ -12,17 +13,28 @@
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);
-    if (archInfo == NULL)
-        return [NSString stringWithFormat:@"0x%x:0x%x", cputype, cpusubtype];
+    if (archInfo != NULL)
+        return [NSString stringWithUTF8String:archInfo->name];
 
-    return [NSString stringWithUTF8String:archInfo->name];
+    // Special cases until the built-in function recognizes these.
+    switch (cputype) {
+        case CPU_TYPE_ARM: {
+            switch (cpusubtype) {
+                case 11: return @"armv7s"; // Not recognized in 10.8.0
+                default: break;
+            }
+        }
+        default: break;
+    }
+
+    return [NSString stringWithFormat:@"0x%x:0x%x", cputype, cpusubtype];
 }
 
 CDArch CDArchFromName(NSString *name)
 {
     CDArch arch;
 
-    arch.cputype = CPU_TYPE_ANY;
+    arch.cputype    = CPU_TYPE_ANY;
     arch.cpusubtype = 0;
 
     if (name == nil)
@@ -30,21 +42,25 @@ CDArch CDArchFromName(NSString *name)
 
     const NXArchInfo *archInfo = NXGetArchInfoFromName([name UTF8String]);
     if (archInfo == NULL) {
-        NSScanner *scanner;
-        NSString *ignore;
-
-        scanner = [[NSScanner alloc] initWithString:name];
-        if ([scanner scanHexInt:(uint32_t *)&arch.cputype]
-            && [scanner scanString:@":" intoString:&ignore]
-            && [scanner scanHexInt:(uint32_t *)&arch.cpusubtype]) {
-            // Great!
-            //NSLog(@"scanned 0x%08x : 0x%08x from '%@'", arch.cputype, arch.cpusubtype, name);
+        if ([name isEqualToString:@"armv7s"]) { // Not recognized in 10.8.0
+            arch.cputype    = CPU_TYPE_ARM;
+            arch.cpusubtype = 11;
         } else {
-            arch.cputype = CPU_TYPE_ANY;
-            arch.cpusubtype = 0;
+            NSString *ignore;
+            
+            NSScanner *scanner = [[NSScanner alloc] initWithString:name];
+            if ([scanner scanHexInt:(uint32_t *)&arch.cputype]
+                && [scanner scanString:@":" intoString:&ignore]
+                && [scanner scanHexInt:(uint32_t *)&arch.cpusubtype]) {
+                // Great!
+                //NSLog(@"scanned 0x%08x : 0x%08x from '%@'", arch.cputype, arch.cpusubtype, name);
+            } else {
+                arch.cputype    = CPU_TYPE_ANY;
+                arch.cpusubtype = 0;
+            }
         }
     } else {
-        arch.cputype = archInfo->cputype;
+        arch.cputype    = archInfo->cputype;
         arch.cpusubtype = archInfo->cpusubtype;
     }
 
@@ -53,8 +69,18 @@ CDArch CDArchFromName(NSString *name)
 
 BOOL CDArchUses64BitABI(CDArch arch)
 {
-    return (arch.cputype & CPU_ARCH_MASK) == CPU_ARCH_ABI64;
+    return (arch.cputype & CPU_ARCH_ABI64) == CPU_ARCH_ABI64;
 }
+
+BOOL CDArchUses64BitLibraries(CDArch arch)
+{
+    return (arch.cpusubtype & CPU_SUBTYPE_LIB64) == CPU_SUBTYPE_LIB64;
+}
+
+#pragma mark -
+
+@interface CDFile ()
+@end
 
 #pragma mark -
 
@@ -62,38 +88,22 @@ BOOL CDArchUses64BitABI(CDArch arch)
 {
     NSString *_filename;
     NSData *_data;
-    NSUInteger _archOffset;
-    NSUInteger _archSize;
     CDSearchPathState *_searchPathState;
 }
 
-+ (id)fileWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+// Returns CDFatFile or CDMachOFile
++ (id)fileWithContentsOfFile:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
-    return [self fileWithData:data archOffset:0 archSize:[data length] filename:filename searchPathState:searchPathState];
+    NSData *data = [NSData dataWithContentsOfMappedFile:filename];
+    CDFatFile *fatFile = [[CDFatFile alloc] initWithData:data filename:filename searchPathState:searchPathState];
+    if (fatFile != nil)
+        return fatFile;
+    
+    CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:data filename:filename searchPathState:searchPathState];
+    return machOFile;
 }
 
-+ (id)fileWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
-{
-    CDFatFile *fatFile = nil;
-
-    if (offset == 0)
-        fatFile = [[CDFatFile alloc] initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState];
-
-    if (fatFile == nil) {
-        CDMachOFile *machOFile = [[CDMachOFile alloc] initWithData:data archOffset:offset archSize:size filename:filename searchPathState:searchPathState];
-        return machOFile;
-    }
-
-    return fatFile;
-}
-
-- (id)init;
-{
-    [NSException raise:@"RejectUnusedImplementation" format:@"-initWithData: is the designated initializer"];
-    return nil;
-}
-
-- (id)initWithData:(NSData *)data archOffset:(NSUInteger)offset archSize:(NSUInteger)size filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
+- (id)initWithData:(NSData *)data filename:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
     if ((self = [super init])) {
         // Otherwise reading the magic number fails.
@@ -101,10 +111,8 @@ BOOL CDArchUses64BitABI(CDArch arch)
             return nil;
         }
         
-        _filename = filename;
-        _data = data;
-        _archOffset = offset;
-        _archSize = size;
+        _filename        = filename;
+        _data            = data;
         _searchPathState = searchPathState;
     }
 
@@ -113,17 +121,37 @@ BOOL CDArchUses64BitABI(CDArch arch)
 
 #pragma mark -
 
-- (BOOL)bestMatchForLocalArch:(CDArch *)archPtr;
-{
-    if (archPtr != NULL) {
-        archPtr->cputype = CPU_TYPE_ANY;
-        archPtr->cpusubtype = 0;
-    }
+// Return YES on success.  If oArchPtr is not NULL, return the best match.
+// Return NO on failure, oArchPtr is untouched.
 
-    return YES;
+- (BOOL)bestMatchForLocalArch:(CDArch *)oArchPtr;
+{
+    const NXArchInfo *archInfo = NXGetLocalArchInfo();
+    if (archInfo == NULL)
+        return NO;
+    
+    CDArch arch = { archInfo->cputype, archInfo->cpusubtype };
+    
+    if ([self bestMatchForArch:&arch]) {
+        if (oArchPtr != NULL)
+            *oArchPtr = arch;
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (BOOL)bestMatchForArch:(CDArch *)ioArchPtr;
+{
+    return NO;
 }
 
 - (CDMachOFile *)machOFileWithArch:(CDArch)arch;
+{
+    return nil;
+}
+
+- (NSString *)architectureNameDescription;
 {
     return nil;
 }

@@ -13,14 +13,9 @@
 
 - (id)initWithData:(NSData *)data;
 {
-    return [self initWithData:data offset:0];
-}
-
-- (id)initWithData:(NSData *)data offset:(NSUInteger)offset;
-{
     if ((self = [super init])) {
         _data = data;
-        _offset = offset;
+        _offset = 0;
     }
 
     return self;

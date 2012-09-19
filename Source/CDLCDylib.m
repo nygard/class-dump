@@ -22,12 +22,12 @@ static NSString *CDDylibVersionString(uint32_t version)
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _dylibCommand.cmd = [cursor readInt32];
+        _dylibCommand.cmd     = [cursor readInt32];
         _dylibCommand.cmdsize = [cursor readInt32];
         
-        _dylibCommand.dylib.name.offset = [cursor readInt32];
-        _dylibCommand.dylib.timestamp = [cursor readInt32];
-        _dylibCommand.dylib.current_version = [cursor readInt32];
+        _dylibCommand.dylib.name.offset           = [cursor readInt32];
+        _dylibCommand.dylib.timestamp             = [cursor readInt32];
+        _dylibCommand.dylib.current_version       = [cursor readInt32];
         _dylibCommand.dylib.compatibility_version = [cursor readInt32];
         
         NSUInteger length = _dylibCommand.cmdsize - sizeof(_dylibCommand);
