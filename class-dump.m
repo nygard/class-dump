@@ -278,16 +278,14 @@ int main(int argc, char *argv[])
                 classDump.targetArch = targetArch;
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
-                if ([classDump loadFile:file]) {
-#if 0
-                    [classDump showHeader];
-                    [classDump showLoadCommands];
-                    exit(5);
-#endif
-
+                NSError *error;
+                if (![classDump loadFile:file error:&error]) {
+                    fprintf(stderr, "Error: %s\n", [[error localizedFailureReason] UTF8String]);
+                    exit(1);
+                } else {
                     [classDump processObjectiveCData];
                     [classDump registerTypes];
-
+                    
                     if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                         visitor.classDump = classDump;

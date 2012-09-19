@@ -18,6 +18,10 @@
 #import "CDTypeController.h"
 #import "CDSearchPathState.h"
 
+NSString *CDErrorDomain_ClassDump = @"CDErrorDomain_ClassDump";
+
+NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
+
 @interface CDClassDump ()
 @end
 
@@ -110,14 +114,18 @@
     return self.containsObjectiveCData || self.hasEncryptedFiles;
 }
 
-- (BOOL)loadFile:(CDFile *)file;
+- (BOOL)loadFile:(CDFile *)file error:(NSError **)error;
 {
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
     CDMachOFile *machOFile = [file machOFileWithArch:_targetArch];
     //NSLog(@"machOFile: %@", machOFile);
     if (machOFile == nil) {
-        NSString *str = [NSString stringWithFormat:@"Error: File doesn't contain the specified architecture (%@).  Available architectures are %@.", CDNameForCPUType(_targetArch.cputype, _targetArch.cpusubtype), file.architectureNameDescription];
-        fprintf(stderr, "%s\n\n", [str UTF8String]);
+        if (error != NULL) {
+            NSDictionary *userInfo = @{
+            NSLocalizedFailureReasonErrorKey : [NSString stringWithFormat:@"File doesn't contain the specified architecture (%@).  Available architectures are %@.", CDNameForCPUType(_targetArch.cputype, _targetArch.cpusubtype), file.architectureNameDescription],
+            };
+            *error = [NSError errorWithDomain:CDErrorDomain_ClassDump code:0 userInfo:userInfo];
+        }
         return NO;
     }
 
@@ -141,6 +149,13 @@
         }
         @catch (NSException *exception) {
             NSLog(@"Caught exception: %@", exception);
+            if (error != NULL) {
+                NSDictionary *userInfo = @{
+                NSLocalizedFailureReasonErrorKey : @"Caught exception",
+                CDErrorKey_Exception             : exception,
+                };
+                *error = [NSError errorWithDomain:CDErrorDomain_ClassDump code:0 userInfo:userInfo];
+            }
             return NO;
         }
     }
@@ -204,7 +219,7 @@
     if (machOFile == nil) {
         CDFile *file = [CDFile fileWithContentsOfFile:adjustedName searchPathState:self.searchPathState];
 
-        if (file == nil || [self loadFile:file] == NO)
+        if (file == nil || [self loadFile:file error:NULL] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedName);
 
         machOFile = _machOFilesByName[adjustedName];
