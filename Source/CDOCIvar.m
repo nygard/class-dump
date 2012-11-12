@@ -74,7 +74,7 @@
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
         if ([typeController shouldShowIvarOffsets]) {
-            [resultString appendFormat:@"\t// %1$ld = 0x%1$lx", self.offset];
+            [resultString appendFormat:@"\t// %ld = 0x%lx", self.offset, self.offset];
         }
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.type, self.name];
