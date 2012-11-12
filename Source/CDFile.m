@@ -21,9 +21,10 @@ NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
         case CPU_TYPE_ARM: {
             switch (cpusubtype) {
                 case 11: return @"armv7s"; // Not recognized in 10.8.0
-                default: break;
             }
+            break;
         }
+
         default: break;
     }
 
