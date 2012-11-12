@@ -5,7 +5,7 @@
 
 #import "NSError-CDExtensions.h"
 
-NSString *NSErrorDomain_ClassDump = @"com.codethecode.MachObjC.ErrorDomain";
+NSString *NSErrorDomain_ClassDump = @"com.stevenygard.MachObjC.ErrorDomain";
 
 @implementation NSError (CDExtensions)
 

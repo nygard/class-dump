@@ -8,7 +8,7 @@ using 'otool -ov', but presented as normal Objective-C declarations.
 
 The latest version and information is available at:
 
-    http://www.codethecode.com/projects/class-dump
+    http://stevenygard.com/projects/class-dump
 
 The source code is also available from my Github repository at:
 
@@ -80,4 +80,4 @@ Contact
 -------
 
 You may contact the author by:
-   e-mail:  class-dump at codethecode.com
+   e-mail:  nygard at gmail.com
