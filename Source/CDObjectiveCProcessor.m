@@ -16,6 +16,7 @@
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDSection.h"
+#import "CDProtocolUniquer.h"
 
 // Note: sizeof(long long) == 8 on both 32-bit and 64-bit.  sizeof(uint64_t) == 8.  So use [NSNumber numberWithUnsignedLongLong:].
 
@@ -28,8 +29,7 @@
     
     NSMutableArray *_categories;
     
-    NSMutableDictionary *_protocolsByName; // uniqued
-    NSMutableDictionary *_protocolsByAddress; // non-uniqued
+    CDProtocolUniquer *_protocolUniquer;
 }
 
 - (id)initWithMachOFile:(CDMachOFile *)machOFile;
@@ -39,8 +39,8 @@
         _classes = [[NSMutableArray alloc] init];
         _classesByAddress = [[NSMutableDictionary alloc] init];
         _categories = [[NSMutableArray alloc] init];
-        _protocolsByName = [[NSMutableDictionary alloc] init];
-        _protocolsByAddress = [[NSMutableDictionary alloc] init];
+        
+        _protocolUniquer = [[CDProtocolUniquer alloc] init];
     }
 
     return self;
@@ -123,23 +123,6 @@
         [_categories addObjectsFromArray:array];
 }
 
-- (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
-{
-    NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    return _protocolsByAddress[key];
-}
-
-- (void)setProtocol:(CDOCProtocol *)protocol withAddress:(uint64_t)address;
-{
-    NSNumber *key = [NSNumber numberWithUnsignedLongLong:address];
-    _protocolsByAddress[key] = protocol;
-}
-
-- (CDOCProtocol *)protocolForName:(NSString *)name;
-{
-    return _protocolsByName[name];
-}
-
 - (void)addCategory:(CDOCCategory *)category;
 {
     if (category != nil)
@@ -155,7 +138,7 @@
         [self.machOFile.dynamicSymbolTable loadSymbols];
 
         [self loadProtocols];
-        [self createUniquedProtocols];
+        [self.protocolUniquer createUniquedProtocols];
 
         // Load classes before categories, so we can get a dictionary of classes by address.
         [self loadClasses];
@@ -187,8 +170,8 @@
     for (CDOCCategory *category in _categories)
         [category registerTypesWithObject:typeController phase:phase];
 
-    for (NSString *name in [[_protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)])
-        [_protocolsByName[name] registerTypesWithObject:typeController phase:phase];
+    for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsSortedByName])
+        [protocol registerTypesWithObject:typeController phase:phase];
 }
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
@@ -197,17 +180,14 @@
     [classesAndCategories addObjectsFromArray:_classes];
     [classesAndCategories addObjectsFromArray:_categories];
 
+    [visitor willVisitObjectiveCProcessor:self];
+    [visitor visitObjectiveCProcessor:self];
+    
     // TODO: Sort protocols by dependency
     // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
     // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
-    NSArray *protocolNames = [[_protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)];
-
-    [visitor willVisitObjectiveCProcessor:self];
-    [visitor visitObjectiveCProcessor:self];
-
-    for (NSString *protocolName in protocolNames) {
-        [_protocolsByName[protocolName] recursivelyVisit:visitor];
-    }
+    for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsSortedByName])
+        [protocol recursivelyVisit:visitor];
 
     if ([[visitor classDump] shouldSortClassesByInheritance]) {
         [classesAndCategories sortTopologically];
@@ -218,75 +198,6 @@
         [aClassOrCategory recursivelyVisit:visitor];
 
     [visitor didVisitObjectiveCProcessor:self];
-}
-
-- (void)createUniquedProtocols;
-{
-    // Now unique the protocols by name and store in protocolsByName
-
-    for (NSNumber *key in [[_protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1 = _protocolsByAddress[key];
-        CDOCProtocol *p2 = _protocolsByName[p1.name];
-        if (p2 == nil) {
-            p2 = [[CDOCProtocol alloc] init];
-            [p2 setName:[p1 name]];
-            _protocolsByName[p2.name] = p2;
-            // adopted protocols still not set, will want uniqued instances
-        } else {
-        }
-    }
-
-    //NSLog(@"uniqued protocol names: %@", [[[protocolsByName allKeys] sortedArrayUsingSelector:@selector(compare:)] componentsJoinedByString:@", "]);
-
-    // And finally fill in adopted protocols, instance and class methods.  And properties.
-    for (NSNumber *key in [[_protocolsByAddress allKeys] sortedArrayUsingSelector:@selector(compare:)]) {
-        CDOCProtocol *p1 = _protocolsByAddress[key];
-        CDOCProtocol *uniqueProtocol = _protocolsByName[p1.name];
-        for (CDOCProtocol *p2 in [p1 protocols])
-            [uniqueProtocol addProtocol:_protocolsByName[p2.name]];
-
-        if ([[uniqueProtocol classMethods] count] == 0) {
-            for (CDOCMethod *method in [p1 classMethods])
-                [uniqueProtocol addClassMethod:method];
-        } else {
-            NSParameterAssert([[p1 classMethods] count] == 0 || [[uniqueProtocol classMethods] count] == [[p1 classMethods] count]);
-        }
-
-        if ([[uniqueProtocol instanceMethods] count] == 0) {
-            for (CDOCMethod *method in [p1 instanceMethods])
-                [uniqueProtocol addInstanceMethod:method];
-        } else {
-            if (!([[p1 instanceMethods] count] == 0 || [[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count])) {
-                //NSLog(@"p1 name: %@, uniqueProtocol name: %@", [p1 name], [uniqueProtocol name]);
-                //NSLog(@"p1 instanceMethods: %@", [p1 instanceMethods]);
-                //NSLog(@"uniqueProtocol instanceMethods: %@", [uniqueProtocol instanceMethods]);
-            }
-            NSParameterAssert([[p1 instanceMethods] count] == 0 || [[uniqueProtocol instanceMethods] count] == [[p1 instanceMethods] count]);
-        }
-
-        if ([[uniqueProtocol optionalClassMethods] count] == 0) {
-            for (CDOCMethod *method in [p1 optionalClassMethods])
-                [uniqueProtocol addOptionalClassMethod:method];
-        } else {
-            NSParameterAssert([[p1 optionalClassMethods] count] == 0 || [[uniqueProtocol optionalClassMethods] count] == [[p1 optionalClassMethods] count]);
-        }
-
-        if ([[uniqueProtocol optionalInstanceMethods] count] == 0) {
-            for (CDOCMethod *method in [p1 optionalInstanceMethods])
-                [uniqueProtocol addOptionalInstanceMethod:method];
-        } else {
-            NSParameterAssert([[p1 optionalInstanceMethods] count] == 0 || [[uniqueProtocol optionalInstanceMethods] count] == [[p1 optionalInstanceMethods] count]);
-        }
-
-        if ([[uniqueProtocol properties] count] == 0) {
-            for (CDOCProperty *property in [p1 properties])
-                [uniqueProtocol addProperty:property];
-        } else {
-            NSParameterAssert([[p1 properties] count] == 0 || [[uniqueProtocol properties] count] == [[p1 properties] count]);
-        }
-    }
-
-    //NSLog(@"protocolsByName: %@", protocolsByName);
 }
 
 // Returns list of NSNumber containing the protocol addresses

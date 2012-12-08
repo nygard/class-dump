@@ -8,6 +8,7 @@
 @class CDMachOFile, CDSection, CDTypeController;
 @class CDClassDump, CDVisitor;
 @class CDOCClass, CDOCCategory, CDOCProtocol;
+@class CDProtocolUniquer;
 
 @interface CDObjectiveCProcessor : NSObject
 
@@ -25,11 +26,6 @@
 - (void)addClassesFromArray:(NSArray *)array;
 - (void)addCategoriesFromArray:(NSArray *)array;
 
-- (CDOCProtocol *)protocolWithAddress:(uint64_t)address;
-- (void)setProtocol:(CDOCProtocol *)aProtocol withAddress:(uint64_t)address;
-
-- (CDOCProtocol *)protocolForName:(NSString *)name;
-
 - (void)addCategory:(CDOCCategory *)category;
 
 - (void)process;
@@ -41,5 +37,7 @@
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
 - (NSArray *)protocolAddressListAtAddress:(uint64_t)address;
+
+@property (readonly) CDProtocolUniquer *protocolUniquer;
 
 @end

@@ -20,6 +20,7 @@
 #import "CDSection32.h"
 #import "CDLCSegment32.h"
 #import "CDVisitor.h"
+#import "CDProtocolUniquer.h"
 
 
 #import "CDSection.h"
@@ -326,15 +327,8 @@ static BOOL debug = NO;
     }
 
     // Process protocols
-    for (NSNumber *protocolAddress in [self protocolAddressListAtAddress:objcClass.protocols]) {
-        // TODO: imp
-        CDOCProtocol *protocol = [self protocolWithAddress:[protocolAddress unsignedLongLongValue]];
-        if (protocol != nil) {
-            CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
-            if (uniqueProtocol != nil)
-                [aClass addProtocol:uniqueProtocol];
-        }
-    }
+    for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsAtAddresses:[self protocolAddressListAtAddress:objcClass.protocols]])
+        [aClass addProtocol:protocol];
 
     return aClass;
 }
@@ -437,15 +431,8 @@ static BOOL debug = NO;
         for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.class_methods])
             [category addClassMethod:method];
 
-        for (NSNumber *protocolAddress in [self protocolAddressListAtAddress:objcCategory.protocols]) {
-            // TODO: imp
-            CDOCProtocol *protocol = [self protocolWithAddress:[protocolAddress unsignedLongLongValue]];
-            if (protocol != nil) {
-                CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
-                if (uniqueProtocol != nil)
-                    [category addProtocol:uniqueProtocol];
-            }
-        }
+        for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsAtAddresses:[self protocolAddressListAtAddress:objcCategory.protocols]])
+            [category addProtocol:protocol];
     }
 
     return category;
@@ -453,11 +440,11 @@ static BOOL debug = NO;
 
 - (CDOCProtocol *)protocolAtAddress:(uint32_t)address;
 {
-    CDOCProtocol *protocol = [self protocolWithAddress:address];
+    CDOCProtocol *protocol = [self.protocolUniquer protocolWithAddress:address];
     if (protocol == nil) {
         //NSLog(@"Creating new protocol from address: 0x%08x", address);
         protocol = [[CDOCProtocol alloc] init];
-        [self setProtocol:protocol withAddress:address];
+        [self.protocolUniquer setProtocol:protocol withAddress:address];
 
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
 

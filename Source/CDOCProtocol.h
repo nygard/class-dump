@@ -42,6 +42,7 @@
 - (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
 
 - (NSString *)methodSearchContext;
+- (void)recursivelyVisit:(CDVisitor *)visitor;
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 

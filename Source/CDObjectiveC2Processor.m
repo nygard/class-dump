@@ -18,6 +18,7 @@
 #import "CDSymbol.h"
 #import "CDOCProperty.h"
 #import "cd_objc2.h"
+#import "CDProtocolUniquer.h"
 
 @implementation CDObjectiveC2Processor
 {
@@ -65,10 +66,10 @@
     if (address == 0)
         return nil;
     
-    CDOCProtocol *protocol = [self protocolWithAddress:address];
+    CDOCProtocol *protocol = [self.protocolUniquer protocolWithAddress:address];
     if (protocol == nil) {
         protocol = [[CDOCProtocol alloc] init];
-        [self setProtocol:protocol withAddress:address];
+        [self.protocolUniquer setProtocol:protocol withAddress:address];
         
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
         NSParameterAssert([cursor offset] != 0);
@@ -153,16 +154,9 @@
     
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Category.classMethods])
         [category addClassMethod:method];
-    
-    for (NSNumber *protocolAddress in [self protocolAddressListAtAddress:objc2Category.protocols]) {
-        // TODO: imp
-        CDOCProtocol *protocol = [self protocolWithAddress:[protocolAddress unsignedLongLongValue]];
-        if (protocol != nil) {
-            CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
-            if (uniqueProtocol != nil)
-                [category addProtocol:uniqueProtocol];
-        }
-    }
+
+    for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsAtAddresses:[self protocolAddressListAtAddress:objc2Category.protocols]])
+        [category addProtocol:protocol];
     
     for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2Category.instanceProperties])
         [category addProperty:property];
@@ -268,15 +262,8 @@
         [aClass addClassMethod:method];
     
     // Process protocols
-    for (NSNumber *protocolAddress in [self protocolAddressListAtAddress:objc2ClassData.baseProtocols]) {
-        // TODO: imp
-        CDOCProtocol *protocol = [self protocolWithAddress:[protocolAddress unsignedLongLongValue]];
-        if (protocol != nil) {
-            CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
-            if (uniqueProtocol != nil)
-                [aClass addProtocol:uniqueProtocol];
-        }
-    }
+    for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsAtAddresses:[self protocolAddressListAtAddress:objc2ClassData.baseProtocols]])
+        [aClass addProtocol:protocol];
     
     for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties])
         [aClass addProperty:property];
