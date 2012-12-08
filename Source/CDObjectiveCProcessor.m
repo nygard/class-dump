@@ -289,4 +289,11 @@
     //NSLog(@"protocolsByName: %@", protocolsByName);
 }
 
+// Returns list of NSNumber containing the protocol addresses
+- (NSArray *)protocolAddressListAtAddress:(uint64_t)address;
+{
+    // Implement in subclasses
+    return nil;
+}
+
 @end

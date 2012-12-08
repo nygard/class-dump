@@ -40,4 +40,6 @@
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
+- (NSArray *)protocolAddressListAtAddress:(uint64_t)address;
+
 @end

@@ -154,8 +154,15 @@
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Category.classMethods])
         [category addClassMethod:method];
     
-    for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objc2Category.protocols])
-        [category addProtocol:protocol];
+    for (NSNumber *protocolAddress in [self protocolAddressListAtAddress:objc2Category.protocols]) {
+        // TODO: imp
+        CDOCProtocol *protocol = [self protocolWithAddress:[protocolAddress unsignedLongLongValue]];
+        if (protocol != nil) {
+            CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
+            if (uniqueProtocol != nil)
+                [category addProtocol:uniqueProtocol];
+        }
+    }
     
     for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2Category.instanceProperties])
         [category addProperty:property];
@@ -261,8 +268,15 @@
         [aClass addClassMethod:method];
     
     // Process protocols
-    for (CDOCProtocol *protocol in [self uniquedProtocolListAtAddress:objc2ClassData.baseProtocols])
-        [aClass addProtocol:protocol];
+    for (NSNumber *protocolAddress in [self protocolAddressListAtAddress:objc2ClassData.baseProtocols]) {
+        // TODO: imp
+        CDOCProtocol *protocol = [self protocolWithAddress:[protocolAddress unsignedLongLongValue]];
+        if (protocol != nil) {
+            CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
+            if (uniqueProtocol != nil)
+                [aClass addProtocol:uniqueProtocol];
+        }
+    }
     
     for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2ClassData.baseProperties])
         [aClass addProperty:property];
@@ -421,10 +435,10 @@
     return ivars;
 }
 
-// Returns list of uniqued protocols.
-- (NSArray *)uniquedProtocolListAtAddress:(uint64_t)address;
+// Returns list of NSNumber containing the protocol addresses
+- (NSArray *)protocolAddressListAtAddress:(uint64_t)address;
 {
-    NSMutableArray *protocols = [[NSMutableArray alloc] init];;
+    NSMutableArray *addresses = [[NSMutableArray alloc] init];;
     
     if (address != 0) {
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
@@ -435,17 +449,12 @@
             if (val == 0) {
                 NSLog(@"Warning: protocol address in protocol list was 0.");
             } else {
-                CDOCProtocol *protocol = [self protocolWithAddress:val];
-                if (protocol != nil) {
-                    CDOCProtocol *uniqueProtocol = [self protocolForName:[protocol name]];
-                    if (uniqueProtocol != nil)
-                        [protocols addObject:uniqueProtocol];
-                }
+                [addresses addObject:[NSNumber numberWithUnsignedLongLong:val]];
             }
         }
     }
     
-    return protocols;
+    return [addresses copy];
 }
 
 - (CDSection *)objcImageInfoSection;
