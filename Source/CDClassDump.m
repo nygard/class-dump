@@ -190,10 +190,13 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
 {
     NSString *adjustedName = nil;
     NSString *executablePathPrefix = @"@executable_path";
+    NSString *loaderPathPrefix = @"@loader_path";
     NSString *rpathPrefix = @"@rpath";
 
     if ([name hasPrefix:executablePathPrefix]) {
         adjustedName = [name stringByReplacingOccurrencesOfString:executablePathPrefix withString:self.searchPathState.executablePath];
+    } else if ([name hasPrefix:loaderPathPrefix]) {
+        adjustedName = [name stringByReplacingOccurrencesOfString:loaderPathPrefix withString:self.searchPathState.executablePath];
     } else if ([name hasPrefix:rpathPrefix]) {
         //NSLog(@"Searching for %@ through run paths: %@", anID, [searchPathState searchPaths]);
         for (NSString *searchPath in [self.searchPathState searchPaths]) {
