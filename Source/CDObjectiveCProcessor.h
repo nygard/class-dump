@@ -40,6 +40,4 @@
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
-- (void)createUniquedProtocols;
-
 @end

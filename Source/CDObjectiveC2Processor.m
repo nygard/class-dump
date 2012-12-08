@@ -31,8 +31,6 @@
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
         [self protocolAtAddress:[cursor readPtr]];
-    
-    [self createUniquedProtocols];
 }
 
 - (void)loadClasses;

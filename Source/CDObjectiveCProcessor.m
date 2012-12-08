@@ -155,6 +155,7 @@
         [self.machOFile.dynamicSymbolTable loadSymbols];
 
         [self loadProtocols];
+        [self createUniquedProtocols];
 
         // Load classes before categories, so we can get a dictionary of classes by address.
         [self loadClasses];

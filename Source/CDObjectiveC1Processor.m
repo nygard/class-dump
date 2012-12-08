@@ -514,8 +514,6 @@ static BOOL debug = NO;
     NSUInteger count = [protocolSection size] / sizeof(struct cd_objc_protocol);
     for (NSUInteger index = 0; index < count; index++, addr += (uint32_t)sizeof(struct cd_objc_protocol))
         [self protocolAtAddress:addr]; // Forces them to be loaded
-
-    [self createUniquedProtocols];
 }
 
 - (CDSection *)objcImageInfoSection;
