@@ -430,7 +430,7 @@ static BOOL debugMerge = NO;
         case 'f': return @"float";
         case 'd': return @"double";
         case 'D': return @"long double";
-        case 'B': return @"_Bool"; /* C99 _Bool or C++ bool */
+        case 'B': return @"_Bool"; // C99 _Bool or C++ bool
         case 'v': return @"void";
         case '*': return @"STR";
         case '#': return @"Class";

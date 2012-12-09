@@ -37,7 +37,7 @@
 
 - (NSString *)formattedString;
 {
-    return [NSString stringWithFormat:@"/*\n * %@\n */\n", self.name];
+    return [NSString stringWithFormat:@"//\n// %@\n//\n", self.name];
 }
 
 @end
