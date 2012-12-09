@@ -37,14 +37,14 @@
 {
     if ((self = [super init])) {
         _name = nil;
-        _protocols = [[NSMutableArray alloc] init];
-        _classMethods = [[NSMutableArray alloc] init];
-        _instanceMethods = [[NSMutableArray alloc] init];
-        _optionalClassMethods = [[NSMutableArray alloc] init];
+        _protocols               = [[NSMutableArray alloc] init];
+        _classMethods            = [[NSMutableArray alloc] init];
+        _instanceMethods         = [[NSMutableArray alloc] init];
+        _optionalClassMethods    = [[NSMutableArray alloc] init];
         _optionalInstanceMethods = [[NSMutableArray alloc] init];
-        _properties = [[NSMutableArray alloc] init];
+        _properties              = [[NSMutableArray alloc] init];
         
-        _adoptedProtocolNames = [[NSMutableSet alloc] init];
+        _adoptedProtocolNames    = [[NSMutableSet alloc] init];
     }
 
     return self;
@@ -231,5 +231,101 @@
         [visitor visitProperty:property];
 }
 #endif
+
+#pragma mark -
+
+- (void)mergeMethodsFromProtocol:(CDOCProtocol *)other;
+{
+    NSMutableDictionary *instanceMethodsByName         = [NSMutableDictionary dictionary];
+    NSMutableDictionary *optionalInstanceMethodsByName = [NSMutableDictionary dictionary];
+    NSMutableDictionary *classMethodsByName            = [NSMutableDictionary dictionary];
+    NSMutableDictionary *optionalClassMethodsByName    = [NSMutableDictionary dictionary];
+    
+    for (CDOCMethod *method in _instanceMethods)
+        instanceMethodsByName[method.name] = method;
+    
+    for (CDOCMethod *method in _optionalInstanceMethods)
+        optionalInstanceMethodsByName[method.name] = method;
+    
+    for (CDOCMethod *method in _classMethods)
+        classMethodsByName[method.name] = method;
+    
+    for (CDOCMethod *method in _optionalClassMethods)
+        optionalClassMethodsByName[method.name] = method;
+    
+    // Instance methods
+    for (CDOCMethod *method in other.instanceMethods) {
+        CDOCMethod *m2 = instanceMethodsByName[method.name];
+        if (m2 == nil) {
+            // Add if it is not an optional instance method.
+            if (optionalInstanceMethodsByName[method.name] == nil) {
+                [self addInstanceMethod:method];
+                instanceMethodsByName[method.name] = method;
+            }
+        }
+    }
+    
+    for (CDOCMethod *method in other.optionalInstanceMethods) {
+        CDOCMethod *m2 = optionalInstanceMethodsByName[method.name];
+        if (m2 == nil) {
+            m2 = instanceMethodsByName[method.name];
+            if (m2 == nil) {
+                [self addOptionalInstanceMethod:method];
+                optionalInstanceMethodsByName[method.name] = method;
+            } else {
+                // Move to the optional instance methods.
+                [self addOptionalInstanceMethod:m2];
+                [_instanceMethods removeObject:m2];
+                optionalInstanceMethodsByName[m2.name] = m2;
+                [instanceMethodsByName removeObjectForKey:m2.name];
+            }
+        }
+    }
+
+    // Class methods
+    for (CDOCMethod *method in other.classMethods) {
+        CDOCMethod *m2 = classMethodsByName[method.name];
+        if (m2 == nil) {
+            // Add if it is not an optional class method.
+            if (optionalClassMethodsByName[method.name] == nil) {
+                [self addClassMethod:method];
+                classMethodsByName[method.name] = method;
+            }
+        }
+    }
+    
+    for (CDOCMethod *method in other.optionalClassMethods) {
+        CDOCMethod *m2 = optionalClassMethodsByName[method.name];
+        if (m2 == nil) {
+            m2 = classMethodsByName[method.name];
+            if (m2 == nil) {
+                [self addOptionalClassMethod:method];
+                optionalClassMethodsByName[method.name] = method;
+            } else {
+                // Move to the optional class methods.
+                [self addOptionalClassMethod:m2];
+                [_classMethods removeObject:m2];
+                optionalClassMethodsByName[m2.name] = m2;
+                [classMethodsByName removeObjectForKey:m2.name];
+            }
+        }
+    }
+}
+
+- (void)mergePropertiesFromProtocol:(CDOCProtocol *)other;
+{
+    NSMutableDictionary *propertiesByName = [NSMutableDictionary dictionary];
+
+    for (CDOCProperty *property in _properties)
+        propertiesByName[property.name] = property;
+    
+    for (CDOCProperty *property in other.properties) {
+        CDOCProperty *p2 = propertiesByName[property.name];
+        if (p2 == nil) {
+            [self addProperty:property];
+            propertiesByName[property.name] = property;
+        }
+    }
+}
 
 @end

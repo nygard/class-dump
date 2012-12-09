@@ -46,4 +46,7 @@
 
 - (void)visitMethods:(CDVisitor *)visitor propertyState:(CDVisitorPropertyState *)propertyState;
 
+- (void)mergeMethodsFromProtocol:(CDOCProtocol *)other;
+- (void)mergePropertiesFromProtocol:(CDOCProtocol *)other;
+
 @end
