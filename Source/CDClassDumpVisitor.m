@@ -70,9 +70,10 @@
         [self.resultString appendFormat:@"//       SDK version: %@\n", machOFile.minVersionIOS.SDKVersionString];
     }
 
-    [self.resultString appendFormat:@"//\n"];
-    if (processor.garbageCollectionStatus != nil)
+    if (processor.garbageCollectionStatus != nil) {
+        [self.resultString appendFormat:@"//\n"];
         [self.resultString appendFormat:@"//       Objective-C Garbage Collection: %@\n", processor.garbageCollectionStatus];
+    }
 
     [machOFile.dyldEnvironment enumerateObjectsUsingBlock:^(CDLCDylinker *env, NSUInteger index, BOOL *stop){
         if (index == 0) {
