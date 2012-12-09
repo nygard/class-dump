@@ -170,7 +170,7 @@
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 {
-    if ([visitor.classDump shouldShowName:self.name]) {
+    if ([visitor.classDump shouldShowName:self.name] && visitor.shouldShowProtocolSection) {
         CDVisitorPropertyState *propertyState = [[CDVisitorPropertyState alloc] initWithProperties:self.properties];
         
         [visitor willVisitProtocol:self];

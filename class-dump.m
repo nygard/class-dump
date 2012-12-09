@@ -56,6 +56,7 @@ void print_usage(void)
 #define CD_OPT_SDK_IOS     4
 #define CD_OPT_SDK_MAC     5
 #define CD_OPT_SDK_ROOT    6
+#define CD_OPT_HIDE        7
 
 int main(int argc, char *argv[])
 {
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
         CDArch targetArch;
         BOOL hasSpecifiedArch = NO;
         NSString *outputPath;
+        NSMutableSet *hiddenSections = [NSMutableSet set];
 
         int ch;
         BOOL errorFlag = NO;
@@ -89,6 +91,7 @@ int main(int argc, char *argv[])
             { "sdk-ios",                 required_argument, NULL, CD_OPT_SDK_IOS },
             { "sdk-mac",                 required_argument, NULL, CD_OPT_SDK_MAC },
             { "sdk-root",                required_argument, NULL, CD_OPT_SDK_ROOT },
+            { "hide",                    required_argument, NULL, CD_OPT_HIDE },
             { NULL,                      0,                 NULL, 0 },
         };
 
@@ -144,6 +147,17 @@ int main(int argc, char *argv[])
                     //NSLog(@"root: %@", root);
                     classDump.sdkRoot = root;
                     
+                    break;
+                }
+                    
+                case CD_OPT_HIDE: {
+                    NSString *str = [NSString stringWithUTF8String:optarg];
+                    if ([str isEqualToString:@"all"]) {
+                        [hiddenSections addObject:@"structures"];
+                        [hiddenSections addObject:@"protocols"];
+                    } else {
+                        [hiddenSections addObject:str];
+                    }
                     break;
                 }
                     
@@ -300,6 +314,8 @@ int main(int argc, char *argv[])
                     } else {
                         CDClassDumpVisitor *visitor = [[CDClassDumpVisitor alloc] init];
                         visitor.classDump = classDump;
+                        if ([hiddenSections containsObject:@"structures"]) visitor.shouldShowStructureSection = NO;
+                        if ([hiddenSections containsObject:@"protocols"])  visitor.shouldShowProtocolSection  = NO;
                         [classDump recursivelyVisit:visitor];
                     }
                 }
