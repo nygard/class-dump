@@ -406,12 +406,12 @@
             objc2Ivar.size = [cursor readInt32];
             
             if (objc2Ivar.name != 0) {
-                NSString *name = [self.machOFile stringAtAddress:objc2Ivar.name];
-                NSString *type = [self.machOFile stringAtAddress:objc2Ivar.type];
+                NSString *name       = [self.machOFile stringAtAddress:objc2Ivar.name];
+                NSString *typeString = [self.machOFile stringAtAddress:objc2Ivar.type];
                 CDMachOFileDataCursor *offsetCursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:objc2Ivar.offset];
                 NSUInteger offset = [offsetCursor readPtr];
                 
-                CDOCInstanceVariable *ivar = [[CDOCInstanceVariable alloc] initWithName:name type:type offset:offset];
+                CDOCInstanceVariable *ivar = [[CDOCInstanceVariable alloc] initWithName:name typeString:typeString offset:offset];
                 [ivars addObject:ivar];
             } else {
                 //NSLog(@"%016lx %016lx %016lx  %08x %08x", objc2Ivar.offset, objc2Ivar.name, objc2Ivar.type, objc2Ivar.alignment, objc2Ivar.size);

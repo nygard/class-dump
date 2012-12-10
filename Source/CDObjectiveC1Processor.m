@@ -277,13 +277,13 @@ static BOOL debug = NO;
             objcIvar.type   = [cursor readInt32];
             objcIvar.offset = [cursor readInt32];
 
-            NSString *name = [self.machOFile stringAtAddress:objcIvar.name];
-            NSString *type = [self.machOFile stringAtAddress:objcIvar.type];
+            NSString *name       = [self.machOFile stringAtAddress:objcIvar.name];
+            NSString *typeString = [self.machOFile stringAtAddress:objcIvar.type];
 
             // bitfields don't need names.
             // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
-            if (type != nil) {
-                CDOCInstanceVariable *instanceVariable = [[CDOCInstanceVariable alloc] initWithName:name type:type offset:objcIvar.offset];
+            if (typeString != nil) {
+                CDOCInstanceVariable *instanceVariable = [[CDOCInstanceVariable alloc] initWithName:name typeString:typeString offset:objcIvar.offset];
                 [ivars addObject:instanceVariable];
             }
         }

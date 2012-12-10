@@ -20,22 +20,22 @@
 @implementation CDOCInstanceVariable
 {
     NSString *_name;
-    NSString *_type;
+    NSString *_typeString;
     NSUInteger _offset;
     
     BOOL _hasParsedType;
     CDType *_parsedType;
 }
 
-- (id)initWithName:(NSString *)name type:(NSString *)type offset:(NSUInteger)offset;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString offset:(NSUInteger)offset;
 {
     if ((self = [super init])) {
-        _name = name;
-        _type = type;
-        _offset = offset;
+        _name       = name;
+        _typeString = typeString;
+        _offset     = offset;
         
         _hasParsedType = NO;
-        _parsedType = nil;
+        _parsedType    = nil;
     }
 
     return self;
@@ -45,8 +45,8 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, type: '%@', offset: %lu",
-            NSStringFromClass([self class]), self.name, self.type, self.offset];
+    return [NSString stringWithFormat:@"[%@] name: %@, typeString: '%@', offset: %lu",
+            NSStringFromClass([self class]), self.name, self.typeString, self.offset];
 }
 
 #pragma mark -
@@ -56,7 +56,7 @@
     if (self.hasParsedType == NO) {
         NSError *error = nil;
 
-        CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.type];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.typeString];
         _parsedType = [parser parseType:&error];
         if (_parsedType == nil)
             NSLog(@"Warning: Parsing ivar type failed, %@", self.name);
@@ -69,7 +69,7 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:self.type];
+    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:self.typeString];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
@@ -77,7 +77,7 @@
             [resultString appendFormat:@"\t// %ld = 0x%lx", self.offset, self.offset];
         }
     } else
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.type, self.name];
+        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
 }
 
 @end

@@ -7,10 +7,10 @@
 
 @interface CDOCInstanceVariable : NSObject
 
-- (id)initWithName:(NSString *)name type:(NSString *)type offset:(NSUInteger)offset;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString offset:(NSUInteger)offset;
 
 @property (readonly) NSString *name;
-@property (readonly) NSString *type;
+@property (readonly) NSString *typeString;
 @property (readonly) NSUInteger offset;
 
 @property (nonatomic, readonly) CDType *parsedType;
