@@ -82,7 +82,7 @@
 		013D1F4613A5AEA100BF0A67 /* CDVisitorPropertyState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB832013A591D8003EDE60 /* CDVisitorPropertyState.m */; };
 		013D1F4713A5AEA100BF0A67 /* CDOCCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82EA13A591D8003EDE60 /* CDOCCategory.m */; };
 		013D1F4813A5AEA100BF0A67 /* CDOCClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82EC13A591D8003EDE60 /* CDOCClass.m */; };
-		013D1F4913A5AEA100BF0A67 /* CDOCIvar.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82EE13A591D8003EDE60 /* CDOCIvar.m */; };
+		013D1F4913A5AEA100BF0A67 /* CDOCInstanceVariable.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82EE13A591D8003EDE60 /* CDOCInstanceVariable.m */; };
 		013D1F4A13A5AEA100BF0A67 /* CDOCMethod.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82F013A591D8003EDE60 /* CDOCMethod.m */; };
 		013D1F4B13A5AEA100BF0A67 /* CDOCModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82F213A591D8003EDE60 /* CDOCModule.m */; };
 		013D1F4C13A5AEA100BF0A67 /* CDOCProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82F413A591D8003EDE60 /* CDOCProperty.m */; };
@@ -369,8 +369,8 @@
 		01EB82EA13A591D8003EDE60 /* CDOCCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDOCCategory.m; path = Source/CDOCCategory.m; sourceTree = SOURCE_ROOT; };
 		01EB82EB13A591D8003EDE60 /* CDOCClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDOCClass.h; path = Source/CDOCClass.h; sourceTree = SOURCE_ROOT; };
 		01EB82EC13A591D8003EDE60 /* CDOCClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDOCClass.m; path = Source/CDOCClass.m; sourceTree = SOURCE_ROOT; };
-		01EB82ED13A591D8003EDE60 /* CDOCIvar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDOCIvar.h; path = Source/CDOCIvar.h; sourceTree = SOURCE_ROOT; };
-		01EB82EE13A591D8003EDE60 /* CDOCIvar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDOCIvar.m; path = Source/CDOCIvar.m; sourceTree = SOURCE_ROOT; };
+		01EB82ED13A591D8003EDE60 /* CDOCInstanceVariable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDOCInstanceVariable.h; path = Source/CDOCInstanceVariable.h; sourceTree = SOURCE_ROOT; };
+		01EB82EE13A591D8003EDE60 /* CDOCInstanceVariable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDOCInstanceVariable.m; path = Source/CDOCInstanceVariable.m; sourceTree = SOURCE_ROOT; };
 		01EB82EF13A591D8003EDE60 /* CDOCMethod.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDOCMethod.h; path = Source/CDOCMethod.h; sourceTree = SOURCE_ROOT; };
 		01EB82F013A591D8003EDE60 /* CDOCMethod.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDOCMethod.m; path = Source/CDOCMethod.m; sourceTree = SOURCE_ROOT; };
 		01EB82F113A591D8003EDE60 /* CDOCModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDOCModule.h; path = Source/CDOCModule.h; sourceTree = SOURCE_ROOT; };
@@ -797,8 +797,8 @@
 				01EB82EA13A591D8003EDE60 /* CDOCCategory.m */,
 				01EB82EB13A591D8003EDE60 /* CDOCClass.h */,
 				01EB82EC13A591D8003EDE60 /* CDOCClass.m */,
-				01EB82ED13A591D8003EDE60 /* CDOCIvar.h */,
-				01EB82EE13A591D8003EDE60 /* CDOCIvar.m */,
+				01EB82ED13A591D8003EDE60 /* CDOCInstanceVariable.h */,
+				01EB82EE13A591D8003EDE60 /* CDOCInstanceVariable.m */,
 				01EB82EF13A591D8003EDE60 /* CDOCMethod.h */,
 				01EB82F013A591D8003EDE60 /* CDOCMethod.m */,
 				01EB82F113A591D8003EDE60 /* CDOCModule.h */,
@@ -1076,7 +1076,7 @@
 				013D1F4613A5AEA100BF0A67 /* CDVisitorPropertyState.m in Sources */,
 				013D1F4713A5AEA100BF0A67 /* CDOCCategory.m in Sources */,
 				013D1F4813A5AEA100BF0A67 /* CDOCClass.m in Sources */,
-				013D1F4913A5AEA100BF0A67 /* CDOCIvar.m in Sources */,
+				013D1F4913A5AEA100BF0A67 /* CDOCInstanceVariable.m in Sources */,
 				013D1F4A13A5AEA100BF0A67 /* CDOCMethod.m in Sources */,
 				013D1F4B13A5AEA100BF0A67 /* CDOCModule.m in Sources */,
 				013D1F4C13A5AEA100BF0A67 /* CDOCProperty.m in Sources */,

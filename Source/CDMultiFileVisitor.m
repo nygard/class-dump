@@ -10,7 +10,7 @@
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
 #import "CDOCProtocol.h"
-#import "CDOCIvar.h"
+#import "CDOCInstanceVariable.h"
 #import "CDTypeController.h"
 
 @interface CDMultiFileVisitor ()

@@ -3,7 +3,7 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
-#import "CDOCIvar.h"
+#import "CDOCInstanceVariable.h"
 
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
@@ -11,13 +11,13 @@
 #import "CDTypeController.h"
 #import "CDType.h"
 
-@interface CDOCIvar ()
+@interface CDOCInstanceVariable ()
 @property (assign) BOOL hasParsedType; // Private
 @end
 
 #pragma mark -
 
-@implementation CDOCIvar
+@implementation CDOCInstanceVariable
 {
     NSString *_name;
     NSString *_type;

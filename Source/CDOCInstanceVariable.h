@@ -7,7 +7,7 @@
 
 @class CDType, CDTypeController;
 
-@interface CDOCIvar : NSObject
+@interface CDOCInstanceVariable : NSObject
 
 - (id)initWithName:(NSString *)name type:(NSString *)type offset:(NSUInteger)offset;
 

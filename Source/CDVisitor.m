@@ -121,7 +121,7 @@
 {
 }
 
-- (void)visitIvar:(CDOCIvar *)ivar;
+- (void)visitIvar:(CDOCInstanceVariable *)ivar;
 {
 }
 

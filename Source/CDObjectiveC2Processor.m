@@ -11,7 +11,7 @@
 #import "CDMachOFileDataCursor.h"
 #import "CDOCClass.h"
 #import "CDOCMethod.h"
-#import "CDOCIvar.h"
+#import "CDOCInstanceVariable.h"
 #import "CDLCSymbolTable.h"
 #import "CDOCCategory.h"
 #import "CDClassDump.h"
@@ -411,7 +411,7 @@
                 CDMachOFileDataCursor *offsetCursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:objc2Ivar.offset];
                 NSUInteger offset = [offsetCursor readPtr];
                 
-                CDOCIvar *ivar = [[CDOCIvar alloc] initWithName:name type:type offset:offset];
+                CDOCInstanceVariable *ivar = [[CDOCInstanceVariable alloc] initWithName:name type:type offset:offset];
                 [ivars addObject:ivar];
             } else {
                 //NSLog(@"%016lx %016lx %016lx  %08x %08x", objc2Ivar.offset, objc2Ivar.name, objc2Ivar.type, objc2Ivar.alignment, objc2Ivar.size);

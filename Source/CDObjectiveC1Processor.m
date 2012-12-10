@@ -12,7 +12,7 @@
 #import "CDMachOFile.h"
 #import "CDOCCategory.h"
 #import "CDOCClass.h"
-#import "CDOCIvar.h"
+#import "CDOCInstanceVariable.h"
 #import "CDOCMethod.h"
 #import "CDOCModule.h"
 #import "CDOCProtocol.h"
@@ -283,7 +283,7 @@ static BOOL debug = NO;
             // bitfields don't need names.
             // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
             if (type != nil) {
-                CDOCIvar *anIvar = [[CDOCIvar alloc] initWithName:name type:type offset:objcIvar.offset];
+                CDOCInstanceVariable *anIvar = [[CDOCInstanceVariable alloc] initWithName:name type:type offset:objcIvar.offset];
                 [ivars addObject:anIvar];
             }
         }

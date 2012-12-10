@@ -13,7 +13,7 @@
 #import "CDTypeController.h"
 #import "CDTypeFormatter.h"
 #import "CDVisitorPropertyState.h"
-#import "CDOCIvar.h"
+#import "CDOCInstanceVariable.h"
 
 // Add newlines after properties
 #define ADD_SPACE
@@ -141,7 +141,7 @@ static BOOL debug = NO;
     }
 }
 
-- (void)visitIvar:(CDOCIvar *)ivar;
+- (void)visitIvar:(CDOCInstanceVariable *)ivar;
 {
     [ivar appendToString:self.resultString typeController:self.classDump.typeController];
     [self.resultString appendString:@"\n"];

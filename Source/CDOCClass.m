@@ -6,7 +6,7 @@
 #import "CDOCClass.h"
 
 #import "CDClassDump.h"
-#import "CDOCIvar.h"
+#import "CDOCInstanceVariable.h"
 #import "CDOCMethod.h"
 #import "CDType.h"
 #import "CDTypeController.h"
@@ -47,7 +47,7 @@
 {
     [super registerTypesWithObject:typeController phase:phase];
 
-    for (CDOCIvar *ivar in self.ivars) {
+    for (CDOCInstanceVariable *ivar in self.ivars) {
         [ivar.parsedType phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
@@ -74,7 +74,7 @@
         [visitor willVisitClass:self];
         
         [visitor willVisitIvarsOfClass:self];
-        for (CDOCIvar *ivar in self.ivars)
+        for (CDOCInstanceVariable *ivar in self.ivars)
             [visitor visitIvar:ivar];
         [visitor didVisitIvarsOfClass:self];
         
