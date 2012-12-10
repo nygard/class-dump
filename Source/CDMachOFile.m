@@ -56,6 +56,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     CDLCVersionMinimum *_minVersionIOS;
     CDLCSourceVersion *_sourceVersion;
     NSArray *_runPaths;
+    NSArray *_runPathCommands;
     NSArray *_dyldEnvironment;
     NSArray *_reExportedDylibs;
 
@@ -132,12 +133,13 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 
 - (void)_readLoadCommands:(CDMachOFileDataCursor *)cursor count:(uint32_t)count;
 {
-    NSMutableArray *loadCommands = [[NSMutableArray alloc] init];
+    NSMutableArray *loadCommands      = [[NSMutableArray alloc] init];
     NSMutableArray *dylibLoadCommands = [[NSMutableArray alloc] init];
-    NSMutableArray *segments = [[NSMutableArray alloc] init];
-    NSMutableArray *runPaths = [[NSMutableArray alloc] init];
-    NSMutableArray *dyldEnvironment = [[NSMutableArray alloc] init];
-    NSMutableArray *reExportedDylibs = [[NSMutableArray alloc] init];
+    NSMutableArray *segments          = [[NSMutableArray alloc] init];
+    NSMutableArray *runPaths          = [[NSMutableArray alloc] init];
+    NSMutableArray *runPathCommands   = [[NSMutableArray alloc] init];
+    NSMutableArray *dyldEnvironment   = [[NSMutableArray alloc] init];
+    NSMutableArray *reExportedDylibs  = [[NSMutableArray alloc] init];
     
     for (uint32_t index = 0; index < count; index++) {
         CDLoadCommand *loadCommand = [CDLoadCommand loadCommandWithDataCursor:cursor];
@@ -154,7 +156,10 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
             else if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])        self.symbolTable = (CDLCSymbolTable *)loadCommand;
             else if ([loadCommand isKindOfClass:[CDLCDynamicSymbolTable class]]) self.dynamicSymbolTable = (CDLCDynamicSymbolTable *)loadCommand;
             else if ([loadCommand isKindOfClass:[CDLCDyldInfo class]])           self.dyldInfo = (CDLCDyldInfo *)loadCommand;
-            else if ([loadCommand isKindOfClass:[CDLCRunPath class]])            [runPaths addObject:[(CDLCRunPath *)loadCommand resolvedRunPath]];
+            else if ([loadCommand isKindOfClass:[CDLCRunPath class]]) {
+                [runPaths addObject:[(CDLCRunPath *)loadCommand resolvedRunPath]];
+                [runPathCommands addObject:loadCommand];
+            }
         }
         //NSLog(@"loadCommand: %@", loadCommand);
     }
@@ -162,6 +167,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     _dylibLoadCommands = [dylibLoadCommands copy];
     _segments          = [segments copy];
     _runPaths          = [runPaths copy];
+    _runPathCommands   = [runPathCommands copy];
     _dyldEnvironment   = [dyldEnvironment copy];
     _reExportedDylibs  = [reExportedDylibs copy];
 

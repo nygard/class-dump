@@ -37,6 +37,7 @@ typedef enum : NSUInteger {
 @property (readonly) NSArray *dylibLoadCommands;
 @property (readonly) NSArray *segments;
 @property (readonly) NSArray *runPaths;
+@property (readonly) NSArray *runPathCommands;
 @property (readonly) NSArray *dyldEnvironment;
 @property (readonly) NSArray *reExportedDylibs;
 
