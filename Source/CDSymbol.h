@@ -40,6 +40,6 @@ extern NSString *const ObjCClassSymbolPrefix;
 @property (nonatomic, readonly) NSString *longTypeDescription;
 
 - (NSComparisonResult)compare:(CDSymbol *)other;
-- (NSComparisonResult)nameCompare:(CDSymbol *)other;
+- (NSComparisonResult)compareByName:(CDSymbol *)other;
 
 @end

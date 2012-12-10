@@ -207,7 +207,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     return NSOrderedSame;
 }
 
-- (NSComparisonResult)nameCompare:(CDSymbol *)other;
+- (NSComparisonResult)compareByName:(CDSymbol *)other;
 {
     return [self.name compare:other.name];
 }
