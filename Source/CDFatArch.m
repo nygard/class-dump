@@ -12,7 +12,7 @@
 
 @implementation CDFatArch
 {
-    __weak CDFatFile *nonretained_fatFile;
+    __weak CDFatFile *_fatFile;
     
     // This is essentially struct fat_arch, but this way our property accessors can be synthesized.
     cpu_type_t _cputype;
@@ -85,8 +85,6 @@
 {
     return CDArchUses64BitLibraries(self.arch);
 }
-
-@synthesize fatFile = nonretained_fatFile;
 
 - (CDArch)arch;
 {

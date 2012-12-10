@@ -25,7 +25,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     struct nlist_64 _nlist;
     BOOL _is32Bit;
     NSString *_name;
-    __weak CDMachOFile *nonretained_machOFile;
+    __weak CDMachOFile *_machOFile;
 }
 
 - (id)initWithName:(NSString *)name machOFile:(CDMachOFile *)machOFile nlist32:(struct nlist)nlist32;
@@ -33,7 +33,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     if ((self = [super init])) {
         _is32Bit = YES;
         _name = name;
-        nonretained_machOFile = machOFile;
+        _machOFile = machOFile;
         _nlist.n_un.n_strx = 0; // We don't use it.
         _nlist.n_type      = nlist32.n_type;
         _nlist.n_sect      = nlist32.n_sect;
@@ -49,7 +49,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     if ((self = [super init])) {
         _is32Bit = NO;
         _name = name;
-        nonretained_machOFile = machOFile;
+        _machOFile = machOFile;
         _nlist.n_un.n_strx = 0; // We don't use it.
         _nlist.n_type      = nlist64.n_type;
         _nlist.n_sect      = nlist64.n_sect;
@@ -76,8 +76,6 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 }
 
 #pragma mark -
-
-@synthesize machOFile = nonretained_machOFile;
 
 - (uint64_t)value;
 {

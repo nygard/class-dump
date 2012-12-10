@@ -12,7 +12,7 @@
 
 @implementation CDSection32
 {
-    __weak CDLCSegment32 *nonretained_segment;
+    __weak CDLCSegment32 *_segment;
     
     struct section _section;
 }
@@ -21,7 +21,7 @@
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment32 *)segment;
 {
     if ((self = [super init])) {
-        nonretained_segment = segment;
+        _segment = segment;
         
         [cursor readBytesOfLength:16 intoBuffer:_section.sectname];
         [cursor readBytesOfLength:16 intoBuffer:_section.segname];
@@ -59,8 +59,6 @@
 }
 
 #pragma mark -
-
-@synthesize segment = nonretained_segment;
 
 - (CDMachOFile *)machOFile;
 {

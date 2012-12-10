@@ -22,8 +22,8 @@ static BOOL debug = NO;
 
 @implementation CDTypeController
 {
-    __weak CDClassDump *nonretained_classDump; // passed during formatting, to get at options.
-    __weak id <CDTypeControllerDelegate> nonretained_delegate;
+    __weak CDClassDump *_classDump; // passed during formatting, to get at options.
+    __weak id <CDTypeControllerDelegate> _delegate;
     
     CDTypeFormatter *_ivarTypeFormatter;
     CDTypeFormatter *_methodTypeFormatter;
@@ -37,7 +37,7 @@ static BOOL debug = NO;
 - (id)initWithClassDump:(CDClassDump *)classDump;
 {
     if ((self = [super init])) {
-        nonretained_classDump = classDump;
+        _classDump = classDump;
         
         _ivarTypeFormatter = [[CDTypeFormatter alloc] init];
         _ivarTypeFormatter.shouldExpand = NO;
@@ -87,11 +87,6 @@ static BOOL debug = NO;
 
     return self;
 }
-
-#pragma mark -
-
-@synthesize classDump = nonretained_classDump;
-@synthesize delegate = nonretained_delegate;
 
 #pragma mark -
 

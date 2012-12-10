@@ -20,7 +20,7 @@ static BOOL debug = NO;
 
 @implementation CDTypeFormatter
 {
-    __weak CDTypeController *nonretained_typeController;
+    __weak CDTypeController *_typeController;
     
     NSUInteger _baseLevel;
     
@@ -32,7 +32,7 @@ static BOOL debug = NO;
 - (id)init;
 {
     if ((self = [super init])) {
-        nonretained_typeController = nil;
+        _typeController = nil;
         _baseLevel = 0;
         _shouldExpand = NO;
         _shouldAutoExpand = NO;
@@ -52,8 +52,6 @@ static BOOL debug = NO;
 }
 
 #pragma mark -
-
-@synthesize typeController = nonretained_typeController;
 
 - (NSString *)_specialCaseVariable:(NSString *)name type:(NSString *)type;
 {

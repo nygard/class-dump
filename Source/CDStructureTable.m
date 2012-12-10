@@ -57,7 +57,7 @@ static BOOL debugAnonStructures = NO;
 
 @implementation CDStructureTable
 {
-    __weak CDTypeController *nonretained_typeController;
+    __weak CDTypeController *_typeController;
     
     NSString *_identifier;
     NSString *_anonymousBaseName;
@@ -125,10 +125,6 @@ static BOOL debugAnonStructures = NO;
 
     return self;
 }
-
-#pragma mark -
-
-@synthesize typeController = nonretained_typeController;
 
 #pragma mark - Phase 0
 

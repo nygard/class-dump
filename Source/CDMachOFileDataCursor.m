@@ -10,7 +10,7 @@
 
 @implementation CDMachOFileDataCursor
 {
-    __weak CDMachOFile *nonretained_machOFile;
+    __weak CDMachOFile *_machOFile;
 }
 
 - (id)initWithFile:(CDMachOFile *)machOFile;
@@ -21,7 +21,7 @@
 - (id)initWithFile:(CDMachOFile *)machOFile offset:(NSUInteger)offset;
 {
     if ((self = [super initWithData:machOFile.data])) {
-        nonretained_machOFile = machOFile;
+        _machOFile = machOFile;
         [self setOffset:offset];
     }
 
@@ -31,7 +31,7 @@
 - (id)initWithFile:(CDMachOFile *)machOFile address:(NSUInteger)address;
 {
     if ((self = [super initWithData:machOFile.data])) {
-        nonretained_machOFile = machOFile;
+        _machOFile = machOFile;
         [self setAddress:address];
     }
 
@@ -41,15 +41,13 @@
 - (id)initWithSection:(CDSection *)section;
 {
     if ((self = [super initWithData:[section data]])) {
-        nonretained_machOFile = [section machOFile];
+        _machOFile = [section machOFile];
     }
 
     return self;
 }
 
 #pragma mark -
-
-@synthesize machOFile = nonretained_machOFile;
 
 - (void)setAddress:(NSUInteger)address;
 {
