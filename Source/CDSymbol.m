@@ -216,57 +216,39 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 - (NSString *)shortTypeDescription;
 {
-    NSString *c = nil;
+    NSString *c;
 
-    if (self.stab)
-        c = @"-";
-    else if (self.isCommon)
-        c = @"c";
-    else if (!self.isDefined || self.isPrebound)
-        c =  @"u";
-    else if (self.isAbsolute)
-        c =  @"a";
+    if (self.stab)                               c = @"-";
+    else if (self.isCommon)                      c = @"c";
+    else if (!self.isDefined || self.isPrebound) c = @"u";
+    else if (self.isAbsolute)                    c = @"a";
     else if (self.isInSection) {
-        if (self.isInTextSection)
-            c = @"t";
-        else if (self.isInDataSection)
-            c = @"d";
-        else if (self.isInBssSection)
-            c = @"b";
-        else
-            c = @"s";
+        if (self.isInTextSection)                c = @"t";
+        else if (self.isInDataSection)           c = @"d";
+        else if (self.isInBssSection)            c = @"b";
+        else                                     c = @"s";
     }
-    else if (self.isIndirect)
-        c = @"i";
-    else
-        c = @"?";
+    else if (self.isIndirect)                    c = @"i";
+    else                                         c = @"?";
 
     return self.isExternal ? [c uppercaseString] : c;
 }
 
 - (NSString *)longTypeDescription;
 {
-    NSString *c = nil;
+    NSString *c;
 
-    if (self.isCommon)
-        c = @"common";
-    else if (!self.isDefined)
-        c =  @"undefined";
-    else if (self.isPrebound)
-        c =  @"prebound";
-    else if (self.isAbsolute)
-        c =  @"absolute";
+    if (self.isCommon)                           c = @"common";
+    else if (!self.isDefined)                    c =  @"undefined";
+    else if (self.isPrebound)                    c =  @"prebound";
+    else if (self.isAbsolute)                    c =  @"absolute";
     else if (self.isInSection) {
         CDSection *section = self.section;
-        if (section)
-            c = [NSString stringWithFormat:@"%@,%@", section.segmentName, section.sectionName];
-        else
-            c = @"?,?";
+        if (section)                             c = [NSString stringWithFormat:@"%@,%@", section.segmentName, section.sectionName];
+        else                                     c = @"?,?";
     }
-    else if (self.isIndirect)
-        c = @"indirect";
-    else
-        c = @"?";
+    else if (self.isIndirect)                    c = @"indirect";
+    else                                         c = @"?";
 
     return c;
 }
