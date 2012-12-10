@@ -184,8 +184,8 @@
     [visitor visitObjectiveCProcessor:self];
     
     // TODO: Sort protocols by dependency
-    // TODO (2004-01-30): It looks like protocols might be defined in more than one file.  i.e. NSObject.
-    // TODO (2004-02-02): Looks like we need to record the order the protocols were encountered, or just always sort protocols
+    // TODO: (2004-01-30) It looks like protocols might be defined in more than one file.  i.e. NSObject.
+    // TODO: (2004-02-02) Looks like we need to record the order the protocols were encountered, or just always sort protocols
     for (CDOCProtocol *protocol in [self.protocolUniquer uniqueProtocolsSortedByName])
         [protocol recursivelyVisit:visitor];
 

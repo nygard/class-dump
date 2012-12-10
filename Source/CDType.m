@@ -21,7 +21,7 @@ static BOOL debugMerge = NO;
 
 @implementation CDType
 {
-    int _type; // TODO (2012-02-24): Rename to primitiveType or something
+    int _type; // TODO: (2012-02-24) Rename to primitiveType or something
     NSArray *_protocols;
     CDType *_subtype;
     CDTypeName *_typeName;
@@ -173,7 +173,7 @@ static BOOL debugMerge = NO;
 
 #pragma mark -
 
-// TODO (2009-08-26): Looks like this doesn't compare the variable name.
+// TODO: (2009-08-26) Looks like this doesn't compare the variable name.
 - (BOOL)isEqual:(id)object;
 {
     if ([object isKindOfClass:[self class]]) {

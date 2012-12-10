@@ -103,7 +103,7 @@ static BOOL debug = NO;
 
 #pragma mark -
 
-// TODO (2009-07-09): Really, I don't need to require the "T" at the start.
+// TODO: (2009-07-09) Really, I don't need to require the "T" at the start.
 - (void)_parseAttributes;
 {
     // On 10.6, Finder's TTaskErrorViewController class has a property with a nasty C++ type.  I just knew someone would make this difficult.

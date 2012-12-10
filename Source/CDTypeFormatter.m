@@ -84,9 +84,9 @@ static BOOL debug = NO;
     return nil;
 }
 
-// TODO (2004-01-28): See if we can pass in the actual CDType.
-// TODO (2009-07-09): Now that we have the other method, see if we can use it instead.
-// TODO (2012-02-25): Only CDOCIvar uses this method now.
+// TODO: (2004-01-28) See if we can pass in the actual CDType.
+// TODO: (2009-07-09) Now that we have the other method, see if we can use it instead.
+// TODO: (2012-02-25) Only CDOCIvar uses this method now.
 - (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
 {
     // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
@@ -124,7 +124,7 @@ static BOOL debug = NO;
     if (specialCase != nil) {
         [resultString appendString:specialCase];
     } else {
-        // TODO (2009-08-26): Ideally, just formatting a type shouldn't change it.  These changes should be done before, but this is handy.
+        // TODO: (2009-08-26) Ideally, just formatting a type shouldn't change it.  These changes should be done before, but this is handy.
         type.variableName = name;
         [type phase0RecursivelyFixStructureNames:NO]; // Nuke the $_ names
         [type phase3MergeWithTypeController:self.typeController];

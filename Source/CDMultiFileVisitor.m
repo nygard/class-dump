@@ -68,7 +68,7 @@
         [self createOutputPathIfNecessary];
         [self generateStructureHeader];
     } else {
-        // TODO (2007-06-14): Make sure this generates no output files in this case.
+        // TODO: (2007-06-14) Make sure this generates no output files in this case.
         NSLog(@"Warning: This file does not contain any Objective-C runtime information.");
     }
 }
@@ -198,7 +198,7 @@
 
 - (NSString *)frameworkForProtocolName:(NSString *)name;
 {
-    // TODO (2012-02-28): Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
+    // TODO: (2012-02-28) Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
     return nil;
 }
 

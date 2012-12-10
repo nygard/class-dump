@@ -670,9 +670,9 @@ static BOOL debugAnonStructures = NO;
     }
 }
 
-// TODO (2003-12-23): Add option to show/hide this section
-// TODO (2003-12-23): sort by name or by dependency
-// TODO (2003-12-23): declare in modules where they were first used
+// TODO: (2003-12-23) Add option to show/hide this section
+// TODO: (2003-12-23) sort by name or by dependency
+// TODO: (2003-12-23) declare in modules where they were first used
 
 - (void)appendNamedStructuresToString:(NSMutableString *)resultString
                             formatter:(CDTypeFormatter *)typeFormatter
@@ -771,7 +771,7 @@ static BOOL debugAnonStructures = NO;
         }
     }
 
-    // TODO (2009-08-25): Need same ref count rules for anon exceptions.
+    // TODO: (2009-08-25) Need same ref count rules for anon exceptions.
     for (CDStructureInfo *info in [[_phase3_anonExceptions allValues] sortedArrayUsingSelector:@selector(ascendingCompareByStructureDepth:)]) {
         BOOL shouldShow = ![self shouldExpandStructureInfo:info];
         if (shouldShow || debugAnonStructures) {
