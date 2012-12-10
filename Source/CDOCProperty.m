@@ -96,9 +96,9 @@ static BOOL debug = NO;
 
 #pragma mark - Sorting
 
-- (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
+- (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)other;
 {
-    return [self.name compare:otherProperty.name];
+    return [self.name compare:other.name];
 }
 
 #pragma mark -

@@ -83,44 +83,40 @@
 #pragma mark - Sorting
 
 // Structure depth, reallyBareTypeString, typeString
-- (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
+- (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)other;
 {
     NSUInteger thisDepth = self.type.structureDepth;
-    NSUInteger otherDepth = otherInfo.type.structureDepth;
+    NSUInteger otherDepth = other.type.structureDepth;
 
-    if (thisDepth < otherDepth)
-        return NSOrderedAscending;
-    else if (thisDepth > otherDepth)
-        return NSOrderedDescending;
+    if (thisDepth < otherDepth) return NSOrderedAscending;
+    if (thisDepth > otherDepth) return NSOrderedDescending;
 
     NSString *str1 = self.type.reallyBareTypeString;
-    NSString *str2 = otherInfo.type.reallyBareTypeString;
+    NSString *str2 = other.type.reallyBareTypeString;
     NSComparisonResult result = [str1 compare:str2];
     if (result == NSOrderedSame) {
         str1 = self.type.typeString;
-        str2 = otherInfo.type.typeString;
+        str2 = other.type.typeString;
         result = [str1 compare:str2];
     }
 
     return result;
 }
 
-- (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
+- (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)other;
 {
     NSUInteger thisDepth = self.type.structureDepth;
-    NSUInteger otherDepth = otherInfo.type.structureDepth;
+    NSUInteger otherDepth = other.type.structureDepth;
 
-    if (thisDepth < otherDepth)
-        return NSOrderedDescending;
-    else if (thisDepth > otherDepth)
-        return NSOrderedAscending;
+    if (thisDepth < otherDepth) return NSOrderedDescending;
+    if (thisDepth > otherDepth) return NSOrderedAscending;
 
     NSString *str1 = self.type.reallyBareTypeString;
-    NSString *str2 = otherInfo.type.reallyBareTypeString;
+    NSString *str2 = other.type.reallyBareTypeString;
     NSComparisonResult result = -[str1 compare:str2];
     if (result == NSOrderedSame) {
         str1 = self.type.typeString;
-        str2 = otherInfo.type.typeString;
+        str2 = other.type.typeString;
         result = -[str1 compare:str2];
     }
 

@@ -199,19 +199,17 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     return nil;
 }
 
-- (NSComparisonResult)compare:(CDSymbol *)otherSymbol;
+- (NSComparisonResult)compare:(CDSymbol *)other;
 {
-    if (otherSymbol.value > self.value)
-        return NSOrderedAscending;
-    else if (otherSymbol.value < self.value)
-        return NSOrderedDescending;
-    else
-        return NSOrderedSame;
+    if (other.value > self.value) return NSOrderedAscending;
+    if (other.value < self.value) return NSOrderedDescending;
+
+    return NSOrderedSame;
 }
 
-- (NSComparisonResult)nameCompare:(CDSymbol *)otherSymbol;
+- (NSComparisonResult)nameCompare:(CDSymbol *)other;
 {
-    return [self.name compare:otherSymbol.name];
+    return [self.name compare:other.name];
 }
 
 - (NSString *)shortTypeDescription;

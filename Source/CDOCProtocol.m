@@ -150,9 +150,9 @@
     return self.name;
 }
 
-- (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
+- (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)other;
 {
-    return [self.sortableName compare:otherProtocol.sortableName];
+    return [self.sortableName compare:other.sortableName];
 }
 
 #pragma mark -

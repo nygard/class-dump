@@ -99,9 +99,9 @@
 
 #pragma mark - Sorting
 
-- (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
+- (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)other;
 {
-    return [self.name compare:otherMethod.name];
+    return [self.name compare:other.name];
 }
 
 @end

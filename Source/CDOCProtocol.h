@@ -39,7 +39,7 @@
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 - (void)registerTypesFromMethods:(NSArray *)methods withObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 
-- (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)otherProtocol;
+- (NSComparisonResult)ascendingCompareByName:(CDOCProtocol *)other;
 
 - (NSString *)methodSearchContext;
 - (void)recursivelyVisit:(CDVisitor *)visitor;

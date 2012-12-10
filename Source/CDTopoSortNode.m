@@ -67,9 +67,9 @@
 
 #pragma mark - Sorting
 
-- (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)otherNode;
+- (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)other;
 {
-    return [self.identifier compare:otherNode.identifier];
+    return [self.identifier compare:other.identifier];
 }
 
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;

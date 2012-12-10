@@ -30,6 +30,6 @@
 @property (readonly) BOOL isReadOnly;
 @property (readonly) BOOL isDynamic;
 
-- (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)otherProperty;
+- (NSComparisonResult)ascendingCompareByName:(CDOCProperty *)other;
 
 @end

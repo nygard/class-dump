@@ -25,7 +25,7 @@
 
 @property (nonatomic, readonly) NSString *name;
 
-- (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
-- (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)otherInfo;
+- (NSComparisonResult)ascendingCompareByStructureDepth:(CDStructureInfo *)other;
+- (NSComparisonResult)descendingCompareByStructureDepth:(CDStructureInfo *)other;
 
 @end

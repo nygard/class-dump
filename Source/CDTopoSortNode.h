@@ -27,7 +27,7 @@ typedef enum : NSUInteger {
 
 @property (assign) CDNodeColor color;
 
-- (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)otherNode;
+- (NSComparisonResult)ascendingCompareByIdentifier:(CDTopoSortNode *)other;
 - (void)topologicallySortNodes:(NSDictionary *)nodesByIdentifier intoArray:(NSMutableArray *)sortedArray;
 
 @end

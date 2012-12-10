@@ -20,6 +20,6 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 
-- (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)otherMethod;
+- (NSComparisonResult)ascendingCompareByName:(CDOCMethod *)other;
 
 @end
