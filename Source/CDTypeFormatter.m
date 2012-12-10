@@ -74,7 +74,7 @@ static BOOL debug = NO;
 
 - (NSString *)_specialCaseVariable:(NSString *)name parsedType:(CDType *)type;
 {
-    if ([type type] == 'c') {
+    if (type.primitiveType == 'c') {
         if (name == nil)
             return @"BOOL";
         else

@@ -19,9 +19,54 @@ static BOOL debugMerge = NO;
 
 #pragma mark -
 
+// primitive types:
+// * gets turned into ^c (i.e. char *)
+// T_NAMED_OBJECT w/ _typeName as the name
+// @ - id
+// { - structure w/ _typeName, members
+// ( - union     w/ _typeName, members
+// b - bitfield  w/ _bitfieldSize          - can these occur anywhere, or just in structures/unions?
+// [ - array     w/ _arraySize, _subtype
+// ^ - poiner to _subtype
+// C++ template type...
+
+// Primitive types:
+// c: char
+// i: int
+// s: short
+// l: long
+// q: long long
+// C: unsigned char
+// I: unsigned int
+// S: unsigned short
+// L: unsigned long
+// Q: unsigned long long
+// f: float
+// d: double
+// D: long double
+// B: _Bool // C99 _Bool or C++ bool
+// v: void
+// #: Class
+// :: SEL
+// %: NXAtom
+// ?: void
+//case '?': return @"UNKNOWN"; // For easier regression testing.
+// j: _Complex - is this a modifier or a primitive type?
+//
+// modifier (which?) w/ _subtype.  Can we limit these to the top level of the type?
+//   - n - in
+//   - N - inout
+//   - o - out
+//   - O - bycopy
+//   - R - byref
+//   - V - oneway
+// const is probably different from the previous modifiers.  You can have const int * const foo, or something like that.
+//   - r - const
+
+
 @implementation CDType
 {
-    int _type; // TODO: (2012-02-24) Rename to primitiveType or something
+    int _primitiveType;
     NSArray *_protocols;
     CDType *_subtype;
     CDTypeName *_typeName;
@@ -35,7 +80,7 @@ static BOOL debugMerge = NO;
 - (id)init;
 {
     if ((self = [super init])) {
-        _type = 0; // ??
+        _primitiveType = 0; // ??
         _protocols = nil;
         _subtype = nil;
         _typeName = nil;
@@ -52,10 +97,10 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         if (type == '*') {
-            _type = '^';
+            _primitiveType = '^';
             _subtype = [[CDType alloc] initSimpleType:'c'];
         } else {
-            _type = type;
+            _primitiveType = type;
         }
     }
 
@@ -66,10 +111,10 @@ static BOOL debugMerge = NO;
 {
     if ((self = [self init])) {
         if (name != nil) {
-            _type = T_NAMED_OBJECT;
+            _primitiveType = T_NAMED_OBJECT;
             _typeName = name;
         } else {
-            _type = '@';
+            _primitiveType = '@';
         }
     }
 
@@ -79,7 +124,7 @@ static BOOL debugMerge = NO;
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 {
     if ((self = [self init])) {
-        _type = '@';
+        _primitiveType = '@';
         _protocols = protocols;
     }
 
@@ -89,7 +134,7 @@ static BOOL debugMerge = NO;
 - (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
 {
     if ((self = [self init])) {
-        _type = '{';
+        _primitiveType = '{';
         _typeName = name;
         _members = [[NSMutableArray alloc] initWithArray:members];
     }
@@ -100,7 +145,7 @@ static BOOL debugMerge = NO;
 - (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;
 {
     if ((self = [self init])) {
-        _type = '(';
+        _primitiveType = '(';
         _typeName = name;
         _members = [[NSMutableArray alloc] initWithArray:members];
     }
@@ -111,7 +156,7 @@ static BOOL debugMerge = NO;
 - (id)initBitfieldType:(NSString *)bitfieldSize;
 {
     if ((self = [self init])) {
-        _type = 'b';
+        _primitiveType = 'b';
         _bitfieldSize = bitfieldSize;
     }
 
@@ -121,7 +166,7 @@ static BOOL debugMerge = NO;
 - (id)initArrayType:(CDType *)type count:(NSString *)count;
 {
     if ((self = [self init])) {
-        _type = '[';
+        _primitiveType = '[';
         _arraySize = count;
         _subtype = type;
     }
@@ -132,7 +177,7 @@ static BOOL debugMerge = NO;
 - (id)initPointerType:(CDType *)type;
 {
     if ((self = [self init])) {
-        _type = '^';
+        _primitiveType = '^';
         _subtype = type;
     }
 
@@ -142,7 +187,7 @@ static BOOL debugMerge = NO;
 - (id)initModifier:(int)modifier type:(CDType *)type;
 {
     if ((self = [self init])) {
-        _type = modifier;
+        _primitiveType = modifier;
         _subtype = type;
     }
 
@@ -189,19 +234,19 @@ static BOOL debugMerge = NO;
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"[%@] type: %d('%c'), name: %@, subtype: %@, bitfieldSize: %@, arraySize: %@, members: %@, variableName: %@",
-            NSStringFromClass([self class]), self.type, self.type, self.typeName, self.subtype, _bitfieldSize, _arraySize, self.members, self.variableName];
+            NSStringFromClass([self class]), self.primitiveType, self.primitiveType, self.typeName, self.subtype, _bitfieldSize, _arraySize, self.members, self.variableName];
 }
 
 #pragma mark -
 
 - (BOOL)isIDType;
 {
-    return self.type == '@' && self.typeName == nil;
+    return self.primitiveType == '@' && self.typeName == nil;
 }
 
 - (BOOL)isNamedObject;
 {
-    return self.type == T_NAMED_OBJECT;
+    return self.primitiveType == T_NAMED_OBJECT;
 }
 
 - (BOOL)isTemplateType;
@@ -211,7 +256,7 @@ static BOOL debugMerge = NO;
 
 - (BOOL)isModifierType;
 {
-    return self.type == 'j' || self.type == 'r' || self.type == 'n' || self.type == 'N' || self.type == 'o' || self.type == 'O' || self.type == 'R' || self.type == 'V';
+    return self.primitiveType == 'j' || self.primitiveType == 'r' || self.primitiveType == 'n' || self.primitiveType == 'N' || self.primitiveType == 'o' || self.primitiveType == 'O' || self.primitiveType == 'R' || self.primitiveType == 'V';
 }
 
 - (int)typeIgnoringModifiers;
@@ -219,7 +264,7 @@ static BOOL debugMerge = NO;
     if (self.isModifierType && self.subtype != nil)
         return self.subtype.typeIgnoringModifiers;
 
-    return self.type;
+    return self.primitiveType;
 }
 
 - (NSUInteger)structureDepth;
@@ -227,7 +272,7 @@ static BOOL debugMerge = NO;
     if (self.subtype != nil)
         return self.subtype.structureDepth;
 
-    if (self.type == '{' || self.type == '(') {
+    if (self.primitiveType == '{' || self.primitiveType == '(') {
         NSUInteger maxDepth = 0;
 
         for (CDType *member in self.members) {
@@ -252,7 +297,7 @@ static BOOL debugMerge = NO;
     else
         currentName = previousName;
 
-    switch (self.type) {
+    switch (self.primitiveType) {
         case T_NAMED_OBJECT:
             assert(self.typeName != nil);
             [typeFormatter formattingDidReferenceClassName:self.typeName.name];
@@ -362,7 +407,7 @@ static BOOL debugMerge = NO;
             else
                 result = [@"*" stringByAppendingString:currentName];
             
-            if (self.subtype != nil && [self.subtype type] == '[')
+            if (self.subtype != nil && self.subtype.primitiveType == '[')
                 result = [NSString stringWithFormat:@"(%@)", result];
             
             result = [self.subtype formattedString:result formatter:typeFormatter level:level];
@@ -399,7 +444,7 @@ static BOOL debugMerge = NO;
 
 - (NSString *)formattedStringForMembersAtLevel:(NSUInteger)level formatter:(CDTypeFormatter *)typeFormatter;
 {
-    NSParameterAssert(self.type == '{' || self.type == '(');
+    NSParameterAssert(self.primitiveType == '{' || self.primitiveType == '(');
     NSMutableString *str = [NSMutableString string];
 
     for (CDType *member in self.members) {
@@ -416,7 +461,7 @@ static BOOL debugMerge = NO;
 - (NSString *)formattedStringForSimpleType;
 {
     // Ugly but simple:
-    switch (self.type) {
+    switch (self.primitiveType) {
         case 'c': return @"char";
         case 'i': return @"int";
         case 's': return @"short";
@@ -478,7 +523,7 @@ static BOOL debugMerge = NO;
 {
     NSString *result;
     
-    switch (self.type) {
+    switch (self.primitiveType) {
         case T_NAMED_OBJECT:
             assert(self.typeName != nil);
             if (shouldShowObjectTypes)
@@ -529,11 +574,11 @@ static BOOL debugMerge = NO;
         case 'O':
         case 'R':
         case 'V':
-            result = [NSString stringWithFormat:@"%c%@", self.type, [self.subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
+            result = [NSString stringWithFormat:@"%c%@", self.primitiveType, [self.subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             
         default:
-            result = [NSString stringWithFormat:@"%c", self.type];
+            result = [NSString stringWithFormat:@"%c", self.primitiveType];
             break;
     }
 
@@ -542,7 +587,7 @@ static BOOL debugMerge = NO;
 
 - (NSString *)_typeStringForMembersWithVariableNamesToLevel:(NSInteger)level showObjectTypes:(BOOL)shouldShowObjectTypes;
 {
-    NSParameterAssert(self.type == '{' || self.type == '(');
+    NSParameterAssert(self.primitiveType == '{' || self.primitiveType == '(');
     NSMutableString *str = [NSMutableString string];
 
     for (CDType *member in self.members) {
@@ -563,7 +608,7 @@ static BOOL debugMerge = NO;
         return YES;
     }
 
-    if (self.type != otherType.type) {
+    if (self.primitiveType != otherType.primitiveType) {
         if (debugMerge) {
             NSLog(@"--------------------");
             NSLog(@"this: %@", self.typeString);
@@ -658,7 +703,7 @@ static BOOL debugMerge = NO;
     if (self.isIDType && otherType.isNamedObject) {
         //NSLog(@"thisType: %@", [self typeString]);
         //NSLog(@"otherType: %@", [otherType typeString]);
-        _type = T_NAMED_OBJECT;
+        _primitiveType = T_NAMED_OBJECT;
         _typeName = [otherType.typeName copy];
         return;
     }
@@ -667,7 +712,7 @@ static BOOL debugMerge = NO;
         return;
     }
 
-    if (self.type != otherType.type) {
+    if (self.primitiveType != otherType.primitiveType) {
         NSLog(@"Warning: Trying to merge different types in %s", __cmd);
         return;
     }
@@ -738,7 +783,7 @@ static BOOL debugMerge = NO;
 
 - (void)generateMemberNames;
 {
-    if (self.type == '{' || self.type == '(') {
+    if (self.primitiveType == '{' || self.primitiveType == '(') {
         NSSet *usedNames = [[NSSet alloc] initWithArray:self.memberVariableNames];
 
         NSUInteger number = 1;
@@ -746,7 +791,7 @@ static BOOL debugMerge = NO;
             [member generateMemberNames];
 
             // Bitfields don't need a name.
-            if (member.variableName == nil && member.type != 'b') {
+            if (member.variableName == nil && member.primitiveType != 'b') {
                 NSString *name;
                 do {
                     name = [NSString stringWithFormat:@"_field%lu", number++];
@@ -775,7 +820,7 @@ static BOOL debugMerge = NO;
     if (self.subtype != nil)
         [self.subtype phase0RegisterStructuresWithObject:typeController usedInMethod:isUsedInMethod];
 
-    if ((self.type == '{' || self.type == '(') && [self.members count] > 0) {
+    if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
     }
 }
@@ -802,7 +847,7 @@ static BOOL debugMerge = NO;
     if (self.subtype != nil)
         [self.subtype phase1RegisterStructuresWithObject:typeController];
 
-    if ((self.type == '{' || self.type == '(') && [self.members count] > 0) {
+    if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         [typeController phase1RegisterStructure:self];
         for (CDType *member in self.members)
             [member phase1RegisterStructuresWithObject:typeController];
@@ -833,7 +878,7 @@ static BOOL debugMerge = NO;
     for (CDType *member in self.members)
         [member _phase2MergeWithTypeController:typeController debug:phase2Debug];
 
-    if ((self.type == '{' || self.type == '(') && [self.members count] > 0) {
+    if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         CDType *phase2Type = [typeController phase2ReplacementForType:self];
         if (phase2Type != nil) {
             // >0 members so we don't try replacing things like... {_xmlNode=^{_xmlNode}}
@@ -856,7 +901,7 @@ static BOOL debugMerge = NO;
 {
     [self.subtype phase3RegisterWithTypeController:typeController];
 
-    if (self.type == '{' || self.type == '(') {
+    if (self.primitiveType == '{' || self.primitiveType == '(') {
         [typeController phase3RegisterStructure:self /*count:1 usedInMethod:NO*/];
     }
 }
@@ -878,7 +923,7 @@ static BOOL debugMerge = NO;
     for (CDType *member in self.members)
         [member phase3MergeWithTypeController:typeController];
 
-    if ((self.type == '{' || self.type == '(') && [self.members count] > 0) {
+    if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         CDType *phase3Type = [typeController phase3ReplacementForType:self];
         if (phase3Type != nil) {
             // >0 members so we don't try replacing things like... {_xmlNode=^{_xmlNode}}

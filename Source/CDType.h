@@ -20,7 +20,7 @@
 
 @property (strong) NSString *variableName;
 
-@property (nonatomic, readonly) int type;
+@property (nonatomic, readonly) int primitiveType;
 @property (nonatomic, readonly) BOOL isIDType;
 @property (nonatomic, readonly) BOOL isNamedObject;
 @property (nonatomic, readonly) BOOL isTemplateType;

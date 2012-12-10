@@ -186,12 +186,12 @@ static BOOL debug = NO;
 
 - (void)phase0RegisterStructure:(CDType *)structure usedInMethod:(BOOL)isUsedInMethod;
 {
-    if (structure.type == '{') {
+    if (structure.primitiveType == '{') {
         [self.structureTable phase0RegisterStructure:structure usedInMethod:isUsedInMethod];
-    } else if (structure.type == '(') {
+    } else if (structure.primitiveType == '(') {
         [self.unionTable     phase0RegisterStructure:structure usedInMethod:isUsedInMethod];
     } else {
-        NSLog(@"%s, unknown structure type: %d", __cmd, structure.type);
+        NSLog(@"%s, unknown structure type: %d", __cmd, structure.primitiveType);
     }
 }
 
@@ -221,12 +221,12 @@ static BOOL debug = NO;
 
 - (void)phase1RegisterStructure:(CDType *)structure;
 {
-    if (structure.type == '{') {
+    if (structure.primitiveType == '{') {
         [self.structureTable phase1RegisterStructure:structure];
-    } else if (structure.type == '(') {
+    } else if (structure.primitiveType == '(') {
         [self.unionTable phase1RegisterStructure:structure];
     } else {
-        NSLog(@"%s, unknown structure type: %d", __cmd, structure.type);
+        NSLog(@"%s, unknown structure type: %d", __cmd, structure.primitiveType);
     }
 }
 
@@ -291,8 +291,8 @@ static BOOL debug = NO;
 
 - (CDType *)phase2ReplacementForType:(CDType *)type;
 {
-    if (type.type == '{') return [self.structureTable phase2ReplacementForType:type];
-    if (type.type == '(') return [self.unionTable     phase2ReplacementForType:type];
+    if (type.primitiveType == '{') return [self.structureTable phase2ReplacementForType:type];
+    if (type.primitiveType == '(') return [self.unionTable     phase2ReplacementForType:type];
 
     return nil;
 }
@@ -300,14 +300,14 @@ static BOOL debug = NO;
 - (void)phase3RegisterStructure:(CDType *)structure;
 {
     //NSLog(@"%s, type= %@", __cmd, [aStructure typeString]);
-    if (structure.type == '{') [self.structureTable phase3RegisterStructure:structure count:1 usedInMethod:NO];
-    if (structure.type == '(') [self.unionTable     phase3RegisterStructure:structure count:1 usedInMethod:NO];
+    if (structure.primitiveType == '{') [self.structureTable phase3RegisterStructure:structure count:1 usedInMethod:NO];
+    if (structure.primitiveType == '(') [self.unionTable     phase3RegisterStructure:structure count:1 usedInMethod:NO];
 }
 
 - (CDType *)phase3ReplacementForType:(CDType *)type;
 {
-    if (type.type == '{') return [self.structureTable phase3ReplacementForType:type];
-    if (type.type == '(') return [self.unionTable     phase3ReplacementForType:type];
+    if (type.primitiveType == '{') return [self.structureTable phase3ReplacementForType:type];
+    if (type.primitiveType == '(') return [self.unionTable     phase3ReplacementForType:type];
 
     return nil;
 }
@@ -321,16 +321,16 @@ static BOOL debug = NO;
 
 - (BOOL)shouldExpandType:(CDType *)type;
 {
-    if (type.type == '{') return [self.structureTable shouldExpandType:type];
-    if (type.type == '(') return [self.unionTable     shouldExpandType:type];
+    if (type.primitiveType == '{') return [self.structureTable shouldExpandType:type];
+    if (type.primitiveType == '(') return [self.unionTable     shouldExpandType:type];
 
     return NO;
 }
 
 - (NSString *)typedefNameForType:(CDType *)type;
 {
-    if (type.type == '{') return [self.structureTable typedefNameForType:type];
-    if (type.type == '(') return [self.unionTable     typedefNameForType:type];
+    if (type.primitiveType == '{') return [self.structureTable typedefNameForType:type];
+    if (type.primitiveType == '(') return [self.unionTable     typedefNameForType:type];
 
     return nil;
 }
