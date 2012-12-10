@@ -40,12 +40,12 @@ static NSString *CDTokenDescription(int token)
     int lookahead;
 }
 
-- (id)initWithType:(NSString *)type;
+- (id)initWithString:(NSString *)string;
 {
     if ((self = [super init])) {
         // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
-        NSMutableString *str = [type mutableCopy];
-        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [type length])];
+        NSMutableString *str = [string mutableCopy];
+        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [string length])];
         
         _lexer = [[CDTypeLexer alloc] initWithString:str];
         lookahead = 0;

@@ -20,7 +20,7 @@ extern NSString *CDErrorKey_LocalizedLongDescription;
 
 @interface CDTypeParser : NSObject
 
-- (id)initWithType:(NSString *)type; // TODO: (2012-02-25) Rename to string or something
+- (id)initWithString:(NSString *)string;
 
 @property (readonly) CDTypeLexer *lexer;
 

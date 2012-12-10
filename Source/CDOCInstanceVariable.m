@@ -56,7 +56,7 @@
     if (self.hasParsedType == NO) {
         NSError *error = nil;
 
-        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:self.type];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.type];
         _parsedType = [parser parseType:&error];
         if (_parsedType == nil)
             NSLog(@"Warning: Parsing ivar type failed, %@", self.name);

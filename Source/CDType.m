@@ -157,7 +157,7 @@ static BOOL debugMerge = NO;
     NSString *str = [self typeString];
     NSParameterAssert(str != nil);
     
-    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:str];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:str];
 
     NSError *error = nil;
     CDType *copiedType = [parser parseType:&error];

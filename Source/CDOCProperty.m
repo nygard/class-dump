@@ -114,7 +114,7 @@ static BOOL debug = NO;
         NSRange typeRange;
 
         typeRange.location = [scanner scanLocation];
-        CDTypeParser *parser = [[CDTypeParser alloc] initWithType:[[scanner string] substringFromIndex:[scanner scanLocation]]];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithString:[[scanner string] substringFromIndex:[scanner scanLocation]]];
         _type = [parser parseType:&error];
         if (_type != nil) {
             typeRange.length = [parser.lexer.scanner scanLocation];

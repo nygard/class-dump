@@ -99,7 +99,7 @@ static BOOL debug = NO;
         return resultString;
     }
 
-    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:type];
     parser.lexer.shouldShowLexing = self.shouldShowLexing;
 
     NSError *error = nil;
@@ -136,7 +136,7 @@ static BOOL debug = NO;
 
 - (NSDictionary *)formattedTypesForMethodName:(NSString *)name type:(NSString *)type;
 {
-    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:type];
 
     NSError *error = nil;
     NSArray *methodTypes = [parser parseMethodType:&error];
@@ -212,7 +212,7 @@ static BOOL debug = NO;
 
 - (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
 {
-    CDTypeParser *parser = [[CDTypeParser alloc] initWithType:type];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:type];
 
     NSError *error = nil;
     NSArray *methodTypes = [parser parseMethodType:&error];
