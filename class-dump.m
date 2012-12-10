@@ -10,8 +10,6 @@
 #include <stdlib.h>
 #include <mach-o/arch.h>
 
-#import <Foundation/Foundation.h>
-
 #import "CDClassDump.h"
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"

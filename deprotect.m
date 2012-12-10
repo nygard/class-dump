@@ -11,8 +11,6 @@
 #include <sysexits.h>
 #include <mach-o/arch.h>
 
-#import <Foundation/Foundation.h>
-
 #import "CDClassDump.h"
 #import "CDMachOFile.h"
 #import "CDFatFile.h"

@@ -9,8 +9,6 @@
 #include <getopt.h>
 #include <stdlib.h>
 
-#import <Foundation/Foundation.h>
-
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDBalanceFormatter.h"
