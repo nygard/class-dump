@@ -25,6 +25,7 @@
     
     BOOL _hasParsedType;
     CDType *_parsedType;
+    NSError *_parseError;
 }
 
 - (id)initWithName:(NSString *)name typeString:(NSString *)typeString offset:(NSUInteger)offset;
@@ -36,6 +37,7 @@
         
         _hasParsedType = NO;
         _parsedType    = nil;
+        _parseError    = nil;
     }
 
     return self;
@@ -53,15 +55,16 @@
 
 - (CDType *)parsedType;
 {
-    if (self.hasParsedType == NO) {
-        NSError *error = nil;
-
+    if (self.hasParsedType == NO && self.parseError == nil) {
         CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.typeString];
+        NSError *error;
         _parsedType = [parser parseType:&error];
-        if (_parsedType == nil)
+        if (_parsedType == nil) {
             NSLog(@"Warning: Parsing ivar type failed, %@", self.name);
-
-        self.hasParsedType = YES;
+            _parseError = error;
+        } else {
+            self.hasParsedType = YES;
+        }
     }
 
     return _parsedType;
