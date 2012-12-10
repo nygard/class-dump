@@ -44,6 +44,7 @@ typedef enum : NSUInteger {
 @property (strong) CDLCSymbolTable *symbolTable;
 @property (strong) CDLCDynamicSymbolTable *dynamicSymbolTable;
 @property (strong) CDLCDyldInfo *dyldInfo;
+@property (strong) CDLCDylib *dylibIdentifier;
 @property (strong) CDLCVersionMinimum *minVersionMacOSX;
 @property (strong) CDLCVersionMinimum *minVersionIOS;
 @property (strong) CDLCSourceVersion *sourceVersion;
@@ -53,8 +54,6 @@ typedef enum : NSUInteger {
 
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
-
-@property (nonatomic, readonly) CDLCDylib *dylibIdentifier;
 
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;

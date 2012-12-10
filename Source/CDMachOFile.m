@@ -52,6 +52,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     CDLCSymbolTable *_symbolTable;
     CDLCDynamicSymbolTable *_dynamicSymbolTable;
     CDLCDyldInfo *_dyldInfo;
+    CDLCDylib *_dylibIdentifier;
     CDLCVersionMinimum *_minVersionMacOSX;
     CDLCVersionMinimum *_minVersionIOS;
     CDLCSourceVersion *_sourceVersion;
@@ -147,10 +148,12 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
             [loadCommands addObject:loadCommand];
 
             if (loadCommand.cmd == LC_VERSION_MIN_MACOSX)                        self.minVersionMacOSX = (CDLCVersionMinimum *)loadCommand;
-            else if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)                 self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
-            else if (loadCommand.cmd == LC_DYLD_ENVIRONMENT)                     [dyldEnvironment addObject:loadCommand];
-            else if (loadCommand.cmd == LC_REEXPORT_DYLIB)                       [reExportedDylibs addObject:loadCommand];
-            else if ([loadCommand isKindOfClass:[CDLCSourceVersion class]])      self.sourceVersion = (CDLCSourceVersion *)loadCommand;
+            if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)                      self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
+            if (loadCommand.cmd == LC_DYLD_ENVIRONMENT)                          [dyldEnvironment addObject:loadCommand];
+            if (loadCommand.cmd == LC_REEXPORT_DYLIB)                            [reExportedDylibs addObject:loadCommand];
+            if (loadCommand.cmd == LC_ID_DYLIB)                                  self.dylibIdentifier = (CDLCDylib *)loadCommand;
+
+            if ([loadCommand isKindOfClass:[CDLCSourceVersion class]])           self.sourceVersion = (CDLCSourceVersion *)loadCommand;
             else if ([loadCommand isKindOfClass:[CDLCDylib class]])              [dylibLoadCommands addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSegment class]])            [segments addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])        self.symbolTable = (CDLCSymbolTable *)loadCommand;
@@ -273,16 +276,6 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     if (flags & MH_PIE)                     [setFlags addObject:@"PIE"];
 
     return [setFlags componentsJoinedByString:@" "];
-}
-
-- (CDLCDylib *)dylibIdentifier;
-{
-    for (CDLoadCommand *loadCommand in _loadCommands) {
-        if ([loadCommand cmd] == LC_ID_DYLIB)
-            return (CDLCDylib *)loadCommand;
-    }
-
-    return nil;
 }
 
 #pragma mark -
