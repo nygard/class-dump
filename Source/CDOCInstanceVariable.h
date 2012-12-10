@@ -14,7 +14,7 @@
 @property (readonly) NSUInteger offset;
 
 // Lazily parses the typeString.  Returns nil and sets the parseError if parsing failed.  Does not try to parse again in the event of an error.
-@property (nonatomic, readonly) CDType *parsedType;
+@property (nonatomic, readonly) CDType *type;
 @property (readonly) NSError *parseError;
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;

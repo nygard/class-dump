@@ -48,7 +48,7 @@
     [super registerTypesWithObject:typeController phase:phase];
 
     for (CDOCInstanceVariable *ivar in self.ivars) {
-        [ivar.parsedType phase:phase registerTypesWithObject:typeController usedInMethod:NO];
+        [ivar.type phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
 

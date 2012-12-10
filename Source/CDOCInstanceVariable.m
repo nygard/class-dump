@@ -12,7 +12,7 @@
 #import "CDType.h"
 
 @interface CDOCInstanceVariable ()
-@property (assign) BOOL hasParsedType; // Private
+@property (assign) BOOL hasParsedType;
 @end
 
 #pragma mark -
@@ -24,7 +24,7 @@
     NSUInteger _offset;
     
     BOOL _hasParsedType;
-    CDType *_parsedType;
+    CDType *_type;
     NSError *_parseError;
 }
 
@@ -36,7 +36,7 @@
         _offset     = offset;
         
         _hasParsedType = NO;
-        _parsedType    = nil;
+        _type          = nil;
         _parseError    = nil;
     }
 
@@ -53,21 +53,21 @@
 
 #pragma mark -
 
-- (CDType *)parsedType;
+- (CDType *)type;
 {
     if (self.hasParsedType == NO && self.parseError == nil) {
         CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.typeString];
         NSError *error;
-        _parsedType = [parser parseType:&error];
-        if (_parsedType == nil) {
-            NSLog(@"Warning: Parsing ivar type failed, %@", self.name);
+        _type = [parser parseType:&error];
+        if (_type == nil) {
+            NSLog(@"Warning: Parsing instance variable type failed, %@", self.name);
             _parseError = error;
         } else {
             self.hasParsedType = YES;
         }
     }
 
-    return _parsedType;
+    return _type;
 }
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
