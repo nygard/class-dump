@@ -67,7 +67,6 @@ static NSString *CDTokenDescription(int token)
     @catch (NSException *exception) {
         if (error != NULL) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            int code;
             NSString *localDesc = [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], self.lexer.string, self.lexer.remainingString];            
 
             userInfo[CDErrorKey_Type]                     = self.lexer.string;
@@ -75,6 +74,7 @@ static NSString *CDTokenDescription(int token)
             userInfo[CDErrorKey_MethodOrVariable]         = @"method";
             userInfo[CDErrorKey_LocalizedLongDescription] = localDesc;
             
+            NSInteger code;
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
                 userInfo[NSLocalizedDescriptionKey]        = @"Syntax Error";
@@ -103,7 +103,6 @@ static NSString *CDTokenDescription(int token)
     @catch (NSException *exception) {
         if (error != NULL) {
             NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-            int code;
             NSString *localDesc = [NSString stringWithFormat:@"%@:\n\t     type: %@\n\tremaining: %@", [exception reason], self.lexer.string, self.lexer.remainingString];
             
             userInfo[CDErrorKey_Type]                     = self.lexer.string;
@@ -111,6 +110,7 @@ static NSString *CDTokenDescription(int token)
             userInfo[CDErrorKey_MethodOrVariable]         = @"variable";
             userInfo[CDErrorKey_LocalizedLongDescription] = localDesc;
             
+            NSInteger code;
             if ([exception name] == CDExceptionName_SyntaxError) {
                 code = CDTypeParserCode_SyntaxError;
                 userInfo[NSLocalizedDescriptionKey]        = @"Syntax Error";
