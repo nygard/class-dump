@@ -16,10 +16,6 @@ typedef enum : NSUInteger {
 @class CDLCSegment;
 @class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
-@protocol CDMachOFileDelegate
-- (void)machOFile:(CDMachOFile *)machOFile loadDylib:(CDLCDylib *)dylibCommand;
-@end
-
 @interface CDMachOFile : CDFile
 
 @property (readonly) CDByteOrder byteOrder;
