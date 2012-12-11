@@ -22,9 +22,9 @@
 {
     NSMutableDictionary *nodesByName = [[NSMutableDictionary alloc] init];
 
-    for (id <CDTopologicalSort> anObject in self) {
-        CDTopoSortNode *node = [[CDTopoSortNode alloc] initWithObject:anObject];
-        [node addDependanciesFromArray:[anObject dependancies]];
+    for (id <CDTopologicalSort> object in self) {
+        CDTopoSortNode *node = [[CDTopoSortNode alloc] initWithObject:object];
+        [node addDependanciesFromArray:[object dependancies]];
 
         if (nodesByName[node.identifier] != nil)
             NSLog(@"Warning: Duplicate identifier (%@) in %s", node.identifier, __cmd);

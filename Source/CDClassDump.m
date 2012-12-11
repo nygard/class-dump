@@ -204,7 +204,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     if ([name hasPrefix:executablePathPrefix]) {
         adjustedName = [name stringByReplacingOccurrencesOfString:executablePathPrefix withString:self.searchPathState.executablePath];
     } else if ([name hasPrefix:rpathPrefix]) {
-        //NSLog(@"Searching for %@ through run paths: %@", anID, [searchPathState searchPaths]);
+        //NSLog(@"Searching for %@ through run paths: %@", name, [searchPathState searchPaths]);
         for (NSString *searchPath in [self.searchPathState searchPaths]) {
             NSString *str = [name stringByReplacingOccurrencesOfString:rpathPrefix withString:searchPath];
             //NSLog(@"trying %@", str);
