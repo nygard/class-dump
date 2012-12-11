@@ -30,6 +30,4 @@
     return [NSString stringWithFormat:@"[%@] type: %@, offset: %@", NSStringFromClass([self class]), self.type, self.offset];
 }
 
-#pragma mark -
-
 @end
