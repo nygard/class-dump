@@ -15,9 +15,6 @@
 #import "CDVisitorPropertyState.h"
 #import "CDOCInstanceVariable.h"
 
-// Add newlines after properties
-#define ADD_SPACE
-
 static BOOL debug = NO;
 
 @interface CDTextClassDumpVisitor ()
@@ -165,42 +162,32 @@ static BOOL debug = NO;
 
 - (void)didVisitPropertiesOfClass:(CDOCClass *)aClass;
 {
-#ifdef ADD_SPACE
     if ([aClass.properties count] > 0)
         [self.resultString appendString:@"\n"];
-#endif
 }
 
 - (void)willVisitPropertiesOfCategory:(CDOCCategory *)category;
 {
-#ifdef ADD_SPACE
     if ([category.properties count] > 0)
         [self.resultString appendString:@"\n"];
-#endif
 }
 
 - (void)didVisitPropertiesOfCategory:(CDOCCategory *)category;
 {
-#ifdef ADD_SPACE
     if ([category.properties count] > 0/* && [aCategory hasMethods]*/)
         [self.resultString appendString:@"\n"];
-#endif
 }
 
 - (void)willVisitPropertiesOfProtocol:(CDOCProtocol *)protocol;
 {
-#ifdef ADD_SPACE
     if ([protocol.properties count] > 0)
         [self.resultString appendString:@"\n"];
-#endif
 }
 
 - (void)didVisitPropertiesOfProtocol:(CDOCProtocol *)protocol;
 {
-#ifdef ADD_SPACE
     if ([protocol.properties count] > 0 /*&& [aProtocol hasMethods]*/)
         [self.resultString appendString:@"\n"];
-#endif
 }
 
 - (void)visitRemainingProperties:(CDVisitorPropertyState *)propertyState;
