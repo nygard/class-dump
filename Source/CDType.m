@@ -341,7 +341,7 @@ static BOOL debugMerge = NO;
         case '(':
             baseType = nil;
             /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-                NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
+                NSString *typedefName = [typeFormatter typedefNameForStructure:self level:level];
                 if (typedefName != nil) {
                     baseType = typedefName;
                 }
@@ -373,7 +373,7 @@ static BOOL debugMerge = NO;
         case '{':
             baseType = nil;
             /*if (typeName == nil || [@"?" isEqual:[typeName description]])*/ {
-                NSString *typedefName = [typeFormatter typedefNameForStruct:self level:level];
+                NSString *typedefName = [typeFormatter typedefNameForStructure:self level:level];
                 if (typedefName != nil) {
                     baseType = typedefName;
                 }

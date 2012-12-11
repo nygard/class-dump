@@ -116,13 +116,13 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
+- (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;
 {
     if (level == 0 && typeFormatter == self.structDeclarationTypeFormatter)
         return nil;
 
-    if ([self shouldExpandType:structType] == NO)
-        return [self typedefNameForType:structType];
+    if ([self shouldExpandType:structureType] == NO)
+        return [self typedefNameForType:structureType];
 
     return nil;
 }

@@ -262,9 +262,9 @@ static BOOL debug = NO;
 }
 
 // Called from CDType, which gets a formatter but not a type controller.
-- (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
+- (NSString *)typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;
 {
-    return [self.typeController typeFormatter:self typedefNameForStruct:structType level:level];
+    return [self.typeController typeFormatter:self typedefNameForStructure:structureType level:level];
 }
 
 - (void)formattingDidReferenceClassName:(NSString *)name;

@@ -17,7 +17,7 @@
 - (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
 - (NSString *)formatMethodName:(NSString *)name typeString:(NSString *)typeString;
 
-- (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
+- (NSString *)typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;
 
 - (void)formattingDidReferenceClassName:(NSString *)name;
 
