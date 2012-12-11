@@ -72,15 +72,18 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:self.typeString];
-    if (formattedString != nil) {
+    CDType *type = [self type]; // Parses it, if necessary;
+    if (self.parseError != nil) {
+        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
+    } else {
+        NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name parsedType:type];
+        NSParameterAssert(formattedString != nil);
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
         if ([typeController shouldShowIvarOffsets]) {
             [resultString appendFormat:@"\t// %ld = 0x%lx", self.offset, self.offset];
         }
-    } else
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
+    }
 }
 
 @end

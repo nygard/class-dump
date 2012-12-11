@@ -12,6 +12,7 @@
 #import "CDClassDump.h"
 #import "CDTypeFormatter.h"
 #import "CDBalanceFormatter.h"
+#import "CDOCInstanceVariable.h"
 
 void print_usage(void)
 {
@@ -120,9 +121,11 @@ int main(int argc, char *argv[])
                     type = line;
 
                     switch (formatType) {
-                        case CDFormat_Ivar:
-                            str = [ivarTypeFormatter formatVariable:name type:type];
+                        case CDFormat_Ivar: {
+                            CDOCInstanceVariable *var = [[CDOCInstanceVariable alloc] initWithName:name typeString:type offset:0];
+                            str = [ivarTypeFormatter formatVariable:name parsedType:var.type];
                             break;
+                        }
                             
                         case CDFormat_Method:
                             str = [methodTypeFormatter formatMethodName:name type:type];

@@ -84,37 +84,6 @@ static BOOL debug = NO;
     return nil;
 }
 
-// TODO: (2004-01-28) See if we can pass in the actual CDType.
-// TODO: (2009-07-09) Now that we have the other method, see if we can use it instead.
-// TODO: (2012-02-25) Only CDOCIvar uses this method now.
-- (NSString *)formatVariable:(NSString *)name type:(NSString *)type;
-{
-    // Special cases: char -> BOOLs, 1 bit ints -> BOOL too?
-    NSString *specialCase = [self _specialCaseVariable:name type:type];
-    if (specialCase != nil) {
-        NSMutableString *resultString = [NSMutableString string];
-        [resultString appendString:[NSString spacesIndentedToLevel:self.baseLevel spacesPerLevel:4]];
-        [resultString appendString:specialCase];
-
-        return resultString;
-    }
-
-    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:type];
-    parser.lexer.shouldShowLexing = self.shouldShowLexing;
-
-    NSError *error = nil;
-    CDType *resultType = [parser parseType:&error];
-    //NSLog(@"resultType: %p", resultType);
-
-    if (resultType == nil) {
-        NSLog(@"Couldn't parse type: %@", [[error userInfo] objectForKey:CDErrorKey_LocalizedLongDescription]);
-        //NSLog(@"<  %s", __cmd);
-        return nil;
-    }
-
-    return [self formatVariable:name parsedType:resultType];
-}
-
 - (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
 {
     NSMutableString *resultString = [NSMutableString string];

@@ -15,6 +15,8 @@
 
 // Lazily parses the typeString.  Returns nil and sets the parseError if parsing failed.  Does not try to parse again in the event of an error.
 @property (nonatomic, readonly) CDType *type;
+
+// This is set after the typeString has been parsed if there was an error.  Doesn't trigger parsing.
 @property (readonly) NSError *parseError;
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
