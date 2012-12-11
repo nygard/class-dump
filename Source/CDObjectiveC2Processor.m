@@ -373,7 +373,7 @@
             //NSLog(@"name: %@", name);
             //NSLog(@"types: %@", types);
             
-            CDOCMethod *method = [[CDOCMethod alloc] initWithName:name type:types imp:objc2Method.imp];
+            CDOCMethod *method = [[CDOCMethod alloc] initWithName:name typeString:types imp:objc2Method.imp];
             [methods addObject:method];
         }
     }

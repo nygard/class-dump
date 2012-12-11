@@ -7,8 +7,8 @@
 
 @interface CDOCMethod : NSObject <NSCopying>
 
-- (id)initWithName:(NSString *)name type:(NSString *)type imp:(NSUInteger)imp;
-- (id)initWithName:(NSString *)name type:(NSString *)type;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString imp:(NSUInteger)imp;
 
 @property (readonly) NSString *name;
 @property (readonly) NSString *type;

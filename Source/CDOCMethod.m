@@ -22,25 +22,21 @@
 
 - (id)init;
 {
-    [NSException raise:@"RejectUnusedImplementation" format:@"-initWithName:type:imp: is the designated initializer"];
+    [NSException raise:@"RejectUnusedImplementation" format:@"-initWithName:typeString:imp: is the designated initializer"];
     return nil;
 }
 
-- (id)initWithName:(NSString *)name type:(NSString *)type imp:(NSUInteger)imp;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString;
 {
-    if ((self = [self initWithName:name type:type])) {
-        [self setImp:imp];
-    }
-
-    return self;
+    return [self initWithName:name typeString:typeString imp:0];
 }
 
-- (id)initWithName:(NSString *)name type:(NSString *)type;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString imp:(NSUInteger)imp;
 {
     if ((self = [super init])) {
         _name = name;
-        _type = type;
-        _imp = 0;
+        _type = typeString;
+        _imp = imp;
         
         _hasParsedType = NO;
         _parsedMethodTypes = nil;
@@ -53,7 +49,7 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    return [[CDOCMethod alloc] initWithName:self.name type:self.type imp:self.imp];
+    return [[CDOCMethod alloc] initWithName:self.name typeString:self.type imp:self.imp];
 }
 
 #pragma mark - Debugging

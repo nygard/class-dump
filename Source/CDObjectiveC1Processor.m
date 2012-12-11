@@ -389,7 +389,7 @@ static BOOL debug = NO;
             NSString *name = [self.machOFile stringAtAddress:objcMethod.name];
             NSString *type = [self.machOFile stringAtAddress:objcMethod.types];
             if (name != nil && type != nil) {
-                CDOCMethod *method = [[CDOCMethod alloc] initWithName:name type:type imp:objcMethod.imp];
+                CDOCMethod *method = [[CDOCMethod alloc] initWithName:name typeString:type imp:objcMethod.imp];
                 [methods addObject:method];
             } else {
                 if (name == nil) NSLog(@"Note: Method name was nil (%08x, %p)", objcMethod.name, name);
