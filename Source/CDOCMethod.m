@@ -14,7 +14,7 @@
 {
     NSString *_name;
     NSString *_typeString;
-    NSUInteger _imp;
+    NSUInteger _address;
     
     BOOL _hasParsedType;
     NSArray *_parsedMethodTypes;
@@ -28,15 +28,15 @@
 
 - (id)initWithName:(NSString *)name typeString:(NSString *)typeString;
 {
-    return [self initWithName:name typeString:typeString imp:0];
+    return [self initWithName:name typeString:typeString address:0];
 }
 
-- (id)initWithName:(NSString *)name typeString:(NSString *)typeString imp:(NSUInteger)imp;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString address:(NSUInteger)address;
 {
     if ((self = [super init])) {
         _name = name;
         _typeString = typeString;
-        _imp = imp;
+        _address = address;
         
         _hasParsedType = NO;
         _parsedMethodTypes = nil;
@@ -49,15 +49,15 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    return [[CDOCMethod alloc] initWithName:self.name typeString:self.typeString imp:self.imp];
+    return [[CDOCMethod alloc] initWithName:self.name typeString:self.typeString address:self.address];
 }
 
 #pragma mark - Debugging
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, typeString: %@, imp: 0x%016lx",
-            NSStringFromClass([self class]), self.name, self.typeString, self.imp];
+    return [NSString stringWithFormat:@"[%@] name: %@, typeString: %@, address: 0x%016lx",
+            NSStringFromClass([self class]), self.name, self.typeString, self.address];
 }
 
 #pragma mark -
@@ -83,11 +83,11 @@
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
-        if (typeController.shouldShowMethodAddresses && self.imp != 0) {
+        if (typeController.shouldShowMethodAddresses && self.address != 0) {
             if (typeController.targetArchUses64BitABI)
-                [resultString appendFormat:@"\t// IMP=0x%016lx", self.imp];
+                [resultString appendFormat:@"\t// IMP=0x%016lx", self.address];
             else
-                [resultString appendFormat:@"\t// IMP=0x%08lx", self.imp];
+                [resultString appendFormat:@"\t// IMP=0x%08lx", self.address];
         }
     } else
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];

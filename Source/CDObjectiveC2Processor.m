@@ -75,14 +75,14 @@
         NSParameterAssert([cursor offset] != 0);
         
         struct cd_objc2_protocol objc2Protocol;
-        objc2Protocol.isa = [cursor readPtr];
-        objc2Protocol.name = [cursor readPtr];
-        objc2Protocol.protocols = [cursor readPtr];
-        objc2Protocol.instanceMethods = [cursor readPtr];
-        objc2Protocol.classMethods = [cursor readPtr];
+        objc2Protocol.isa                     = [cursor readPtr];
+        objc2Protocol.name                    = [cursor readPtr];
+        objc2Protocol.protocols               = [cursor readPtr];
+        objc2Protocol.instanceMethods         = [cursor readPtr];
+        objc2Protocol.classMethods            = [cursor readPtr];
         objc2Protocol.optionalInstanceMethods = [cursor readPtr];
-        objc2Protocol.optionalClassMethods = [cursor readPtr];
-        objc2Protocol.instanceProperties = [cursor readPtr];
+        objc2Protocol.optionalClassMethods    = [cursor readPtr];
+        objc2Protocol.instanceProperties      = [cursor readPtr];
         
         //NSLog(@"----------------------------------------");
         //NSLog(@"%016lx %016lx %016lx %016lx", objc2Protocol.isa, objc2Protocol.name, objc2Protocol.protocols, objc2Protocol.instanceMethods);
@@ -133,14 +133,14 @@
     NSParameterAssert([cursor offset] != 0);
     
     struct cd_objc2_category objc2Category;
-    objc2Category.name = [cursor readPtr];
-    objc2Category.class = [cursor readPtr];
-    objc2Category.instanceMethods = [cursor readPtr];
-    objc2Category.classMethods = [cursor readPtr];
-    objc2Category.protocols = [cursor readPtr];
+    objc2Category.name               = [cursor readPtr];
+    objc2Category.class              = [cursor readPtr];
+    objc2Category.instanceMethods    = [cursor readPtr];
+    objc2Category.classMethods       = [cursor readPtr];
+    objc2Category.protocols          = [cursor readPtr];
     objc2Category.instanceProperties = [cursor readPtr];
-    objc2Category.v7 = [cursor readPtr];
-    objc2Category.v8 = [cursor readPtr];
+    objc2Category.v7                 = [cursor readPtr];
+    objc2Category.v8                 = [cursor readPtr];
     //NSLog(@"----------------------------------------");
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.name, objc2Category.class, objc2Category.instanceMethods, objc2Category.classMethods);
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.protocols, objc2Category.instanceProperties, objc2Category.v7, objc2Category.v8);
@@ -190,14 +190,14 @@
     NSParameterAssert([cursor offset] != 0);
     
     struct cd_objc2_class objc2Class;
-    objc2Class.isa = [cursor readPtr];
+    objc2Class.isa        = [cursor readPtr];
     objc2Class.superclass = [cursor readPtr];
-    objc2Class.cache = [cursor readPtr];
-    objc2Class.vtable = [cursor readPtr];
-    objc2Class.data = [cursor readPtr];
-    objc2Class.reserved1 = [cursor readPtr];
-    objc2Class.reserved2 = [cursor readPtr];
-    objc2Class.reserved3 = [cursor readPtr];
+    objc2Class.cache      = [cursor readPtr];
+    objc2Class.vtable     = [cursor readPtr];
+    objc2Class.data       = [cursor readPtr];
+    objc2Class.reserved1  = [cursor readPtr];
+    objc2Class.reserved2  = [cursor readPtr];
+    objc2Class.reserved3  = [cursor readPtr];
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.isa, objc2Class.superclass, objc2Class.cache, objc2Class.vtable);
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.data, objc2Class.reserved1, objc2Class.reserved2, objc2Class.reserved3);
     
@@ -205,19 +205,19 @@
     [cursor setAddress:objc2Class.data];
 
     struct cd_objc2_class_ro_t objc2ClassData;
-    objc2ClassData.flags = [cursor readInt32];
+    objc2ClassData.flags         = [cursor readInt32];
     objc2ClassData.instanceStart = [cursor readInt32];
-    objc2ClassData.instanceSize = [cursor readInt32];
+    objc2ClassData.instanceSize  = [cursor readInt32];
     if ([self.machOFile uses64BitABI])
-        objc2ClassData.reserved = [cursor readInt32];
+        objc2ClassData.reserved  = [cursor readInt32];
     else
         objc2ClassData.reserved = 0;
     
-    objc2ClassData.ivarLayout = [cursor readPtr];
-    objc2ClassData.name = [cursor readPtr];
-    objc2ClassData.baseMethods = [cursor readPtr];
-    objc2ClassData.baseProtocols = [cursor readPtr];
-    objc2ClassData.ivars = [cursor readPtr];
+    objc2ClassData.ivarLayout     = [cursor readPtr];
+    objc2ClassData.name           = [cursor readPtr];
+    objc2ClassData.baseMethods    = [cursor readPtr];
+    objc2ClassData.baseProtocols  = [cursor readPtr];
+    objc2ClassData.ivars          = [cursor readPtr];
     objc2ClassData.weakIvarLayout = [cursor readPtr];
     objc2ClassData.baseProperties = [cursor readPtr];
     
@@ -311,14 +311,14 @@
     NSParameterAssert([cursor offset] != 0);
     
     struct cd_objc2_class objc2Class;
-    objc2Class.isa = [cursor readPtr];
+    objc2Class.isa        = [cursor readPtr];
     objc2Class.superclass = [cursor readPtr];
-    objc2Class.cache = [cursor readPtr];
-    objc2Class.vtable = [cursor readPtr];
-    objc2Class.data = [cursor readPtr];
-    objc2Class.reserved1 = [cursor readPtr];
-    objc2Class.reserved2 = [cursor readPtr];
-    objc2Class.reserved3 = [cursor readPtr];
+    objc2Class.cache      = [cursor readPtr];
+    objc2Class.vtable     = [cursor readPtr];
+    objc2Class.data       = [cursor readPtr];
+    objc2Class.reserved1  = [cursor readPtr];
+    objc2Class.reserved2  = [cursor readPtr];
+    objc2Class.reserved3  = [cursor readPtr];
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.isa, objc2Class.superclass, objc2Class.cache, objc2Class.vtable);
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.data, objc2Class.reserved1, objc2Class.reserved2, objc2Class.reserved3);
     
@@ -326,19 +326,19 @@
     [cursor setAddress:objc2Class.data];
 
     struct cd_objc2_class_ro_t objc2ClassData;
-    objc2ClassData.flags = [cursor readInt32];
+    objc2ClassData.flags         = [cursor readInt32];
     objc2ClassData.instanceStart = [cursor readInt32];
-    objc2ClassData.instanceSize = [cursor readInt32];
+    objc2ClassData.instanceSize  = [cursor readInt32];
     if ([self.machOFile uses64BitABI])
-        objc2ClassData.reserved = [cursor readInt32];
+        objc2ClassData.reserved  = [cursor readInt32];
     else
         objc2ClassData.reserved = 0;
     
-    objc2ClassData.ivarLayout = [cursor readPtr];
-    objc2ClassData.name = [cursor readPtr];
-    objc2ClassData.baseMethods = [cursor readPtr];
-    objc2ClassData.baseProtocols = [cursor readPtr];
-    objc2ClassData.ivars = [cursor readPtr];
+    objc2ClassData.ivarLayout     = [cursor readPtr];
+    objc2ClassData.name           = [cursor readPtr];
+    objc2ClassData.baseMethods    = [cursor readPtr];
+    objc2ClassData.baseProtocols  = [cursor readPtr];
+    objc2ClassData.ivars          = [cursor readPtr];
     objc2ClassData.weakIvarLayout = [cursor readPtr];
     objc2ClassData.baseProperties = [cursor readPtr];
     
@@ -357,23 +357,23 @@
         struct cd_objc2_list_header listHeader;
         
         listHeader.entsize = [cursor readInt32];
-        listHeader.count = [cursor readInt32];
+        listHeader.count   = [cursor readInt32];
         NSParameterAssert(listHeader.entsize == ([self.machOFile uses64BitABI] ? 24 : 12));
         
         for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_method objc2Method;
             
-            objc2Method.name = [cursor readPtr];
+            objc2Method.name  = [cursor readPtr];
             objc2Method.types = [cursor readPtr];
-            objc2Method.imp = [cursor readPtr];
-            NSString *name = [self.machOFile stringAtAddress:objc2Method.name];
-            NSString *types = [self.machOFile stringAtAddress:objc2Method.types];
+            objc2Method.imp   = [cursor readPtr];
+            NSString *name    = [self.machOFile stringAtAddress:objc2Method.name];
+            NSString *types   = [self.machOFile stringAtAddress:objc2Method.types];
             
             //NSLog(@"%3u: %016lx %016lx %016lx", index, objc2Method.name, objc2Method.types, objc2Method.imp);
             //NSLog(@"name: %@", name);
             //NSLog(@"types: %@", types);
             
-            CDOCMethod *method = [[CDOCMethod alloc] initWithName:name typeString:types imp:objc2Method.imp];
+            CDOCMethod *method = [[CDOCMethod alloc] initWithName:name typeString:types address:objc2Method.imp];
             [methods addObject:method];
         }
     }
@@ -399,11 +399,11 @@
         for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_ivar objc2Ivar;
             
-            objc2Ivar.offset = [cursor readPtr];
-            objc2Ivar.name = [cursor readPtr];
-            objc2Ivar.type = [cursor readPtr];
+            objc2Ivar.offset    = [cursor readPtr];
+            objc2Ivar.name      = [cursor readPtr];
+            objc2Ivar.type      = [cursor readPtr];
             objc2Ivar.alignment = [cursor readInt32];
-            objc2Ivar.size = [cursor readInt32];
+            objc2Ivar.size      = [cursor readInt32];
             
             if (objc2Ivar.name != 0) {
                 NSString *name       = [self.machOFile stringAtAddress:objc2Ivar.name];

@@ -8,11 +8,11 @@
 @interface CDOCMethod : NSObject <NSCopying>
 
 - (id)initWithName:(NSString *)name typeString:(NSString *)typeString;
-- (id)initWithName:(NSString *)name typeString:(NSString *)typeString imp:(NSUInteger)imp;
+- (id)initWithName:(NSString *)name typeString:(NSString *)typeString address:(NSUInteger)address;
 
 @property (readonly) NSString *name;
 @property (readonly) NSString *typeString;
-@property (assign) NSUInteger imp;
+@property (assign) NSUInteger address;
 
 - (NSArray *)parsedMethodTypes;
 
