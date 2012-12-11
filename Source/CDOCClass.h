@@ -13,9 +13,4 @@
 @property (strong) NSArray *instanceVariables;
 @property (assign) BOOL isExported;
 
-- (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
-
-- (NSString *)methodSearchContext;
-- (void)recursivelyVisit:(CDVisitor *)visitor;
-
 @end
