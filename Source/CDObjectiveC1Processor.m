@@ -160,8 +160,7 @@ static BOOL debug = NO;
 
 - (void)processModules;
 {
-    CDLCSegment *objcSegment = [self.machOFile segmentWithName:@"__OBJC"];
-    CDSection *moduleSection = [objcSegment sectionWithName:@"__module_info"];
+    CDSection *moduleSection = [[self.machOFile segmentWithName:@"__OBJC"] sectionWithName:@"__module_info"];
 
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:moduleSection];
     while ([cursor isAtEnd] == NO) {
@@ -502,8 +501,7 @@ static BOOL debug = NO;
 // Perhaps a bit more work than necessary, but at least I can see exactly what is happening.
 - (void)loadProtocols;
 {
-    CDLCSegment *objcSegment = [self.machOFile segmentWithName:@"__OBJC"];
-    CDSection *protocolSection = [objcSegment sectionWithName:@"__protocol"];
+    CDSection *protocolSection = [[self.machOFile segmentWithName:@"__OBJC"] sectionWithName:@"__protocol"];
     uint32_t addr = (uint32_t)[protocolSection addr];
 
     NSUInteger count = [protocolSection size] / sizeof(struct cd_objc_protocol);

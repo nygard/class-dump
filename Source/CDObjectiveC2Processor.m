@@ -26,8 +26,7 @@
 
 - (void)loadProtocols;
 {
-    CDLCSegment *segment = [self.machOFile segmentWithName:@"__DATA"];
-    CDSection *section = [segment sectionWithName:@"__objc_protolist"];
+    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_protolist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
@@ -36,8 +35,7 @@
 
 - (void)loadClasses;
 {
-    CDLCSegment *segment = [self.machOFile segmentWithName:@"__DATA"];
-    CDSection *section = [segment sectionWithName:@"__objc_classlist"];
+    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
@@ -51,8 +49,7 @@
 
 - (void)loadCategories;
 {
-    CDLCSegment *segment = [self.machOFile segmentWithName:@"__DATA"];
-    CDSection *section = [segment sectionWithName:@"__objc_catlist"];
+    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_catlist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
