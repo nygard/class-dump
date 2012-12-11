@@ -4,8 +4,8 @@
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
 @class CDMachOFile, CDSection, CDTypeController;
-@class CDClassDump, CDVisitor;
-@class CDOCClass, CDOCCategory, CDOCProtocol;
+@class CDVisitor;
+@class CDOCClass, CDOCCategory;
 @class CDProtocolUniquer;
 
 @interface CDObjectiveCProcessor : NSObject

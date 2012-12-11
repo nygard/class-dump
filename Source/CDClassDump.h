@@ -13,7 +13,7 @@
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION
 #endif
 
-@class CDFile, CDMachOFile;
+@class CDFile;
 @class CDTypeController;
 @class CDVisitor;
 @class CDSearchPathState;

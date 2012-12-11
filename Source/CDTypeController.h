@@ -5,7 +5,7 @@
 
 @protocol CDTypeControllerDelegate;
 
-@class CDClassDump, CDStructureTable, CDType, CDTypeFormatter;
+@class CDClassDump, CDType, CDTypeFormatter;
 
 @interface CDTypeController : NSObject
 

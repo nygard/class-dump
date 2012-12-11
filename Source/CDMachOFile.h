@@ -13,7 +13,7 @@ typedef enum : NSUInteger {
     CDByteOrder_BigEndian = 1,
 } CDByteOrder;
 
-@class CDLCSegment, CDMachOFileDataCursor;
+@class CDLCSegment;
 @class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
 @protocol CDMachOFileDelegate

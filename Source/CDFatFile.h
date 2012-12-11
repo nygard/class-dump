@@ -5,7 +5,7 @@
 
 #import "CDFile.h"
 
-@class CDFatArch, CDMachOFile;
+@class CDFatArch;
 
 @interface CDFatFile : CDFile
 
