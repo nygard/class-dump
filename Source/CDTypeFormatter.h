@@ -14,7 +14,7 @@
 @property (assign) BOOL shouldAutoExpand;
 @property (assign) BOOL shouldShowLexing;
 
-- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
+- (NSString *)formatVariable:(NSString *)name type:(CDType *)type;
 - (NSString *)formatMethodName:(NSString *)name typeString:(NSString *)typeString;
 
 - (NSString *)typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;

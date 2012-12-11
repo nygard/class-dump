@@ -76,7 +76,7 @@
     if (self.parseError != nil) {
         [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
     } else {
-        NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name parsedType:type];
+        NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:type];
         NSParameterAssert(formattedString != nil);
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

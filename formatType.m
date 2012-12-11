@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
                     switch (formatType) {
                         case CDFormat_Ivar: {
                             CDOCInstanceVariable *var = [[CDOCInstanceVariable alloc] initWithName:name typeString:type offset:0];
-                            str = [ivarTypeFormatter formatVariable:name parsedType:var.type];
+                            str = [ivarTypeFormatter formatVariable:name type:var.type];
                             break;
                         }
                             

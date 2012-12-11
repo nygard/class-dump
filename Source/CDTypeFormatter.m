@@ -84,7 +84,7 @@ static BOOL debug = NO;
     return nil;
 }
 
-- (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
+- (NSString *)formatVariable:(NSString *)name type:(CDType *)type;
 {
     NSMutableString *resultString = [NSMutableString string];
 

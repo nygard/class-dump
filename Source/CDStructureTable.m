@@ -696,7 +696,7 @@ static BOOL debugAnonStructures = NO;
                     [resultString appendFormat:@"// would normally show? %u\n", shouldShow];
                     [resultString appendFormat:@"// depth: %lu, ref count: %lu, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
                 }
-                NSString *formattedString = [typeFormatter formatVariable:nil parsedType:type];
+                NSString *formattedString = [typeFormatter formatVariable:nil type:type];
                 if (formattedString != nil) {
                     [resultString appendString:formattedString];
                     [resultString appendString:@";\n\n"];
@@ -725,7 +725,7 @@ static BOOL debugAnonStructures = NO;
                     [resultString appendFormat:@"// depth: %lu, ref count: %lu, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
                     //[resultString appendFormat:@"// typedefName: %@\n", [info typedefName]];
                 }
-                NSString *formattedString = [typeFormatter formatVariable:nil parsedType:type];
+                NSString *formattedString = [typeFormatter formatVariable:nil type:type];
                 if (formattedString != nil) {
                     [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];
                 }
@@ -764,7 +764,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %lu, ref: %lu, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
-            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
+            NSString *formattedString = [typeFormatter formatVariable:nil type:info.type];
             if (formattedString != nil) {
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];
             }
@@ -790,7 +790,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %lu, ref: %lu, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
-            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
+            NSString *formattedString = [typeFormatter formatVariable:nil type:info.type];
             if (formattedString != nil) {
                 //[resultString appendFormat:@"%@;\n\n", formattedString];
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];
@@ -817,7 +817,7 @@ static BOOL debugAnonStructures = NO;
                 [resultString appendFormat:@"// depth: %lu, ref: %lu, used in method? %u\n", info.type.structureDepth, info.referenceCount, info.isUsedInMethod];
             }
 
-            NSString *formattedString = [typeFormatter formatVariable:nil parsedType:info.type];
+            NSString *formattedString = [typeFormatter formatVariable:nil type:info.type];
             if (formattedString != nil) {
                 //[resultString appendFormat:@"%@;\n\n", formattedString];
                 [resultString appendFormat:@"typedef %@ %@;\n\n", formattedString, info.typedefName];

@@ -270,7 +270,7 @@ static BOOL debug = NO;
     if (isWeak)
         [self.resultString appendString:@"__weak "];
     
-    NSString *formattedString = [self.classDump.typeController.propertyTypeFormatter formatVariable:property.name parsedType:parsedType];
+    NSString *formattedString = [self.classDump.typeController.propertyTypeFormatter formatVariable:property.name type:parsedType];
     [self.resultString appendFormat:@"%@;", formattedString];
     
     if (isDynamic) {
