@@ -202,7 +202,7 @@
     return _baseAddress;
 }
 
-- (CDSymbol *)symbolForClass:(NSString *)className;
+- (CDSymbol *)symbolForClassName:(NSString *)className;
 {
     return _classSymbols[className];
 }

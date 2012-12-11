@@ -19,6 +19,6 @@
 @property (nonatomic, readonly) NSUInteger baseAddress;
 @property (nonatomic, readonly) NSArray *symbols;
 
-- (CDSymbol *)symbolForClass:(NSString *)className;
+- (CDSymbol *)symbolForClassName:(NSString *)className;
 
 @end

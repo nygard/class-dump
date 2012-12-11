@@ -237,7 +237,7 @@
     aClass.instanceVariables = [self loadIvarsAtAddress:objc2ClassData.ivars];
     
     {
-        CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForClass:str];
+        CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForClassName:str];
         
         if (classSymbol != nil)
             aClass.isExported = [classSymbol isExternal];
