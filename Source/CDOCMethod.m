@@ -13,7 +13,7 @@
 @implementation CDOCMethod
 {
     NSString *_name;
-    NSString *_type;
+    NSString *_typeString;
     NSUInteger _imp;
     
     BOOL _hasParsedType;
@@ -35,7 +35,7 @@
 {
     if ((self = [super init])) {
         _name = name;
-        _type = typeString;
+        _typeString = typeString;
         _imp = imp;
         
         _hasParsedType = NO;
@@ -49,15 +49,15 @@
 
 - (id)copyWithZone:(NSZone *)zone;
 {
-    return [[CDOCMethod alloc] initWithName:self.name typeString:self.type imp:self.imp];
+    return [[CDOCMethod alloc] initWithName:self.name typeString:self.typeString imp:self.imp];
 }
 
 #pragma mark - Debugging
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"[%@] name: %@, type: %@, imp: 0x%016lx",
-            NSStringFromClass([self class]), self.name, self.type, self.imp];
+    return [NSString stringWithFormat:@"[%@] name: %@, typeString: %@, imp: 0x%016lx",
+            NSStringFromClass([self class]), self.name, self.typeString, self.imp];
 }
 
 #pragma mark -
@@ -67,7 +67,7 @@
     if (_hasParsedType == NO) {
         NSError *error = nil;
 
-        CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.type];
+        CDTypeParser *parser = [[CDTypeParser alloc] initWithString:self.typeString];
         _parsedMethodTypes = [parser parseMethodType:&error];
         if (_parsedMethodTypes == nil)
             NSLog(@"Warning: Parsing method types failed, %@", self.name);
@@ -79,7 +79,7 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:self.name typeString:self.type];
+    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:self.name typeString:self.typeString];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];
@@ -90,7 +90,7 @@
                 [resultString appendFormat:@"\t// IMP=0x%08lx", self.imp];
         }
     } else
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.type, self.name];
+        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
 }
 
 #pragma mark - Sorting

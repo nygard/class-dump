@@ -11,7 +11,7 @@
 - (id)initWithName:(NSString *)name typeString:(NSString *)typeString imp:(NSUInteger)imp;
 
 @property (readonly) NSString *name;
-@property (readonly) NSString *type;
+@property (readonly) NSString *typeString;
 @property (assign) NSUInteger imp;
 
 - (NSArray *)parsedMethodTypes;
