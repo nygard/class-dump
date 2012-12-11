@@ -234,7 +234,7 @@
     for (CDOCMethod *method in [self loadMethodsAtAddress:objc2ClassData.baseMethods])
         [aClass addInstanceMethod:method];
     
-    [aClass setIvars:[self loadIvarsAtAddress:objc2ClassData.ivars]];
+    aClass.instanceVariables = [self loadIvarsAtAddress:objc2ClassData.ivars];
     
     {
         CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForClass:str];

@@ -17,7 +17,7 @@
 @implementation CDOCClass
 {
     NSString *_superClassName;
-    NSArray *_ivars;
+    NSArray *_instanceVariables;
     
     BOOL _isExported;
 }
@@ -26,7 +26,7 @@
 {
     if ((self = [super init])) {
         _superClassName = nil;
-        _ivars = nil;
+        _instanceVariables = nil;
         
         _isExported = YES;
     }
@@ -47,8 +47,8 @@
 {
     [super registerTypesWithObject:typeController phase:phase];
 
-    for (CDOCInstanceVariable *ivar in self.ivars) {
-        [ivar.type phase:phase registerTypesWithObject:typeController usedInMethod:NO];
+    for (CDOCInstanceVariable *instanceVariable in self.instanceVariables) {
+        [instanceVariable.type phase:phase registerTypesWithObject:typeController usedInMethod:NO];
     }
 }
 
@@ -74,13 +74,13 @@
         [visitor willVisitClass:self];
         
         [visitor willVisitIvarsOfClass:self];
-        for (CDOCInstanceVariable *ivar in self.ivars)
-            [visitor visitIvar:ivar];
+        for (CDOCInstanceVariable *instanceVariable in self.instanceVariables)
+            [visitor visitIvar:instanceVariable];
         [visitor didVisitIvarsOfClass:self];
         
-        //[aVisitor willVisitPropertiesOfClass:self];
-        //[self visitProperties:aVisitor];
-        //[aVisitor didVisitPropertiesOfClass:self];
+        //[visitor willVisitPropertiesOfClass:self];
+        //[self visitProperties:visitor];
+        //[visitor didVisitPropertiesOfClass:self];
         
         [self visitMethods:visitor propertyState:propertyState];
         // Should mostly be dynamic properties

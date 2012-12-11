@@ -269,7 +269,7 @@ static BOOL debug = NO;
         NSParameterAssert([cursor offset] != 0);
 
         uint32_t count = [cursor readInt32];
-        NSMutableArray *ivars = [[NSMutableArray alloc] init];
+        NSMutableArray *instanceVariables = [[NSMutableArray alloc] init];
         for (uint32_t index = 0; index < count; index++) {
             struct cd_objc_ivar objcIvar;
 
@@ -284,11 +284,11 @@ static BOOL debug = NO;
             // NSIconRefBitmapImageRep in AppKit on 10.5 has a single-bit bitfield, plus an unnamed 31-bit field.
             if (typeString != nil) {
                 CDOCInstanceVariable *instanceVariable = [[CDOCInstanceVariable alloc] initWithName:name typeString:typeString offset:objcIvar.offset];
-                [ivars addObject:instanceVariable];
+                [instanceVariables addObject:instanceVariable];
             }
         }
 
-        [aClass setIvars:[NSArray arrayWithArray:ivars]];
+        aClass.instanceVariables = [NSArray arrayWithArray:instanceVariables];
     }
 
     // Process instance methods
