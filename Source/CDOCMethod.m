@@ -83,7 +83,7 @@
 
 - (void)appendToString:(NSMutableString *)resultString typeController:(CDTypeController *)typeController;
 {
-    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:self.name type:self.type];
+    NSString *formattedString = [typeController.methodTypeFormatter formatMethodName:self.name typeString:self.type];
     if (formattedString != nil) {
         [resultString appendString:formattedString];
         [resultString appendString:@";"];

@@ -128,7 +128,7 @@ int main(int argc, char *argv[])
                         }
                             
                         case CDFormat_Method:
-                            str = [methodTypeFormatter formatMethodName:name type:type];
+                            str = [methodTypeFormatter formatMethodName:name typeString:type];
                             break;
                             
                         case CDFormat_Balance: {

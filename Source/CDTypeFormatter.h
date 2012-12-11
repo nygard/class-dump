@@ -15,7 +15,7 @@
 @property (assign) BOOL shouldShowLexing;
 
 - (NSString *)formatVariable:(NSString *)name parsedType:(CDType *)type;
-- (NSString *)formatMethodName:(NSString *)name type:(NSString *)type;
+- (NSString *)formatMethodName:(NSString *)name typeString:(NSString *)typeString;
 
 - (NSString *)typedefNameForStruct:(CDType *)structType level:(NSUInteger)level;
 

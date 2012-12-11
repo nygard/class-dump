@@ -179,9 +179,9 @@ static BOOL debug = NO;
     return typeDict;
 }
 
-- (NSString *)formatMethodName:(NSString *)methodName type:(NSString *)type;
+- (NSString *)formatMethodName:(NSString *)methodName typeString:(NSString *)typeString;
 {
-    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:type];
+    CDTypeParser *parser = [[CDTypeParser alloc] initWithString:typeString];
 
     NSError *error = nil;
     NSArray *methodTypes = [parser parseMethodType:&error];
@@ -231,11 +231,11 @@ static BOOL debug = NO;
                     if (specialCase != nil) {
                         [resultString appendFormat:@"(%@)", specialCase];
                     } else {
-                        NSString *typeString = [methodType.type formattedString:nil formatter:self level:0];
-                        //if ([[aMethodType type] isIDType] == NO)
-                        [resultString appendFormat:@"(%@)", typeString];
+                        NSString *formattedType = [methodType.type formattedString:nil formatter:self level:0];
+                        //if ([[methodType type] isIDType] == NO)
+                        [resultString appendFormat:@"(%@)", formattedType];
                     }
-                    //[resultString appendFormat:@"fp%@", [aMethodType offset]];
+                    //[resultString appendFormat:@"fp%@", [methodType offset]];
                     [resultString appendFormat:@"arg%lu", index-2];
 
                     NSString *ch = [scanner peekCharacter];
