@@ -7,6 +7,6 @@
 
 @interface CDLCUUID : CDLoadCommand
 
-@property (nonatomic, readonly) NSString *uuidString;
+@property (nonatomic, readonly) NSUUID *UUID;
 
 @end

@@ -48,7 +48,9 @@
     [self.resultString appendString:@"#pragma mark -\n\n"];
     [self.resultString appendString:@"//\n"];
     [self.resultString appendFormat:@"// File: %@\n", machOFile.filename];
-    [self.resultString appendFormat:@"// UUID: %@\n", machOFile.uuidString];
+    if (machOFile.UUID) {
+        [self.resultString appendFormat:@"// UUID: %@\n", [machOFile.UUID UUIDString]];
+    }
     [self.resultString appendString:@"//\n"];
     [self.resultString appendFormat:@"//                           Arch: %@\n", CDNameForCPUType(machOFile.cputype, machOFile.cpusubtype)];
 

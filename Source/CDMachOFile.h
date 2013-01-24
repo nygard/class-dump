@@ -69,7 +69,7 @@ typedef enum : NSUInteger {
 - (NSString *)loadCommandString:(BOOL)isVerbose;
 - (NSString *)headerString:(BOOL)isVerbose;
 
-@property (nonatomic, readonly) NSString *uuidString;
+@property (nonatomic, readonly) NSUUID *UUID;
 @property (nonatomic, readonly) NSString *archName;
 
 - (Class)processorClass;
