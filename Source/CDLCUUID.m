@@ -49,4 +49,9 @@
     [resultString appendString:@"\n"];
 }
 
+- (NSString *)extraDescription;
+{
+    return [self.UUID UUIDString];
+}
+
 @end
