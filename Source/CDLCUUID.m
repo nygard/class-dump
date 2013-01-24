@@ -19,7 +19,7 @@
     if ((self = [super initWithDataCursor:cursor])) {
         _uuidCommand.cmd     = [cursor readInt32];
         _uuidCommand.cmdsize = [cursor readInt32];
-        for (NSUInteger index = 0; index < 16; index++) {
+        for (NSUInteger index = 0; index < sizeof(_uuidCommand.uuid); index++) {
             _uuidCommand.uuid[index] = [cursor readByte];
         }
         _UUID = [[NSUUID alloc] initWithUUIDBytes:_uuidCommand.uuid];
