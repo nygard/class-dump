@@ -121,6 +121,11 @@ static BOOL debugMerge = NO;
     return self;
 }
 
+- (id)initBlockType;
+{
+    return [self initModifier:'@' type:[[CDType alloc] initSimpleType:'?']];
+}
+
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 {
     if ((self = [self init])) {
@@ -244,6 +249,11 @@ static BOOL debugMerge = NO;
     return self.primitiveType == '@' && self.typeName == nil;
 }
 
+- (BOOL)isBlockType;
+{
+    return self.isIDType && self.subtype.primitiveType == '?';
+}
+
 - (BOOL)isNamedObject;
 {
     return self.primitiveType == T_NAMED_OBJECT;
@@ -309,7 +319,9 @@ static BOOL debugMerge = NO;
             
         case '@':
             if (currentName == nil) {
-                if (_protocols == nil)
+                if (_subtype.primitiveType == '?')
+                    result = @"CDUnknownBlockType";
+                else if (_protocols == nil)
                     result = @"id";
                 else
                     result = [NSString stringWithFormat:@"id <%@>", [_protocols componentsJoinedByString:@", "]];
@@ -822,6 +834,8 @@ static BOOL debugMerge = NO;
 
     if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
+    } else if (self.isBlockType) {
+        typeController.hasBlocks = YES;
     }
 }
 

@@ -10,6 +10,7 @@
 - (id)init;
 - (id)initSimpleType:(int)type;
 - (id)initIDType:(CDTypeName *)name;
+- (id)initBlockType;
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 - (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
 - (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;
@@ -22,6 +23,7 @@
 
 @property (nonatomic, readonly) int primitiveType;
 @property (nonatomic, readonly) BOOL isIDType;
+@property (nonatomic, readonly) BOOL isBlockType;
 @property (nonatomic, readonly) BOOL isNamedObject;
 @property (nonatomic, readonly) BOOL isTemplateType;
 
