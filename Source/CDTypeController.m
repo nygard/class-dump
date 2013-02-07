@@ -142,6 +142,11 @@ static BOOL debug = NO;
 
     [self.unionTable appendNamedStructuresToString:resultString formatter:self.structDeclarationTypeFormatter markName:@"Named Unions"];
     [self.unionTable appendTypedefsToString:resultString        formatter:self.structDeclarationTypeFormatter markName:@"Typedef'd Unions"];
+    
+    if (self.hasBlocks) {
+        [resultString appendString:@"#pragma mark Blocks\n\n"];
+        [resultString appendFormat:@"typedef void (^CDUnknownBlockType)(void); // return type and parameters are unknown\n\n"];
+    }
 }
 
 // Call this before calling generateMemberNames.

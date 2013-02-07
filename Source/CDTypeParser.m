@@ -253,7 +253,12 @@ static NSString *CDTokenDescription(int token)
 
             [self match:TK_QUOTED_STRING];
         } else {
-            result = [[CDType alloc] initIDType:nil];
+            if (_lookahead == '?') {
+                result = [[CDType alloc] initBlockType];
+                [self match:'?'];
+            } else {
+                result = [[CDType alloc] initIDType:nil];
+            }
         }
     } else if (_lookahead == '{') { // structure
         CDTypeLexerState savedState = self.lexer.state;
