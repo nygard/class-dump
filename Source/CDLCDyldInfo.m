@@ -8,106 +8,10 @@
 #import "CDMachOFile.h"
 
 #import "CDLCSegment.h"
+#import "ULEB128.h"
 
 static BOOL debugBindOps = NO;
 static BOOL debugExportedSymbols = NO;
-
-// Can use dyldinfo(1) to view info.
-
-// http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/gnu-assembler/uleb128.html
-// uleb128 stands for "unsigned little endian base 128."
-// This is a compact, variable length representation of numbers used by the DWARF symbolic debugging format.
-
-// Top bit of byte is set until last byte.
-// Other 7 bits are the "slice".
-// Basically, it represents the low order bits 7 at a time, and can stop when the rest of the bits would be zero.
-// This needs to modify ptr.
-
-// For example, uleb with these bytes: e8 d7 15
-// 0xe8 = 1110 1000
-// 0xd7 = 1101 0111
-// 0x15 = 0001 0101
-
-//                 .... .... .... .... .... .... .... .... .... .... .... .... .... .... .... ....
-// 0xe8 1 1101000  .... .... .... .... .... .... .... .... .... .... .... .... .... .... .110 1000
-// 0xd7 1 1010111  .... .... .... .... .... .... .... .... .... .... .... .... ..10 1011 1110 1000
-// 0x15 0 0010101  .... .... .... .... .... .... .... .... .... .... .... .... ..10 1011 1110 1000
-// 0x15 0 0010101  .... .... .... .... .... .... .... .... .... .... ...0 0101 0110 1011 1110 1000
-// Result is: 0x056be8
-// So... 24 bits to encode 64 bits
-
-static uint64_t read_uleb128(const uint8_t **ptrptr, const uint8_t *end)
-{
-    const uint8_t *ptr = *ptrptr;
-    uint64_t result = 0;
-    int bit = 0;
-
-    //NSLog(@"read_uleb128()");
-    do {
-        NSCAssert(ptr != end, @"Malformed uleb128", nil);
-
-        //NSLog(@"byte: %02x", *ptr);
-        uint64_t slice = *ptr & 0x7f;
-
-        if (bit >= 64 || slice << bit >> bit != slice) {
-            NSLog(@"uleb128 too big");
-            exit(88);
-        } else {
-            result |= (slice << bit);
-            bit += 7;
-        }
-    }
-    while ((*ptr++ & 0x80) != 0);
-
-#if 0
-    static NSUInteger maxlen = 0;
-    if (maxlen < ptr - *ptrptr) {
-        const uint8_t *ptr2 = *ptrptr;
-
-        NSMutableArray *byteStrs = [NSMutableArray array];
-        do {
-            [byteStrs addObject:[NSString stringWithFormat:@"%02x", *ptr2]];
-        } while (++ptr2 < ptr);
-        //NSLog(@"max uleb length now: %u (%@)", ptr - *ptrptr, [byteStrs componentsJoinedByString:@" "]);
-        //NSLog(@"sizeof(uint64_t): %u, sizeof(uintptr_t): %u", sizeof(uint64_t), sizeof(uintptr_t));
-        maxlen = ptr - *ptrptr;
-    }
-#endif
-
-    *ptrptr = ptr;
-    return result;
-}
-
-static int64_t read_sleb128(const uint8_t **ptrptr, const uint8_t *end)
-{
-    const uint8_t *ptr = *ptrptr;
-
-    int64_t result = 0;
-    int bit = 0;
-    uint8_t byte;
-
-    //NSLog(@"read_sleb128()");
-    do {
-        NSCAssert(ptr != end, @"Malformed sleb128", nil);
-
-        byte = *ptr++;
-        //NSLog(@"%02x", byte);
-        result |= ((byte & 0x7f) << bit);
-        bit += 7;
-    } while ((byte & 0x80) != 0);
-
-    //NSLog(@"result before sign extend: %ld", result);
-    // sign extend negative numbers
-    // This essentially clears out from -1 the low order bits we've already set, and combines that with our bits.
-    if ( (byte & 0x40) != 0 )
-        result |= (-1LL) << bit;
-
-    //NSLog(@"result after sign extend: %ld", result);
-
-    //NSLog(@"ptr before: %p, after: %p", *ptrptr, ptr);
-    *ptrptr = ptr;
-    return result;
-}
 
 static NSString *CDRebaseTypeDescription(uint8_t type)
 {
