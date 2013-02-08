@@ -5,41 +5,31 @@
 
 #import "CDLCFunctionStarts.h"
 
+#import "ULEB128.h"
+
 @implementation CDLCFunctionStarts
 {
-    struct load_command _loadCommand;
-    
-    NSData *_commandData;
-}
-
-- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
-{
-    if ((self = [super initWithDataCursor:cursor])) {
-        _loadCommand.cmd     = [cursor readInt32];
-        _loadCommand.cmdsize = [cursor readInt32];
-        
-        if (_loadCommand.cmdsize > 8) {
-            NSMutableData *commandData = [[NSMutableData alloc] init];
-            [cursor appendBytesOfLength:_loadCommand.cmdsize - 8 intoData:commandData];
-            _commandData = [commandData copy]; 
-        } else {
-            _commandData = nil;
-        }
-    }
-
-    return self;
+    NSArray *_functionStarts;
 }
 
 #pragma mark -
 
-- (uint32_t)cmd;
+- (NSArray *)functionStarts;
 {
-    return _loadCommand.cmd;
-}
-
-- (uint32_t)cmdsize;
-{
-    return _loadCommand.cmdsize;
+    if (_functionStarts == nil) {
+        NSData *functionStartsData = [self linkeditData];
+        const uint8_t *start = (uint8_t *)[functionStartsData bytes];
+        const uint8_t *end = start + [functionStartsData length];
+        uint64_t startAddress;
+        uint64_t previousAddress = 0;
+        NSMutableArray *functionStarts = [[NSMutableArray alloc] init];
+        while ((startAddress = read_uleb128(&start, end))) {
+            [functionStarts addObject:@(startAddress + previousAddress)];
+            previousAddress += startAddress;
+        }
+        _functionStarts = [functionStarts copy];
+    }
+    return _functionStarts;
 }
 
 @end
