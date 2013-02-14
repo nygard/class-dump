@@ -3,8 +3,6 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
-// Can use dyldinfo(1) to view info.
-
 // http://www.redhat.com/docs/manuals/enterprise/RHEL-4-Manual/gnu-assembler/uleb128.html
 // uleb128 stands for "unsigned little endian base 128."
 // This is a compact, variable length representation of numbers used by the DWARF symbolic debugging format.
