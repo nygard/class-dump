@@ -80,6 +80,19 @@
         objc2Protocol.optionalInstanceMethods = [cursor readPtr];
         objc2Protocol.optionalClassMethods    = [cursor readPtr];
         objc2Protocol.instanceProperties      = [cursor readPtr];
+        objc2Protocol.size                    = [cursor readInt32];
+        objc2Protocol.flags                   = [cursor readInt32];
+        objc2Protocol.extendedMethodTypes     = 0;
+        
+        CDMachOFileDataCursor *extendedMethodTypesCursor = nil;
+        BOOL hasExtendedMethodTypesField = objc2Protocol.size >= (offsetof(struct cd_objc2_protocol, extendedMethodTypes) + sizeof(objc2Protocol.extendedMethodTypes));
+        if (hasExtendedMethodTypesField) {
+            objc2Protocol.extendedMethodTypes = [cursor readPtr];
+            if (objc2Protocol.extendedMethodTypes != 0) {
+                extendedMethodTypesCursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:objc2Protocol.extendedMethodTypes];
+                NSParameterAssert([extendedMethodTypesCursor offset] != 0);
+            }
+        }
         
         //NSLog(@"----------------------------------------");
         //NSLog(@"%016lx %016lx %016lx %016lx", objc2Protocol.isa, objc2Protocol.name, objc2Protocol.protocols, objc2Protocol.instanceMethods);
@@ -102,16 +115,16 @@
             }
         }
         
-        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.instanceMethods])
+        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.instanceMethods extendedMethodTypesCursor:extendedMethodTypesCursor])
             [protocol addInstanceMethod:method];
         
-        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.classMethods])
+        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.classMethods extendedMethodTypesCursor:extendedMethodTypesCursor])
             [protocol addClassMethod:method];
         
-        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.optionalInstanceMethods])
+        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.optionalInstanceMethods extendedMethodTypesCursor:extendedMethodTypesCursor])
             [protocol addOptionalInstanceMethod:method];
         
-        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.optionalClassMethods])
+        for (CDOCMethod *method in [self loadMethodsAtAddress:objc2Protocol.optionalClassMethods extendedMethodTypesCursor:extendedMethodTypesCursor])
             [protocol addOptionalClassMethod:method];
         
         for (CDOCProperty *property in [self loadPropertiesAtAddress:objc2Protocol.instanceProperties])
@@ -344,6 +357,11 @@
 
 - (NSArray *)loadMethodsAtAddress:(uint64_t)address;
 {
+    return [self loadMethodsAtAddress:address extendedMethodTypesCursor:nil];
+}
+
+- (NSArray *)loadMethodsAtAddress:(uint64_t)address extendedMethodTypesCursor:(CDMachOFileDataCursor *)extendedMethodTypesCursor;
+{
     NSMutableArray *methods = [NSMutableArray array];
     
     if (address != 0) {
@@ -365,6 +383,11 @@
             objc2Method.imp   = [cursor readPtr];
             NSString *name    = [self.machOFile stringAtAddress:objc2Method.name];
             NSString *types   = [self.machOFile stringAtAddress:objc2Method.types];
+            
+            if (extendedMethodTypesCursor) {
+                uint64_t extendedMethodTypes = [extendedMethodTypesCursor readPtr];
+                types = [self.machOFile stringAtAddress:extendedMethodTypes];
+            }
             
             //NSLog(@"%3u: %016lx %016lx %016lx", index, objc2Method.name, objc2Method.types, objc2Method.imp);
             //NSLog(@"name: %@", name);

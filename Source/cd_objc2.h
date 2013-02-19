@@ -66,6 +66,9 @@ struct cd_objc2_protocol {
     uint64_t optionalInstanceMethods;
     uint64_t optionalClassMethods;
     uint64_t instanceProperties; // So far, always 0
+    uint32_t size; // sizeof(cd_objc2_protocol)
+    uint32_t flags;
+    uint64_t extendedMethodTypes;
 };
 
 struct cd_objc2_category {
