@@ -25,7 +25,7 @@ void print_usage(void)
             "Usage: deprotect [options] <input file> <output file>\n"
             "\n"
             "  where options are:\n"
-            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64)\n"
+            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s)\n"
             ,
             CLASS_DUMP_VERSION
        );
