@@ -121,9 +121,15 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     //NSLog(@"machOFile: %@", machOFile);
     if (machOFile == nil) {
         if (error != NULL) {
-            NSDictionary *userInfo = @{
-            NSLocalizedFailureReasonErrorKey : [NSString stringWithFormat:@"File doesn't contain the specified architecture (%@).  Available architectures are %@.", CDNameForCPUType(_targetArch.cputype, _targetArch.cpusubtype), file.architectureNameDescription],
-            };
+            NSString *failureReason;
+            NSString *targetArchName = CDNameForCPUType(_targetArch.cputype, _targetArch.cpusubtype);
+            if ([file isKindOfClass:[CDFatFile class]] && [(CDFatFile *)file containsArchitecture:_targetArch]) {
+                failureReason = [NSString stringWithFormat:@"Fat file doesn't contain a valid Mach-O file for the specified architecture (%@).  "
+                                                            "It probably means that class-dump was run on a static library, which is not supported.", targetArchName];
+            } else {
+                failureReason = [NSString stringWithFormat:@"File doesn't contain the specified architecture (%@).  Available architectures are %@.", targetArchName, file.architectureNameDescription];
+            }
+            NSDictionary *userInfo = @{ NSLocalizedFailureReasonErrorKey : failureReason };
             *error = [NSError errorWithDomain:CDErrorDomain_ClassDump code:0 userInfo:userInfo];
         }
         return NO;
