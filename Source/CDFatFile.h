@@ -13,5 +13,6 @@
 @property (nonatomic, readonly) NSArray *archNames;
 
 - (void)addArchitecture:(CDFatArch *)fatArch;
+- (BOOL)containsArchitecture:(CDArch)arch;
 
 @end
