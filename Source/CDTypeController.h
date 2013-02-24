@@ -22,6 +22,9 @@
 @property (nonatomic, readonly) BOOL shouldShowMethodAddresses;
 @property (nonatomic, readonly) BOOL targetArchUses64BitABI;
 
+@property (nonatomic, assign) BOOL hasFunctionPointers;
+@property (nonatomic, assign) BOOL hasBlocks;
+
 - (CDType *)typeFormatter:(CDTypeFormatter *)typeFormatter replacementForType:(CDType *)type;
 - (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;
 - (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceClassName:(NSString *)name;

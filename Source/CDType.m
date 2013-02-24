@@ -433,16 +433,16 @@ static BOOL debugMerge = NO;
             
         case T_FUNCTION_POINTER_TYPE:
             if (currentName == nil)
-                result = @"void(*)()";
+                result = @"CDUnknownFunctionPointerType";
             else
-                result = [NSString stringWithFormat:@"void(*%@)()", currentName];
+                result = [NSString stringWithFormat:@"CDUnknownFunctionPointerType %@", currentName];
             break;
             
         case T_BLOCK_TYPE:
             if (currentName == nil)
-                result = @"void(^)()";
+                result = @"CDUnknownBlockType";
             else
-                result = [NSString stringWithFormat:@"void(^%@)()", currentName];
+                result = [NSString stringWithFormat:@"CDUnknownBlockType %@", currentName];
             break;
             
         case 'j':
@@ -862,6 +862,10 @@ static BOOL debugMerge = NO;
 
     if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
+    } else if (self.primitiveType == T_FUNCTION_POINTER_TYPE) {
+        typeController.hasFunctionPointers = YES;
+    } else if (self.primitiveType == T_BLOCK_TYPE) {
+        typeController.hasBlocks = YES;
     }
 }
 
