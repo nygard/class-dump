@@ -85,7 +85,7 @@
         objc2Protocol.extendedMethodTypes     = 0;
         
         CDMachOFileDataCursor *extendedMethodTypesCursor = nil;
-        BOOL hasExtendedMethodTypesField = objc2Protocol.size >= (offsetof(struct cd_objc2_protocol, extendedMethodTypes) + sizeof(objc2Protocol.extendedMethodTypes));
+        BOOL hasExtendedMethodTypesField = objc2Protocol.size > 8 * [self.machOFile ptrSize] + 2 * sizeof(uint32_t);
         if (hasExtendedMethodTypesField) {
             objc2Protocol.extendedMethodTypes = [cursor readPtr];
             if (objc2Protocol.extendedMethodTypes != 0) {
