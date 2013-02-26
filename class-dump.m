@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
                 case 'C': {
                     NSError *error;
                     NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithUTF8String:optarg]
-                                                                                                       options:0
+                                                                                                       options:(NSRegularExpressionOptions)0
                                                                                                          error:&error];
                     if (regularExpression != nil) {
                         classDump.regularExpression = regularExpression;

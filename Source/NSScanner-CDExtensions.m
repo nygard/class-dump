@@ -88,7 +88,7 @@
     return YES;
 }
 
-- (BOOL)scanCharacterFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
+- (BOOL)scanCharacterFromSet:(NSCharacterSet *)set intoString:(NSString *__autoreleasing *)value;
 {
     //[self skipCharacters];
 
@@ -113,7 +113,7 @@
 
 // This works for my purposes, but I haven't tested it to make sure it's fully compatible with the standard version.
 
-- (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString **)value;
+- (BOOL)my_scanCharactersFromSet:(NSCharacterSet *)set intoString:(NSString *__autoreleasing *)value;
 {
     NSUInteger currentLocation = [self scanLocation];
 
@@ -151,7 +151,7 @@
     return YES;
 }
 
-- (BOOL)scanIdentifierIntoString:(NSString **)stringPointer;
+- (BOOL)scanIdentifierIntoString:(NSString *__autoreleasing *)stringPointer;
 {
     NSString *start, *remainder;
 

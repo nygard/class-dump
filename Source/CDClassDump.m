@@ -79,7 +79,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
 - (BOOL)shouldShowName:(NSString *)name;
 {
     if (self.regularExpression != nil) {
-        NSTextCheckingResult *firstMatch = [self.regularExpression firstMatchInString:name options:0 range:NSMakeRange(0, [name length])];
+        NSTextCheckingResult *firstMatch = [self.regularExpression firstMatchInString:name options:(NSMatchingOptions)0 range:NSMakeRange(0, [name length])];
         return firstMatch != nil;
     }
 
@@ -114,7 +114,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     return self.containsObjectiveCData || self.hasEncryptedFiles;
 }
 
-- (BOOL)loadFile:(CDFile *)file error:(NSError **)error;
+- (BOOL)loadFile:(CDFile *)file error:(NSError *__autoreleasing *)error;
 {
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
     CDMachOFile *machOFile = [file machOFileWithArch:_targetArch];
