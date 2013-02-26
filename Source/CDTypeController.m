@@ -137,21 +137,21 @@ static BOOL debug = NO;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 {
+    if (self.hasUnknownFunctionPointers) {
+        [resultString appendString:@"#pragma mark Function Pointers\n\n"];
+        [resultString appendFormat:@"typedef void (*CDUnknownFunctionPointerType)(void); // return type and parameters are unknown\n\n"];
+    }
+    
+    if (self.hasUnknownBlocks) {
+        [resultString appendString:@"#pragma mark Blocks\n\n"];
+        [resultString appendFormat:@"typedef void (^CDUnknownBlockType)(void); // return type and parameters are unknown\n\n"];
+    }
+    
     [self.structureTable appendNamedStructuresToString:resultString formatter:self.structDeclarationTypeFormatter markName:@"Named Structures"];
     [self.structureTable appendTypedefsToString:resultString        formatter:self.structDeclarationTypeFormatter markName:@"Typedef'd Structures"];
 
     [self.unionTable appendNamedStructuresToString:resultString formatter:self.structDeclarationTypeFormatter markName:@"Named Unions"];
     [self.unionTable appendTypedefsToString:resultString        formatter:self.structDeclarationTypeFormatter markName:@"Typedef'd Unions"];
-    
-    if (self.hasFunctionPointers) {
-        [resultString appendString:@"#pragma mark Function Pointers\n\n"];
-        [resultString appendFormat:@"typedef void (*CDUnknownFunctionPointerType)(void); // return type and parameters are unknown\n\n"];
-    }
-    
-    if (self.hasBlocks) {
-        [resultString appendString:@"#pragma mark Blocks\n\n"];
-        [resultString appendFormat:@"typedef void (^CDUnknownBlockType)(void); // return type and parameters are unknown\n\n"];
-    }
 }
 
 // Call this before calling generateMemberNames.

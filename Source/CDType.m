@@ -193,10 +193,11 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initBlockType
+- (id)initBlockTypeWithTypes:(NSArray *)types;
 {
     if ((self = [self init])) {
         _primitiveType = T_BLOCK_TYPE;
+        _types = types;
     }
 
     return self;
@@ -439,10 +440,14 @@ static BOOL debugMerge = NO;
             break;
             
         case T_BLOCK_TYPE:
-            if (currentName == nil)
-                result = @"CDUnknownBlockType";
-            else
-                result = [NSString stringWithFormat:@"CDUnknownBlockType %@", currentName];
+            if (self.types) {
+                result = [self blockSignatureString];
+            } else {
+                if (currentName == nil)
+                    result = @"CDUnknownBlockType";
+                else
+                    result = [NSString stringWithFormat:@"CDUnknownBlockType %@", currentName];
+            }
             break;
             
         case 'j':
@@ -844,6 +849,37 @@ static BOOL debugMerge = NO;
     [self.subtype generateMemberNames];
 }
 
+- (NSString *)blockSignatureString;
+{
+    NSMutableString *blockSignatureString = [[NSMutableString alloc] init];
+    CDTypeFormatter *blockSignatureTypeFormatter = [[CDTypeFormatter alloc] init];
+    blockSignatureTypeFormatter.shouldExpand = NO;
+    blockSignatureTypeFormatter.shouldAutoExpand = NO;
+    blockSignatureTypeFormatter.baseLevel = 0;
+    [self.types enumerateObjectsUsingBlock:^(CDType *type, NSUInteger idx, BOOL *stop) {
+        if (idx != 1)
+            [blockSignatureString appendString:[type formattedString:nil formatter:blockSignatureTypeFormatter level:0]];
+        else
+            [blockSignatureString appendString:@"(^)"];
+        
+        if (idx == 0)
+            [blockSignatureString appendString:@" "];
+        else if (idx == 1)
+            [blockSignatureString appendString:@"("];
+        else if (idx > 2)
+            [blockSignatureString appendString:@", "];
+        
+        if (idx == [self.types count] - 1) {
+            if ([self.types count] == 2) {
+                [blockSignatureString appendString:@"void"];
+            }
+            [blockSignatureString appendString:@")"];
+        }
+    }];
+    
+    return blockSignatureString;
+}
+
 #pragma mark - Phase 0
 
 - (void)phase:(NSUInteger)phase registerTypesWithObject:(CDTypeController *)typeController usedInMethod:(BOOL)isUsedInMethod;
@@ -862,10 +898,10 @@ static BOOL debugMerge = NO;
 
     if ((self.primitiveType == '{' || self.primitiveType == '(') && [self.members count] > 0) {
         [typeController phase0RegisterStructure:self usedInMethod:isUsedInMethod];
-    } else if (self.primitiveType == T_FUNCTION_POINTER_TYPE) {
-        typeController.hasFunctionPointers = YES;
-    } else if (self.primitiveType == T_BLOCK_TYPE) {
-        typeController.hasBlocks = YES;
+    } else if (self.primitiveType == T_FUNCTION_POINTER_TYPE && self.types == nil) {
+        typeController.hasUnknownFunctionPointers = YES;
+    } else if (self.primitiveType == T_BLOCK_TYPE && self.types == nil) {
+        typeController.hasUnknownBlocks = YES;
     }
 }
 

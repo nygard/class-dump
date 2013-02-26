@@ -257,7 +257,13 @@ static NSString *CDTokenDescription(int token)
             [self match:TK_QUOTED_STRING];
         } else if (_lookahead == '?') {
             [self match:'?'];
-            result = [[CDType alloc] initBlockType];
+            NSArray *blockTypes = nil;
+            if (_lookahead == '<') {
+                [self match:'<'];
+                blockTypes = [[self _parseMethodType] valueForKeyPath:@"type"];
+                [self match:'>'];
+            }
+            result = [[CDType alloc] initBlockTypeWithTypes:blockTypes];
         } else {
             result = [[CDType alloc] initIDType:nil];
         }
