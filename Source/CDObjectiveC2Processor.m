@@ -353,7 +353,8 @@
         
         struct cd_objc2_list_header listHeader;
         
-        listHeader.entsize = [cursor readInt32];
+        // See getEntsize() from http://www.opensource.apple.com/source/objc4/objc4-532.2/runtime/objc-runtime-new.h
+        listHeader.entsize = [cursor readInt32] & ~(uint32_t)3;
         listHeader.count   = [cursor readInt32];
         NSParameterAssert(listHeader.entsize == 3 * [self.machOFile ptrSize]);
         
