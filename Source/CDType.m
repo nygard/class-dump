@@ -77,22 +77,6 @@ static BOOL debugMerge = NO;
     NSString *_variableName;
 }
 
-- (id)init;
-{
-    if ((self = [super init])) {
-        _primitiveType = 0; // ??
-        _protocols = nil;
-        _subtype = nil;
-        _typeName = nil;
-        _members = nil;
-        _variableName = nil;
-        _bitfieldSize = nil;
-        _arraySize = nil;
-    }
-
-    return self;
-}
-
 - (id)initSimpleType:(int)type;
 {
     if ((self = [self init])) {
