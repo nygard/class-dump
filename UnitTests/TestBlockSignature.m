@@ -62,4 +62,15 @@
 	STAssertEqualObjects(blockSignatureString, @"void (^)(void (^)(void))", nil);
 }
 
+- (void)testBOOLArgument;
+{
+	NSMutableArray *types = [NSMutableArray new];
+	[types addObject:[[CDType alloc] initSimpleType:'v']];
+	[types addObject:[[CDType alloc] initBlockTypeWithTypes:nil]];
+	[types addObject:[[CDType alloc] initSimpleType:'c']];
+	CDType *blockType = [[CDType alloc] initBlockTypeWithTypes:types];
+	NSString *blockSignatureString = [blockType blockSignatureString];
+	STAssertEqualObjects(blockSignatureString, @"void (^)(BOOL)", nil);
+}
+
 @end
