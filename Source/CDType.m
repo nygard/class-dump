@@ -858,7 +858,7 @@ static BOOL debugMerge = NO;
     blockSignatureTypeFormatter.baseLevel = 0;
     [self.types enumerateObjectsUsingBlock:^(CDType *type, NSUInteger idx, BOOL *stop) {
         if (idx != 1)
-            [blockSignatureString appendString:[type formattedString:nil formatter:blockSignatureTypeFormatter level:0]];
+            [blockSignatureString appendString:[blockSignatureTypeFormatter formatVariable:nil type:type]];
         else
             [blockSignatureString appendString:@"(^)"];
         
