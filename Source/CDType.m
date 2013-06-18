@@ -862,14 +862,16 @@ static BOOL debugMerge = NO;
         else
             [blockSignatureString appendString:@"(^)"];
         
+        BOOL isLastType = idx == [self.types count] - 1;
+        
         if (idx == 0)
             [blockSignatureString appendString:@" "];
         else if (idx == 1)
             [blockSignatureString appendString:@"("];
-        else if (idx > 2)
+        else if (idx >= 2 && !isLastType)
             [blockSignatureString appendString:@", "];
         
-        if (idx == [self.types count] - 1) {
+        if (isLastType) {
             if ([self.types count] == 2) {
                 [blockSignatureString appendString:@"void"];
             }
