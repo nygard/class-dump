@@ -46,6 +46,13 @@
     STAssertEquals(arch.cpusubtype, 11,                 @"The cpusubtype for 'armv7s' should be 11");
 }
 
+- (void)test_arm64;
+{
+    CDArch arch = CDArchFromName(@"arm64");
+    STAssertEquals(arch.cputype,    CPU_TYPE_ARM | CPU_ARCH_ABI64, @"The cputype for 'arm64' should be ARM with 64-bit mask");
+    STAssertEquals(arch.cpusubtype, CPU_SUBTYPE_ARM_ALL,           @"The cpusubtype for 'arm64' should be CPU_SUBTYPE_ARM_ALL");
+}
+
 #pragma mark - Intel x86
 
 - (void)test_i386;
