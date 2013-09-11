@@ -45,7 +45,7 @@ static NSString *CDTokenDescription(int token)
     if ((self = [super init])) {
         // Do some preprocessing first: Replace "<unnamed>::" with just "unnamed::".
         NSMutableString *str = [string mutableCopy];
-        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:0 range:NSMakeRange(0, [string length])];
+        [str replaceOccurrencesOfString:@"<unnamed>::" withString:@"unnamed::" options:(NSStringCompareOptions)0 range:NSMakeRange(0, [string length])];
         
         _lexer = [[CDTypeLexer alloc] initWithString:str];
         _lookahead = 0;
@@ -56,7 +56,7 @@ static NSString *CDTokenDescription(int token)
 
 #pragma mark -
 
-- (NSArray *)parseMethodType:(NSError **)error;
+- (NSArray *)parseMethodType:(NSError *__autoreleasing *)error;
 {
     NSArray *result;
 
@@ -92,7 +92,7 @@ static NSString *CDTokenDescription(int token)
     return result;
 }
 
-- (CDType *)parseType:(NSError **)error;
+- (CDType *)parseType:(NSError *__autoreleasing *)error;
 {
     CDType *result;
 

@@ -948,7 +948,7 @@
 		01EB825613A590D9003EDE60 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0450;
+				LastUpgradeCheck = 0460;
 			};
 			buildConfigurationList = 01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "class-dump" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1193,15 +1193,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
-					"-fdiagnostics-show-option",
-					"-Weverything",
-					"-Wno-semicolon-before-method-body",
-					"-Wno-c11-extensions",
-					"-Wno-readonly-setter-attrs",
-					"-Wno-overriding-method-mismatch",
-					"-Wno-unused-macros",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-pedantic",
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+					"-Wno-gnu",
 				);
 				WRAPPER_EXTENSION = octest;
 			};
@@ -1224,15 +1218,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
-					"-fdiagnostics-show-option",
-					"-Weverything",
-					"-Wno-semicolon-before-method-body",
-					"-Wno-c11-extensions",
-					"-Wno-readonly-setter-attrs",
-					"-Wno-overriding-method-mismatch",
-					"-Wno-unused-macros",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-pedantic",
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+					"-Wno-gnu",
 				);
 				WRAPPER_EXTENSION = octest;
 			};
@@ -1337,7 +1325,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1352,6 +1344,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1366,6 +1359,8 @@
 					"-Wno-overriding-method-mismatch",
 					"-Wno-unused-macros",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-direct-ivar-access",
+					"-Wno-arc-repeated-use-of-weak",
 				);
 			};
 			name = Debug;
@@ -1375,7 +1370,11 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1384,6 +1383,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1397,6 +1397,8 @@
 					"-Wno-overriding-method-mismatch",
 					"-Wno-unused-macros",
 					"-Wno-objc-missing-property-synthesis",
+					"-Wno-direct-ivar-access",
+					"-Wno-arc-repeated-use-of-weak",
 				);
 			};
 			name = Release;
