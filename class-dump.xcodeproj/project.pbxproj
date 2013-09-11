@@ -1193,15 +1193,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
-					"-fdiagnostics-show-option",
-					"-Weverything",
-					"-Wno-semicolon-before-method-body",
-					"-Wno-c11-extensions",
-					"-Wno-readonly-setter-attrs",
-					"-Wno-overriding-method-mismatch",
-					"-Wno-unused-macros",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-pedantic",
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+					"-Wno-gnu",
 				);
 				WRAPPER_EXTENSION = octest;
 			};
@@ -1224,15 +1218,9 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
-					"-fdiagnostics-show-option",
-					"-Weverything",
-					"-Wno-semicolon-before-method-body",
-					"-Wno-c11-extensions",
-					"-Wno-readonly-setter-attrs",
-					"-Wno-overriding-method-mismatch",
-					"-Wno-unused-macros",
-					"-Wno-objc-missing-property-synthesis",
-					"-Wno-pedantic",
+					"$(inherited)",
+					"-Wno-objc-interface-ivars",
+					"-Wno-gnu",
 				);
 				WRAPPER_EXTENSION = octest;
 			};
