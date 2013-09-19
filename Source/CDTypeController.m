@@ -137,6 +137,22 @@ static BOOL debug = NO;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 {
+    if (self.hasUnknownFunctionPointers && self.hasUnknownBlocks) {
+        [resultString appendString:@"#pragma mark Function Pointers and Blocks\n\n"];
+    } else if (self.hasUnknownFunctionPointers) {
+        [resultString appendString:@"#pragma mark Function Pointers\n\n"];
+    } else if (self.hasUnknownBlocks) {
+        [resultString appendString:@"#pragma mark Blocks\n\n"];
+    }
+    
+    if (self.hasUnknownFunctionPointers) {
+        [resultString appendFormat:@"typedef void (*CDUnknownFunctionPointerType)(void); // return type and parameters are unknown\n\n"];
+    }
+    
+    if (self.hasUnknownBlocks) {
+        [resultString appendFormat:@"typedef void (^CDUnknownBlockType)(void); // return type and parameters are unknown\n\n"];
+    }
+    
     [self.structureTable appendNamedStructuresToString:resultString formatter:self.structDeclarationTypeFormatter markName:@"Named Structures"];
     [self.structureTable appendTypedefsToString:resultString        formatter:self.structDeclarationTypeFormatter markName:@"Typedef'd Structures"];
 

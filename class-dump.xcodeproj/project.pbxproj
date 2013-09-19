@@ -134,6 +134,7 @@
 		01B02D2D13A5B57E0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01B02D3A13A5B72B0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
+		C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */; };
 		DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -418,6 +419,8 @@
 		01EB831E13A591D8003EDE60 /* CDVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitor.m; path = Source/CDVisitor.m; sourceTree = SOURCE_ROOT; };
 		01EB831F13A591D8003EDE60 /* CDVisitorPropertyState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVisitorPropertyState.h; path = Source/CDVisitorPropertyState.h; sourceTree = SOURCE_ROOT; };
 		01EB832013A591D8003EDE60 /* CDVisitorPropertyState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitorPropertyState.m; path = Source/CDVisitorPropertyState.m; sourceTree = SOURCE_ROOT; };
+		C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBlockSignature.h; sourceTree = "<group>"; };
+		C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBlockSignature.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -487,6 +490,8 @@
 		011E48471604DF3700722F8D /* UnitTests */ = {
 			isa = PBXGroup;
 			children = (
+				C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */,
+				C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */,
 				011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */,
 				011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */,
 				011E489B160522A100722F8D /* TestCDArchFromName.h */,
@@ -1013,6 +1018,7 @@
 				019358FE160A48AC00C4021F /* TestThinFile_Intel64_lib64.m in Sources */,
 				01935901160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.m in Sources */,
 				01935904160A534A00C4021F /* TestCDArchUses64BitABI.m in Sources */,
+				C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1191,6 +1197,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"$(inherited)",
@@ -1216,6 +1223,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WARNING_CFLAGS = (
 					"$(inherited)",
