@@ -16,6 +16,8 @@
 - (id)initBitfieldType:(NSString *)bitfieldSize;
 - (id)initArrayType:(CDType *)type count:(NSString *)count;
 - (id)initPointerType:(CDType *)type;
+- (id)initFunctionPointerType;
+- (id)initBlockTypeWithTypes:(NSArray *)types;
 - (id)initModifier:(int)modifier type:(CDType *)type;
 
 @property (strong) NSString *variableName;
@@ -29,6 +31,7 @@
 @property (nonatomic, readonly) CDTypeName *typeName;
 
 @property (nonatomic, readonly) NSArray *members;
+@property (nonatomic, readonly) NSArray *types;
 
 @property (nonatomic, readonly) int typeIgnoringModifiers;
 @property (nonatomic, readonly) NSUInteger structureDepth;
