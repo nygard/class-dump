@@ -134,9 +134,9 @@
 		01B02D2D13A5B57E0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01B02D3A13A5B72B0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
-		C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */; };
 		C270B5C616C54AD6006CA75D /* ULEB128.m in Sources */ = {isa = PBXBuildFile; fileRef = C270B5C516C54AD5006CA75D /* ULEB128.m */; };
 		C270B5C816C54B0C006CA75D /* ULEB128.h in Headers */ = {isa = PBXBuildFile; fileRef = C270B5C716C54B0A006CA75D /* ULEB128.h */; };
+		C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */; };
 		DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -421,10 +421,10 @@
 		01EB831E13A591D8003EDE60 /* CDVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitor.m; path = Source/CDVisitor.m; sourceTree = SOURCE_ROOT; };
 		01EB831F13A591D8003EDE60 /* CDVisitorPropertyState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDVisitorPropertyState.h; path = Source/CDVisitorPropertyState.h; sourceTree = SOURCE_ROOT; };
 		01EB832013A591D8003EDE60 /* CDVisitorPropertyState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitorPropertyState.m; path = Source/CDVisitorPropertyState.m; sourceTree = SOURCE_ROOT; };
-		C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBlockSignature.h; sourceTree = "<group>"; };
-		C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBlockSignature.m; sourceTree = "<group>"; };
 		C270B5C516C54AD5006CA75D /* ULEB128.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ULEB128.m; path = Source/ULEB128.m; sourceTree = "<group>"; };
 		C270B5C716C54B0A006CA75D /* ULEB128.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ULEB128.h; path = Source/ULEB128.h; sourceTree = "<group>"; };
+		C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBlockSignature.h; sourceTree = "<group>"; };
+		C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBlockSignature.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -960,7 +960,7 @@
 		01EB825613A590D9003EDE60 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0500;
 			};
 			buildConfigurationList = 01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "class-dump" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1340,8 +1340,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
@@ -1360,7 +1361,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -1385,8 +1388,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS = NO;
@@ -1399,7 +1403,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_SHADOW = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /;
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
