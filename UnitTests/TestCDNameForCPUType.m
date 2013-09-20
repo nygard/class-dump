@@ -40,6 +40,11 @@
     STAssertEqualObjects(CDNameForCPUType(CPU_TYPE_ARM, 11), @"armv7s", @"The name for ARM subtype 11 should be 'armv7s'");
 }
 
+- (void)test_arm64;
+{
+    STAssertEqualObjects(CDNameForCPUType(CPU_TYPE_ARM | CPU_ARCH_ABI64, CPU_SUBTYPE_ARM_ALL), @"arm64", @"The name for ARM 64-bit subtype CPU_SUBTYPE_ARM_ALL should be 'arm64'");
+}
+
 #pragma mark - Intel x86
 
 - (void)test_i386;
