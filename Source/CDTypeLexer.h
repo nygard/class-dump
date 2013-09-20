@@ -3,14 +3,14 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2012 Steve Nygard.
 
-#define TK_EOS           0
-#define TK_NUMBER        257
-#define TK_IDENTIFIER    258
-#define T_NAMED_OBJECT   259
-#define TK_QUOTED_STRING 260
-#define TK_TEMPLATE_TYPE TK_IDENTIFIER
+#define TK_EOS                  0
+#define TK_NUMBER               257
+#define TK_IDENTIFIER           258
+#define T_NAMED_OBJECT          259
+#define TK_QUOTED_STRING        260
+#define TK_TEMPLATE_TYPE        TK_IDENTIFIER
 #define T_FUNCTION_POINTER_TYPE 1001
-#define T_BLOCK_TYPE 1002
+#define T_BLOCK_TYPE            1002
 
 typedef enum : NSUInteger {
     CDTypeLexerState_Normal        = 0,
