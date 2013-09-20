@@ -135,6 +135,8 @@
 		01B02D3A13A5B72B0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */; };
+		C270B5C616C54AD6006CA75D /* ULEB128.m in Sources */ = {isa = PBXBuildFile; fileRef = C270B5C516C54AD5006CA75D /* ULEB128.m */; };
+		C270B5C816C54B0C006CA75D /* ULEB128.h in Headers */ = {isa = PBXBuildFile; fileRef = C270B5C716C54B0A006CA75D /* ULEB128.h */; };
 		DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -421,6 +423,8 @@
 		01EB832013A591D8003EDE60 /* CDVisitorPropertyState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitorPropertyState.m; path = Source/CDVisitorPropertyState.m; sourceTree = SOURCE_ROOT; };
 		C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBlockSignature.h; sourceTree = "<group>"; };
 		C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBlockSignature.m; sourceTree = "<group>"; };
+		C270B5C516C54AD5006CA75D /* ULEB128.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ULEB128.m; path = Source/ULEB128.m; sourceTree = "<group>"; };
+		C270B5C716C54B0A006CA75D /* ULEB128.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ULEB128.h; path = Source/ULEB128.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -690,6 +694,8 @@
 				01EB828E13A591A5003EDE60 /* NSScanner-CDExtensions.m */,
 				01EB828F13A591A5003EDE60 /* NSString-CDExtensions.h */,
 				01EB829013A591A5003EDE60 /* NSString-CDExtensions.m */,
+				C270B5C716C54B0A006CA75D /* ULEB128.h */,
+				C270B5C516C54AD5006CA75D /* ULEB128.m */,
 			);
 			name = Extensions;
 			sourceTree = "<group>";
@@ -852,6 +858,7 @@
 				0179B9EB14F204AA00EC98F7 /* CDLCSourceVersion.h in Headers */,
 				0179B9F714F20E9800EC98F7 /* CDLCDataInCode.h in Headers */,
 				0194945C1673F8F400A29005 /* CDProtocolUniquer.h in Headers */,
+				C270B5C816C54B0C006CA75D /* ULEB128.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1100,6 +1107,7 @@
 				0179B9EC14F204AA00EC98F7 /* CDLCSourceVersion.m in Sources */,
 				0179B9F814F20E9800EC98F7 /* CDLCDataInCode.m in Sources */,
 				0194945D1673F8F400A29005 /* CDProtocolUniquer.m in Sources */,
+				C270B5C616C54AD6006CA75D /* ULEB128.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
