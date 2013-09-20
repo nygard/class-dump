@@ -288,7 +288,6 @@ static BOOL debugAnonStructures = NO;
     // If not, this means that either the types or the member names conflicted, and we save the entire group as an exception.
     for (NSString *key in [nameDict allKeys]) {
         CDStructureInfo *combined = nil;
-        BOOL canBeCombined = YES;
 
         //NSLog(@"key... %@", key);
         NSMutableArray *group = nameDict[key];
@@ -306,13 +305,13 @@ static BOOL debugAnonStructures = NO;
                         combined.isUsedInMethod = YES;
 #endif
                 } else {
-                    canBeCombined = NO;
+                    combined = nil;
                     break;
                 }
             }
         }
 
-        if (canBeCombined) {
+        if (combined != nil) {
             CDStructureInfo *previousInfo = _phase2_namedStructureInfo[key];
             if (previousInfo != nil) {
                 // struct _Vector_impl in HALLab.
@@ -341,7 +340,6 @@ static BOOL debugAnonStructures = NO;
     //NSLog(@"======================================================================");
     for (NSString *key in [anonDict allKeys]) {
         CDStructureInfo *combined = nil;
-        BOOL canBeCombined = YES;
 
         //NSLog(@"key... %@", key);
         NSMutableArray *group = anonDict[key];
@@ -365,13 +363,13 @@ static BOOL debugAnonStructures = NO;
                         NSLog(@"previous: %@", combined.type.typeString);
                         NSLog(@"    This: %@", info.type.typeString);
                     }
-                    canBeCombined = NO;
+                    combined = nil;
                     break;
                 }
             }
         }
 
-        if (canBeCombined) {
+        if (combined != nil) {
             if (_phase2_anonStructureInfo[key] != nil) {
                 // This shouldn't happen, but the named case might.
                 NSLog(@"[%@] %s, WARNING: depth %lu type %@ has conflict(?) at lower level", self.identifier, __cmd, depth, key);
