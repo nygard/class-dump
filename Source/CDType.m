@@ -184,7 +184,7 @@ static BOOL debugMerge = NO;
     return self;
 }
 
-- (id)initFunctionPointerType
+- (id)initFunctionPointerType;
 {
     if ((self = [self init])) {
         _primitiveType = T_FUNCTION_POINTER_TYPE;
