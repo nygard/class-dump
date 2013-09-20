@@ -1,3 +1,20 @@
+### Next Release
+
+* Fixed Objective-C 2.0 ivar offsets. It now displays actual offsets instead of ivar addresses.
+* Support for the new `arm64` architecure.
+  * Recognize the `--arch arm64` option
+  * Display `arm64` instead of `0x100000c:0x0`
+  * Handle the new `LC_ENCRYPTION_INFO_64` load command
+* Parse extended types when available. It means that you can extract more precise type information on protocol methods. E.g. you get `- (NSArray *)bookmarksFromContentItems:(NSArray *)arg1;` instead of `- (id)bookmarksFromContentItems:(id)arg1;`. Unfortunately, extended types are not available on classes, only on protocols.
+* Parse blocks type information, i.e. you get `CDUnknownBlockType` instead of `id`. Inside protocol methods – thanks to extended types – you get the full block signature, e.g. `- (void)accountsWithHandler:(void (^)(NSArray *, NSError *))arg1;`.
+* Optimizations to make class-dump run faster.
+* Resolve `@loader_path`. Xcode and the developer tools use this.
+* Added the `--hide` options to hide struct/union and protocol sections. Use `--hide structures` and `--hide protocols` or `--hide all` to hide both of those. This is meant for development, to make it easier to see just the other sections.
+* Tweaked comments, now using `//` instead of `/* */` in generated headers.
+* Show a better error message when trying to run class-dump on a static library.
+* Fix the way the ObjC 2 list header `entsize` field is read. This allows to run class-dump on files produced by the latest version of [dyld_decache](https://github.com/kennytm/Miscellaneous#dyld_decache).
+* Parse the `LC_FUNCTION_STARTS` load command.
+
 ### Version 3.4 - Released 2012-11-19
 
 * Targetting 10.7+ now. Needs to build with the 10.8 SDK.
