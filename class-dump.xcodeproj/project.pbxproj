@@ -24,15 +24,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		011E48401604DF3700722F8D /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 011E483F1604DF3700722F8D /* SenTestingKit.framework */; };
-		011E484C1604DF3700722F8D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 011E484A1604DF3700722F8D /* InfoPlist.strings */; };
-		011E484F1604DF3700722F8D /* TestCDNameForCPUType.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */; };
-		011E48981604EFAE00722F8D /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
-		011E48991604EFBD00722F8D /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
-		011E489A1604EFCF00722F8D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
-		011E489D160522A100722F8D /* TestCDArchFromName.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E489C160522A100722F8D /* TestCDArchFromName.m */; };
-		011E48F41608EA5B00722F8D /* TestFatFile_Intel32_64.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E48F31608EA5B00722F8D /* TestFatFile_Intel32_64.m */; };
-		011E48F81608EF9F00722F8D /* TestFatFile_Intel64_32.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E48F71608EF9F00722F8D /* TestFatFile_Intel64_32.m */; };
 		013D1EFD13A5A0F100BF0A67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		013D1F1913A5AEA100BF0A67 /* CDTopoSortNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830F13A591D8003EDE60 /* CDTopoSortNode.m */; };
 		013D1F1A13A5AEA100BF0A67 /* NSArray-CDExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB828813A591A5003EDE60 /* NSArray-CDExtensions.m */; };
@@ -99,6 +90,20 @@
 		013D1F5713A5AF3400BF0A67 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		013D1F5813A5AF4C00BF0A67 /* deprotect.m in Sources */ = {isa = PBXBuildFile; fileRef = 013D1F0913A5A11100BF0A67 /* deprotect.m */; };
 		013D1F5A13A5AF6500BF0A67 /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
+		0165B8B31827137D00CC647F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0165B8B21827137D00CC647F /* XCTest.framework */; };
+		0165B8B91827137D00CC647F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0165B8B71827137D00CC647F /* InfoPlist.strings */; };
+		0165B8C31827182000CC647F /* TestCDNameForCPUType.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */; };
+		0165B8C41827184700CC647F /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
+		0165B8C51827186600CC647F /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
+		0165B8D81827198900CC647F /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8C71827198900CC647F /* TestBlockSignature.m */; };
+		0165B8D91827198900CC647F /* TestCDArchFromName.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8C91827198900CC647F /* TestCDArchFromName.m */; };
+		0165B8DA1827198900CC647F /* TestCDArchUses64BitABI.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8CB1827198900CC647F /* TestCDArchUses64BitABI.m */; };
+		0165B8DB1827198900CC647F /* TestFatFile_armv7_v7s.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8CD1827198900CC647F /* TestFatFile_armv7_v7s.m */; };
+		0165B8DC1827198900CC647F /* TestFatFile_Intel32_64_lib64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8CF1827198900CC647F /* TestFatFile_Intel32_64_lib64.m */; };
+		0165B8DD1827198900CC647F /* TestFatFile_Intel32_64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8D11827198900CC647F /* TestFatFile_Intel32_64.m */; };
+		0165B8DE1827198900CC647F /* TestFatFile_Intel64_32.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8D31827198900CC647F /* TestFatFile_Intel64_32.m */; };
+		0165B8DF1827198900CC647F /* TestThinFile_Intel64_lib64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8D51827198900CC647F /* TestThinFile_Intel64_lib64.m */; };
+		0165B8E01827198900CC647F /* TestThinFile_Intel64.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8D71827198900CC647F /* TestThinFile_Intel64.m */; };
 		0168C98713E4AB3200926EC3 /* CDLCFunctionStarts.h in Headers */ = {isa = PBXBuildFile; fileRef = 0168C98513E4AB3200926EC3 /* CDLCFunctionStarts.h */; };
 		0168C98813E4AB3200926EC3 /* CDLCFunctionStarts.m in Sources */ = {isa = PBXBuildFile; fileRef = 0168C98613E4AB3200926EC3 /* CDLCFunctionStarts.m */; };
 		0179B9E614F2025E00EC98F7 /* CDLCMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 0179B9E414F2025E00EC98F7 /* CDLCMain.h */; };
@@ -108,11 +113,6 @@
 		0179B9F714F20E9800EC98F7 /* CDLCDataInCode.h in Headers */ = {isa = PBXBuildFile; fileRef = 0179B9F514F20E9800EC98F7 /* CDLCDataInCode.h */; };
 		0179B9F814F20E9800EC98F7 /* CDLCDataInCode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0179B9F614F20E9800EC98F7 /* CDLCDataInCode.m */; };
 		018BFD4214F65DB600190F07 /* CDExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 018BFD4114F65DB600190F07 /* CDExtensions.h */; };
-		019358DD160A1D2E00C4021F /* TestFatFile_armv7_v7s.m in Sources */ = {isa = PBXBuildFile; fileRef = 019358DC160A1D2E00C4021F /* TestFatFile_armv7_v7s.m */; };
-		019358FA160A3EB200C4021F /* TestThinFile_Intel64.m in Sources */ = {isa = PBXBuildFile; fileRef = 019358F9160A3EB200C4021F /* TestThinFile_Intel64.m */; };
-		019358FE160A48AC00C4021F /* TestThinFile_Intel64_lib64.m in Sources */ = {isa = PBXBuildFile; fileRef = 019358FD160A48AC00C4021F /* TestThinFile_Intel64_lib64.m */; };
-		01935901160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.m in Sources */ = {isa = PBXBuildFile; fileRef = 01935900160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.m */; };
-		01935904160A534A00C4021F /* TestCDArchUses64BitABI.m in Sources */ = {isa = PBXBuildFile; fileRef = 01935903160A534A00C4021F /* TestCDArchUses64BitABI.m */; };
 		0194945C1673F8F400A29005 /* CDProtocolUniquer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0194945A1673F8F100A29005 /* CDProtocolUniquer.h */; };
 		0194945D1673F8F400A29005 /* CDProtocolUniquer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194945B1673F8F200A29005 /* CDProtocolUniquer.m */; };
 		01B02D0113A5B0DC0047BC53 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
@@ -136,7 +136,6 @@
 		01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		C270B5C616C54AD6006CA75D /* ULEB128.m in Sources */ = {isa = PBXBuildFile; fileRef = C270B5C516C54AD5006CA75D /* ULEB128.m */; };
 		C270B5C816C54B0C006CA75D /* ULEB128.h in Headers */ = {isa = PBXBuildFile; fileRef = C270B5C716C54B0A006CA75D /* ULEB128.h */; };
-		C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */; };
 		DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 /* End PBXBuildFile section */
 
@@ -168,6 +167,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 013D1F1013A5AE5A00BF0A67;
 			remoteInfo = MachObjC;
+		};
+		0165B8BD1827137D00CC647F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 01EB825613A590D9003EDE60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 01B02D2E13A5B5D50047BC53;
+			remoteInfo = all;
 		};
 		01B02D3213A5B5E20047BC53 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -223,27 +229,30 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		011E483E1604DF3700722F8D /* UnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		011E483F1604DF3700722F8D /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		011E48411604DF3700722F8D /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
 		011E48441604DF3700722F8D /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		011E48451604DF3700722F8D /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		011E48461604DF3700722F8D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		011E48491604DF3700722F8D /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
-		011E484B1604DF3700722F8D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestCDNameForCPUType.h; sourceTree = "<group>"; };
 		011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestCDNameForCPUType.m; sourceTree = "<group>"; };
-		011E48501604DF3700722F8D /* UnitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UnitTests-Prefix.pch"; sourceTree = "<group>"; };
-		011E489B160522A100722F8D /* TestCDArchFromName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCDArchFromName.h; sourceTree = "<group>"; };
-		011E489C160522A100722F8D /* TestCDArchFromName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCDArchFromName.m; sourceTree = "<group>"; };
-		011E48F21608EA5B00722F8D /* TestFatFile_Intel32_64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFatFile_Intel32_64.h; sourceTree = "<group>"; };
-		011E48F31608EA5B00722F8D /* TestFatFile_Intel32_64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_Intel32_64.m; sourceTree = "<group>"; };
-		011E48F61608EF9F00722F8D /* TestFatFile_Intel64_32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFatFile_Intel64_32.h; sourceTree = "<group>"; };
-		011E48F71608EF9F00722F8D /* TestFatFile_Intel64_32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_Intel64_32.m; sourceTree = "<group>"; };
 		013D1EFB13A5A0F100BF0A67 /* deprotect */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = deprotect; sourceTree = BUILT_PRODUCTS_DIR; };
 		013D1F0913A5A11100BF0A67 /* deprotect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = deprotect.m; sourceTree = SOURCE_ROOT; };
 		013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = usr/lib/libcrypto.dylib; sourceTree = SDKROOT; };
 		013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMachObjC.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		0165B8B11827137D00CC647F /* UnitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UnitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0165B8B21827137D00CC647F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		0165B8B61827137D00CC647F /* UnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UnitTests-Info.plist"; sourceTree = "<group>"; };
+		0165B8B81827137D00CC647F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0165B8BC1827137D00CC647F /* UnitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UnitTests-Prefix.pch"; sourceTree = "<group>"; };
+		0165B8C71827198900CC647F /* TestBlockSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBlockSignature.m; sourceTree = "<group>"; };
+		0165B8C91827198900CC647F /* TestCDArchFromName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCDArchFromName.m; sourceTree = "<group>"; };
+		0165B8CB1827198900CC647F /* TestCDArchUses64BitABI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCDArchUses64BitABI.m; sourceTree = "<group>"; };
+		0165B8CD1827198900CC647F /* TestFatFile_armv7_v7s.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_armv7_v7s.m; sourceTree = "<group>"; };
+		0165B8CF1827198900CC647F /* TestFatFile_Intel32_64_lib64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_Intel32_64_lib64.m; sourceTree = "<group>"; };
+		0165B8D11827198900CC647F /* TestFatFile_Intel32_64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_Intel32_64.m; sourceTree = "<group>"; };
+		0165B8D31827198900CC647F /* TestFatFile_Intel64_32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_Intel64_32.m; sourceTree = "<group>"; };
+		0165B8D51827198900CC647F /* TestThinFile_Intel64_lib64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestThinFile_Intel64_lib64.m; sourceTree = "<group>"; };
+		0165B8D71827198900CC647F /* TestThinFile_Intel64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestThinFile_Intel64.m; sourceTree = "<group>"; };
 		0168C98513E4AB3200926EC3 /* CDLCFunctionStarts.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCFunctionStarts.h; path = Source/CDLCFunctionStarts.h; sourceTree = "<group>"; };
 		0168C98613E4AB3200926EC3 /* CDLCFunctionStarts.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCFunctionStarts.m; path = Source/CDLCFunctionStarts.m; sourceTree = "<group>"; };
 		0179B9E414F2025E00EC98F7 /* CDLCMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCMain.h; path = Source/CDLCMain.h; sourceTree = "<group>"; };
@@ -253,16 +262,6 @@
 		0179B9F514F20E9800EC98F7 /* CDLCDataInCode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCDataInCode.h; path = Source/CDLCDataInCode.h; sourceTree = "<group>"; };
 		0179B9F614F20E9800EC98F7 /* CDLCDataInCode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCDataInCode.m; path = Source/CDLCDataInCode.m; sourceTree = "<group>"; };
 		018BFD4114F65DB600190F07 /* CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDExtensions.h; path = Source/CDExtensions.h; sourceTree = "<group>"; };
-		019358DB160A1D2E00C4021F /* TestFatFile_armv7_v7s.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFatFile_armv7_v7s.h; sourceTree = "<group>"; };
-		019358DC160A1D2E00C4021F /* TestFatFile_armv7_v7s.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_armv7_v7s.m; sourceTree = "<group>"; };
-		019358F8160A3EB200C4021F /* TestThinFile_Intel64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestThinFile_Intel64.h; sourceTree = "<group>"; };
-		019358F9160A3EB200C4021F /* TestThinFile_Intel64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestThinFile_Intel64.m; sourceTree = "<group>"; };
-		019358FC160A48AC00C4021F /* TestThinFile_Intel64_lib64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestThinFile_Intel64_lib64.h; sourceTree = "<group>"; };
-		019358FD160A48AC00C4021F /* TestThinFile_Intel64_lib64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestThinFile_Intel64_lib64.m; sourceTree = "<group>"; };
-		019358FF160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFatFile_Intel32_64_lib64.h; sourceTree = "<group>"; };
-		01935900160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestFatFile_Intel32_64_lib64.m; sourceTree = "<group>"; };
-		01935902160A534A00C4021F /* TestCDArchUses64BitABI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestCDArchUses64BitABI.h; sourceTree = "<group>"; };
-		01935903160A534A00C4021F /* TestCDArchUses64BitABI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestCDArchUses64BitABI.m; sourceTree = "<group>"; };
 		0194945A1673F8F100A29005 /* CDProtocolUniquer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDProtocolUniquer.h; path = Source/CDProtocolUniquer.h; sourceTree = "<group>"; };
 		0194945B1673F8F200A29005 /* CDProtocolUniquer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDProtocolUniquer.m; path = Source/CDProtocolUniquer.m; sourceTree = "<group>"; };
 		01B02CFF13A5B0DC0047BC53 /* formatType */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = formatType; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -423,22 +422,9 @@
 		01EB832013A591D8003EDE60 /* CDVisitorPropertyState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDVisitorPropertyState.m; path = Source/CDVisitorPropertyState.m; sourceTree = SOURCE_ROOT; };
 		C270B5C516C54AD5006CA75D /* ULEB128.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ULEB128.m; path = Source/ULEB128.m; sourceTree = "<group>"; };
 		C270B5C716C54B0A006CA75D /* ULEB128.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ULEB128.h; path = Source/ULEB128.h; sourceTree = "<group>"; };
-		C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestBlockSignature.h; sourceTree = "<group>"; };
-		C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestBlockSignature.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		011E483A1604DF3700722F8D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				011E48981604EFAE00722F8D /* libMachObjC.a in Frameworks */,
-				011E48991604EFBD00722F8D /* libcrypto.dylib in Frameworks */,
-				011E489A1604EFCF00722F8D /* Foundation.framework in Frameworks */,
-				011E48401604DF3700722F8D /* SenTestingKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		013D1EF813A5A0F100BF0A67 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -455,6 +441,16 @@
 			files = (
 				013D1F5713A5AF3400BF0A67 /* libcrypto.dylib in Frameworks */,
 				DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0165B8AE1827137D00CC647F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0165B8C51827186600CC647F /* libcrypto.dylib in Frameworks */,
+				0165B8C41827184700CC647F /* libMachObjC.a in Frameworks */,
+				0165B8B31827137D00CC647F /* XCTest.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -489,44 +485,6 @@
 				011E48461604DF3700722F8D /* Foundation.framework */,
 			);
 			name = "Other Frameworks";
-			sourceTree = "<group>";
-		};
-		011E48471604DF3700722F8D /* UnitTests */ = {
-			isa = PBXGroup;
-			children = (
-				C2712E8C176F9DEE002B3CF4 /* TestBlockSignature.h */,
-				C2712E8D176F9DEE002B3CF4 /* TestBlockSignature.m */,
-				011E484D1604DF3700722F8D /* TestCDNameForCPUType.h */,
-				011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */,
-				011E489B160522A100722F8D /* TestCDArchFromName.h */,
-				011E489C160522A100722F8D /* TestCDArchFromName.m */,
-				01935902160A534A00C4021F /* TestCDArchUses64BitABI.h */,
-				01935903160A534A00C4021F /* TestCDArchUses64BitABI.m */,
-				011E48F21608EA5B00722F8D /* TestFatFile_Intel32_64.h */,
-				011E48F31608EA5B00722F8D /* TestFatFile_Intel32_64.m */,
-				019358FF160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.h */,
-				01935900160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.m */,
-				011E48F61608EF9F00722F8D /* TestFatFile_Intel64_32.h */,
-				011E48F71608EF9F00722F8D /* TestFatFile_Intel64_32.m */,
-				019358DB160A1D2E00C4021F /* TestFatFile_armv7_v7s.h */,
-				019358DC160A1D2E00C4021F /* TestFatFile_armv7_v7s.m */,
-				019358F8160A3EB200C4021F /* TestThinFile_Intel64.h */,
-				019358F9160A3EB200C4021F /* TestThinFile_Intel64.m */,
-				019358FC160A48AC00C4021F /* TestThinFile_Intel64_lib64.h */,
-				019358FD160A48AC00C4021F /* TestThinFile_Intel64_lib64.m */,
-				011E48481604DF3700722F8D /* Supporting Files */,
-			);
-			path = UnitTests;
-			sourceTree = "<group>";
-		};
-		011E48481604DF3700722F8D /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				011E48491604DF3700722F8D /* UnitTests-Info.plist */,
-				011E484A1604DF3700722F8D /* InfoPlist.strings */,
-				011E48501604DF3700722F8D /* UnitTests-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		011F1D6214F8EB9F00CF8AE2 /* Structure / Union handling */ = {
@@ -564,6 +522,34 @@
 			sourceTree = "<group>";
 			tabWidth = 4;
 			usesTabs = 0;
+		};
+		0165B8B41827137D00CC647F /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				0165B8C71827198900CC647F /* TestBlockSignature.m */,
+				011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */,
+				0165B8C91827198900CC647F /* TestCDArchFromName.m */,
+				0165B8CB1827198900CC647F /* TestCDArchUses64BitABI.m */,
+				0165B8CD1827198900CC647F /* TestFatFile_armv7_v7s.m */,
+				0165B8CF1827198900CC647F /* TestFatFile_Intel32_64_lib64.m */,
+				0165B8D11827198900CC647F /* TestFatFile_Intel32_64.m */,
+				0165B8D31827198900CC647F /* TestFatFile_Intel64_32.m */,
+				0165B8D51827198900CC647F /* TestThinFile_Intel64_lib64.m */,
+				0165B8D71827198900CC647F /* TestThinFile_Intel64.m */,
+				0165B8B51827137D00CC647F /* Supporting Files */,
+			);
+			path = UnitTests;
+			sourceTree = "<group>";
+		};
+		0165B8B51827137D00CC647F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0165B8B61827137D00CC647F /* UnitTests-Info.plist */,
+				0165B8B71827137D00CC647F /* InfoPlist.strings */,
+				0165B8BC1827137D00CC647F /* UnitTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
 		};
 		01984AC013AA9EA900EABFF6 /* Visitors */ = {
 			isa = PBXGroup;
@@ -611,7 +597,7 @@
 				01EB826513A590D9003EDE60 /* class-dump */,
 				013D1EFE13A5A0F100BF0A67 /* deprotect */,
 				01B02D0213A5B0DC0047BC53 /* formatType */,
-				011E48471604DF3700722F8D /* UnitTests */,
+				0165B8B41827137D00CC647F /* UnitTests */,
 				01EB826213A590D9003EDE60 /* Frameworks */,
 				01EB826013A590D9003EDE60 /* Products */,
 			);
@@ -624,7 +610,7 @@
 				013D1EFB13A5A0F100BF0A67 /* deprotect */,
 				013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */,
 				01B02CFF13A5B0DC0047BC53 /* formatType */,
-				011E483E1604DF3700722F8D /* UnitTests.octest */,
+				0165B8B11827137D00CC647F /* UnitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -636,6 +622,7 @@
 				013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */,
 				011E483F1604DF3700722F8D /* SenTestingKit.framework */,
 				011E48411604DF3700722F8D /* Cocoa.framework */,
+				0165B8B21827137D00CC647F /* XCTest.framework */,
 				011E48431604DF3700722F8D /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -865,24 +852,6 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		011E483D1604DF3700722F8D /* UnitTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 011E48531604DF3700722F8D /* Build configuration list for PBXNativeTarget "UnitTests" */;
-			buildPhases = (
-				011E48391604DF3700722F8D /* Sources */,
-				011E483A1604DF3700722F8D /* Frameworks */,
-				011E483B1604DF3700722F8D /* Resources */,
-				011E483C1604DF3700722F8D /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = UnitTests;
-			productName = UnitTests;
-			productReference = 011E483E1604DF3700722F8D /* UnitTests.octest */;
-			productType = "com.apple.product-type.bundle";
-		};
 		013D1EFA13A5A0F100BF0A67 /* deprotect */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 013D1F0713A5A0F200BF0A67 /* Build configuration list for PBXNativeTarget "deprotect" */;
@@ -917,6 +886,24 @@
 			productName = MachObjC;
 			productReference = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */;
 			productType = "com.apple.product-type.library.static";
+		};
+		0165B8B01827137D00CC647F /* UnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0165B8BF1827137D00CC647F /* Build configuration list for PBXNativeTarget "UnitTests" */;
+			buildPhases = (
+				0165B8AD1827137D00CC647F /* Sources */,
+				0165B8AE1827137D00CC647F /* Frameworks */,
+				0165B8AF1827137D00CC647F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0165B8BE1827137D00CC647F /* PBXTargetDependency */,
+			);
+			name = UnitTests;
+			productName = UnitTests;
+			productReference = 0165B8B11827137D00CC647F /* UnitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		01B02CFE13A5B0DC0047BC53 /* formatType */ = {
 			isa = PBXNativeTarget;
@@ -979,56 +966,23 @@
 				01EB825E13A590D9003EDE60 /* class-dump */,
 				013D1EFA13A5A0F100BF0A67 /* deprotect */,
 				01B02CFE13A5B0DC0047BC53 /* formatType */,
-				011E483D1604DF3700722F8D /* UnitTests */,
+				0165B8B01827137D00CC647F /* UnitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		011E483B1604DF3700722F8D /* Resources */ = {
+		0165B8AF1827137D00CC647F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				011E484C1604DF3700722F8D /* InfoPlist.strings in Resources */,
+				0165B8B91827137D00CC647F /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		011E483C1604DF3700722F8D /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		011E48391604DF3700722F8D /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				011E484F1604DF3700722F8D /* TestCDNameForCPUType.m in Sources */,
-				011E489D160522A100722F8D /* TestCDArchFromName.m in Sources */,
-				011E48F41608EA5B00722F8D /* TestFatFile_Intel32_64.m in Sources */,
-				011E48F81608EF9F00722F8D /* TestFatFile_Intel64_32.m in Sources */,
-				019358DD160A1D2E00C4021F /* TestFatFile_armv7_v7s.m in Sources */,
-				019358FA160A3EB200C4021F /* TestThinFile_Intel64.m in Sources */,
-				019358FE160A48AC00C4021F /* TestThinFile_Intel64_lib64.m in Sources */,
-				01935901160A4D5700C4021F /* TestFatFile_Intel32_64_lib64.m in Sources */,
-				01935904160A534A00C4021F /* TestCDArchUses64BitABI.m in Sources */,
-				C2712E8E176F9DEE002B3CF4 /* TestBlockSignature.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		013D1EF713A5A0F100BF0A67 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1111,6 +1065,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0165B8AD1827137D00CC647F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0165B8D81827198900CC647F /* TestBlockSignature.m in Sources */,
+				0165B8DD1827198900CC647F /* TestFatFile_Intel32_64.m in Sources */,
+				0165B8DB1827198900CC647F /* TestFatFile_armv7_v7s.m in Sources */,
+				0165B8DA1827198900CC647F /* TestCDArchUses64BitABI.m in Sources */,
+				0165B8DC1827198900CC647F /* TestFatFile_Intel32_64_lib64.m in Sources */,
+				0165B8D91827198900CC647F /* TestCDArchFromName.m in Sources */,
+				0165B8C31827182000CC647F /* TestCDNameForCPUType.m in Sources */,
+				0165B8E01827198900CC647F /* TestThinFile_Intel64.m in Sources */,
+				0165B8DF1827198900CC647F /* TestThinFile_Intel64_lib64.m in Sources */,
+				0165B8DE1827198900CC647F /* TestFatFile_Intel64_32.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		01B02CFB13A5B0DC0047BC53 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1161,6 +1132,11 @@
 			target = 013D1F1013A5AE5A00BF0A67 /* MachObjC */;
 			targetProxy = 0158A8151412DED0003FEB91 /* PBXContainerItemProxy */;
 		};
+		0165B8BE1827137D00CC647F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 01B02D2E13A5B5D50047BC53 /* all */;
+			targetProxy = 0165B8BD1827137D00CC647F /* PBXContainerItemProxy */;
+		};
 		01B02D3313A5B5E20047BC53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 01EB825E13A590D9003EDE60 /* class-dump */;
@@ -1179,10 +1155,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		011E484A1604DF3700722F8D /* InfoPlist.strings */ = {
+		0165B8B71827137D00CC647F /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				011E484B1604DF3700722F8D /* en */,
+				0165B8B81827137D00CC647F /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1190,58 +1166,6 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		011E48511604DF3700722F8D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "UnitTests/UnitTests-Prefix.pch";
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WARNING_CFLAGS = (
-					"$(inherited)",
-					"-Wno-objc-interface-ivars",
-					"-Wno-gnu",
-				);
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		011E48521604DF3700722F8D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "UnitTests/UnitTests-Prefix.pch";
-				GCC_WARN_UNINITIALIZED_AUTOS = YES;
-				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
-				MACOSX_DEPLOYMENT_TARGET = 10.8;
-				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WARNING_CFLAGS = (
-					"$(inherited)",
-					"-Wno-objc-interface-ivars",
-					"-Wno-gnu",
-				);
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Release;
-		};
 		013D1F0513A5A0F100BF0A67 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1289,6 +1213,69 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "MachObjC-Prefix.pch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		0165B8C01827137D00CC647F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UnitTests/UnitTests-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		0165B8C11827137D00CC647F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				ENABLE_NS_ASSERTIONS = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "UnitTests/UnitTests-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				INFOPLIST_FILE = "UnitTests/UnitTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				OTHER_LDFLAGS = (
+					"-all_load",
+					"-ObjC",
+					"-sectcreate",
+					__TEXT,
+					"___info_plist",
+					Info.plist,
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = xctest;
 			};
 			name = Release;
 		};
@@ -1372,7 +1359,6 @@
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-fdiagnostics-show-option",
-					"-Weverything",
 					"-Wno-semicolon-before-method-body",
 					"-Wno-c11-extensions",
 					"-Wno-readonly-setter-attrs",
@@ -1414,7 +1400,6 @@
 				SDKROOT = macosx;
 				WARNING_CFLAGS = (
 					"-fdiagnostics-show-option",
-					"-Weverything",
 					"-Wno-semicolon-before-method-body",
 					"-Wno-c11-extensions",
 					"-Wno-readonly-setter-attrs",
@@ -1462,15 +1447,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		011E48531604DF3700722F8D /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				011E48511604DF3700722F8D /* Debug */,
-				011E48521604DF3700722F8D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		013D1F0713A5A0F200BF0A67 /* Build configuration list for PBXNativeTarget "deprotect" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1485,6 +1461,15 @@
 			buildConfigurations = (
 				013D1F1713A5AE5A00BF0A67 /* Debug */,
 				013D1F1813A5AE5A00BF0A67 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0165B8BF1827137D00CC647F /* Build configuration list for PBXNativeTarget "UnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0165B8C01827137D00CC647F /* Debug */,
+				0165B8C11827137D00CC647F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

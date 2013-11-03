@@ -3,9 +3,12 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2013 Steve Nygard.
 
-#import "TestCDArchUses64BitABI.h"
+#import <XCTest/XCTest.h>
 
 #import "CDFile.h"
+
+@interface TestCDArchUses64BitABI : XCTestCase
+@end
 
 @implementation TestCDArchUses64BitABI
 
@@ -28,25 +31,25 @@
 - (void)test_i386;
 {
     CDArch arch = { CPU_TYPE_X86, CPU_SUBTYPE_386 };
-    STAssertFalse(CDArchUses64BitABI(arch), @"i386 does not use 64 bit ABI");
+    XCTAssertFalse(CDArchUses64BitABI(arch), @"i386 does not use 64 bit ABI");
 }
 
 - (void)test_x86_64;
 {
     CDArch arch = { CPU_TYPE_X86_64, CPU_SUBTYPE_386 };
-    STAssertTrue(CDArchUses64BitABI(arch), @"x86_64 uses 64 bit ABI");
+    XCTAssertTrue(CDArchUses64BitABI(arch), @"x86_64 uses 64 bit ABI");
 }
 
 - (void)test_x86_64_lib64;
 {
     CDArch arch = { CPU_TYPE_X86_64, CPU_SUBTYPE_386 | CPU_SUBTYPE_LIB64 };
-    STAssertTrue(CDArchUses64BitABI(arch), @"x86_64 (with LIB64 capability bit) uses 64 bit ABI");
+    XCTAssertTrue(CDArchUses64BitABI(arch), @"x86_64 (with LIB64 capability bit) uses 64 bit ABI");
 }
 
 - (void)test_x86_64_plusOtherCapablity
 {
     CDArch arch = { CPU_TYPE_X86_64 | 0x40000000, CPU_SUBTYPE_386 };
-    STAssertTrue(CDArchUses64BitABI(arch), @"x86_64 (with other capability bit) uses 64 bit ABI");
+    XCTAssertTrue(CDArchUses64BitABI(arch), @"x86_64 (with other capability bit) uses 64 bit ABI");
 }
 
 @end

@@ -3,11 +3,14 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2013 Steve Nygard.
 
-#import "TestFatFile_armv7_v7s.h"
+#import <XCTest/XCTest.h>
 
 #import "CDFatArch.h"
 #import "CDFatFile.h"
 #import "CDMachOFile.h"
+
+@interface TestFatFile_armv7_v7s : XCTestCase
+@end
 
 @implementation TestFatFile_armv7_v7s
 {
@@ -58,16 +61,16 @@
 {
     CDArch arch = { CPU_TYPE_ARM, CPU_SUBTYPE_ARM_V7 };
     CDMachOFile *machOFile = [_fatFile machOFileWithArch:arch];
-    STAssertNotNil(machOFile,            @"The Mach-O file shouldn't be nil", NULL);
-    STAssertEquals(machOFile, _macho_v7, @"Didn't find correct Mach-O file");
+    XCTAssertNotNil(machOFile,            @"The Mach-O file shouldn't be nil", NULL);
+    XCTAssertEqual(machOFile, _macho_v7,  @"Didn't find correct Mach-O file");
 }
 
 - (void)test_machOFileWithArch_armv7s;
 {
     CDArch arch = { CPU_TYPE_ARM, 11 };
     CDMachOFile *machOFile = [_fatFile machOFileWithArch:arch];
-    STAssertNotNil(machOFile,             @"The Mach-O file shouldn't be nil");
-    STAssertEquals(machOFile, _macho_v7s, @"Didn't find correct Mach-O file");
+    XCTAssertNotNil(machOFile,             @"The Mach-O file shouldn't be nil");
+    XCTAssertEqual(machOFile, _macho_v7s,  @"Didn't find correct Mach-O file");
 }
 
 @end

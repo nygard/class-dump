@@ -3,13 +3,16 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2013 Steve Nygard.
 
-#import "TestBlockSignature.h"
+#import <XCTest/XCTest.h>
 
 #import "CDType.h"
 #import "CDTypeName.h"
 
 @interface CDType (UnitTests)
 - (NSString *)blockSignatureString;
+@end
+
+@interface TestBlockSignature : XCTestCase
 @end
 
 @implementation TestBlockSignature
@@ -21,7 +24,7 @@
 	[types addObject:[[CDType alloc] initBlockTypeWithTypes:nil]];
 	CDType *blockType = [[CDType alloc] initBlockTypeWithTypes:types];
 	NSString *blockSignatureString = [blockType blockSignatureString];
-	STAssertEqualObjects(blockSignatureString, @"void (^)(void)", nil);
+	XCTAssertEqualObjects(blockSignatureString, @"void (^)(void)", @"");
 }
 
 - (void)testOneArgument;
@@ -34,7 +37,7 @@
 	[types addObject:[[CDType alloc] initIDType:typeName]];
 	CDType *blockType = [[CDType alloc] initBlockTypeWithTypes:types];
 	NSString *blockSignatureString = [blockType blockSignatureString];
-	STAssertEqualObjects(blockSignatureString, @"void (^)(NSData *)", nil);
+	XCTAssertEqualObjects(blockSignatureString, @"void (^)(NSData *)", @"");
 }
 
 - (void)testTwoArguments;
@@ -48,7 +51,7 @@
 	[types addObject:[[CDType alloc] initIDType:typeName]];
 	CDType *blockType = [[CDType alloc] initBlockTypeWithTypes:types];
 	NSString *blockSignatureString = [blockType blockSignatureString];
-	STAssertEqualObjects(blockSignatureString, @"void (^)(id, NSError *)", nil);
+	XCTAssertEqualObjects(blockSignatureString, @"void (^)(id, NSError *)", @"");
 }
 
 - (void)testBlockArgument;
@@ -59,7 +62,7 @@
 	[types addObject:[[CDType alloc] initBlockTypeWithTypes:[types copy]]];
 	CDType *blockType = [[CDType alloc] initBlockTypeWithTypes:types];
 	NSString *blockSignatureString = [blockType blockSignatureString];
-	STAssertEqualObjects(blockSignatureString, @"void (^)(void (^)(void))", nil);
+	XCTAssertEqualObjects(blockSignatureString, @"void (^)(void (^)(void))", @"");
 }
 
 - (void)testBOOLArgument;
@@ -70,7 +73,7 @@
 	[types addObject:[[CDType alloc] initSimpleType:'c']];
 	CDType *blockType = [[CDType alloc] initBlockTypeWithTypes:types];
 	NSString *blockSignatureString = [blockType blockSignatureString];
-	STAssertEqualObjects(blockSignatureString, @"void (^)(BOOL)", nil);
+	XCTAssertEqualObjects(blockSignatureString, @"void (^)(BOOL)", @"");
 }
 
 @end

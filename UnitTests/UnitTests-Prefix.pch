@@ -1,5 +1,7 @@
 //
-// Prefix header for all source files of the 'UnitTests' target in the 'UnitTests' project
+//  Prefix header
+//
+//  The contents of this file are implicitly included at the beginning of every source file.
 //
 
 #ifdef __OBJC__

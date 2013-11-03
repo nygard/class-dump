@@ -4,13 +4,6 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>All Tests.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>5</integer>
-		</dict>
 		<key>MachObjC.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -75,6 +68,11 @@
 			<true/>
 		</dict>
 		<key>01549F710903BF88002FA8F1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>0165B8B01827137D00CC647F</key>
 		<dict>
 			<key>primary</key>
 			<true/>
