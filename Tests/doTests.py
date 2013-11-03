@@ -48,8 +48,8 @@ TESTDIR_NEW = TESTDIR + "/new"
 TESTDIR_NEW_32 = TESTDIR + "/new32"
 TESTDIR_NEW_64 = TESTDIR + "/new64"
 
-#OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-3.3.4")
-OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-e9c13d1")
+OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-3.4")
+#OLD_CD = os.path.expanduser("~/Unix/bin/class-dump-e9c13d1")
 #OLD_CD = "/bin/echo"
 NEW_CD = os.path.expanduser("/Local/nygard/Debug/class-dump")
 
