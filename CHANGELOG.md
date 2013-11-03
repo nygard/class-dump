@@ -1,13 +1,13 @@
-### Next Release
+### Version 3.5 - Released 2013-11-03
 
+* Targeting 10.8+ now, and building with the 10.9 SDK.
 * Fixed Objective-C 2.0 ivar offsets. It now displays actual offsets instead of ivar addresses.
-* Support for the new `arm64` architecure.
+* Support for the new `arm64` architecture.
   * Recognize the `--arch arm64` option
   * Display `arm64` instead of `0x100000c:0x0`
   * Handle the new `LC_ENCRYPTION_INFO_64` load command
 * Parse extended types when available. It means that you can extract more precise type information on protocol methods. E.g. you get `- (NSArray *)bookmarksFromContentItems:(NSArray *)arg1;` instead of `- (id)bookmarksFromContentItems:(id)arg1;`. Unfortunately, extended types are not available on classes, only on protocols.
 * Parse blocks type information, i.e. you get `CDUnknownBlockType` instead of `id`. Inside protocol methods – thanks to extended types – you get the full block signature, e.g. `- (void)accountsWithHandler:(void (^)(NSArray *, NSError *))arg1;`.
-* Optimizations to make class-dump run faster.
 * Resolve `@loader_path`. Xcode and the developer tools use this.
 * Added the `--hide` options to hide struct/union and protocol sections. Use `--hide structures` and `--hide protocols` or `--hide all` to hide both of those. This is meant for development, to make it easier to see just the other sections.
 * Tweaked comments, now using `//` instead of `/* */` in generated headers.
@@ -17,7 +17,7 @@
 
 ### Version 3.4 - Released 2012-11-19
 
-* Targetting 10.7+ now. Needs to build with the 10.8 SDK.
+* Targeting 10.7+ now. Needs to build with the 10.8 SDK.
 * Lots of changes to the code. Style changes. Using automatic reference counting. Objective-C literals and array/dictionary indexing.
 * Recognise `armv7s` architecture.
 * Fixed a bug where `--arch x86_64` wouldn’t find the correct architecture.
@@ -29,7 +29,7 @@
 * Show source and SDK versions.
 * Fix crasher on SDK frameworks, which have empty sections.
 * deprotect fat files, endian neutral, better error messages. [0xced]
-* Use `__atribute__((visibility(“hidden”)))` instead of `// Not exported` [0xced]
+* Use `__attribute__((visibility(“hidden”)))` instead of `// Not exported` [0xced]
 * Show a more informative error message when the file doesn’t contain the desired architecture.
 * Switch to `NSRegularExpression` for `-C` arg matching.
 
@@ -68,7 +68,7 @@
 ### Version 3.3.2 - Released 2010-05-11
 
 * The `-a` and `-A` options should work again.
-* Better error reporting for non-existant and unreadable files. (Patch from Gerriet M. Denkmann)
+* Better error reporting for non-existent and unreadable files. (Patch from Gerriet M. Denkmann)
 * Added missing classes to one of the targets.
 
 ### Version 3.3.1 - Released 2009-09-17
@@ -91,7 +91,7 @@
 * Mac OS X prefers 64-bit executables over 32-bit executables, so there is no need to have class-dump-32. Now class-dump is built 32/64 bit Universal.
 * Recognize more load commands so it doesn’t complain about them.
 * Recognize encrypted iPhone apps (`LC_ENCRYPTION_INFO`) so that it doesn’t print a bunch of garbage.
-* Changed the way I handle structures. This is the part that gathers all of the structure types, merges member names, merges id types with object pointers, figures out which can be expanded inline and which must be delcared at the top, and then chooses typedef names. For the most part, it works better than before, although there may be problems for things like Safari, WebKit, iPhoto.
+* Changed the way I handle structures. This is the part that gathers all of the structure types, merges member names, merges id types with object pointers, figures out which can be expanded inline and which must be declared at the top, and then chooses typedef names. For the most part, it works better than before, although there may be problems for things like Safari, WebKit, iPhoto.
   * Changed anonymous structure/union typedef names from being numbered based on the order they were encountered (which was very susceptible to changes in the code or the target files), to using a hash based on the type string. This should result in smaller, more meaningful diffs between versions of a target file. For example, only 6 differences versus 78 between the i386 AppKit 10.5.5 and 10.5.8.
 
 ### Version 3.2 - Released 2009-07-01
@@ -222,7 +222,7 @@
 * An `id *` type should now be printed correctly.
 * Fixed printing of pointers to arrays.
 * Fixed printing of multi-dimensional arrays.
-* Made #ifdefs of `LC_PREBOUND_DYLIB` and `LC_LOAD_DYLIB` independant for compiling under 3.3 (Suggested by Carl Lindberg.)
+* Made #ifdefs of `LC_PREBOUND_DYLIB` and `LC_LOAD_DYLIB` independent for compiling under 3.3 (Suggested by Carl Lindberg.)
 * This now uses the Foundation framework, so it may not work with NeXTSTEP 3.x.
 * flex is no longer required.
 * The version number of class-dump is now included in the output.
