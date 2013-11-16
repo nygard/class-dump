@@ -1,4 +1,4 @@
-### Version 3.5 - Released 2013-11-03
+### Version 3.5 - Released 2013-11-16
 
 * Targeting 10.8+ now, and building with the 10.9 SDK.
 * Fixed Objective-C 2.0 ivar offsets. It now displays actual offsets instead of ivar addresses.
