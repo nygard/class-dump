@@ -17,7 +17,7 @@ The source code is also available from my Github repository at:
 Usage
 -----
 
-    class-dump 3.4 (64 bit)
+    class-dump 3.5 (64 bit)
     Usage: class-dump [options] <mach-o-file>
 
       where options are:
