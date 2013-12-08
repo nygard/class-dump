@@ -458,13 +458,13 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     return resultString;
 }
 
-- (NSString *)uuidString;
+- (NSUUID *)UUID;
 {
     for (CDLoadCommand *loadCommand in _loadCommands)
         if ([loadCommand isKindOfClass:[CDLCUUID class]])
-            return [(CDLCUUID *)loadCommand uuidString];
+            return [(CDLCUUID *)loadCommand UUID];
 
-    return @"N/A";
+    return nil;
 }
 
 // Must not return nil.

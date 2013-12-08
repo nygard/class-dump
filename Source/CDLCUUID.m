@@ -5,14 +5,13 @@
 
 #import "CDLCUUID.h"
 
-#import <CoreFoundation/CoreFoundation.h>
 #import "CDMachOFile.h"
 
 @implementation CDLCUUID
 {
     struct uuid_command _uuidCommand;
     
-    CFUUIDRef _uuid;
+    NSUUID *_UUID;
 }
 
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
@@ -20,35 +19,13 @@
     if ((self = [super initWithDataCursor:cursor])) {
         _uuidCommand.cmd     = [cursor readInt32];
         _uuidCommand.cmdsize = [cursor readInt32];
-        for (NSUInteger index = 0; index < 16; index++) {
+        for (NSUInteger index = 0; index < sizeof(_uuidCommand.uuid); index++) {
             _uuidCommand.uuid[index] = [cursor readByte];
         }
-        // Lovely API
-        _uuid = CFUUIDCreateWithBytes(kCFAllocatorDefault,
-                                     _uuidCommand.uuid[0],
-                                     _uuidCommand.uuid[1],
-                                     _uuidCommand.uuid[2],
-                                     _uuidCommand.uuid[3],
-                                     _uuidCommand.uuid[4],
-                                     _uuidCommand.uuid[5],
-                                     _uuidCommand.uuid[6],
-                                     _uuidCommand.uuid[7],
-                                     _uuidCommand.uuid[8],
-                                     _uuidCommand.uuid[9],
-                                     _uuidCommand.uuid[10],
-                                     _uuidCommand.uuid[11],
-                                     _uuidCommand.uuid[12],
-                                     _uuidCommand.uuid[13],
-                                     _uuidCommand.uuid[14],
-                                     _uuidCommand.uuid[15]);
+        _UUID = [[NSUUID alloc] initWithUUIDBytes:_uuidCommand.uuid];
     }
 
     return self;
-}
-
-- (void)dealloc;
-{
-    CFRelease(_uuid);
 }
 
 #pragma mark -
@@ -63,18 +40,18 @@
     return _uuidCommand.cmdsize;
 }
 
-- (NSString *)uuidString;
-{
-    return (__bridge_transfer NSString *)(CFUUIDCreateString(kCFAllocatorDefault, _uuid));
-}
-
 - (void)appendToString:(NSMutableString *)resultString verbose:(BOOL)isVerbose;
 {
     [super appendToString:resultString verbose:isVerbose];
 
     [resultString appendString:@"    uuid "];
-    [resultString appendString:[self uuidString]];
+    [resultString appendString:[self.UUID UUIDString]];
     [resultString appendString:@"\n"];
+}
+
+- (NSString *)extraDescription;
+{
+    return [self.UUID UUIDString];
 }
 
 @end
