@@ -125,7 +125,12 @@ int main(int argc, char *argv[])
                 case CD_OPT_SDK_IOS: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
-                    NSString *str = [NSString stringWithFormat:@"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                    NSString *str = nil;
+                    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Applications/Xcode.app"]) {
+                        str = [NSString stringWithFormat:@"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                    } else if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Developer"]) {
+                        str = [NSString stringWithFormat:@"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                    }
                     classDump.sdkRoot = str;
                     
                     break;
@@ -134,7 +139,12 @@ int main(int argc, char *argv[])
                 case CD_OPT_SDK_MAC: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
-                    NSString *str = [NSString stringWithFormat:@"/Developer/SDKs/MacOSX%@.sdk", root];
+                    NSString *str = nil;
+                    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Applications/Xcode.app"]) {
+                        str = [NSString stringWithFormat:@"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX%@.sdk", root];
+                    } else if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Developer"]) {
+                        str = [NSString stringWithFormat:@"/Developer/SDKs/MacOSX%@.sdk", root];
+                    }
                     classDump.sdkRoot = str;
                     
                     break;
