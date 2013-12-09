@@ -40,8 +40,10 @@ void print_usage(void)
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
             "        --list-arches  list the arches in the file, then exit\n"
-            "        --sdk-ios      specify iOS SDK version (will look in /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
-            "        --sdk-mac      specify Mac OS X version (will look in /Developer/SDKs/MacOSX<version>.sdk\n"
+            "        --sdk-ios      specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
+            "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
+            "        --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
+            "                       or /Developer/SDKs/MacOSX<version>.sdk)\n"
             "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
             ,
             CLASS_DUMP_VERSION
