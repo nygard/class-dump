@@ -260,7 +260,8 @@ static BOOL debug = NO;
 
     CDOCClass *aClass = [[CDOCClass alloc] init];
     aClass.name           = className;
-    aClass.superClassName = [self.machOFile stringAtAddress:objcClass.super_class];
+    if (objcClass.super_class != 0)
+        aClass.superClass = [self processClassDefinitionAtAddress:objcClass.super_class];
 
     // Process ivars
     if (objcClass.ivars != 0) {

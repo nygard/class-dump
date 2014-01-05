@@ -8,6 +8,8 @@
 #import "CDMachOFile.h"
 #import "CDOCClass.h"
 #import "CDObjectiveCProcessor.h"
+#import "CDSymbol.h"
+#import "CDLCDylib.h"
 
 @interface CDClassFrameworkVisitor ()
 @property (strong) NSString *frameworkName;
@@ -40,6 +42,15 @@
 - (void)willVisitClass:(CDOCClass *)aClass;
 {
     [self addClassName:aClass.name referencedInFramework:self.frameworkName];
+    
+    // We only need to add superclasses for external classes - classes defined in this binary will be visited on their own
+    id superClass = [aClass superClass];
+    if ([superClass isKindOfClass:[CDSymbol class]]) {
+        CDSymbol *symbol = superClass;
+        NSString *frameworkName = CDImportNameForPath([[symbol dylibLoadCommand] path]);
+        NSString *className = [CDSymbol classNameFromSymbolName:[symbol name]];
+        [self addClassName:className referencedInFramework:frameworkName];
+    }
 }
 
 #pragma mark -

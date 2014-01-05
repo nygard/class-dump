@@ -256,15 +256,22 @@
     {
         uint64_t classNameAddress = address + [self.machOFile ptrSize];
         
+        NSString *superClassName = nil;
         if ([self.machOFile hasRelocationEntryForAddress2:classNameAddress]) {
-            [aClass setSuperClassName:[self.machOFile externalClassNameForAddress2:classNameAddress]];
+            superClassName = [self.machOFile externalClassNameForAddress2:classNameAddress];
             //NSLog(@"class: got external class name (2): %@", [aClass superClassName]);
         } else if ([self.machOFile hasRelocationEntryForAddress:classNameAddress]) {
-            [aClass setSuperClassName:[self.machOFile externalClassNameForAddress:classNameAddress]];
+            superClassName = [self.machOFile externalClassNameForAddress:classNameAddress];
             //NSLog(@"class: got external class name (1): %@", [aClass superClassName]);
         } else if (objc2Class.superclass != 0) {
             CDOCClass *sc = [self loadClassAtAddress:objc2Class.superclass];
-            [aClass setSuperClassName:[sc name]];
+            aClass.superClass = sc;
+        }
+        
+        if (superClassName) {
+            CDSymbol *superClassSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:superClassName];
+            if (superClassSymbol)
+                aClass.superClass = superClassSymbol;
         }
     }
     

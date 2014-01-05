@@ -82,6 +82,8 @@ typedef enum : NSUInteger {
 - (BOOL)hasRelocationEntryForAddress2:(NSUInteger)address;
 - (NSString *)externalClassNameForAddress2:(NSUInteger)address;
 
+- (CDLCDylib *)dylibLoadCommandForLibraryOrdinal:(NSUInteger)ordinal;
+
 @property (nonatomic, readonly) BOOL hasObjectiveC1Data;
 @property (nonatomic, readonly) BOOL hasObjectiveC2Data;
 @property (nonatomic, readonly) Class processorClass;

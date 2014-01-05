@@ -10,6 +10,15 @@
 #import "CDMachOFile.h"
 #import "CDSearchPathState.h"
 
+NSString *CDImportNameForPath(NSString *path)
+{
+    NSString *name = [[path lastPathComponent] stringByDeletingPathExtension];
+    NSString *libPrefix = @"lib";
+    if ([name hasPrefix:libPrefix])
+        name = [name substringFromIndex:[libPrefix length]];
+    return name;
+}
+
 NSString *CDNameForCPUType(cpu_type_t cputype, cpu_subtype_t cpusubtype)
 {
     const NXArchInfo *archInfo = NXGetArchInfoFromCpuType(cputype, cpusubtype);

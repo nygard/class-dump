@@ -381,13 +381,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 - (NSString *)importBaseName;
 {
     if ([self filetype] == MH_DYLIB) {
-        NSString *str = [self.filename lastPathComponent];
-        if ([str hasPrefix:@"lib"]) {
-            NSArray *components = [[str substringFromIndex:3] componentsSeparatedByString:@"."];
-            str = components[0];
-        }
-
-        return str;
+        return CDImportNameForPath(self.filename);
     }
 
     return nil;
@@ -574,6 +568,25 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
         return [CDObjectiveC2Processor class];
     
     return [CDObjectiveC1Processor class];
+}
+
+- (CDLCDylib *)dylibLoadCommandForLibraryOrdinal:(NSUInteger)libraryOrdinal
+{
+    if (libraryOrdinal == SELF_LIBRARY_ORDINAL || libraryOrdinal >= MAX_LIBRARY_ORDINAL)
+        return nil;
+    
+    NSArray *loadCommands = _dylibLoadCommands;
+    if (_dylibIdentifier) {
+        // Remove our own ID (LC_ID_DYLIB) so that we calculate the correct offset
+        NSMutableArray *remainingLoadCommands = [loadCommands mutableCopy];
+        [remainingLoadCommands removeObject:_dylibIdentifier];
+        loadCommands = remainingLoadCommands;
+    }
+    
+    if (libraryOrdinal - 1 < [loadCommands count]) // Ordinals start from 1
+        return loadCommands[libraryOrdinal - 1];
+    else
+        return nil;
 }
 
 - (NSString *)architectureNameDescription;
