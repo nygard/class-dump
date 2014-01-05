@@ -193,7 +193,14 @@
 
 - (NSString *)frameworkForClassName:(NSString *)name;
 {
-    return self.frameworkNamesByClassName[name];
+    NSString *framework = self.frameworkNamesByClassName[name];
+    
+    // Map public CoreFoundation classes to Foundation, because that is where the headers are exposed
+    if ([framework isEqualToString:@"CoreFoundation"] && [name hasPrefix:@"NS"]) {
+        framework = @"Foundation";
+    }
+    
+    return framework;
 }
 
 - (NSString *)frameworkForProtocolName:(NSString *)name;
@@ -219,10 +226,11 @@
 {
     if (name != nil) {
         NSString *framework = [self frameworkForProtocolName:name];
+        NSString *headerName = [name stringByAppendingString:@"-Protocol.h"];
         if (framework == nil)
-            return [NSString stringWithFormat:@"#import \"%@.h\"\n", name];
+            return [NSString stringWithFormat:@"#import \"%@\"\n", headerName];
         else
-            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, name];
+            return [NSString stringWithFormat:@"#import <%@/%@>\n", framework, headerName];
     }
     
     return nil;
