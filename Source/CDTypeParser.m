@@ -254,7 +254,7 @@ static NSString *CDTokenDescription(int token)
                 
                 NSString *typeNameStr = [[str substringToIndex:(protocolOpenIdx - 1)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
                 CDTypeName *typeName = nil;
-                if (![typeNameStr isEqualToString:@"id"]) {
+                if ([typeNameStr length] && ![typeNameStr isEqualToString:@"id"]) {
                     typeName = [[CDTypeName alloc] init];
                     typeName.name = typeNameStr;
                 }
