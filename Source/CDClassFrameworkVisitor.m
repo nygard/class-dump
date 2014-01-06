@@ -10,6 +10,7 @@
 #import "CDObjectiveCProcessor.h"
 #import "CDSymbol.h"
 #import "CDLCDylib.h"
+#import "CDOCCategory.h"
 
 @interface CDClassFrameworkVisitor ()
 @property (strong) NSString *frameworkName;
@@ -48,10 +49,7 @@
     // We only need to add superclasses for external classes - classes defined in this binary will be visited on their own
     id superClass = [aClass superClass];
     if ([superClass isKindOfClass:[CDSymbol class]]) {
-        CDSymbol *symbol = superClass;
-        NSString *frameworkName = CDImportNameForPath([[symbol dylibLoadCommand] path]);
-        NSString *className = [CDSymbol classNameFromSymbolName:[symbol name]];
-        [self addClassName:className referencedInFramework:frameworkName];
+        [self addClassForExternalSymbol:superClass];
     }
 }
 
@@ -61,7 +59,22 @@
     [self addProtocolName:protocol.name referencedInFramework:self.frameworkName];
 }
 
+- (void)willVisitCategory:(CDOCCategory *)category
+{
+    id classRef = [category classRef];
+    if ([classRef isKindOfClass:[CDSymbol class]]) {
+        [self addClassForExternalSymbol:classRef];
+    }
+}
+
 #pragma mark -
+
+- (void)addClassForExternalSymbol:(CDSymbol *)symbol
+{
+    NSString *frameworkName = CDImportNameForPath([[symbol dylibLoadCommand] path]);
+    NSString *className = [CDSymbol classNameFromSymbolName:[symbol name]];
+    [self addClassName:className referencedInFramework:frameworkName];
+}
 
 - (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 {

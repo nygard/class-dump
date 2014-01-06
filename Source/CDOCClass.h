@@ -9,7 +9,7 @@
 
 @interface CDOCClass : CDOCProtocol <CDTopologicalSort>
 
-@property (strong) id superClass; // can be CDOCClass or CDSymbol (for external classes)
+@property (strong) id superClass; // can be CDOCClass, CDSymbol (for external classes), or NSString (for ObjC1 class refs)
 @property (strong, readonly) NSString *superClassName;
 @property (strong) NSArray *instanceVariables;
 @property (assign) BOOL isExported;

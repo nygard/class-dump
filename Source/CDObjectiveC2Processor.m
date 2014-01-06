@@ -174,15 +174,22 @@
     {
         uint64_t classNameAddress = address + [self.machOFile ptrSize];
         
+        NSString *externalClassName = nil;
         if ([self.machOFile hasRelocationEntryForAddress2:classNameAddress]) {
-            [category setClassName:[self.machOFile externalClassNameForAddress2:classNameAddress]];
+            externalClassName = [self.machOFile externalClassNameForAddress2:classNameAddress];
             //NSLog(@"category: got external class name (2): %@", [category className]);
         } else if ([self.machOFile hasRelocationEntryForAddress:classNameAddress]) {
-            [category setClassName:[self.machOFile externalClassNameForAddress:classNameAddress]];
+            externalClassName = [self.machOFile externalClassNameForAddress:classNameAddress];
             //NSLog(@"category: got external class name (1): %@", [aClass className]);
         } else if (objc2Category.class != 0) {
             CDOCClass *aClass = [self classWithAddress:objc2Category.class];
-            [category setClassName:[aClass name]];
+            [category setClassRef:aClass];
+        }
+        
+        if (externalClassName) {
+            CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:externalClassName];
+            if (classSymbol)
+                [category setClassRef:classSymbol];
         }
     }
     

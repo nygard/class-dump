@@ -260,8 +260,9 @@ static BOOL debug = NO;
 
     CDOCClass *aClass = [[CDOCClass alloc] init];
     aClass.name           = className;
-    if (objcClass.super_class != 0)
-        aClass.superClass = [self processClassDefinitionAtAddress:objcClass.super_class];
+    
+    // TODO: can we extract more than just the string from here?
+    aClass.superClass     = [self.machOFile stringAtAddress:objcClass.super_class];
 
     // Process ivars
     if (objcClass.ivars != 0) {
@@ -423,7 +424,9 @@ static BOOL debug = NO;
 
         category = [[CDOCCategory alloc] init];
         category.name = name;
-        category.className = [self.machOFile stringAtAddress:objcCategory.class_name];
+        
+        // TODO: can we extract more than just the string from here?
+        category.classRef = [self.machOFile stringAtAddress:objcCategory.class_name];
 
         for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.methods])
             [category addInstanceMethod:method];

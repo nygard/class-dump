@@ -9,11 +9,10 @@
 #import "CDOCMethod.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
+#import "CDOCClass.h"
+#import "CDSymbol.h"
 
 @implementation CDOCCategory
-{
-    NSString *_className;
-}
 
 #pragma mark - Superclass overrides
 
@@ -23,6 +22,21 @@
 }
 
 #pragma mark -
+
+- (NSString *)className
+{
+    if ([_classRef isKindOfClass:[CDOCClass class]]) {
+        return [(CDOCClass *)_classRef name];
+    } else if ([_classRef isKindOfClass:[CDSymbol class]]) {
+        NSString *name = [(CDSymbol *)_classRef name];
+        return [CDSymbol classNameFromSymbolName:name];
+    } else if ([_classRef isKindOfClass:[NSString class]]) {
+        return _classRef;
+    } else {
+        if (_classRef) NSLog(@"unknown category class instance %@", _classRef);
+        return nil;
+    }
+}
 
 - (NSString *)methodSearchContext;
 {

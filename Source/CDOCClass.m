@@ -47,6 +47,8 @@
     } else if ([_superClass isKindOfClass:[CDSymbol class]]) {
         NSString *name = [(CDSymbol *)_superClass name];
         return [CDSymbol classNameFromSymbolName:name];
+    } else if ([_superClass isKindOfClass:[NSString class]]) {
+        return _superClass;
     } else {
         if (_superClass) NSLog(@"unknown superclass instance %@", _superClass);
         return nil;
