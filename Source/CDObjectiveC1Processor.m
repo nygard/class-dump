@@ -262,7 +262,7 @@ static BOOL debug = NO;
     aClass.name           = className;
     
     // TODO: can we extract more than just the string from here?
-    aClass.superClass     = [self.machOFile stringAtAddress:objcClass.super_class];
+    aClass.superClassRef     = [self.machOFile stringAtAddress:objcClass.super_class];
 
     // Process ivars
     if (objcClass.ivars != 0) {

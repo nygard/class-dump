@@ -47,9 +47,9 @@
     [self addClassName:aClass.name referencedInFramework:self.frameworkName];
     
     // We only need to add superclasses for external classes - classes defined in this binary will be visited on their own
-    id superClass = [aClass superClass];
-    if ([superClass isKindOfClass:[CDSymbol class]]) {
-        [self addClassForExternalSymbol:superClass];
+    id superClassRef = [aClass superClassRef];
+    if ([superClassRef isKindOfClass:[CDSymbol class]]) {
+        [self addClassForExternalSymbol:superClassRef];
     }
 }
 

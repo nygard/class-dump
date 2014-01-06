@@ -272,13 +272,13 @@
             //NSLog(@"class: got external class name (1): %@", [aClass superClassName]);
         } else if (objc2Class.superclass != 0) {
             CDOCClass *sc = [self loadClassAtAddress:objc2Class.superclass];
-            aClass.superClass = sc;
+            aClass.superClassRef = sc;
         }
         
         if (superClassName) {
             CDSymbol *superClassSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:superClassName];
             if (superClassSymbol)
-                aClass.superClass = superClassSymbol;
+                aClass.superClassRef = superClassSymbol;
         }
     }
     

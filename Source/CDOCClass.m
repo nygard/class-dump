@@ -42,15 +42,15 @@
 
 - (NSString *)superClassName
 {
-    if ([_superClass isKindOfClass:[CDOCClass class]]) {
-        return [(CDOCClass *)_superClass name];
-    } else if ([_superClass isKindOfClass:[CDSymbol class]]) {
-        NSString *name = [(CDSymbol *)_superClass name];
+    if ([_superClassRef isKindOfClass:[CDOCClass class]]) {
+        return [(CDOCClass *)_superClassRef name];
+    } else if ([_superClassRef isKindOfClass:[CDSymbol class]]) {
+        NSString *name = [(CDSymbol *)_superClassRef name];
         return [CDSymbol classNameFromSymbolName:name];
-    } else if ([_superClass isKindOfClass:[NSString class]]) {
-        return _superClass;
+    } else if ([_superClassRef isKindOfClass:[NSString class]]) {
+        return _superClassRef;
     } else {
-        if (_superClass) NSLog(@"unknown superclass instance %@", _superClass);
+        if (_superClassRef) NSLog(@"unknown superclass instance %@", _superClassRef);
         return nil;
     }
 }
