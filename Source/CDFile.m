@@ -12,7 +12,15 @@
 
 NSString *CDImportNameForPath(NSString *path)
 {
-    NSString *name = [[path lastPathComponent] stringByDeletingPathExtension];
+    NSString *name = [path lastPathComponent];
+    
+    // Remove all extensions (make sure extensions like .a.dylib are covered)
+    NSString *nameWithExtensions = name;
+    for (NSInteger i = ([nameWithExtensions length] - 1); i >= 0; i--) {
+        if ([nameWithExtensions characterAtIndex:i] == '.')
+            name = [name substringToIndex:i];
+    }
+    
     NSString *libPrefix = @"lib";
     if ([name hasPrefix:libPrefix])
         name = [name substringFromIndex:[libPrefix length]];
