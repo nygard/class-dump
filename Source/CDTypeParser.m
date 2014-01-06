@@ -245,9 +245,21 @@ static NSString *CDTokenDescription(int token)
 #endif
         if (_lookahead == TK_QUOTED_STRING && (isInStruct == NO || [self.lexer.lexText isFirstLetterUppercase] || [self isTokenInTypeStartSet:self.lexer.peekChar] == NO)) {
             NSString *str = self.lexer.lexText;
-            if ([str hasPrefix:@"<"] && [str hasSuffix:@">"]) {
-                str = [str substringWithRange:NSMakeRange(1, [str length] - 2)];
-                result = [[CDType alloc] initIDTypeWithProtocols:[str componentsSeparatedByString:@","]];
+            
+            NSUInteger protocolOpenIdx = NSMaxRange([str rangeOfString:@"<"]);
+            NSUInteger protocolCloseIdx = [str rangeOfString:@">" options:NSBackwardsSearch].location;
+            if (protocolOpenIdx != NSNotFound && protocolCloseIdx != NSNotFound) {
+                NSRange protocolRange = NSMakeRange(protocolOpenIdx, protocolCloseIdx - protocolOpenIdx);
+                NSArray *protocols = [[str substringWithRange:protocolRange] componentsSeparatedByString:@","];
+                
+                NSString *typeNameStr = [[str substringToIndex:(protocolOpenIdx - 1)] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+                CDTypeName *typeName = nil;
+                if (![typeNameStr isEqualToString:@"id"]) {
+                    typeName = [[CDTypeName alloc] init];
+                    typeName.name = typeNameStr;
+                }
+                
+                result = [[CDType alloc] initIDType:typeName withProtocols:protocols];
             } else {
                 CDTypeName *typeName = [[CDTypeName alloc] init];
                 typeName.name = str;

@@ -10,6 +10,7 @@
 - (id)init;
 - (id)initSimpleType:(int)type;
 - (id)initIDType:(CDTypeName *)name;
+- (id)initIDType:(CDTypeName *)name withProtocols:(NSArray *)protocols;
 - (id)initIDTypeWithProtocols:(NSArray *)protocols;
 - (id)initStructType:(CDTypeName *)name members:(NSArray *)members;
 - (id)initUnionType:(CDTypeName *)name members:(NSArray *)members;

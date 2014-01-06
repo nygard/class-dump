@@ -109,6 +109,11 @@ static BOOL debugMerge = NO;
 
 - (id)initIDType:(CDTypeName *)name;
 {
+    return [self initIDType:name withProtocols:nil];
+}
+
+- (id)initIDType:(CDTypeName *)name withProtocols:(NSArray *)protocols
+{
     if ((self = [self init])) {
         if (name != nil) {
             _primitiveType = T_NAMED_OBJECT;
@@ -116,8 +121,9 @@ static BOOL debugMerge = NO;
         } else {
             _primitiveType = '@';
         }
+        _protocols = protocols;
     }
-
+    
     return self;
 }
 
@@ -315,17 +321,27 @@ static BOOL debugMerge = NO;
         currentName = self.variableName;
     else
         currentName = previousName;
+    
+    if ([_protocols count])
+        [typeFormatter formattingDidReferenceProtocolNames:_protocols];
 
     switch (self.primitiveType) {
-        case T_NAMED_OBJECT:
+        case T_NAMED_OBJECT: {
             assert(self.typeName != nil);
             [typeFormatter formattingDidReferenceClassName:self.typeName.name];
-            if (currentName == nil)
-                result = [NSString stringWithFormat:@"%@ *", self.typeName];
-            else
-                result = [NSString stringWithFormat:@"%@ *%@", self.typeName, currentName];
-            break;
             
+            NSString *typeName = nil;
+            if (_protocols == nil)
+                typeName = [NSString stringWithFormat:@"%@", self.typeName];
+            else
+                typeName = [NSString stringWithFormat:@"%@ <%@>", self.typeName, [_protocols componentsJoinedByString:@", "]];
+            
+            if (currentName == nil)
+                result = [NSString stringWithFormat:@"%@ *", typeName];
+            else
+                result = [NSString stringWithFormat:@"%@ *%@", typeName, currentName];
+            break;
+        }
         case '@':
             if (currentName == nil) {
                 if (_protocols == nil)

@@ -28,6 +28,7 @@
 - (CDType *)typeFormatter:(CDTypeFormatter *)typeFormatter replacementForType:(CDType *)type;
 - (NSString *)typeFormatter:(CDTypeFormatter *)typeFormatter typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;
 - (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceClassName:(NSString *)name;
+- (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceProtocolNames:(NSArray *)names;
 
 - (void)appendStructuresToString:(NSMutableString *)resultString;
 
@@ -58,4 +59,5 @@
 @protocol CDTypeControllerDelegate <NSObject>
 @optional
 - (void)typeController:(CDTypeController *)typeController didReferenceClassName:(NSString *)name;
+- (void)typeController:(CDTypeController *)typeController didReferenceProtocolNames:(NSArray *)names;
 @end

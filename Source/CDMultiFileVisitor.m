@@ -192,6 +192,11 @@
     [self addReferenceToClassName:name];
 }
 
+- (void)typeController:(CDTypeController *)typeController didReferenceProtocolNames:(NSArray *)names
+{
+    [self addReferencesToProtocolNamesInArray:names];
+}
+
 #pragma mark -
 
 - (NSString *)frameworkForClassName:(NSString *)name;
