@@ -28,9 +28,11 @@
 // Class and protocol references
 @property (readonly) NSMutableSet *referencedClassNames;
 @property (readonly) NSMutableSet *referencedProtocolNames;
+@property (readonly) NSMutableSet *weaklyReferencedProtocolNames; // Protocols that can be forward-declared instead of imported
 
 @property (nonatomic, readonly) NSArray *referencedClassNamesSortedByName;
 @property (nonatomic, readonly) NSArray *referencedProtocolNamesSortedByName;
+@property (nonatomic, readonly) NSArray *weaklyReferencedProtocolNamesSortedByName;
 
 @property (nonatomic, readonly) NSString *referenceString;
 
@@ -53,6 +55,7 @@
     if ((self = [super init])) {
         _referencedClassNames = [[NSMutableSet alloc] init];
         _referencedProtocolNames = [[NSMutableSet alloc] init];
+        _weaklyReferencedProtocolNames = [[NSMutableSet alloc] init];
     }
     
     return self;
@@ -194,7 +197,7 @@
 
 - (void)typeController:(CDTypeController *)typeController didReferenceProtocolNames:(NSArray *)names
 {
-    [self addReferencesToProtocolNamesInArray:names];
+    [self addWeakReferencesToProtocolNamesInArray:names];
 }
 
 #pragma mark -
@@ -255,6 +258,11 @@
     return [[self.referencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
 
+- (NSArray *)weaklyReferencedProtocolNamesSortedByName
+{
+    return [[self.weaklyReferencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
+}
+
 - (void)addReferenceToClassName:(NSString *)className;
 {
     [self.referencedClassNames addObject:className];
@@ -271,10 +279,16 @@
     [self.referencedProtocolNames addObjectsFromArray:protocolNames];
 }
 
+- (void)addWeakReferencesToProtocolNamesInArray:(NSArray *)protocolNames
+{
+    [self.weaklyReferencedProtocolNames addObjectsFromArray:protocolNames];
+}
+
 - (void)removeAllClassNameProtocolNameReferences;
 {
     [self.referencedClassNames removeAllObjects];
     [self.referencedProtocolNames removeAllObjects];
+    [self.weaklyReferencedProtocolNames removeAllObjects];
 }
 
 #pragma mark -
@@ -319,9 +333,19 @@
         [referenceString appendString:@"\n"];
     }
     
+    BOOL addNewline = NO;
     if ([self.referencedClassNames count] > 0) {
-        [referenceString appendFormat:@"@class %@;\n\n", [self.referencedClassNamesSortedByName componentsJoinedByString:@", "]];
+        [referenceString appendFormat:@"@class %@;\n", [self.referencedClassNamesSortedByName componentsJoinedByString:@", "]];
+        addNewline = YES;
     }
+
+    if ([self.weaklyReferencedProtocolNames count] > 0) {
+        [referenceString appendFormat:@"@protocol %@;\n", [self.weaklyReferencedProtocolNamesSortedByName componentsJoinedByString:@", "]];
+        addNewline = YES;
+    }
+    
+    if (addNewline)
+        [referenceString appendString:@"\n"];
     
     if ([referenceString length] == 0)
         return nil;
