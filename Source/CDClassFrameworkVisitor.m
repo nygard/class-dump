@@ -20,6 +20,7 @@
 @implementation CDClassFrameworkVisitor
 {
     NSMutableDictionary *_frameworkNamesByClassName;
+    NSMutableDictionary *_frameworkNamesByProtocolName;
     NSString *_frameworkName;
 }
 
@@ -27,6 +28,7 @@
 {
     if ((self = [super init])) {
         _frameworkNamesByClassName = [[NSMutableDictionary alloc] init];
+        _frameworkNamesByProtocolName = [[NSMutableDictionary alloc] init];
     }
     
     return self;
@@ -53,6 +55,12 @@
     }
 }
 
+- (void)willVisitProtocol:(CDOCProtocol *)protocol
+{
+    // TODO: (2012-02-28) Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
+    [self addProtocolName:protocol.name referencedInFramework:self.frameworkName];
+}
+
 #pragma mark -
 
 - (void)addClassName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
@@ -61,9 +69,20 @@
         _frameworkNamesByClassName[name] = frameworkName;
 }
 
+- (void)addProtocolName:(NSString *)name referencedInFramework:(NSString *)frameworkName
+{
+    if (name != nil && frameworkName != nil)
+        _frameworkNamesByProtocolName[name] = frameworkName;
+}
+
 - (NSDictionary *)frameworkNamesByClassName;
 {
     return [_frameworkNamesByClassName copy];
+}
+
+- (NSDictionary *)frameworkNamesByProtocolName
+{
+    return [_frameworkNamesByProtocolName copy];
 }
 
 @end

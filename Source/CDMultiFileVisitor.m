@@ -18,6 +18,9 @@
 // NSString (class name) -> NSString (framework name)
 @property (strong) NSDictionary *frameworkNamesByClassName;
 
+// NSString (protocol name) -> NSString (framework name)
+@property (strong) NSDictionary *frameworkNamesByProtocolName;
+
 // Location in output string to insert the protocol imports and forward class declarations.
 // We don't know what classes and protocols will be referenced until the rest of the output is generated.
 @property (assign) NSUInteger referenceLocation;
@@ -205,8 +208,7 @@
 
 - (NSString *)frameworkForProtocolName:(NSString *)name;
 {
-    // TODO: (2012-02-28) Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
-    return nil;
+    return self.frameworkNamesByProtocolName[name];
 }
 
 - (NSString *)importStringForClassName:(NSString *)name;
@@ -331,6 +333,7 @@
     
     [self.classDump recursivelyVisit:visitor];
     self.frameworkNamesByClassName = visitor.frameworkNamesByClassName;
+    self.frameworkNamesByProtocolName = visitor.frameworkNamesByProtocolName;
 }
 
 - (void)generateStructureHeader;
