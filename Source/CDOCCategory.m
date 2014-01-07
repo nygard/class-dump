@@ -10,7 +10,7 @@
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
 #import "CDOCClass.h"
-#import "CDSymbol.h"
+#import "CDOCClassReference.h"
 
 @implementation CDOCCategory
 
@@ -25,17 +25,7 @@
 
 - (NSString *)className
 {
-    if ([_classRef isKindOfClass:[CDOCClass class]]) {
-        return [(CDOCClass *)_classRef name];
-    } else if ([_classRef isKindOfClass:[CDSymbol class]]) {
-        NSString *name = [(CDSymbol *)_classRef name];
-        return [CDSymbol classNameFromSymbolName:name];
-    } else if ([_classRef isKindOfClass:[NSString class]]) {
-        return _classRef;
-    } else {
-        if (_classRef) NSLog(@"unknown category class instance %@", _classRef);
-        return nil;
-    }
+    return [_classRef className];
 }
 
 - (NSString *)methodSearchContext;

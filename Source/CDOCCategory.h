@@ -5,9 +5,11 @@
 
 #import "CDOCProtocol.h"
 
+@class CDOCClassReference;
+
 @interface CDOCCategory : CDOCProtocol <CDTopologicalSort>
 
-@property (strong) id classRef; // Can be CDOCClass, CDSymbol (for external classes), or NSString (for ObjC1 class refs)
+@property (strong) CDOCClassReference *classRef;
 @property (strong, readonly) NSString *className;
 
 - (NSString *)methodSearchContext;

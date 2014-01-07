@@ -13,7 +13,7 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
-#import "CDSymbol.h"
+#import "CDOCClassReference.h"
 
 @implementation CDOCClass
 {
@@ -42,17 +42,7 @@
 
 - (NSString *)superClassName
 {
-    if ([_superClassRef isKindOfClass:[CDOCClass class]]) {
-        return [(CDOCClass *)_superClassRef name];
-    } else if ([_superClassRef isKindOfClass:[CDSymbol class]]) {
-        NSString *name = [(CDSymbol *)_superClassRef name];
-        return [CDSymbol classNameFromSymbolName:name];
-    } else if ([_superClassRef isKindOfClass:[NSString class]]) {
-        return _superClassRef;
-    } else {
-        if (_superClassRef) NSLog(@"unknown superclass instance %@", _superClassRef);
-        return nil;
-    }
+    return [_superClassRef className];
 }
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;

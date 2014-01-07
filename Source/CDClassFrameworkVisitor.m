@@ -11,6 +11,7 @@
 #import "CDSymbol.h"
 #import "CDLCDylib.h"
 #import "CDOCCategory.h"
+#import "CDOCClassReference.h"
 
 @interface CDClassFrameworkVisitor ()
 @property (strong) NSString *frameworkName;
@@ -47,9 +48,9 @@
     [self addClassName:aClass.name referencedInFramework:self.frameworkName];
     
     // We only need to add superclasses for external classes - classes defined in this binary will be visited on their own
-    id superClassRef = [aClass superClassRef];
-    if ([superClassRef isKindOfClass:[CDSymbol class]]) {
-        [self addClassForExternalSymbol:superClassRef];
+    CDOCClassReference *superClassRef = [aClass superClassRef];
+    if ([superClassRef isExternalClass] && superClassRef.classSymbol) {
+        [self addClassForExternalSymbol:superClassRef.classSymbol];
     }
 }
 
@@ -61,9 +62,9 @@
 
 - (void)willVisitCategory:(CDOCCategory *)category
 {
-    id classRef = [category classRef];
-    if ([classRef isKindOfClass:[CDSymbol class]]) {
-        [self addClassForExternalSymbol:classRef];
+    CDOCClassReference *classRef = [category classRef];
+    if ([classRef isExternalClass] && classRef.classSymbol) {
+        [self addClassForExternalSymbol:classRef.classSymbol];
     }
 }
 

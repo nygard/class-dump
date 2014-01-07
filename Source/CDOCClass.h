@@ -7,10 +7,12 @@
 
 #import "CDTopologicalSortProtocol.h"
 
+@class CDOCClassReference;
+
 @interface CDOCClass : CDOCProtocol <CDTopologicalSort>
 
-@property (strong) id superClassRef; // can be CDOCClass, CDSymbol (for external classes), or NSString (for ObjC1 class refs)
-@property (strong, readonly) NSString *superClassName;
+@property (strong) CDOCClassReference *superClassRef;
+@property (copy, readonly) NSString *superClassName;
 @property (strong) NSArray *instanceVariables;
 @property (assign) BOOL isExported;
 

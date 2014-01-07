@@ -21,7 +21,7 @@
 #import "CDLCSegment32.h"
 #import "CDVisitor.h"
 #import "CDProtocolUniquer.h"
-
+#import "CDOCClassReference.h"
 
 #import "CDSection.h"
 #import "CDLCSegment.h"
@@ -262,7 +262,7 @@ static BOOL debug = NO;
     aClass.name           = className;
     
     // TODO: can we extract more than just the string from here?
-    aClass.superClassRef     = [self.machOFile stringAtAddress:objcClass.super_class];
+    aClass.superClassRef  = [[CDOCClassReference alloc] initWithClassName:[self.machOFile stringAtAddress:objcClass.super_class]];
 
     // Process ivars
     if (objcClass.ivars != 0) {
@@ -426,7 +426,7 @@ static BOOL debug = NO;
         category.name = name;
         
         // TODO: can we extract more than just the string from here?
-        category.classRef = [self.machOFile stringAtAddress:objcCategory.class_name];
+        category.classRef = [[CDOCClassReference alloc] initWithClassName:[self.machOFile stringAtAddress:objcCategory.class_name]];
 
         for (CDOCMethod *method in [self processMethodsAtAddress:objcCategory.methods])
             [category addInstanceMethod:method];

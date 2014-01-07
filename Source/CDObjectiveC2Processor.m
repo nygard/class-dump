@@ -19,6 +19,7 @@
 #import "CDOCProperty.h"
 #import "cd_objc2.h"
 #import "CDProtocolUniquer.h"
+#import "CDOCClassReference.h"
 
 @implementation CDObjectiveC2Processor
 {
@@ -183,13 +184,13 @@
             //NSLog(@"category: got external class name (1): %@", [aClass className]);
         } else if (objc2Category.class != 0) {
             CDOCClass *aClass = [self classWithAddress:objc2Category.class];
-            [category setClassRef:aClass];
+            category.classRef = [[CDOCClassReference alloc] initWithClassObject:aClass];
         }
         
         if (externalClassName) {
             CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:externalClassName];
             if (classSymbol)
-                [category setClassRef:classSymbol];
+                category.classRef = [[CDOCClassReference alloc] initWithClassSymbol:classSymbol];
         }
     }
     
@@ -272,13 +273,13 @@
             //NSLog(@"class: got external class name (1): %@", [aClass superClassName]);
         } else if (objc2Class.superclass != 0) {
             CDOCClass *sc = [self loadClassAtAddress:objc2Class.superclass];
-            aClass.superClassRef = sc;
+            aClass.superClassRef = [[CDOCClassReference alloc] initWithClassObject:sc];
         }
         
         if (superClassName) {
             CDSymbol *superClassSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:superClassName];
             if (superClassSymbol)
-                aClass.superClassRef = superClassSymbol;
+                aClass.superClassRef = [[CDOCClassReference alloc] initWithClassSymbol:superClassSymbol];
         }
     }
     
