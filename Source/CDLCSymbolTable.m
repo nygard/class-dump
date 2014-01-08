@@ -116,9 +116,8 @@
         if (className) {
             if (symbol.value != 0)
                 classSymbols[className] = symbol;
-            else {
+            else
                 externalClassSymbols[className] = symbol;
-            }
         }
     };
 

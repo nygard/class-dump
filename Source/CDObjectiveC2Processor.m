@@ -191,6 +191,8 @@
             CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:externalClassName];
             if (classSymbol)
                 category.classRef = [[CDOCClassReference alloc] initWithClassSymbol:classSymbol];
+            else
+                category.classRef = [[CDOCClassReference alloc] initWithClassName:externalClassName];
         }
     }
     
@@ -280,6 +282,8 @@
             CDSymbol *superClassSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:superClassName];
             if (superClassSymbol)
                 aClass.superClassRef = [[CDOCClassReference alloc] initWithClassSymbol:superClassSymbol];
+            else
+                aClass.superClassRef = [[CDOCClassReference alloc] initWithClassName:superClassName];
         }
     }
     
