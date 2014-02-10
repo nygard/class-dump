@@ -87,7 +87,6 @@
 		013D1F5413A5AEA100BF0A67 /* CDTypeName.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB831913A591D8003EDE60 /* CDTypeName.m */; };
 		013D1F5513A5AEA100BF0A67 /* CDTypeParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB831B13A591D8003EDE60 /* CDTypeParser.m */; };
 		013D1F5613A5AF1E00BF0A67 /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
-		013D1F5713A5AF3400BF0A67 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		013D1F5813A5AF4C00BF0A67 /* deprotect.m in Sources */ = {isa = PBXBuildFile; fileRef = 013D1F0913A5A11100BF0A67 /* deprotect.m */; };
 		013D1F5A13A5AF6500BF0A67 /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
 		0165B8B31827137D00CC647F /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0165B8B21827137D00CC647F /* XCTest.framework */; };
@@ -443,7 +442,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				013D1F5713A5AF3400BF0A67 /* libcrypto.dylib in Frameworks */,
 				DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
