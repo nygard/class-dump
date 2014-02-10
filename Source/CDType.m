@@ -347,12 +347,12 @@ static BOOL debugMerge = NO;
                 if (_protocols == nil)
                     result = @"id";
                 else
-                    result = [NSString stringWithFormat:@"id<%@>", [_protocols componentsJoinedByString:@", "]];
+                    result = [NSString stringWithFormat:@"id <%@>", [_protocols componentsJoinedByString:@", "]];
             } else {
                 if (_protocols == nil)
                     result = [NSString stringWithFormat:@"id %@", currentName];
                 else
-                    result = [NSString stringWithFormat:@"id<%@> %@", [_protocols componentsJoinedByString:@", "], currentName];
+                    result = [NSString stringWithFormat:@"id <%@> %@", [_protocols componentsJoinedByString:@", "], currentName];
             }
             break;
             
