@@ -7,7 +7,6 @@
 
 @interface CDType : NSObject <NSCopying>
 
-- (id)init;
 - (id)initSimpleType:(int)type;
 - (id)initIDType:(CDTypeName *)name;
 - (id)initIDType:(CDTypeName *)name withProtocols:(NSArray *)protocols;

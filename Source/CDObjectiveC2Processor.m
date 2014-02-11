@@ -204,6 +204,10 @@
     if (address == 0)
         return nil;
     
+    CDOCClass *class = [self classWithAddress:address];
+    if (class)
+        return class;
+    
     //NSLog(@"%s, address=%016lx", __cmd, address);
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
