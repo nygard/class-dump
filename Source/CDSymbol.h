@@ -40,4 +40,6 @@ extern NSString *const ObjCClassSymbolPrefix;
 - (NSComparisonResult)compare:(CDSymbol *)other;
 - (NSComparisonResult)compareByName:(CDSymbol *)other;
 
++ (NSString *)classNameFromSymbolName:(NSString *)symbolName;
+
 @end

@@ -13,21 +13,18 @@
 #import "CDTypeParser.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
+#import "CDOCClassReference.h"
 
 @implementation CDOCClass
 {
-    NSString *_superClassName;
     NSArray *_instanceVariables;
-    
+
     BOOL _isExported;
 }
 
 - (id)init;
 {
     if ((self = [super init])) {
-        _superClassName = nil;
-        _instanceVariables = nil;
-        
         _isExported = YES;
     }
 
@@ -42,6 +39,11 @@
 }
 
 #pragma mark -
+
+- (NSString *)superClassName
+{
+    return [_superClassRef className];
+}
 
 - (void)registerTypesWithObject:(CDTypeController *)typeController phase:(NSUInteger)phase;
 {

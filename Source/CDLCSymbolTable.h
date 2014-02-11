@@ -20,5 +20,6 @@
 @property (nonatomic, readonly) NSArray *symbols;
 
 - (CDSymbol *)symbolForClassName:(NSString *)className;
+- (CDSymbol *)symbolForExternalClassName:(NSString *)className;
 
 @end

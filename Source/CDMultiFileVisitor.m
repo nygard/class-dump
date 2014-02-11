@@ -18,6 +18,9 @@
 // NSString (class name) -> NSString (framework name)
 @property (strong) NSDictionary *frameworkNamesByClassName;
 
+// NSString (protocol name) -> NSString (framework name)
+@property (strong) NSDictionary *frameworkNamesByProtocolName;
+
 // Location in output string to insert the protocol imports and forward class declarations.
 // We don't know what classes and protocols will be referenced until the rest of the output is generated.
 @property (assign) NSUInteger referenceLocation;
@@ -25,9 +28,11 @@
 // Class and protocol references
 @property (readonly) NSMutableSet *referencedClassNames;
 @property (readonly) NSMutableSet *referencedProtocolNames;
+@property (readonly) NSMutableSet *weaklyReferencedProtocolNames; // Protocols that can be forward-declared instead of imported
 
 @property (nonatomic, readonly) NSArray *referencedClassNamesSortedByName;
 @property (nonatomic, readonly) NSArray *referencedProtocolNamesSortedByName;
+@property (nonatomic, readonly) NSArray *weaklyReferencedProtocolNamesSortedByName;
 
 @property (nonatomic, readonly) NSString *referenceString;
 
@@ -50,6 +55,7 @@
     if ((self = [super init])) {
         _referencedClassNames = [[NSMutableSet alloc] init];
         _referencedProtocolNames = [[NSMutableSet alloc] init];
+        _weaklyReferencedProtocolNames = [[NSMutableSet alloc] init];
     }
     
     return self;
@@ -189,17 +195,28 @@
     [self addReferenceToClassName:name];
 }
 
+- (void)typeController:(CDTypeController *)typeController didReferenceProtocolNames:(NSArray *)names
+{
+    [self addWeakReferencesToProtocolNamesInArray:names];
+}
+
 #pragma mark -
 
 - (NSString *)frameworkForClassName:(NSString *)name;
 {
-    return self.frameworkNamesByClassName[name];
+    NSString *framework = self.frameworkNamesByClassName[name];
+    
+    // Map public CoreFoundation classes to Foundation, because that is where the headers are exposed
+    if ([framework isEqualToString:@"CoreFoundation"] && [name hasPrefix:@"NS"]) {
+        framework = @"Foundation";
+    }
+    
+    return framework;
 }
 
 - (NSString *)frameworkForProtocolName:(NSString *)name;
 {
-    // TODO: (2012-02-28) Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
-    return nil;
+    return self.frameworkNamesByProtocolName[name];
 }
 
 - (NSString *)importStringForClassName:(NSString *)name;
@@ -219,10 +236,11 @@
 {
     if (name != nil) {
         NSString *framework = [self frameworkForProtocolName:name];
+        NSString *headerName = [name stringByAppendingString:@"-Protocol.h"];
         if (framework == nil)
-            return [NSString stringWithFormat:@"#import \"%@.h\"\n", name];
+            return [NSString stringWithFormat:@"#import \"%@\"\n", headerName];
         else
-            return [NSString stringWithFormat:@"#import <%@/%@.h>\n", framework, name];
+            return [NSString stringWithFormat:@"#import <%@/%@>\n", framework, headerName];
     }
     
     return nil;
@@ -238,6 +256,11 @@
 - (NSArray *)referencedProtocolNamesSortedByName;
 {
     return [[self.referencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
+}
+
+- (NSArray *)weaklyReferencedProtocolNamesSortedByName
+{
+    return [[self.weaklyReferencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
 
 - (void)addReferenceToClassName:(NSString *)className;
@@ -256,10 +279,16 @@
     [self.referencedProtocolNames addObjectsFromArray:protocolNames];
 }
 
+- (void)addWeakReferencesToProtocolNamesInArray:(NSArray *)protocolNames
+{
+    [self.weaklyReferencedProtocolNames addObjectsFromArray:protocolNames];
+}
+
 - (void)removeAllClassNameProtocolNameReferences;
 {
     [self.referencedClassNames removeAllObjects];
     [self.referencedProtocolNames removeAllObjects];
+    [self.weaklyReferencedProtocolNames removeAllObjects];
 }
 
 #pragma mark -
@@ -304,9 +333,19 @@
         [referenceString appendString:@"\n"];
     }
     
+    BOOL addNewline = NO;
     if ([self.referencedClassNames count] > 0) {
-        [referenceString appendFormat:@"@class %@;\n\n", [self.referencedClassNamesSortedByName componentsJoinedByString:@", "]];
+        [referenceString appendFormat:@"@class %@;\n", [self.referencedClassNamesSortedByName componentsJoinedByString:@", "]];
+        addNewline = YES;
     }
+
+    if ([self.weaklyReferencedProtocolNames count] > 0) {
+        [referenceString appendFormat:@"@protocol %@;\n", [self.weaklyReferencedProtocolNamesSortedByName componentsJoinedByString:@", "]];
+        addNewline = YES;
+    }
+    
+    if (addNewline)
+        [referenceString appendString:@"\n"];
     
     if ([referenceString length] == 0)
         return nil;
@@ -323,6 +362,7 @@
     
     [self.classDump recursivelyVisit:visitor];
     self.frameworkNamesByClassName = visitor.frameworkNamesByClassName;
+    self.frameworkNamesByProtocolName = visitor.frameworkNamesByProtocolName;
 }
 
 - (void)generateStructureHeader;

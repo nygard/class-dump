@@ -5,9 +5,12 @@
 
 #import "CDOCProtocol.h"
 
+@class CDOCClassReference;
+
 @interface CDOCCategory : CDOCProtocol <CDTopologicalSort>
 
-@property (strong) NSString *className;
+@property (strong) CDOCClassReference *classRef;
+@property (strong, readonly) NSString *className;
 
 - (NSString *)methodSearchContext;
 - (void)recursivelyVisit:(CDVisitor *)visitor;

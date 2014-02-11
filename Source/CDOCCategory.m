@@ -9,11 +9,10 @@
 #import "CDOCMethod.h"
 #import "CDVisitor.h"
 #import "CDVisitorPropertyState.h"
+#import "CDOCClass.h"
+#import "CDOCClassReference.h"
 
 @implementation CDOCCategory
-{
-    NSString *_className;
-}
 
 #pragma mark - Superclass overrides
 
@@ -23,6 +22,11 @@
 }
 
 #pragma mark -
+
+- (NSString *)className
+{
+    return [_classRef className];
+}
 
 - (NSString *)methodSearchContext;
 {

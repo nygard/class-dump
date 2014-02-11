@@ -77,6 +77,14 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 #pragma mark -
 
++ (NSString *)classNameFromSymbolName:(NSString *)symbolName
+{
+    if ([symbolName hasPrefix:ObjCClassSymbolPrefix])
+        return [symbolName substringFromIndex:[ObjCClassSymbolPrefix length]];
+    else
+        return nil;
+}
+
 - (uint64_t)value;
 {
     return _nlist.n_value;
@@ -103,12 +111,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 - (CDLCDylib *)dylibLoadCommand;
 {
     NSUInteger libraryOrdinal = GET_LIBRARY_ORDINAL(_nlist.n_desc);
-    NSArray *dylibLoadCommands = self.machOFile.dylibLoadCommands;
-
-    if (libraryOrdinal < [dylibLoadCommands count])
-        return dylibLoadCommands[libraryOrdinal];
-    else
-        return nil;
+    return [self.machOFile dylibLoadCommandForLibraryOrdinal:libraryOrdinal];
 }
 
 - (BOOL)isExternal;

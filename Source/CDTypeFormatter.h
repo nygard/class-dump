@@ -20,5 +20,6 @@
 - (NSString *)typedefNameForStructure:(CDType *)structureType level:(NSUInteger)level;
 
 - (void)formattingDidReferenceClassName:(NSString *)name;
+- (void)formattingDidReferenceProtocolNames:(NSArray *)names;
 
 @end
