@@ -40,8 +40,10 @@ void print_usage(void)
             "        -S             sort methods by name\n"
             "        -t             suppress header in output, for testing\n"
             "        --list-arches  list the arches in the file, then exit\n"
-            "        --sdk-ios      specify iOS SDK version (will look in /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
-            "        --sdk-mac      specify Mac OS X version (will look in /Developer/SDKs/MacOSX<version>.sdk\n"
+            "        --sdk-ios      specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
+            "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
+            "        --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
+            "                       or /Developer/SDKs/MacOSX<version>.sdk)\n"
             "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
             ,
             CLASS_DUMP_VERSION
@@ -125,7 +127,12 @@ int main(int argc, char *argv[])
                 case CD_OPT_SDK_IOS: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
-                    NSString *str = [NSString stringWithFormat:@"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                    NSString *str = nil;
+                    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Applications/Xcode.app"]) {
+                        str = [NSString stringWithFormat:@"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                    } else if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Developer"]) {
+                        str = [NSString stringWithFormat:@"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
+                    }
                     classDump.sdkRoot = str;
                     
                     break;
@@ -134,7 +141,12 @@ int main(int argc, char *argv[])
                 case CD_OPT_SDK_MAC: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
-                    NSString *str = [NSString stringWithFormat:@"/Developer/SDKs/MacOSX%@.sdk", root];
+                    NSString *str = nil;
+                    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Applications/Xcode.app"]) {
+                        str = [NSString stringWithFormat:@"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX%@.sdk", root];
+                    } else if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Developer"]) {
+                        str = [NSString stringWithFormat:@"/Developer/SDKs/MacOSX%@.sdk", root];
+                    }
                     classDump.sdkRoot = str;
                     
                     break;
