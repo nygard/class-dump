@@ -11,6 +11,8 @@
 @implementation CDMachOFileDataCursor
 {
     __weak CDMachOFile *_machOFile;
+    NSUInteger _ptrSize;
+    CDByteOrder _byteOrder;
 }
 
 - (id)initWithFile:(CDMachOFile *)machOFile;
@@ -21,7 +23,7 @@
 - (id)initWithFile:(CDMachOFile *)machOFile offset:(NSUInteger)offset;
 {
     if ((self = [super initWithData:machOFile.data])) {
-        _machOFile = machOFile;
+        self.machOFile = machOFile;
         [self setOffset:offset];
     }
 
@@ -31,7 +33,7 @@
 - (id)initWithFile:(CDMachOFile *)machOFile address:(NSUInteger)address;
 {
     if ((self = [super initWithData:machOFile.data])) {
-        _machOFile = machOFile;
+        self.machOFile = machOFile;
         [self setAddress:address];
     }
 
@@ -41,7 +43,7 @@
 - (id)initWithSection:(CDSection *)section;
 {
     if ((self = [super initWithData:[section data]])) {
-        _machOFile = [section machOFile];
+        self.machOFile = [section machOFile];
     }
 
     return self;
@@ -49,9 +51,16 @@
 
 #pragma mark -
 
+- (void)setMachOFile:(CDMachOFile *)machOFile;
+{
+    _machOFile = machOFile;
+    _ptrSize = machOFile.ptrSize;
+    _byteOrder = machOFile.byteOrder;
+}
+
 - (void)setAddress:(NSUInteger)address;
 {
-    NSUInteger dataOffset = [self.machOFile dataOffsetForAddress:address];
+    NSUInteger dataOffset = [_machOFile dataOffsetForAddress:address];
     [self setOffset:dataOffset];
 }
 
@@ -59,7 +68,7 @@
 
 - (uint16_t)readInt16;
 {
-    if (self.machOFile.byteOrder == CDByteOrder_LittleEndian)
+    if (_byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt16];
 
     return [self readBigInt16];
@@ -67,7 +76,7 @@
 
 - (uint32_t)readInt32;
 {
-    if (self.machOFile.byteOrder == CDByteOrder_LittleEndian)
+    if (_byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt32];
 
     return [self readBigInt32];
@@ -75,7 +84,7 @@
 
 - (uint64_t)readInt64;
 {
-    if (self.machOFile.byteOrder == CDByteOrder_LittleEndian)
+    if (_byteOrder == CDByteOrder_LittleEndian)
         return [self readLittleInt64];
 
     return [self readBigInt64];
@@ -92,7 +101,7 @@
 
 - (uint64_t)readPtr;
 {
-    switch ([self.machOFile ptrSize]) {
+    switch (_ptrSize) {
         case sizeof(uint32_t): return [self readInt32];
         case sizeof(uint64_t): return [self readInt64];
     }

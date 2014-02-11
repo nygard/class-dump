@@ -331,7 +331,6 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        exit(0); // avoid costly autorelease pool drain, we’re exiting anyway
     }
-
-    return 0;
 }
