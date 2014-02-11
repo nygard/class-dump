@@ -570,13 +570,13 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     return [CDObjectiveC1Processor class];
 }
 
-- (CDLCDylib *)dylibLoadCommandForLibraryOrdinal:(NSUInteger)libraryOrdinal
+- (CDLCDylib *)dylibLoadCommandForLibraryOrdinal:(NSUInteger)libraryOrdinal;
 {
     if (libraryOrdinal == SELF_LIBRARY_ORDINAL || libraryOrdinal >= MAX_LIBRARY_ORDINAL)
         return nil;
     
     NSArray *loadCommands = _dylibLoadCommands;
-    if (_dylibIdentifier) {
+    if (_dylibIdentifier != nil) {
         // Remove our own ID (LC_ID_DYLIB) so that we calculate the correct offset
         NSMutableArray *remainingLoadCommands = [loadCommands mutableCopy];
         [remainingLoadCommands removeObject:_dylibIdentifier];

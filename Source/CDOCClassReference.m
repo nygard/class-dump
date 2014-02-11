@@ -9,43 +9,46 @@
 
 @implementation CDOCClassReference
 
-- (instancetype)initWithClassSymbol:(CDSymbol *)symbol
+- (instancetype)initWithClassSymbol:(CDSymbol *)symbol;
 {
     if ((self = [super init])) {
         _classSymbol = symbol;
     }
+
     return self;
 }
 
-- (instancetype)initWithClassObject:(CDOCClass *)classObject
+- (instancetype)initWithClassObject:(CDOCClass *)classObject;
 {
     if ((self = [super init])) {
         _classObject = classObject;
     }
+
     return self;
 }
 
-- (instancetype)initWithClassName:(NSString *)className
+- (instancetype)initWithClassName:(NSString *)className;
 {
     if ((self = [super init])) {
         _className = [className copy];
     }
+
     return self;
 }
 
-- (NSString *)className
+- (NSString *)className;
 {
-    if (_className)
+    if (_className != nil)
         return _className;
-    else if (_classObject)
+    else if (_classObject != nil)
         return [_classObject name];
-    else if (_classSymbol)
+    else if (_classSymbol != nil)
         return [CDSymbol classNameFromSymbolName:[_classSymbol name]];
     else
         return nil;
 }
 
-- (BOOL)isExternalClass
+- (BOOL)isExternalClass;
 {
     return (!_classObject && (!_classSymbol || [_classSymbol isExternal]));
 }

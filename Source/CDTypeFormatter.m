@@ -272,7 +272,7 @@ static BOOL debug = NO;
     [self.typeController typeFormatter:self didReferenceClassName:name];
 }
 
-- (void)formattingDidReferenceProtocolNames:(NSArray *)names
+- (void)formattingDidReferenceProtocolNames:(NSArray *)names;
 {
     [self.typeController typeFormatter:self didReferenceProtocolNames:names];
 }

@@ -187,9 +187,9 @@
             category.classRef = [[CDOCClassReference alloc] initWithClassObject:aClass];
         }
         
-        if (externalClassName) {
+        if (externalClassName != nil) {
             CDSymbol *classSymbol = [[self.machOFile symbolTable] symbolForExternalClassName:externalClassName];
-            if (classSymbol)
+            if (classSymbol != nil)
                 category.classRef = [[CDOCClassReference alloc] initWithClassSymbol:classSymbol];
             else
                 category.classRef = [[CDOCClassReference alloc] initWithClassName:externalClassName];

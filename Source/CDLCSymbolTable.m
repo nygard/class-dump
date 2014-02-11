@@ -113,7 +113,7 @@
         [symbols addObject:symbol];
         
         NSString *className = [CDSymbol classNameFromSymbolName:symbol.name];
-        if (className) {
+        if (className != nil) {
             if (symbol.value != 0)
                 classSymbols[className] = symbol;
             else

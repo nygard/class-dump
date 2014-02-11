@@ -40,7 +40,7 @@
 
 #pragma mark -
 
-- (NSString *)superClassName
+- (NSString *)superClassName;
 {
     return [_superClassRef className];
 }

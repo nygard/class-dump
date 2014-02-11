@@ -77,7 +77,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
 
 #pragma mark -
 
-+ (NSString *)classNameFromSymbolName:(NSString *)symbolName
++ (NSString *)classNameFromSymbolName:(NSString *)symbolName;
 {
     if ([symbolName hasPrefix:ObjCClassSymbolPrefix])
         return [symbolName substringFromIndex:[ObjCClassSymbolPrefix length]];
@@ -90,7 +90,7 @@ NSString *const ObjCClassSymbolPrefix = @"_OBJC_CLASS_$_";
     return _nlist.n_value;
 }
 
-- (CDSection *)section
+- (CDSection *)section;
 {
     // We might be tempted to do [[self.machOFile segmentContainingAddress:nlist.n_value] sectionContainingAddress:nlist.n_value]
     // but this does not work for __mh_dylib_header for example (n_value == 0, but it is in the __TEXT,__text section)

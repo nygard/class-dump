@@ -195,7 +195,7 @@
     [self addReferenceToClassName:name];
 }
 
-- (void)typeController:(CDTypeController *)typeController didReferenceProtocolNames:(NSArray *)names
+- (void)typeController:(CDTypeController *)typeController didReferenceProtocolNames:(NSArray *)names;
 {
     [self addWeakReferencesToProtocolNamesInArray:names];
 }
@@ -258,7 +258,7 @@
     return [[self.referencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
 
-- (NSArray *)weaklyReferencedProtocolNamesSortedByName
+- (NSArray *)weaklyReferencedProtocolNamesSortedByName;
 {
     return [[self.weaklyReferencedProtocolNames allObjects] sortedArrayUsingSelector:@selector(compare:)];
 }
@@ -279,7 +279,7 @@
     [self.referencedProtocolNames addObjectsFromArray:protocolNames];
 }
 
-- (void)addWeakReferencesToProtocolNamesInArray:(NSArray *)protocolNames
+- (void)addWeakReferencesToProtocolNamesInArray:(NSArray *)protocolNames;
 {
     [self.weaklyReferencedProtocolNames addObjectsFromArray:protocolNames];
 }

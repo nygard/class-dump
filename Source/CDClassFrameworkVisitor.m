@@ -49,28 +49,28 @@
     
     // We only need to add superclasses for external classes - classes defined in this binary will be visited on their own
     CDOCClassReference *superClassRef = [aClass superClassRef];
-    if ([superClassRef isExternalClass] && superClassRef.classSymbol) {
+    if ([superClassRef isExternalClass] && superClassRef.classSymbol != nil) {
         [self addClassForExternalSymbol:superClassRef.classSymbol];
     }
 }
 
-- (void)willVisitProtocol:(CDOCProtocol *)protocol
+- (void)willVisitProtocol:(CDOCProtocol *)protocol;
 {
     // TODO: (2012-02-28) Figure out what frameworks use each protocol, and try to pick the correct one.  More difficult because, for example, NSCopying is found in many frameworks, and picking the last one isn't good enough.  Perhaps a topological sort of the dependancies would be better.
     [self addProtocolName:protocol.name referencedInFramework:self.frameworkName];
 }
 
-- (void)willVisitCategory:(CDOCCategory *)category
+- (void)willVisitCategory:(CDOCCategory *)category;
 {
     CDOCClassReference *classRef = [category classRef];
-    if ([classRef isExternalClass] && classRef.classSymbol) {
+    if ([classRef isExternalClass] && classRef.classSymbol != nil) {
         [self addClassForExternalSymbol:classRef.classSymbol];
     }
 }
 
 #pragma mark -
 
-- (void)addClassForExternalSymbol:(CDSymbol *)symbol
+- (void)addClassForExternalSymbol:(CDSymbol *)symbol;
 {
     NSString *frameworkName = CDImportNameForPath([[symbol dylibLoadCommand] path]);
     NSString *className = [CDSymbol classNameFromSymbolName:[symbol name]];
@@ -83,7 +83,7 @@
         _frameworkNamesByClassName[name] = frameworkName;
 }
 
-- (void)addProtocolName:(NSString *)name referencedInFramework:(NSString *)frameworkName
+- (void)addProtocolName:(NSString *)name referencedInFramework:(NSString *)frameworkName;
 {
     if (name != nil && frameworkName != nil)
         _frameworkNamesByProtocolName[name] = frameworkName;
@@ -94,7 +94,7 @@
     return [_frameworkNamesByClassName copy];
 }
 
-- (NSDictionary *)frameworkNamesByProtocolName
+- (NSDictionary *)frameworkNamesByProtocolName;
 {
     return [_frameworkNamesByProtocolName copy];
 }

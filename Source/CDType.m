@@ -112,7 +112,7 @@ static BOOL debugMerge = NO;
     return [self initIDType:name withProtocols:nil];
 }
 
-- (id)initIDType:(CDTypeName *)name withProtocols:(NSArray *)protocols
+- (id)initIDType:(CDTypeName *)name withProtocols:(NSArray *)protocols;
 {
     if ((self = [self init])) {
         if (name != nil) {

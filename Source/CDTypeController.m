@@ -133,7 +133,7 @@ static BOOL debug = NO;
         [self.delegate typeController:self didReferenceClassName:name];
 }
 
-- (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceProtocolNames:(NSArray *)names
+- (void)typeFormatter:(CDTypeFormatter *)typeFormatter didReferenceProtocolNames:(NSArray *)names;
 {
     if ([self.delegate respondsToSelector:@selector(typeController:didReferenceProtocolNames:)])
         [self.delegate typeController:self didReferenceProtocolNames:names];

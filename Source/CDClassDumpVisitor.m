@@ -48,7 +48,7 @@
     [self.resultString appendString:@"#pragma mark -\n\n"];
     [self.resultString appendString:@"//\n"];
     [self.resultString appendFormat:@"// File: %@\n", machOFile.filename];
-    if (machOFile.UUID) {
+    if (machOFile.UUID != nil) {
         [self.resultString appendFormat:@"// UUID: %@\n", [machOFile.UUID UUIDString]];
     }
     [self.resultString appendString:@"//\n"];
