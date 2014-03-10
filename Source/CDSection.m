@@ -22,8 +22,10 @@
     if ((self = [super init])) {
         _segment = segment;
         
-        [cursor readBytesOfLength:16 intoBuffer:_section.sectname];
-        [cursor readBytesOfLength:16 intoBuffer:_section.segname];
+        _sectionName = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
+        memcpy(_section.sectname, [_sectionName UTF8String], sizeof(_section.sectname));
+        _segmentName = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
+        memcpy(_section.segname, [_segmentName UTF8String], sizeof(_section.segname));
         _section.addr      = [cursor readPtr];
         _section.size      = [cursor readPtr];
         _section.offset    = [cursor readInt32];
@@ -36,17 +38,6 @@
         if (cursor.machOFile.uses64BitABI) {
             _section.reserved3 = [cursor readInt32];
         }
-        
-        // These aren't guaranteed to be null terminated.  Witness __cstring_object in __OBJC segment
-        char buf[17];
-        
-        memcpy(buf, _section.segname, 16);
-        buf[16] = 0;
-        _segmentName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
-        
-        memcpy(buf, _section.sectname, 16);
-        buf[16] = 0;
-        _sectionName = [[NSString alloc] initWithBytes:buf length:strlen(buf) encoding:NSASCIIStringEncoding];
     }
 
     return self;
