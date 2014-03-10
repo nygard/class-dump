@@ -5,7 +5,7 @@
 
 #import "CDLCSegment64.h"
 
-#import "CDSection64.h"
+#import "CDSection.h"
 
 @implementation CDLCSegment64
 {
@@ -39,7 +39,7 @@
 
         NSMutableArray *_sections = [[NSMutableArray alloc] init];
         for (NSUInteger index = 0; index < _segmentCommand.nsects; index++) {
-            CDSection64 *section = [[CDSection64 alloc] initWithDataCursor:cursor segment:self];
+            CDSection *section = [[CDSection alloc] initWithDataCursor:cursor segment:self];
             [_sections addObject:section];
         }
         self.sections = [_sections copy]; 

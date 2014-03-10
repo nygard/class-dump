@@ -3,23 +3,22 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2014 Steve Nygard.
 
-@class CDMachOFile;
+@class CDMachOFileDataCursor;
+@class CDLCSegment;
 
 @interface CDSection : NSObject
 
-@property (retain) NSString *segmentName;
-@property (retain) NSString *sectionName;
+- (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor segment:(CDLCSegment *)segment;
 
-@property (nonatomic, strong) NSData *data;
+@property (weak, readonly) CDLCSegment *segment;
 
-@property (assign) BOOL hasLoadedData;
-- (void)loadData;
-- (void)unloadData;
+@property (nonatomic, readonly) NSData *data;
+
+@property (nonatomic, readonly) NSString *segmentName;
+@property (nonatomic, readonly) NSString *sectionName;
 
 @property (nonatomic, readonly) NSUInteger addr;
 @property (nonatomic, readonly) NSUInteger size;
-
-- (CDMachOFile *)machOFile;
 
 - (BOOL)containsAddress:(NSUInteger)address;
 - (NSUInteger)fileOffsetForAddress:(NSUInteger)address;
