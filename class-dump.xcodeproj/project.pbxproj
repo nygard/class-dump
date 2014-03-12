@@ -45,8 +45,6 @@
 		013D1F2A13A5AEA100BF0A67 /* CDLCRoutines64.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82BC13A591D8003EDE60 /* CDLCRoutines64.m */; };
 		013D1F2B13A5AEA100BF0A67 /* CDLCRunPath.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82BE13A591D8003EDE60 /* CDLCRunPath.m */; };
 		013D1F2C13A5AEA100BF0A67 /* CDLCSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82C013A591D8003EDE60 /* CDLCSegment.m */; };
-		013D1F2D13A5AEA100BF0A67 /* CDLCSegment32.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82C213A591D8003EDE60 /* CDLCSegment32.m */; };
-		013D1F2E13A5AEA100BF0A67 /* CDLCSegment64.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82C413A591D8003EDE60 /* CDLCSegment64.m */; };
 		013D1F2F13A5AEA100BF0A67 /* CDLCSubClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82C613A591D8003EDE60 /* CDLCSubClient.m */; };
 		013D1F3013A5AEA100BF0A67 /* CDLCSubFramework.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82C813A591D8003EDE60 /* CDLCSubFramework.m */; };
 		013D1F3113A5AEA100BF0A67 /* CDLCSubLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82CA13A591D8003EDE60 /* CDLCSubLibrary.m */; };
@@ -326,10 +324,6 @@
 		01EB82BE13A591D8003EDE60 /* CDLCRunPath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCRunPath.m; path = Source/CDLCRunPath.m; sourceTree = SOURCE_ROOT; };
 		01EB82BF13A591D8003EDE60 /* CDLCSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCSegment.h; path = Source/CDLCSegment.h; sourceTree = SOURCE_ROOT; };
 		01EB82C013A591D8003EDE60 /* CDLCSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCSegment.m; path = Source/CDLCSegment.m; sourceTree = SOURCE_ROOT; };
-		01EB82C113A591D8003EDE60 /* CDLCSegment32.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCSegment32.h; path = Source/CDLCSegment32.h; sourceTree = SOURCE_ROOT; };
-		01EB82C213A591D8003EDE60 /* CDLCSegment32.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCSegment32.m; path = Source/CDLCSegment32.m; sourceTree = SOURCE_ROOT; };
-		01EB82C313A591D8003EDE60 /* CDLCSegment64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCSegment64.h; path = Source/CDLCSegment64.h; sourceTree = SOURCE_ROOT; };
-		01EB82C413A591D8003EDE60 /* CDLCSegment64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCSegment64.m; path = Source/CDLCSegment64.m; sourceTree = SOURCE_ROOT; };
 		01EB82C513A591D8003EDE60 /* CDLCSubClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCSubClient.h; path = Source/CDLCSubClient.h; sourceTree = SOURCE_ROOT; };
 		01EB82C613A591D8003EDE60 /* CDLCSubClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CDLCSubClient.m; path = Source/CDLCSubClient.m; sourceTree = SOURCE_ROOT; };
 		01EB82C713A591D8003EDE60 /* CDLCSubFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CDLCSubFramework.h; path = Source/CDLCSubFramework.h; sourceTree = SOURCE_ROOT; };
@@ -742,10 +736,6 @@
 				01EB82BE13A591D8003EDE60 /* CDLCRunPath.m */,
 				01EB82BF13A591D8003EDE60 /* CDLCSegment.h */,
 				01EB82C013A591D8003EDE60 /* CDLCSegment.m */,
-				01EB82C113A591D8003EDE60 /* CDLCSegment32.h */,
-				01EB82C213A591D8003EDE60 /* CDLCSegment32.m */,
-				01EB82C313A591D8003EDE60 /* CDLCSegment64.h */,
-				01EB82C413A591D8003EDE60 /* CDLCSegment64.m */,
 				01EB82C513A591D8003EDE60 /* CDLCSubClient.h */,
 				01EB82C613A591D8003EDE60 /* CDLCSubClient.m */,
 				01EB82C713A591D8003EDE60 /* CDLCSubFramework.h */,
@@ -1010,8 +1000,6 @@
 				013D1F2A13A5AEA100BF0A67 /* CDLCRoutines64.m in Sources */,
 				013D1F2B13A5AEA100BF0A67 /* CDLCRunPath.m in Sources */,
 				013D1F2C13A5AEA100BF0A67 /* CDLCSegment.m in Sources */,
-				013D1F2D13A5AEA100BF0A67 /* CDLCSegment32.m in Sources */,
-				013D1F2E13A5AEA100BF0A67 /* CDLCSegment64.m in Sources */,
 				013D1F2F13A5AEA100BF0A67 /* CDLCSubClient.m in Sources */,
 				013D1F3013A5AEA100BF0A67 /* CDLCSubFramework.m in Sources */,
 				013D1F3113A5AEA100BF0A67 /* CDLCSubLibrary.m in Sources */,

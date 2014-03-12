@@ -16,7 +16,6 @@
 #import "CDFatFile.h"
 #import "CDLoadCommand.h"
 #import "CDLCSegment.h"
-#import "CDLCSegment64.h"
 
 void print_usage(void)
 {
@@ -48,7 +47,7 @@ BOOL saveDeprotectedFileToPath(CDMachOFile *file, NSString *path)
                 NSCParameterAssert([decryptedData length] == segmentRange.length);
                 
                 [mdata replaceBytesInRange:segmentRange withBytes:[decryptedData bytes]];
-                if ([segment isKindOfClass:[CDLCSegment64 class]]) {
+                if (segment.machOFile.uses64BitABI) {
                     flagOffset = [segment commandOffset] + offsetof(struct segment_command_64, flags);
                 } else {
                     flagOffset = [segment commandOffset] + offsetof(struct segment_command, flags);

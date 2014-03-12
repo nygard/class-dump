@@ -17,8 +17,7 @@
 #import "CDLCRoutines32.h"
 #import "CDLCRoutines64.h"
 #import "CDLCRunPath.h"
-#import "CDLCSegment32.h"
-#import "CDLCSegment64.h"
+#import "CDLCSegment.h"
 #import "CDLCSubClient.h"
 #import "CDLCSubFramework.h"
 #import "CDLCSubLibrary.h"
@@ -48,7 +47,8 @@
     uint32_t val = [cursor peekInt32];
 
     switch (val) {
-        case LC_SEGMENT:               targetClass = [CDLCSegment32 class]; break;
+        case LC_SEGMENT:               targetClass = [CDLCSegment class]; break;
+        case LC_SEGMENT_64:            targetClass = [CDLCSegment class]; break;
         case LC_SYMTAB:                targetClass = [CDLCSymbolTable class]; break;
             //case LC_SYMSEG: // obsolete
             //case LC_THREAD: // not used?
@@ -72,7 +72,6 @@
         case LC_TWOLEVEL_HINTS:        targetClass = [CDLCTwoLevelHints class]; break;
         case LC_PREBIND_CKSUM:         targetClass = [CDLCPrebindChecksum class]; break;
         case LC_LOAD_WEAK_DYLIB:       targetClass = [CDLCDylib class]; break;
-        case LC_SEGMENT_64:            targetClass = [CDLCSegment64 class]; break;
         case LC_ROUTINES_64:           targetClass = [CDLCRoutines64 class]; break;
         case LC_UUID:                  targetClass = [CDLCUUID class]; break;
         case LC_RPATH:                 targetClass = [CDLCRunPath class]; break;
