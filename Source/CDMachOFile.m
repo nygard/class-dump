@@ -18,7 +18,6 @@
 #import "CDLCEncryptionInfo.h"
 #import "CDLCRunPath.h"
 #import "CDLCSegment.h"
-#import "CDLCSegment64.h"
 #import "CDLCSymbolTable.h"
 #import "CDLCUUID.h"
 #import "CDLCVersionMinimum.h"

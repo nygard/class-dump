@@ -17,8 +17,6 @@
 #import "CDOCModule.h"
 #import "CDOCProtocol.h"
 #import "CDOCSymtab.h"
-#import "CDSection32.h"
-#import "CDLCSegment32.h"
 #import "CDVisitor.h"
 #import "CDProtocolUniquer.h"
 #import "CDOCClassReference.h"

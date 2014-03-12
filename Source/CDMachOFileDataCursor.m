@@ -6,6 +6,7 @@
 #import "CDMachOFileDataCursor.h"
 
 #import "CDMachOFile.h"
+#import "CDLCSegment.h"
 #import "CDSection.h"
 
 @implementation CDMachOFileDataCursor
@@ -43,7 +44,7 @@
 - (id)initWithSection:(CDSection *)section;
 {
     if ((self = [super initWithData:[section data]])) {
-        self.machOFile = [section machOFile];
+        self.machOFile = section.segment.machOFile;
     }
 
     return self;

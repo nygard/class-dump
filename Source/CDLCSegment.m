@@ -22,6 +22,8 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
 @implementation CDLCSegment
 {
+    struct segment_command_64 _segmentCommand; // 64-bit, also holding 32-bit
+    
     NSString *_name;
     NSArray *_sections;
     
@@ -31,9 +33,26 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 - (id)initWithDataCursor:(CDMachOFileDataCursor *)cursor;
 {
     if ((self = [super initWithDataCursor:cursor])) {
-        _name = nil;
-        _sections = nil;
-        _decryptedData = nil;
+        _segmentCommand.cmd     = [cursor readInt32];
+        _segmentCommand.cmdsize = [cursor readInt32];
+        
+        _name = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
+        memcpy(_segmentCommand.segname, [_name UTF8String], sizeof(_segmentCommand.segname));
+        _segmentCommand.vmaddr   = [cursor readPtr];
+        _segmentCommand.vmsize   = [cursor readPtr];
+        _segmentCommand.fileoff  = [cursor readPtr];
+        _segmentCommand.filesize = [cursor readPtr];
+        _segmentCommand.maxprot  = [cursor readInt32];
+        _segmentCommand.initprot = [cursor readInt32];
+        _segmentCommand.nsects   = [cursor readInt32];
+        _segmentCommand.flags    = [cursor readInt32];
+        
+        NSMutableArray *sections = [[NSMutableArray alloc] init];
+        for (NSUInteger index = 0; index < _segmentCommand.nsects; index++) {
+            CDSection *section = [[CDSection alloc] initWithDataCursor:cursor segment:self];
+            [sections addObject:section];
+        }
+        _sections = [sections copy];
     }
 
     return self;
@@ -41,57 +60,49 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 
 #pragma mark - Debugging
 
-- (NSString *)description;
-{
-    NSString *extra = [self extraDescription];
-    
-    if (extra == nil) {
-        return [NSString stringWithFormat:@"<%@:%p> name: %@",
-                NSStringFromClass([self class]), self,
-                self.name];
-    }
-    
-    return [NSString stringWithFormat:@"<%@:%p> name: %@, %@",
-            NSStringFromClass([self class]), self,
-            self.name, extra];
-}
-
 - (NSString *)extraDescription;
 {
-    // Implement in subclasses
-    return nil;
+    int padding = (int)self.machOFile.ptrSize * 2;
+    return [NSString stringWithFormat:@"vmaddr: 0x%0*llx - 0x%0*llx [0x%0*llx], offset: %lld, flags: 0x%x (%@), nsects: %d, sections: %@",
+            padding, _segmentCommand.vmaddr, padding, _segmentCommand.vmaddr + _segmentCommand.vmsize - 1, padding, _segmentCommand.vmsize,
+            _segmentCommand.fileoff, self.flags, [self flagDescription], _segmentCommand.nsects, self.sections.count > 0 ? self.sections : @"N/A"];
 }
 
 #pragma mark -
 
+- (uint32_t)cmd;
+{
+    return _segmentCommand.cmd;
+}
+
+- (uint32_t)cmdsize;
+{
+    return _segmentCommand.cmdsize;
+}
+
 - (NSUInteger)vmaddr;
 {
-    // Implement in subclasses.
-    return 0;
+    return _segmentCommand.vmaddr;
 }
 
 - (NSUInteger)fileoff;
 {
-    // Implement in subclasses.
-    return 0;
+    return _segmentCommand.fileoff;
 }
 
 - (NSUInteger)filesize;
 {
-    // Implement in subclasses.
-    return 0;
+    return _segmentCommand.filesize;
 }
 
 - (vm_prot_t)initprot;
 {
-    // Implement in subclsses.
-    return 0;
+    return _segmentCommand.initprot;
 }
 
 - (uint32_t)flags;
 {
-    // Implement in subclsses.
-    return 0;
+    return _segmentCommand.flags;
 }
 
 - (BOOL)isProtected;
@@ -143,15 +154,14 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
     if (flags & SG_PROTECTED_VERSION_1) [setFlags addObject:@"PROTECTED_VERSION_1"];
 
     if ([setFlags count] == 0)
-        return @"(none)";
+        return @"none";
 
     return [setFlags componentsJoinedByString:@" "];
 }
 
 - (BOOL)containsAddress:(NSUInteger)address;
 {
-    // Implement in subclasses
-    return NO;
+    return (address >= _segmentCommand.vmaddr) && (address < _segmentCommand.vmaddr + _segmentCommand.vmsize);
 }
 
 - (CDSection *)sectionContainingAddress:(NSUInteger)address;
@@ -188,21 +198,21 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
     [super appendToString:resultString verbose:isVerbose];
 #if 0
-    [resultString appendFormat:@"  segname %@\n",     self.name];
-    [resultString appendFormat:@"   vmaddr 0x%08x\n", segmentCommand.vmaddr];
-    [resultString appendFormat:@"   vmsize 0x%08x\n", segmentCommand.vmsize];
-    [resultString appendFormat:@"  fileoff %d\n",     segmentCommand.fileoff];
-    [resultString appendFormat:@" filesize %d\n",     segmentCommand.filesize];
-    [resultString appendFormat:@"  maxprot 0x%08x\n", segmentCommand.maxprot];
-    [resultString appendFormat:@" initprot 0x%08x\n", segmentCommand.initprot];
-    [resultString appendFormat:@"   nsects %d\n",     segmentCommand.nsects];
+    int padding = (int)self.machOFile.ptrSize * 2;
+    [resultString appendFormat:@"  segname %@\n",       self.name];
+    [resultString appendFormat:@"   vmaddr 0x%0*llx\n", padding, _segmentCommand.vmaddr];
+    [resultString appendFormat:@"   vmsize 0x%0*llx\n", padding, _segmentCommand.vmsize];
+    [resultString appendFormat:@"  fileoff %lld\n",     _segmentCommand.fileoff];
+    [resultString appendFormat:@" filesize %lld\n",     _segmentCommand.filesize];
+    [resultString appendFormat:@"  maxprot 0x%08x\n",   _segmentCommand.maxprot];
+    [resultString appendFormat:@" initprot 0x%08x\n",   _segmentCommand.initprot];
+    [resultString appendFormat:@"   nsects %d\n",       _segmentCommand.nsects];
 
     if (isVerbose)
         [resultString appendFormat:@"    flags %@\n", [self flagDescription]];
     else
-        [resultString appendFormat:@"    flags 0x%x\n", segmentCommand.flags];
+        [resultString appendFormat:@"    flags 0x%x\n", _segmentCommand.flags];
 #endif
-    // Implement in subclasses
 }
 
 - (void)writeSectionData;
