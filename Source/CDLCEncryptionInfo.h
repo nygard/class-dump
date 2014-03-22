@@ -5,10 +5,6 @@
 
 #import "CDLoadCommand.h"
 
-#ifndef LC_ENCRYPTION_INFO_64
-#define LC_ENCRYPTION_INFO_64 0x2C
-#endif
-
 @interface CDLCEncryptionInfo : CDLoadCommand
 
 @property (nonatomic, readonly) uint32_t cryptoff;
