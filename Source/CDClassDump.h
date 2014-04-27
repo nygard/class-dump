@@ -29,6 +29,8 @@
 @property (assign) BOOL shouldShowIvarOffsets;
 @property (assign) BOOL shouldShowMethodAddresses;
 @property (assign) BOOL shouldShowHeader;
+@property (assign) int maxRecursiveDepth;
+@property (assign) BOOL shouldIterateInReverse;
 
 @property (strong) NSRegularExpression *regularExpression;
 - (BOOL)shouldShowName:(NSString *)name;
@@ -46,7 +48,7 @@
 
 @property (readonly) CDTypeController *typeController;
 
-- (BOOL)loadFile:(CDFile *)file error:(NSError **)error;
+- (BOOL)loadFile:(CDFile *)file error:(NSError **)error depth:(int)depth;
 - (void)processObjectiveCData;
 
 - (void)recursivelyVisit:(CDVisitor *)visitor;

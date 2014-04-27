@@ -19,6 +19,7 @@
 #import "CDFatFile.h"
 #import "CDFatArch.h"
 #import "CDSearchPathState.h"
+#import "CDSymoblsGeneratorVisitor.h"
 
 void print_usage(void)
 {
@@ -67,8 +68,10 @@ int main(int argc, char *argv[])
         BOOL shouldPrintVersion = NO;
         CDArch targetArch;
         BOOL hasSpecifiedArch = NO;
+        BOOL generateSymbolsTable = NO;
         NSString *outputPath;
         NSMutableSet *hiddenSections = [NSMutableSet set];
+        NSMutableArray *classFilter = [NSMutableArray new];
 
         int ch;
         BOOL errorFlag = NO;
@@ -84,6 +87,8 @@ int main(int argc, char *argv[])
             { "recursive",               no_argument,       NULL, 'r' },
             { "sort",                    no_argument,       NULL, 's' },
             { "sort-methods",            no_argument,       NULL, 'S' },
+                { "generate-symbols-table", no_argument, NULL, 'G' },
+                { "filter-class", no_argument, NULL, 'F' },
             { "arch",                    required_argument, NULL, CD_OPT_ARCH },
             { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
             { "suppress-header",         no_argument,       NULL, 't' },
@@ -102,7 +107,7 @@ int main(int argc, char *argv[])
 
         CDClassDump *classDump = [[CDClassDump alloc] init];
 
-        while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -170,6 +175,17 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
+
+                case 'G':
+                    generateSymbolsTable = YES;
+                    classDump.shouldProcessRecursively = YES;
+                    classDump.shouldIterateInReverse = YES;
+                    classDump.maxRecursiveDepth = 1;
+                    break;
+
+                case 'F':
+                    [classFilter addObject:[NSString stringWithUTF8String:optarg]];
+                    break;
                     
                 case 'a':
                     classDump.shouldShowIvarOffsets = YES;
@@ -303,7 +319,7 @@ int main(int argc, char *argv[])
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
                 NSError *error;
-                if (![classDump loadFile:file error:&error]) {
+                if (![classDump loadFile:file error:&error depth:0]) {
                     fprintf(stderr, "Error: %s\n", [[error localizedFailureReason] UTF8String]);
                     exit(1);
                 } else {
@@ -314,6 +330,11 @@ int main(int argc, char *argv[])
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                         visitor.classDump = classDump;
                         visitor.searchString = searchString;
+                        [classDump recursivelyVisit:visitor];
+                    } else if (generateSymbolsTable) {
+                        CDSymoblsGeneratorVisitor *visitor = [CDSymoblsGeneratorVisitor new];
+                        visitor.classDump = classDump;
+                        visitor.classFilter = classFilter;
                         [classDump recursivelyVisit:visitor];
                     } else if (shouldGenerateSeparateHeaders) {
                         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];

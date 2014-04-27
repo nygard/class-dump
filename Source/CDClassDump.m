@@ -69,6 +69,8 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
         _targetArch.cpusubtype = 0;
         
         _shouldShowHeader = YES;
+
+        _maxRecursiveDepth = INT_MAX;
     }
 
     return self;
@@ -114,8 +116,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     return self.containsObjectiveCData || self.hasEncryptedFiles;
 }
 
-- (BOOL)loadFile:(CDFile *)file error:(NSError *__autoreleasing *)error;
-{
+- (BOOL)loadFile:(CDFile *)file error:(NSError **)error depth:(int)depth {
     //NSLog(@"targetArch: (%08x, %08x)", targetArch.cputype, targetArch.cpusubtype);
     CDMachOFile *machOFile = [file machOFileWithArch:_targetArch];
     //NSLog(@"machOFile: %@", machOFile);
@@ -140,7 +141,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     [_machOFiles addObject:machOFile];
     _machOFilesByName[machOFile.filename] = machOFile;
 
-    if ([self shouldProcessRecursively]) {
+    if ([self shouldProcessRecursively] && depth < _maxRecursiveDepth) {
         @try {
             for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
                 if ([loadCommand isKindOfClass:[CDLCDylib class]]) {
@@ -155,7 +156,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
                                 NSString *loaderPath = [machOFile.filename stringByDeletingLastPathComponent];
                                 path = [[path stringByReplacingOccurrencesOfString:loaderPathPrefix withString:loaderPath] stringByStandardizingPath];
                             }
-                            [self machOFileWithName:path]; // Loads as a side effect
+                            [self machOFileWithName:path andDepth:depth+1]; // Loads as a side effect
                         }
                         [self.searchPathState popSearchPaths];
                     }
@@ -194,15 +195,21 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
 {
     [visitor willBeginVisiting];
 
-    for (CDObjectiveCProcessor *processor in self.objcProcessors) {
+    NSEnumerator *objcProcessors;
+    if(self.shouldIterateInReverse) {
+        objcProcessors = [self.objcProcessors reverseObjectEnumerator];
+    } else {
+        objcProcessors = [self.objcProcessors objectEnumerator];
+    }
+
+    for (CDObjectiveCProcessor *processor in objcProcessors) {
         [processor recursivelyVisit:visitor];
     }
 
     [visitor didEndVisiting];
 }
 
-- (CDMachOFile *)machOFileWithName:(NSString *)name;
-{
+- (CDMachOFile *)machOFileWithName:(NSString *)name andDepth:(int)depth {
     NSString *adjustedName = nil;
     NSString *executablePathPrefix = @"@executable_path";
     NSString *rpathPrefix = @"@rpath";
@@ -234,7 +241,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     if (machOFile == nil) {
         CDFile *file = [CDFile fileWithContentsOfFile:adjustedName searchPathState:self.searchPathState];
 
-        if (file == nil || [self loadFile:file error:NULL] == NO)
+        if (file == nil || [self loadFile:file error:NULL depth:depth] == NO)
             NSLog(@"Warning: Failed to load: %@", adjustedName);
 
         machOFile = _machOFilesByName[adjustedName];
