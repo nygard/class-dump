@@ -161,7 +161,7 @@ static NSString *const lettersSet[maxLettersSet] = {
 
         for (int i = 0; i < length; i++) {
             NSString *letters = lettersSet[MIN(i, maxLettersSet - 1)];
-            NSInteger index = arc4random_uniform(letters.length);
+            NSInteger index = arc4random_uniform((u_int32_t)letters.length);
             [randomString appendString:[letters substringWithRange:NSMakeRange(index, 1)]];
         }
 
@@ -190,7 +190,7 @@ static NSString *const lettersSet[maxLettersSet] = {
     if ([self doesContainGeneratedSymbol:symbolName]) {
         return;
     }
-    if ([_forbiddenNames containsObject:symbolName]) {
+    if ([self shouldSymbolsBeObfuscated:symbolName]) {
         return;
     }
     NSString *newSymbolName = [self generateRandomString];
@@ -201,7 +201,7 @@ static NSString *const lettersSet[maxLettersSet] = {
     if ([self doesContainGeneratedSymbol:symbolName]) {
         return;
     }
-    if ([_forbiddenNames containsObject:symbolName]) {
+    if ([self shouldSymbolsBeObfuscated:symbolName]) {
         return;
     }
     if ([symbolName hasPrefix:@"init"] && isupper([symbolName characterAtIndex:4])) {
@@ -243,9 +243,9 @@ static NSString *const lettersSet[maxLettersSet] = {
     NSString *setterName = [self setterPropertyName:propertyName];
 
     // don't generate symbol if any of the name is forbidden
-    if ([_forbiddenNames containsObject:ivarName] ||
-            [_forbiddenNames containsObject:getterName] ||
-            [_forbiddenNames containsObject:setterName]) {
+    if ([self shouldSymbolsBeObfuscated:ivarName] ||
+            [self shouldSymbolsBeObfuscated:getterName] ||
+            [self shouldSymbolsBeObfuscated:setterName]) {
         [_forbiddenNames addObject:ivarName];
         [_forbiddenNames addObject:getterName];
         [_forbiddenNames addObject:setterName];
@@ -303,6 +303,20 @@ static NSString *const lettersSet[maxLettersSet] = {
             }
         }
     }
+    return YES;
+}
+
+- (BOOL)shouldSymbolsBeObfuscated:(NSString *)symbolName {
+    if ([_forbiddenNames containsObject:symbolName]) {
+        return NO;
+    }
+
+    for (NSString *filter in self.ignoreSymbols) {
+        if ([symbolName isLike:filter]) {
+            return NO;
+        }
+    }
+
     return YES;
 }
 

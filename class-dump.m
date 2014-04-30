@@ -24,22 +24,13 @@
 void print_usage(void)
 {
     fprintf(stderr,
-            "class-dump %s\n"
-            "Usage: class-dump [options] <mach-o-file>\n"
+            "ios-class-guard %s\n"
+            "Usage: ios-class-guard [options] <mach-o-file>\n"
             "\n"
             "  where options are:\n"
-            "        -a             show instance variable offsets\n"
-            "        -A             show implementation addresses\n"
+            "        -F <class>     specify class filter for symbols obfuscator (also protocol)"
+            "        -i <symbol>    ignore obfuscation of specific symbol"
             "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s, arm64)\n"
-            "        -C <regex>     only display classes matching regular expression\n"
-            "        -f <str>       find string in method name\n"
-            "        -H             generate header files in current directory, or directory specified with -o\n"
-            "        -I             sort classes, categories, and protocols by inheritance (overrides -s)\n"
-            "        -o <dir>       output directory used for -H\n"
-            "        -r             recursively expand frameworks and fixed VM shared libraries\n"
-            "        -s             sort classes and categories by name\n"
-            "        -S             sort methods by name\n"
-            "        -t             suppress header in output, for testing\n"
             "        --list-arches  list the arches in the file, then exit\n"
             "        --sdk-ios      specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
             "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
@@ -72,6 +63,7 @@ int main(int argc, char *argv[])
         NSString *outputPath;
         NSMutableSet *hiddenSections = [NSMutableSet set];
         NSMutableArray *classFilter = [NSMutableArray new];
+        NSMutableArray *ignoreSymbols = [NSMutableArray new];
 
         int ch;
         BOOL errorFlag = NO;
@@ -89,6 +81,7 @@ int main(int argc, char *argv[])
             { "sort-methods",            no_argument,       NULL, 'S' },
                 { "generate-symbols-table", no_argument, NULL, 'G' },
                 { "filter-class", no_argument, NULL, 'F' },
+                { "ignore-symbols", no_argument, NULL, 'i' },
             { "arch",                    required_argument, NULL, CD_OPT_ARCH },
             { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
             { "suppress-header",         no_argument,       NULL, 't' },
@@ -107,7 +100,12 @@ int main(int argc, char *argv[])
 
         CDClassDump *classDump = [[CDClassDump alloc] init];
 
-        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:", longopts, NULL)) != -1) {
+        generateSymbolsTable = YES;
+        classDump.shouldProcessRecursively = YES;
+        classDump.shouldIterateInReverse = YES;
+        classDump.maxRecursiveDepth = 1;
+
+        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:i:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -185,6 +183,10 @@ int main(int argc, char *argv[])
 
                 case 'F':
                     [classFilter addObject:[NSString stringWithUTF8String:optarg]];
+                    break;
+                    
+                case 'i':
+                    [ignoreSymbols addObject:[NSString stringWithUTF8String:optarg]];
                     break;
                     
                 case 'a':
@@ -335,6 +337,7 @@ int main(int argc, char *argv[])
                         CDSymoblsGeneratorVisitor *visitor = [CDSymoblsGeneratorVisitor new];
                         visitor.classDump = classDump;
                         visitor.classFilter = classFilter;
+                        visitor.ignoreSymbols = ignoreSymbols;
                         [classDump recursivelyVisit:visitor];
                     } else if (shouldGenerateSeparateHeaders) {
                         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];

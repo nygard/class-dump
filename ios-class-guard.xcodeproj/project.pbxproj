@@ -267,9 +267,9 @@
 		01B02D0F13A5B1220047BC53 /* formatType-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "formatType-Prefix.pch"; sourceTree = SOURCE_ROOT; };
 		01B02D1013A5B1460047BC53 /* class-dump.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "class-dump.m"; sourceTree = SOURCE_ROOT; };
 		01B02D1213A5B16E0047BC53 /* deprotect-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "deprotect-Prefix.pch"; sourceTree = SOURCE_ROOT; };
-		01B02D1B13A5B2A40047BC53 /* class-dump-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "class-dump-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		01B02D1B13A5B2A40047BC53 /* ios-class-guard-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ios-class-guard-Prefix.pch"; sourceTree = "<group>"; };
 		01B02D4913A5B9090047BC53 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = SOURCE_ROOT; };
-		01EB825F13A590D9003EDE60 /* class-dump */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "class-dump"; sourceTree = BUILT_PRODUCTS_DIR; };
+		01EB825F13A590D9003EDE60 /* ios-class-guard */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "ios-class-guard"; sourceTree = BUILT_PRODUCTS_DIR; };
 		01EB826313A590D9003EDE60 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		01EB828213A5916D003EDE60 /* MachObjC-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MachObjC-Prefix.pch"; sourceTree = "<group>"; };
 		01EB828713A591A5003EDE60 /* NSArray-CDExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSArray-CDExtensions.h"; path = "Source/NSArray-CDExtensions.h"; sourceTree = SOURCE_ROOT; };
@@ -601,7 +601,7 @@
 		01EB826013A590D9003EDE60 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				01EB825F13A590D9003EDE60 /* class-dump */,
+				01EB825F13A590D9003EDE60 /* ios-class-guard */,
 				013D1EFB13A5A0F100BF0A67 /* deprotect */,
 				013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */,
 				01B02CFF13A5B0DC0047BC53 /* formatType */,
@@ -626,7 +626,7 @@
 		01EB826513A590D9003EDE60 /* class-dump */ = {
 			isa = PBXGroup;
 			children = (
-				01B02D1B13A5B2A40047BC53 /* class-dump-Prefix.pch */,
+				01B02D1B13A5B2A40047BC53 /* ios-class-guard-Prefix.pch */,
 				01B02D4913A5B9090047BC53 /* Info.plist */,
 				01EB829913A591D7003EDE60 /* CDClassDump.h */,
 				01EB829A13A591D7003EDE60 /* CDClassDump.m */,
@@ -913,9 +913,9 @@
 			productReference = 01B02CFF13A5B0DC0047BC53 /* formatType */;
 			productType = "com.apple.product-type.tool";
 		};
-		01EB825E13A590D9003EDE60 /* class-dump */ = {
+		01EB825E13A590D9003EDE60 /* ios-class-guard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 01EB826E13A590D9003EDE60 /* Build configuration list for PBXNativeTarget "class-dump" */;
+			buildConfigurationList = 01EB826E13A590D9003EDE60 /* Build configuration list for PBXNativeTarget "ios-class-guard" */;
 			buildPhases = (
 				01EB825B13A590D9003EDE60 /* Sources */,
 				01EB825C13A590D9003EDE60 /* Frameworks */,
@@ -926,9 +926,9 @@
 			dependencies = (
 				0158A8161412DED0003FEB91 /* PBXTargetDependency */,
 			);
-			name = "class-dump";
+			name = "ios-class-guard";
 			productName = "class-dump";
-			productReference = 01EB825F13A590D9003EDE60 /* class-dump */;
+			productReference = 01EB825F13A590D9003EDE60 /* ios-class-guard */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -939,7 +939,7 @@
 			attributes = {
 				LastUpgradeCheck = 0510;
 			};
-			buildConfigurationList = 01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "class-dump" */;
+			buildConfigurationList = 01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "ios-class-guard" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -953,7 +953,7 @@
 			targets = (
 				01B02D2E13A5B5D50047BC53 /* all */,
 				013D1F1013A5AE5A00BF0A67 /* MachObjC */,
-				01EB825E13A590D9003EDE60 /* class-dump */,
+				01EB825E13A590D9003EDE60 /* ios-class-guard */,
 				013D1EFA13A5A0F100BF0A67 /* deprotect */,
 				01B02CFE13A5B0DC0047BC53 /* formatType */,
 				0165B8B01827137D00CC647F /* UnitTests */,
@@ -1127,7 +1127,7 @@
 		};
 		01B02D3313A5B5E20047BC53 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 01EB825E13A590D9003EDE60 /* class-dump */;
+			target = 01EB825E13A590D9003EDE60 /* ios-class-guard */;
 			targetProxy = 01B02D3213A5B5E20047BC53 /* PBXContainerItemProxy */;
 		};
 		01B02D3513A5B5E20047BC53 /* PBXTargetDependency */ = {
@@ -1403,12 +1403,12 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "class-dump-Prefix.pch";
+				GCC_PREFIX_HEADER = "ios-class-guard-Prefix.pch";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "ios-class-guard";
 			};
 			name = Debug;
 		};
@@ -1417,7 +1417,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "class-dump-Prefix.pch";
+				GCC_PREFIX_HEADER = "ios-class-guard-Prefix.pch";
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
@@ -1426,7 +1426,7 @@
 					"___info_plist",
 					Info.plist,
 				);
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "ios-class-guard";
 			};
 			name = Release;
 		};
@@ -1478,7 +1478,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "class-dump" */ = {
+		01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "ios-class-guard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01EB826C13A590D9003EDE60 /* Debug */,
@@ -1487,7 +1487,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		01EB826E13A590D9003EDE60 /* Build configuration list for PBXNativeTarget "class-dump" */ = {
+		01EB826E13A590D9003EDE60 /* Build configuration list for PBXNativeTarget "ios-class-guard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				01EB826F13A590D9003EDE60 /* Debug */,
