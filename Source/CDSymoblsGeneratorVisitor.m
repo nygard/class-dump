@@ -190,21 +190,39 @@ static NSString *const lettersSet[maxLettersSet] = {
     if ([self doesContainGeneratedSymbol:symbolName]) {
         return;
     }
-    if ([self shouldSymbolsBeObfuscated:symbolName]) {
+    if ([self shouldSymbolsBeIgnored:symbolName]) {
         return;
     }
     NSString *newSymbolName = [self generateRandomString];
     [self addGenerated:newSymbolName forSymbol:symbolName];
 }
 
+- (bool)isInitMethod:(NSString *)symbolName {
+    if (![symbolName hasPrefix:@"init"]) {
+        return NO;
+    }
+
+    // just "init"
+    if (symbolName.length == 4) {
+        return YES;
+    }
+
+    // we expect that next character after init is in UPPER CASE
+    if (isupper([symbolName characterAtIndex:4])) {
+        return YES;
+    }
+
+    return NO;
+}
+
 - (void)generateMethodSymbols:(NSString *)symbolName {
     if ([self doesContainGeneratedSymbol:symbolName]) {
         return;
     }
-    if ([self shouldSymbolsBeObfuscated:symbolName]) {
+    if ([self shouldSymbolsBeIgnored:symbolName]) {
         return;
     }
-    if ([symbolName hasPrefix:@"init"] && isupper([symbolName characterAtIndex:4])) {
+    if ([self isInitMethod:symbolName]) {
         NSString *newSymbolName = [self generateRandomStringWithPrefix:@"initL"];
         [self addGenerated:newSymbolName forSymbol:symbolName];
     } else {
@@ -243,9 +261,9 @@ static NSString *const lettersSet[maxLettersSet] = {
     NSString *setterName = [self setterPropertyName:propertyName];
 
     // don't generate symbol if any of the name is forbidden
-    if ([self shouldSymbolsBeObfuscated:ivarName] ||
-            [self shouldSymbolsBeObfuscated:getterName] ||
-            [self shouldSymbolsBeObfuscated:setterName]) {
+    if ([self shouldSymbolsBeIgnored:ivarName] ||
+            [self shouldSymbolsBeIgnored:getterName] ||
+            [self shouldSymbolsBeIgnored:setterName]) {
         [_forbiddenNames addObject:ivarName];
         [_forbiddenNames addObject:getterName];
         [_forbiddenNames addObject:setterName];
@@ -306,18 +324,22 @@ static NSString *const lettersSet[maxLettersSet] = {
     return YES;
 }
 
-- (BOOL)shouldSymbolsBeObfuscated:(NSString *)symbolName {
+- (BOOL)shouldSymbolsBeIgnored:(NSString *)symbolName {
+    if ([symbolName hasPrefix:@"."]) { // .cxx_destruct
+        return YES;
+    }
+
     if ([_forbiddenNames containsObject:symbolName]) {
-        return NO;
+        return YES;
     }
 
     for (NSString *filter in self.ignoreSymbols) {
         if ([symbolName isLike:filter]) {
-            return NO;
+            return YES;
         }
     }
 
-    return YES;
+    return NO;
 }
 
 #pragma mark - CDVisitor
