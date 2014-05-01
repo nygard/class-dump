@@ -3,11 +3,11 @@ iOS Class Guard
 
 iOS-Class-Guard is a command-line utility for obfuscating Objective-C class and protocol names. It was made as an extesion for [class-dump](https://github.com/nygard/class-dump). The utility generates symbol table which is then include during compilation. Effectively hides most of class, protocols, methods, properties and i-var names.
 
-**iOS Class Guard will not enhance the security of your application, but will make it a harder to read. Obfuscation technique presented here is similar in results to that produced by [ProGuard](http://proguard.sourceforge.net/).**
+**iOS Class Guard will not enhance the security of your application, but will make it a harder to read. Obfuscation technique presented here will generate results similar to that produced by [ProGuard](http://proguard.sourceforge.net/).**
 
 Version
 -----------
-0.1
+0.5
 
 Do I need It?
 -----------
@@ -48,7 +48,42 @@ curl https://raw.githubusercontent.com/Polidea/ios-class-guard/master/install.sh
 
 How to use it?
 -----------
-TBD
+A few steps is required to integrate iOS Class Guard in project.
+
+1. To any used .PCH (Precompiled header) at top paste:
+``` C
+#ifndef DEBUG
+#include "symbols.h"
+#endif // DBEUG
+```
+
+2. Create empty ```symbols.h``` and add it to project.
+
+3. Create ```generate_symbols_map``` and update project path, scheme and configuration name:
+
+        #!/bin/bash
+        set -xe
+    
+      # remove the content of symbols.h before compilation
+      echo '' > SWTableViewCell/symbols.h 
+    
+      # Compile iOS xcarchive without obfuscation
+      xcodebuild \
+        -sdk iphoneos7.1 \
+        -project SWTableViewCell.xcodeproj \
+        -scheme SWTableViewCell \
+        -configuration Release \
+        -archivePath SWTableViewCell-no-obfuscated \
+        clean archive
+    
+      # Generate symbols map and write it to SWTableViewCell/symbols.h
+      ios-class-guard \
+        --sdk-ios 7.1 \
+        SWTableViewCell-no-obfuscated.xcarchive/Products/Applications/SWTableViewCell.app/SWTableViewCell > SWTableViewCell/symbols.h
+
+4. Do ```bash generate_symbols_map``` everytime when you want to regenerate symbols map. It should be done every release.
+
+5. The presented way is the simplest one. You can also add additional target that will automatically regenerate symbols map during compilation.
 
 Example
 -----------
@@ -177,4 +212,4 @@ Remove any *keyPath* and change it to ```NSStringFromSelector(@selector(keyPath)
 
 License
 ----
-TBD
+TBD - MIT
