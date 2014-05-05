@@ -8,6 +8,7 @@
 #import "CDOCProperty.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
+#import "CDType.h"
 
 static const int maxLettersSet = 3;
 static NSString *const lettersSet[maxLettersSet] = {
@@ -161,7 +162,7 @@ static NSString *const lettersSet[maxLettersSet] = {
 
         for (int i = 0; i < length; i++) {
             NSString *letters = lettersSet[MIN(i, maxLettersSet - 1)];
-            NSInteger index = arc4random_uniform((u_int32_t)letters.length);
+            NSInteger index = arc4random_uniform((u_int32_t) letters.length);
             [randomString appendString:[letters substringWithRange:NSMakeRange(index, 1)]];
         }
 
@@ -321,6 +322,10 @@ static NSString *const lettersSet[maxLettersSet] = {
             }
         }
     }
+
+    if ([self shouldSymbolsBeIgnored:className]) {
+        return NO;
+    }
     return YES;
 }
 
@@ -384,7 +389,7 @@ static NSString *const lettersSet[maxLettersSet] = {
         [_classNames addObject:aClass.name];
         _ignored = NO;
 
-        if([aClass.name isEqualToString:@"IKOCore"]) {
+        if ([aClass.name isEqualToString:@"IKOCore"]) {
             NSLog(@"Found");
         }
     }
@@ -425,7 +430,9 @@ static NSString *const lettersSet[maxLettersSet] = {
 }
 
 - (void)visitIvar:(CDOCInstanceVariable *)ivar {
-    if (!_ignored) {
+    if (_ignored) {
+        [self visitType:ivar.type];
+    } else {
         [_ivarNames addObject:ivar.name];
     }
 }
@@ -436,6 +443,7 @@ static NSString *const lettersSet[maxLettersSet] = {
         [_forbiddenNames addObject:property.defaultGetter];
         [_forbiddenNames addObject:[@"_" stringByAppendingString:property.name]];
         [_forbiddenNames addObject:property.defaultSetter];
+        [self visitType:property.type];
     } else {
         [_propertyNames addObject:property.name];
     }
@@ -444,6 +452,18 @@ static NSString *const lettersSet[maxLettersSet] = {
 - (void)visitRemainingProperties:(CDVisitorPropertyState *)propertyState {
     for (CDOCProperty *property in propertyState.remainingProperties) {
         [self visitProperty:property];
+    }
+}
+
+- (void)visitType:(CDType *)type {
+    if (_ignored) {
+        for (NSString *protocol in type.protocols) {
+            [_forbiddenNames addObject:protocol];
+        }
+
+        if (type.typeName) {
+            [_forbiddenNames addObject:[NSString stringWithFormat:@"%@", type.typeName]];
+        }
     }
 }
 

@@ -29,6 +29,7 @@
 
 @property (nonatomic, readonly) CDType *subtype;
 @property (nonatomic, readonly) CDTypeName *typeName;
+@property (nonatomic, readonly) NSArray *protocols;
 
 @property (nonatomic, readonly) NSArray *members;
 @property (nonatomic, readonly) NSArray *types;
