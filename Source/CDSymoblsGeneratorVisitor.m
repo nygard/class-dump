@@ -379,6 +379,12 @@ static NSString *const lettersSet[maxLettersSet] = {
 - (void)willVisitClass:(CDOCClass *)aClass {
     if (_external) {
         [_forbiddenNames addObject:aClass.name];
+
+        if (![aClass.name hasSuffix:@"Delegate"] && ![aClass.name hasSuffix:@"Protocol"]) {
+            [_forbiddenNames addObject:[aClass.name stringByAppendingString:@"Delegate"]];
+            [_forbiddenNames addObject:[aClass.name stringByAppendingString:@"Protocol"]];
+        }
+
         _ignored = YES;
     } else if (![self shouldClassBeObfuscated:aClass.name]) {
         NSLog(@"Ignoring @class %@", aClass.name);
