@@ -103,7 +103,8 @@ int main(int argc, char *argv[])
         generateSymbolsTable = YES;
         classDump.shouldProcessRecursively = YES;
         classDump.shouldIterateInReverse = YES;
-        classDump.maxRecursiveDepth = 1;
+        // classDump.maxRecursiveDepth = 1;
+        // classDump.forceRecursiveAnalyze = @[@"Foundation"];
 
         while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:i:", longopts, NULL)) != -1) {
             switch (ch) {
@@ -178,7 +179,6 @@ int main(int argc, char *argv[])
                     generateSymbolsTable = YES;
                     classDump.shouldProcessRecursively = YES;
                     classDump.shouldIterateInReverse = YES;
-                    classDump.maxRecursiveDepth = 1;
                     break;
 
                 case 'F':

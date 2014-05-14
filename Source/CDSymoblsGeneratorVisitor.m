@@ -394,10 +394,6 @@ static NSString *const lettersSet[maxLettersSet] = {
         NSLog(@"Obfuscating @class %@", aClass.name);
         [_classNames addObject:aClass.name];
         _ignored = NO;
-
-        if ([aClass.name isEqualToString:@"IKOCore"]) {
-            NSLog(@"Found");
-        }
     }
 }
 

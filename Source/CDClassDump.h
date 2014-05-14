@@ -31,6 +31,7 @@
 @property (assign) BOOL shouldShowHeader;
 @property (assign) int maxRecursiveDepth;
 @property (assign) BOOL shouldIterateInReverse;
+@property (copy, nonatomic) NSArray *forceRecursiveAnalyze;
 
 @property (strong) NSRegularExpression *regularExpression;
 - (BOOL)shouldShowName:(NSString *)name;

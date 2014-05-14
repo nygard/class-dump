@@ -141,7 +141,13 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     [_machOFiles addObject:machOFile];
     _machOFilesByName[machOFile.filename] = machOFile;
 
-    if ([self shouldProcessRecursively] && depth < _maxRecursiveDepth) {
+    BOOL shouldProcessRecursively = [self shouldProcessRecursively] && depth < _maxRecursiveDepth;
+    if(!shouldProcessRecursively && [self.forceRecursiveAnalyze containsObject:machOFile.importBaseName]) {
+        shouldProcessRecursively = YES;
+        NSLog(@"Forced recursively processing of %@", machOFile.importBaseName);
+    }
+
+    if (shouldProcessRecursively) {
         @try {
             for (CDLoadCommand *loadCommand in [machOFile loadCommands]) {
                 if ([loadCommand isKindOfClass:[CDLCDylib class]]) {
