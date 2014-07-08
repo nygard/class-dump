@@ -20,6 +20,7 @@
 
 - (BOOL)hasUnderscoreCapitalPrefix;
 - (NSString *)capitalizeFirstCharacter;
+- (NSString *)lowercaseFirstCharacter;
 
 @end
 

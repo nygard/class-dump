@@ -71,7 +71,8 @@ static NSString *const lettersSet[maxLettersSet] = {
             @"while",
             @"in",
             @"init",
-            @"alloc"
+            @"alloc",
+            @"_inline"
     ]];
 }
 
@@ -216,11 +217,32 @@ static NSString *const lettersSet[maxLettersSet] = {
     return NO;
 }
 
+- (NSString *)getterNameForMethodName:(NSString *)methodName {
+    NSString *setterPrefix = @"set";
+    if ([methodName hasPrefix:setterPrefix] && ![methodName isEqualToString:setterPrefix]) {
+        return [[methodName stringByReplacingCharactersInRange:NSMakeRange(0, setterPrefix.length) withString:@""] lowercaseFirstCharacter];
+    } else {
+        return methodName;
+    }
+}
+
+- (NSString *)setterNameForMethodName:(NSString *)methodName {
+    NSString *setterPrefix = @"set";
+    if ([methodName hasPrefix:setterPrefix] && ![methodName isEqualToString:setterPrefix]) {
+        return methodName;
+    } else {
+        return [setterPrefix stringByAppendingString:[methodName capitalizeFirstCharacter]];
+    }
+}
+
 - (void)generateMethodSymbols:(NSString *)symbolName {
-    if ([self doesContainGeneratedSymbol:symbolName]) {
+    NSString *getterName = [self getterNameForMethodName:symbolName];
+    NSString *setterName = [self setterNameForMethodName:symbolName];
+
+    if ([self doesContainGeneratedSymbol:getterName] && [self doesContainGeneratedSymbol:setterName]) {
         return;
     }
-    if ([self shouldSymbolsBeIgnored:symbolName]) {
+    if ([self shouldSymbolsBeIgnored:getterName] || [self doesContainGeneratedSymbol:setterName]) {
         return;
     }
     if ([self isInitMethod:symbolName]) {
@@ -228,23 +250,41 @@ static NSString *const lettersSet[maxLettersSet] = {
         [self addGenerated:newSymbolName forSymbol:symbolName];
     } else {
         NSString *newSymbolName = [self generateRandomString];
-        [self addGenerated:newSymbolName forSymbol:symbolName];
+        [self addGenerated:newSymbolName forSymbol:getterName];
+        [self addGenerated:[@"set" stringByAppendingString:[newSymbolName capitalizeFirstCharacter]] forSymbol:setterName];
     }
 }
 
-- (NSString *)ivarPropertyName:(NSString *)propertyName {
-    return [@"_" stringByAppendingString:propertyName];
+- (NSString *)plainIvarPropertyName:(NSString *)propertyName {
+    return [@"_" stringByAppendingString:[self plainGetterName:propertyName]];
 }
 
-- (NSString *)getterPropertyName:(NSString *)propertyName {
-    return propertyName;
+- (NSString *)isIvarPropertyName:(NSString *)propertyName {
+    return [@"_" stringByAppendingString:[self isGetterName:propertyName]];
 }
 
-- (NSString *)setterPropertyName:(NSString *)propertyName {
-    NSMutableString *setterName = [NSMutableString new];
-    [setterName appendString:@"set"];
-    [setterName appendString:[propertyName capitalizeFirstCharacter]];
-    return setterName;
+- (NSString *)plainGetterName:(NSString *)propertyName {
+    if ([propertyName hasPrefix:@"is"] && ![propertyName isEqualToString:@"is"]) {
+        return [[propertyName stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""] lowercaseFirstCharacter];
+    } else {
+        return propertyName;
+    }
+}
+
+- (NSString *)isGetterName:(NSString *)propertyName {
+    if ([propertyName hasPrefix:@"is"] && ![propertyName isEqualToString:@"is"]) {
+        return propertyName;
+    } else {
+        return [@"is" stringByAppendingString:[propertyName capitalizeFirstCharacter]];
+    }
+}
+
+- (NSString *)plainSetterPropertyName:(NSString *)propertyName {
+    return [@"set" stringByAppendingString:[[self plainGetterName:propertyName] capitalizeFirstCharacter]];
+}
+
+- (NSString *)isSetterPropertyName:(NSString *)propertyName {
+    return [@"set" stringByAppendingString:[[self isGetterName:propertyName] capitalizeFirstCharacter]];
 }
 
 - (void)addGenerated:(NSString *)generatedSymbol forSymbol:(NSString *)symbol {
@@ -257,17 +297,18 @@ static NSString *const lettersSet[maxLettersSet] = {
 }
 
 - (void)generatePropertySymbols:(NSString *)propertyName {
-    NSString *ivarName = [self ivarPropertyName:propertyName];
-    NSString *getterName = [self getterPropertyName:propertyName];
-    NSString *setterName = [self setterPropertyName:propertyName];
+    NSArray *symbols = [self symbolsForProperty:propertyName];
+    BOOL shouldSymbolBeIgnored = NO;
+    for (NSString *symbolName in symbols) {
+        if ([self shouldSymbolsBeIgnored:symbolName]) {
+            shouldSymbolBeIgnored = YES;
+            break;
+        }
+    }
 
     // don't generate symbol if any of the name is forbidden
-    if ([self shouldSymbolsBeIgnored:ivarName] ||
-            [self shouldSymbolsBeIgnored:getterName] ||
-            [self shouldSymbolsBeIgnored:setterName]) {
-        [_forbiddenNames addObject:ivarName];
-        [_forbiddenNames addObject:getterName];
-        [_forbiddenNames addObject:setterName];
+    if (shouldSymbolBeIgnored) {
+        [_forbiddenNames addObjectsFromArray:symbols];
         return;
     }
 
@@ -275,37 +316,82 @@ static NSString *const lettersSet[maxLettersSet] = {
 
     // reuse previously generated symbol
     if (newPropertyName) {
-        NSString *newIvarName = [self ivarPropertyName:newPropertyName];
-        NSString *newGetterName = [self getterPropertyName:newPropertyName];
-        NSString *newSetterName = [self setterPropertyName:newPropertyName];
-        [self addGenerated:newIvarName forSymbol:ivarName];
-        [self addGenerated:newGetterName forSymbol:getterName];
-        [self addGenerated:newSetterName forSymbol:setterName];
+        NSDictionary *symbolMapping = [self symbolMappingForOriginalPropertyName:propertyName generatedPropertyName:newPropertyName];
+        for (NSString *key in symbolMapping.allKeys) {
+            [self addGenerated:symbolMapping[key] forSymbol:key];
+        }
         return;
     }
 
+    [self createNewSymbolsForProperty:propertyName];
+
+}
+
+- (void)createNewSymbolsForProperty:(NSString *)propertyName {
     NSInteger symbolLength = _symbolLength;
 
     while (true) {
-        newPropertyName = [self generateRandomStringWithLength:symbolLength andPrefix:nil];
+        NSString *newPropertyName = [self generateRandomStringWithLength:symbolLength andPrefix:nil];
+        NSArray *symbols = [self symbolsForProperty:newPropertyName];
 
-        NSString *newIvarName = [self ivarPropertyName:newPropertyName];
-        NSString *newGetterName = [self getterPropertyName:newPropertyName];
-        NSString *newSetterName = [self setterPropertyName:newPropertyName];
-
+        BOOL isAlreadyGenerated = NO;
+        for (NSString *symbolName in symbols) {
+            if ([_uniqueSymbols containsObject:symbolName]) {
+                isAlreadyGenerated = YES;
+                break;
+            }
+        }
         // check if symbol is already generated
-        if (![_uniqueSymbols containsObject:newIvarName] &&
-                ![_uniqueSymbols containsObject:newGetterName] &&
-                ![_uniqueSymbols containsObject:newSetterName]) {
-
-            [self addGenerated:newIvarName forSymbol:ivarName];
-            [self addGenerated:newGetterName forSymbol:getterName];
-            [self addGenerated:newSetterName forSymbol:setterName];
+        if (!isAlreadyGenerated) {
+            NSDictionary *symbolMapping = [self symbolMappingForOriginalPropertyName:propertyName generatedPropertyName:newPropertyName];
+            for (NSString *key in symbolMapping.allKeys) {
+                [self addGenerated:symbolMapping[key] forSymbol:key];
+            }
             return;
         }
 
         ++symbolLength;
     }
+}
+
+- (NSDictionary *)symbolMappingForOriginalPropertyName:(NSString *)originalPropertyName generatedPropertyName:(NSString *)generatedName {
+    NSString *ivarName = [self plainIvarPropertyName:originalPropertyName];
+    NSString *isIvarName = [self isIvarPropertyName:originalPropertyName];
+    NSString *getterName = [self plainGetterName:originalPropertyName];
+    NSString *isGetterName = [self isGetterName:originalPropertyName];
+    NSString *setterName = [self plainSetterPropertyName:originalPropertyName];
+    NSString *isSetterName = [self isSetterPropertyName:originalPropertyName];
+
+    NSString *newIvarName = [self plainIvarPropertyName:generatedName];
+    NSString *newIsIvarName = [self isIvarPropertyName:generatedName];
+    NSString *newGetterName = [self plainGetterName:generatedName];
+    NSString *newIsGetterName = [self isGetterName:generatedName];
+    NSString *newSetterName = [self plainSetterPropertyName:generatedName];
+    NSString *newIsSetterName = [self isSetterPropertyName:generatedName];
+
+    return @{ivarName : newIvarName,
+            isIvarName : newIsIvarName,
+            getterName : newGetterName,
+            isGetterName : newIsGetterName,
+            setterName : newSetterName,
+            isSetterName : newIsSetterName};
+}
+
+- (NSArray *)symbolsForProperty:(NSString *)propertyName {
+    NSString *ivarName = [self plainIvarPropertyName:propertyName];
+    NSString *isIvarName = [self isIvarPropertyName:propertyName];
+    NSString *getterName = [self plainGetterName:propertyName];
+    NSString *isGetterName = [self isGetterName:propertyName];
+    NSString *setterName = [self plainSetterPropertyName:propertyName];
+    NSString *isSetterName = [self isSetterPropertyName:propertyName];
+
+    NSMutableArray *symbols = [NSMutableArray arrayWithObject:ivarName];
+    [symbols addObject:isIvarName];
+    [symbols addObject:getterName];
+    [symbols addObject:isGetterName];
+    [symbols addObject:setterName];
+    [symbols addObject:isSetterName];
+    return symbols;
 }
 
 - (BOOL)shouldClassBeObfuscated:(NSString *)className {
