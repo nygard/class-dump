@@ -1,17 +1,17 @@
 #import <Kiwi/Kiwi.h>
 
-#import "CDSymoblsGeneratorVisitor.h"
+#import "CDSymbolsGeneratorVisitor.h"
 #import "CDOCProperty.h"
 #import "NSString-CDExtensions.h"
 #import "CDOCMethod.h"
 
 SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
-    describe(@"CDSymoblsGeneratorVisitor", ^{
-        __block CDSymoblsGeneratorVisitor *visitor;
+    describe(@"CDSymbolsGeneratorVisitor", ^{
+        __block CDSymbolsGeneratorVisitor *visitor;
 
         beforeEach(^{
-            visitor = [[CDSymoblsGeneratorVisitor alloc] init];
+            visitor = [[CDSymbolsGeneratorVisitor alloc] init];
         });
 
         describe(@"visiting property", ^{

@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
+#import "CDParserSharedBase.h"
 
 
-@interface CDXibStoryboardParser : NSObject
-
-- (NSData *)obfuscatedXmlData:(NSData *)data symbols:(NSDictionary *)symbols;
+@interface CDXibStoryboardParser : CDParserSharedBase
 @end

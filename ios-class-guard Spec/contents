@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="TestEntityA" representedClassName="TestEntityA" syncable="YES">
+        <attribute name="attributeA" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <relationship name="bs" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TestEntityB" inverseName="a" inverseEntity="TestEntityB" syncable="YES"/>
+    </entity>
+    <entity name="TestEntityB" representedClassName="TestEntityB" syncable="YES">
+        <attribute name="attributeB" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="a" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="TestEntityA" inverseName="bs" inverseEntity="TestEntityA" syncable="YES"/>
+    </entity>
+    <entity name="TestEntityC" representedClassName="TestEntityC" parentEntity="TestParentEntity" syncable="YES"/>
+    <entity name="TestParentEntity" representedClassName="TestParentEntity" syncable="YES"/>
+    <elements>
+        <element name="TestEntityA" positionX="-63" positionY="-18" width="128" height="73"/>
+        <element name="TestEntityB" positionX="-54" positionY="-9" width="128" height="73"/>
+        <element name="TestEntityC" positionX="-45" positionY="27" width="128" height="43"/>
+        <element name="TestParentEntity" positionX="-36" positionY="36" width="128" height="43"/>
+    </elements>
+</model>

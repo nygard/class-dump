@@ -19,9 +19,10 @@
 #import "CDFatFile.h"
 #import "CDFatArch.h"
 #import "CDSearchPathState.h"
-#import "CDSymoblsGeneratorVisitor.h"
+#import "CDSymbolsGeneratorVisitor.h"
 #import "CDXibStoryboardParser.h"
 #import "CDXibStoryBoardProcessor.h"
+#import "CDCoreDataModelProcessor.h"
 
 void print_usage(void)
 {
@@ -336,6 +337,10 @@ int main(int argc, char *argv[])
                 } else {
                     [classDump processObjectiveCData];
                     [classDump registerTypes];
+
+                    CDCoreDataModelProcessor *coreDataModelProcessor = [[CDCoreDataModelProcessor alloc] init];
+                    [classFilter addObjectsFromArray:[coreDataModelProcessor coreDataModelSymbolsToExclude]];
+
                     
                     if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
@@ -343,7 +348,7 @@ int main(int argc, char *argv[])
                         visitor.searchString = searchString;
                         [classDump recursivelyVisit:visitor];
                     } else if (generateSymbolsTable) {
-                        CDSymoblsGeneratorVisitor *visitor = [CDSymoblsGeneratorVisitor new];
+                        CDSymbolsGeneratorVisitor *visitor = [CDSymbolsGeneratorVisitor new];
                         visitor.classDump = classDump;
                         visitor.classFilter = classFilter;
                         visitor.ignoreSymbols = ignoreSymbols;
