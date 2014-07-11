@@ -1,2 +1,4 @@
 xcuserdata
 *.xcarchive/
+.idea
+Pods

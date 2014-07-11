@@ -91,6 +91,14 @@
     return [NSString stringWithFormat:@"%@%@", [[self substringToIndex:1] capitalizedString], [self substringFromIndex:1]];
 }
 
+- (NSString *)lowercaseFirstCharacter {
+    if ([self length] < 2)
+        return [self lowercaseString];
+
+    return [NSString stringWithFormat:@"%@%@", [[self substringToIndex:1] lowercaseString], [self substringFromIndex:1]];
+}
+
+
 @end
 
 @implementation NSMutableString (CDExtensions)
