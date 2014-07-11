@@ -86,6 +86,21 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define _is%@ _is", [propertyName capitalizeFirstCharacter]]].location;
                     [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
                 });
+
+                context(@"when obfuscating setter for upprecase property", ^{
+                    NSString *uppercaseName = @"URL";
+                    CDOCProperty *upperCaseProperty = [[CDOCProperty alloc] initWithName:uppercaseName attributes:@""];
+                    it(@"should not change first letter to lowercase", ^{
+                        [visitor willBeginVisiting];
+
+                        [visitor visitProperty:upperCaseProperty];
+
+                        [visitor didEndVisiting];
+
+                        NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"%@", [uppercaseName lowercaseFirstCharacter]]].location;
+                        [[theValue(location) should] equal:theValue(NSNotFound)];
+                    });
+                });
             });
 
             context(@"when obfuscating 'is' property", ^{
@@ -168,6 +183,21 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define _is%@ _is", [propertyName capitalizeFirstCharacter]]].location;
                     [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
                 });
+
+                context(@"when obfuscating setter for upprecase property", ^{
+                    NSString *uppercaseName = @"URL";
+                    CDOCProperty *upperCaseProperty = [[CDOCProperty alloc] initWithName:[@"is" stringByAppendingString:uppercaseName] attributes:@""];
+                    it(@"should not change first letter to lowercase", ^{
+                        [visitor willBeginVisiting];
+
+                        [visitor visitProperty:upperCaseProperty];
+
+                        [visitor didEndVisiting];
+
+                        NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"%@", [uppercaseName lowercaseFirstCharacter]]].location;
+                        [[theValue(location) should] equal:theValue(NSNotFound)];
+                    });
+                });
             });
         });
 
@@ -204,6 +234,21 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                     NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define %@", methodName]].location;
                     [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                });
+
+                context(@"for uppercase getter name", ^{
+                    NSString *uppercaseName = @"URL";
+                    CDOCMethod *upperCaseProperty = [[CDOCMethod alloc] initWithName:[@"set" stringByAppendingString:uppercaseName] typeString:nil];
+                    it(@"should not change first letter to lowercase", ^{
+                        [visitor willBeginVisiting];
+
+                        [visitor visitInstanceMethod:upperCaseProperty propertyState:nil];
+
+                        [visitor didEndVisiting];
+
+                        NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"%@", [uppercaseName lowercaseFirstCharacter]]].location;
+                        [[theValue(location) should] equal:theValue(NSNotFound)];
+                    });
                 });
             });
 

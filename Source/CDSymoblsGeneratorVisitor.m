@@ -220,7 +220,13 @@ static NSString *const lettersSet[maxLettersSet] = {
 - (NSString *)getterNameForMethodName:(NSString *)methodName {
     NSString *setterPrefix = @"set";
     if ([methodName hasPrefix:setterPrefix] && ![methodName isEqualToString:setterPrefix]) {
-        return [[methodName stringByReplacingCharactersInRange:NSMakeRange(0, setterPrefix.length) withString:@""] lowercaseFirstCharacter];
+        NSString *string = [methodName stringByReplacingCharactersInRange:NSMakeRange(0, setterPrefix.length) withString:@""];
+        // If getter method name is all upper case then don't change first letter to lower case e.g. URL should remain URL, not uRL
+        if ([string isEqualToString:[string uppercaseString]]) {
+            return string;
+        } else {
+            return [string lowercaseFirstCharacter];
+        }
     } else {
         return methodName;
     }
@@ -265,7 +271,13 @@ static NSString *const lettersSet[maxLettersSet] = {
 
 - (NSString *)plainGetterName:(NSString *)propertyName {
     if ([propertyName hasPrefix:@"is"] && ![propertyName isEqualToString:@"is"]) {
-        return [[propertyName stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""] lowercaseFirstCharacter];
+        NSString *string = [propertyName stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""];
+        // If property name is all upper case then don't change first letter to lower case e.g. URL should remain URL, not uRL
+        if ([string isEqualToString:[string uppercaseString]]) {
+            return string;
+        } else {
+            return [string lowercaseFirstCharacter];
+        }
     } else {
         return propertyName;
     }
