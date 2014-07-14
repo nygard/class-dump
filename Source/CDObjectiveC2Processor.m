@@ -199,6 +199,30 @@
     return category;
 }
 
+- (NSString *)demangleSwiftName:(NSString *)s
+{
+	// xcode-select -s /Applications/Xcode6-Beta3.app for this to work!
+
+	NSTask *task = [[NSTask alloc] init];
+    task.launchPath = @"/usr/bin/xcrun";
+    task.arguments = @[@"swift-demangle",@"-compact",s];
+    
+    NSPipe *outputPipe = [NSPipe pipe];
+	task.standardOutput = outputPipe;
+    [task launch];
+    [task waitUntilExit];
+    
+    NSData *data = [[outputPipe fileHandleForReading] readDataToEndOfFile];
+    if ( [data length] > 0 )
+    {
+	    NSString *demangled = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+	    if ( demangled )
+    		return [demangled stringByReplacingOccurrencesOfString:@"\n" withString:@""];
+    }
+    
+	return s;
+}
+
 - (CDOCClass *)loadClassAtAddress:(uint64_t)address;
 {
     if (address == 0)
@@ -226,7 +250,8 @@
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Class.data, objc2Class.reserved1, objc2Class.reserved2, objc2Class.reserved3);
     
     NSParameterAssert(objc2Class.data != 0);
-    [cursor setAddress:objc2Class.data];
+	// objc2Class.data first bit is set for swift classes
+    [cursor setAddress:(objc2Class.data&0xFFFFFFFFFFFFFFF8)];
 
     struct cd_objc2_class_ro_t objc2ClassData;
     objc2ClassData.flags         = [cursor readInt32];
@@ -251,6 +276,12 @@
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2ClassData.ivars, objc2ClassData.weakIvarLayout, objc2ClassData.baseProperties);
     NSString *str = [self.machOFile stringAtAddress:objc2ClassData.name];
     //NSLog(@"name = %@", str);
+    
+    if ( objc2Class.data & 1 )
+    {
+    	// swift class
+        str = [self demangleSwiftName:str];
+    }
     
     CDOCClass *aClass = [[CDOCClass alloc] init];
     [aClass setName:str];
