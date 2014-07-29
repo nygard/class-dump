@@ -23,6 +23,8 @@
 #import "CDXibStoryboardParser.h"
 #import "CDXibStoryBoardProcessor.h"
 #import "CDCoreDataModelProcessor.h"
+#import "CDPbxProjectParser.h"
+#import "CDPbxProjectProcessor.h"
 
 void print_usage(void)
 {
@@ -39,8 +41,10 @@ void print_usage(void)
             "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
             "        --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
             "                       or /Developer/SDKs/MacOSX<version>.sdk)\n"
-            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n",
-            "        -X <directory> base directory for XIB, storyboards (will be searched recursively)"
+            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
+            "        -X <directory> base directory for XIB, storyboards (will be searched recursively)\n"
+            "        -P <path>      path to project.pbxproj of Pods project (located inside Pods.xcodeproj)\n"
+            "        -O <path>      path to file where obfuscated symbols are written\n"
             ,
             CLASS_DUMP_VERSION
        );
@@ -69,6 +73,8 @@ int main(int argc, char *argv[])
         NSMutableArray *classFilter = [NSMutableArray new];
         NSMutableArray *ignoreSymbols = [NSMutableArray new];
         NSString *xibBaseDirectory = nil;
+        NSString *podsPath = nil;
+        NSString *symbolsPath = nil;
 
         int ch;
         BOOL errorFlag = NO;
@@ -87,7 +93,9 @@ int main(int argc, char *argv[])
                 { "generate-symbols-table", no_argument, NULL, 'G' },
                 { "filter-class", no_argument, NULL, 'F' },
                 { "ignore-symbols", no_argument, NULL, 'i' },
-                { "xib-directory", no_argument, NULL, 'X' },
+                { "xib-directory", required_argument, NULL, 'X' },
+                { "pods-project", required_argument, NULL, 'P' },
+                { "symbols-file", required_argument, NULL, 'O' },
             { "arch",                    required_argument, NULL, CD_OPT_ARCH },
             { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
             { "suppress-header",         no_argument,       NULL, 't' },
@@ -112,7 +120,7 @@ int main(int argc, char *argv[])
         // classDump.maxRecursiveDepth = 1;
         // classDump.forceRecursiveAnalyze = @[@"Foundation"];
 
-        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:i:", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:P:i:O:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -193,6 +201,14 @@ int main(int argc, char *argv[])
                     
                 case 'X':
                     xibBaseDirectory = [NSString stringWithUTF8String:optarg];
+                    break;
+
+                case 'P':
+                    podsPath = [NSString stringWithUTF8String:optarg];
+                    break;
+
+                case 'O':
+                    symbolsPath = [NSString stringWithUTF8String:optarg];
                     break;
                     
                 case 'i':
@@ -348,14 +364,26 @@ int main(int argc, char *argv[])
                         visitor.searchString = searchString;
                         [classDump recursivelyVisit:visitor];
                     } else if (generateSymbolsTable) {
+                        if (symbolsPath == nil) {
+                            printf("Please specify symbols file path\n");
+                            print_usage();
+                            exit(3);
+                        }
+
                         CDSymbolsGeneratorVisitor *visitor = [CDSymbolsGeneratorVisitor new];
                         visitor.classDump = classDump;
                         visitor.classFilter = classFilter;
                         visitor.ignoreSymbols = ignoreSymbols;
+                        visitor.symbolsFilePath = symbolsPath;
                         [classDump recursivelyVisit:visitor];
                         CDXibStoryBoardProcessor *processor = [[CDXibStoryBoardProcessor alloc] init];
                         processor.xibBaseDirectory = xibBaseDirectory;
                         [processor obfuscateFilesUsingSymbols:visitor.symbols];
+
+                        if (podsPath) {
+                            CDPbxProjectProcessor *projectProcessor = [[CDPbxProjectProcessor alloc] init];
+                            [projectProcessor processPodsProjectAtPath:podsPath symbolsFilePath:symbolsPath];
+                        }
                     } else if (shouldGenerateSeparateHeaders) {
                         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
                         multiFileVisitor.classDump = classDump;

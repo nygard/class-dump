@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import "CDParserSharedBase.h"
+#import "CDXMLParserSharedBase.h"
 
 @class GDataXMLElement;
 
 
-@interface CDCoreDataModelParser : CDParserSharedBase
+@interface CDCoreDataModelParser : CDXMLParserSharedBase
 @end

@@ -1,8 +1,8 @@
-#import "CDParserSharedBase.h"
+#import "CDXMLParserSharedBase.h"
 #import "GDataXMLNode.h"
 
 
-@implementation CDParserSharedBase
+@implementation CDXMLParserSharedBase
 
 - (NSArray *)symbolsInData:(NSData *)data {
     NSMutableArray *array = [NSMutableArray array];

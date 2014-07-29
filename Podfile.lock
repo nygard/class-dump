@@ -6,7 +6,7 @@ PODS:
     - Kiwi/NonARC
 
 DEPENDENCIES:
-  - Kiwi/XCTest
+  - Kiwi/XCTest (~> 2.2.0)
 
 SPEC CHECKSUMS:
   Kiwi: c73667f2b84cbf36f1a3830267c5a4ae8dcbd8ba

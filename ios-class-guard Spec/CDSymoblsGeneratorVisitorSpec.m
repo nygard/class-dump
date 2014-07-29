@@ -87,7 +87,22 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                 });
 
                 context(@"when obfuscating setter for upprecase property", ^{
-                    NSString *uppercaseName = @"URL";
+                    NSString *uppercaseName = @"HTTPBody";
+                    CDOCProperty *upperCaseProperty = [[CDOCProperty alloc] initWithName:uppercaseName attributes:@""];
+                    it(@"should not change first letter to lowercase", ^{
+                        [visitor willBeginVisiting];
+
+                        [visitor visitProperty:upperCaseProperty];
+
+                        [visitor didEndVisiting];
+
+                        NSString *symbolName = visitor.symbols[[uppercaseName lowercaseFirstCharacter]];
+                        [[symbolName should] beNil];
+                    });
+                });
+
+                context(@"when obfuscating getter for upprecase property", ^{
+                    NSString *uppercaseName = @"HTTPBody";
                     CDOCProperty *upperCaseProperty = [[CDOCProperty alloc] initWithName:uppercaseName attributes:@""];
                     it(@"should not change first letter to lowercase", ^{
                         [visitor willBeginVisiting];
@@ -171,8 +186,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     [[theValue(visitor.symbols[ivarName]) shouldNot] beNil];
                 });
 
-                context(@"when obfuscating setter for upprecase property", ^{
-                    NSString *uppercaseName = @"URL";
+                context(@"when obfuscating setter for uppercase property", ^{
+                    NSString *uppercaseName = @"HTTPBody";
                     CDOCProperty *upperCaseProperty = [[CDOCProperty alloc] initWithName:[@"is" stringByAppendingString:uppercaseName] attributes:@""];
                     it(@"should not change first letter to lowercase", ^{
                         [visitor willBeginVisiting];
@@ -222,7 +237,7 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                 });
 
                 context(@"for uppercase getter name", ^{
-                    NSString *uppercaseName = @"URL";
+                    NSString *uppercaseName = @"HTTPBody";
                     CDOCMethod *upperCaseProperty = [[CDOCMethod alloc] initWithName:[@"set" stringByAppendingString:uppercaseName] typeString:nil];
                     it(@"should not change first letter to lowercase", ^{
                         [visitor willBeginVisiting];
@@ -251,6 +266,26 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                     NSString *setterName = [NSString stringWithFormat:@"set%@", [methodName capitalizeFirstCharacter]];
                     [[theValue(visitor.symbols[setterName]) shouldNot] beNil];
+                });
+            });
+
+            context(@"when obfuscating method which name starts with 'set'", ^{
+                NSString *setupName = @"setupSomething";
+
+                beforeEach(^{
+                    method = [[CDOCMethod alloc] initWithName:setupName typeString:nil];
+                });
+
+                it(@"should generate symbol name for whole word", ^{
+                    [visitor willBeginVisiting];
+
+                    [visitor visitInstanceMethod:method propertyState:nil];
+
+                    [visitor didEndVisiting];
+
+                    NSString *symbol = visitor.symbols[setupName];
+                    [[symbol shouldNot] beNil];
+                    [[theValue([symbol hasPrefix:@"set"]) should] beFalse];
                 });
             });
         });
