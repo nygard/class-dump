@@ -26,9 +26,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     [visitor visitProperty:aProperty];
     
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define %@", propertyName]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    [[theValue(visitor.symbols[propertyName]) shouldNot] beNil];
                 });
     
                 it(@"should generate symbol for default setter", ^{
@@ -37,9 +36,9 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     [visitor visitProperty:aProperty];
     
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define set%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    NSString *setterName = [NSString stringWithFormat:@"set%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[setterName]) shouldNot] beNil];
                 });
     
                 it(@"should generate symbol for iVar", ^{
@@ -49,8 +48,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
     
                     [visitor didEndVisiting];
     
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define _%@", propertyName]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                    NSString *ivarName = [NSString stringWithFormat:@"_%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[ivarName]) shouldNot] beNil];
                 });
     
                 it(@"should generate symbol for 'is' property getter", ^{
@@ -60,8 +59,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
     
                     [visitor didEndVisiting];
     
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define is%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                    NSString *isGetterName = [NSString stringWithFormat:@"is%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[isGetterName]) shouldNot] beNil];
                 });
     
     
@@ -72,8 +71,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
     
                     [visitor didEndVisiting];
     
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define setIs%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                    NSString *setterName = [NSString stringWithFormat:@"setIs%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[setterName]) shouldNot] beNil];
                 });
     
                 it(@"should generate symbol for 'setIs' iVar", ^{
@@ -83,8 +82,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
     
                     [visitor didEndVisiting];
     
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define _is%@ _is", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                    NSString *ivarIsName = [NSString stringWithFormat:@"_is%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[ivarIsName]) shouldNot] beNil];
                 });
 
                 context(@"when obfuscating setter for upprecase property", ^{
@@ -97,8 +96,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                         [visitor didEndVisiting];
 
-                        NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"%@", [uppercaseName lowercaseFirstCharacter]]].location;
-                        [[theValue(location) should] equal:theValue(NSNotFound)];
+                        NSString *symbolName = visitor.symbols[[uppercaseName lowercaseFirstCharacter]];
+                        [[symbolName should] beNil];
                     });
                 });
             });
@@ -110,78 +109,66 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     [visitor willBeginVisiting];
 
                     [visitor visitProperty:isProperty];
-    
+
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define %@", propertyName]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    [[theValue(visitor.symbols[propertyName]) shouldNot] beNil];
                 });
-    
+
                 it(@"should generate symbol for default setter", ^{
                     [visitor willBeginVisiting];
 
                     [visitor visitProperty:isProperty];
-    
+
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define set%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    NSString *setterName = [NSString stringWithFormat:@"set%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[setterName]) shouldNot] beNil];
                 });
-    
+
                 it(@"should generate symbol for iVar", ^{
                     [visitor willBeginVisiting];
 
                     [visitor visitProperty:isProperty];
-    
+
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define _%@", propertyName]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    NSString *ivarName = [NSString stringWithFormat:@"_%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[ivarName]) shouldNot] beNil];
                 });
-    
+
                 it(@"should generate symbol for 'is' property getter", ^{
                     [visitor willBeginVisiting];
 
                     [visitor visitProperty:isProperty];
-    
+
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define is%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    NSString *isGetterName = [NSString stringWithFormat:@"is%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[isGetterName]) shouldNot] beNil];
                 });
 
 
-                it(@"should generate symbol for plain setter for 'is' property", ^{
-                    [visitor willBeginVisiting];
-
-                    [visitor visitProperty:isProperty];
-    
-                    [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define set%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
-                });
-    
                 it(@"should generate symbol for 'setIs' setter for 'is' property", ^{
                     [visitor willBeginVisiting];
 
                     [visitor visitProperty:isProperty];
-    
+
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define setIs%@", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    NSString *setterName = [NSString stringWithFormat:@"setIs%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[setterName]) shouldNot] beNil];
                 });
-    
-                it(@"should generate symbol for 'setIs' setter for 'is' property", ^{
+
+                it(@"should generate symbol for '_is' ivar for 'is' property", ^{
                     [visitor willBeginVisiting];
 
                     [visitor visitProperty:isProperty];
-    
+
                     [visitor didEndVisiting];
-    
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define _is%@ _is", [propertyName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+
+                    NSString *ivarName = [NSString stringWithFormat:@"_is%@", [propertyName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[ivarName]) shouldNot] beNil];
                 });
 
                 context(@"when obfuscating setter for upprecase property", ^{
@@ -194,8 +181,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                         [visitor didEndVisiting];
 
-                        NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"%@", [uppercaseName lowercaseFirstCharacter]]].location;
-                        [[theValue(location) should] equal:theValue(NSNotFound)];
+                        NSString *symbol = visitor.symbols[[uppercaseName lowercaseFirstCharacter]];
+                        [[symbol should] beNil];
                     });
                 });
             });
@@ -216,8 +203,7 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                 [visitor didEndVisiting];
 
-                NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define %@", methodName]].location;
-                [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                [[theValue(visitor.symbols[method]) shouldNot] beNil];
             });
 
             context(@"when method is a setter", ^{
@@ -232,8 +218,7 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                     [visitor didEndVisiting];
 
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define %@", methodName]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                    [[theValue(visitor.symbols[method]) shouldNot] beNil];
                 });
 
                 context(@"for uppercase getter name", ^{
@@ -246,8 +231,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                         [visitor didEndVisiting];
 
-                        NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"%@", [uppercaseName lowercaseFirstCharacter]]].location;
-                        [[theValue(location) should] equal:theValue(NSNotFound)];
+                        NSString *symbol = visitor.symbols[[uppercaseName lowercaseFirstCharacter]];
+                        [[symbol should] beNil];
                     });
                 });
             });
@@ -264,8 +249,8 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
 
                     [visitor didEndVisiting];
 
-                    NSInteger location = [visitor.resultString rangeOfString:[NSString stringWithFormat:@"#define set%@", [methodName capitalizeFirstCharacter]]].location;
-                    [[theValue(location) shouldNot] equal:theValue(NSNotFound)];
+                    NSString *setterName = [NSString stringWithFormat:@"set%@", [methodName capitalizeFirstCharacter]];
+                    [[theValue(visitor.symbols[setterName]) shouldNot] beNil];
                 });
             });
         });

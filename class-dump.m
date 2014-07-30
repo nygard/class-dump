@@ -20,6 +20,8 @@
 #import "CDFatArch.h"
 #import "CDSearchPathState.h"
 #import "CDSymoblsGeneratorVisitor.h"
+#import "CDXibStoryboardParser.h"
+#import "CDXibStoryBoardProcessor.h"
 
 void print_usage(void)
 {
@@ -36,7 +38,8 @@ void print_usage(void)
             "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
             "        --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
             "                       or /Developer/SDKs/MacOSX<version>.sdk)\n"
-            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
+            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n",
+            "        -X <directory> base directory for XIB, storyboards (will be searched recursively)"
             ,
             CLASS_DUMP_VERSION
        );
@@ -64,6 +67,7 @@ int main(int argc, char *argv[])
         NSMutableSet *hiddenSections = [NSMutableSet set];
         NSMutableArray *classFilter = [NSMutableArray new];
         NSMutableArray *ignoreSymbols = [NSMutableArray new];
+        NSString *xibBaseDirectory = nil;
 
         int ch;
         BOOL errorFlag = NO;
@@ -82,6 +86,7 @@ int main(int argc, char *argv[])
                 { "generate-symbols-table", no_argument, NULL, 'G' },
                 { "filter-class", no_argument, NULL, 'F' },
                 { "ignore-symbols", no_argument, NULL, 'i' },
+                { "xib-directory", no_argument, NULL, 'X' },
             { "arch",                    required_argument, NULL, CD_OPT_ARCH },
             { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
             { "suppress-header",         no_argument,       NULL, 't' },
@@ -106,7 +111,7 @@ int main(int argc, char *argv[])
         // classDump.maxRecursiveDepth = 1;
         // classDump.forceRecursiveAnalyze = @[@"Foundation"];
 
-        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:i:", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:i:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -183,6 +188,10 @@ int main(int argc, char *argv[])
 
                 case 'F':
                     [classFilter addObject:[NSString stringWithUTF8String:optarg]];
+                    break;
+                    
+                case 'X':
+                    xibBaseDirectory = [NSString stringWithUTF8String:optarg];
                     break;
                     
                 case 'i':
@@ -339,6 +348,9 @@ int main(int argc, char *argv[])
                         visitor.classFilter = classFilter;
                         visitor.ignoreSymbols = ignoreSymbols;
                         [classDump recursivelyVisit:visitor];
+                        CDXibStoryBoardProcessor *processor = [[CDXibStoryBoardProcessor alloc] init];
+                        processor.xibBaseDirectory = xibBaseDirectory;
+                        [processor obfuscateFilesUsingSymbols:visitor.symbols];
                     } else if (shouldGenerateSeparateHeaders) {
                         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
                         multiFileVisitor.classDump = classDump;
