@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>B8076B39-140E-405E-B256-C528FF3ACAEC</string>
+	<string>31B4234D-B1D4-48F7-8962-43003B2E9CDE</string>
 	<key>IDESourceControlProjectName</key>
 	<string>ios-class-guard</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>791412B7-B673-4EB9-ACE9-5FB8AB141FF4</key>
-		<string>ssh://github.com/tgrf/ios-class-guard.git</string>
+		<key>F0ABFDED-B470-489F-A821-427C78271C21</key>
+		<string>ssh://github.com/polidea/ios-class-guard.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>ios-class-guard.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>791412B7-B673-4EB9-ACE9-5FB8AB141FF4</key>
+		<key>F0ABFDED-B470-489F-A821-427C78271C21</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/tgrf/ios-class-guard.git</string>
+	<string>ssh://github.com/polidea/ios-class-guard.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>791412B7-B673-4EB9-ACE9-5FB8AB141FF4</string>
+	<string>F0ABFDED-B470-489F-A821-427C78271C21</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>791412B7-B673-4EB9-ACE9-5FB8AB141FF4</string>
+			<string>F0ABFDED-B470-489F-A821-427C78271C21</string>
 			<key>IDESourceControlWCCName</key>
-			<string>ios-class-guard</string>
+			<string>class-dump</string>
 		</dict>
 	</array>
 </dict>

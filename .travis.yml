@@ -1,4 +1,4 @@
 language: objective-c
-install: gem install cocoapods
-before_script: pod install
-script: xcodebuild -workspace ios-class-guard.xcworkspace -configuration Release -scheme 'All tests' test
+xcode_sdk: macosx10.9
+xcode_workspace: ios-class-guard.xcworkspace
+xcode_scheme: ios-class-guard

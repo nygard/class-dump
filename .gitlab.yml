@@ -1,0 +1,11 @@
+language: objective-c
+script:
+- gem install cocoapods
+- pod install
+- xcodebuild -workspace ios-class-guard.xcworkspace -configuration Release -scheme 'All tests' test
+xcode:
+- v1.5
+- v1.6
+env:
+- V=10
+- V=20
