@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>1AAA375E-72D1-4074-A322-8E4262648622</string>
+	<string>B8076B39-140E-405E-B256-C528FF3ACAEC</string>
 	<key>IDESourceControlProjectName</key>
 	<string>ios-class-guard</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,11 +14,11 @@
 		<string>ssh://github.com/tgrf/ios-class-guard.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ios-class-guard.xcodeproj/project.xcworkspace</string>
+	<string>ios-class-guard.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>791412B7-B673-4EB9-ACE9-5FB8AB141FF4</key>
-		<string>../..</string>
+		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>ssh://github.com/tgrf/ios-class-guard.git</string>

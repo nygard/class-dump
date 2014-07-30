@@ -1,4 +1,4 @@
-#import "CDSymoblsGeneratorVisitor.h"
+#import "CDSymbolsGeneratorVisitor.h"
 #import "CDOCProtocol.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
@@ -17,7 +17,7 @@ static NSString *const lettersSet[maxLettersSet] = {
         @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 };
 
-@implementation CDSymoblsGeneratorVisitor {
+@implementation CDSymbolsGeneratorVisitor {
     NSMutableSet *_protocolNames;
     NSMutableSet *_classNames;
     NSMutableSet *_categoryNames;

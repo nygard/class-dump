@@ -2,9 +2,7 @@
 #import "CDXibStoryboardParser.h"
 
 
-@implementation CDXibStoryBoardProcessor {
-
-}
+@implementation CDXibStoryBoardProcessor
 
 - (void)obfuscateFilesUsingSymbols:(NSDictionary *)symbols {
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -39,4 +37,7 @@
         }
     }
 }
+
+
+
 @end
