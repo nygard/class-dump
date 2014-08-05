@@ -25,6 +25,9 @@
 #import "CDCoreDataModelProcessor.h"
 #import "CDPbxProjectParser.h"
 #import "CDPbxProjectProcessor.h"
+#import "CDSymbolMapper.h"
+
+NSString *defaultSymbolMappingPath = @"symbols.json";
 
 void print_usage(void)
 {
@@ -45,6 +48,8 @@ void print_usage(void)
             "        -X <directory> base directory for XIB, storyboards (will be searched recursively)\n"
             "        -P <path>      path to project.pbxproj of Pods project (located inside Pods.xcodeproj)\n"
             "        -O <path>      path to file where obfuscated symbols are written\n"
+            "        -m <path>      path to symbol file map (default value symbols.json)\n"
+            "        -c <path>      path to symbolicated crash dump\n"
             ,
             CLASS_DUMP_VERSION
        );
@@ -75,6 +80,8 @@ int main(int argc, char *argv[])
         NSString *xibBaseDirectory = nil;
         NSString *podsPath = nil;
         NSString *symbolsPath = nil;
+        NSString *symbolMappingPath = nil;
+        NSString *crashDumpPath = nil;
 
         int ch;
         BOOL errorFlag = NO;
@@ -96,6 +103,8 @@ int main(int argc, char *argv[])
                 { "xib-directory", required_argument, NULL, 'X' },
                 { "pods-project", required_argument, NULL, 'P' },
                 { "symbols-file", required_argument, NULL, 'O' },
+                { "symbols-map", required_argument, NULL, 'm' },
+                { "crash-dump", required_argument, NULL, 'c' },
             { "arch",                    required_argument, NULL, CD_OPT_ARCH },
             { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
             { "suppress-header",         no_argument,       NULL, 't' },
@@ -120,7 +129,7 @@ int main(int argc, char *argv[])
         // classDump.maxRecursiveDepth = 1;
         // classDump.forceRecursiveAnalyze = @[@"Foundation"];
 
-        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:P:i:O:", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aGAC:f:HIo:rRsStF:X:P:i:O:m:c:", longopts, NULL)) != -1) {
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -211,6 +220,14 @@ int main(int argc, char *argv[])
                     symbolsPath = [NSString stringWithUTF8String:optarg];
                     break;
                     
+                case 'm':
+                    symbolMappingPath = [NSString stringWithUTF8String:optarg];
+                    break;
+
+                case 'c':
+                    crashDumpPath = [NSString stringWithUTF8String:optarg];
+                    break;
+                    
                 case 'i':
                     [ignoreSymbols addObject:[NSString stringWithUTF8String:optarg]];
                     break;
@@ -289,6 +306,7 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
+
         if (optind < argc) {
             NSString *arg = [NSString stringWithFileSystemRepresentation:argv[optind]];
             NSString *executablePath = [arg executablePathForFilename];
@@ -309,6 +327,8 @@ int main(int argc, char *argv[])
                         }
                     }
                 }
+            } else if (crashDumpPath) {
+
             } else {
                 if (executablePath == nil) {
                     fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [arg fileSystemRepresentation]);
@@ -319,7 +339,7 @@ int main(int argc, char *argv[])
                 CDFile *file = [CDFile fileWithContentsOfFile:executablePath searchPathState:classDump.searchPathState];
                 if (file == nil) {
                     NSFileManager *defaultManager = [NSFileManager defaultManager];
-                    
+
                     if ([defaultManager fileExistsAtPath:executablePath]) {
                         if ([defaultManager isReadableFileAtPath:executablePath]) {
                             fprintf(stderr, "class-dump: Input file (%s) is neither a Mach-O file nor a fat archive.\n", [executablePath UTF8String]);
@@ -357,7 +377,7 @@ int main(int argc, char *argv[])
                     CDCoreDataModelProcessor *coreDataModelProcessor = [[CDCoreDataModelProcessor alloc] init];
                     [classFilter addObjectsFromArray:[coreDataModelProcessor coreDataModelSymbolsToExclude]];
 
-                    
+
                     if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
                         visitor.classDump = classDump;
@@ -384,6 +404,11 @@ int main(int argc, char *argv[])
                             CDPbxProjectProcessor *projectProcessor = [[CDPbxProjectProcessor alloc] init];
                             [projectProcessor processPodsProjectAtPath:podsPath symbolsFilePath:symbolsPath];
                         }
+                        if (!symbolMappingPath) {
+                            symbolMappingPath = defaultSymbolMappingPath;
+                        }
+                        CDSymbolMapper *mapper = [[CDSymbolMapper alloc] init];
+                        [mapper writeSymbolsFromSymbolsVisitor:visitor toFile:symbolMappingPath];
                     } else if (shouldGenerateSeparateHeaders) {
                         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
                         multiFileVisitor.classDump = classDump;
