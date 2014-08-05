@@ -306,6 +306,9 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
+        if (!symbolMappingPath) {
+            symbolMappingPath = defaultSymbolMappingPath;
+        }
 
         if (optind < argc) {
             NSString *arg = [NSString stringWithFileSystemRepresentation:argv[optind]];
@@ -327,8 +330,6 @@ int main(int argc, char *argv[])
                         }
                     }
                 }
-            } else if (crashDumpPath) {
-
             } else {
                 if (executablePath == nil) {
                     fprintf(stderr, "class-dump: Input file (%s) doesn't contain an executable.\n", [arg fileSystemRepresentation]);
@@ -404,9 +405,7 @@ int main(int argc, char *argv[])
                             CDPbxProjectProcessor *projectProcessor = [[CDPbxProjectProcessor alloc] init];
                             [projectProcessor processPodsProjectAtPath:podsPath symbolsFilePath:symbolsPath];
                         }
-                        if (!symbolMappingPath) {
-                            symbolMappingPath = defaultSymbolMappingPath;
-                        }
+
                         CDSymbolMapper *mapper = [[CDSymbolMapper alloc] init];
                         [mapper writeSymbolsFromSymbolsVisitor:visitor toFile:symbolMappingPath];
                     } else if (shouldGenerateSeparateHeaders) {
@@ -424,6 +423,22 @@ int main(int argc, char *argv[])
                     }
                 }
             }
+        }  else if (crashDumpPath) {
+            NSString *crashDump = [NSString stringWithContentsOfFile:crashDumpPath encoding:NSUTF8StringEncoding error:nil];
+            if (crashDump.length == 0) {
+                fprintf(stderr, "class-dump: crash dump file does not exist or is empty %s", [crashDumpPath fileSystemRepresentation]);
+                exit(4);
+            }
+
+            NSString *symbolsData = [NSString stringWithContentsOfFile:symbolMappingPath encoding:NSUTF8StringEncoding error:nil];
+            if (symbolsData.length == 0) {
+                fprintf(stderr, "class-dump: symbols file does not exist or is empty %s", [symbolMappingPath fileSystemRepresentation]);
+                exit(5);
+            }
+
+            CDSymbolMapper *mapper = [[CDSymbolMapper alloc] init];
+            NSString *processedFile = [mapper processCrashDump:crashDump withSymbols:[NSJSONSerialization JSONObjectWithData:[symbolsData dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil]];
+            [processedFile writeToFile:crashDumpPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
         }
         exit(0); // avoid costly autorelease pool drain, we’re exiting anyway
     }
