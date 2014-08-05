@@ -148,7 +148,7 @@ static NSString *const lettersSet[maxLettersSet] = {
     [_resultString appendFormat:@"\r\n"];
 
     NSData *data = [_resultString dataUsingEncoding:NSUTF8StringEncoding];
-    [(NSFileHandle *) [NSFileHandle fileHandleWithStandardOutput] writeData:data];
+    [data writeToFile:self.symbolsFilePath atomically:YES];
 
     NSLog(@"Done generating symbol table.");
     NSLog(@"Generated unique symbols = %zd", _uniqueSymbols.count);
@@ -219,23 +219,55 @@ static NSString *const lettersSet[maxLettersSet] = {
 
 - (NSString *)getterNameForMethodName:(NSString *)methodName {
     NSString *setterPrefix = @"set";
-    if ([methodName hasPrefix:setterPrefix] && ![methodName isEqualToString:setterPrefix]) {
-        NSString *string = [methodName stringByReplacingCharactersInRange:NSMakeRange(0, setterPrefix.length) withString:@""];
-        // If getter method name is all upper case then don't change first letter to lower case e.g. URL should remain URL, not uRL
-        if ([string isEqualToString:[string uppercaseString]]) {
-            return string;
+    BOOL hasSetterPrefix = [methodName hasPrefix:setterPrefix];
+    BOOL isEqualToSetter = [methodName isEqualToString:setterPrefix];
+
+    if (hasSetterPrefix && !isEqualToSetter) {
+        BOOL isFirstLetterAfterPrefixUppercase = [[methodName substringFromIndex:setterPrefix.length] isFirstLetterUppercase];
+
+        NSString *methodNameToObfuscate = methodName;
+
+        // exclude method names like setupSomething
+        if (isFirstLetterAfterPrefixUppercase) {
+            methodNameToObfuscate = [methodName stringByReplacingCharactersInRange:NSMakeRange(0, setterPrefix.length) withString:@""];
+        }
+
+        if (![self shouldSymbolStartWithLowercase:methodNameToObfuscate]) {
+            return methodNameToObfuscate;
         } else {
-            return [string lowercaseFirstCharacter];
+            return [methodNameToObfuscate lowercaseFirstCharacter];
         }
     } else {
         return methodName;
     }
 }
 
+- (BOOL)shouldSymbolStartWithLowercase:(NSString *)symbol {
+    // if two first characters in symbol are uppercase name should not be changed to lowercase
+    if (symbol.length > 1) {
+        NSString *prefix = [symbol substringToIndex:1];
+        if ([prefix isEqualToString:[prefix uppercaseString]]) {
+            return NO;
+        }
+    } else if ([symbol isEqualToString:[symbol uppercaseString]]) {
+        return NO;
+    }
+    return YES;
+}
+
 - (NSString *)setterNameForMethodName:(NSString *)methodName {
     NSString *setterPrefix = @"set";
-    if ([methodName hasPrefix:setterPrefix] && ![methodName isEqualToString:setterPrefix]) {
-        return methodName;
+    BOOL hasSetterPrefix = [methodName hasPrefix:setterPrefix];
+    BOOL isEqualToSetter = [methodName isEqualToString:setterPrefix];
+
+    if (hasSetterPrefix && !isEqualToSetter) {
+        BOOL isFirstLetterAfterPrefixUppercase = [[methodName substringFromIndex:setterPrefix.length] isFirstLetterUppercase];
+        // Excludes methods like setupSomething
+        if (isFirstLetterAfterPrefixUppercase) {
+            return methodName;
+        } else {
+            return [setterPrefix stringByAppendingString:[methodName capitalizeFirstCharacter]];
+        }
     } else {
         return [setterPrefix stringByAppendingString:[methodName capitalizeFirstCharacter]];
     }
@@ -248,7 +280,7 @@ static NSString *const lettersSet[maxLettersSet] = {
     if ([self doesContainGeneratedSymbol:getterName] && [self doesContainGeneratedSymbol:setterName]) {
         return;
     }
-    if ([self shouldSymbolsBeIgnored:getterName] || [self doesContainGeneratedSymbol:setterName]) {
+    if ([self shouldSymbolsBeIgnored:getterName] || [self shouldSymbolsBeIgnored:setterName]) {
         return;
     }
     if ([self isInitMethod:symbolName]) {
@@ -273,13 +305,15 @@ static NSString *const lettersSet[maxLettersSet] = {
     if ([propertyName hasPrefix:@"is"] && ![propertyName isEqualToString:@"is"]) {
         NSString *string = [propertyName stringByReplacingCharactersInRange:NSMakeRange(0, 2) withString:@""];
         // If property name is all upper case then don't change first letter to lower case e.g. URL should remain URL, not uRL
-        if ([string isEqualToString:[string uppercaseString]]) {
+        if (![self shouldSymbolStartWithLowercase:string]) {
             return string;
         } else {
             return [string lowercaseFirstCharacter];
         }
-    } else {
+    } else if (![self shouldSymbolStartWithLowercase:propertyName]){
         return propertyName;
+    } else {
+        return [propertyName lowercaseFirstCharacter];
     }
 }
 

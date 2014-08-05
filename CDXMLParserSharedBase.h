@@ -2,7 +2,7 @@
 
 @class GDataXMLElement;
 
-@interface CDParserSharedBase : NSObject
+@interface CDXMLParserSharedBase : NSObject
 - (NSArray *)symbolsInData:(NSData *)data;
 
 - (NSData *)obfuscatedXmlData:(NSData *)data symbols:(NSDictionary *)symbols;

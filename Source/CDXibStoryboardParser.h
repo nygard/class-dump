@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
-#import "CDParserSharedBase.h"
+#import "CDXMLParserSharedBase.h"
 
 
-@interface CDXibStoryboardParser : CDParserSharedBase
+@interface CDXibStoryboardParser : CDXMLParserSharedBase
 @end
