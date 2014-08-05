@@ -1,13 +1,13 @@
 iOS Class Guard
 =========
 
-iOS-Class-Guard is a command-line utility for obfuscating Objective-C class and protocol names. It was made as an extesion for [class-dump](https://github.com/nygard/class-dump). The utility generates symbol table which is then include during compilation. Effectively hides most of class, protocols, methods, properties and i-var names.
+iOS-Class-Guard is a command-line utility for obfuscating Objective-C class, protocol, property and method names. It was made as an extension for [class-dump](https://github.com/nygard/class-dump). The utility generates symbol table which is then include during compilation. Effectively hides most of class, protocols, methods, properties and i-var names.
 
 **iOS Class Guard will not enhance the security of your application, but will make it a harder to read. Obfuscation technique presented here will generate results similar to that produced by [ProGuard](http://proguard.sourceforge.net/).**
 
 Version
 -----------
-0.5
+0.6
 
 Do I need It?
 -----------
@@ -18,9 +18,13 @@ This utility makes code analyzing and runtime inspection more difficult. Which c
 * http://resources.infosecinstitute.com/ios-application-security-part-2-getting-class-information-of-ios-apps/
 * http://timourrashed.com/decrypting-ios-app/
 
-How it works?
+How does it work?
 ----------
-Utility works on compiled version of application. It reads Objective-C portion of Mach-O object files. Parses all classes, properties, methods and i-vars defined in that file adding all symbols to the list. Then it reads all dependent frameworks doing the same (parsing Objective-C code structure), but now adding symbols to forbidden list. Than all symbols from your executable that aren't in forbidden list are obfuscated. For each symbol random identifier consisting of letters and digits is generated. Every time you do obfuscation unique symbol map is generated. Generated map is then formatted as header file with C-preprocessor defines. File is then included in .pch file. During compilation any symbol defined in header is compiled with different identifier, the generated one.
+Utility works on compiled version of an application. It reads Objective-C portion of Mach-O object files. Parses all classes, properties, methods and i-vars defined in that file adding all symbols to the list. Then it reads all dependent frameworks doing the same (parsing Objective-C code structure), but now adding symbols to forbidden list. Then all symbols from your executable that aren't in forbidden list are obfuscated. For each symbol random identifier consisting of letters and digits is generated. Every time you do obfuscation unique symbol map is generated. Generated map is then formatted as header file with C-preprocessor defines. This file is then included in .pch file. Then it finds all XIBs and Storyboards and updates names inside (so effectively Interface Builder files are also obfuscated). Utility also finds xcdatamodel files inside your project and adds symbols (class and property names) to forbidden list. During compilation any symbol defined in header is compiled with different identifier, the generated one.
+
+iOS Class Guard also provides support for obfuscating CocoaPods libraries. When you provide path to Pods project utility automatically goes through all listed targets and finds .xcconfig files and precompiled header paths which will be modified. Then it adds previously generated header to library .pch header and updates header search path in .xcconfig file for a target.
+
+iOS Class Guard also generates symbol mapping in a JSON format. It’s needed for reversing the process when e.g. you get a crash report. Important note is that iOS Class Guard does not obfuscate system symbols, so if some of the methods/properties has same name in a custom class they won’t be obfuscated.
 
 Example generated symbols header:
 ``` C
@@ -79,9 +83,9 @@ A few steps is required to integrate iOS Class Guard in project.
       # Generate symbols map and write it to SWTableViewCell/symbols.h
       ios-class-guard \
         --sdk-ios 7.1 \
-        SWTableViewCell-no-obfuscated.xcarchive/Products/Applications/SWTableViewCell.app/SWTableViewCell > SWTableViewCell/symbols.h
+        SWTableViewCell-no-obfuscated.xcarchive/Products/Applications/SWTableViewCell.app/SWTableViewCell -O SWTableViewCell/symbols.h
 
-4. Do ```bash generate_symbols_map``` everytime when you want to regenerate symbols map. It should be done every release.
+4. Do ```bash generate_symbols_map``` every time when you want to regenerate symbols map. It should be done every release. Store symbols mapping json file so you can get real symbol names in case of a crash.
 
 5. The presented way is the simplest one. You can also add additional target that will automatically regenerate symbols map during compilation.
 
@@ -104,7 +108,7 @@ https://github.com/Polidea/ios-class-guard-example/tree/master/SWTableViewCell-o
 Command Line Options
 -----------
 ```
-ios-class-guard 0.5 (64 bit)
+ios-class-guard 0.6 (64 bit)
 Usage: ios-class-guard [options] <mach-o-file>
 
   where options are:
@@ -117,9 +121,22 @@ Usage: ios-class-guard [options] <mach-o-file>
         --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk
                        or /Developer/SDKs/MacOSX<version>.sdk)
         --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)
+        -X <directory> base directory for XIB, storyboards (will be searched recursively)
+        -P <path>      path to project.pbxproj of Pods project (located inside Pods.xcodeproj)
+        -O <path>      path to file where obfuscated symbols are written
+        -m <path>      path to symbol file map (default value symbols.json)
+        -c <path>      path to symbolicated crash dump
 ```
 
-Utility mostly requires you to get familiar with at least two options.
+Utility mostly requires you to get familiar with few options.
+
+### Output header path
+iOS Class Guard requires you to provide path to generated symbols header.
+
+#### Example
+```
+-O SWTableView\symbols.h
+```
 
 ### Class filter
 iOS Class Guard allows to filter out some of the class that can't be obfuscated. For example, because you use it as a precompiled static library.
@@ -142,14 +159,47 @@ It may happen that some symbols gets obfuscated when it shouldn't. For example y
 ```
 This will not obfuscate symbols of name *deflate* and symbols that starts with *curl_\**.
 
+### CocoaPods
+If you’re using CocoaPods in your project you can also obfuscate symbols inside external libraries. The only thing you need to specify path to Pods PBX project file. It’s located inside .xcodeproj directory. Utility will modify configurations and precompiled headers so that they’re also obfuscated.
+
+#### Example
+```
+-P Pods/Pods.xcodeproj/project.pbxproj
+```
+
+### Other options
+
+#### Xib directory
+This is optional argument. By default utility is searching for all XIB/Storyboard files recursively from directory of execution (in most cases root directory of project). If you store those files in a different directory you can provide a path to directory where they can be found.
+
+##### Example
+```
+-X SWTableView\Xib
+```
+
+#### Symbol mapping file
+You can provide path where utility will save symbol mapping. By default it’s symbols.json.
+
+#####
+```
+-m release/symbols_1.0.0.json
+```
+
+#### Reversing obfuscation in crash dump
+iOS Class Guard lets you reverse the process of obfuscation. It might come handy when you get a crash report from user and you’re trying to find the reason. You can provide a path to file with crash dump or file with output of ```atos``` command. Symbols in the file which was provided will replaced using symbol mapping file. Result will be saved in the same file.
+
+##### Example
+```
+-c crashdump -m symbols_1.0.0.json
+```
+
 Limitations
 -----------
 
 Due to the way iOS Class Guard you should be aware of two main limitations with that approach.
 
 ### XIB and Storyboards
-*ios-class-guard* is not aware of any *XIB* and *Storyboard* files, so any property and class name defined in these files most likely will be obfuscated and it will render *XIB* and *Storyboard* files broken. For now I suggest you to simply ignore these classes with *Class filter* (ie. ```-F '!MyNS*Controller```).
-
+*ios-class-guard* works pretty well with XIB and Storyboard files, but if you’re using external library which provide their bundle with Interface Builder files be sure to ignore those symbols as they won’t work when you launch the app and try to use them. You can do that using *Class filter*.
 
 ### Key-Value Observing (KVO)
 It is possible that during obfuscation KVO will stop working. Most developers to specify *KeyPath* use hardcoded strings.
