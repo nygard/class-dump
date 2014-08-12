@@ -1,4 +1,5 @@
 xcuserdata
 *.xcarchive/
 .idea
-Pods
+Pods/BuildHeaders
+build

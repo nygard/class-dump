@@ -1,0 +1,6 @@
+#ifdef __OBJC__
+#import <Cocoa/Cocoa.h>
+#endif
+
+#import "Pods-UnitTests-environment.h"
+#import <XCTest/XCTest.h>
