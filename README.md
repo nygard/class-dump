@@ -65,25 +65,49 @@ A few steps is required to integrate iOS Class Guard in project.
 
 3. Create ```generate_symbols_map``` and update project path, scheme and configuration name:
 
-        #!/bin/bash
-        set -xe
-    
-      # remove the content of symbols.h before compilation
-      echo '' > SWTableViewCell/symbols.h 
-    
-      # Compile iOS xcarchive without obfuscation
-      xcodebuild \
-        -sdk iphoneos7.1 \
-        -project SWTableViewCell.xcodeproj \
-        -scheme SWTableViewCell \
-        -configuration Release \
-        -archivePath SWTableViewCell-no-obfuscated \
-        clean archive
-    
-      # Generate symbols map and write it to SWTableViewCell/symbols.h
-      ios-class-guard \
-        --sdk-ios 7.1 \
-        SWTableViewCell-no-obfuscated.xcarchive/Products/Applications/SWTableViewCell.app/SWTableViewCell -O SWTableViewCell/symbols.h
+``` # sh
+#!/bin/bash
+
+set -xe
+
+PROJECT=SWTableViewCell.xcodeproj
+SCHEME=SWTableViewCell
+TARGET=SWTableViewCell
+CONFIGURATION=Release
+SDK=iphoneos
+
+# Just in case
+echo "WARNING: This will wipe all your not commited changes in your repository"
+echo "Press Ctrl-C to Cancel or Enter to proceed."
+read
+
+# Clean current workspace
+git reset --hard
+git clean -fdx
+
+[[ -f Podfile ]] && [[ ! -f Pods/Manifest.lock ]] && pod install
+
+# Build project to fetch symbols
+xctool  -project "$PROJECT" \
+	-scheme "$SCHEME" \
+	-configuration "$CONFIGURATION" \
+	-sdk "$SDK" \
+	clean build \
+	OBJROOT=build/ \
+	SYMROOT=build/
+
+SYMBOLS_FILE="$PWD/symbols.h"
+
+find . -name '*-Prefix.pch' -exec sed -i .bak '1i\
+'"#import \"$SYMBOLS_FILE\"
+" "{}" \;
+
+# Obfuscate project
+ios-class-guard \
+	--sdk-ios 7.1 \
+	-O symbols.h \
+	build/$CONFIGURATION-$SDK/$TARGET.app/$TARGET
+```
 
 4. Do ```bash generate_symbols_map``` every time when you want to regenerate symbols map. It should be done every release. Store symbols mapping json file so you can get real symbol names in case of a crash.
 
@@ -135,7 +159,7 @@ iOS Class Guard requires you to provide path to generated symbols header.
 
 #### Example
 ```
--O SWTableView\symbols.h
+-O SWTableView/symbols.h
 ```
 
 ### Class filter
@@ -174,7 +198,7 @@ This is optional argument. By default utility is searching for all XIB/Storyboar
 
 ##### Example
 ```
--X SWTableView\Xib
+-X SWTableView/Xib
 ```
 
 #### Symbol mapping file
@@ -260,9 +284,14 @@ Remove any *keyPath* and change it to ```NSStringFromSelector(@selector(keyPath)
 }
 ```
 
+Note
+---
+iOS-Class-Guard should work alongside LLVM Obfuscator: https://github.com/obfuscator-llvm/obfuscator. However, it is not tested.
+
 License
 ----
 This file is part of ios-class-guard, a utility for obfuscating the Objective-C applications. Copyright (C) 2014 Polidea.
+Application is made as an extension for class-dump, a utility for examining the Objective-C segment of Mach-O files. Copyright (C) 1997-1998, 2000-2001, 2004-2013 Steve Nygard.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
