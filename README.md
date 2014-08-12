@@ -46,7 +46,7 @@ Installation
 -----------
 Execute this simple bash script in Terminal. When asked for password, enter your account. It's needed, because utility is installed in /usr/local/bin.
 
-```sh
+``` sh
 curl https://raw.githubusercontent.com/Polidea/ios-class-guard/master/install.sh | bash
 ```
 
@@ -65,7 +65,7 @@ A few steps is required to integrate iOS Class Guard in project.
 
 3. Create ```generate_symbols_map``` and update project path, scheme and configuration name:
 
-``` # sh
+``` sh
 #!/bin/bash
 
 set -xe
