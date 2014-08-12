@@ -26,6 +26,7 @@
 #import "CDPbxProjectParser.h"
 #import "CDPbxProjectProcessor.h"
 #import "CDSymbolMapper.h"
+#import "CDSystemProtocolsProcessor.h"
 
 NSString *defaultSymbolMappingPath = @"symbols.json";
 
@@ -378,6 +379,8 @@ int main(int argc, char *argv[])
                     CDCoreDataModelProcessor *coreDataModelProcessor = [[CDCoreDataModelProcessor alloc] init];
                     [classFilter addObjectsFromArray:[coreDataModelProcessor coreDataModelSymbolsToExclude]];
 
+                    CDSystemProtocolsProcessor *systemProtocolsProcessor = [[CDSystemProtocolsProcessor alloc] initWithSdkPath:classDump.sdkRoot];
+                    [classFilter addObjectsFromArray:[systemProtocolsProcessor systemProtocolsSymbolsToExclude]];
 
                     if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
