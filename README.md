@@ -284,6 +284,9 @@ Remove any *keyPath* and change it to ```NSStringFromSelector(@selector(keyPath)
 }
 ```
 
+### Serialization
+If you use classes that are saved to the disk or user defaults using `NSCoding` protocol you’ll have to exclude them from obfuscation. If you won’t do it, after generating symbols again your app will start crashing as it won’t be able to read that class from serialized data.
+
 Note
 ---
 iOS-Class-Guard should work alongside LLVM Obfuscator: https://github.com/obfuscator-llvm/obfuscator. However, it is not tested.
