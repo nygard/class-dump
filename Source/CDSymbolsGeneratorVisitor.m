@@ -245,7 +245,7 @@ static NSString *const lettersSet[maxLettersSet] = {
 - (BOOL)shouldSymbolStartWithLowercase:(NSString *)symbol {
     // if two first characters in symbol are uppercase name should not be changed to lowercase
     if (symbol.length > 1) {
-        NSString *prefix = [symbol substringToIndex:1];
+        NSString *prefix = [symbol substringToIndex:2];
         if ([prefix isEqualToString:[prefix uppercaseString]]) {
             return NO;
         }
