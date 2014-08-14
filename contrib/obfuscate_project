@@ -1,0 +1,81 @@
+#!/bin/bash
+
+set -e
+
+# General build options
+# WORKSPACE=YourWorkspace.xcworkspace
+PROJECT=YourProject.xcodeproj
+SCHEME=YourScheme
+CONFIGURATION=Release
+SDK=7.1
+
+# Additional build options
+XCTOOL_OPTS=""
+CLASS_GUARD_OPTS="-i IgnoredSymbol -F !ExcludedClass"
+
+####################################################
+# BUILD SCRIPT STARTS HERE
+####################################################
+
+# Just in case
+echo "WARNING: This will wipe all your not commited changes in your repository"
+echo "Press Ctrl-C to Cancel or Enter to proceed."
+read
+
+function echo_and_run() {
+    echo "$@"
+    "$@"
+}
+
+# Jump to directory where obfuscate script is located
+pushd $(dirname $0)
+
+# Symbols file path
+SYMBOLS_FILE="$PWD/symbols.h"
+
+# Clean current workspace
+echo_and_run git reset --hard
+echo_and_run git clean -fdx
+
+# Just in case: wipe build/
+rm -rf build/
+
+# Automatically detect PODS
+[[ -f Podfile ]] && [[ ! -f Pods/Manifest.lock ]] && pod install
+[[ -f Pods/Pods.xcodeproj/project.pbxproj ]] && CLASS_GUARD_OPTS="$CLASS_GUARD_OPTS -P Pods/Pods.xcodeproj/project.pbxproj"
+
+# Build project to fetch symbols
+[[ -n "$WORKSPACE" ]] && XCTOOL_OPTS="$XCTOOL_OPTS -workspace $WORKSPACE"
+[[ -n "$PROJECT" ]] && XCTOOL_OPTS="$XCTOOL_OPTS -project $PROJECT"
+[[ -n "$SCHEME" ]] && XCTOOL_OPTS="$XCTOOL_OPTS -scheme $SCHEME"
+[[ -n "$CONFIGURATION" ]] && XCTOOL_OPTS="$XCTOOL_OPTS -configuration $CONFIGURATION"
+[[ -n "$SDK" ]] && XCTOOL_OPTS="$XCTOOL_OPTS -sdk iphoneos$SDK"
+
+echo_and_run xctool $XCTOOL_OPTS \
+    clean build \
+    OBJROOT=build/ \
+    SYMROOT=build/
+
+# Insert SYMBOLS_FILE to all .pch found in project
+echo_and_run find . -name '*-Prefix.pch' -exec sed -i .bak '1i\
+'"#import \"$SYMBOLS_FILE\"
+" "{}" \;
+
+# Obfuscate project
+for app in build/*/*.app
+do
+    TARGET=$(basename "$app" .app)
+    echo "Obfuscating $TARGET in $app..."
+    echo_and_run ios-class-guard \
+        --sdk-ios "$SDK" \
+        $CLASS_GUARD_OPTS \
+        -O "$SYMBOLS_FILE" \
+        "$app/$TARGET"
+    break
+done
+
+echo ""
+echo ""
+echo "Congratulations! Obfuscation completed. You can now build, test and archive Your project using Xcode, Xctool or Xcodebuid..."
+echo ""
+echo ""
