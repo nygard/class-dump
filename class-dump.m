@@ -380,7 +380,7 @@ int main(int argc, char *argv[])
                     [classFilter addObjectsFromArray:[coreDataModelProcessor coreDataModelSymbolsToExclude]];
 
                     CDSystemProtocolsProcessor *systemProtocolsProcessor = [[CDSystemProtocolsProcessor alloc] initWithSdkPath:classDump.sdkRoot];
-                    [classFilter addObjectsFromArray:[systemProtocolsProcessor systemProtocolsSymbolsToExclude]];
+                    [ignoreSymbols addObjectsFromArray:[systemProtocolsProcessor systemProtocolsSymbolsToExclude]];
 
                     if (searchString != nil) {
                         CDFindMethodVisitor *visitor = [[CDFindMethodVisitor alloc] init];
