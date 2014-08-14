@@ -1,9 +1,9 @@
 iOS Class Guard
 =========
 
-iOS-Class-Guard is a command-line utility for obfuscating Objective-C class, protocol, property and method names. It was made as an extension for [class-dump](https://github.com/nygard/class-dump). The utility generates symbol table which is then include during compilation. Effectively hides most of class, protocols, methods, properties and i-var names.
+iOS-Class-Guard is a command-line utility for obfuscating Objective-C class, protocol, property and method names. It was made as an extension for [class-dump](https://github.com/nygard/class-dump). The utility generates a symbol table which is then included during compilation. It effectively hides most of class, protocol, method, property and i-var names.
 
-**iOS Class Guard will not enhance the security of your application, but will make it a harder to read. Obfuscation technique presented here will generate results similar to that produced by [ProGuard](http://proguard.sourceforge.net/).**
+**iOS Class Guard itself is not the silver bullet for security of your application. However, it will definitiely make your application harder to read by an attacker.**
 
 Version
 -----------
@@ -11,7 +11,7 @@ Version
 
 Do I need It?
 -----------
-This utility makes code analyzing and runtime inspection more difficult. Which can be referred as simple/basic method of obfuscation. You may ask yourself why is it needed? Due to Objective-C architecture any dissection of iOS applications is rather simple. You may want to check out a following links:
+This utility makes code analyzing and runtime inspection more difficult, which can be referred to as a simple/basic method of obfuscation. You may ask yourself why it is needed; due to Objective-C architecture any dissection of iOS applications is rather simple. You may want to check out the following links:
 
 * http://www.infointox.net/?p=123
 * http://www.cycript.org/
@@ -20,11 +20,11 @@ This utility makes code analyzing and runtime inspection more difficult. Which c
 
 How does it work?
 ----------
-Utility works on compiled version of an application. It reads Objective-C portion of Mach-O object files. Parses all classes, properties, methods and i-vars defined in that file adding all symbols to the list. Then it reads all dependent frameworks doing the same (parsing Objective-C code structure), but now adding symbols to forbidden list. Then all symbols from your executable that aren't in forbidden list are obfuscated. For each symbol random identifier consisting of letters and digits is generated. Every time you do obfuscation unique symbol map is generated. Generated map is then formatted as header file with C-preprocessor defines. This file is then included in .pch file. Then it finds all XIBs and Storyboards and updates names inside (so effectively Interface Builder files are also obfuscated). Utility also finds xcdatamodel files inside your project and adds symbols (class and property names) to forbidden list. During compilation any symbol defined in header is compiled with different identifier, the generated one.
+The utility works on the compiled version of an application. It reads the Objective-C portion of Mach-O object files. It parses all classes, properties, methods and i-vars defined in that file adding all symbols to the list. Then it reads all dependent frameworks doing the same (parsing Objective-C code structure), but now adding symbols to a forbidden list. Then all symbols from your executable that aren't in the forbidden list are obfuscated. For each symbol a random identifier consisting of letters and digits is generated. Every time you do obfuscation, a unique symbol map is generated. The generated map is then formatted as a header file with C-preprocessor defines. This file is then included in .pch file. Then it finds all XIBs and Storyboards and updates names inside (so effectively Interface Builder files are also obfuscated). The utility also finds xcdatamodel files inside your project and adds symbols (class and property names) to the forbidden list. During compilation any symbol defined in the header is compiled with a different identifier, the generated one.
 
-iOS Class Guard also provides support for obfuscating CocoaPods libraries. When you provide path to Pods project utility automatically goes through all listed targets and finds .xcconfig files and precompiled header paths which will be modified. Then it adds previously generated header to library .pch header and updates header search path in .xcconfig file for a target.
+iOS Class Guard also provides support for obfuscating CocoaPods libraries. When you provide paths to Pods the project utility automatically goes through all listed targets and finds .xcconfig files and precompiled header paths to be modified. Then it adds the previously generated header to library .pch header and updates the header search path in .xcconfig file for a target.
 
-iOS Class Guard also generates symbol mapping in a JSON format. It’s needed for reversing the process when e.g. you get a crash report. Important note is that iOS Class Guard does not obfuscate system symbols, so if some of the methods/properties has same name in a custom class they won’t be obfuscated.
+iOS Class Guard also generates symbol mapping in a JSON format. It’s needed for reversing the process when e.g. you get a crash report. It is important to note that iOS Class Guard does not obfuscate system symbols, so if some of the methods/properties have the same name in a custom class they won’t be obfuscated.
 
 Example generated symbols header:
 ``` C
@@ -44,7 +44,7 @@ Example generated symbols header:
 
 Installation
 -----------
-Execute this simple bash script in Terminal. When asked for password, enter your account. It's needed, because utility is installed in /usr/local/bin.
+Execute this simple bash script in Terminal. When asked for the password, enter your account. It's needed, because the utility is installed in /usr/local/bin.
 
 ``` sh
 curl https://raw.githubusercontent.com/Polidea/ios-class-guard/master/install.sh | bash
@@ -52,7 +52,7 @@ curl https://raw.githubusercontent.com/Polidea/ios-class-guard/master/install.sh
 
 How to use it?
 -----------
-A few steps is required to integrate iOS Class Guard in project.
+A few steps are required to integrate iOS Class Guard in a project.
 
 1. Download ```obfuscate_project``` in to your project root path.
 
@@ -60,17 +60,17 @@ A few steps is required to integrate iOS Class Guard in project.
 curl -o obfuscate_project https://raw.githubusercontent.com/Polidea/ios-class-guard/master/contrib/obfuscate_project && chmod +x obfuscate_project
 ```
 
-2. Update project file, scheme and configuration name.
+2. Update the project file, scheme and configuration name.
 
-3. Do ```bash obfuscate_project``` every time when you want to obfuscate your project. It should be done every release. Store symbols mapping json file so you can get real symbol names in case of a crash.
+3. Do ```bash obfuscate_project``` every time when you want to obfuscate your project. It should be done every release. Store the json file containing symbol mapping so you can get the original symbol names in case of a crash.
 
 4. Build, test and archive your project using Xcode or other tools.
 
-The presented way is the simplest one. You can also add additional target that will automatically regenerate symbols map during compilation.
+The presented way is the simplest one. You can also add additional target that will automatically regenerate the symbols map during compilation.
 
 Example
 -----------
-You can take a look what changes are required and how it works in some example project.
+You can take a look what changes are required and how it works in some example projects.
 
 ``` sh
 git clone https://github.com/Polidea/ios-class-guard-example ios-class-guard-example
@@ -81,7 +81,7 @@ make compile
 Here is *class-dump* for non-obfuscated sources: 
 https://github.com/Polidea/ios-class-guard-example/tree/master/SWTableViewCell-no-obfuscated.xcarchive/Headers
 
-How it will look when you use *iOS Class Guard*:
+What it will look like when you use *iOS Class Guard*:
 https://github.com/Polidea/ios-class-guard-example/tree/master/SWTableViewCell-obfuscated.xcarchive/Headers
 
 Command Line Options
@@ -107,7 +107,7 @@ Usage: ios-class-guard [options] <mach-o-file>
         -c <path>      path to symbolicated crash dump
 ```
 
-Utility mostly requires you to get familiar with few options.
+The utility requires you to get familiar with a few options.
 
 ### Output header path
 iOS Class Guard requires you to provide path to generated symbols header.
@@ -118,9 +118,9 @@ iOS Class Guard requires you to provide path to generated symbols header.
 ```
 
 ### Class filter
-iOS Class Guard allows to filter out some of the class that can't be obfuscated. For example, because you use it as a precompiled static library.
+iOS Class Guard allows to filter out some of the classes that can't be obfuscated. For example, because you use it as a precompiled static library.
 
-iOS Code Style assumes that every class is prefixed with two-or-three-symbol identifier - namespace (ie. NS* for Foundation class). This allows you to filter in or filter out the whole namespace.
+iOS Code Style assumes that every class is prefixed with a two-or-three-symbol identifier - namespace (ie. NS* for Foundation class). This allows you to filter in or filter out the whole namespace.
 
 #### Example
 ```
@@ -130,16 +130,16 @@ iOS Code Style assumes that every class is prefixed with two-or-three-symbol ide
 This will filter out any class in namespace *APH* and *MC*.
 
 ### Ignored symbols
-It may happen that some symbols gets obfuscated when it shouldn't. For example you use C method and name Objective-C method using the same name. It will lead to linker error (*unresolved external*). You have to find what symbol is it and add it to list of ignored symbols.
+It may happen that some symbols get obfuscated even though they shouldn’t, e.g. if you use C method and name Objective-C method using the same name. It will lead to a linker error (*unresolved external*). You have to find what symbol is it and add it to the list of ignored symbols.
 
 #### Example
 ```
 -i 'deflate' -i 'curl_*'
 ```
-This will not obfuscate symbols of name *deflate* and symbols that starts with *curl_\**.
+This will not obfuscate symbols named *deflate* and symbols that start with *curl_\**.
 
 ### CocoaPods
-If you’re using CocoaPods in your project you can also obfuscate symbols inside external libraries. The only thing you need to specify path to Pods PBX project file. It’s located inside .xcodeproj directory. Utility will modify configurations and precompiled headers so that they’re also obfuscated.
+If you’re using CocoaPods in your project you can also obfuscate symbols inside external libraries. The only thing you need is to specify path to Pods PBX project file. It’s located inside the .xcodeproj directory. Utility will modify configurations and precompiled headers so that they’re also obfuscated.
 
 #### Example
 ```
@@ -149,7 +149,7 @@ If you’re using CocoaPods in your project you can also obfuscate symbols insid
 ### Other options
 
 #### Xib directory
-This is optional argument. By default utility is searching for all XIB/Storyboard files recursively from directory of execution (in most cases root directory of project). If you store those files in a different directory you can provide a path to directory where they can be found.
+This is optional argument. By default utility searches for all XIB/Storyboard files recursively from directory of execution (in most cases root directory of the project). If you store those files in a different directory you can provide a path to the directory where they can be found.
 
 ##### Example
 ```
@@ -157,7 +157,7 @@ This is optional argument. By default utility is searching for all XIB/Storyboar
 ```
 
 #### Symbol mapping file
-You can provide path where utility will save symbol mapping. By default it’s symbols.json.
+You can provide the path where utility will save symbol mapping. By default it’s symbols.json.
 
 #####
 ```
@@ -165,7 +165,7 @@ You can provide path where utility will save symbol mapping. By default it’s s
 ```
 
 #### Reversing obfuscation in crash dump
-iOS Class Guard lets you reverse the process of obfuscation. It might come handy when you get a crash report from user and you’re trying to find the reason. You can provide a path to file with crash dump or file with output of ```atos``` command. Symbols in the file which was provided will replaced using symbol mapping file. Result will be saved in the same file.
+iOS Class Guard lets you reverse the process of obfuscation. It might come in handy when you get a crash report from a user and you’re trying to find the reason. You can provide a path to a file with crash dump or a file with the output of ```atos``` command. Symbols in the file which was provided will be replaced using the symbol mapping file. The result will be saved in the same file.
 
 ##### Example
 ```
@@ -175,13 +175,13 @@ iOS Class Guard lets you reverse the process of obfuscation. It might come handy
 Limitations
 -----------
 
-Due to the way iOS Class Guard you should be aware of two main limitations with that approach.
+Due to the way iOS Class Guard works you should be aware of two main limitations of that approach.
 
 ### XIB and Storyboards
-*ios-class-guard* works pretty well with XIB and Storyboard files, but if you’re using external library which provide their bundle with Interface Builder files be sure to ignore those symbols as they won’t work when you launch the app and try to use them. You can do that using *Class filter*.
+*ios-class-guard* works pretty well with XIB and Storyboard files, but if you’re using external libraries which provide their bundle with Interface Builder files be sure to ignore those symbols, as they won’t work when you launch the app and try to use them. You can do that using *Class filter*.
 
 ### Key-Value Observing (KVO)
-It is possible that during obfuscation KVO will stop working. Most developers to specify *KeyPath* use hardcoded strings.
+It is possible that during obfuscation KVO will stop working. Most developers use hardcoded strings to specify *KeyPath*.
 
 ``` objc
 - (void)registerObserver {
@@ -208,7 +208,7 @@ It is possible that during obfuscation KVO will stop working. Most developers to
 }
 ```
 
-This will simply not work. The property *isFinished* will get a new name and hardcoded string will not reflect the change.
+This will simply not work. The property *isFinished* will get a new name and the hardcoded string will not reflect the change.
 
 Remove any *keyPath* and change it to ```NSStringFromSelector(@selector(keyPath))```.
 
@@ -240,7 +240,7 @@ Remove any *keyPath* and change it to ```NSStringFromSelector(@selector(keyPath)
 ```
 
 ### Serialization
-If you use classes that are saved to the disk or user defaults using `NSCoding` protocol you’ll have to exclude them from obfuscation. If you won’t do it, after generating symbols again your app will start crashing as it won’t be able to read that class from serialized data.
+If you use classes that are saved to the disk or user defaults using `NSCoding` protocol you’ll have to exclude them from obfuscation. If you don’t, after generating symbols again your app will start crashing as it won’t be able to read that class from serialized data.
 
 ### Undefined symbols
 When using `iOS-Class-Guard` it is more than probable that you will encounter issues similar to this:
@@ -251,16 +251,16 @@ Undefined symbols for architecture i386:
       objc-class-ref in GRAppDelegate.o
 ```
 
-To fix it, copy `n9z` and search for it in `symbols.h`. Most probably it will be a class. You simply have to exclude it from obfuscating by specifing: `-F '!UnresolvedClassName'` and retest.
+To fix it, copy `n9z` and search for it in `symbols.h`. Most probably it will be a class. You simply have to exclude it from obfuscation by specifying: `-F '!UnresolvedClassName'` and retest.
 
 Note
 ---
-iOS-Class-Guard should work alongside LLVM Obfuscator: https://github.com/obfuscator-llvm/obfuscator. However, it is not tested.
+iOS-Class-Guard should work alongside LLVM Obfuscator: https://github.com/obfuscator-llvm/obfuscator. However, this has not been tested.
 
 License
 ----
 This file is part of ios-class-guard, a utility for obfuscating the Objective-C applications. Copyright (C) 2014 Polidea.
-Application is made as an extension for class-dump, a utility for examining the Objective-C segment of Mach-O files. Copyright (C) 1997-1998, 2000-2001, 2004-2013 Steve Nygard.
+The application is made as an extension for class-dump, a utility for examining the Objective-C segment of Mach-O files. Copyright (C) 1997-1998, 2000-2001, 2004-2013 Steve Nygard.
 
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
 
