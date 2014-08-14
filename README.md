@@ -54,64 +54,19 @@ How to use it?
 -----------
 A few steps is required to integrate iOS Class Guard in project.
 
-1. To any used .PCH (Precompiled header) at top paste:
-``` C
-#ifndef DEBUG
-#include "symbols.h"
-#endif // DBEUG
-```
-
-2. Create empty ```symbols.h``` and add it to project.
-
-3. Create ```generate_symbols_map``` and update project path, scheme and configuration name:
+1. Download ```obfuscate_project``` in to your project root path.
 
 ``` sh
-#!/bin/bash
-
-set -xe
-
-PROJECT=SWTableViewCell.xcodeproj
-SCHEME=SWTableViewCell
-TARGET=SWTableViewCell
-CONFIGURATION=Release
-SDK=iphoneos
-
-# Just in case
-echo "WARNING: This will wipe all your not commited changes in your repository"
-echo "Press Ctrl-C to Cancel or Enter to proceed."
-read
-
-# Clean current workspace
-git reset --hard
-git clean -fdx
-
-[[ -f Podfile ]] && [[ ! -f Pods/Manifest.lock ]] && pod install
-
-# Build project to fetch symbols
-xctool  -project "$PROJECT" \
-	-scheme "$SCHEME" \
-	-configuration "$CONFIGURATION" \
-	-sdk "$SDK" \
-	clean build \
-	OBJROOT=build/ \
-	SYMROOT=build/
-
-SYMBOLS_FILE="$PWD/symbols.h"
-
-find . -name '*-Prefix.pch' -exec sed -i .bak '1i\
-'"#import \"$SYMBOLS_FILE\"
-" "{}" \;
-
-# Obfuscate project
-ios-class-guard \
-	--sdk-ios 7.1 \
-	-O symbols.h \
-	build/$CONFIGURATION-$SDK/$TARGET.app/$TARGET
+curl -o obfuscate_project https://raw.githubusercontent.com/Polidea/ios-class-guard/master/contrib/obfuscate_project && chmod +x obfuscate_project
 ```
 
-4. Do ```bash generate_symbols_map``` every time when you want to regenerate symbols map. It should be done every release. Store symbols mapping json file so you can get real symbol names in case of a crash.
+2. Update project file, scheme and configuration name.
 
-5. The presented way is the simplest one. You can also add additional target that will automatically regenerate symbols map during compilation.
+3. Do ```bash obfuscate_project``` every time when you want to obfuscate your project. It should be done every release. Store symbols mapping json file so you can get real symbol names in case of a crash.
+
+4. Build, test and archive your project using Xcode or other tools.
+
+The presented way is the simplest one. You can also add additional target that will automatically regenerate symbols map during compilation.
 
 Example
 -----------
