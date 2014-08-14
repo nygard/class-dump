@@ -53,6 +53,7 @@ static NSString *const lettersSet[maxLettersSet] = {
             @"for",
             @"goto",
             @"if",
+            @"bool",
             @"int",
             @"long",
             @"register",
@@ -72,7 +73,8 @@ static NSString *const lettersSet[maxLettersSet] = {
             @"in",
             @"init",
             @"alloc",
-            @"_inline"
+            @"_inline",
+            @"_Bool"
     ]];
 }
 
