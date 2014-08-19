@@ -28,7 +28,8 @@
     NSMutableDictionary *_classesByAddress;
     
     NSMutableArray *_categories;
-    
+    NSMutableDictionary *_categoriesByAddress;
+
     CDProtocolUniquer *_protocolUniquer;
 }
 
@@ -39,6 +40,7 @@
         _classes = [[NSMutableArray alloc] init];
         _classesByAddress = [[NSMutableDictionary alloc] init];
         _categories = [[NSMutableArray alloc] init];
+        _categoriesByAddress = [[NSMutableDictionary alloc] init];
         
         _protocolUniquer = [[CDProtocolUniquer alloc] init];
     }
@@ -102,8 +104,12 @@
 
 - (void)addClass:(CDOCClass *)aClass withAddress:(uint64_t)address;
 {
-    [_classes addObject:aClass];
-    [_classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedLongLong:address]];
+    if ([self classWithAddress:address] == nil)
+    {
+        aClass.address = address;
+        [_classes addObject:aClass];
+        [_classesByAddress setObject:aClass forKey:[NSNumber numberWithUnsignedLongLong:address]];
+    }
 }
 
 - (CDOCClass *)classWithAddress:(uint64_t)address;
@@ -114,19 +120,38 @@
 - (void)addClassesFromArray:(NSArray *)array;
 {
     if (array != nil)
-        [_classes addObjectsFromArray:array];
+    {
+        for (CDOCClass * aClass in array)
+        {
+            [self addClass:aClass withAddress:aClass.address];
+        }
+    }
 }
 
 - (void)addCategoriesFromArray:(NSArray *)array;
 {
     if (array != nil)
-        [_categories addObjectsFromArray:array];
+    {
+        for (CDOCCategory * aCategory in array)
+        {
+            [self addCategory:aCategory withAddress:aCategory.address];
+        }
+    }
 }
 
-- (void)addCategory:(CDOCCategory *)category;
+- (void)addCategory:(CDOCCategory *)category withAddress:(uint64_t)address;
 {
-    if (category != nil)
+    if (category != nil && [self categoryWithAddress:address] == nil)
+    {
+        category.address = address;
         [_categories addObject:category];
+        [_categoriesByAddress setObject:category forKey:[NSNumber numberWithUnsignedLongLong:address]];
+    }
+}
+
+- (CDOCClass *)categoryWithAddress:(uint64_t)address;
+{
+    return [_categoriesByAddress objectForKey:[NSNumber numberWithUnsignedLongLong:address]];
 }
 
 #pragma mark - Processing
