@@ -5,6 +5,8 @@ iOS-Class-Guard is a command-line utility for obfuscating Objective-C class, pro
 
 **iOS Class Guard itself is not the silver bullet for security of your application. However, it will definitiely make your application harder to read by an attacker.**
 
+Read the official announcement at [Polidea Blog](http://www.polidea.com/#!heartbeat/blog/Protecting_iOS_Applications)
+
 Version
 -----------
 0.6
