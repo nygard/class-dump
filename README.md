@@ -49,7 +49,12 @@ Installation
 Execute this simple bash script in Terminal. When asked for the password, enter your account. It's needed, because the utility is installed in /usr/local/bin.
 
 ``` sh
-curl https://raw.githubusercontent.com/Polidea/ios-class-guard/master/install.sh | bash
+brew install https://raw.githubusercontent.com/Polidea/homebrew/ios-class-guard/Library/Formula/ios-class-guard.rb
+```
+
+To install bleeding edge version:
+``` sh
+brew install --HEAD https://raw.githubusercontent.com/Polidea/homebrew/ios-class-guard/Library/Formula/ios-class-guard.rb
 ```
 
 How to use it?
