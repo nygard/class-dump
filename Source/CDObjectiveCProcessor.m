@@ -24,10 +24,10 @@
 {
     CDMachOFile *_machOFile;
     
-    NSMutableArray *_classes;
+    NSMutableOrderedSet *_classes;
     NSMutableDictionary *_classesByAddress;
     
-    NSMutableArray *_categories;
+    NSMutableOrderedSet *_categories;
     
     CDProtocolUniquer *_protocolUniquer;
 }
@@ -36,9 +36,9 @@
 {
     if ((self = [super init])) {
         _machOFile = machOFile;
-        _classes = [[NSMutableArray alloc] init];
+        _classes = [[NSMutableOrderedSet alloc] init];
         _classesByAddress = [[NSMutableDictionary alloc] init];
-        _categories = [[NSMutableArray alloc] init];
+        _categories = [[NSMutableOrderedSet alloc] init];
         
         _protocolUniquer = [[CDProtocolUniquer alloc] init];
     }
@@ -177,8 +177,8 @@
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 {
     NSMutableArray *classesAndCategories = [[NSMutableArray alloc] init];
-    [classesAndCategories addObjectsFromArray:_classes];
-    [classesAndCategories addObjectsFromArray:_categories];
+    [classesAndCategories addObjectsFromArray:[_classes array]];
+    [classesAndCategories addObjectsFromArray:[_categories array]];
 
     [visitor willVisitObjectiveCProcessor:self];
     [visitor visitObjectiveCProcessor:self];

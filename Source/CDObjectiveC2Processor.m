@@ -36,26 +36,30 @@
 
 - (void)loadClasses;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"];
-    
-    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
-    while ([cursor isAtEnd] == NO) {
-        uint64_t val = [cursor readPtr];
-        CDOCClass *aClass = [self loadClassAtAddress:val];
-        if (aClass != nil) {
-            [self addClass:aClass withAddress:val];
+    for (NSString *sectionName in @[@"__objc_classlist", @"__objc_nlclslist"]) {
+        CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:sectionName];
+        
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+        while ([cursor isAtEnd] == NO) {
+            uint64_t val = [cursor readPtr];
+            CDOCClass *aClass = [self loadClassAtAddress:val];
+            if (aClass != nil) {
+                [self addClass:aClass withAddress:val];
+            }
         }
     }
 }
 
 - (void)loadCategories;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_catlist"];
-    
-    CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
-    while ([cursor isAtEnd] == NO) {
-        CDOCCategory *category = [self loadCategoryAtAddress:[cursor readPtr]];
-        [self addCategory:category];
+    for (NSString *sectionName in @[@"__objc_catlist", @"__objc_nlcatlist"]) {
+        CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:sectionName];
+        
+        CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+        while ([cursor isAtEnd] == NO) {
+            CDOCCategory *category = [self loadCategoryAtAddress:[cursor readPtr]];
+            [self addCategory:category];
+        }
     }
 }
 
