@@ -53,8 +53,9 @@
 
 - (NSString *)description;
 {
-    if ([self.templateTypes count] == 0)
-        return self.name;
+    if ([self.templateTypes count] == 0) {
+        return self.name ? self.name : @"";
+    }
     
     if (self.suffix != nil)
         return [NSString stringWithFormat:@"%@<%@>%@", self.name, [self.templateTypes componentsJoinedByString:@", "], self.suffix];
