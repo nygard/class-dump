@@ -6,7 +6,7 @@
 
 // This needs to come first.
 #import "KiwiConfiguration.h"
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -65,7 +65,6 @@ extern "C" {
 #import "KWNull.h"
 #import "KWObjCUtilities.h"
 #import "KWPendingNode.h"
-#import "KWRaiseMatcher.h"
 #import "KWReceiveMatcher.h"
 #import "KWRegisterMatchersNode.h"
 #import "KWRegularExpressionPatternMatcher.h"
@@ -73,6 +72,7 @@ extern "C" {
 #import "KWSpec.h"
 #import "KWStringUtilities.h"
 #import "KWStub.h"
+#import "KWSuiteConfigurationBase.h"
 #import "KWUserDefinedMatcher.h"
 #import "KWValue.h"
 #import "KWVerifying.h"
