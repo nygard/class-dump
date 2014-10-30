@@ -1,2 +1,0 @@
-PODS_UNITTESTS_KIWI_FRAMEWORK_SEARCH_PATHS = $(inherited) "$(DEVELOPER_LIBRARY_DIR)/Frameworks" $(inherited) "$(DEVELOPER_LIBRARY_DIR)/Frameworks" $(inherited) "$(DEVELOPER_LIBRARY_DIR)/Frameworks"
-PODS_UNITTESTS_KIWI_OTHER_LDFLAGS = -framework XCTest
