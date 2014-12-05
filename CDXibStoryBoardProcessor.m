@@ -6,7 +6,7 @@
 
 - (void)obfuscateFilesUsingSymbols:(NSDictionary *)symbols {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+    NSArray *keys = @[NSURLIsDirectoryKey];
     NSURL *directoryURL;
     if (self.xibBaseDirectory) {
         directoryURL = [NSURL URLWithString:self.xibBaseDirectory];

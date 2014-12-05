@@ -3,30 +3,23 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-1998, 2000-2001, 2004-2014 Steve Nygard.
 
-#include <stdio.h>
-#include <libc.h>
-#include <unistd.h>
 #include <getopt.h>
-#include <stdlib.h>
-#include <mach-o/arch.h>
 
 #import "CDClassDump.h"
 #import "CDFindMethodVisitor.h"
 #import "CDClassDumpVisitor.h"
 #import "CDMultiFileVisitor.h"
-#import "CDFile.h"
 #import "CDMachOFile.h"
 #import "CDFatFile.h"
 #import "CDFatArch.h"
 #import "CDSearchPathState.h"
 #import "CDSymbolsGeneratorVisitor.h"
-#import "CDXibStoryboardParser.h"
 #import "CDXibStoryBoardProcessor.h"
 #import "CDCoreDataModelProcessor.h"
-#import "CDPbxProjectParser.h"
 #import "CDPbxProjectProcessor.h"
 #import "CDSymbolMapper.h"
 #import "CDSystemProtocolsProcessor.h"
+#import "CDdSYMProcessor.h"
 
 NSString *defaultSymbolMappingPath = @"symbols.json";
 
@@ -37,23 +30,25 @@ void print_usage(void)
             "Usage: ios-class-guard [options] <mach-o-file>\n"
             "\n"
             "  where options are:\n"
-            "        -F <class>     specify class filter for symbols obfuscator (also protocol))\n"
-            "        -i <symbol>    ignore obfuscation of specific symbol)\n"
-            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s, arm64)\n"
-            "        --list-arches  list the arches in the file, then exit\n"
-            "        --sdk-ios      specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
-            "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
-            "        --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
-            "                       or /Developer/SDKs/MacOSX<version>.sdk)\n"
-            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
-            "        -X <directory> base directory for XIB, storyboards (will be searched recursively)\n"
-            "        -P <path>      path to project.pbxproj of Pods project (located inside Pods.xcodeproj)\n"
-            "        -O <path>      path to file where obfuscated symbols are written\n"
-            "        -m <path>      path to symbol file map (default value symbols.json)\n"
-            "        -c <path>      path to symbolicated crash dump\n"
+            "        -F <class>        specify class filter for symbols obfuscator (also protocol))\n"
+            "        -i <symbol>       ignore obfuscation of specific symbol)\n"
+            "        --arch <arch>     choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s, arm64)\n"
+            "        --list-arches     list the arches in the file, then exit\n"
+            "        --sdk-ios         specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
+            "                          or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
+            "        --sdk-mac         specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
+            "                          or /Developer/SDKs/MacOSX<version>.sdk)\n"
+            "        --sdk-root        specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
+            "        -X <directory>    base directory for XIB, storyboards (will be searched recursively)\n"
+            "        -P <path>         path to project.pbxproj of Pods project (located inside Pods.xcodeproj)\n"
+            "        -O <path>         path to file where obfuscated symbols are written\n"
+            "        -m <path>         path to symbol file map (default value symbols.json)\n"
+            "        -c <path>         path to symbolicated crash dump\n"
+            "        --dsym <path>     path to dSym file to translate\n"
+            "        --dsym-out <path> path to dSym file to translate\n"
             ,
             CLASS_DUMP_VERSION
-       );
+    );
 }
 
 #define CD_OPT_ARCH        1
@@ -63,6 +58,9 @@ void print_usage(void)
 #define CD_OPT_SDK_MAC     5
 #define CD_OPT_SDK_ROOT    6
 #define CD_OPT_HIDE        7
+#define CD_OPT_DSYM        8
+#define CD_OPT_DSYM_OUT    9
+
 
 int main(int argc, char *argv[])
 {
@@ -83,38 +81,42 @@ int main(int argc, char *argv[])
         NSString *symbolsPath = nil;
         NSString *symbolMappingPath = nil;
         NSString *crashDumpPath = nil;
+        NSString *dSYMPath = nil;
+        NSString *dSYMOutPath = nil;
 
         int ch;
         BOOL errorFlag = NO;
 
         struct option longopts[] = {
-            { "show-ivar-offsets",       no_argument,       NULL, 'a' },
-            { "show-imp-addr",           no_argument,       NULL, 'A' },
-            { "match",                   required_argument, NULL, 'C' },
-            { "find",                    required_argument, NULL, 'f' },
-            { "generate-multiple-files", no_argument,       NULL, 'H' },
-            { "sort-by-inheritance",     no_argument,       NULL, 'I' },
-            { "output-dir",              required_argument, NULL, 'o' },
-            { "recursive",               no_argument,       NULL, 'r' },
-            { "sort",                    no_argument,       NULL, 's' },
-            { "sort-methods",            no_argument,       NULL, 'S' },
-                { "generate-symbols-table", no_argument, NULL, 'G' },
-                { "filter-class", no_argument, NULL, 'F' },
-                { "ignore-symbols", no_argument, NULL, 'i' },
-                { "xib-directory", required_argument, NULL, 'X' },
-                { "pods-project", required_argument, NULL, 'P' },
-                { "symbols-file", required_argument, NULL, 'O' },
-                { "symbols-map", required_argument, NULL, 'm' },
-                { "crash-dump", required_argument, NULL, 'c' },
-            { "arch",                    required_argument, NULL, CD_OPT_ARCH },
-            { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
-            { "suppress-header",         no_argument,       NULL, 't' },
-            { "version",                 no_argument,       NULL, CD_OPT_VERSION },
-            { "sdk-ios",                 required_argument, NULL, CD_OPT_SDK_IOS },
-            { "sdk-mac",                 required_argument, NULL, CD_OPT_SDK_MAC },
-            { "sdk-root",                required_argument, NULL, CD_OPT_SDK_ROOT },
-            { "hide",                    required_argument, NULL, CD_OPT_HIDE },
-            { NULL,                      0,                 NULL, 0 },
+                { "show-ivar-offsets",       no_argument,       NULL, 'a' },
+                { "show-imp-addr",           no_argument,       NULL, 'A' },
+                { "match",                   required_argument, NULL, 'C' },
+                { "find",                    required_argument, NULL, 'f' },
+                { "generate-multiple-files", no_argument,       NULL, 'H' },
+                { "sort-by-inheritance",     no_argument,       NULL, 'I' },
+                { "output-dir",              required_argument, NULL, 'o' },
+                { "recursive",               no_argument,       NULL, 'r' },
+                { "sort",                    no_argument,       NULL, 's' },
+                { "sort-methods",            no_argument,       NULL, 'S' },
+                { "generate-symbols-table",  no_argument,       NULL, 'G' },
+                { "filter-class",            no_argument,       NULL, 'F' },
+                { "ignore-symbols",          no_argument,       NULL, 'i' },
+                { "xib-directory",           required_argument, NULL, 'X' },
+                { "pods-project",            required_argument, NULL, 'P' },
+                { "symbols-file",            required_argument, NULL, 'O' },
+                { "symbols-map",             required_argument, NULL, 'm' },
+                { "crash-dump",              required_argument, NULL, 'c' },
+                { "dsym",                    required_argument, NULL, CD_OPT_DSYM },
+                { "dsym-out",                required_argument, NULL, CD_OPT_DSYM_OUT },
+                { "arch",                    required_argument, NULL, CD_OPT_ARCH },
+                { "list-arches",             no_argument,       NULL, CD_OPT_LIST_ARCHES },
+                { "suppress-header",         no_argument,       NULL, 't' },
+                { "version",                 no_argument,       NULL, CD_OPT_VERSION },
+                { "sdk-ios",                 required_argument, NULL, CD_OPT_SDK_IOS },
+                { "sdk-mac",                 required_argument, NULL, CD_OPT_SDK_MAC },
+                { "sdk-root",                required_argument, NULL, CD_OPT_SDK_ROOT },
+                { "hide",                    required_argument, NULL, CD_OPT_HIDE },
+                { NULL,                      0,                 NULL, 0 },
         };
 
         if (argc == 1) {
@@ -143,51 +145,51 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
-                    
+
                 case CD_OPT_LIST_ARCHES:
                     shouldListArches = YES;
                     break;
-                    
+
                 case CD_OPT_VERSION:
                     shouldPrintVersion = YES;
                     break;
-                    
+
                 case CD_OPT_SDK_IOS: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
                     NSString *str;
-                    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Applications/Xcode.app"]) {
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/Xcode.app"]) {
                         str = [NSString stringWithFormat:@"/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
-                    } else if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Developer"]) {
+                    } else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Developer"]) {
                         str = [NSString stringWithFormat:@"/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS%@.sdk", root];
                     }
                     classDump.sdkRoot = str;
-                    
+
                     break;
                 }
-                    
+
                 case CD_OPT_SDK_MAC: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
                     NSString *str;
-                    if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Applications/Xcode.app"]) {
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Applications/Xcode.app"]) {
                         str = [NSString stringWithFormat:@"/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX%@.sdk", root];
-                    } else if ([[NSFileManager defaultManager] fileExistsAtPath: @"/Developer"]) {
+                    } else if ([[NSFileManager defaultManager] fileExistsAtPath:@"/Developer"]) {
                         str = [NSString stringWithFormat:@"/Developer/SDKs/MacOSX%@.sdk", root];
                     }
                     classDump.sdkRoot = str;
-                    
+
                     break;
                 }
-                    
+
                 case CD_OPT_SDK_ROOT: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
                     classDump.sdkRoot = root;
-                    
+
                     break;
                 }
-                    
+
                 case CD_OPT_HIDE: {
                     NSString *str = [NSString stringWithUTF8String:optarg];
                     if ([str isEqualToString:@"all"]) {
@@ -196,6 +198,16 @@ int main(int argc, char *argv[])
                     } else {
                         [hiddenSections addObject:str];
                     }
+                    break;
+                }
+
+                case CD_OPT_DSYM: {
+                    dSYMPath = [NSString stringWithUTF8String:optarg];
+                    break;
+                }
+
+                case CD_OPT_DSYM_OUT: {
+                    dSYMOutPath = [NSString stringWithUTF8String:optarg];
                     break;
                 }
 
@@ -208,7 +220,7 @@ int main(int argc, char *argv[])
                 case 'F':
                     [classFilter addObject:[NSString stringWithUTF8String:optarg]];
                     break;
-                    
+
                 case 'X':
                     xibBaseDirectory = [NSString stringWithUTF8String:optarg];
                     break;
@@ -220,7 +232,7 @@ int main(int argc, char *argv[])
                 case 'O':
                     symbolsPath = [NSString stringWithUTF8String:optarg];
                     break;
-                    
+
                 case 'm':
                     symbolMappingPath = [NSString stringWithUTF8String:optarg];
                     break;
@@ -228,19 +240,19 @@ int main(int argc, char *argv[])
                 case 'c':
                     crashDumpPath = [NSString stringWithUTF8String:optarg];
                     break;
-                    
+
                 case 'i':
                     [ignoreSymbols addObject:[NSString stringWithUTF8String:optarg]];
                     break;
-                    
+
                 case 'a':
                     classDump.shouldShowIvarOffsets = YES;
                     break;
-                    
+
                 case 'A':
                     classDump.shouldShowMethodAddresses = YES;
                     break;
-                    
+
                 case 'C': {
                     NSError *error;
                     NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithUTF8String:optarg]
@@ -256,40 +268,40 @@ int main(int argc, char *argv[])
                     // Last one wins now.
                     break;
                 }
-                    
+
                 case 'f': {
                     searchString = [NSString stringWithUTF8String:optarg];
                     break;
                 }
-                    
+
                 case 'H':
                     shouldGenerateSeparateHeaders = YES;
                     break;
-                    
+
                 case 'I':
                     classDump.shouldSortClassesByInheritance = YES;
                     break;
-                    
+
                 case 'o':
                     outputPath = [NSString stringWithUTF8String:optarg];
                     break;
-                    
+
                 case 'r':
                     classDump.shouldProcessRecursively = YES;
                     break;
-                    
+
                 case 's':
                     classDump.shouldSortClasses = YES;
                     break;
-                    
+
                 case 'S':
                     classDump.shouldSortMethods = YES;
                     break;
-                    
+
                 case 't':
                     classDump.shouldShowHeader = NO;
                     break;
-                    
+
                 case '?':
                 default:
                     errorFlag = YES;
@@ -406,6 +418,7 @@ int main(int argc, char *argv[])
                         visitor.ignoreSymbols = ignoreSymbols;
                         visitor.symbolsFilePath = symbolsPath;
                         [classDump recursivelyVisit:visitor];
+
                         CDXibStoryBoardProcessor *processor = [[CDXibStoryBoardProcessor alloc] init];
                         processor.xibBaseDirectory = xibBaseDirectory;
                         [processor obfuscateFilesUsingSymbols:visitor.symbols];
@@ -448,6 +461,35 @@ int main(int argc, char *argv[])
             CDSymbolMapper *mapper = [[CDSymbolMapper alloc] init];
             NSString *processedFile = [mapper processCrashDump:crashDump withSymbols:[NSJSONSerialization JSONObjectWithData:[symbolsData dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil]];
             [processedFile writeToFile:crashDumpPath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        } else if (dSYMPath) {
+            NSString *symbolsData = [NSString stringWithContentsOfFile:symbolMappingPath encoding:NSUTF8StringEncoding error:nil];
+            if (symbolsData.length == 0) {
+                fprintf(stderr, "class-dump: symbols file does not exist or is empty %s", [symbolMappingPath fileSystemRepresentation]);
+                exit(5);
+            }
+
+            NSRange dSYMPathRange = [dSYMPath rangeOfString:@".dSYM"];
+            if (dSYMPathRange.location == NSNotFound) {
+                fprintf(stderr, "class-dump: no valid dsym file provided %s", [dSYMOutPath fileSystemRepresentation]);
+                exit(4);
+            }
+
+            CDdSYMProcessor *processor = [[CDdSYMProcessor alloc] init];
+            NSArray *dwarfFilesPaths = [processor extractDwarfPathsForDSYM:dSYMPath];
+
+            for (NSString *dwarfFilePath in dwarfFilesPaths) {
+                NSData *dwarfdumpData = [NSData dataWithContentsOfFile:dwarfFilePath];
+                if (dwarfdumpData.length == 0) {
+                    fprintf(stderr, "class-dump: dwarf file does not exist or is empty %s", [dwarfFilePath fileSystemRepresentation]);
+                    exit(4);
+                }
+
+                NSData *processedFileContent = [processor processDwarfdump:dwarfdumpData
+                                                               withSymbols:[NSJSONSerialization JSONObjectWithData:[symbolsData dataUsingEncoding:NSUTF8StringEncoding]
+                                                                                                           options:0
+                                                                                                             error:nil]];
+                [processor writeDwarfdump:processedFileContent originalDwarfPath:dwarfFilePath inputDSYM:dSYMPath outputDSYM:dSYMOutPath];
+            }
         }
         exit(0); // avoid costly autorelease pool drain, we’re exiting anyway
     }

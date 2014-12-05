@@ -288,6 +288,28 @@ SPEC_BEGIN(CDSymoblsGeneratorVisitorSpec)
                     [[theValue([symbol hasPrefix:@"set"]) should] beFalse];
                 });
             });
+
+            context(@"when obfuscating method signature is longer than obfuscated one", ^{
+                __block NSString *originalSignature = @"somethingLong";
+
+                beforeEach(^{
+                    method = [[CDOCMethod alloc] initWithName:originalSignature typeString:nil];
+                });
+
+                it(@"should set padding to make obfuscated signature's length equal original one's length", ^{
+                    [visitor willBeginVisiting];
+
+                    [visitor visitInstanceMethod:method propertyState:nil];
+
+                    [visitor didEndVisiting];
+
+                    [visitor addSymbolsPadding];
+
+                    NSString *symbol = visitor.symbols[originalSignature];
+                    [[symbol shouldNot] beNil];
+                    [[theValue(symbol.length) should] equal:theValue(originalSignature.length)];
+                });
+            });
         });
     });
 

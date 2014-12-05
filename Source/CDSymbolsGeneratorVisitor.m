@@ -178,16 +178,16 @@ static NSString *const lettersSet[maxLettersSet] = {
     }
 }
 
-- (NSString *)generateRandomString {
-    return [self generateRandomStringWithLength:_symbolLength andPrefix:nil];
+- (NSString *)generateRandomStringWithLength:(NSUInteger)length {
+    return [self generateRandomStringWithLength:length andPrefix:nil];
 }
 
-- (NSString *)generateRandomStringWithPrefix:(NSString *)prefix {
-    return [self generateRandomStringWithLength:_symbolLength andPrefix:prefix];
+- (NSString *)generateRandomStringWithPrefix:(NSString *)prefix length:(NSUInteger)length {
+    return [self generateRandomStringWithLength:length andPrefix:prefix];
 }
 
 - (BOOL)doesContainGeneratedSymbol:(NSString *)symbol {
-    return [_symbols objectForKey:symbol] != nil;
+    return _symbols[symbol] != nil;
 }
 
 - (void)generateSimpleSymbols:(NSString *)symbolName {
@@ -197,7 +197,7 @@ static NSString *const lettersSet[maxLettersSet] = {
     if ([self shouldSymbolsBeIgnored:symbolName]) {
         return;
     }
-    NSString *newSymbolName = [self generateRandomString];
+    NSString *newSymbolName = [self generateRandomStringWithLength:symbolName.length];
     [self addGenerated:newSymbolName forSymbol:symbolName];
 }
 
@@ -212,11 +212,8 @@ static NSString *const lettersSet[maxLettersSet] = {
     }
 
     // we expect that next character after init is in UPPER CASE
-    if (isupper([symbolName characterAtIndex:4])) {
-        return YES;
-    }
+    return isupper([symbolName characterAtIndex:4]) != 0;
 
-    return NO;
 }
 
 - (NSString *)getterNameForMethodName:(NSString *)methodName {
@@ -286,10 +283,11 @@ static NSString *const lettersSet[maxLettersSet] = {
         return;
     }
     if ([self isInitMethod:symbolName]) {
-        NSString *newSymbolName = [self generateRandomStringWithPrefix:@"initL"];
+        NSString *initPrefix = @"initL";
+        NSString *newSymbolName = [self generateRandomStringWithPrefix:initPrefix length:symbolName.length - initPrefix.length];
         [self addGenerated:newSymbolName forSymbol:symbolName];
     } else {
-        NSString *newSymbolName = [self generateRandomString];
+        NSString *newSymbolName = [self generateRandomStringWithLength:symbolName.length];
         [self addGenerated:newSymbolName forSymbol:getterName];
         [self addGenerated:[@"set" stringByAppendingString:[newSymbolName capitalizeFirstCharacter]] forSymbol:setterName];
     }
@@ -337,7 +335,7 @@ static NSString *const lettersSet[maxLettersSet] = {
 
 - (void)addGenerated:(NSString *)generatedSymbol forSymbol:(NSString *)symbol {
     [_uniqueSymbols addObject:generatedSymbol];
-    [_symbols setObject:generatedSymbol forKey:symbol];
+    _symbols[symbol] = generatedSymbol;
 
     [_resultString appendFormat:@"#ifndef %@\r\n", symbol];
     [_resultString appendFormat:@"#define %@ %@\r\n", symbol, generatedSymbol];
@@ -360,7 +358,7 @@ static NSString *const lettersSet[maxLettersSet] = {
         return;
     }
 
-    NSString *newPropertyName = [_symbols objectForKey:propertyName];
+    NSString *newPropertyName = _symbols[propertyName];
 
     // reuse previously generated symbol
     if (newPropertyName) {
@@ -376,7 +374,7 @@ static NSString *const lettersSet[maxLettersSet] = {
 }
 
 - (void)createNewSymbolsForProperty:(NSString *)propertyName {
-    NSInteger symbolLength = _symbolLength;
+    NSInteger symbolLength = propertyName.length;
 
     while (true) {
         NSString *newPropertyName = [self generateRandomStringWithLength:symbolLength andPrefix:nil];
@@ -457,10 +455,7 @@ static NSString *const lettersSet[maxLettersSet] = {
         }
     }
 
-    if ([self shouldSymbolsBeIgnored:className]) {
-        return NO;
-    }
-    return YES;
+    return ![self shouldSymbolsBeIgnored:className];
 }
 
 - (BOOL)shouldSymbolsBeIgnored:(NSString *)symbolName {
@@ -601,6 +596,15 @@ static NSString *const lettersSet[maxLettersSet] = {
             [_forbiddenNames addObject:[NSString stringWithFormat:@"%@", type.typeName]];
         }
     }
+}
+
+- (void)addSymbolsPadding {
+    [_symbols.allKeys enumerateObjectsUsingBlock:^(NSString *key, NSUInteger idx, BOOL *stop) {
+        NSString *obfuscated = _symbols[key];
+        if (key.length > obfuscated.length) {
+            _symbols[key] = [self generateRandomStringWithLength:key.length - obfuscated.length andPrefix:obfuscated];
+        }
+    }];
 }
 
 @end

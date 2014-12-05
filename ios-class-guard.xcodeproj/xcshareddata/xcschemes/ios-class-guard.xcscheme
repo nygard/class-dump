@@ -53,7 +53,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "YES"
+      useCustomWorkingDirectory = "NO"
       customWorkingDirectory = "/Users/ayufan/"
       buildConfiguration = "Debug"
       ignoresPersistentStateOnLaunch = "NO"
@@ -68,20 +68,6 @@
             ReferencedContainer = "container:ios-class-guard.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "--sdk-ios"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "7.1"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "/Users/ayufan/Downloads/ActiveLink-no-obfuscated.xcarchive/Products/Applications/ActiveLink.app/ActiveLink"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
