@@ -379,6 +379,12 @@ int main(int argc, char *argv[])
                     CDCoreDataModelProcessor *coreDataModelProcessor = [[CDCoreDataModelProcessor alloc] init];
                     [classFilter addObjectsFromArray:[coreDataModelProcessor coreDataModelSymbolsToExclude]];
 
+                    if (![classDump.sdkRoot length]) {
+                        printf("Please specify either --sdk-mac/--sdk-ios or --sdk-root\n");
+                        print_usage();
+                        exit(3);
+                    }
+
                     CDSystemProtocolsProcessor *systemProtocolsProcessor = [[CDSystemProtocolsProcessor alloc] initWithSdkPath:classDump.sdkRoot];
                     [ignoreSymbols addObjectsFromArray:[systemProtocolsProcessor systemProtocolsSymbolsToExclude]];
 
