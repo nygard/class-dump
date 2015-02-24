@@ -437,6 +437,8 @@ static BOOL debugMerge = NO;
                 result = @"CDUnknownFunctionPointerType";
             else
                 result = [NSString stringWithFormat:@"CDUnknownFunctionPointerType %@", currentName];
+            result = [NSString stringWithFormat:@"void * /* %@ */", result];
+
             break;
             
         case T_BLOCK_TYPE:
@@ -447,6 +449,7 @@ static BOOL debugMerge = NO;
                     result = @"CDUnknownBlockType";
                 else
                     result = [NSString stringWithFormat:@"CDUnknownBlockType %@", currentName];
+                result = [NSString stringWithFormat:@"id /* %@ */", result];
             }
             break;
             
