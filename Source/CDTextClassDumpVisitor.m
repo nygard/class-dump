@@ -6,6 +6,7 @@
 #import "CDTextClassDumpVisitor.h"
 
 #import "CDClassDump.h"
+#import "CDType.h"
 #import "CDOCClass.h"
 #import "CDOCCategory.h"
 #import "CDOCMethod.h"
@@ -122,7 +123,9 @@ static BOOL debug = NO;
 - (void)visitInstanceMethod:(CDOCMethod *)method propertyState:(CDVisitorPropertyState *)propertyState;
 {
     CDOCProperty *property = [propertyState propertyForAccessor:method.name];
-    if (property == nil) {
+    if (property.isReadOnly && [property.setter isEqualToString:method.name]) {
+        [self.resultString appendFormat:@"- (void)%@(%@)arg1;\n", method.name, [property.type formattedString:nil formatter:self.classDump.typeController.propertyTypeFormatter level:0]];
+    } else if (property == nil) {
         //NSLog(@"No property for method: %@", method.name);
         // C++ destructors can't be called and this header can't be compiled with one declared. So let's comment it out.
         // Leave it there so the user knows that the class has a C++ implementation though.
