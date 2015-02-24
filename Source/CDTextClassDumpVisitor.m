@@ -124,6 +124,12 @@ static BOOL debug = NO;
     CDOCProperty *property = [propertyState propertyForAccessor:method.name];
     if (property == nil) {
         //NSLog(@"No property for method: %@", method.name);
+        // C++ destructors can't be called and this header can't be compiled with one declared. So let's comment it out.
+        // Leave it there so the user knows that the class has a C++ implementation though.
+        if ([method.name isEqualToString:@".cxx_destruct"]) {
+            [self.resultString appendString:@"// "];
+        }
+
         [self.resultString appendString:@"- "];
         [method appendToString:self.resultString typeController:self.classDump.typeController];
         [self.resultString appendString:@"\n"];
