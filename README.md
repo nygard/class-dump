@@ -179,6 +179,23 @@ iOS Class Guard lets you reverse the process of obfuscation. It might come in ha
 -c crashdump -m symbols_1.0.0.json
 ```
 
+#### Reversing obfuscation in dSYMs
+iOS Class Guard lets you reverse the process of obfuscation for automatic crash reporting tools such as Crashlytics, Fabric, BugSense/Splunk Mint, Crittercism or HockeyApp. With ```--dsym``` parameter, iOS Class Guard will exchange obfuscated symbols with original ones within provided dSYM file. We highly recommend you adding in the very beginnig of your Build Phases/Run script one line shown in the example below to automate dSYM translation process. Feature has been tested with the tools mentioned above.
+
+##### Build Phases/Run script example
+```
+if [ -f "$PROJECT_DIR/symbols.json" ]; then
+/usr/local/bin/ios-class-guard -m $PROJECT_DIR/symbols.json --dsym $DWARF_DSYM_FOLDER_PATH/$DWARF_DSYM_FILE_NAME --dsym-out $DWARF_DSYM_FOLDER_PATH/$DWARF_DSYM_FILE_NAME
+fi
+
+# Another invocations eg.: ./Crashlytics.framework/run <Crashlytics secret #1> <Crashlytics secret #2>
+```
+
+##### Manual usage example
+```
+ios-class-guard -m symbols.json --dsym MyProject_obfuscated.app.dSYM --dsym-out MyProject_unobfuscated.app.dSYM
+```
+
 Limitations
 -----------
 

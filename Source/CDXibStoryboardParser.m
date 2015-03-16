@@ -45,7 +45,7 @@
 
 - (void)obfuscateFilesUsingSymbols:(NSDictionary *)symbols {
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    NSArray *keys = [NSArray arrayWithObject:NSURLIsDirectoryKey];
+    NSArray *keys = @[NSURLIsDirectoryKey];
     NSURL *directoryURL = [NSURL URLWithString:@"."];
 
     NSDirectoryEnumerator *enumerator = [fileManager

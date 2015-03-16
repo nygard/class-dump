@@ -1,10 +1,8 @@
 #import "CDSymbolMapper.h"
 #import "CDSymbolsGeneratorVisitor.h"
 
+@implementation CDSymbolMapper
 
-@implementation CDSymbolMapper {
-
-}
 - (void)writeSymbolsFromSymbolsVisitor:(CDSymbolsGeneratorVisitor *)visitor toFile:(NSString *)file {
     NSMutableDictionary *invertedSymbols = [NSMutableDictionary dictionary];
     for (NSString *key in [visitor.symbols allKeys]) {
@@ -56,6 +54,5 @@
     }
     return [NSString stringWithFormat:@"[%@ %@]", realClassName, realMethodName];
 }
-
 
 @end
