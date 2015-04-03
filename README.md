@@ -19,7 +19,7 @@ The source code is also available from my Github repository at:
 
 I added "Swift support" for class-dump. 
 
-Now, the tool can dump Objective-C headers even the executable file uses Swift and ObjC at the same time.
+Now, this tool can dump Objective-C headers even the executable file uses Swift and ObjC at the same time.
 Notice, only ObjC headers can be dumped! 
 
 LAST, THIS IS AN EXPERIMENTAL VERSION. 
