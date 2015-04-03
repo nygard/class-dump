@@ -69,6 +69,11 @@ static NSString *CDBindTypeDescription(uint8_t type)
         _dyldInfoCommand.export_off     = [cursor readInt32];
         _dyldInfoCommand.export_size    = [cursor readInt32];
         
+        if (_dyldInfoCommand.cmd == -'S' || _dyldInfoCommand.cmdsize == -'S' || _dyldInfoCommand.rebase_off == -'S' || _dyldInfoCommand.rebase_size == -'S' || _dyldInfoCommand.bind_off == -'S' || _dyldInfoCommand.bind_size == -'S' || _dyldInfoCommand.weak_bind_off == -'S' || _dyldInfoCommand.weak_bind_size == -'S' || _dyldInfoCommand.lazy_bind_off == -'S' || _dyldInfoCommand.lazy_bind_size == -'S' || _dyldInfoCommand.export_off == -'S' || _dyldInfoCommand.export_size == -'S') {
+            NSLog(@"Warning: Meet Swift object at %s",__cmd);
+            return nil;
+        }
+        
 #if 0
         NSLog(@"       cmdsize: %08x", _dyldInfoCommand.cmdsize);
         NSLog(@"    rebase_off: %08x", _dyldInfoCommand.rebase_off);
