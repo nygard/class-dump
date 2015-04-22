@@ -5,7 +5,7 @@
 
 #import "CDFile.h" // For CDArch
 
-#define CLASS_DUMP_BASE_VERSION "0.6 (64 bit)"
+#define CLASS_DUMP_BASE_VERSION "0.7 (64 bit) [based on class-dump 0.6]"
 
 #ifdef DEBUG
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION " (Debug version compiled " __DATE__ " " __TIME__ ")"

@@ -11,7 +11,7 @@ if you need **iOS Class Guard Pro** with more features [click here](#pro-version
 
 Version
 -----------
-0.6
+0.7
 
 Do I need It?
 -----------
@@ -96,7 +96,7 @@ https://github.com/Polidea/ios-class-guard-example/tree/master/SWTableViewCell-o
 Command Line Options
 -----------
 ```
-ios-class-guard 0.6 (64 bit)
+ios-class-guard 0.7 (64 bit)
 Usage: ios-class-guard [options] <mach-o-file>
 
   where options are:

@@ -315,7 +315,7 @@ int main(int argc, char *argv[])
         }
 
         if (shouldPrintVersion) {
-            printf("class-dump %s compiled %s\n", CLASS_DUMP_VERSION, __DATE__ " " __TIME__);
+            printf("ios-class-guard %s compiled %s\n", CLASS_DUMP_VERSION, __DATE__ " " __TIME__);
             exit(0);
         }
 
