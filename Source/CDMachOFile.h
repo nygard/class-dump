@@ -51,6 +51,7 @@ typedef enum : NSUInteger {
 - (NSString *)filetypeDescription;
 - (NSString *)flagDescription;
 
+- (CDLCSegment *)dataConstSegment;
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 - (CDLCSegment *)segmentContainingAddress:(NSUInteger)address;
 - (NSString *)stringAtAddress:(NSUInteger)address;
