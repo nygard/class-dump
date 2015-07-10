@@ -27,7 +27,7 @@
 
 - (void)loadProtocols;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_protolist"];
+    CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_protolist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
@@ -36,7 +36,7 @@
 
 - (void)loadClasses;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"];
+    CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_classlist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
@@ -50,7 +50,7 @@
 
 - (void)loadCategories;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_catlist"];
+    CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_catlist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
@@ -490,7 +490,7 @@
 
 - (CDSection *)objcImageInfoSection;
 {
-    return [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"];
+    return [[self.machOFile dataConstSegment] sectionWithName:@"__objc_imageinfo"];
 }
 
 @end

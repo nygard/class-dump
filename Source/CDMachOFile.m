@@ -279,6 +279,19 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 
 #pragma mark -
 
+- (CDLCSegment *)dataConstSegment
+{
+    // macho objects from iOS 9 appear to store various sections
+    // in __DATA_CONST that were previously found in __DATA
+    CDLCSegment *seg = [self segmentWithName:@"__DATA_CONST"];
+
+    // Fall back on __DATA if it is not found for earlier behavior
+    if (!seg) {
+        seg = [self segmentWithName:@"__DATA"];
+    }
+    return seg;
+}
+
 - (CDLCSegment *)segmentWithName:(NSString *)segmentName;
 {
     for (id loadCommand in _loadCommands) {
@@ -558,7 +571,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     // 0xced: @gparker I was hoping for a flag, but that will do it, thanks.
     // 0xced: @gparker Did you mean __DATA,__objc_imageinfo instead of __DATA,__objc_info ?
     // gparker: @0xced Yes, it's __DATA,__objc_imageinfo.
-    return [[self segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"] != nil;
+    return [[self dataConstSegment] sectionWithName:@"__objc_imageinfo"] != nil;
 }
 
 - (Class)processorClass;
