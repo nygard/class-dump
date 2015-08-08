@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>247FE7C7-27E5-4B6D-88C4-A8FCB2F13522</string>
+	<key>IDESourceControlProjectName</key>
+	<string>class-dump</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>9C1C74AB-C0E6-452C-925F-28D46110F792</key>
+		<string>https://github.com/pascalxvi/class-dump.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>class-dump.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>9C1C74AB-C0E6-452C-925F-28D46110F792</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/pascalxvi/class-dump.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>9C1C74AB-C0E6-452C-925F-28D46110F792</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9C1C74AB-C0E6-452C-925F-28D46110F792</string>
+			<key>IDESourceControlWCCName</key>
+			<string>class-dump</string>
+		</dict>
+	</array>
+</dict>
+</plist>

@@ -15,5 +15,6 @@
 @property (copy, readonly) NSString *superClassName;
 @property (strong) NSArray *instanceVariables;
 @property (assign) BOOL isExported;
+@property (assign) uint64_t address;
 
 @end

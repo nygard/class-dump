@@ -24,7 +24,8 @@
 - (void)addClassesFromArray:(NSArray *)array;
 - (void)addCategoriesFromArray:(NSArray *)array;
 
-- (void)addCategory:(CDOCCategory *)category;
+- (void)addCategory:(CDOCCategory *)category withAddress:(uint64_t)address;
+- (CDOCCategory *)categoryWithAddress:(uint64_t)address;
 
 - (void)process;
 - (void)loadProtocols;

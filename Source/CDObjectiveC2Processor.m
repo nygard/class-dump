@@ -46,6 +46,17 @@
             [self addClass:aClass withAddress:val];
         }
     }
+
+    section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_nlclslist"];
+    
+    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+    while ([cursor isAtEnd] == NO) {
+        uint64_t val = [cursor readPtr];
+        CDOCClass *aClass = [self loadClassAtAddress:val];
+        if (aClass != nil) {
+            [self addClass:aClass withAddress:val];
+        }
+    }
 }
 
 - (void)loadCategories;
@@ -54,8 +65,18 @@
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
-        CDOCCategory *category = [self loadCategoryAtAddress:[cursor readPtr]];
-        [self addCategory:category];
+        uint64_t val = [cursor readPtr];
+        CDOCCategory *category = [self loadCategoryAtAddress:val];
+        [self addCategory:category withAddress:val];
+    }
+
+    section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_nlcatlist"];
+    
+    cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
+    while ([cursor isAtEnd] == NO) {
+        uint64_t val = [cursor readPtr];
+        CDOCCategory *category = [self loadCategoryAtAddress:val];
+        [self addCategory:category withAddress:val];
     }
 }
 
@@ -140,6 +161,10 @@
     if (address == 0)
         return nil;
     
+    CDOCCategory *category = [self categoryWithAddress:address];
+    if (category)
+        return category;
+
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
     NSParameterAssert([cursor offset] != 0);
     
@@ -156,7 +181,7 @@
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.name, objc2Category.class, objc2Category.instanceMethods, objc2Category.classMethods);
     //NSLog(@"%016lx %016lx %016lx %016lx", objc2Category.protocols, objc2Category.instanceProperties, objc2Category.v7, objc2Category.v8);
     
-    CDOCCategory *category = [[CDOCCategory alloc] init];
+    category = [[CDOCCategory alloc] init];
     NSString *str = [self.machOFile stringAtAddress:objc2Category.name];
     [category setName:str];
     

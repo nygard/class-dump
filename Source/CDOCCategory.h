@@ -11,6 +11,7 @@
 
 @property (strong) CDOCClassReference *classRef;
 @property (strong, readonly) NSString *className;
+@property (assign) uint64_t address;
 
 - (NSString *)methodSearchContext;
 - (void)recursivelyVisit:(CDVisitor *)visitor;
