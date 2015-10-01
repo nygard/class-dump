@@ -103,6 +103,8 @@
     uint64_t result;
 
     if (_offset + sizeof(result) <= [_data length]) {
+//        uint8_t *ptr = [_data bytes] + _offset;
+//        NSLog(@"%016llx: %02x %02x %02x %02x %02x %02x %02x %02x", _offset, ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5], ptr[6], ptr[7]);
         result = OSReadLittleInt64([_data bytes], _offset);
         _offset += sizeof(result);
     } else {

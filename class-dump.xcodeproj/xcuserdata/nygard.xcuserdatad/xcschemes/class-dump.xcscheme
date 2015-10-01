@@ -93,6 +93,10 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Applications/Utilities/Grab.app --arch x86_64"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/Users/nygard/Downloads/p/Principle.app"
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
