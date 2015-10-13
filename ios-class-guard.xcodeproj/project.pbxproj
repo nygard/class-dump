@@ -91,7 +91,6 @@
 		0194945C1673F8F400A29005 /* CDProtocolUniquer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0194945A1673F8F100A29005 /* CDProtocolUniquer.h */; };
 		0194945D1673F8F400A29005 /* CDProtocolUniquer.m in Sources */ = {isa = PBXBuildFile; fileRef = 0194945B1673F8F200A29005 /* CDProtocolUniquer.m */; };
 		01B02D1113A5B1460047BC53 /* class-dump.m in Sources */ = {isa = PBXBuildFile; fileRef = 01B02D1013A5B1460047BC53 /* class-dump.m */; };
-		01B02D2C13A5B4FE0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		0D288C10187BC2EE0026E2A0 /* CDOCClassReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D288C0E187BC2EE0026E2A0 /* CDOCClassReference.h */; };
 		0D288C11187BC2EE0026E2A0 /* CDOCClassReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D288C0F187BC2EE0026E2A0 /* CDOCClassReference.m */; };
@@ -133,11 +132,9 @@
 		38653F8A9A4EF64A59D8D893 /* CDXMLParserSharedBase.h in Headers */ = {isa = PBXBuildFile; fileRef = 38653CA2F0ABFAD4E2CF751C /* CDXMLParserSharedBase.h */; };
 		38653FEA401225F0D8F67653 /* CDXMLParserSharedBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 38653286B5D583921AF1B820 /* CDXMLParserSharedBase.m */; };
 		479E9A3A1EE542E3BD725B35 /* libPods-UnitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA6B93F373B4E5BA48C4048 /* libPods-UnitTests.a */; };
-		670B7972197007120069F751 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 670B7971197007120069F751 /* libxml2.dylib */; };
 		670B79781970082F0069F751 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 670B7971197007120069F751 /* libxml2.dylib */; };
 		6772E06D197FF624004CF475 /* GDataXMLNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6772E06B197FF624004CF475 /* GDataXMLNode.h */; };
 		6772E06E197FF624004CF475 /* GDataXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6772E06C197FF624004CF475 /* GDataXMLNode.m */; };
-		67AC1169198A827E002CCDD7 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 670B7971197007120069F751 /* libxml2.dylib */; };
 		67AC293D196D401600641C23 /* CDClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB829C13A591D7003EDE60 /* CDClassDumpVisitor.m */; };
 		67AC293E196D401600641C23 /* CDFindMethodVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82A813A591D7003EDE60 /* CDFindMethodVisitor.m */; };
 		67AC293F196D401600641C23 /* CDVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB831E13A591D8003EDE60 /* CDVisitor.m */; };
@@ -424,7 +421,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67AC1169198A827E002CCDD7 /* libxml2.dylib in Frameworks */,
 				DA7533B213AA587A003BE32C /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,8 +441,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				670B7972197007120069F751 /* libxml2.dylib in Frameworks */,
-				01B02D2C13A5B4FE0047BC53 /* libcrypto.dylib in Frameworks */,
 				013D1F5A13A5AF6500BF0A67 /* libMachObjC.a in Frameworks */,
 				01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */,
 			);
@@ -1055,8 +1049,6 @@
 			mainGroup = 01EB825413A590D9003EDE60;
 			productRefGroup = 01EB826013A590D9003EDE60 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-			);
 			projectRoot = "";
 			targets = (
 				013D1F1013A5AE5A00BF0A67 /* MachObjC */,
@@ -1279,6 +1271,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"/usr/include/libxml2/**",
 				);
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -1295,6 +1288,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"/usr/include/libxml2/**",
 				);
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -1482,6 +1476,7 @@
 				OTHER_LDFLAGS = (
 					"-all_load",
 					"-ObjC",
+					"-lxml2",
 				);
 				PRODUCT_NAME = "ios-class-guard";
 			};
@@ -1500,6 +1495,7 @@
 					__TEXT,
 					"___info_plist",
 					Info.plist,
+					"-lxml2",
 				);
 				PRODUCT_NAME = "ios-class-guard";
 			};
