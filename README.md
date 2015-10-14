@@ -79,15 +79,18 @@ The presented way is the simplest one. You can also add additional target that w
 
 Pre compiled header file
 -----------
-After obfuscation, iOS-Class-Guard will try to add generated symbols header (`symbols.h`) to your project's `*.pch` file. However, projects created in Xcode 6 and higher doesn't contain `*.pch` file by default. If your project doesn't contain any `*.pch` file, you will have to add it manually **before obfuscation**. 
+After obfuscation, iOS-Class-Guard will try to add generated symbols header (`symbols.h`) to your project's `*.pch` file. However, projects created in Xcode 6 and above don't contain `*.pch` file by default. In case your project doesnt have any `*.pch` file, you have to add it manually **before obfuscation**. 
 
-To add `*.pch` file to your project:
+To add `*.pch` file to your project follow the steps below:
 
-1. Create file with `.pch` extension in your project's root directory. In Xcode go to `File -> New -> File -> iOS -> Other -> PCH File`
+1. Create `PCH` file in your project's root directory. In Xcode go to `File -> New -> File -> iOS -> Other -> PCH File`.
+To ensure backward compatibility iOS-Class-Guard will be looking for a file matching the `*-Prefix.pch` mask, as an example `MyProject-Prefix.pch`
+
 
 2. At the target's *Build Settings*, in *Apple LLVM - Language* section, set **Prefix Header** to your PCH file name.
 
 3. At the target's *Build Settings*, in *Apple LLVM - Language* section, set **Precompile Prefix Header** to `YES`.
+
 
 For more details please refer to [this](http://stackoverflow.com/a/24524692/1219382) Stack Overflow question.
 
