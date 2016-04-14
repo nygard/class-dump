@@ -37,7 +37,8 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         _segmentCommand.cmdsize = [cursor readInt32];
         
         _name = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
-        memcpy(_segmentCommand.segname, [_name UTF8String], sizeof(_segmentCommand.segname));
+        size_t nameLength = [_name lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        memcpy(_segmentCommand.segname, [_name UTF8String], MIN(sizeof(_segmentCommand.segname), nameLength));
         _segmentCommand.vmaddr   = [cursor readPtr];
         _segmentCommand.vmsize   = [cursor readPtr];
         _segmentCommand.fileoff  = [cursor readPtr];
