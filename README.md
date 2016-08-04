@@ -13,8 +13,6 @@ iOS-Class-Guard is a command-line utility for obfuscating Objective-C class, pro
 
 Read the official announcement at [Polidea Blog](http://www.polidea.com/#!heartbeat/blog/Protecting_iOS_Applications)
 
-if you need **iOS Class Guard Pro** with more features [click here](#pro-version).
-
 Version
 -----------
 0.8
@@ -305,19 +303,6 @@ To fix it, copy `n9z` and search for it in `symbols.h`. Most probably it will be
 Note
 ---
 iOS-Class-Guard works alongside LLVM Obfuscator: https://github.com/obfuscator-llvm/obfuscator. However, this has not been tested.
-
-Pro version
------------
-
-Contact us at [ios-class-guard@polidea.com](mailto:ios-class-guard@polidea.com) if you need iOS Class Guard Pro with more features including:
-* Encryption of strings and constants
-* Tamper detection mechanism
-* Anti-debug mechanism
-* Methods inlining
-* Assets encryption
-* Control flow obfuscation
-* Code virtualization with encryption
-* API method execution hiding
 
 License
 ----
