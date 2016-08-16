@@ -23,9 +23,9 @@
         _segment = segment;
         
         _sectionName = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
-        memcpy(_section.sectname, [_sectionName UTF8String], sizeof(_section.sectname));
+        strncpy(_section.sectname, [_sectionName UTF8String], sizeof(_section.sectname) - 1);
         _segmentName = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
-        memcpy(_section.segname, [_segmentName UTF8String], sizeof(_section.segname));
+        strncpy(_section.segname, [_segmentName UTF8String], sizeof(_section.segname) - 1);
         _section.addr      = [cursor readPtr];
         _section.size      = [cursor readPtr];
         _section.offset    = [cursor readInt32];
