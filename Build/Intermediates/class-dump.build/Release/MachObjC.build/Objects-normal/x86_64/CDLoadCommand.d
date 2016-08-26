@@ -1,0 +1,33 @@
+dependencies: \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLoadCommand.m \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLoadCommand.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDMachOFileDataCursor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDDataCursor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDyldInfo.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDylib.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDylinker.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDynamicSymbolTable.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCEncryptionInfo.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCFunctionStarts.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCLinkeditData.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCPrebindChecksum.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCPreboundDylib.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCRoutines32.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCRoutines64.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCRunPath.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSegment.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSubClient.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSubFramework.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSubLibrary.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSubUmbrella.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSymbolTable.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCTwoLevelHints.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCUnixThread.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCUUID.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCUnknown.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCVersionMinimum.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDMachOFile.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDFile.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCMain.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDataInCode.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSourceVersion.h

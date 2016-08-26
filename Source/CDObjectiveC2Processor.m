@@ -29,6 +29,7 @@
 {
     CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_protolist"];
     
+    //遍历所有地址，然后到该地址读取协议结构
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
         [self protocolAtAddress:[cursor readPtr]];
@@ -41,6 +42,7 @@
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
         uint64_t val = [cursor readPtr];
+        //从这个地址处读取类的结构
         CDOCClass *aClass = [self loadClassAtAddress:val];
         if (aClass != nil) {
             [self addClass:aClass withAddress:val];
@@ -99,6 +101,7 @@
         //NSLog(@"%016lx %016lx %016lx %016lx", objc2Protocol.isa, objc2Protocol.name, objc2Protocol.protocols, objc2Protocol.instanceMethods);
         //NSLog(@"%016lx %016lx %016lx %016lx", objc2Protocol.classMethods, objc2Protocol.optionalInstanceMethods, objc2Protocol.optionalClassMethods, objc2Protocol.instanceProperties);
         
+        //虚拟地址 - 对应section虚拟地址 + 对应section文件偏移
         NSString *str = [self.machOFile stringAtAddress:objc2Protocol.name];
         [protocol setName:str];
         
@@ -221,7 +224,7 @@
 
     uint64_t value        = [cursor readPtr];
     class.isSwiftClass    = (value & 0x1) != 0;
-    objc2Class.data       = value & ~7;
+    objc2Class.data       = value & ~3;    //value & ~7 //这里不用~7
 
     objc2Class.reserved1  = [cursor readPtr];
     objc2Class.reserved2  = [cursor readPtr];

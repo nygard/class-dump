@@ -1,0 +1,20 @@
+dependencies: \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDClassDumpVisitor.m \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDClassDumpVisitor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDTextClassDumpVisitor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDVisitor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDClassDump.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDFile.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDObjectiveCProcessor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDMachOFile.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDylib.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLoadCommand.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDMachOFileDataCursor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDDataCursor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCDylinker.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCEncryptionInfo.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCRunPath.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSegment.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSourceVersion.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCVersionMinimum.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDTypeController.h

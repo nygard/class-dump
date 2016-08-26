@@ -1,0 +1,27 @@
+-x
+objective-c
+-arch
+x86_64
+-std=gnu99
+-fobjc-arc
+-fpascal-strings
+-Os
+-fno-common
+-DNS_BLOCK_ASSERTIONS=1
+-DOBJC_OLD_DISPATCH_PROTOTYPES=0
+-isysroot
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk
+-fasm-blocks
+-mmacosx-version-min=10.9
+-g
+-iquote
+-iquote
+-I/Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Build/Products/Release/include
+-fdiagnostics-show-option
+-F/Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Build/Products/Release
+-F/Applications/Xcode.app/Contents/Developer/Library/Frameworks
+-F/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks
+x86_64-apple-darwin15.6.0
+"4.2.1 Compatible Apple LLVM 7.3.0 (clang-703.0.31)"
+SDK_PRODUCT_BUILD_VERSION=15E60
+15E60

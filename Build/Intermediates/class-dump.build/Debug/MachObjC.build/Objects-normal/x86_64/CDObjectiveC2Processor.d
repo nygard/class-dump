@@ -1,0 +1,23 @@
+dependencies: \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDObjectiveC2Processor.m \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDObjectiveC2Processor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDObjectiveCProcessor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDMachOFile.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDFile.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDSection.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSegment.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLoadCommand.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDMachOFileDataCursor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDDataCursor.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCClass.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCProtocol.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCMethod.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCInstanceVariable.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDLCSymbolTable.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCCategory.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDClassDump.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDSymbol.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCProperty.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/cd_objc2.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDProtocolUniquer.h \
+  /Users/monkey/Dropbox/iOSReverseEngineering/Demo/class-dump/class-dump/Source/CDOCClassReference.h
