@@ -1,0 +1,32 @@
+dependencies: \
+  /Users/monkey/Documents/git/class-dump/Source/NSString-CDExtensions.h \
+  /Users/monkey/Documents/git/class-dump/Source/NSScanner-CDExtensions.h \
+  /Users/monkey/Documents/git/class-dump/Source/NSError-CDExtensions.h \
+  /Users/monkey/Documents/git/class-dump/Source/NSData-CDExtensions.h \
+  /Users/monkey/Documents/git/class-dump/Source/NSArray-CDExtensions.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDTopologicalSortProtocol.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDTopoSortNode.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDExtensions.h \
+  /Users/monkey/Documents/git/class-dump/MachObjC-Prefix.pch \
+  /Users/monkey/Documents/git/class-dump/Source/CDObjectiveC1Processor.m \
+  /Users/monkey/Documents/git/class-dump/Source/CDObjectiveC1Processor.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDObjectiveCProcessor.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDClassDump.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDFile.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDLCDylib.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDLoadCommand.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDMachOFileDataCursor.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDDataCursor.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDMachOFile.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCCategory.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCProtocol.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCClass.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCInstanceVariable.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCMethod.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCModule.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCSymtab.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDVisitor.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDProtocolUniquer.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDOCClassReference.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDSection.h \
+  /Users/monkey/Documents/git/class-dump/Source/CDLCSegment.h
