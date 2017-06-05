@@ -125,9 +125,6 @@
 		01B02D2913A5B4D70047BC53 /* CDMultiFileVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82E213A591D8003EDE60 /* CDMultiFileVisitor.m */; };
 		01B02D2A13A5B4D70047BC53 /* CDTextClassDumpVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB830C13A591D8003EDE60 /* CDTextClassDumpVisitor.m */; };
 		01B02D2B13A5B4D70047BC53 /* CDSearchPathState.m in Sources */ = {isa = PBXBuildFile; fileRef = 01EB82FC13A591D8003EDE60 /* CDSearchPathState.m */; };
-		01B02D2C13A5B4FE0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
-		01B02D2D13A5B57E0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
-		01B02D3A13A5B72B0047BC53 /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01EB826313A590D9003EDE60 /* Foundation.framework */; };
 		0D288C10187BC2EE0026E2A0 /* CDOCClassReference.h in Headers */ = {isa = PBXBuildFile; fileRef = 0D288C0E187BC2EE0026E2A0 /* CDOCClassReference.h */; };
 		0D288C11187BC2EE0026E2A0 /* CDOCClassReference.m in Sources */ = {isa = PBXBuildFile; fileRef = 0D288C0F187BC2EE0026E2A0 /* CDOCClassReference.m */; };
@@ -420,7 +417,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01B02D2D13A5B57E0047BC53 /* libcrypto.dylib in Frameworks */,
 				013D1F5613A5AF1E00BF0A67 /* libMachObjC.a in Frameworks */,
 				013D1EFD13A5A0F100BF0A67 /* Foundation.framework in Frameworks */,
 			);
@@ -448,7 +444,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01B02D3A13A5B72B0047BC53 /* libcrypto.dylib in Frameworks */,
 				01B02D1313A5B1CE0047BC53 /* libMachObjC.a in Frameworks */,
 				01B02D0113A5B0DC0047BC53 /* Foundation.framework in Frameworks */,
 			);
@@ -458,7 +453,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				01B02D2C13A5B4FE0047BC53 /* libcrypto.dylib in Frameworks */,
 				013D1F5A13A5AF6500BF0A67 /* libMachObjC.a in Frameworks */,
 				01EB826413A590D9003EDE60 /* Foundation.framework in Frameworks */,
 			);
