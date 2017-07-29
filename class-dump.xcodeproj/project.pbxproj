@@ -89,7 +89,6 @@
 		0165B8B91827137D00CC647F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0165B8B71827137D00CC647F /* InfoPlist.strings */; };
 		0165B8C31827182000CC647F /* TestCDNameForCPUType.m in Sources */ = {isa = PBXBuildFile; fileRef = 011E484E1604DF3700722F8D /* TestCDNameForCPUType.m */; };
 		0165B8C41827184700CC647F /* libMachObjC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F1113A5AE5A00BF0A67 /* libMachObjC.a */; };
-		0165B8C51827186600CC647F /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 013D1F0B13A5ADC300BF0A67 /* libcrypto.dylib */; };
 		0165B8D81827198900CC647F /* TestBlockSignature.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8C71827198900CC647F /* TestBlockSignature.m */; };
 		0165B8D91827198900CC647F /* TestCDArchFromName.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8C91827198900CC647F /* TestCDArchFromName.m */; };
 		0165B8DA1827198900CC647F /* TestCDArchUses64BitABI.m in Sources */ = {isa = PBXBuildFile; fileRef = 0165B8CB1827198900CC647F /* TestCDArchUses64BitABI.m */; };
@@ -434,7 +433,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0165B8C51827186600CC647F /* libcrypto.dylib in Frameworks */,
 				0165B8C41827184700CC647F /* libMachObjC.a in Frameworks */,
 				0165B8B31827137D00CC647F /* XCTest.framework in Frameworks */,
 			);
