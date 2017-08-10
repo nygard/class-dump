@@ -253,7 +253,7 @@ def main(argv):
             out.close
 
     print "Ended tests at", datetime.today().ctime()
-    Popen("opendiff %s %s" % (TESTDIR_OLD, TESTDIR_NEW), shell=True)
+    Popen("ksdiff %s %s" % (TESTDIR_OLD, TESTDIR_NEW), shell=True)
 
 #----------------------------------------------------------------------
 #

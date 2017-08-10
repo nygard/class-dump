@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2014 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
 
 #import "CDDataCursor.h"
 
@@ -127,6 +127,8 @@
         return 0;
     }
     if (_offset + sizeof(result) <= [_data length]) {
+//        uint8_t *ptr = [_data bytes] + _offset;
+//        NSLog(@"%016llx: %02x %02x %02x %02x %02x %02x %02x %02x", _offset, ptr[0], ptr[1], ptr[2], ptr[3], ptr[4], ptr[5], ptr[6], ptr[7]);
         result = OSReadLittleInt64([_data bytes], _offset);
         _offset += sizeof(result);
     } else {

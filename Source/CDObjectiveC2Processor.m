@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2014 Steve Nygard.
+//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
 
 #import "CDObjectiveC2Processor.h"
 
@@ -27,7 +27,7 @@
 
 - (void)loadProtocols;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_protolist"];
+    CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_protolist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO)
@@ -36,7 +36,7 @@
 
 - (void)loadClasses;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_classlist"];
+    CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_classlist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
@@ -50,7 +50,7 @@
 
 - (void)loadCategories;
 {
-    CDSection *section = [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_catlist"];
+    CDSection *section = [[self.machOFile dataConstSegment] sectionWithName:@"__objc_catlist"];
     
     CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithSection:section];
     while ([cursor isAtEnd] == NO) {
@@ -220,7 +220,11 @@
     objc2Class.superclass = [cursor readPtr];
     objc2Class.cache      = [cursor readPtr];
     objc2Class.vtable     = [cursor readPtr];
-    objc2Class.data       = [cursor readPtr];
+
+    uint64_t value        = [cursor readPtr];
+    class.isSwiftClass    = (value & 0x1) != 0;
+    objc2Class.data       = value & ~7;
+
     objc2Class.reserved1  = [cursor readPtr];
     objc2Class.reserved2  = [cursor readPtr];
     objc2Class.reserved3  = [cursor readPtr];
@@ -497,7 +501,7 @@
 
 - (CDSection *)objcImageInfoSection;
 {
-    return [[self.machOFile segmentWithName:@"__DATA"] sectionWithName:@"__objc_imageinfo"];
+    return [[self.machOFile dataConstSegment] sectionWithName:@"__objc_imageinfo"];
 }
 
 @end
