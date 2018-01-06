@@ -221,7 +221,11 @@
 
     uint64_t value        = [cursor readPtr];
     class.isSwiftClass    = (value & 0x1) != 0;
-    objc2Class.data       = value & ~7;
+    if ([self.machOFile uses64BitABI]) {
+      objc2Class.data = value & ~7;
+    } else {
+      objc2Class.data = value & ~3;
+    }
 
     objc2Class.reserved1  = [cursor readPtr];
     objc2Class.reserved2  = [cursor readPtr];
