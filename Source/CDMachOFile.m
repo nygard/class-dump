@@ -366,10 +366,10 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
         exit(5);
     }
 
-    if ([segment isProtected]) {
-        NSLog(@"Error: Segment is protected.");
-        exit(5);
-    }
+//    if ([segment isProtected]) {
+//        NSLog(@"Error: Segment is protected.");
+//        exit(5);
+//    }
 
 #if 0
     NSLog(@"---------->");
