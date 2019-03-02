@@ -10,6 +10,7 @@
 #import "CDClassDump.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
+#import "CDLCBuildVersion.h"
 #import "CDLCDylib.h"
 #import "CDLCDylinker.h"
 #import "CDLCEncryptionInfo.h"
@@ -64,6 +65,10 @@
     
     if (machOFile.sourceVersion != nil)
         [self.resultString appendFormat:@"//                 Source version: %@\n", machOFile.sourceVersion.sourceVersionString];
+    if (machOFile.buildVersion != nil) {
+        [self.resultString appendFormat:@"//                  Build version: %@\n", machOFile.buildVersion.buildVersionString];
+        [self.resultString appendFormat:@"//                          Tools: %@\n", [machOFile.buildVersion.toolStrings componentsJoinedByString:@"\n                                   "]];
+    }
 
     if (machOFile.minVersionMacOSX != nil) {
         [self.resultString appendFormat:@"//       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];

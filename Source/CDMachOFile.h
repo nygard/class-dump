@@ -14,7 +14,7 @@ typedef enum : NSUInteger {
 } CDByteOrder;
 
 @class CDLCSegment;
-@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
+@class CDLCBuildVersion, CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
 @interface CDMachOFile : CDFile
 
@@ -44,6 +44,7 @@ typedef enum : NSUInteger {
 @property (strong) CDLCVersionMinimum *minVersionMacOSX;
 @property (strong) CDLCVersionMinimum *minVersionIOS;
 @property (strong) CDLCSourceVersion *sourceVersion;
+@property (strong) CDLCBuildVersion *buildVersion;
 
 @property (readonly) BOOL uses64BitABI;
 - (NSUInteger)ptrSize;
