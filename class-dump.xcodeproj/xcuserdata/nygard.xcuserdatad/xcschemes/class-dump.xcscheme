@@ -87,6 +87,14 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "/System/Library/CoreServices/Finder.app/Contents/MacOS/Finder"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "/System/Library/CoreServices/Dock.app/Contents/MacOS/Dock"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "/Users/nygard/Library/Developer/Xcode/DerivedData/NewApp5-eblpfarcajqhnmfwnhncmpmhsjog/Build/Products/Debug-iphoneos/NewApp5.app/NewApp5"
             isEnabled = "NO">
          </CommandLineArgument>
@@ -104,7 +112,7 @@
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/Applications/Utilities/Activity\ Monitor.app"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "/System/Library/Frameworks/Foundation.framework"
