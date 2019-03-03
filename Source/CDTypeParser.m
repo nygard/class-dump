@@ -204,7 +204,8 @@ static NSString *CDTokenDescription(int token)
         || _lookahead == 'o'
         || _lookahead == 'O'
         || _lookahead == 'R'
-        || _lookahead == 'V') { // modifiers
+        || _lookahead == 'V'
+        || _lookahead == 'A') { // modifiers
         int modifier = _lookahead;
         [self match:modifier];
 
@@ -460,7 +461,8 @@ static NSString *CDTokenDescription(int token)
         || token == 'o'
         || token == 'O'
         || token == 'R'
-        || token == 'V')
+        || token == 'V'
+        || token == 'A')
         return YES;
 
     return NO;
@@ -517,6 +519,7 @@ static NSString *CDTokenDescription(int token)
         || token == 'O'
         || token == 'R'
         || token == 'V'
+        || token == 'A'
         || token == '^'
         || token == 'b'
         || token == '@'

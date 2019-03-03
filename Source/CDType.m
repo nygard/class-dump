@@ -265,7 +265,7 @@ static BOOL debugMerge = NO;
 
 - (BOOL)isModifierType;
 {
-    return _primitiveType == 'j' || _primitiveType == 'r' || _primitiveType == 'n' || _primitiveType == 'N' || _primitiveType == 'o' || _primitiveType == 'O' || _primitiveType == 'R' || _primitiveType == 'V';
+    return _primitiveType == 'j' || _primitiveType == 'r' || _primitiveType == 'n' || _primitiveType == 'N' || _primitiveType == 'o' || _primitiveType == 'O' || _primitiveType == 'R' || _primitiveType == 'V' || _primitiveType == 'A';
 }
 
 - (int)typeIgnoringModifiers;
@@ -467,6 +467,17 @@ static BOOL debugMerge = NO;
                 result = [NSString stringWithFormat:@"%@ %@",
                           self.formattedStringForSimpleType, [_subtype formattedString:currentName formatter:typeFormatter level:level]];
             break;
+
+        case 'A':
+            if (_subtype == nil) {
+                if (currentName == nil)
+                    result = [self formattedStringForSimpleType];
+                else
+                    result = [NSString stringWithFormat:@"%@ %@", self.formattedStringForSimpleType, currentName];
+            } else
+                result = [NSString stringWithFormat:@"%@ %@",
+                          self.formattedStringForSimpleType, currentName];
+            break;
             
         default:
             if (currentName == nil)
@@ -528,6 +539,7 @@ static BOOL debugMerge = NO;
         case 'O': return @"bycopy";
         case 'R': return @"byref";
         case 'V': return @"oneway";
+        case 'A': return [NSString stringWithFormat:@"_Atomic(%@)", _subtype.formattedStringForSimpleType];
         default:
             break;
     }
@@ -611,6 +623,7 @@ static BOOL debugMerge = NO;
         case 'O':
         case 'R':
         case 'V':
+        case 'A':
             result = [NSString stringWithFormat:@"%c%@", _primitiveType, [_subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             
