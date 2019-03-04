@@ -74,7 +74,11 @@
 {
     CDType *type = [self type]; // Parses it, if necessary;
     if (self.parseError != nil) {
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
+        if ([self.typeString length] > 0) {
+            [resultString appendFormat:@"    // Error: parsing type: '%@', name: %@", self.typeString, self.name];
+        } else {
+            [resultString appendFormat:@"    // Error: Empty type, name: %@", self.name];
+        }
     } else {
         NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:type];
         NSParameterAssert(formattedString != nil);
