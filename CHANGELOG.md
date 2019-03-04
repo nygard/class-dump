@@ -1,3 +1,17 @@
+### Unreleased
+
+* Building with the 10.14 SDK.
+* Fix parse error of _Atomic() types
+* Work around many other parsing errors from blank types:
+  * types like vector_float4 have a blank encoding. (Thank you iTerm2!  Open source FTW.)
+  * Swift types have a blank encoding.
+  * Arrays of the above types failed because... no type
+  * Now, instead of generating a parse error, the parser just assumes a type is missing and uses one called "MISSING_TYPE".
+* Switched from OpenSSL to CommonCrypto for decryption.
+* Replaced CommonCrypto Blowfish decryption (which checks for valid key sizes) with a C implementation that doesn't, since
+  we need to use bigger keys.
+* Some other changes from Eric Monti, Oleksiy Ivanov, and Cédric Luthi
+
 ### Version 3.5 - Released 2013-11-16
 
 * Targeting 10.8+ now, and building with the 10.9 SDK.
