@@ -193,6 +193,8 @@ def main(argv):
     for pattern in sdict["bundles"]:
         bundles.extend(glob.glob(pattern))
 
+    apps = [app for app in apps if not os.path.basename(app).startswith("Hopper")]
+
     print "  Framework count:", len(frameworks)
     print "Application count:", len(apps)
     print "     Bundle count:", len(bundles)
