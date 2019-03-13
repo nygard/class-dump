@@ -1,7 +1,7 @@
 ### Unreleased
 
 * Building with the 10.14 SDK.
-* Fix parse error of _Atomic() types
+* Fix parse error of _Atomic types.  (Thanks to Jacob Bandes-Storch (jtbandes)).
 * Work around many other parsing errors from blank types:
   * types like vector_float4 have a blank encoding. (Thank you iTerm2!  Open source FTW.)
   * Swift types have a blank encoding.
