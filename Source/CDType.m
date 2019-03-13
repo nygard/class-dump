@@ -458,16 +458,6 @@ static BOOL debugMerge = NO;
         case 'O':
         case 'R':
         case 'V':
-            if (_subtype == nil) {
-                if (currentName == nil)
-                    result = [self formattedStringForSimpleType];
-                else
-                    result = [NSString stringWithFormat:@"%@ %@", self.formattedStringForSimpleType, currentName];
-            } else
-                result = [NSString stringWithFormat:@"%@ %@",
-                          self.formattedStringForSimpleType, [_subtype formattedString:currentName formatter:typeFormatter level:level]];
-            break;
-
         case 'A':
             if (_subtype == nil) {
                 if (currentName == nil)
@@ -476,7 +466,7 @@ static BOOL debugMerge = NO;
                     result = [NSString stringWithFormat:@"%@ %@", self.formattedStringForSimpleType, currentName];
             } else
                 result = [NSString stringWithFormat:@"%@ %@",
-                          self.formattedStringForSimpleType, currentName];
+                          self.formattedStringForSimpleType, [_subtype formattedString:currentName formatter:typeFormatter level:level]];
             break;
             
         default:
@@ -539,7 +529,7 @@ static BOOL debugMerge = NO;
         case 'O': return @"bycopy";
         case 'R': return @"byref";
         case 'V': return @"oneway";
-        case 'A': return [NSString stringWithFormat:@"_Atomic(%@)", _subtype.formattedStringForSimpleType];
+        case 'A': return @"_Atomic";
         default:
             break;
     }
