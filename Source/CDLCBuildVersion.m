@@ -36,8 +36,11 @@ static NSString *NSStringFromBuildVersionTool(uint32_t tool)
 static NSString *NSStringFromBuildVersionToolNotATuple(uint64_t tuple)
 {
     uint32_t tool = tuple >> 32;
-    uint32_t version = tool & 0xffffffff;
-    return [NSString stringWithFormat:@"%@ %u", NSStringFromBuildVersionTool(tool), version];
+    uint32_t version = tuple & 0xffffffff;
+    return [NSString stringWithFormat:@"%@ %u.%u.%u", NSStringFromBuildVersionTool(tool),
+            version >> 16,
+            (version >> 8) & 0xff,
+            version & 0xff];
 }
 
 @implementation CDLCBuildVersion
@@ -99,7 +102,7 @@ static NSString *NSStringFromBuildVersionToolNotATuple(uint64_t tuple)
     NSMutableArray *tools = [NSMutableArray array];
     // iso map
     for (NSNumber *tuple in _tools) {
-        [tools addObject:NSStringFromBuildVersionToolNotATuple([tuple unsignedLongValue])];
+        [tools addObject:NSStringFromBuildVersionToolNotATuple([tuple unsignedLongLongValue])];
     }
 
     return [tools copy];
