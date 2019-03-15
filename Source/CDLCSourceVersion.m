@@ -38,11 +38,11 @@
 - (NSString *)sourceVersionString;
 {
     // A.B.C.D.E packed as a24.b10.c10.d10.e10
-    uint32_t a = (_sourceVersionCommand.version >> 40);
-    uint32_t b = (_sourceVersionCommand.version >> 30) & 0x3f;
-    uint32_t c = (_sourceVersionCommand.version >> 20) & 0x3f;
-    uint32_t d = (_sourceVersionCommand.version >> 10) & 0x3f;
-    uint32_t e = _sourceVersionCommand.version & 0x3f;
+    uint32_t a =  _sourceVersionCommand.version >> 40;
+    uint32_t b = (_sourceVersionCommand.version >> 30) & 0x3ff;
+    uint32_t c = (_sourceVersionCommand.version >> 20) & 0x3ff;
+    uint32_t d = (_sourceVersionCommand.version >> 10) & 0x3ff;
+    uint32_t e =  _sourceVersionCommand.version        & 0x3ff;
 
     return [NSString stringWithFormat:@"%u.%u.%u.%u.%u", a, b, c, d, e];
 }
