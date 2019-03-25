@@ -28,7 +28,7 @@
             //NSLog(@"property: %@, getter: %@, setter: %@", [property name], [property getter], [property setter]);
             _propertiesByName[property.name] = property;
             _propertiesByAccessor[property.getter] = property;
-            if (property.isReadOnly == NO)
+            if (property.isReadOnly == NO || property.setter)
                 _propertiesByAccessor[property.setter] = property;
         }
     }
