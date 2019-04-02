@@ -121,8 +121,15 @@ BOOL CDArchUses64BitLibraries(CDArch arch)
 // Returns CDFatFile or CDMachOFile
 + (id)fileWithContentsOfFile:(NSString *)filename searchPathState:(CDSearchPathState *)searchPathState;
 {
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= 101000
+    NSURL *url = [NSURL fileURLWithPath:filename];
+    NSData *data = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedAlways error:nil];
+#else /* MAC_OS_X_VERSION_MIN_REQUIRED < 101000 */
     NSData *data = [NSData dataWithContentsOfMappedFile:filename];
+#endif /* MAC_OS_X_VERSION_MIN_REQUIRED >= 101000 */
+
     CDFatFile *fatFile = [[CDFatFile alloc] initWithData:data filename:filename searchPathState:searchPathState];
+
     if (fatFile != nil)
         return fatFile;
     

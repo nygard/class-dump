@@ -298,6 +298,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
     uint8_t segmentIndex = 0;
     const char *symbolName = NULL;
     uint8_t symbolFlags = 0;
+    bool useThreadedRebaseBind = false;
 
     NSArray *segments = [self.machOFile segments];
     NSParameterAssert([segments count] > 0);
@@ -305,6 +306,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
     uint64_t address = [segments[0] vmaddr];
 
     const uint8_t *ptr = start;
+    uint64_t count = 0;
     while ((ptr < end) && isDone == NO) {
         uint8_t immediate = *ptr & BIND_IMMEDIATE_MASK;
         uint8_t opcode = *ptr & BIND_OPCODE_MASK;
@@ -403,7 +405,7 @@ static NSString *CDBindTypeDescription(uint8_t type)
                 break;
                 
             case BIND_OPCODE_DO_BIND_ULEB_TIMES_SKIPPING_ULEB: {
-                uint64_t count = read_uleb128(&ptr, end);
+                count = read_uleb128(&ptr, end);
                 uint64_t skip = read_uleb128(&ptr, end);
                 if (debugBindOps) NSLog(@"BIND_OPCODE: DO_BIND_ULEB_TIMES_SKIPPING_ULEB, count: %016llx, skip: %016llx", count, skip);
                 for (uint64_t index = 0; index < count; index++) {
@@ -413,7 +415,46 @@ static NSString *CDBindTypeDescription(uint8_t type)
                 bindCount += count;
                 break;
             }
-                
+
+            case BIND_OPCODE_THREADED: {
+                switch (immediate) {
+                    case BIND_SUBOPCODE_THREADED_SET_BIND_ORDINAL_TABLE_SIZE_ULEB:
+                        count = read_uleb128(&ptr, end);
+                        bindCount += count;
+                        useThreadedRebaseBind = true;
+                        break;
+
+                    case BIND_SUBOPCODE_THREADED_APPLY: {
+                        uint64_t delta = 0;
+                        do {
+                            const uint8_t *pointerLocation = [self.machOFile header] + [segments[segmentIndex] fileoff] + address;
+                            uint64_t val = *(uint64_t *)pointerLocation;
+                            bool isRebase = ((val & (1ULL << 62)) == 0);
+
+                            if (isRebase == false) {
+                                libraryOrdinal = val & 0xFFFF;
+                                [self bindAddress:address type:type symbolName:symbolName flags:symbolFlags addend:addend libraryOrdinal:libraryOrdinal];
+                            } else {
+                                [self rebaseAddress:address type:type];
+                            }
+
+                            // The delta is bits [51..61]
+                            // And bit 62 is to tell us if we are a rebase (0) or bind (1)
+                            val &= ~(1ULL << 62);
+                            delta = (val & 0x3FF8000000000000) >> 51;
+                            address += delta * _ptrSize;
+                        } while ( delta != 0 );
+                        break;
+                    }
+
+                    default:
+                        NSLog(@"Unknown threaded bind subopcode %d", immediate);
+                        exit(99);
+                }
+                break;
+            }
+            break;
+
             default:
                 NSLog(@"Unknown opcode op: %x, imm: %x", opcode, immediate);
                 exit(99);

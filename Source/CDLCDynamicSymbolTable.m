@@ -141,7 +141,7 @@
 - (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
 {
     for (CDRelocationInfo *info in _externalRelocationEntries) {
-        if (info.isExtern && info.offset == offset) {
+        if (info.isExtern && (info.offset == offset)) {
             return info;
         }
     }
