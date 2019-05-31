@@ -343,7 +343,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
             return nil;
 
         ptr = (uint8_t *)[d2 bytes] + d2Offset;
-        return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+        return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSUTF8StringEncoding];
     }
 
     NSUInteger offset = [self dataOffsetForAddress:address];
@@ -352,7 +352,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 
     ptr = (uint8_t *)[self.data bytes] + offset;
 
-    return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];
+    return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSUTF8StringEncoding];
 }
 
 - (NSUInteger)dataOffsetForAddress:(NSUInteger)address;
