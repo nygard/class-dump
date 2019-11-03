@@ -9,16 +9,21 @@
 
 static NSString *NSStringFromBuildVersionPlatform(uint32_t platform)
 {
+
     switch (platform) {
         case PLATFORM_MACOS:            return @"macOS";
         case PLATFORM_IOS:              return @"iOS";
         case PLATFORM_TVOS:             return @"tvOS";
         case PLATFORM_WATCHOS:          return @"watchOS";
         case PLATFORM_BRIDGEOS:         return @"bridgeOS";
-        case PLATFORM_IOSMAC:           return @"iOS Mac";
+            
+        case PLATFORM_MACCATALYST:      return @"macCatalyst";
+        //case PLATFORM_IOSMAC:           return @"iOS Mac";
+            
         case PLATFORM_IOSSIMULATOR:     return @"iOS Simulator";
         case PLATFORM_TVOSSIMULATOR:    return @"tvOS Simulator";
         case PLATFORM_WATCHOSSIMULATOR: return @"watchOS Simulator";
+        case PLATFORM_DRIVERKIT:        return @"driverKit";
         default:               return [NSString stringWithFormat:@"Unknown platform %x", platform];
     }
 }
