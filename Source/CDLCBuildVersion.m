@@ -3,27 +3,32 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-2019 Steve Nygard.
 
+// M_20191104 BlackDady support Framework Catalina 10.15.1 XCode 11.2b2
+
 #import "CDLCBuildVersion.h"
 
 #import "CDMachOFile.h"
 
 static NSString *NSStringFromBuildVersionPlatform(uint32_t platform)
 {
-
     switch (platform) {
         case PLATFORM_MACOS:            return @"macOS";
         case PLATFORM_IOS:              return @"iOS";
         case PLATFORM_TVOS:             return @"tvOS";
         case PLATFORM_WATCHOS:          return @"watchOS";
         case PLATFORM_BRIDGEOS:         return @"bridgeOS";
-            
-        case PLATFORM_MACCATALYST:      return @"macCatalyst";
+           
+        // M_20191104
         //case PLATFORM_IOSMAC:           return @"iOS Mac";
-            
+        case PLATFORM_MACCATALYST:      return @"macCatalyst";
+        // END M_20191104
+                    
         case PLATFORM_IOSSIMULATOR:     return @"iOS Simulator";
         case PLATFORM_TVOSSIMULATOR:    return @"tvOS Simulator";
         case PLATFORM_WATCHOSSIMULATOR: return @"watchOS Simulator";
-        case PLATFORM_DRIVERKIT:        return @"driverKit";
+            
+        case PLATFORM_DRIVERKIT:        return @"driverKit"; // M_20191104 END M_20191104
+            
         default:               return [NSString stringWithFormat:@"Unknown platform %x", platform];
     }
 }
