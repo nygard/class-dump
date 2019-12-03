@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "01B02D2E13A5B5D50047BC53"
-               BuildableName = "all"
-               BlueprintName = "all"
+               BlueprintIdentifier = "01EB825E13A590D9003EDE60"
+               BuildableName = "class-dump"
+               BlueprintName = "class-dump"
                ReferencedContainer = "container:class-dump.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,16 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "0165B8B01827137D00CC647F"
-               BuildableName = "UnitTests.xctest"
-               BlueprintName = "UnitTests"
-               ReferencedContainer = "container:class-dump.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -50,6 +40,16 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "01EB825E13A590D9003EDE60"
+            BuildableName = "class-dump"
+            BlueprintName = "class-dump"
+            ReferencedContainer = "container:class-dump.xcodeproj">
+         </BuildableReference>
+      </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-a"
@@ -68,6 +68,30 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-R &quot;a \\/ b \\\\\\/ c / d \\/  \\\\\\/&quot;"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-R &quot;a \\/ b \\\\\\/ c / d \\\\/  \\\\\\/&quot;"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-R &quot;lmqskdqskjdk \\/ kkkjjkjj \\\\\\/ kj / shhd \\/  \\\\\\/&quot;"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-R &quot;fdfiiodsfidfsnsdfdsn kskdks &quot;"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-R &quot;_BaselinePopupButton/_BaselinePopupButton2&quot;"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-R &quot;AppKit/AppKit2&quot;"
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-o /Users/Cedric/Documents/Golden-Block/GIT/GPGTools/GPGMail/MailHeaders/Catalina-10.15.1/MailUI"
             isEnabled = "YES">
          </CommandLineArgument>
@@ -83,15 +107,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "01B02D2E13A5B5D50047BC53"
-            BuildableName = "all"
-            BlueprintName = "all"
+            BlueprintIdentifier = "01EB825E13A590D9003EDE60"
+            BuildableName = "class-dump"
+            BlueprintName = "class-dump"
             ReferencedContainer = "container:class-dump.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
