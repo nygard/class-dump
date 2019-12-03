@@ -3,9 +3,11 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-2019 Steve Nygard.
 
+// M_20191124 BlackDady Add Option Replace (regex format)
+
 #import "CDFile.h" // For CDArch
 
-#define CLASS_DUMP_BASE_VERSION "3.5 (64 bit)"
+#define CLASS_DUMP_BASE_VERSION "3.5b1 (64 bit)"
 
 #ifdef DEBUG
 #define CLASS_DUMP_VERSION CLASS_DUMP_BASE_VERSION " (Debug version compiled " __DATE__ " " __TIME__ ")"
@@ -30,7 +32,11 @@
 @property (assign) BOOL shouldShowMethodAddresses;
 @property (assign) BOOL shouldShowHeader;
 
+
 @property (strong) NSRegularExpression *regularExpression;
+
+@property (strong) NSMutableDictionary<NSRegularExpression *, NSString *> *dictReplaceRegularExpressions; // M_20191124 END M_20191124
+
 - (BOOL)shouldShowName:(NSString *)name;
 
 @property (strong) NSString *sdkRoot;
@@ -52,6 +58,9 @@
 - (void)recursivelyVisit:(CDVisitor *)visitor;
 
 - (void)appendHeaderToString:(NSMutableString *)resultString;
+
+- (void)replacePartsToMutableString:(NSMutableString *)resultString; // M_20191124 END M_20191124
+- (NSString *)replacePartsToString:(NSString *)txtInput; // M_20191124 END M_20191124
 
 - (void)registerTypes;
 

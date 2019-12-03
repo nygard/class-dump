@@ -3,6 +3,8 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-2019 Steve Nygard.
 
+// M_20191124 BlackDady Add Option Replace (regex format)
+
 #import "CDClassDump.h"
 
 #import "CDFatArch.h"
@@ -40,12 +42,17 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
     BOOL _shouldShowMethodAddresses;
     BOOL _shouldShowHeader;
     
+    
     NSRegularExpression *_regularExpression;
+    
+    NSMutableDictionary<NSRegularExpression *, NSString *> *_dictReplaceRegularExpressions; // M_20191124 END M_20191124
     
     NSString *_sdkRoot;
     NSMutableArray *_machOFiles;
     NSMutableDictionary *_machOFilesByName;
     NSMutableArray *_objcProcessors;
+    
+    
     
     CDTypeController *_typeController;
     
@@ -61,6 +68,8 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
         _machOFiles = [[NSMutableArray alloc] init];
         _machOFilesByName = [[NSMutableDictionary alloc] init];
         _objcProcessors = [[NSMutableArray alloc] init];
+        
+        _dictReplaceRegularExpressions =  [[NSMutableDictionary alloc] init]; // M_20191124 END M_20191124
         
         _typeController = [[CDTypeController alloc] initWithClassDump:self];
         
@@ -79,6 +88,7 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
 - (BOOL)shouldShowName:(NSString *)name;
 {
     if (self.regularExpression != nil) {
+
         NSTextCheckingResult *firstMatch = [self.regularExpression firstMatchInString:name options:(NSMatchingOptions)0 range:NSMakeRange(0, [name length])];
         return firstMatch != nil;
     }
@@ -264,6 +274,30 @@ NSString *CDErrorKey_Exception    = @"CDErrorKey_Exception";
         [resultString appendString:@"//\n\n"];
     }
 }
+
+// M_20191124
+- (void)replacePartsToMutableString:(NSMutableString *)resultString;
+{
+    NSString *txtOutput = [self replacePartsToString: resultString];
+
+    [resultString setString:txtOutput];
+}
+
+- (NSString *)replacePartsToString:(NSString *)txtInput;
+{
+    NSString __block *txtOutput = txtInput;
+    
+    if( (_dictReplaceRegularExpressions != nil) && ([_dictReplaceRegularExpressions count] > 0) )
+    {
+        [_dictReplaceRegularExpressions enumerateKeysAndObjectsUsingBlock:^(NSRegularExpression * _Nonnull regexp, NSString * _Nonnull replaceTemplate, BOOL * _Nonnull stop) {
+            
+            txtOutput = [regexp stringByReplacingMatchesInString:txtOutput options:0 range:NSMakeRange(0, [txtOutput length]) withTemplate:replaceTemplate];
+        }];
+    }
+    
+    return txtOutput;
+}
+// END M_20191124
 
 - (void)registerTypes;
 {

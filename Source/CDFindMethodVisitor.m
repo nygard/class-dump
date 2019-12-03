@@ -3,6 +3,8 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-2019 Steve Nygard.
 
+// M_20191124 BlackDady Add Option Replace (regex format)
+
 #import "CDFindMethodVisitor.h"
 
 #import "CDClassDump.h"
@@ -66,6 +68,8 @@
 
 - (void)didEndVisiting;
 {
+    [self.classDump replacePartsToMutableString:self.resultString];  // M_20191124 END M_20191124
+    
     [self writeResultToStandardOutput];
 }
 

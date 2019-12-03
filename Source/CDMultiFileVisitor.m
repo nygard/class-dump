@@ -3,6 +3,8 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-2019 Steve Nygard.
 
+// M_20191124 BlackDady Add Option Replace (regex format)
+
 #import "CDMultiFileVisitor.h"
 
 #import "CDClassDump.h"
@@ -115,6 +117,8 @@
     NSString *filename = [NSString stringWithFormat:@"%@.h", aClass.name];
     if (self.outputPath != nil)
         filename = [self.outputPath stringByAppendingPathComponent:filename];
+    
+    [self.classDump replacePartsToMutableString:self.resultString];  // M_20191124 END M_20191124
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
@@ -154,6 +158,8 @@
     if (self.outputPath != nil)
         filename = [self.outputPath stringByAppendingPathComponent:filename];
 
+    [self.classDump replacePartsToMutableString:self.resultString];  // M_20191124 END M_20191124
+    
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
 
@@ -184,6 +190,8 @@
     NSString *filename = [NSString stringWithFormat:@"%@-Protocol.h", protocol.name];
     if (self.outputPath != nil)
         filename = [self.outputPath stringByAppendingPathComponent:filename];
+    
+    [self.classDump replacePartsToMutableString:self.resultString];  // M_20191124 END M_20191124
 
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }
@@ -382,6 +390,8 @@
     NSString *filename = @"CDStructures.h";
     if (self.outputPath != nil)
         filename = [self.outputPath stringByAppendingPathComponent:filename];
+    
+    [self.classDump replacePartsToMutableString:self.resultString];  // M_20191124 END M_20191124
     
     [[self.resultString dataUsingEncoding:NSUTF8StringEncoding] writeToFile:filename atomically:YES];
 }

@@ -3,6 +3,9 @@
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
 //  Copyright (C) 1997-2019 Steve Nygard.
 
+// M_20191124 BlackDady Add Option Replace (regex format)
+
+
 #include <stdio.h>
 #include <libc.h>
 #include <unistd.h>
@@ -22,32 +25,36 @@
 
 void print_usage(void)
 {
+    
+    // M_20191124
     fprintf(stderr,
             "class-dump %s\n"
             "Usage: class-dump [options] <mach-o-file>\n"
             "\n"
             "  where options are:\n"
-            "        -a             show instance variable offsets\n"
-            "        -A             show implementation addresses\n"
-            "        --arch <arch>  choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s, arm64)\n"
-            "        -C <regex>     only display classes matching regular expression\n"
-            "        -f <str>       find string in method name\n"
-            "        -H             generate header files in current directory, or directory specified with -o\n"
-            "        -I             sort classes, categories, and protocols by inheritance (overrides -s)\n"
-            "        -o <dir>       output directory used for -H\n"
-            "        -r             recursively expand frameworks and fixed VM shared libraries\n"
-            "        -s             sort classes and categories by name\n"
-            "        -S             sort methods by name\n"
-            "        -t             suppress header in output, for testing\n"
-            "        --list-arches  list the arches in the file, then exit\n"
-            "        --sdk-ios      specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
-            "                       or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
-            "        --sdk-mac      specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
-            "                       or /Developer/SDKs/MacOSX<version>.sdk)\n"
-            "        --sdk-root     specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
+            "        -a               show instance variable offsets\n"
+            "        -A               show implementation addresses\n"
+            "        --arch <arch>    choose a specific architecture from a universal binary (ppc, ppc64, i386, x86_64, armv6, armv7, armv7s, arm64)\n"
+            "        -C <regex>       only display classes matching regular expression\n"
+            "        -f <str>         find string in method name\n"
+            "        -H               generate header files in current directory, or directory specified with -o\n"
+            "        -I               sort classes, categories, and protocols by inheritance (overrides -s)\n"
+            "        -o <dir>         output directory used for -H\n"
+            "        -r               recursively expand frameworks and fixed VM shared libraries\n"
+            "        -R <regex>/<str> replace matching regular expression by the str\n"
+            "        -s               sort classes and categories by name\n"
+            "        -S               sort methods by name\n"
+            "        -t               suppress header in output, for testing\n"
+            "        --list-arches    list the arches in the file, then exit\n"
+            "        --sdk-ios        specify iOS SDK version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk\n"
+            "                         or /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS<version>.sdk)\n"
+            "        --sdk-mac        specify Mac OS X version (will look for /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX<version>.sdk\n"
+            "                         or /Developer/SDKs/MacOSX<version>.sdk)\n"
+            "        --sdk-root       specify the full SDK root path (or use --sdk-ios/--sdk-mac for a shortcut)\n"
             ,
             CLASS_DUMP_VERSION
        );
+      // END M_20191124
 }
 
 #define CD_OPT_ARCH        1
@@ -82,6 +89,7 @@ int main(int argc, char *argv[])
             { "sort-by-inheritance",     no_argument,       NULL, 'I' },
             { "output-dir",              required_argument, NULL, 'o' },
             { "recursive",               no_argument,       NULL, 'r' },
+            { "replace",                 required_argument, NULL, 'R' }, // M_20191124 END M_20191124
             { "sort",                    no_argument,       NULL, 's' },
             { "sort-methods",            no_argument,       NULL, 'S' },
             { "arch",                    required_argument, NULL, CD_OPT_ARCH },
@@ -102,7 +110,7 @@ int main(int argc, char *argv[])
 
         CDClassDump *classDump = [[CDClassDump alloc] init];
 
-        while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
+        while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rR:sSt", longopts, NULL)) != -1) { // M_20191124 END M_20191124
             switch (ch) {
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
@@ -215,6 +223,150 @@ int main(int argc, char *argv[])
                 case 'r':
                     classDump.shouldProcessRecursively = YES;
                     break;
+                    
+                // M_20191124
+                case 'R': {
+                    NSString *replacePattern = @"";
+                    NSString *replaceTemplate = @"";
+                    
+                    // -R <regex>/<str> replace matching regular expression by the str
+                    // There, we transform 1 string in 2 (separated by a / and not escaped)
+                    //
+                    // For : "AppKit/AppKit2"
+                    //        - "AppKit"
+                    //        - "AppKit2"
+                    //
+                    // For : "a \/ b \\\/ c / d \/  \\\/"
+                    //        - "a \/ b \\\/ c "
+                    //        - " d \/  \\\/"
+                    //
+                    // For : "a \/ b \\\/ c / d \\/  \\\/"
+                    //        - "a \/ b \\\/ c / d \\"
+                    //        - "  \\\/"
+
+                    if( FALSE )
+                    {
+                        NSError *error;
+                        NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:@"^([^/]+)\\/(.*)$"
+                                                                                                           options:(NSRegularExpressionOptions)0
+                                                                                                             error:&error];
+                        NSString *allReplacePattern = [NSString stringWithUTF8String:optarg];
+                    
+                        if (regularExpression != nil) {
+                            
+                            
+                            
+                            replacePattern = [regularExpression stringByReplacingMatchesInString:allReplacePattern
+                                                                                         options:0
+                                                                                           range:NSMakeRange(0, [allReplacePattern length])
+                                                                                    withTemplate:@"$1"];
+                            
+                            replaceTemplate = [regularExpression stringByReplacingMatchesInString:allReplacePattern
+                                                                                         options:0
+                                                                                           range:NSMakeRange(0, [allReplacePattern length])
+                                                                                    withTemplate:@"$2"];
+                                                                    
+                        }
+                    }
+                    else if( FALSE )
+                    {
+                        // Search last char / but no count it if escaped
+                        if( optarg != nil )
+                        {
+                            char *ptr = optarg;
+                            char *slash = nil;
+                            BOOL escape = NO;
+                            while( *ptr != 0x00 )
+                            {
+                                if( escape == YES )
+                                    escape = NO;
+                                else if( *ptr =='\\' )
+                                    escape = YES;
+                                else if( *ptr =='/' )
+                                    slash = ptr;
+                                
+                                ptr++;
+                            }
+                            
+                            if( slash != nil)
+                            {
+                                *slash = 0;
+                                replacePattern = [NSString stringWithUTF8String:optarg];
+                                replaceTemplate = [NSString stringWithUTF8String:slash+1];
+                            }
+                            else
+                                replacePattern = [NSString stringWithUTF8String:optarg];
+                                
+                        }
+                    }
+                    else
+                    {
+                        // Search last char / but no count it if escaped
+                        // Version unicode
+                        
+                        NSString *allReplacePattern = [NSString stringWithUTF8String:optarg];
+                        
+                        if( allReplacePattern != nil )
+                        {
+                            NSData * data = [allReplacePattern dataUsingEncoding:NSUnicodeStringEncoding];
+                            
+                            if( data != nil )
+                            {
+                                unichar *pdata = (unichar *)data.bytes+1; // +1: ignore 2 bytes bom UTF16: U+FFFE
+                                long ldata = (data.length-2)/sizeof(unichar); // -2: ignore 2 bytes bom UTF16: U+FFFE
+                                unichar *ptr = pdata;
+                                unichar *slash = nil;
+                                BOOL escape = NO;
+                                
+                                
+                                while( ptr < (pdata+data.length) )
+                                {
+                                    if( escape == YES )
+                                        escape = NO;
+                                    else if( *ptr == '\\' )
+                                        escape = YES;
+                                    else if( *ptr == '/' )
+                                    {
+                                        slash = ptr;
+                                        
+                                        if( TRUE ) // Stop on First slash
+                                            break;
+                                    }
+                                    
+                                    ptr++;
+                                }
+                                
+                                if( slash != nil)
+                                {
+                                    NSUInteger lenPattern = slash - pdata;
+                                    NSUInteger lenTemplate = ldata-lenPattern-1;
+                                    
+                                    replacePattern = [NSString stringWithCharacters:pdata length: lenPattern];
+                                    replaceTemplate = [NSString stringWithCharacters:slash+1 length: lenTemplate];
+                                }
+                                else
+                                    replacePattern = allReplacePattern;
+                            }
+                        }
+                    }
+                    
+                    NSError *error = nil;
+                    NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:replacePattern
+                                                                                                       options:NSRegularExpressionCaseInsensitive
+                                                                                                         error:&error];
+                    
+                    
+                    if (regularExpression != nil) {
+                        classDump.dictReplaceRegularExpressions[regularExpression] = replaceTemplate;
+                    } else {
+                        fprintf(stderr, "class-dump: Error with regular expression: %s\n\n", [[error localizedFailureReason] UTF8String]);
+                        errorFlag = YES;
+                    }
+
+                    // Last one wins now.
+                    break;
+                }
+                // END M_20191124
                     
                 case 's':
                     classDump.shouldSortClasses = YES;
