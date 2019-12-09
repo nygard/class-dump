@@ -45,16 +45,19 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 @implementation CDMachOFile
 {
     CDByteOrder _byteOrder;
-    
+
     NSArray *_loadCommands;
     NSArray *_dylibLoadCommands;
     NSArray *_segments;
+    const void *_header;
     CDLCSymbolTable *_symbolTable;
     CDLCDynamicSymbolTable *_dynamicSymbolTable;
     CDLCDyldInfo *_dyldInfo;
     CDLCDylib *_dylibIdentifier;
     CDLCVersionMinimum *_minVersionMacOSX;
     CDLCVersionMinimum *_minVersionIOS;
+    CDLCVersionMinimum *_minVersionTVOS;
+    CDLCVersionMinimum *_minVersionWatchOS;
     CDLCSourceVersion *_sourceVersion;
     CDLCBuildVersion *_buildVersion;
     NSArray *_runPaths;
@@ -90,6 +93,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
         _byteOrder = CDByteOrder_LittleEndian;
         
         CDDataCursor *cursor = [[CDDataCursor alloc] initWithData:data];
+        _header = [data bytes];
         _magic = [cursor readBigInt32];
         if (_magic == MH_MAGIC || _magic == MH_MAGIC_64) {
             _byteOrder = CDByteOrder_BigEndian;
@@ -122,7 +126,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
                 _reserved = [cursor readBigInt32];
             }
         }
-        
+
         NSAssert(_uses64BitABI == CDArchUses64BitABI((CDArch){ .cputype = _cputype, .cpusubtype = _cpusubtype }), @"Header magic should match cpu arch", nil);
         
         NSUInteger headerOffset = _uses64BitABI ? sizeof(struct mach_header_64) : sizeof(struct mach_header);
@@ -150,6 +154,10 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 
             if (loadCommand.cmd == LC_VERSION_MIN_MACOSX)                        self.minVersionMacOSX = (CDLCVersionMinimum *)loadCommand;
             if (loadCommand.cmd == LC_VERSION_MIN_IPHONEOS)                      self.minVersionIOS = (CDLCVersionMinimum *)loadCommand;
+            if (loadCommand.cmd == LC_VERSION_MIN_TVOS)
+                self.minVersionTVOS = (CDLCVersionMinimum *)loadCommand;
+            if (loadCommand.cmd == LC_VERSION_MIN_WATCHOS)
+                self.minVersionWatchOS = (CDLCVersionMinimum *)loadCommand;
             if (loadCommand.cmd == LC_DYLD_ENVIRONMENT)                          [dyldEnvironment addObject:loadCommand];
             if (loadCommand.cmd == LC_REEXPORT_DYLIB)                            [reExportedDylibs addObject:loadCommand];
             if (loadCommand.cmd == LC_ID_DYLIB)                                  self.dylibIdentifier = (CDLCDylib *)loadCommand;

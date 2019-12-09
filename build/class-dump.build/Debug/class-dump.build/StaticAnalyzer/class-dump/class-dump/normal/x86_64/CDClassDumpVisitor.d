@@ -1,0 +1,30 @@
+dependencies: \
+  /Users/andyvand/GitHub/class-dump/Source/NSString-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSScanner-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSError-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSData-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSArray-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDTopologicalSortProtocol.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDTopoSortNode.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/class-dump-Prefix.pch \
+  /Users/andyvand/GitHub/class-dump/Source/CDClassDumpVisitor.m \
+  /Users/andyvand/GitHub/class-dump/Source/CDClassDumpVisitor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDTextClassDumpVisitor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDVisitor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDClassDump.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDFile.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDObjectiveCProcessor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDMachOFile.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCBuildVersion.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLoadCommand.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDMachOFileDataCursor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDDataCursor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCDylib.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCDylinker.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCEncryptionInfo.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCRunPath.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCSegment.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCSourceVersion.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCVersionMinimum.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDTypeController.h
