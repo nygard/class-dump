@@ -987,34 +987,6 @@
 			isa = PBXProject;
 			attributes = {
 				LastUpgradeCheck = 1000;
-				TargetAttributes = {
-					013D1EFA13A5A0F100BF0A67 = {
-						DevelopmentTeam = TYR55Y75T7;
-						ProvisioningStyle = Automatic;
-					};
-					013D1F1013A5AE5A00BF0A67 = {
-						DevelopmentTeam = TYR55Y75T7;
-					};
-					0165B8B01827137D00CC647F = {
-						DevelopmentTeam = TYR55Y75T7;
-					};
-					01B02CFE13A5B0DC0047BC53 = {
-						DevelopmentTeam = TYR55Y75T7;
-						ProvisioningStyle = Automatic;
-					};
-					01B02D2E13A5B5D50047BC53 = {
-						DevelopmentTeam = TYR55Y75T7;
-					};
-					01EB825E13A590D9003EDE60 = {
-						DevelopmentTeam = TYR55Y75T7;
-						ProvisioningStyle = Automatic;
-					};
-					AB47A63B2252EDD000623B23 = {
-						CreatedOnToolsVersion = 10.2;
-						DevelopmentTeam = TYR55Y75T7;
-						ProvisioningStyle = Automatic;
-					};
-				};
 			};
 			buildConfigurationList = 01EB825913A590D9003EDE60 /* Build configuration list for PBXProject "class-dump" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1461,10 +1433,6 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3.6;
-				DEVELOPMENT_TEAM = TYR55Y75T7;
-				DYLIB_COMPATIBILITY_VERSION = 3.0;
-				DYLIB_CURRENT_VERSION = 3.6;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1531,7 +1499,6 @@
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 3.6;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = TYR55Y75T7;
 				DYLIB_COMPATIBILITY_VERSION = 3.0;
 				DYLIB_CURRENT_VERSION = 3.6;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
