@@ -68,12 +68,15 @@ int64_t read_sleb128(const uint8_t **ptrptr, const uint8_t *end)
     //NSLog(@"result before sign extend: %ld", result);
     // sign extend negative numbers
     // This essentially clears out from -1 the low order bits we've already set, and combines that with our bits.
-    if ( (byte & 0x40) != 0 )
-        result |= (-1LL) << bit;
-    
+    if ((byte & 0x40) != 0)
+    {
+        result |= ((-1LL) << bit);
+    }
+
     //NSLog(@"result after sign extend: %ld", result);
     
     //NSLog(@"ptr before: %p, after: %p", *ptrptr, ptr);
     *ptrptr = ptr;
+
     return result;
 }

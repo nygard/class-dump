@@ -1,0 +1,35 @@
+dependencies: \
+  /Users/andyvand/GitHub/class-dump/Source/NSString-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSScanner-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSError-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSData-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/NSArray-CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDTopologicalSortProtocol.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDTopoSortNode.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDExtensions.h \
+  /Users/andyvand/GitHub/class-dump/MachObjC-Prefix.pch \
+  /Users/andyvand/GitHub/class-dump/Source/CDMachOFile.m \
+  /Users/andyvand/GitHub/class-dump/Source/CDMachOFile.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDFile.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDMachOFileDataCursor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDDataCursor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDFatFile.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLoadCommand.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCDyldInfo.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCDylib.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCDynamicSymbolTable.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCEncryptionInfo.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCRunPath.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCSegment.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCSymbolTable.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCUUID.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCVersionMinimum.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDObjectiveC1Processor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDObjectiveCProcessor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDObjectiveC2Processor.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDSection.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDSymbol.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDRelocationInfo.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDSearchPathState.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCSourceVersion.h \
+  /Users/andyvand/GitHub/class-dump/Source/CDLCBuildVersion.h
