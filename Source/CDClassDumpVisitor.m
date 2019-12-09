@@ -74,9 +74,20 @@
         [self.resultString appendFormat:@"//       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];
         [self.resultString appendFormat:@"//                    SDK version: %@\n", machOFile.minVersionMacOSX.SDKVersionString];
     }
+
     if (machOFile.minVersionIOS != nil) {
         [self.resultString appendFormat:@"//            Minimum iOS version: %@\n", machOFile.minVersionIOS.minimumVersionString];
         [self.resultString appendFormat:@"//                    SDK version: %@\n", machOFile.minVersionIOS.SDKVersionString];
+    }
+
+    if (machOFile.minVersionTVOS != nil) {
+        [self.resultString appendFormat:@"//            Minimum AppleTV OS version: %@\n", machOFile.minVersionTVOS.minimumVersionString];
+        [self.resultString appendFormat:@"//                    SDK version: %@\n", machOFile.minVersionTVOS.SDKVersionString];
+    }
+
+    if (machOFile.minVersionWatchOS != nil) {
+        [self.resultString appendFormat:@"//            Minimum Watch OS version: %@\n", machOFile.minVersionWatchOS.minimumVersionString];
+        [self.resultString appendFormat:@"//                    SDK version: %@\n", machOFile.minVersionWatchOS.SDKVersionString];
     }
 
     if (processor.garbageCollectionStatus != nil) {

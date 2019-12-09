@@ -20,6 +20,8 @@ typedef enum : NSUInteger {
 
 @property (readonly) CDByteOrder byteOrder;
 
+@property (readonly) const void *header;
+
 @property (readonly) uint32_t magic;
 @property (assign) cpu_type_t cputype;
 @property (assign) cpu_subtype_t cpusubtype;
@@ -43,6 +45,8 @@ typedef enum : NSUInteger {
 @property (strong) CDLCDylib *dylibIdentifier;
 @property (strong) CDLCVersionMinimum *minVersionMacOSX;
 @property (strong) CDLCVersionMinimum *minVersionIOS;
+@property (strong) CDLCVersionMinimum *minVersionTVOS;
+@property (strong) CDLCVersionMinimum *minVersionWatchOS;
 @property (strong) CDLCSourceVersion *sourceVersion;
 @property (strong) CDLCBuildVersion *buildVersion;
 
