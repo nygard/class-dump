@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDClassDumpVisitor.h"
 
@@ -10,6 +10,7 @@
 #import "CDClassDump.h"
 #import "CDObjectiveCProcessor.h"
 #import "CDMachOFile.h"
+#import "CDLCBuildVersion.h"
 #import "CDLCDylib.h"
 #import "CDLCDylinker.h"
 #import "CDLCEncryptionInfo.h"
@@ -64,6 +65,10 @@
     
     if (machOFile.sourceVersion != nil)
         [self.resultString appendFormat:@"//                 Source version: %@\n", machOFile.sourceVersion.sourceVersionString];
+    if (machOFile.buildVersion != nil) {
+        [self.resultString appendFormat:@"//                  Build version: %@\n", machOFile.buildVersion.buildVersionString];
+        [self.resultString appendFormat:@"//                          Tools: %@\n", [machOFile.buildVersion.toolStrings componentsJoinedByString:@"\n                                   "]];
+    }
 
     if (machOFile.minVersionMacOSX != nil) {
         [self.resultString appendFormat:@"//       Minimum Mac OS X version: %@\n", machOFile.minVersionMacOSX.minimumVersionString];

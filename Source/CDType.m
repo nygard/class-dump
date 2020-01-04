@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDType.h"
 
@@ -265,7 +265,7 @@ static BOOL debugMerge = NO;
 
 - (BOOL)isModifierType;
 {
-    return _primitiveType == 'j' || _primitiveType == 'r' || _primitiveType == 'n' || _primitiveType == 'N' || _primitiveType == 'o' || _primitiveType == 'O' || _primitiveType == 'R' || _primitiveType == 'V';
+    return _primitiveType == 'j' || _primitiveType == 'r' || _primitiveType == 'n' || _primitiveType == 'N' || _primitiveType == 'o' || _primitiveType == 'O' || _primitiveType == 'R' || _primitiveType == 'V' || _primitiveType == 'A';
 }
 
 - (int)typeIgnoringModifiers;
@@ -458,6 +458,7 @@ static BOOL debugMerge = NO;
         case 'O':
         case 'R':
         case 'V':
+        case 'A':
             if (_subtype == nil) {
                 if (currentName == nil)
                     result = [self formattedStringForSimpleType];
@@ -528,6 +529,7 @@ static BOOL debugMerge = NO;
         case 'O': return @"bycopy";
         case 'R': return @"byref";
         case 'V': return @"oneway";
+        case 'A': return @"_Atomic";
         default:
             break;
     }
@@ -611,6 +613,7 @@ static BOOL debugMerge = NO;
         case 'O':
         case 'R':
         case 'V':
+        case 'A':
             result = [NSString stringWithFormat:@"%c%@", _primitiveType, [_subtype _typeStringWithVariableNamesToLevel:level showObjectTypes:shouldShowObjectTypes]];
             break;
             

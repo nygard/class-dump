@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDSection.h"
 
@@ -23,9 +23,11 @@
         _segment = segment;
         
         _sectionName = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
-        memcpy(_section.sectname, [_sectionName UTF8String], sizeof(_section.sectname));
+        size_t sectionNameLength = [_sectionName lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        memcpy(_section.sectname, [_sectionName UTF8String], MIN(sectionNameLength, sizeof(_section.sectname)));
+        size_t segmentNameLength = [_sectionName lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
         _segmentName = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
-        memcpy(_section.segname, [_segmentName UTF8String], sizeof(_section.segname));
+        memcpy(_section.segname, [_segmentName UTF8String], MIN(segmentNameLength, sizeof(_section.segname)));
         _section.addr      = [cursor readPtr];
         _section.size      = [cursor readPtr];
         _section.offset    = [cursor readInt32];

@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDFile.h"
 
@@ -14,7 +14,7 @@ typedef enum : NSUInteger {
 } CDByteOrder;
 
 @class CDLCSegment;
-@class CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
+@class CDLCBuildVersion, CDLCDyldInfo, CDLCDylib, CDMachOFile, CDLCSymbolTable, CDLCDynamicSymbolTable, CDLCVersionMinimum, CDLCSourceVersion;
 
 @interface CDMachOFile : CDFile
 
@@ -44,6 +44,7 @@ typedef enum : NSUInteger {
 @property (strong) CDLCVersionMinimum *minVersionMacOSX;
 @property (strong) CDLCVersionMinimum *minVersionIOS;
 @property (strong) CDLCSourceVersion *sourceVersion;
+@property (strong) CDLCBuildVersion *buildVersion;
 
 @property (readonly) BOOL uses64BitABI;
 - (NSUInteger)ptrSize;

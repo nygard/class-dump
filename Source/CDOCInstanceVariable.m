@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDOCInstanceVariable.h"
 
@@ -74,7 +74,11 @@
 {
     CDType *type = [self type]; // Parses it, if necessary;
     if (self.parseError != nil) {
-        [resultString appendFormat:@"    // Error parsing type: %@, name: %@", self.typeString, self.name];
+        if ([self.typeString length] > 0) {
+            [resultString appendFormat:@"    // Error: parsing type: '%@', name: %@", self.typeString, self.name];
+        } else {
+            [resultString appendFormat:@"    // Error: Empty type, name: %@", self.name];
+        }
     } else {
         NSString *formattedString = [[typeController ivarTypeFormatter] formatVariable:self.name type:type];
         NSParameterAssert(formattedString != nil);

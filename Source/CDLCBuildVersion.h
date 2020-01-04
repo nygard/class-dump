@@ -5,12 +5,8 @@
 
 #import "CDLoadCommand.h"
 
-@class CDRelocationInfo;
+@interface CDLCBuildVersion : CDLoadCommand
 
-@interface CDLCDynamicSymbolTable : CDLoadCommand
-
-- (void)loadSymbols;
-
-- (CDRelocationInfo *)relocationEntryWithOffset:(NSUInteger)offset;
-
+@property (nonatomic, readonly) NSString *buildVersionString;
+@property (nonatomic, readonly) NSArray *toolStrings;
 @end

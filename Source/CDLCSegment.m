@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDLCSegment.h"
 
@@ -9,6 +9,30 @@
 #import "CDSection.h"
 
 #include <CommonCrypto/CommonCrypto.h>
+#include "blowfish.h"
+
+// Decrypt PAGE_SIZE (4096) bytes
+static void BF_Decrypt_Block(BLOWFISH_CTX *ctx, const uint8_t *ptr, uint8_t *dest)
+{
+    uint32_t left, right;
+    uint32_t src_offset = 0, dest_offset = 0;
+    uint32_t previous_left = 0, previous_right = 0;
+    for (NSUInteger index = 0; index < PAGE_SIZE / 8; index++) {
+        left  = OSReadBigInt32(ptr, src_offset); src_offset += sizeof(uint32_t);
+        right = OSReadBigInt32(ptr, src_offset); src_offset += sizeof(uint32_t);
+
+        uint32_t left2 = left;
+        uint32_t right2 = right;
+        Blowfish_Decrypt(ctx, &left2, &right2);
+        left2 ^= previous_left;
+        right2 ^= previous_right;
+        previous_left = left;
+        previous_right = right;
+
+        OSWriteBigInt32(dest, dest_offset, left2);  dest_offset += sizeof(uint32_t);
+        OSWriteBigInt32(dest, dest_offset, right2); dest_offset += sizeof(uint32_t);
+    }
+}
 
 NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
 {
@@ -37,7 +61,8 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
         _segmentCommand.cmdsize = [cursor readInt32];
         
         _name = [cursor readStringOfLength:16 encoding:NSASCIIStringEncoding];
-        memcpy(_segmentCommand.segname, [_name UTF8String], sizeof(_segmentCommand.segname));
+        size_t nameLength = [_name lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+        memcpy(_segmentCommand.segname, [_name UTF8String], MIN(sizeof(_segmentCommand.segname), nameLength));
         _segmentCommand.vmaddr   = [cursor readPtr];
         _segmentCommand.vmsize   = [cursor readPtr];
         _segmentCommand.fileoff  = [cursor readPtr];
@@ -254,6 +279,9 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
                 memcpy(dest, src, [self filesize] - PAGE_SIZE * 3);
             } else if (magic == CDSegmentProtectedMagic_Blowfish) {
                 // 10.6 decryption
+#if 0
+                // CommonCrypto 60026 (OS X 10.8) is first to include kCCKeySizeMaxBlowfish.
+                // CommonCrypto 60075.50.1 (OS X 10.11.5) is the first to check the keysize.
                 CCCryptorRef cryptor;
                 CCCryptorStatus status = CCCryptorCreate(kCCDecrypt, kCCAlgorithmBlowfish, 0, keyData, sizeof(keyData), NULL, &cryptor);
                 NSParameterAssert(status == kCCSuccess);
@@ -270,6 +298,17 @@ NSString *CDSegmentEncryptionTypeName(CDSegmentEncryptionType type)
                     dest += PAGE_SIZE;
                 }
                 CCCryptorRelease(cryptor);
+#else
+                // This uses a 64 byte keysize, which is too big for the enforced keysize check of CommonCrypto.
+                BLOWFISH_CTX ctx;
+                Blowfish_Init(&ctx, keyData, sizeof(keyData));
+                for (NSUInteger index = 0; index < count; index++) {
+                    BF_Decrypt_Block(&ctx, src, dest);
+
+                    src += PAGE_SIZE;
+                    dest += PAGE_SIZE;
+                }
+#endif
             } else if (magic == CDSegmentProtectedMagic_AES) {
                 // 10.5 decryption
                 CCCryptorRef cryptor1, cryptor2;

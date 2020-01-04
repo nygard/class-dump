@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDTypeParser.h"
 
@@ -204,7 +204,8 @@ static NSString *CDTokenDescription(int token)
         || _lookahead == 'o'
         || _lookahead == 'O'
         || _lookahead == 'R'
-        || _lookahead == 'V') { // modifiers
+        || _lookahead == 'V'
+        || _lookahead == 'A') { // modifiers
         int modifier = _lookahead;
         [self match:modifier];
 
@@ -314,8 +315,11 @@ static NSString *CDTokenDescription(int token)
         [self match:simpleType];
         result = [[CDType alloc] initSimpleType:simpleType];
     } else {
-        result = nil;
-        [NSException raise:CDExceptionName_SyntaxError format:@"expected (many things), got %@", CDTokenDescription(_lookahead)];
+        CDTypeName *typeName = [[CDTypeName alloc] init];
+        typeName.name = @"MISSING_TYPE";
+        result = [[CDType alloc] initIDType:typeName];
+//        result = nil;
+//        [NSException raise:CDExceptionName_SyntaxError format:@"expected (many things), got %@", CDTokenDescription(_lookahead)];
     }
 
     return result;
@@ -460,7 +464,8 @@ static NSString *CDTokenDescription(int token)
         || token == 'o'
         || token == 'O'
         || token == 'R'
-        || token == 'V')
+        || token == 'V'
+        || token == 'A')
         return YES;
 
     return NO;
@@ -517,6 +522,7 @@ static NSString *CDTokenDescription(int token)
         || token == 'O'
         || token == 'R'
         || token == 'V'
+        || token == 'A'
         || token == '^'
         || token == 'b'
         || token == '@'

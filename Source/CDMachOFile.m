@@ -1,7 +1,7 @@
 // -*- mode: ObjC -*-
 
 //  This file is part of class-dump, a utility for examining the Objective-C segment of Mach-O files.
-//  Copyright (C) 1997-1998, 2000-2001, 2004-2015 Steve Nygard.
+//  Copyright (C) 1997-2019 Steve Nygard.
 
 #import "CDMachOFile.h"
 
@@ -28,6 +28,7 @@
 #import "CDRelocationInfo.h"
 #import "CDSearchPathState.h"
 #import "CDLCSourceVersion.h"
+#import "CDLCBuildVersion.h"
 
 static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
 {
@@ -55,6 +56,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     CDLCVersionMinimum *_minVersionMacOSX;
     CDLCVersionMinimum *_minVersionIOS;
     CDLCSourceVersion *_sourceVersion;
+    CDLCBuildVersion *_buildVersion;
     NSArray *_runPaths;
     NSArray *_runPathCommands;
     NSArray *_dyldEnvironment;
@@ -153,6 +155,7 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
             if (loadCommand.cmd == LC_ID_DYLIB)                                  self.dylibIdentifier = (CDLCDylib *)loadCommand;
 
             if ([loadCommand isKindOfClass:[CDLCSourceVersion class]])           self.sourceVersion = (CDLCSourceVersion *)loadCommand;
+            else if ([loadCommand isKindOfClass:[CDLCBuildVersion class]])       self.buildVersion = (CDLCBuildVersion *)loadCommand;
             else if ([loadCommand isKindOfClass:[CDLCDylib class]])              [dylibLoadCommands addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSegment class]])            [segments addObject:loadCommand];
             else if ([loadCommand isKindOfClass:[CDLCSymbolTable class]])        self.symbolTable = (CDLCSymbolTable *)loadCommand;
@@ -368,10 +371,10 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
         return -'S';
     }
 
-    if ([segment isProtected]) {
-        NSLog(@"Error: Segment is protected.");
-        exit(5);
-    }
+//    if ([segment isProtected]) {
+//        NSLog(@"Error: Segment is protected.");
+//        exit(5);
+//    }
 
 #if 0
     NSLog(@"---------->");
