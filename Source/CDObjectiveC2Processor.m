@@ -63,15 +63,17 @@
 {
     if (address == 0)
         return nil;
-    
     CDOCProtocol *protocol = [self.protocolUniquer protocolWithAddress:address];
     if (protocol == nil) {
         protocol = [[CDOCProtocol alloc] init];
         [self.protocolUniquer setProtocol:protocol withAddress:address];
         
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
+        if ([cursor offset] == -'S') {
+            NSLog(@"Warning: Meet Swift object at %s",__cmd);
+            return nil;
+        }
         NSParameterAssert([cursor offset] != 0);
-        
         struct cd_objc2_protocol objc2Protocol;
         objc2Protocol.isa                     = [cursor readPtr];
         objc2Protocol.name                    = [cursor readPtr];
@@ -320,18 +322,23 @@
         
         listHeader.entsize = [cursor readInt32];
         listHeader.count = [cursor readInt32];
-        NSParameterAssert(listHeader.entsize == 2 * [self.machOFile ptrSize]);
         
-        for (uint32_t index = 0; index < listHeader.count; index++) {
-            struct cd_objc2_property objc2Property;
-            
-            objc2Property.name = [cursor readPtr];
-            objc2Property.attributes = [cursor readPtr];
-            NSString *name = [self.machOFile stringAtAddress:objc2Property.name];
-            NSString *attributes = [self.machOFile stringAtAddress:objc2Property.attributes];
-            
-            CDOCProperty *property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
-            [properties addObject:property];
+        if (listHeader.entsize == 2 * [self.machOFile ptrSize]) {
+            for (uint32_t index = 0; index < listHeader.count; index++) {
+                struct cd_objc2_property objc2Property;
+                
+                objc2Property.name = [cursor readPtr];
+                objc2Property.attributes = [cursor readPtr];
+                NSString *name = [self.machOFile stringAtAddress:objc2Property.name];
+                NSString *attributes = [self.machOFile stringAtAddress:objc2Property.attributes];
+                
+                CDOCProperty *property = [[CDOCProperty alloc] initWithName:name attributes:attributes];
+                [properties addObject:property];
+            }
+        }
+        else
+        {
+            return nil;
         }
     }
     

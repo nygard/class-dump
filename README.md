@@ -13,6 +13,22 @@ The latest version and information is available at:
 The source code is also available from my Github repository at:
 
     https://github.com/nygard/class-dump
+    
+"Swift support"
+==========
+
+I added "Swift support" for class-dump. 
+
+Now, this tool can dump Objective-C headers even the MachO file uses Swift and ObjC at the same time.
+Notice, only ObjC headers can be dumped! 
+
+LAST, THIS IS AN EXPERIMENTAL VERSION. 
+
+我为class-dump添加了"Swift支持"。
+
+现在，这个工具可以dump出可执行文件的Objective-C头文件，即使那个MachO文件同时使用了Swift和ObjC。请注意只有ObjC类的头文件可以被dump出来！
+
+最后，这只是一个试验版本。
 
 Usage
 -----
