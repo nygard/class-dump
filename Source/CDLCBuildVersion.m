@@ -15,7 +15,11 @@ static NSString *NSStringFromBuildVersionPlatform(uint32_t platform)
         case PLATFORM_TVOS:             return @"tvOS";
         case PLATFORM_WATCHOS:          return @"watchOS";
         case PLATFORM_BRIDGEOS:         return @"bridgeOS";
+#if defined(PLATFORM_IOSMAC)
         case PLATFORM_IOSMAC:           return @"iOS Mac";
+#elif defined(PLATFORM_MACCATALYST)
+        case PLATFORM_MACCATALYST:      return @"Mac Catalyst";
+#endif
         case PLATFORM_IOSSIMULATOR:     return @"iOS Simulator";
         case PLATFORM_TVOSSIMULATOR:    return @"tvOS Simulator";
         case PLATFORM_WATCHOSSIMULATOR: return @"watchOS Simulator";
