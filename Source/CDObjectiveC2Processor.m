@@ -393,6 +393,7 @@
     
     if (address != 0) {
         CDMachOFileDataCursor *cursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile address:address];
+        CDMachOFileDataCursor *nameCursor = [[CDMachOFileDataCursor alloc] initWithFile:self.machOFile];
         NSParameterAssert([cursor offset] != 0);
         //NSLog(@"method list data offset: %lu", [cursor offset]);
         
@@ -401,14 +402,30 @@
         // See getEntsize() from http://www.opensource.apple.com/source/objc4/objc4-532.2/runtime/objc-runtime-new.h
         listHeader.entsize = [cursor readInt32] & ~(uint32_t)3;
         listHeader.count   = [cursor readInt32];
-        NSParameterAssert(listHeader.entsize == 3 * [self.machOFile ptrSize]);
-        
+        uint32_t small = listHeader.entsize & 0x80000000;
+        if(small) {
+            NSParameterAssert((listHeader.entsize & 0x7FFFFFFF) == 12);
+        } else {
+            NSParameterAssert(listHeader.entsize == 3 * [self.machOFile ptrSize]);
+        }
         for (uint32_t index = 0; index < listHeader.count; index++) {
             struct cd_objc2_method objc2Method;
             
-            objc2Method.name  = [cursor readPtr];
-            objc2Method.types = [cursor readPtr];
-            objc2Method.imp   = [cursor readPtr];
+            if(small) {
+                uint64_t baseAddress = address + index * 12 + 8;
+                uint64_t name = baseAddress + (int64_t)(int32_t) [cursor readInt32];
+                uint64_t types = baseAddress + 4 + (int64_t)(int32_t) [cursor readInt32];
+                uint64_t imp = baseAddress + 8 + (int64_t)(int32_t) [cursor readInt32];
+                
+                [nameCursor setAddress:name];
+                objc2Method.name = [nameCursor readPtr];
+                objc2Method.types = types;
+                objc2Method.imp = imp;
+            } else {
+                objc2Method.name  = [cursor readPtr];
+                objc2Method.types = [cursor readPtr];
+                objc2Method.imp   = [cursor readPtr];
+            }
             NSString *name    = [self.machOFile stringAtAddress:objc2Method.name];
             NSString *types   = [self.machOFile stringAtAddress:objc2Method.types];
             
