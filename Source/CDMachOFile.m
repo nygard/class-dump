@@ -350,6 +350,13 @@ static NSString *CDMachOFileMagicNumberDescription(uint32_t magic)
     if (offset == 0)
         return nil;
 
+    // Support small methods referencing selector names in __objc_selrefs.
+    CDSection *section = [segment sectionContainingAddress:address];
+    if ([[section sectionName] isEqualToString:@"__objc_selrefs"]) {
+        const void * reference = [self.data bytes] + offset;
+        offset = ([self ptrSize] == 8) ? *((uint64_t *)reference) : *((uint32_t *)reference);
+    }
+
     ptr = (uint8_t *)[self.data bytes] + offset;
 
     return [[NSString alloc] initWithBytes:ptr length:strlen(ptr) encoding:NSASCIIStringEncoding];

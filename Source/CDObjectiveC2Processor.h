@@ -5,6 +5,10 @@
 
 #import "CDObjectiveCProcessor.h"
 
+#define METHOD_LIST_T_RESERVED_BITS 0x7FFF0003
+#define METHOD_LIST_T_SMALL_METHOD_FLAG 0x80000000
+#define METHOD_LIST_T_ENTSIZE_MASK (METHOD_LIST_T_RESERVED_BITS|METHOD_LIST_T_SMALL_METHOD_FLAG)
+
 @interface CDObjectiveC2Processor : CDObjectiveCProcessor
 
 @end
