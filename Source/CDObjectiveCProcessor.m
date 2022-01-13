@@ -134,14 +134,20 @@
 - (void)process;
 {
     if (self.machOFile.isEncrypted == NO && self.machOFile.canDecryptAllSegments) {
+        //首先从LC_SYMTAB定位到Symbol Table，然后枚举符号表
         [self.machOFile.symbolTable loadSymbols];
+        //读取LC_DYSYMTAB
         [self.machOFile.dynamicSymbolTable loadSymbols];
-
+        
+        //从__DATA,__objc_protolist 读取解析协议列表
         [self loadProtocols];
+        //合并
         [self.protocolUniquer createUniquedProtocols];
 
         // Load classes before categories, so we can get a dictionary of classes by address.
+        //从__DATA,__objc_classlist 读取解析类列表
         [self loadClasses];
+        //从__DATA,__objc_catlist 读取解析分类列表
         [self loadCategories];
     }
 }

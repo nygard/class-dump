@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
 
         while ( (ch = getopt_long(argc, argv, "aAC:f:HIo:rRsSt", longopts, NULL)) != -1) {
             switch (ch) {
+                //指定目标arch架构
                 case CD_OPT_ARCH: {
                     NSString *name = [NSString stringWithUTF8String:optarg];
                     targetArch = CDArchFromName(name);
@@ -115,15 +116,15 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
-                    
+                //列举出有哪些架构
                 case CD_OPT_LIST_ARCHES:
                     shouldListArches = YES;
                     break;
-                    
+                //打印class-dump版本
                 case CD_OPT_VERSION:
                     shouldPrintVersion = YES;
                     break;
-                    
+                //指定sdk版本
                 case CD_OPT_SDK_IOS: {
                     NSString *root = [NSString stringWithUTF8String:optarg];
                     //NSLog(@"root: %@", root);
@@ -159,7 +160,7 @@ int main(int argc, char *argv[])
                     
                     break;
                 }
-                    
+                //隐藏section
                 case CD_OPT_HIDE: {
                     NSString *str = [NSString stringWithUTF8String:optarg];
                     if ([str isEqualToString:@"all"]) {
@@ -170,15 +171,15 @@ int main(int argc, char *argv[])
                     }
                     break;
                 }
-                    
+                //显示变量偏移
                 case 'a':
                     classDump.shouldShowIvarOffsets = YES;
                     break;
-                    
+                //显示方法地址
                 case 'A':
                     classDump.shouldShowMethodAddresses = YES;
                     break;
-                    
+                //对类名正则匹配
                 case 'C': {
                     NSError *error;
                     NSRegularExpression *regularExpression = [NSRegularExpression regularExpressionWithPattern:[NSString stringWithUTF8String:optarg]
@@ -194,36 +195,36 @@ int main(int argc, char *argv[])
                     // Last one wins now.
                     break;
                 }
-                    
+                //在方法名中搜索字符串
                 case 'f': {
                     searchString = [NSString stringWithUTF8String:optarg];
                     break;
                 }
-                    
+                //是否生成头文件
                 case 'H':
                     shouldGenerateSeparateHeaders = YES;
                     break;
-                    
+                //根据继承关系排序
                 case 'I':
                     classDump.shouldSortClassesByInheritance = YES;
                     break;
-                    
+                //生成头文件的目标文件夹
                 case 'o':
                     outputPath = [NSString stringWithUTF8String:optarg];
                     break;
-                    
+                //递归处理framework和dylib
                 case 'r':
                     classDump.shouldProcessRecursively = YES;
                     break;
-                    
+                //排序类名
                 case 's':
                     classDump.shouldSortClasses = YES;
                     break;
-                    
+                //排序方法名
                 case 'S':
                     classDump.shouldSortMethods = YES;
                     break;
-                    
+                //打印头文件
                 case 't':
                     classDump.shouldShowHeader = NO;
                     break;
@@ -248,6 +249,7 @@ int main(int argc, char *argv[])
         if (optind < argc) {
             NSString *arg = [NSString stringWithFileSystemRepresentation:argv[optind]];
             NSString *executablePath = [arg executablePathForFilename];
+            //打印所有架构
             if (shouldListArches) {
                 if (executablePath == nil) {
                     printf("none\n");
@@ -272,6 +274,7 @@ int main(int argc, char *argv[])
                 }
 
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
+                //解析Mach-O文件结构
                 CDFile *file = [CDFile fileWithContentsOfFile:executablePath searchPathState:classDump.searchPathState];
                 if (file == nil) {
                     NSFileManager *defaultManager = [NSFileManager defaultManager];
@@ -290,6 +293,7 @@ int main(int argc, char *argv[])
                 }
 
                 if (hasSpecifiedArch == NO) {
+                    //没有指定目标架构，配置最佳架构
                     if ([file bestMatchForLocalArch:&targetArch] == NO) {
                         fprintf(stderr, "Error: Couldn't get local architecture\n");
                         exit(1);
@@ -303,11 +307,14 @@ int main(int argc, char *argv[])
                 classDump.searchPathState.executablePath = [executablePath stringByDeletingLastPathComponent];
 
                 NSError *error;
+                //加载文件
                 if (![classDump loadFile:file error:&error]) {
                     fprintf(stderr, "Error: %s\n", [[error localizedFailureReason] UTF8String]);
                     exit(1);
                 } else {
+                    //处理解析数据
                     [classDump processObjectiveCData];
+                    //处理type
                     [classDump registerTypes];
                     
                     if (searchString != nil) {
@@ -316,6 +323,7 @@ int main(int argc, char *argv[])
                         visitor.searchString = searchString;
                         [classDump recursivelyVisit:visitor];
                     } else if (shouldGenerateSeparateHeaders) {
+                        //生成头文件
                         CDMultiFileVisitor *multiFileVisitor = [[CDMultiFileVisitor alloc] init];
                         multiFileVisitor.classDump = classDump;
                         classDump.typeController.delegate = multiFileVisitor;
